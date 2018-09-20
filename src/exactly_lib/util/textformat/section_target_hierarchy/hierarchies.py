@@ -15,7 +15,7 @@ from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetI
     TargetInfoNode, TargetInfoFactoryWithFixedRoot
 from exactly_lib.util.textformat.structure import document as doc, core
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
+from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib.util.textformat.structure.structures import StrOrStringText
 
 
@@ -145,66 +145,6 @@ def child_leaf(local_target_name: str,
                  leaf(header, contents_constructor))
 
 
-def parent_(header: str,
-            initial_paragraphs: List[ParagraphItem],
-            nodes: List[Node],
-            ) -> SectionHierarchyGenerator:
-    """
-    A section with sub sections that appear in the TOC/target hierarchy.
-    """
-    return parent(header,
-                  paragraphs.constant(initial_paragraphs),
-                  nodes)
-
-
-def parent(header: str,
-           initial_paragraphs: ParagraphItemsConstructor,
-           nodes: List[Node],
-           ) -> SectionHierarchyGenerator:
-    """
-    A section with sub sections that appear in the TOC/target hierarchy.
-    """
-    return _Hierarchy(StringText(header),
-                      initial_paragraphs,
-                      [child(node.local_target_name, node.generator)
-                       for node in nodes])
-
-
-def parent3(header: StringText,
-            initial_paragraphs: ParagraphItemsConstructor,
-            nodes: List[Node],
-            ) -> SectionHierarchyGenerator:
-    """
-    A section with sub sections that appear in the TOC/target hierarchy.
-    """
-    return _SectionHierarchyGeneratorWithSubSections(header,
-                                                     initial_paragraphs,
-                                                     nodes)
-
-
-def sections(header: str,
-             nodes: List[Node],
-             ) -> SectionHierarchyGenerator:
-    """
-    A section with sub sections that appear in the TOC/target hierarchy.
-    """
-    return parent(header,
-                  paragraphs.empty(),
-                  nodes)
-
-
-def hierarchy_with_constant_target(header: str,
-                                   constant_target: core.CrossReferenceTarget,
-                                   initial_paragraphs: ParagraphItemsConstructor,
-                                   nodes: List[Node],
-                                   ) -> SectionHierarchyGenerator:
-    return _SectionHierarchyGeneratorWithSubSections(StringText(header),
-                                                     initial_paragraphs,
-                                                     nodes,
-                                                     constant_target,
-                                                     )
-
-
 class _ChildSectionHierarchyGenerator(SectionHierarchyGenerator):
     def __init__(self,
                  local_target_name: str,
@@ -268,31 +208,6 @@ class _ArticleLeafGenerator(_SectionHierarchyGeneratorBase):
         return LeafArticleNode(self._root_target_info(target_factory),
                                self._contents_renderer,
                                self._tags)
-
-
-class _SectionHierarchyGeneratorWithSubSections(_SectionHierarchyGeneratorBase):
-    """
-    A section with sub sections.
-    """
-
-    def __init__(self,
-                 header: StringText,
-                 initial_paragraphs: ParagraphItemsConstructor,
-                 nodes: List[Node],
-                 constant_target: Optional[core.CrossReferenceTarget] = None,
-                 ):
-        super().__init__(header, constant_target)
-        self._initial_paragraphs = initial_paragraphs
-        self._nodes = nodes
-
-    def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
-        sub_sections = [node.generator.generate(target_factory.sub_factory(node.local_target_name))
-                        for node
-                        in self._nodes
-                        ]
-        return SectionItemNodeWithSubSections(self._root_target_info(target_factory),
-                                              self._initial_paragraphs,
-                                              sub_sections)
 
 
 class _Hierarchy(_SectionHierarchyGeneratorBase):

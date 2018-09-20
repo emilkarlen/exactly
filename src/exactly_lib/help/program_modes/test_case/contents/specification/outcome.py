@@ -15,7 +15,7 @@ from exactly_lib.help.program_modes.test_case.contents.specification.utils impor
     step_with_single_exit_value, singe_exit_value_display, step_with_single_exit_value2
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
-from exactly_lib.util.textformat.constructor import sections
+from exactly_lib.util.textformat.constructor import sections, paragraphs
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
 from exactly_lib.util.textformat.structure.structures import *
@@ -29,48 +29,47 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
         return h.leaf(header_,
                       sections.constant_contents(section_contents(paragraphs)))
 
-    return h.parent_(
+    return h.hierarchy__str(
         header,
-        preamble_paragraphs,
+        paragraphs.constant(preamble_paragraphs),
         [
-            h.Node('reporting',
-                   const_contents('Reporting',
-                                  TEXT_PARSER.fnap(REPORTING))
+            h.child('reporting',
+                    const_contents('Reporting',
+                                   TEXT_PARSER.fnap(REPORTING))
 
-                   ),
-            h.Node('scenarios',
-                   h.parent_(
-                       'Scenarios',
-                       [],
-                       [
-                           h.Node('complete-execution',
-                                  const_contents('Complete execution',
-                                                 _description_of_complete_execution(setup))
+                    ),
+            h.child('scenarios',
+                    h.hierarchy__str(
+                        'Scenarios',
+                        children=[
+                            h.child('complete-execution',
+                                    const_contents('Complete execution',
+                                                   _description_of_complete_execution(setup))
 
-                                  ),
-                           h.Node('error-during-validation',
-                                  const_contents('Error during validation',
-                                                 _error_in_validation_before_execution())
+                                    ),
+                            h.child('error-during-validation',
+                                    const_contents('Error during validation',
+                                                   _error_in_validation_before_execution())
 
-                                  ),
-                           h.Node('error-during-execution',
-                                  const_contents('Error during execution',
-                                                 _interrupted_execution(setup))
+                                    ),
+                            h.child('error-during-execution',
+                                    const_contents('Error during execution',
+                                                   _interrupted_execution(setup))
 
-                                  ),
-                           h.Node('other-errors',
-                                  const_contents('Other errors',
-                                                 _other_errors(setup))
+                                    ),
+                            h.child('other-errors',
+                                    const_contents('Other errors',
+                                                   _other_errors(setup))
 
-                                  ),
-                       ]
-                   )),
-            h.Node('summary-of-exit-codes',
-                   const_contents(ALL_EXIT_VALUES_SUMMARY_TABLE_HEADER,
-                                  [all_exit_values_summary_table()]
-                                  )
+                                    ),
+                        ]
+                    )),
+            h.child('summary-of-exit-codes',
+                    const_contents(ALL_EXIT_VALUES_SUMMARY_TABLE_HEADER,
+                                   [all_exit_values_summary_table()]
+                                   )
 
-                   ),
+                    ),
         ]
     )
 

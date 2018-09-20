@@ -54,51 +54,49 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
         return h.leaf(header_,
                       sections.constant_contents(section_contents(paragraphs_)))
 
-    return h.parent_(
+    return h.hierarchy__str(
         header,
-        [],
-        [
-            h.Node('dir-structure',
-                   h.parent_(
-                       'Directory structure and Current directory',
-                       tp.fnap(_DS_CD_PREAMBLE),
-                       [
-                           h.Node('sds',
-                                  const_paragraphs(
-                                      concepts.SANDBOX_CONCEPT_INFO.singular_name.capitalize() +
-                                      ' and Current directory',
-                                      tp.fnap(_SDS_AND_CD))
-                                  ),
-                           h.Node('hds',
-                                  const_paragraphs(
-                                      concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.singular_name.capitalize(),
-                                      tp.fnap(_HDS))
-                                  ),
-                           h.Node('file-ref',
-                                  const_paragraphs(
-                                      'File references',
-                                      tp.fnap(_FILE_REFERENCES))
-                                  ),
-                           h.Node('see-also',
-                                  h.leaf_not_in_toc(
-                                      see_also.SeeAlsoSectionConstructor(
-                                          see_also.items_of_targets(_dir_struct_see_also_targets())
-                                      ))
-                                  ),
-                       ])
-                   ),
-            h.Node('env-vars',
-                   h.leaf(
-                       'Environment variables',
-                       sections.contents(
-                           [paragraphs.constant(tp.fnap(_ENVIRONMENT_VARIABLES))],
-                           [
-                               see_also.SeeAlsoSectionConstructor(
-                                   see_also.items_of_targets(_env_var_see_also_targets())
-                               )
-                           ]
-                       ))
-                   ),
+        children=[
+            h.child_hierarchy('dir-structure',
+                              'Directory structure and Current directory',
+                              paragraphs.constant(tp.fnap(_DS_CD_PREAMBLE)),
+                              [
+                                  h.child('sds',
+                                          const_paragraphs(
+                                              concepts.SANDBOX_CONCEPT_INFO.singular_name.capitalize() +
+                                              ' and Current directory',
+                                              tp.fnap(_SDS_AND_CD))
+                                          ),
+                                  h.child('hds',
+                                          const_paragraphs(
+                                              concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.singular_name.capitalize(),
+                                              tp.fnap(_HDS))
+                                          ),
+                                  h.child('file-ref',
+                                          const_paragraphs(
+                                              'File references',
+                                              tp.fnap(_FILE_REFERENCES))
+                                          ),
+                                  h.child('see-also',
+                                          h.leaf_not_in_toc(
+                                              see_also.SeeAlsoSectionConstructor(
+                                                  see_also.items_of_targets(_dir_struct_see_also_targets())
+                                              ))
+                                          ),
+                              ]
+                              ),
+            h.child('env-vars',
+                    h.leaf(
+                        'Environment variables',
+                        sections.contents(
+                            [paragraphs.constant(tp.fnap(_ENVIRONMENT_VARIABLES))],
+                            [
+                                see_also.SeeAlsoSectionConstructor(
+                                    see_also.items_of_targets(_env_var_see_also_targets())
+                                )
+                            ]
+                        ))
+                    ),
         ]
     )
 

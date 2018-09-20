@@ -6,6 +6,7 @@ from exactly_lib.help.program_modes.test_case.contents.specification.utils impor
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
 from exactly_lib.section_document.syntax import section_header, LINE_COMMENT_MARKER
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
+from exactly_lib.util.textformat.constructor import paragraphs
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor
@@ -17,21 +18,21 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
     text_parser = _text_parser(setup)
-    return h.parent_(
-        header, [],
-        [
-            h.Node('phases', h.leaf('Phases', _PhaseRenderer(text_parser))),
-            h.Node('phase-contents', h.leaf('Phase contents', _PhaseContentsRenderer(text_parser))),
-            h.Node('instructions', h.parent_(
-                'Instructions',
-                text_parser.fnap(INSTRUCTIONS_DOC),
-                [h.Node('description',
-                        h.leaf('Instruction descriptions',
-                               _InstructionsRenderer(
-                                   text_parser)))])
-                   ),
-            h.Node('file-inclusion', h.leaf('File inclusion', _FileInclusionContentsRenderer(text_parser))),
-            h.Node('com-empty', h.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
+    return h.hierarchy__str(
+        header,
+        children=[
+            h.child('phases', h.leaf('Phases', _PhaseRenderer(text_parser))),
+            h.child('phase-contents', h.leaf('Phase contents', _PhaseContentsRenderer(text_parser))),
+            h.child('instructions',
+                    h.hierarchy__str('Instructions',
+                                     paragraphs.constant(text_parser.fnap(INSTRUCTIONS_DOC)),
+                                     [h.child_leaf('description',
+                                                   'Instruction descriptions',
+                                                   _InstructionsRenderer(text_parser))
+                                      ])
+                    ),
+            h.child('file-inclusion', h.leaf('File inclusion', _FileInclusionContentsRenderer(text_parser))),
+            h.child('com-empty', h.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
         ]
     )
 

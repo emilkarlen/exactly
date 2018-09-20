@@ -4,7 +4,7 @@ from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.help.render import see_also
 from exactly_lib.test_suite import exit_values
-from exactly_lib.util.textformat.constructor import sections
+from exactly_lib.util.textformat.constructor import sections, paragraphs
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.sections import SectionContentsConstructor
 from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
@@ -16,22 +16,22 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 def root(header: str) -> generator.SectionHierarchyGenerator:
     preamble_paragraphs = TEXT_PARSER.fnap(PREAMBLE)
 
-    def const_contents(header_: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
+    def const_contents(header_: str, paragraphs_: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
         return h.leaf(header_,
-                      sections.constant_contents(section_contents(paragraphs)))
+                      sections.constant_contents(section_contents(paragraphs_)))
 
-    return h.parent_(
+    return h.hierarchy__str(
         header,
-        preamble_paragraphs,
+        paragraphs.constant(preamble_paragraphs),
         [
-            h.Node('reporting',
-                   h.leaf('Reporting',
-                          _ReportingContentsConstructor())
-                   ),
-            h.Node('scenarios',
-                   const_contents('Scenarios',
-                                  _scenarios_list())
-                   ),
+            h.child('reporting',
+                    h.leaf('Reporting',
+                           _ReportingContentsConstructor())
+                    ),
+            h.child('scenarios',
+                    const_contents('Scenarios',
+                                   _scenarios_list())
+                    ),
         ]
     )
 

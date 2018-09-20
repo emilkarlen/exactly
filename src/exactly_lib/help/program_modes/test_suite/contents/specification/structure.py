@@ -7,7 +7,7 @@ from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.definitions.test_suite import section_names_plain
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_help import TestSuiteHelp
-from exactly_lib.util.textformat.constructor import sections
+from exactly_lib.util.textformat.constructor import sections, paragraphs
 from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h
 from exactly_lib.util.textformat.section_target_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib.util.textformat.structure import structures as docs
@@ -39,23 +39,23 @@ class _HierarchyGenerator:
         })
 
     def generator(self, header: str) -> SectionHierarchyGenerator:
-        return h.parent_(
+        return h.hierarchy__str(
             header,
-            self._tp.fnap(_PRELUDE),
+            paragraphs.constant(self._tp.fnap(_PRELUDE)),
             [
-                h.Node('cases-and-sub-suites',
-                       self._cases_and_sub_suites(CASES_AND_SUB_SUITES_HEADER)
-                       ),
-                h.Node('common-test-case-contents',
-                       self._common_tc_contents(COMMON_CASE_CONTENTS_HEADER)
-                       ),
-                h.Node('additional-test-case-conf',
-                       h.leaf(
-                           ADDITIONAL_TEST_CASE_CONFIG_HEADER,
-                           sections.constant_contents(
-                               docs.section_contents(self._tp.fnap(_ADDITIONAL_TEST_CASE_CONFIG))
-                           ))
-                       ),
+                h.child('cases-and-sub-suites',
+                        self._cases_and_sub_suites(CASES_AND_SUB_SUITES_HEADER)
+                        ),
+                h.child('common-test-case-contents',
+                        self._common_tc_contents(COMMON_CASE_CONTENTS_HEADER)
+                        ),
+                h.child('additional-test-case-conf',
+                        h.leaf(
+                            ADDITIONAL_TEST_CASE_CONFIG_HEADER,
+                            sections.constant_contents(
+                                docs.section_contents(self._tp.fnap(_ADDITIONAL_TEST_CASE_CONFIG))
+                            ))
+                        ),
             ])
 
     def _cases_and_sub_suites(self, header: str) -> SectionHierarchyGenerator:
