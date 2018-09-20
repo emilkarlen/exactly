@@ -23,12 +23,12 @@ class TestSuiteSectionWithoutInstructionsInfo(TestSuiteSectionInfo):
         raise ValueError('The {} section do not have instructions'.format(self.name.plain))
 
 
-CONFIGURATION = TestSuiteSectionInfo(section_names.CONFIGURATION)
-CASES = TestSuiteSectionWithoutInstructionsInfo(section_names.CASES)
-SUITES = TestSuiteSectionWithoutInstructionsInfo(section_names.SUITES)
+CONFIGURATION = TestSuiteSectionInfo(section_names.CONFIGURATION.plain)
+CASES = TestSuiteSectionWithoutInstructionsInfo(section_names.CASES.plain)
+SUITES = TestSuiteSectionWithoutInstructionsInfo(section_names.SUITES.plain)
 
-CASE__SETUP = TestSuiteSectionInfo(section_names.CASE__SETUP)
-CASE__ACT = TestSuiteSectionInfo(section_names.CASE__ACT)
-CASE__BEFORE_ASSERT = TestSuiteSectionInfo(section_names.CASE__BEFORE_ASSERT)
-CASE__ASSERT = TestSuiteSectionInfo(section_names.CASE__ASSERT)
-CASE__CLEANUP = TestSuiteSectionInfo(section_names.CASE__CLEANUP)
+CASE__SETUP = TestSuiteSectionInfo(section_names.CASE__SETUP.plain)
+CASE__ACT = TestSuiteSectionInfo(section_names.CASE__ACT.plain)
+CASE__BEFORE_ASSERT = TestSuiteSectionInfo(section_names.CASE__BEFORE_ASSERT.plain)
+CASE__ASSERT = TestSuiteSectionInfo(section_names.CASE__ASSERT.plain)
+CASE__CLEANUP = TestSuiteSectionInfo(section_names.CASE__CLEANUP.plain)

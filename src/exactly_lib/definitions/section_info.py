@@ -5,9 +5,8 @@ from exactly_lib.definitions.formatting import SectionName
 class SectionInfo:
     """Information about a section, useful in help texts"""
 
-    def __init__(self,
-                 name: SectionName):
-        self._section_name = name
+    def __init__(self, name: str):
+        self._section_name = SectionName(name)
 
     @property
     def name(self) -> SectionName:
