@@ -1,8 +1,8 @@
 from exactly_lib import program_info
 from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
-from exactly_lib.definitions import formatting
-from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO
-from exactly_lib.definitions.misc_texts import SYNTAX_ERROR_NAME
+from exactly_lib.definitions import formatting, misc_texts
+from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup, \
     post_setup_validation_step_name, \
     step_with_single_exit_value
@@ -22,10 +22,14 @@ class ContentsConstructor(SectionContentsConstructor):
         self._tp = TextParser({
             'phase': setup.phase_names,
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'symbol': SYMBOL_CONCEPT_INFO.name.singular,
-            'symbols': SYMBOL_CONCEPT_INFO.name.plural,
+            'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name.singular,
+            'instructions': concepts.INSTRUCTION_CONCEPT_INFO.name.plural,
+            'ATC': concepts.ACTION_TO_CHECK_CONCEPT_INFO.singular_name,
+            'act_phase': phase_infos.ACT.name,
+            'symbol': concepts.SYMBOL_CONCEPT_INFO.name.singular,
+            'symbols': concepts.SYMBOL_CONCEPT_INFO.name.plural,
             'cli_option_for_preprocessor': formatting.cli_option(OPTION_FOR_PREPROCESSOR),
-            'an_error_in_source': SYNTAX_ERROR_NAME.singular_determined,
+            'an_error_in_source': misc_texts.SYNTAX_ERROR_NAME.singular_determined,
         })
 
     def apply(self, environment: ConstructionEnvironment) -> SectionContents:
@@ -108,7 +112,13 @@ Fails if the preprocessor program cannot be executed,
 or if it exits with a non-zero exit code.
 """
 
-PURPOSE_OF_SYNTAX_CHECKING = 'Checks the syntax of all elements in the test case file.'
+PURPOSE_OF_SYNTAX_CHECKING = """\
+Checks the syntax of all elements in the test case file
+-
+phases,
+their {instructions},
+and the {ATC} of the {act_phase:syntax} phase.
+"""
 
 FAILURE_CONDITION_OF_SYNTAX_CHECKING = 'Fails if {an_error_in_source} is found.'
 
@@ -135,6 +145,18 @@ or if a reference to a non-existing file is found, e.g.
 
 EXECUTION_DESCRIPTION = """\
 Executes the actual test.
+ 
+ 
+Executes the phases in the predefined order.
+
+
+Executing a phase with {instructions} means executing all instructions
+in the order they appear in the test case file.
+
+
+The execution halts if an {instruction} encounters an error,
+or, in the case of assertion instructions, if the
+assertion fails. 
 
 
 One validation step is embedded in the execution:"""
