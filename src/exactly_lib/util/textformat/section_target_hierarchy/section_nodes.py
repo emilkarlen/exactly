@@ -48,23 +48,36 @@ class LeafArticleNode(LeafSectionItemNodeWithRoot):
                  tags: Optional[Set[str]] = None,
                  ):
         super().__init__(node_target_info)
-        self._tags = frozenset() if tags is None else tags
+        self._tags = tags
         self._contents_renderer = contents_renderer
 
     def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> ArticleConstructor:
-        super_self = self
         tags = self._tags.union(node_environment.toc_section_item_tags)
 
-        class RetVal(ArticleConstructor):
-            def apply(self, environment: ConstructionEnvironment) -> doc.Article:
-                article_contents = super_self._contents_renderer.apply(environment)
-                return doc.Article(super_self._root_target_info.presentation_text,
-                                   ArticleContents(article_contents.abstract_paragraphs,
-                                                   article_contents.section_contents),
-                                   target=super_self._root_target_info.target,
-                                   tags=tags)
+        return ArticleConstructorFromContentsConstructor(
+            self._root_target_info,
+            self._contents_renderer,
+            tags,
+        )
 
-        return RetVal()
+
+class ArticleConstructorFromContentsConstructor(ArticleConstructor):
+    def __init__(self,
+                 node_target_info: TargetInfo,
+                 contents_renderer: ArticleContentsConstructor,
+                 tags: Optional[Set[str]] = None,
+                 ):
+        self._node_target_info = node_target_info
+        self._tags = frozenset() if tags is None else tags
+        self._contents_renderer = contents_renderer
+
+    def apply(self, environment: ConstructionEnvironment) -> doc.Article:
+        article_contents = self._contents_renderer.apply(environment)
+        return doc.Article(self._node_target_info.presentation_text,
+                           ArticleContents(article_contents.abstract_paragraphs,
+                                           article_contents.section_contents),
+                           target=self._node_target_info.target,
+                           tags=self._tags)
 
 
 class SectionItemNodeWithSubSections(SectionItemNodeWithRoot):
