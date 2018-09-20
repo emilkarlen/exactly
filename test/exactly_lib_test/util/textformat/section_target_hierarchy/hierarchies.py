@@ -5,7 +5,6 @@ from exactly_lib.util.textformat.constructor.environment import ConstructionEnvi
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor
 from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as sut, generator
-from exactly_lib.util.textformat.section_target_hierarchy.hierarchies import Node
 from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoNode, target_info_leaf, \
     TargetInfoFactory, TargetInfo
 from exactly_lib.util.textformat.structure import document as doc
@@ -203,78 +202,6 @@ class Test(TestBase):
                              target_factory,
                              target_info_node_assertion,
                              section_assertion)
-
-    def test_parent_without_sub_sections(self):
-        # ARRANGE #
-        target_factory = TargetInfoFactoryTestImpl(['target_component'])
-        object_to_test = sut.parent_('top header', [], [])
-        # EXPECTATION #
-        expected_target_info = target_factory.root(StringText('top header'))
-
-        target_info_node_assertion = equals_target_info_node(
-            target_info_leaf(expected_target_info),
-            mk_equals_cross_ref_id=equals_custom_cross_ref_test_impl)
-
-        section_assertion = section_matches(
-            target=equals_custom_cross_ref_test_impl(expected_target_info.target),
-            header=asrt_para.equals_text(expected_target_info.presentation_text),
-            contents=asrt.sub_component('is_empty',
-                                        doc.SectionContents.is_empty.fget,
-                                        asrt.is_true))
-        # ACT & ASSERT #
-        self._act_and_assert(object_to_test,
-                             target_factory,
-                             target_info_node_assertion,
-                             section_assertion)
-
-    def test_parent_with_sub_sections(self):
-        # ARRANGE #
-        target_factory = TargetInfoFactoryTestImpl(['target_component'])
-        expected_section_contents_object1 = doc.empty_section_contents()
-        expected_section_contents_object2 = docs.section_contents(docs.paras('testing testing'))
-        expected_root_initial_para = docs.para('root initial paras')
-        expected_root_initial_paras = [expected_root_initial_para]
-        object_to_test = sut.parent_(
-            'root header',
-            expected_root_initial_paras,
-            [Node('sub-target1', sut.leaf('sub1',
-                                          section_contents(expected_section_contents_object1))),
-             Node('sub-target2', sut.leaf('sub2',
-                                          section_contents(expected_section_contents_object2)))
-             ])
-        # EXPECTATION #
-        expected_root_target_info = target_factory.root(StringText('root header'))
-
-        sub1_target = target_factory.sub('sub1', 'sub-target1')
-        sub2_target = target_factory.sub('sub2', 'sub-target2')
-        target_info_node_assertion = equals_target_info_node(
-            TargetInfoNode(expected_root_target_info,
-                           [
-                               target_info_leaf(sub1_target),
-                               target_info_leaf(sub2_target),
-                           ]),
-            mk_equals_cross_ref_id=equals_custom_cross_ref_test_impl)
-
-        section_assertion2 = section_matches(
-            target=equals_custom_cross_ref_test_impl(expected_root_target_info.target),
-            header=asrt_para.equals_text(expected_root_target_info.presentation_text),
-            contents=section_contents_matches(
-                initial_paragraphs=asrt.matches_sequence([asrt.Is(expected_root_initial_para)]),
-                sections=asrt.matches_sequence([
-                    section_matches(
-                        target=equals_custom_cross_ref_test_impl(sub1_target.target),
-                        header=asrt_para.equals_text(sub1_target.presentation_text),
-                        contents=asrt.Is(expected_section_contents_object1)),
-                    section_matches(
-                        target=equals_custom_cross_ref_test_impl(sub2_target.target),
-                        header=asrt_para.equals_text(sub2_target.presentation_text),
-                        contents=asrt.Is(expected_section_contents_object2)),
-                ])))
-        # ACT & ASSERT #
-        self._act_and_assert(object_to_test,
-                             target_factory,
-                             target_info_node_assertion,
-                             section_assertion2)
 
     def test_hierarchy_with_sub_sections(self):
         # ARRANGE #
