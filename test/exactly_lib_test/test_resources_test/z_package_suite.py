@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib_test.test_resources_test import string_formatting, value_assertions
+from exactly_lib_test.test_resources_test import string_formatting
+from exactly_lib_test.test_resources_test.value_assertions import z_package_suite as value_assertions
 
 
 def suite() -> unittest.TestSuite:

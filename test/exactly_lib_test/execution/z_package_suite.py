@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib_test.execution import full_execution
-from exactly_lib_test.execution import impl
-from exactly_lib_test.execution import partial_execution
+from exactly_lib_test.execution.full_execution import z_package_suite as full_execution
+from exactly_lib_test.execution.impl import z_package_suite as impl
+from exactly_lib_test.execution.partial_execution import z_package_suite as partial_execution
 
 
 def suite() -> unittest.TestSuite:

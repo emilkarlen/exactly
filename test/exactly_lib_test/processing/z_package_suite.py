@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib_test.processing import parse
 from exactly_lib_test.processing import preprocessor
 from exactly_lib_test.processing import processing_utils, processors
+from exactly_lib_test.processing.parse import z_package_suite as parse
 from exactly_lib_test.processing.standalone import z_package_suite as standalone
 
 

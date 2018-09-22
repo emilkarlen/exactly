@@ -1,6 +1,8 @@
 import unittest
 
-from exactly_lib_test.type_system import data, logic, utils
+from exactly_lib_test.type_system import utils
+from exactly_lib_test.type_system.data import z_package_suite as data
+from exactly_lib_test.type_system.logic import z_package_suite as logic
 
 
 def suite() -> unittest.TestSuite:

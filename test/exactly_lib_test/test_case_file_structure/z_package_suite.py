@@ -5,8 +5,9 @@ from exactly_lib_test.test_case_file_structure import home_and_sds
 from exactly_lib_test.test_case_file_structure import home_directory_structure, sandbox_directory_structure
 from exactly_lib_test.test_case_file_structure import path_relativity
 from exactly_lib_test.test_case_file_structure import relative_path_options
-from exactly_lib_test.test_case_file_structure import relativity_root, test_resources_test
+from exactly_lib_test.test_case_file_structure import relativity_root
 from exactly_lib_test.test_case_file_structure import relativity_validation
+from exactly_lib_test.test_case_file_structure.test_resources_test import z_package_suite as test_resources_test
 
 
 def suite() -> unittest.TestSuite:
