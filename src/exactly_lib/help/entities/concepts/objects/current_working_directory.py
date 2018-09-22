@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib import program_info
-from exactly_lib.definitions import formatting, file_ref
+from exactly_lib.definitions import formatting, file_ref, misc_texts
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.current_directory_and_path_type import cd_instruction_section_on_def_instruction
@@ -39,6 +39,8 @@ class _CurrentWorkingDirectoryConcept(ConceptDocumentation):
             'run_instruction': InstructionName(instruction_names.RUN_INSTRUCTION_NAME),
             'shell_instruction': InstructionName(instruction_names.SHELL_INSTRUCTION_NAME),
             'def_instruction': InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
+
+            'os_process': misc_texts.OS_PROCESS_NAME,
 
         })
         return DescriptionWithSubSections(
@@ -102,7 +104,7 @@ Instruction arguments of type {path_type} that are relative to the {CD}
 (via the {rel_cd_option} option).
 
 
-OS processes executed from within a test case
+{os_process:plural} executed from within a test case
 have the {CD} as Present Working Directory (PWD)
 when the process starts.
 
@@ -110,7 +112,7 @@ This applies to the {act_phase} phase (as a whole),
 and the {run_instruction} and {shell_instruction} instructions.
 
 The {act_phase} phase is always executed as a single
-OS process execution.
+{os_process} execution.
 
 
 Change of PWD in a process do not change the {CD}

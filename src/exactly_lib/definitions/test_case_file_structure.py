@@ -1,3 +1,4 @@
+from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 
@@ -26,6 +27,7 @@ class TcDirInfo:
 
 _FORMAT_MAP = {
     'phase': PHASE_NAME_DICTIONARY,
+    'os_process': misc_texts.OS_PROCESS_NAME.singular,
 }
 
 
@@ -59,7 +61,7 @@ SDS_ACT_INFO = TcDirInfo(
 SDS_RESULT_INFO = TcDirInfo(
     'result',
     'result directory',
-    _format('Stores OS process result of {phase[act]:syntax}, '
+    _format('Stores {os_process} result of {phase[act]:syntax}, '
             'so that {phase[assert]:syntax} may check it'),
 )
 
