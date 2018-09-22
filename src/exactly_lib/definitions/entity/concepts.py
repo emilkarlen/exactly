@@ -1,7 +1,7 @@
 from typing import Optional
 
 from exactly_lib import program_info
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames, \
     SingularAndPluralAndAcronymNameAndCrossReferenceId
@@ -32,15 +32,21 @@ def name_and_ref_target_for_entity_type(names: EntityTypeNames,
     return name_and_ref_target(names.name, single_line_description_str)
 
 
-def _format(s: str) -> str:
-    return s.format(program_name=formatting.program_name(program_info.PROGRAM_NAME),
-                    phase=phase_names.PHASE_NAME_DICTIONARY,
-                    actor=formatting.concept(all_entity_types.ACTOR_ENTITY_TYPE_NAMES.name.singular),
-                    action_to_check=formatting.concept(ACTION_TO_CHECK_NAME.singular),
-                    current_directory_concept=formatting.concept(_CURRENT_DIRECTORY_SINGULAR))
-
-
 ACTION_TO_CHECK_NAME = Name('action to check', "actions to check")
+
+_FORMAT_MAP = {
+    'program_name': formatting.program_name(program_info.PROGRAM_NAME),
+    'phase': phase_names.PHASE_NAME_DICTIONARY,
+    'actor': formatting.concept(all_entity_types.ACTOR_ENTITY_TYPE_NAMES.name.singular),
+    'action_to_check': formatting.concept(ACTION_TO_CHECK_NAME.singular),
+    'current_directory_concept': formatting.concept(_CURRENT_DIRECTORY_SINGULAR),
+    'os_processes': misc_texts.OS_PROCESS_NAME.plural
+}
+
+
+def _format(s: str) -> str:
+    return s.format_map(_FORMAT_MAP)
+
 
 _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION = """\
 A value set in the {0} phase that determine how the remaining phases are executed."""
@@ -76,7 +82,7 @@ SANDBOX_CONCEPT_INFO = name_and_ref_target(
 
 CURRENT_WORKING_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
     Name(_CURRENT_DIRECTORY_SINGULAR, 'current directories'),
-    'The current directory of the environment in which instruction and OS processes are executed.',
+    'The current directory of the environment in which instruction and {os_processes} are executed.',
     'CD',
 )
 
