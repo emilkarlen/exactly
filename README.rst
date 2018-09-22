@@ -512,6 +512,8 @@ Including (but not limited to):
 * New type "string matcher"
 * Possibility to use "program" values in more places, e.g. in ``[act]``
 * Improved string character escaping
+* Separate sets of environment variables for "action to check" and other processes
+* Possibility to set stdin for processes other than the "action to check"
 * Variables - corresponding to symbol definitions -
   but for variable values
 * Macros and functions

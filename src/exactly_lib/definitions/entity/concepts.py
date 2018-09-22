@@ -40,7 +40,7 @@ _FORMAT_MAP = {
     'actor': formatting.concept(all_entity_types.ACTOR_ENTITY_TYPE_NAMES.name.singular),
     'action_to_check': formatting.concept(ACTION_TO_CHECK_NAME.singular),
     'current_directory_concept': formatting.concept(_CURRENT_DIRECTORY_SINGULAR),
-    'os_processes': misc_texts.OS_PROCESS_NAME.plural
+    'os_process': misc_texts.OS_PROCESS_NAME,
 }
 
 
@@ -82,7 +82,7 @@ SANDBOX_CONCEPT_INFO = name_and_ref_target(
 
 CURRENT_WORKING_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
     Name(_CURRENT_DIRECTORY_SINGULAR, 'current directories'),
-    'The current directory of the environment in which instruction and {os_processes} are executed.',
+    _format('The current directory of the environment in which instruction and {os_process:plural} are executed.'),
     'CD',
 )
 
