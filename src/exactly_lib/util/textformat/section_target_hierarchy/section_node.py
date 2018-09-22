@@ -17,7 +17,7 @@ class SectionItemNodeEnvironment:
 
 class SectionItemNode:
     """
-    A node in the tree of sections with corresponding targets.
+    A node at a fixed position in the tree of sections with corresponding targets.
 
     Supplies one method for getting the target-hierarchy
     (for rendering a TOC),
