@@ -4,11 +4,15 @@ from exactly_lib.common.help.abs_or_rel_path import abs_or_rel_path_of_existing
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args, \
     SyntaxElementDescription, cli_argument_syntax_element_description
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.processing.parse import file_inclusion_directive_parser
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose, AssertPhasePurpose
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import Section
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
@@ -17,14 +21,18 @@ class FileInclusionDirectiveDocumentation(InstructionDocumentation,
     def __init__(self):
         super().__init__(instruction_names.FILE_INCLUSION_DIRECTIVE_NAME)
         self.file_argument = a.Named(file_inclusion_directive_parser.FILE_ARGUMENT_NAME)
-        self._tp = TextParser()
+        self._tp = TextParser({
+            'including_directive': self.instruction_name(),
+            'FILE': self.file_argument.name,
+            'symbols': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.plural_name),
+        })
 
     @property
     def assert_phase_purpose(self) -> AssertPhasePurpose:
         return AssertPhasePurpose.HELPER
 
     def single_line_description(self) -> str:
-        return 'Directive that includes a test case source file'
+        return 'Directive that includes test case contents from an external file'
 
     def invokation_variants(self) -> Sequence[InvokationVariant]:
         return [
@@ -45,20 +53,23 @@ class FileInclusionDirectiveDocumentation(InstructionDocumentation,
     def main_description_rest(self) -> List[ParagraphItem]:
         return self._tp.fnap(_MAIN_DESCRIPTION_REST)
 
+    def main_description_rest_sub_sections(self) -> Sequence[Section]:
+        return [
+            docs.section('Directive',
+                         self._tp.fnap(_DIRECTIVE))
+        ]
 
-_FILE_RELATIVITY_ROOT = 'directory of the source file'
+
+_FILE_RELATIVITY_ROOT = 'directory of the current source file'
 
 _MAIN_DESCRIPTION_REST = """\
-Includes instructions from an external file.
-
-
 The effect of including a file is equivalent to having the
-contents of the included file in the including file,
+contents of the included file in the including file;
 except that the current phase of the including file
 cannot be changed by an included file.
 
 
-The default phase of the external file is the phase
+The default phase of the included file is the phase
 from which the file is included.
 
 
@@ -68,4 +79,14 @@ by declaring different phases just as in a main test case file.
 
 But the phase of the including file is
 not changed.
+"""
+
+_DIRECTIVE = """\
+"{including_directive}" is a "directive" - not an "instruction".
+
+It is processed during file reading and syntax checking.
+Nothing happens at later processing steps.
+
+
+A consequence of this is that {symbols} cannot be used in the {FILE} argument.
 """

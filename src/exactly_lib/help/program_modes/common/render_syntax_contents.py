@@ -1,4 +1,4 @@
-from typing import Iterable, List
+from typing import Iterable, List, Sequence
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import doc_format
@@ -33,7 +33,7 @@ def variants_list(instruction_name: str,
 
 
 def invokation_variants_paragraphs(instruction_name_or_none: str,
-                                   invokation_variants: List[InvokationVariant],
+                                   invokation_variants: Sequence[InvokationVariant],
                                    syntax_element_descriptions: Iterable[SyntaxElementDescription]
                                    ) -> List[ParagraphItem]:
     def syntax_element_description_list() -> ParagraphItem:
@@ -71,7 +71,7 @@ def invokation_variants_paragraphs(instruction_name_or_none: str,
 
 
 def invokation_variants_content(instruction_name_or_none: str,
-                                invokation_variants: List[InvokationVariant],
+                                invokation_variants: Sequence[InvokationVariant],
                                 syntax_element_descriptions: Iterable[SyntaxElementDescription]
                                 ) -> doc.SectionContents:
     return doc.SectionContents(invokation_variants_paragraphs(instruction_name_or_none,
