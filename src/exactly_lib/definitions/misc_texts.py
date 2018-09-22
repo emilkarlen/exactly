@@ -10,8 +10,12 @@ EXIT_CODE = name.an_name(name.name_with_plural_s('exit code'))
 
 EXIT_IDENTIFIER_TITLE = EXIT_IDENTIFIER.singular.capitalize()
 
-EXIT_CODE_TITLE = EXIT_CODE.singular.capitalize()
-
 IS_A_SHELL_CMD = """is a shell command (with optional arguments), using Unix shell syntax."""
 
 RELATIVITY = name.a_name(name.Name('relativity', 'relativities'))
+
+EXIT_CODE_TITLE = EXIT_CODE.singular.capitalize()
+
+TEST_CASE_SPEC_TITLE = 'Specification of test case functionality'
+
+TEST_SUITE_SPEC_TITLE = 'Specification of test suite functionality'

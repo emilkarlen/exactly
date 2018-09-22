@@ -1,3 +1,6 @@
+from exactly_lib.definitions import misc_texts
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
+    HelpPredefinedContentsPart
 from exactly_lib.definitions.test_case.phase_names_plain import SECTION_CONCEPT_NAME
 from exactly_lib.help.html_doc.parts.common.section_document_renderer import \
     GeneratorsForSectionDocument
@@ -17,9 +20,11 @@ def hierarchy(header: str,
         header,
         children=[
             h.child('spec',
-                    test_case_specification_rendering.root(
-                        'Specification of test case functionality',
-                        test_case_help)
+                    h.with_fixed_root_target(
+                        PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_CASE_SPEC),
+                        test_case_specification_rendering.root(
+                            misc_texts.TEST_CASE_SPEC_TITLE,
+                            test_case_help))
                     ),
             h.child('phases',
                     sections_helper.all_sections_list('Phases')
