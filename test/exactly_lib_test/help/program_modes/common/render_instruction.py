@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.program_modes.common import render_instruction as sut
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
+from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.structures import paras, text
 from exactly_lib_test.common.test_resources.instruction_documentation import InstructionDocumentationWithConstantValues
 from exactly_lib_test.util.textformat.constructor.test_resources import CrossReferenceTextConstructorTestImpl
@@ -40,6 +41,20 @@ class TestManPage(unittest.TestCase):
                                                                  'single line description',
                                                                  'main description rest',
                                                                  [])
+        actual = sut.instruction_doc_section_contents_constructor(description).apply(CONSTRUCTION_ENVIRONMENT)
+        struct_check.is_section_contents.apply(self, actual)
+
+    def test_with_main_description_rest_sub_sections(self):
+        description = InstructionDocumentationWithConstantValues(
+            'instruction name',
+            'single line description',
+            'main description rest',
+            [],
+            main_description_rest_sub_sections=[
+                docs.section('main description rest sub section header',
+                             docs.paras('Sub section paragraphs'))
+            ]
+        )
         actual = sut.instruction_doc_section_contents_constructor(description).apply(CONSTRUCTION_ENVIRONMENT)
         struct_check.is_section_contents.apply(self, actual)
 

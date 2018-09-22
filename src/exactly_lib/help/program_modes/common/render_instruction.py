@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, List
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
@@ -28,14 +28,24 @@ class InstructionDocArticleContentsConstructor(ArticleContentsConstructor):
                 invokation_variants_content(documentation.instruction_name(),
                                             documentation.invokation_variants(),
                                             documentation.syntax_element_descriptions())))
-        main_description_rest = documentation.main_description_rest()
-        if main_description_rest:
-            sub_sections.append(description_section(doc.SectionContents(main_description_rest)))
+        sub_sections += self._main_description_rest_sections()
         sub_sections += see_also_sections(documentation.see_also_targets(), environment,
                                           uppercase_title=True)
         abstract_paragraphs = docs.paras(self.documentation.single_line_description())
         return doc.ArticleContents(abstract_paragraphs,
                                    doc.SectionContents([], sub_sections))
+
+    def _main_description_rest_sections(self) -> List[docs.Section]:
+        d = self.documentation
+        ip = list(d.main_description_rest())
+        ss = list(d.main_description_rest_sub_sections())
+        if not (ip or ss):
+            return []
+        section = description_section(
+            doc.SectionContents(ip,
+                                ss)
+        )
+        return [section]
 
 
 def instruction_doc_section_contents_constructor(documentation: InstructionDocumentation) -> SectionContentsConstructor:
