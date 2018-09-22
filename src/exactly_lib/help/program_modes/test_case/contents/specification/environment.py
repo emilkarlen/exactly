@@ -2,6 +2,7 @@ from exactly_lib import program_info
 from exactly_lib.definitions import formatting, type_system, misc_texts
 from exactly_lib.definitions import test_case_file_structure
 from exactly_lib.definitions.entity import concepts, types, conf_params
+from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.render import see_also
@@ -41,7 +42,9 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
         'data': type_system.DATA_TYPE_CATEGORY_NAME,
         'path_type': formatting.term(types.PATH_TYPE_INFO.singular_name),
 
-        'Symbols': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.plural_name.capitalize()),
+        'symbol_concept': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
+        'def_instruction': InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
+
         'os_process': misc_texts.OS_PROCESS_NAME,
         'time_out_conf_param': formatting.conf_param_(conf_params.TIMEOUT_CONF_PARAM_INFO),
 
@@ -52,10 +55,6 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
         'env': formatting.emphasis(instruction_names.ENV_VAR_INSTRUCTION_NAME),
         'CD': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
     })
-
-    def const_paragraphs(header_: str, paragraphs_: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
-        return h.leaf(header_,
-                      sections.constant_contents(section_contents(paragraphs_)))
 
     def const_paragraphs_child(local_target_name: str,
                                header_: str,
@@ -100,9 +99,24 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
                 ]
             ),
             h.child_hierarchy(
+                'symbols',
+                concepts.SYMBOL_CONCEPT_INFO.plural_name.capitalize(),
+                paragraphs.constant(tp.fnap(_SYMBOLS)),
+                [
+                    h.with_not_in_toc(
+                        h.child_leaf(
+                            'see-also',
+                            see_also.SEE_ALSO_TITLE,
+                            see_also.SeeAlsoSectionContentsConstructor(
+                                see_also.items_of_targets(_symbols_see_also_targets())
+                            ))
+                    )
+                ]
+            ),
+            h.child_hierarchy(
                 'os-proc',
                 tp.text('{os_process} environment'),
-                paragraphs.empty(),
+                paragraphs.constant(tp.fnap(_OS_PROC_INTRO)),
                 [
                     const_paragraphs_child(
                         'cd',
@@ -119,15 +133,14 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
                         'Timeout',
                         tp.fnap(_OS_PROC_TIMEOUT),
                     ),
-                    h.child(
-                        'see-also',
-                        h.with_not_in_toc(
-                            h.leaf(
-                                see_also.SEE_ALSO_TITLE,
-                                see_also.SeeAlsoSectionContentsConstructor(
-                                    see_also.items_of_targets(_os_process_see_also_targets())
-                                )))
-                    ),
+                    h.with_not_in_toc(
+                        h.child_leaf(
+                            'see-also',
+                            see_also.SEE_ALSO_TITLE,
+                            see_also.SeeAlsoSectionContentsConstructor(
+                                see_also.items_of_targets(_os_process_see_also_targets())
+                            )))
+                    ,
                 ],
             ),
         ]
@@ -208,12 +221,10 @@ and can be changed in the {conf_phase} phase.
 ############################################################
 _FILE_REFERENCES = """\
 {program_name} has functionality for referencing files in the
-{TCDS}:
+{TCDS} using the {path_type} type.
 
 
-  * The {path_type} {data} type has syntax for expressing paths relative to any of the {TCDS} directories.
-  
-  * {Symbols} may be defined with the {path_type} {data} type for convenient reusable references to directories.
+The {path_type} {data} type has syntax for expressing paths relative to any of the {TCDS} directories.
   
 
 The directory that a {path_type} value is relative to is called the
@@ -242,6 +253,30 @@ def _dir_struct_see_also_targets() -> List[see_also.SeeAlsoTarget]:
         phase_infos.CONFIGURATION.cross_reference_target,
     ]
 
+
+_SYMBOLS = """\
+A {symbol_concept} is a named constant defined by the {def_instruction:emphasis} instruction.
+
+
+Once defined, it is available to all following instructions and in all following phases.
+
+
+Symbols may be used to define reusable values used by instructions and the {act_phase} phase.
+"""
+
+
+def _symbols_see_also_targets() -> List[see_also.SeeAlsoTarget]:
+    return [
+        concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
+        phase_infos.SETUP.instruction_cross_reference_target(
+            instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
+    ]
+
+
+_OS_PROC_INTRO = """\
+{program_name} executes {os_process:plural} as part of a test case.
+Part of their environment is controlled by {program_name}.
+"""
 
 ############################################################
 # MENTION
