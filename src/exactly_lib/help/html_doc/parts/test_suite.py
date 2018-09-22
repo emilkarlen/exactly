@@ -1,3 +1,6 @@
+from exactly_lib.definitions import misc_texts
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import HelpPredefinedContentsPart, \
+    PredefinedHelpContentsPartReference
 from exactly_lib.definitions.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.definitions.test_suite.section_names_plain import SECTION_CONCEPT_NAME
 from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
@@ -22,9 +25,11 @@ def hierarchy(header: str,
         header,
         children=[
             h.child('spec',
-                    main.hierarchy('Specification of test suite functionality',
-                                   test_suite_help)
-                    ),
+                    h.with_fixed_root_target(
+                        PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_SUITE_SPEC),
+                        main.hierarchy(misc_texts.TEST_SUITE_SPEC_TITLE,
+                                       test_suite_help)
+                    )),
             h.child('sections',
                     h.hierarchy(
                         'Sections',

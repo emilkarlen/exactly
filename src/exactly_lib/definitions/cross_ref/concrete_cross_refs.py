@@ -127,6 +127,8 @@ class EntityCrossReferenceId(CrossReferenceId):
 class HelpPredefinedContentsPart(Enum):
     TEST_CASE_CLI = 1
     TEST_SUITE_CLI = 2
+    TEST_CASE_SPEC = 3
+    TEST_SUITE_SPEC = 4
 
 
 class PredefinedHelpContentsPartReference(CrossReferenceId):
