@@ -1,6 +1,7 @@
 from typing import List
 
 from exactly_lib.definitions import test_case_file_structure, formatting
+from exactly_lib.definitions.doc_format import file_name_text
 from exactly_lib.definitions.entity import concepts, conf_params
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
@@ -9,6 +10,7 @@ from exactly_lib.test_case_file_structure import sandbox_directory_structure as 
 from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_RESULT
 from exactly_lib.util.textformat.structure import structures as docs, table
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.table import TableCell
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _TEXT_PARSER = TextParser({
@@ -76,9 +78,9 @@ def sequence_info__preceding_phase(following_phase: SectionName) -> List[Paragra
 
 
 def result_sub_dir_files_table() -> docs.ParagraphItem:
-    def row(name: str, file_name: str):
+    def row(name: str, file_name: str) -> List[TableCell]:
         return [docs.cell(docs.paras(name)),
-                docs.cell(docs.paras(sds.SUB_DIRECTORY__RESULT + '/' + file_name))]
+                docs.cell(docs.paras(file_name_text(sds.SUB_DIRECTORY__RESULT + '/' + file_name)))]
 
     rows = [
         row('exit code', sds.RESULT_FILE__EXITCODE),
