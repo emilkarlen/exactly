@@ -56,7 +56,7 @@ class _SandboxConcept(ConceptDocumentation):
             types.PATH_TYPE_INFO.cross_reference_target,
             phase_infos.SETUP.instruction_cross_reference_target(CHANGE_DIR_INSTRUCTION_NAME),
             PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_CASE_CLI),
-            SeeAlsoUrlInfo('Location of temporary files',
+            SeeAlsoUrlInfo('Platform dependent location of sandbox',
                            'https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir')
         ]
 
