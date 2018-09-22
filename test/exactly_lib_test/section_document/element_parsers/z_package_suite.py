@@ -4,9 +4,9 @@ from exactly_lib_test.section_document.element_parsers import instruction_parser
 from exactly_lib_test.section_document.element_parsers import optional_description_and_instruction_parser
 from exactly_lib_test.section_document.element_parsers import parser_for_dictionary_of_instructions
 from exactly_lib_test.section_document.element_parsers import section_element_parsers
-from exactly_lib_test.section_document.element_parsers import test_resources_test
 from exactly_lib_test.section_document.element_parsers import token_parse, token_stream
 from exactly_lib_test.section_document.element_parsers import token_stream_parser
+from exactly_lib_test.section_document.element_parsers.test_resources_test import z_package_suite as test_resources_test
 
 
 def suite() -> unittest.TestSuite:

@@ -1,8 +1,13 @@
 import unittest
 
-from exactly_lib_test.test_case_utils import expression, condition
-from exactly_lib_test.test_case_utils import file_properties, parse
-from exactly_lib_test.test_case_utils import line_matcher, string_transformers, file_matcher, program
+from exactly_lib_test.test_case_utils import file_properties
+from exactly_lib_test.test_case_utils.condition import z_package_suite as condition
+from exactly_lib_test.test_case_utils.expression import z_package_suite as expression
+from exactly_lib_test.test_case_utils.file_matcher import z_package_suite as file_matcher
+from exactly_lib_test.test_case_utils.line_matcher import z_package_suite as line_matcher
+from exactly_lib_test.test_case_utils.parse import z_package_suite as parse
+from exactly_lib_test.test_case_utils.program import z_package_suite as program
+from exactly_lib_test.test_case_utils.string_transformers import z_package_suite as string_transformers
 
 
 def suite() -> unittest.TestSuite:

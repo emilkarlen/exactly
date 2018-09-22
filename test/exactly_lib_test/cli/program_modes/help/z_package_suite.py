@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib_test.cli.program_modes.help import argument_parsing, program_modes, entities_requests
+from exactly_lib_test.cli.program_modes.help.program_modes import z_package_suite as program_modes
 from exactly_lib_test.cli.program_modes.help.request_handling import z_package_suite as request_handling
 
 

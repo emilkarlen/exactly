@@ -1,7 +1,9 @@
 import unittest
 
-from exactly_lib_test.common import help, err_msg, result_reporting
 from exactly_lib_test.common import instruction_name_and_argument_splitter as splitter
+from exactly_lib_test.common import result_reporting
+from exactly_lib_test.common.err_msg import z_package_suite as err_msg
+from exactly_lib_test.common.help import z_package_suite as help
 
 
 def suite() -> unittest.TestSuite:

@@ -1,6 +1,9 @@
 import unittest
 
-from exactly_lib_test.help import program_modes, html_doc, entities, file_inclusion_directive
+from exactly_lib_test.help import file_inclusion_directive
+from exactly_lib_test.help.entities import z_package_suite as entities
+from exactly_lib_test.help.html_doc import z_package_suite as html_doc
+from exactly_lib_test.help.program_modes import z_package_suite as program_modes
 from exactly_lib_test.help.render import z_package_suite as render
 
 
