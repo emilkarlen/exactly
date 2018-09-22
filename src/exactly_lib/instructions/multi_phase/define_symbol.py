@@ -231,6 +231,9 @@ Defines the symbol {NAME} to be a value of the given type.
 
 
 {NAME} must not have been defined earlier.
+
+
+The defined symbol is available in all following instructions and phases.
 """
 
 
