@@ -1,5 +1,8 @@
+from typing import List
+
 from exactly_lib.cli.definitions.common_cli_options import OPTION_FOR_ACTOR
 from exactly_lib.definitions import test_case_file_structure as tc_fs, formatting
+from exactly_lib.definitions.doc_format import literal_source_text
 from exactly_lib.definitions.entity import concepts, conf_params, actors
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
@@ -16,6 +19,7 @@ from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.structures import cell
+from exactly_lib.util.textformat.structure.table import TableCell
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
@@ -120,10 +124,10 @@ The escape sequences are only recognized at the first non-space characters of a 
 
 
 def _escape_sequence_table() -> docs.ParagraphItem:
-    def _row(escape_sequence: str, translation: str) -> list:
+    def _row(escape_sequence: str, translation: str) -> List[TableCell]:
         return [
-            cell(docs.paras(escape_sequence)),
-            cell(docs.paras(translation)),
+            cell(docs.paras(literal_source_text(escape_sequence))),
+            cell(docs.paras(literal_source_text(translation))),
         ]
 
     return docs.first_row_is_header_table(

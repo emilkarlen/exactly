@@ -28,6 +28,14 @@ def file_name_text(name: str) -> StringText:
     return syntax_text(name)
 
 
+def dir_name_text(name: str) -> StringText:
+    return file_name_text(name + '/')
+
+
+def literal_source_text(source: str) -> StringText:
+    return syntax_text(source)
+
+
 def instruction_name_text(name: str) -> StringText:
     return syntax_text(name)
 

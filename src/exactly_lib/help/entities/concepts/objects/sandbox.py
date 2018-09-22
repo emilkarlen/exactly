@@ -8,7 +8,7 @@ from exactly_lib.definitions import test_case_file_structure as tcds
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
-from exactly_lib.definitions.doc_format import file_name_text
+from exactly_lib.definitions.doc_format import file_name_text, dir_name_text
 from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary, InstructionName
 from exactly_lib.definitions.test_case import phase_names, phase_infos
@@ -64,7 +64,7 @@ class _SandboxConcept(ConceptDocumentation):
         def section(directory_name: str,
                     dir_info: tcds.TcDirInfo,
                     paragraph_items: List[ParagraphItem]) -> Section:
-            return docs.section(_dir_name_text(directory_name),
+            return docs.section(dir_name_text(directory_name),
                                 docs.paras(dir_info.single_line_description_str + '.') +
                                 paragraph_items)
 
@@ -78,7 +78,7 @@ class _SandboxConcept(ConceptDocumentation):
             section(sds.PATH__TMP_USER,
                     tcds.SDS_TMP_INFO,
                     self._tmp_user_dir_description_paragraphs()),
-            docs.section(_dir_name_text(sds.SUB_DIRECTORY__INTERNAL),
+            docs.section(dir_name_text(sds.SUB_DIRECTORY__INTERNAL),
                          self._internal_dir_description_paragraphs())
         ]
 
@@ -194,13 +194,9 @@ def _directory_structure_list(dir_with_sub_dir_list: List[DirWithSubDirs]) -> Pa
         sub_dirs_items = []
         if dir_wsd.sub_dirs:
             sub_dirs_items = [_directory_structure_list(dir_wsd.sub_dirs)]
-        items.append(docs.list_item(_dir_name_text(dir_wsd.name), sub_dirs_items))
+        items.append(docs.list_item(dir_name_text(dir_wsd.name), sub_dirs_items))
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.ITEMIZED_LIST))
-
-
-def _dir_name_text(dir_name: str) -> docs.Text:
-    return file_name_text(dir_name + '/')
 
 
 _INTERNAL_DIRECTORIES = """\
