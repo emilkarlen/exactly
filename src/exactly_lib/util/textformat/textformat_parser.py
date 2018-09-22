@@ -20,8 +20,8 @@ class TextParser:
             d.update(extra)
         return s.format_map(d)
 
-    def text(self, s: str, extra: dict = None) -> docs.Text:
-        return docs.text(self.format(s, extra))
+    def text(self, s: str, extra: dict = None) -> docs.StringText:
+        return docs.string_text(self.format(s, extra))
 
     def para(self, s: str, extra: dict = None) -> docs.ParagraphItem:
         return docs.para(self.format(s, extra))

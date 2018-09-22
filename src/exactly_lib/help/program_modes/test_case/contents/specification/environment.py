@@ -1,7 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting, type_system, misc_texts
 from exactly_lib.definitions import test_case_file_structure
-from exactly_lib.definitions.entity import concepts, types
+from exactly_lib.definitions.entity import concepts, types, conf_params
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.render import see_also
@@ -16,6 +16,7 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
     tp = TextParser({
 
         'program_name': formatting.program_name(program_info.PROGRAM_NAME),
+        'conf_param': formatting.concept_(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO),
 
         'tcds_concept': formatting.concept_(concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO),
         'TCDS': concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.acronym,
@@ -41,6 +42,8 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
         'path_type': formatting.term(types.PATH_TYPE_INFO.singular_name),
 
         'Symbols': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.plural_name.capitalize()),
+        'os_process': misc_texts.OS_PROCESS_NAME,
+        'time_out_conf_param': formatting.conf_param_(conf_params.TIMEOUT_CONF_PARAM_INFO),
 
         'relativity': formatting.concept(misc_texts.RELATIVITY.singular),
         'relativities': formatting.concept(misc_texts.RELATIVITY.plural),
@@ -54,51 +57,79 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
         return h.leaf(header_,
                       sections.constant_contents(section_contents(paragraphs_)))
 
+    def const_paragraphs_child(local_target_name: str,
+                               header_: str,
+                               paragraphs_: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
+        return h.child(local_target_name,
+                       h.leaf(header_,
+                              sections.constant_contents(section_contents(paragraphs_)))
+                       )
+
     return h.hierarchy(
         header,
         children=[
-            h.child_hierarchy('dir-structure',
-                              'Directory structure and Current directory',
-                              paragraphs.constant(tp.fnap(_DS_CD_PREAMBLE)),
-                              [
-                                  h.child('sds',
-                                          const_paragraphs(
-                                              concepts.SANDBOX_CONCEPT_INFO.singular_name.capitalize() +
-                                              ' and Current directory',
-                                              tp.fnap(_SDS_AND_CD))
-                                          ),
-                                  h.child('hds',
-                                          const_paragraphs(
-                                              concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.singular_name.capitalize(),
-                                              tp.fnap(_HDS))
-                                          ),
-                                  h.child('file-ref',
-                                          const_paragraphs(
-                                              'File references',
-                                              tp.fnap(_FILE_REFERENCES))
-                                          ),
-                                  h.child('see-also',
-                                          h.with_not_in_toc(
-                                              h.leaf(
-                                                  see_also.SEE_ALSO_TITLE,
-                                                  see_also.SeeAlsoSectionContentsConstructor(
-                                                      see_also.items_of_targets(_dir_struct_see_also_targets())
-                                                  )))
-                                          ),
-                              ]
-                              ),
-            h.child('env-vars',
-                    h.leaf(
-                        'Environment variables',
-                        sections.contents(
-                            [paragraphs.constant(tp.fnap(_ENVIRONMENT_VARIABLES))],
-                            [
-                                see_also.SeeAlsoSectionConstructor(
-                                    see_also.items_of_targets(_env_var_see_also_targets())
-                                )
-                            ]
-                        ))
+            h.child_hierarchy(
+                'dir-structure',
+                'Directory structure and Current directory',
+                paragraphs.constant(tp.fnap(_DS_CD_PREAMBLE)),
+                [
+                    const_paragraphs_child(
+                        'sds',
+                        concepts.SANDBOX_CONCEPT_INFO.singular_name.capitalize() +
+                        ' and Current directory',
+                        tp.fnap(_SDS_AND_CD)
                     ),
+                    const_paragraphs_child(
+                        'hds',
+                        concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.singular_name.capitalize(),
+                        tp.fnap(_HDS),
+                    ),
+                    const_paragraphs_child(
+                        'file-ref',
+                        'File references',
+                        tp.fnap(_FILE_REFERENCES)
+                    ),
+                    h.child('see-also',
+                            h.with_not_in_toc(
+                                h.leaf(
+                                    see_also.SEE_ALSO_TITLE,
+                                    see_also.SeeAlsoSectionContentsConstructor(
+                                        see_also.items_of_targets(_dir_struct_see_also_targets())
+                                    )))
+                            ),
+                ]
+            ),
+            h.child_hierarchy(
+                'os-proc',
+                tp.text('{os_process} environment'),
+                paragraphs.empty(),
+                [
+                    const_paragraphs_child(
+                        'cd',
+                        'Current directory',
+                        tp.fnap(_OS_PROC_CURRENT_DIRECTORY),
+                    ),
+                    const_paragraphs_child(
+                        'env-vars',
+                        'Environment variables',
+                        tp.fnap(_OS_PROC_ENVIRONMENT_VARIABLES),
+                    ),
+                    const_paragraphs_child(
+                        'timeout',
+                        'Timeout',
+                        tp.fnap(_OS_PROC_TIMEOUT),
+                    ),
+                    h.child(
+                        'see-also',
+                        h.with_not_in_toc(
+                            h.leaf(
+                                see_also.SEE_ALSO_TITLE,
+                                see_also.SeeAlsoSectionContentsConstructor(
+                                    see_also.items_of_targets(_os_process_see_also_targets())
+                                )))
+                    ),
+                ],
+            ),
         ]
     )
 
@@ -219,10 +250,10 @@ def _dir_struct_see_also_targets() -> List[see_also.SeeAlsoTarget]:
 # - Env vars and TCDS
 # - Manipulating env vars
 ############################################################
-_ENVIRONMENT_VARIABLES = """\
+_OS_PROC_ENVIRONMENT_VARIABLES = """\
 All OS environment variables
 that are set when {program_name} is started
-are available in processes run from the test case.
+are available in {os_process:plural} run from the test case.
 
 
 In addition to these, {program_name} sets some environment variables
@@ -232,9 +263,22 @@ that correspond to directories in the {tcds_concept}.
 Environment variables can be manipulated by the {env} instruction.
 """
 
+_OS_PROC_CURRENT_DIRECTORY = """\
+The current directory (PWD) is the same as for instructions.
 
-def _env_var_see_also_targets() -> List[see_also.SeeAlsoTarget]:
+
+It is changed by the {cd} instruction.
+"""
+
+_OS_PROC_TIMEOUT = """\
+Timeout for all {os_process:plural} is determined by the {conf_param} {time_out_conf_param}.
+"""
+
+
+def _os_process_see_also_targets() -> List[see_also.SeeAlsoTarget]:
     return [
         concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
+        concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
         concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+        conf_params.TIMEOUT_CONF_PARAM_INFO.cross_reference_target,
     ]
