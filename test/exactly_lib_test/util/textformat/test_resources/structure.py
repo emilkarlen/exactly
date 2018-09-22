@@ -148,7 +148,18 @@ class SectionAssertion:
         assert isinstance(value, doc.SectionItem)
         asrt.sub_component('header',
                            doc.SectionItem.header.fget,
-                           is_text).apply(put, value, message_builder)
+                           is_text
+                           ).apply(put, value, message_builder)
+        asrt.sub_component('tags',
+                           doc.SectionItem.tags.fget,
+                           asrt.is_instance_with(set,
+                                                 asrt.on_transformed(list,
+                                                                     asrt.is_sequence_of(asrt.is_instance(str)))
+                                                 )
+                           ).apply(put, value, message_builder)
+        asrt.sub_component('target',
+                           doc.SectionItem.target.fget,
+                           asrt.is_instance(core.CrossReferenceTarget)),
         if isinstance(value, doc.Article):
             is_article_contents.apply(put, value.contents,
                                       message_builder.for_sub_component('article_contents'))
@@ -175,6 +186,12 @@ is_article_contents = asrt.is_instance_with(
     ]))
 
 is_section_item = asrt.OfCallable(SECTION_ASSERTION.is_section_item)
+
+is_section = asrt.is_instance_with(doc.Section,
+                                   is_section_item)
+
+is_article = asrt.is_instance_with(doc.Article,
+                                   is_section_item)
 
 is_list_item = asrt.And([
     asrt.IsInstance(lists.HeaderContentListItem),
