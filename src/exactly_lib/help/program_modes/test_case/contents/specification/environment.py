@@ -274,7 +274,7 @@ def _symbols_see_also_targets() -> List[see_also.SeeAlsoTarget]:
 
 
 _OS_PROC_INTRO = """\
-{program_name} executes {os_process:plural} as part of a test case.
+{program_name} executes {os_process:s} as part of a test case.
 Part of their environment is controlled by {program_name}.
 """
 
@@ -288,7 +288,7 @@ Part of their environment is controlled by {program_name}.
 _OS_PROC_ENVIRONMENT_VARIABLES = """\
 All OS environment variables
 that are set when {program_name} is started
-are available in {os_process:plural} run from the test case.
+are available in {os_process:s} run from the test case.
 
 
 In addition to these, {program_name} sets some environment variables
@@ -306,7 +306,7 @@ It is changed by the {cd} instruction.
 """
 
 _OS_PROC_TIMEOUT = """\
-Timeout for all {os_process:plural} is determined by the {conf_param} {time_out_conf_param}.
+Timeout for all {os_process:s} is determined by the {conf_param} {time_out_conf_param}.
 """
 
 
