@@ -14,7 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - Sub suite list accepts DIR if DIR contains default suite file
  - Improved description of Test case execution environment
  - More examples in README
-
+ - More built in help
+ 
 ### Changed
 
  - Changes the layout of the sandbox directory structure
