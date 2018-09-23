@@ -72,7 +72,7 @@ class SingularAndPluralNameAndCrossReferenceId(SingularNameAndCrossReferenceId):
 
 class SingularAndPluralAndAcronymNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):
     def __init__(self,
-                 name: Name,
+                 name: NameWithGender,
                  single_line_description_str: str,
                  cross_reference_target: CrossReferenceId,
                  acronym: Optional[str] = None):
@@ -80,6 +80,11 @@ class SingularAndPluralAndAcronymNameAndCrossReferenceId(SingularAndPluralNameAn
                          single_line_description_str,
                          cross_reference_target)
         self._acronym = acronym
+        self._name = name
+
+    @property
+    def name(self) -> NameWithGender:
+        return self._name
 
     @property
     def acronym(self) -> str:

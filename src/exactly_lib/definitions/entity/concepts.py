@@ -7,7 +7,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
     SingularAndPluralAndAcronymNameAndCrossReferenceId
 from exactly_lib.definitions.entity import all_entity_types
 from exactly_lib.definitions.test_case import phase_names
-from exactly_lib.util.name import Name, name_with_plural_s
+from exactly_lib.util.name import NameWithGender, an_name_with_plural_s, a_name_with_plural_s
 
 _CURRENT_DIRECTORY_SINGULAR = 'current directory'
 
@@ -17,7 +17,7 @@ def concept_cross_ref(concept_name: str) -> EntityCrossReferenceId:
                                   concept_name)
 
 
-def name_and_ref_target(name: Name,
+def name_and_ref_target(name: NameWithGender,
                         single_line_description_str: str,
                         acronym: Optional[str] = None) -> SingularAndPluralAndAcronymNameAndCrossReferenceId:
     return SingularAndPluralAndAcronymNameAndCrossReferenceId(name,
@@ -32,7 +32,7 @@ def name_and_ref_target_for_entity_type(names: EntityTypeNames,
     return name_and_ref_target(names.name, single_line_description_str)
 
 
-ACTION_TO_CHECK_NAME = Name('action to check', "actions to check")
+ACTION_TO_CHECK_NAME = NameWithGender('an', 'action to check', "actions to check")
 
 _FORMAT_MAP = {
     'program_name': formatting.program_name(program_info.PROGRAM_NAME),
@@ -57,47 +57,47 @@ CONFIGURATION_PARAMETER_CONCEPT_INFO = name_and_ref_target_for_entity_type(
 )
 
 INSTRUCTION_CONCEPT_INFO = name_and_ref_target(
-    name_with_plural_s('instruction'),
-    _format('The smallest executable unit - the building block of all phases except {phase[act]:syntax}.'),
+    an_name_with_plural_s('instruction'),
+    _format('The building block of all phases except {phase[act]:syntax}.'),
 )
 
 TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(
-    name_with_plural_s('test case directory structure'),
+    a_name_with_plural_s('test case directory structure'),
     'Persistent and temporary directories used in the execution of a test case.',
     'TCDS',
 )
 
 HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(
-    name_with_plural_s('home directory structure'),
+    a_name_with_plural_s('home directory structure'),
     'Persistent directories for files used in every execution of a test case.',
     'HDS',
 )
 
 SANDBOX_CONCEPT_INFO = name_and_ref_target(
-    name_with_plural_s('sandbox directory structure'),
+    a_name_with_plural_s('sandbox directory structure'),
     _format('Temporary directories used in a single execution of a test case, '
             'one of which is the initial {current_directory_concept}.'),
     'SDS',
 )
 
 CURRENT_WORKING_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
-    Name(_CURRENT_DIRECTORY_SINGULAR, 'current directories'),
-    _format('The current directory of the environment in which instruction and {os_process:plural} are executed.'),
+    NameWithGender('a', _CURRENT_DIRECTORY_SINGULAR, 'current directories'),
+    _format('The current directory of the environment in which instruction and {os_process:s} are executed.'),
     'CD',
 )
 
 ENVIRONMENT_VARIABLE_CONCEPT_INFO = name_and_ref_target(
-    name_with_plural_s('environment variable'),
+    an_name_with_plural_s('environment variable'),
     _format('OS environment variables available to processes executed from within a test case.')
 )
 
 PREPROCESSOR_CONCEPT_INFO = name_and_ref_target(
-    name_with_plural_s('preprocessor'),
+    a_name_with_plural_s('preprocessor'),
     'A shell command that transforms a test case file as the first step of processing it'
 )
 
 SHELL_SYNTAX_CONCEPT_INFO = name_and_ref_target(
-    Name('shell syntax', "shell syntaxes"),
+    NameWithGender('a', 'shell syntax', "shell syntaxes"),
     'Quoting of strings in command lines.'
 )
 
