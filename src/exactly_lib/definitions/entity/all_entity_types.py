@@ -1,43 +1,44 @@
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
-from exactly_lib.util.name import name_with_plural_s, Name
+from exactly_lib.util.name import a_name_with_plural_s, NameWithGender, an_name_with_plural_s
 
 
 def _command_line_names_as_singular_name(entity_type_identifier: str,
-                                         name: Name) -> EntityTypeNames:
+                                         name: NameWithGender) -> EntityTypeNames:
     return EntityTypeNames(entity_type_identifier,
                            name)
 
 
 def _entity_arg_is_singular_name(entity_type_identifier: str,
-                                 name: Name,
+                                 name: NameWithGender,
                                  ) -> EntityTypeNames:
     return EntityTypeNames(entity_type_identifier,
                            name)
 
 
-SYMBOL_CONCEPT_NAME = name_with_plural_s('symbol')
+SYMBOL_CONCEPT_NAME = a_name_with_plural_s('symbol')
 
 CONCEPT_ENTITY_TYPE_NAMES = _command_line_names_as_singular_name('concept',
-                                                                 name_with_plural_s('concept'))
+                                                                 a_name_with_plural_s('concept'))
 
 ACTOR_ENTITY_TYPE_NAMES = _command_line_names_as_singular_name('actor',
-                                                               name_with_plural_s('actor'))
+                                                               an_name_with_plural_s('actor'))
 
 CONF_PARAM_ENTITY_TYPE_NAMES = _entity_arg_is_singular_name('confparam',
-                                                            name_with_plural_s('configuration parameter'))
+                                                            a_name_with_plural_s('configuration parameter'))
 
 SUITE_REPORTER_ENTITY_TYPE_NAMES = _entity_arg_is_singular_name('reporter',
-                                                                name_with_plural_s('suite reporter'))
+                                                                a_name_with_plural_s('suite reporter'))
 
 SYNTAX_ELEMENT_ENTITY_TYPE_NAMES = _entity_arg_is_singular_name('syntax',
-                                                                name_with_plural_s('syntax element'))
+                                                                a_name_with_plural_s('syntax element'))
 
 TYPE_ENTITY_TYPE_NAMES = _command_line_names_as_singular_name('type',
-                                                              name_with_plural_s('type'))
+                                                              a_name_with_plural_s('type'))
 
 BUILTIN_SYMBOL_ENTITY_TYPE_NAMES = EntityTypeNames('builtin',
-                                                   Name('builtin ' + SYMBOL_CONCEPT_NAME.singular,
-                                                        'builtin ' + SYMBOL_CONCEPT_NAME.plural))
+                                                   NameWithGender('a',
+                                                                  'builtin ' + SYMBOL_CONCEPT_NAME.singular,
+                                                                  'builtin ' + SYMBOL_CONCEPT_NAME.plural))
 
 ALL_ENTITY_TYPES_IN_DISPLAY_ORDER = (
     CONCEPT_ENTITY_TYPE_NAMES,

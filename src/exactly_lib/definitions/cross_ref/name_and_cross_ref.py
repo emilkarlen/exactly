@@ -1,19 +1,19 @@
 from typing import Optional
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
-from exactly_lib.util.name import Name
+from exactly_lib.util.name import Name, NameWithGender
 from exactly_lib.util.textformat.structure.core import Text, StringText
 
 
 class EntityTypeNames(tuple):
     def __new__(cls,
                 identifier: str,
-                name: Name):
+                name: NameWithGender):
         return tuple.__new__(cls, (name,
                                    identifier))
 
     @property
-    def name(self) -> Name:
+    def name(self) -> NameWithGender:
         return self[0]
 
     @property
