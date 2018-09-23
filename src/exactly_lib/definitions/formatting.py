@@ -1,6 +1,7 @@
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
+from exactly_lib.util.name import NameWithGender, NameWithGenderWithFormatting
 
 
 class SectionName:
@@ -122,6 +123,10 @@ def concept(s: str) -> str:
     return '"' + s + '"'
 
 
+def concept_name_with_formatting(name: NameWithGender) -> NameWithGenderWithFormatting:
+    return _common_name_with_formatting(name)
+
+
 def concept_(x: SingularNameAndCrossReferenceId) -> str:
     return concept(x.singular_name)
 
@@ -140,6 +145,10 @@ def entity(name: str) -> str:
 
 def entity_(name: SingularNameAndCrossReferenceId) -> str:
     return entity(name.singular_name)
+
+
+def entity_name_with_formatting(name: NameWithGender) -> NameWithGenderWithFormatting:
+    return _common_name_with_formatting(name)
 
 
 def symbol_type(name: str) -> str:
@@ -172,3 +181,13 @@ def syntax_element(human_readable_name: str) -> str:
 
 def syntax_element_(name: SingularNameAndCrossReferenceId) -> str:
     return syntax_element(name.singular_name)
+
+
+def misc_name_with_formatting(name: NameWithGender) -> NameWithGenderWithFormatting:
+    return _common_name_with_formatting(name)
+
+
+def _common_name_with_formatting(name: NameWithGender) -> NameWithGenderWithFormatting:
+    return NameWithGenderWithFormatting(name,
+                                        quoting_begin='"',
+                                        quoting_end='"')

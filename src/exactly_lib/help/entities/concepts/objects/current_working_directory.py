@@ -104,7 +104,7 @@ Instruction arguments of type {path_type} that are relative to the {CD}
 (via the {rel_cd_option} option).
 
 
-{os_process:plural} executed from within a test case
+{os_process:s} executed from within a test case
 have the {CD} as Present Working Directory (PWD)
 when the process starts.
 
