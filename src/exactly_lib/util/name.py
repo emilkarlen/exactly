@@ -124,3 +124,17 @@ def an_name(name: Name) -> NameWithGender:
 def name_with_plural_s(singular: str) -> Name:
     return Name(singular,
                 singular + 's')
+
+
+def a_name_with_plural_s(singular: str) -> NameWithGender:
+    return NameWithGender('a',
+                          singular,
+                          singular + 's'
+                          )
+
+
+def an_name_with_plural_s(singular: str) -> NameWithGender:
+    return NameWithGender('an',
+                          singular,
+                          singular + 's'
+                          )

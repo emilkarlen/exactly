@@ -3,7 +3,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
 
 from exactly_lib_test.definitions.test_resources import cross_reference_id_va as asrt_cross_ref
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources.name import equals_name
+from exactly_lib_test.util.test_resources.name import equals_name_with_gender
 
 
 def equals_entity_cross_ref(entity_type_names: EntityTypeNames,
@@ -39,6 +39,6 @@ def equals_entity_type_names(entity_type_names: EntityTypeNames) -> asrt.ValueAs
                                                         ),
                                      asrt.sub_component('name',
                                                         EntityTypeNames.name.fget,
-                                                        equals_name(entity_type_names.name)
+                                                        equals_name_with_gender(entity_type_names.name)
                                                         ),
                                  ]))
