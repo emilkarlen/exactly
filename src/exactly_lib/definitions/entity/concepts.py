@@ -20,7 +20,7 @@ def concept_cross_ref(concept_name: str) -> EntityCrossReferenceId:
 def name_and_ref_target(name: NameWithGender,
                         single_line_description_str: str,
                         acronym: Optional[str] = None) -> SingularAndPluralAndAcronymNameAndCrossReferenceId:
-    return SingularAndPluralAndAcronymNameAndCrossReferenceId(name,
+    return SingularAndPluralAndAcronymNameAndCrossReferenceId(formatting.concept_name_with_formatting(name),
                                                               single_line_description_str,
                                                               concept_cross_ref(name.singular),
                                                               acronym)
