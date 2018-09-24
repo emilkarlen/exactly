@@ -151,7 +151,7 @@ _USR_TMP_DIR_DESCRIPTION = """\
 {program_name} does not touch this directory.
 
 The test case can use it as a place where it is safe to put temporary files without
-the risk of clashes with files from other program.
+the risk of name clashes with files from other program.
 """
 
 _RESULT_DIR_ENV_VARIABLE = """\
