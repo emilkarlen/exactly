@@ -1,7 +1,7 @@
 from typing import Optional
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
-from exactly_lib.util.name import Name, NameWithGender
+from exactly_lib.util.name import Name, NameWithGender, NameWithGenderWithFormatting
 from exactly_lib.util.textformat.structure.core import Text, StringText
 
 
@@ -72,7 +72,7 @@ class SingularAndPluralNameAndCrossReferenceId(SingularNameAndCrossReferenceId):
 
 class SingularAndPluralAndAcronymNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):
     def __init__(self,
-                 name: NameWithGender,
+                 name: NameWithGenderWithFormatting,
                  single_line_description_str: str,
                  cross_reference_target: CrossReferenceId,
                  acronym: Optional[str] = None):
@@ -83,7 +83,7 @@ class SingularAndPluralAndAcronymNameAndCrossReferenceId(SingularAndPluralNameAn
         self._name = name
 
     @property
-    def name(self) -> NameWithGender:
+    def name(self) -> NameWithGenderWithFormatting:
         return self._name
 
     @property
