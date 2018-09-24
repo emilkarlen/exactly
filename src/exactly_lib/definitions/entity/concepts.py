@@ -6,7 +6,7 @@ from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossRef
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames, \
     SingularAndPluralAndAcronymNameAndCrossReferenceId
 from exactly_lib.definitions.entity import all_entity_types
-from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.util.name import NameWithGender, an_name_with_plural_s, a_name_with_plural_s
 
 _CURRENT_DIRECTORY_SINGULAR = 'current directory'
@@ -37,6 +37,7 @@ ACTION_TO_CHECK_NAME = NameWithGender('an', 'action to check', "actions to check
 _FORMAT_MAP = {
     'program_name': formatting.program_name(program_info.PROGRAM_NAME),
     'phase': phase_names.PHASE_NAME_DICTIONARY,
+    'act': phase_infos.ACT.name,
     'actor': formatting.concept(all_entity_types.ACTOR_ENTITY_TYPE_NAMES.name.singular),
     'action_to_check': formatting.concept(ACTION_TO_CHECK_NAME.singular),
     'current_directory_concept': formatting.concept(_CURRENT_DIRECTORY_SINGULAR),
@@ -123,6 +124,6 @@ ACTOR_CONCEPT_INFO = name_and_ref_target_for_entity_type(
 
 ACTION_TO_CHECK_CONCEPT_INFO = name_and_ref_target(
     ACTION_TO_CHECK_NAME,
-    _format('The action that is checked by the test case.'),
+    _format('The action that is executed in the {act} phase.'),
     'ATC',
 )
