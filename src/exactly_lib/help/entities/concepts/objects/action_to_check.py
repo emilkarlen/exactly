@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib.cli.definitions import common_cli_options
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import conf_params
@@ -20,11 +20,14 @@ class _ActionToCheckConcept(ConceptDocumentation):
 
     def purpose(self) -> DescriptionWithSubSections:
         parser = TextParser({
-            'action_to_check': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
-            'actor_concept': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
+            'action_to_check': concepts.ACTION_TO_CHECK_CONCEPT_INFO.name,
+            'actor': concepts.ACTOR_CONCEPT_INFO.name,
+            'ATC': concepts.ACTION_TO_CHECK_CONCEPT_INFO.acronym,
             'actor_option': formatting.cli_option(common_cli_options.OPTION_FOR_ACTOR),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
+            'act': phase_infos.ACT.name,
             'phase': PHASE_NAME_DICTIONARY,
+            'os_process': misc_texts.OS_PROCESS_NAME,
         })
         return DescriptionWithSubSections(concepts.ACTION_TO_CHECK_CONCEPT_INFO.single_line_description,
                                           docs.section_contents(parser.fnap(_DESCRIPTION)))
@@ -42,24 +45,20 @@ class _ActionToCheckConcept(ConceptDocumentation):
 ACTOR_CONCEPT = _ActionToCheckConcept()
 
 _DESCRIPTION = """\
-The {action_to_check} is specified jointly by
-the configured {actor_concept}
-and the contents of the {phase[act]} phase.
+The {action_to_check:/q} ({ATC}) is specified jointly by
+the configured {actor:/q}
+and the contents of the {act} phase.
 
 
-The {actor_concept} is responsible for interpreting the contents
-of the {phase[act]}, and executing it.
+It is executed as {os_process:a}.
 
 
-It is executed in it's own process.
+Depending on which {actor:/q} is configured,
+the {ATC} may be, for example:
 
 
-Depending on which {actor_concept} is configured,
-the {action_to_check} may be, for example:
-
-
- * executable program (together with arguments)
- * source file
+ * executable program (with arguments)
+ * source code file
  * source code
  * shell command
 """
