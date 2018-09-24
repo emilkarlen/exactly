@@ -36,11 +36,13 @@ class ExecutionEnvironmentInfo(tuple):
                 cwd_at_start_of_phase: List[ParagraphItem],
                 environment_variables: List[str],
                 prologue: Sequence[ParagraphItem] = (),
-                environment_variables_prologue: Sequence[ParagraphItem] = ()):
+                environment_variables_prologue: Sequence[ParagraphItem] = (),
+                custom_items: Sequence[docs.lists.HeaderContentListItem] = ()):
         return tuple.__new__(cls, (cwd_at_start_of_phase,
                                    environment_variables,
                                    list(prologue),
-                                   list(environment_variables_prologue)))
+                                   list(environment_variables_prologue),
+                                   list(custom_items)))
 
     @property
     def cwd_at_start_of_phase(self) -> List[ParagraphItem]:
@@ -63,6 +65,10 @@ class ExecutionEnvironmentInfo(tuple):
     @property
     def prologue(self) -> List[ParagraphItem]:
         return self[2]
+
+    @property
+    def custom_items(self) -> List[docs.lists.HeaderContentListItem]:
+        return self[4]
 
 
 class TestCasePhaseDocumentation(SectionDocumentation):

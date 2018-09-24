@@ -1,6 +1,7 @@
 from typing import List
 
 from exactly_lib.definitions.doc_format import syntax_text
+from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_case.phase_names_plain import SECTION_CONCEPT_NAME, ACT_PHASE_NAME
 from exactly_lib.help.program_modes.common import contents as common_contents
 from exactly_lib.help.program_modes.common.section_documentation_renderer import SectionDocumentationConstructorBase
@@ -53,10 +54,30 @@ class TestCasePhaseDocumentationConstructor(SectionDocumentationConstructorBase)
                                    si.prelude + si.preceding_phase + si.succeeding_phase))
 
     def _add_section_for_environment(self, output: List[docs.SectionItem]):
+        list_items = []
+        list_items += self._current_directory_items()
+        list_items += self._environment_variables_items()
+        list_items += self.doc.execution_environment_info().custom_items
+        if list_items:
+            properties_list = docs.simple_list_with_space_between_elements_and_content(list_items,
+                                                                                       lists.ListType.ITEMIZED_LIST)
+            output.append(docs.section('Environment',
+                                       [properties_list]))
+
+    def _current_directory_items(self) -> List[lists.HeaderContentListItem]:
+        eei = self.doc.execution_environment_info()
+        if eei.cwd_at_start_of_phase:
+            list_item = docs.list_item(
+                '{cd:/u}'.format(cd=concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.name),
+                eei.cwd_at_start_of_phase
+            )
+            return [list_item]
+        else:
+            return []
+
+    def _environment_variables_items(self) -> List[lists.HeaderContentListItem]:
         eei = self.doc.execution_environment_info()
         paragraphs = []
-        if eei.cwd_at_start_of_phase:
-            paragraphs.extend(eei.cwd_at_start_of_phase)
         paragraphs += eei.environment_variables_prologue
         if eei.environment_variables:
             paragraphs.extend([docs.para('The following environment variables are set:'),
@@ -65,9 +86,14 @@ class TestCasePhaseDocumentationConstructor(SectionDocumentationConstructorBase)
                 # FIXME Remove setting of env vars for the act phase.
                 paragraphs.append(docs.para('NOTE: In future versions, '
                                             'these environment variables will not be available!'))
-        paragraphs.extend(eei.prologue)
         if paragraphs:
-            output.append(docs.section('Environment', paragraphs))
+            list_item = docs.list_item(
+                '{ev:s/u}'.format(ev=concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.name),
+                paragraphs
+            )
+            return [list_item]
+        else:
+            return []
 
     @staticmethod
     def _environment_variables_list(environment_variable_names: List[str]) -> ParagraphItem:

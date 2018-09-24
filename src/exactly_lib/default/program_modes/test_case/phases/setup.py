@@ -5,7 +5,7 @@ from exactly_lib.instructions.setup import change_dir, env, run, copy, new_dir, 
 
 INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
     [
-        ('stdin', stdin.setup),
+        (instruction_names.CONTENTS_OF_STDIN_INSTRUCTION_NAME, stdin.setup),
         ('copy', copy.setup),
         (instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME, define_symbol.setup),
         (instruction_names.CHANGE_DIR_INSTRUCTION_NAME, change_dir.setup),
