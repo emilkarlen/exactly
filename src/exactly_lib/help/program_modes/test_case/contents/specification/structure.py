@@ -1,6 +1,7 @@
+from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
-from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.entity import concepts, actors
 from exactly_lib.definitions.test_case import phase_names_plain, phase_infos
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
@@ -16,11 +17,17 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
     tp = TextParser({
         'default_suite_file_name': file_names.DEFAULT_SUITE_FILE,
-        'act_phase': phase_infos.ACT.name,
+        'act': phase_infos.ACT.name,
+        'action_to_check': concepts.ACTION_TO_CHECK_CONCEPT_INFO.name,
+        'ATC': concepts.ACTION_TO_CHECK_CONCEPT_INFO.acronym,
+        'actor': concepts.ACTOR_CONCEPT_INFO.name,
+        'os_process': misc_texts.OS_PROCESS_NAME,
+        'null_actor': actors.NULL_ACTOR.singular_name,
     })
 
-    def const_paragraphs(header: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
-        return h.leaf(header,
+    def const_paragraphs(header_: StrOrStringText,
+                         paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
+        return h.leaf(header_,
                       sections.constant_contents(section_contents(paragraphs)))
 
     def phases_documentation() -> List[ParagraphItem]:
@@ -35,6 +42,10 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
             h.child('phases',
                     const_paragraphs('Phases',
                                      phases_documentation())
+                    ),
+            h.child('act',
+                    const_paragraphs(tp.text('The {act} phase, {action_to_check:/q} and {actor:s/q}'),
+                                     tp.fnap(_ACT))
                     ),
             h.child('instructions',
                     const_paragraphs('Instructions',
@@ -96,9 +107,40 @@ All phases are optional.
 
 The phases are (in order of execution):
 """
+############################################################
+# MENTION
+#
+# Cooperation of
+# - "act" phase
+# - "action to check"
+# - "actor"
+#
+# - "null" actor
+############################################################
+_ACT = """\
+The contents of the {act} phase represents an {action_to_check:/q} ({ATC}),
+and executing the {act} phase means executing this as an {os_process}.
+
+
+The {actor:/q} concept makes it possible
+to have different kind of {ATC}s.
+E.g. executable program files, source code files and shell commands.
+
+
+The {actor}
+interprets the contents of the {act} phase,
+which gives the {ATC}.
+
+
+A test case configures which {actor} to use.
+
+
+The special "{null_actor}" {actor}
+specifies a no-options {ATC}.
+"""
 
 _INSTRUCTIONS = """\
-All phases except {act_phase:syntax} is a sequence of instructions, zero or more.
+All phases except {act:syntax} is a sequence of instructions, zero or more.
 
 
 Executing a phase with instructions means executing all it's instructions,
