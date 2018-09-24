@@ -55,7 +55,7 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
 
 ONE_LINE_DESCRIPTION = """\
 Sets up the environment that the {ATC}
-(the {phase[act]} phase) will be executed in.
+(the {phase[act]} phase) is executed in.
 """
 
 REST_OF_DESCRIPTION = """\
