@@ -107,6 +107,7 @@ All phases are optional.
 
 The phases are (in order of execution):
 """
+
 ############################################################
 # MENTION
 #
@@ -119,7 +120,7 @@ The phases are (in order of execution):
 ############################################################
 _ACT = """\
 The contents of the {act} phase represents an {action_to_check:/q} ({ATC}),
-and executing the {act} phase means executing this as an {os_process}.
+and executing the {act} phase means executing this as {os_process:a}.
 
 
 The {actor:/q} concept makes it possible
@@ -129,7 +130,7 @@ E.g. executable program files, source code files and shell commands.
 
 The {actor}
 interprets the contents of the {act} phase,
-which gives the {ATC}.
+and thereby resolves the {ATC}.
 
 
 A test case configures which {actor} to use.
