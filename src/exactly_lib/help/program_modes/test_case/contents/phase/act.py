@@ -1,12 +1,14 @@
 from typing import List
 
 from exactly_lib.cli.definitions.common_cli_options import OPTION_FOR_ACTOR
-from exactly_lib.definitions import test_case_file_structure as tc_fs, formatting
+from exactly_lib.definitions import test_case_file_structure as tc_fs, formatting, misc_texts
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
+    HelpPredefinedContentsPart
 from exactly_lib.definitions.doc_format import literal_source_text
 from exactly_lib.definitions.entity import concepts, conf_params, actors
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.help.entities.concepts.objects.actor import HOW_TO_SPECIFY_ACTOR
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, env_vars_up_to_act, \
@@ -28,25 +30,24 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         super().__init__(name)
         self._tp = TextParser({
             'phase': phase_names.PHASE_NAME_DICTIONARY,
-            'action_to_check': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
+            'action_to_check': concepts.ACTION_TO_CHECK_CONCEPT_INFO.name,
             'home_directory': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'result_dir': tc_fs.SDS_RESULT_INFO.identifier,
             'actor_option': OPTION_FOR_ACTOR,
-            'actor_concept': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
+            'actor': concepts.ACTOR_CONCEPT_INFO.name,
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
             'default_actor': actors.DEFAULT_ACTOR_SINGLE_LINE_VALUE,
             'null_actor': formatting.entity_(actors.NULL_ACTOR),
+            'os_process': misc_texts.OS_PROCESS_NAME,
+            'act': phase_infos.ACT.name,
         })
 
     def purpose(self) -> Description:
-        actor_info = (self._tp.fnap(_DESCRIPTION__BEFORE_HOW_TO_SPECIFY_ACTOR) +
-                      self._tp.fnap(HOW_TO_SPECIFY_ACTOR)
-                      )
         return Description(self._tp.text(ONE_LINE_DESCRIPTION),
                            self._tp.fnap(REST_OF_DESCRIPTION) +
                            [result_sub_dir_files_table()] +
-                           actor_info)
+                           self._tp.fnap(_RELATION_TO_ACTOR__TO_BE_SEPARATE_SECTION))
 
     def sequence_info(self) -> PhaseSequenceInfo:
         return PhaseSequenceInfo(sequence_info__preceding_phase(phase_names.SETUP),
@@ -64,58 +65,50 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             environment_variables_prologue=env_vars_prologue_for_inherited_from_previous_phase())
 
     @property
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
             concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
+            concepts.ACTION_TO_CHECK_CONCEPT_INFO.cross_reference_target,
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+            conf_params.ACTOR_CONF_PARAM_INFO.cross_reference_target,
+            PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_CASE_CLI),
             phase_infos.SETUP.cross_reference_target,
             phase_infos.BEFORE_ASSERT.cross_reference_target,
             phase_infos.ASSERT.cross_reference_target,
-            actors.NULL_ACTOR.cross_reference_target,
-            actors.DEFAULT_ACTOR.cross_reference_target,
         ]
 
 
 ONE_LINE_DESCRIPTION = """\
-The {action_to_check} (or "system under test").
+Contains the {action_to_check}; executes it and stores the outcome for later inspection.
 """
 
 REST_OF_DESCRIPTION = """\
-Specifies an action that is checked by the test case.
+Executes the {action_to_check:/q} as {os_process:a}.
 
-
-There are a number of different kind of actions:
-
-
- * executable program
- * source file
- * source code
- * shell command
-
-
-Which one is used -
-and the meaning and syntax of the {phase[act]} phase -
-depends on which {actor_concept} is used.
-
-
-The action specified by the {phase[act]} phase is executed and its result is stored
-in the {result_dir} directory of the {sandbox}:
+It's outcome is stored as files in the {result_dir} directory of the {sandbox}:
 """
 
-_DESCRIPTION__BEFORE_HOW_TO_SPECIFY_ACTOR = """\
-If a test case does not have an {phase[act]} phase,
-or if the {phase[act]} phase is empty,
-then the {null_actor} {actor_concept} is used.
+_RELATION_TO_ACTOR__TO_BE_SEPARATE_SECTION = """\
+The {actor} configured for the test case
+determines what the {act} phase will execute.
 
 
-For test cases with a non-empty {phase[act]} phase, the default {actor_concept} is:
+Default {actor} is: {default_actor}
 
 
-{default_actor}
+If the {act} phase is not specified,
+or if it's contents is empty,
+then the {null_actor} {actor} is used.
 """
 
 _CONTENTS_DESCRIPTION = """\
+The source of the {action_to_check:/q}.
+
+
+The syntax depends on which {actor:/q} is used.
+
+
 Some escape sequences exist to make it possible to have contents that would otherwise be treated as
 phase headers.
 
