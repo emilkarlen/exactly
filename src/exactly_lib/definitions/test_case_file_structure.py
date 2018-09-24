@@ -61,7 +61,7 @@ SDS_ACT_INFO = TcDirInfo(
 SDS_RESULT_INFO = TcDirInfo(
     'result',
     'result directory',
-    _format('Stores {os_process} result of {phase[act]:syntax}, '
+    _format('Stores {os_process} outcome of {phase[act]:syntax}, '
             'so that {phase[assert]:syntax} may check it'),
 )
 
