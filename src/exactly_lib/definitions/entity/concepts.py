@@ -123,5 +123,6 @@ ACTOR_CONCEPT_INFO = name_and_ref_target_for_entity_type(
 
 ACTION_TO_CHECK_CONCEPT_INFO = name_and_ref_target(
     ACTION_TO_CHECK_NAME,
-    _format('The action that is checked by the test case.')
+    _format('The action that is checked by the test case.'),
+    'ATC',
 )
