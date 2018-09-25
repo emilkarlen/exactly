@@ -1,8 +1,10 @@
 [suites]
 
-intro/exactly.suite
+builtin-help
 
 readme-file-examples/exactly.suite
+
+intro/exactly.suite
 
 wiki/exactly.suite
 

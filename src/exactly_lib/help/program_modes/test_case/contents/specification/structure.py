@@ -1,3 +1,6 @@
+from typing import List
+
+from exactly_lib.act_phase_setups.common import SHELL_COMMAND_MARKER
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
@@ -8,9 +11,11 @@ from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
 from exactly_lib.help.render import see_also
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.util.textformat.constructor import sections
+from exactly_lib.util.textformat.constructor import sections, paragraphs
 from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
-from exactly_lib.util.textformat.structure.structures import *
+from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.structures import StrOrStringText
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
@@ -23,18 +28,29 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
         'actor': concepts.ACTOR_CONCEPT_INFO.name,
         'os_process': misc_texts.OS_PROCESS_NAME,
         'null_actor': actors.NULL_ACTOR.singular_name,
+        'shell_command_marker': SHELL_COMMAND_MARKER,
     })
 
     def const_paragraphs(header_: StrOrStringText,
-                         paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
+                         initial_paragraphs: List[docs.ParagraphItem]) -> generator.SectionHierarchyGenerator:
         return h.leaf(header_,
-                      sections.constant_contents(section_contents(paragraphs)))
+                      sections.constant_contents(docs.section_contents(initial_paragraphs)))
 
     def phases_documentation() -> List[ParagraphItem]:
         return (tp.fnap(_PHASES_INTRO) +
                 [sections_short_list(setup.test_case_help.phase_helps_in_order_of_execution,
                                      phase_identifier.DEFAULT_PHASE.section_name,
                                      phase_names_plain.SECTION_CONCEPT_NAME)])
+
+    act_contents = sections.contents2(
+        paragraphs.constant(tp.fnap(_ACT)),
+        [
+            _act_examples(tp),
+            see_also.SeeAlsoSectionConstructor(
+                see_also.items_of_targets(_act_see_also_targets())
+            )
+        ]
+    )
 
     return h.hierarchy(
         header,
@@ -44,8 +60,10 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
                                      phases_documentation())
                     ),
             h.child('act',
-                    const_paragraphs(tp.text('The {act} phase, {action_to_check:/q} and {actor:s/q}'),
-                                     tp.fnap(_ACT))
+                    h.leaf(
+                        tp.text('The {act} phase, {action_to_check:/q} and {actor:s/q}'),
+                        act_contents
+                    )
                     ),
             h.child('instructions',
                     const_paragraphs('Instructions',
@@ -81,6 +99,23 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
             ),
         ]
     )
+
+
+def _act_examples(tp: TextParser) -> sections.SectionConstructor:
+    return sections.section(
+        docs.text('Examples'),
+        sections.constant_contents(
+            docs.section_contents(tp.fnap(_ACT_EXAMPLES))
+        )
+    )
+
+
+def _act_see_also_targets() -> List[see_also.SeeAlsoTarget]:
+    return [
+        phase_infos.ACT.cross_reference_target,
+        concepts.ACTION_TO_CHECK_CONCEPT_INFO.cross_reference_target,
+        concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
+    ]
 
 
 def _see_also_targets() -> List[see_also.SeeAlsoTarget]:
@@ -137,7 +172,33 @@ A test case configures which {actor} to use.
 
 
 The special "{null_actor}" {actor}
-specifies a no-options {ATC}.
+specifies a no-operations {ATC}.
+"""
+
+# ACT EXAMPLES exists as test cases in examples/
+_ACT_EXAMPLES = """\
+An {ATC} that is a Python source file, executed with arguments:
+
+
+```
+[conf]
+
+actor = -file python
+
+[act]
+
+my-python-program.py argument1 "second argument"
+```
+
+
+An {ATC} that is a shell command line:
+
+
+```
+[act]
+
+$ echo 'This is a' shell command line > &2
+```
 """
 
 _INSTRUCTIONS = """\
