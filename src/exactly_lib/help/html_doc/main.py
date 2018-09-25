@@ -2,8 +2,7 @@ from typing import List, Sequence
 
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.definitions.cross_ref.target_info_factory import root_factory
-from exactly_lib.definitions.entity.all_entity_types import ALL_ENTITY_TYPES_IN_DISPLAY_ORDER, \
-    SUITE_REPORTER_ENTITY_TYPE_NAMES
+from exactly_lib.definitions.entity import all_entity_types
 from exactly_lib.help import std_tags
 from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.html_doc import page_setup
@@ -63,7 +62,9 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
                 _case_and_suite_sections(application_help)
                 +
                 _entity_sections(application_help,
-                                 entity_types_to_exclude=[SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier])
+                                 entity_types_to_exclude=[
+                                     all_entity_types.SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier,
+                                     all_entity_types.DIRECTIVE_ENTITY_TYPE_NAMES.identifier])
                 +
                 _cli_syntax_sections('cli-syntax')
         ),
@@ -76,6 +77,8 @@ def _case_and_suite_sections(application_help: ApplicationHelp) -> List[SectionH
             'test-case',
             test_case.hierarchy(_TEST_CASES_HEADER,
                                 application_help.test_case_help,
+                                application_help.entity_type_conf_for(
+                                    all_entity_types.DIRECTIVE_ENTITY_TYPE_NAMES.identifier)
                                 )
         ),
         h.child(
@@ -83,7 +86,7 @@ def _case_and_suite_sections(application_help: ApplicationHelp) -> List[SectionH
             test_suite.hierarchy(_TEST_SUITES_HEADER,
                                  application_help.test_suite_help,
                                  application_help.entity_type_conf_for(
-                                     SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier))
+                                     all_entity_types.SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier))
         ),
     ]
 
@@ -93,7 +96,7 @@ def _entity_sections(application_help: ApplicationHelp,
     all_entity_type_names = filter(
         lambda
             etn: etn.identifier not in entity_types_to_exclude,
-        ALL_ENTITY_TYPES_IN_DISPLAY_ORDER)
+        all_entity_types.ALL_ENTITY_TYPES_IN_DISPLAY_ORDER)
 
     def _section_setup_for_entity(names: EntityTypeNames) -> SectionHierarchyGenerator:
         return h.child(
@@ -115,16 +118,16 @@ def _cli_syntax_sections(local_target_name: str) -> List[SectionHierarchyGenerat
             local_target_name,
             h.hierarchy('Command line syntax',
                         children=[
-                                 h.child('test-case',
-                                         case_cli_syntax.root(_TEST_CASES_HEADER)
-                                         ),
-                                 h.child('test-suite',
-                                         suite_cli_syntax.root(_TEST_SUITES_HEADER)
-                                         ),
-                                 h.child('help',
-                                         help.root('Getting Help')
-                                         ),
-                             ]
+                            h.child('test-case',
+                                    case_cli_syntax.root(_TEST_CASES_HEADER)
+                                    ),
+                            h.child('test-suite',
+                                    suite_cli_syntax.root(_TEST_SUITES_HEADER)
+                                    ),
+                            h.child('help',
+                                    help.root('Getting Help')
+                                    ),
+                        ]
                         )
         )
     ]
