@@ -1,6 +1,6 @@
 from typing import Dict
 
-from exactly_lib.definitions.test_case.instructions import instruction_names
+from exactly_lib.definitions.entity import directives
 from exactly_lib.processing.parse.file_inclusion_directive_parser import FileInclusionDirectiveParser
 from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \
     InstructionWithOptionalDescriptionParser
@@ -21,7 +21,7 @@ def section_element_parser_of(
         the_instruction_parser: InstructionParser) -> SectionElementParser:
     return ParserFromSequenceOfParsers([
         StandardSyntaxCommentAndEmptyLineParser(),
-        FileInclusionDirectiveParser(instruction_names.FILE_INCLUSION_DIRECTIVE_NAME),
+        FileInclusionDirectiveParser(directives.INCLUDING_DIRECTIVE_INFO.singular_name),
         InstructionWithOptionalDescriptionParser(the_instruction_parser)
     ])
 

@@ -1,7 +1,7 @@
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.entity import directives
 from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary
-from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
 from exactly_lib.section_document.syntax import section_header, LINE_COMMENT_MARKER
@@ -27,9 +27,9 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
                     h.hierarchy('Instructions',
                                 paragraphs.constant(text_parser.fnap(INSTRUCTIONS_DOC)),
                                 [h.child_leaf('description',
-                                                   'Instruction descriptions',
-                                                   _InstructionsRenderer(text_parser))
-                                      ])
+                                              'Instruction descriptions',
+                                              _InstructionsRenderer(text_parser))
+                                 ])
                     ),
             h.child('file-inclusion', h.leaf('File inclusion', _FileInclusionContentsRenderer(text_parser))),
             h.child('com-empty', h.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
@@ -47,8 +47,8 @@ def _text_parser(setup: Setup) -> TextParser:
         'CONTENTS_EQUALS_ARGUMENT': contents_opts.EQUALS_ARGUMENT,
         'CONTENTS_EMPTY_ARGUMENT': contents_opts.EMPTY_ARGUMENT,
         'line_comment_char': LINE_COMMENT_MARKER,
-        'file_inclusion_directive_in_text': formatting.keyword(instruction_names.FILE_INCLUSION_DIRECTIVE_NAME),
-        'file_inclusion_directive': instruction_names.FILE_INCLUSION_DIRECTIVE_NAME,
+        'file_inclusion_directive_in_text': formatting.keyword(directives.INCLUDING_DIRECTIVE_INFO.singular_name),
+        'file_inclusion_directive': directives.INCLUDING_DIRECTIVE_INFO.singular_name,
     })
 
 
