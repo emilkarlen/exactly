@@ -34,3 +34,7 @@ def name_and_ref_target(name: str,
 
 INCLUDING_DIRECTIVE_INFO = name_and_ref_target('including',
                                                'Includes test case contents from an external file')
+
+ALL_DIRECTIVES = [
+    INCLUDING_DIRECTIVE_INFO,
+]
