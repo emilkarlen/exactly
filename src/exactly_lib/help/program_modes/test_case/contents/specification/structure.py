@@ -52,6 +52,15 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
         ]
     )
 
+    instructions_contents = sections.contents2(
+        paragraphs.constant(tp.fnap(_INSTRUCTIONS)),
+        [
+            see_also.SeeAlsoSectionConstructor(
+                see_also.items_of_targets(_instructions_see_also_targets())
+            )
+        ]
+    )
+
     return h.hierarchy(
         header,
         children=[
@@ -66,8 +75,8 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
                     )
                     ),
             h.child('instructions',
-                    const_paragraphs('Instructions',
-                                     tp.fnap(_INSTRUCTIONS))
+                    h.leaf('Instructions',
+                           instructions_contents)
                     ),
             h.child('suites',
                     h.hierarchy(
@@ -90,13 +99,6 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
                             ,
                         ]),
                     ),
-            h.with_not_in_toc(
-                h.leaf(
-                    see_also.SEE_ALSO_TITLE,
-                    see_also.SeeAlsoSectionContentsConstructor(
-                        see_also.items_of_targets(_see_also_targets())
-                    ))
-            ),
         ]
     )
 
@@ -118,7 +120,7 @@ def _act_see_also_targets() -> List[see_also.SeeAlsoTarget]:
     ]
 
 
-def _see_also_targets() -> List[see_also.SeeAlsoTarget]:
+def _instructions_see_also_targets() -> List[see_also.SeeAlsoTarget]:
     return [
         concepts.INSTRUCTION_CONCEPT_INFO.cross_reference_target,
     ]
