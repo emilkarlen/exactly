@@ -3,6 +3,7 @@ from exactly_lib.definitions.entity import directives
 from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
+from exactly_lib.help.render import see_also
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
 from exactly_lib.section_document.syntax import section_header, LINE_COMMENT_MARKER
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
@@ -74,7 +75,13 @@ class _InstructionsRenderer(_ConstructorBase):
 
 class _FileInclusionContentsRenderer(_ConstructorBase):
     def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
-        return docs.section_contents(self.parser.fnap(FILE_INCLUSION_DOC))
+        see_also_items = see_also.items_of_targets([
+            directives.INCLUDING_DIRECTIVE_INFO.cross_reference_target,
+        ])
+        return docs.section_contents(self.parser.fnap(FILE_INCLUSION_DOC),
+                                     [
+                                         see_also.SeeAlsoSectionConstructor(see_also_items).apply(environment)
+                                     ])
 
 
 class _OtherContentsRenderer(_ConstructorBase):
@@ -215,8 +222,4 @@ using the {file_inclusion_directive_in_text} directive:
 ```
 {file_inclusion_directive} external-part-of-test-case.xly
 ```
-
-
-For details, see the description of {file_inclusion_directive_in_text}
-in the description of instructions per phase.
 """
