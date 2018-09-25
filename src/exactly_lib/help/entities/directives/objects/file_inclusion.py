@@ -1,16 +1,14 @@
-from typing import Sequence, List
+from typing import Sequence
 
 from exactly_lib.common.help.abs_or_rel_path import abs_or_rel_path_of_existing
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args, \
     SyntaxElementDescription, cli_argument_syntax_element_description
-from exactly_lib.definitions import formatting
-from exactly_lib.definitions.entity import concepts, directives
+from exactly_lib.definitions.entity import directives
 from exactly_lib.help.entities.directives.contents_structure import DirectiveDocumentation
 from exactly_lib.processing.parse import file_inclusion_directive_parser
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.core import ParagraphItem
-from exactly_lib.util.textformat.structure.document import Section, SectionContents
+from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
@@ -21,7 +19,6 @@ class FileInclusionDocumentation(DirectiveDocumentation):
         self._tp = TextParser({
             'including_directive': self.info.singular_name,
             'FILE': self.file_argument.name,
-            'symbols': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.plural_name),
         })
 
     def invokation_variants(self) -> Sequence[InvokationVariant]:
@@ -41,17 +38,7 @@ class FileInclusionDocumentation(DirectiveDocumentation):
         ]
 
     def description(self) -> SectionContents:
-        return SectionContents(self.main_description_rest(),
-                               list(self.main_description_rest_sub_sections()))
-
-    def main_description_rest(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_MAIN_DESCRIPTION_REST)
-
-    def main_description_rest_sub_sections(self) -> Sequence[Section]:
-        return [
-            docs.section('Directive',
-                         self._tp.fnap(_DIRECTIVE))
-        ]
+        return docs.section_contents(self._tp.fnap(_MAIN_DESCRIPTION_REST))
 
 
 _FILE_RELATIVITY_ROOT = 'directory of the current source file'
@@ -73,14 +60,4 @@ by declaring different phases just as in a main test case file.
 
 But the phase of the including file is
 not changed.
-"""
-
-_DIRECTIVE = """\
-"{including_directive}" is a "directive" - not an "instruction".
-
-It is processed during file reading and syntax checking.
-Nothing happens at later processing steps.
-
-
-A consequence of this is that {symbols} cannot be used in the {FILE} argument.
 """

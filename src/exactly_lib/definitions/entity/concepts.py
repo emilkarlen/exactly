@@ -127,3 +127,8 @@ ACTION_TO_CHECK_CONCEPT_INFO = name_and_ref_target(
     _format('The action that is executed in the {act} phase.'),
     'ATC',
 )
+
+DIRECTIVE_CONCEPT_INFO = name_and_ref_target_for_entity_type(
+    all_entity_types.DIRECTIVE_ENTITY_TYPE_NAMES,
+    'Processing during file reading and syntax checking.',
+)
