@@ -2,6 +2,7 @@ import itertools
 
 from typing import Iterable, Optional, Set
 
+from exactly_lib.util.textformat.constructor import paragraphs
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.paragraph import ParagraphItemsConstructor
 from exactly_lib.util.textformat.constructor.section import SectionContentsConstructor, \
@@ -24,6 +25,13 @@ def contents(initial_paragraphs: Iterable[ParagraphItemsConstructor] = (),
              sub_sections: Iterable[SectionConstructor] = (),
              ) -> SectionContentsConstructor:
     return _SectionContents(initial_paragraphs,
+                            sub_sections)
+
+
+def contents2(initial_paragraphs: ParagraphItemsConstructor = paragraphs.empty(),
+              sub_sections: Iterable[SectionConstructor] = (),
+              ) -> SectionContentsConstructor:
+    return _SectionContents([initial_paragraphs],
                             sub_sections)
 
 
