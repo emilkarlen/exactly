@@ -20,7 +20,7 @@ class BuiltinSymbolInfo(SingularNameAndCrossReferenceId):
         return syntax_text(self._singular_name)
 
 
-def type_cross_ref(symbol_name: str) -> EntityCrossReferenceId:
+def builtin_cross_ref(symbol_name: str) -> EntityCrossReferenceId:
     return EntityCrossReferenceId(BUILTIN_SYMBOL_ENTITY_TYPE_NAMES,
                                   symbol_name)
 
@@ -29,4 +29,4 @@ def name_and_ref_target(symbol_name: str,
                         single_line_description_str: str) -> SingularNameAndCrossReferenceId:
     return BuiltinSymbolInfo(symbol_name,
                              single_line_description_str,
-                             type_cross_ref(symbol_name))
+                             builtin_cross_ref(symbol_name))
