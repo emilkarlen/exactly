@@ -10,6 +10,8 @@ DO_NOTHING = 'do-nothing'
 
 HELLO_WORLD = 'hello-world'
 
+HELLO_WORLD_WITHOUT_DASH = 'helloworld'
+
 PRINT_NUMBER_OF_ARGUMENTS = 'print-number-of-arguments'
 
 PRINT_NUMBER_OF_LINES_IN_FILE = 'print-number-of-lines-in-file'
@@ -113,6 +115,10 @@ README_FILES = itertools.chain.from_iterable([
          ]),
 ])
 
+BUILTIN_HELP_FILES = [
+    st(Path('.'), HELLO_WORLD_WITHOUT_DASH),
+]
+
 INTRO_FILES = itertools.chain.from_iterable(
     [
         sts(first_step_dir,
@@ -172,6 +178,7 @@ WIKI_FILES = itertools.chain.from_iterable(
 SUB_DIR_CONFIGS = [
     (intro_sub_dir, INTRO_FILES),
     (readme_examples_root_dir, README_FILES),
+    ('builtin-help', BUILTIN_HELP_FILES),
     (wiki_sub_dir, WIKI_FILES),
 ]
 
