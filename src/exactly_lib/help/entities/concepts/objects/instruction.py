@@ -1,6 +1,7 @@
 from typing import List
 
 from exactly_lib import program_info
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_string
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts
@@ -8,6 +9,7 @@ from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
+from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_paragraphs, FORMS_PARA
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -16,29 +18,33 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 class _InstructionConcept(ConceptDocumentation):
     def __init__(self):
         super().__init__(concepts.INSTRUCTION_CONCEPT_INFO)
-
-    def purpose(self) -> DescriptionWithSubSections:
-        tp = TextParser({
+        self._tp = TextParser({
             'instruction': self.name(),
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'symbol': formatting.concept_name_with_formatting(concepts.SYMBOL_CONCEPT_INFO.name),
+            'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
             'def': InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
-            'def_instruction': InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
             'act': phase_infos.ACT.name,
+            'atc': concepts.ACTION_TO_CHECK_CONCEPT_INFO.name,
             'assert': phase_infos.ASSERT.name,
             'cleanup': phase_infos.CLEANUP.name,
         })
+
+    def purpose(self) -> DescriptionWithSubSections:
         return DescriptionWithSubSections(
             self.single_line_description(),
             docs.section_contents(
-                tp.fnap(_DESCRIPTION_REST),
+                self._tp.fnap(_DESCRIPTION_REST),
                 [
-                    docs.section('Semantics',
-                                 tp.fnap(_SEMANTICS)
-                                 ),
-                    docs.section('Syntax',
-                                 tp.fnap(_SYNTAX)
-                                 ),
+                    docs.section(
+                        'Semantics',
+                        self._tp.fnap(_SEMANTICS)
+                    ),
+                    docs.section(
+                        'Syntax',
+                        [FORMS_PARA] +
+                        self._invokation_variants_paragraphs() +
+                        self._tp.fnap(_SYNTAX),
+                    ),
                 ]
             ))
 
@@ -47,6 +53,25 @@ class _InstructionConcept(ConceptDocumentation):
             concepts.TYPE_CONCEPT_INFO.cross_reference_target,
             concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
         ]
+
+    def _invokation_variants_paragraphs(self) -> List[docs.ParagraphItem]:
+        return invokation_variants_paragraphs(
+            None,
+            [self._invokation_variant_set_property(),
+             self._invokation_variant_name_argument(), ],
+            [])
+
+    def _invokation_variant_set_property(self) -> InvokationVariant:
+        return invokation_variant_from_string(
+            'PROPERTY = VALUE',
+            self._tp.fnap(_SET_PROPERTY_DESCRIPTION),
+        )
+
+    def _invokation_variant_name_argument(self) -> InvokationVariant:
+        return invokation_variant_from_string(
+            'INSTRUCTION-NAME ARGUMENT...',
+            self._tp.fnap(_NAME_AND_ARGUMENT_DESCRIPTION),
+        )
 
 
 INSTRUCTION_CONCEPT = _InstructionConcept()
@@ -88,21 +113,31 @@ Each phase has its own {instruction} set.
 """
 
 _SEMANTICS = """\
-In {assert:syntax}, {instruction:s} serve as assertions by representing a boolean expression.
+In {assert:syntax}, {instruction:s} serve as assertions by representing boolean expressions.
 
-E.g. asserting that a file with a given name exists.
+E.g. asserting that the {atc} did not output anything to stdout:
 
 
-In all other phases, and also in {assert:syntax},
+```
+exists -file my-file.txt
+```
+
+
+In all other phases, and also for some of the {instruction:s} in {assert:syntax},
 the purpose of {instruction:a} is it's side effects for
 setting up the execution environment of {act:syntax}, {assert:syntax},
 or cleaning up after the test ({cleanup:syntax}).
 
-E.g. creating a file.
+E.g. creating a file:
+
+
+```
+file my-file.txt = "contents of my file"
+```
 """
 
 _SYNTAX = """\
-Starts on a new line, beginning with the name of the {instruction},
+{instruction:a/u} starts on a new line, beginning with the name of the {instruction},
 followed by arguments.
 
 
@@ -128,4 +163,29 @@ Arguments may refer to {symbol:s} defined by the {def} {instruction}.
 
 
 Comments may not appear inside {instruction:s}.
+"""
+
+# EXAMPLE CASES exist in examples/builtin-help
+_SET_PROPERTY_DESCRIPTION = """\
+For example:
+
+
+```
+timeout = 10
+
+stdin   = "contents of stdin"
+```
+"""
+
+# EXAMPLE CASES exist in examples/builtin-help
+_NAME_AND_ARGUMENT_DESCRIPTION = """\
+For example:
+
+
+```
+file my-file.txt = "contents of my file
+
+run % python -c :> import sys; sys.stdout.write("Hello world")
+```
+
 """

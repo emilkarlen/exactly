@@ -1,4 +1,4 @@
-from typing import Iterable, List, Sequence
+from typing import Iterable, List, Sequence, Optional
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import doc_format
@@ -46,7 +46,7 @@ def invokation_variants_paragraphs(instruction_name_or_none: str,
                                                           x.invokation_variants,
                                                           True,
                                                           custom_separations=BLANK_LINE_BETWEEN_ELEMENTS)]
-            separator_paras = [_FORMS_PARA] if x.invokation_variants and x.description_rest else []
+            separator_paras = [FORMS_PARA] if x.invokation_variants and x.description_rest else []
             contents = list(x.description_rest) + separator_paras + variants_list_paragraphs
             items.append(docs.list_item(syntax_text(x.element_name),
                                         contents))
@@ -70,11 +70,11 @@ def invokation_variants_paragraphs(instruction_name_or_none: str,
             syntax_element_description_paragraph_items())
 
 
-def invokation_variants_content(instruction_name_or_none: str,
+def invokation_variants_content(instruction_name: Optional[str],
                                 invokation_variants: Sequence[InvokationVariant],
                                 syntax_element_descriptions: Iterable[SyntaxElementDescription]
                                 ) -> doc.SectionContents:
-    return doc.SectionContents(invokation_variants_paragraphs(instruction_name_or_none,
+    return doc.SectionContents(invokation_variants_paragraphs(instruction_name,
                                                               invokation_variants,
                                                               syntax_element_descriptions
                                                               ),
@@ -82,7 +82,7 @@ def invokation_variants_content(instruction_name_or_none: str,
 
 
 _WHERE_PARA = docs.para(doc_format.text_as_header('where'))
-_FORMS_PARA = docs.para(doc_format.text_as_header('Forms:'))
+FORMS_PARA = docs.para(doc_format.text_as_header('Forms:'))
 
 
 def _custom_list_indent(indented: bool) -> int:
