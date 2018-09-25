@@ -29,6 +29,9 @@ CONF_PARAM_ENTITY_TYPE_NAMES = _entity_arg_is_singular_name('confparam',
 SUITE_REPORTER_ENTITY_TYPE_NAMES = _entity_arg_is_singular_name('reporter',
                                                                 a_name_with_plural_s('suite reporter'))
 
+DIRECTIVE_ENTITY_TYPE_NAMES = EntityTypeNames('directive',
+                                              a_name_with_plural_s('directive'))
+
 SYNTAX_ELEMENT_ENTITY_TYPE_NAMES = _entity_arg_is_singular_name('syntax',
                                                                 a_name_with_plural_s('syntax element'))
 
@@ -46,6 +49,7 @@ ALL_ENTITY_TYPES_IN_DISPLAY_ORDER = (
     TYPE_ENTITY_TYPE_NAMES,
     ACTOR_ENTITY_TYPE_NAMES,
     SYNTAX_ELEMENT_ENTITY_TYPE_NAMES,
+    DIRECTIVE_ENTITY_TYPE_NAMES,
     BUILTIN_SYMBOL_ENTITY_TYPE_NAMES,
     SUITE_REPORTER_ENTITY_TYPE_NAMES,
 )

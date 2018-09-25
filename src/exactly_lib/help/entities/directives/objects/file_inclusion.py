@@ -1,38 +1,28 @@
 from typing import Sequence, List
 
 from exactly_lib.common.help.abs_or_rel_path import abs_or_rel_path_of_existing
-from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args, \
     SyntaxElementDescription, cli_argument_syntax_element_description
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.entity import concepts
-from exactly_lib.definitions.test_case.instructions import instruction_names
+from exactly_lib.definitions.entity import concepts, directives
+from exactly_lib.help.entities.directives.contents_structure import DirectiveDocumentation
 from exactly_lib.processing.parse import file_inclusion_directive_parser
-from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose, AssertPhasePurpose
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
-from exactly_lib.util.textformat.structure.document import Section
+from exactly_lib.util.textformat.structure.document import Section, SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class FileInclusionDirectiveDocumentation(InstructionDocumentation,
-                                          WithAssertPhasePurpose):
+class FileInclusionDocumentation(DirectiveDocumentation):
     def __init__(self):
-        super().__init__(instruction_names.FILE_INCLUSION_DIRECTIVE_NAME)
+        super().__init__(directives.INCLUDING_DIRECTIVE_INFO)
         self.file_argument = a.Named(file_inclusion_directive_parser.FILE_ARGUMENT_NAME)
         self._tp = TextParser({
-            'including_directive': self.instruction_name(),
+            'including_directive': self.info.singular_name,
             'FILE': self.file_argument.name,
             'symbols': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.plural_name),
         })
-
-    @property
-    def assert_phase_purpose(self) -> AssertPhasePurpose:
-        return AssertPhasePurpose.HELPER
-
-    def single_line_description(self) -> str:
-        return 'Directive that includes test case contents from an external file'
 
     def invokation_variants(self) -> Sequence[InvokationVariant]:
         return [
@@ -49,6 +39,10 @@ class FileInclusionDirectiveDocumentation(InstructionDocumentation,
                                                         _FILE_RELATIVITY_ROOT
                                                     ))
         ]
+
+    def description(self) -> SectionContents:
+        return SectionContents(self.main_description_rest(),
+                               list(self.main_description_rest_sub_sections()))
 
     def main_description_rest(self) -> List[ParagraphItem]:
         return self._tp.fnap(_MAIN_DESCRIPTION_REST)

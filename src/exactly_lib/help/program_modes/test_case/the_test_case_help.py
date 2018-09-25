@@ -1,7 +1,6 @@
 from typing import Sequence, Dict
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help.file_inclusion_directive import FileInclusionDirectiveDocumentation
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase import configuration, setup, act, before_assert, assert_, \
     cleanup
@@ -43,6 +42,5 @@ def phase_helps_for(instructions_setup: InstructionsSetup) -> Sequence[SectionDo
 def _phase_instruction_set_help(single_instruction_setup_dic: Dict[str, SingleInstructionSetup]
                                 ) -> SectionInstructionSet:
     return SectionInstructionSet(
-        list(map(lambda x: x.documentation, single_instruction_setup_dic.values())) +
-        [FileInclusionDirectiveDocumentation()]
+        list(map(lambda x: x.documentation, single_instruction_setup_dic.values()))
     )

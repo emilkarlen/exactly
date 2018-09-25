@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib_test.help import file_inclusion_directive
 from exactly_lib_test.help.entities import z_package_suite as entities
 from exactly_lib_test.help.html_doc import z_package_suite as html_doc
 from exactly_lib_test.help.program_modes import z_package_suite as program_modes
@@ -11,7 +10,6 @@ def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(render.suite())
     ret_val.addTest(program_modes.suite())
-    ret_val.addTest(file_inclusion_directive.suite())
     ret_val.addTest(entities.suite())
     ret_val.addTest(html_doc.suite())
     return ret_val

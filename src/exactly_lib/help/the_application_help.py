@@ -3,7 +3,7 @@ from typing import Sequence, Dict, List
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES, ACTOR_ENTITY_TYPE_NAMES, \
     CONF_PARAM_ENTITY_TYPE_NAMES, SUITE_REPORTER_ENTITY_TYPE_NAMES, SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, \
-    TYPE_ENTITY_TYPE_NAMES, BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
+    TYPE_ENTITY_TYPE_NAMES, BUILTIN_SYMBOL_ENTITY_TYPE_NAMES, DIRECTIVE_ENTITY_TYPE_NAMES
 from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.help.entities.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
@@ -11,6 +11,7 @@ from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDo
 from exactly_lib.help.entities.builtin.entity_configuration import builtin_symbols_entity_configuration
 from exactly_lib.help.entities.concepts.entity_configuration import CONCEPT_ENTITY_CONFIGURATION
 from exactly_lib.help.entities.configuration_parameters.entity_configuration import CONF_PARAM_ENTITY_CONFIGURATION
+from exactly_lib.help.entities.directives.entity_configuration import DIRECTIVE_ENTITY_CONFIGURATION
 from exactly_lib.help.entities.suite_reporters.entity_configuration import SUITE_REPORTER_ENTITY_CONFIGURATION
 from exactly_lib.help.entities.syntax_elements.entity_configuration import SYNTAX_ELEMENT_ENTITY_CONFIGURATION
 from exactly_lib.help.entities.types.entity_configuration import TYPE_ENTITY_CONFIGURATION
@@ -44,6 +45,8 @@ def entity_name_2_entity_configuration(builtin_symbols: List[BuiltinSymbolDocume
         TYPE_ENTITY_TYPE_NAMES.identifier: TYPE_ENTITY_CONFIGURATION,
 
         SYNTAX_ELEMENT_ENTITY_TYPE_NAMES.identifier: SYNTAX_ELEMENT_ENTITY_CONFIGURATION,
+
+        DIRECTIVE_ENTITY_TYPE_NAMES.identifier: DIRECTIVE_ENTITY_CONFIGURATION,
 
         BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.identifier: builtin_symbols_entity_configuration(
             builtin_symbols),
