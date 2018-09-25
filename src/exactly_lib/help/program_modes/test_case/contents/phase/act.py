@@ -6,7 +6,7 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
 from exactly_lib.definitions.doc_format import literal_source_text
-from exactly_lib.definitions.entity import concepts, conf_params, actors
+from exactly_lib.definitions.entity import concepts, conf_params, actors, directives
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
@@ -47,6 +47,10 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             'act': phase_infos.ACT.name,
             'stdin_instruction': InstructionName(instruction_names.CONTENTS_OF_STDIN_INSTRUCTION_NAME),
             'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
+
+            'directive': concepts.DIRECTIVE_CONCEPT_INFO.name,
+            'including': formatting.keyword(directives.INCLUDING_DIRECTIVE_INFO.singular_name),
+
         })
 
     def purpose(self) -> Description:
@@ -140,6 +144,9 @@ The source of the {action_to_check:/q}.
 
 
 The syntax depends on which {actor:/q} is used.
+
+
+The {including} {directive} cannot be used.
 
 
 Some escape sequences exist to make it possible to have contents that would otherwise be treated as

@@ -35,7 +35,6 @@ DIRECTIVE_CONCEPT = _DirectiveConcept()
 _DESCRIPTION = """\
 {directive:a/u} is processed during file reading and syntax checking.
 
-
 Nothing happens at later processing steps -
 i.e. unlike {instruction:s}, there is no
 execution.

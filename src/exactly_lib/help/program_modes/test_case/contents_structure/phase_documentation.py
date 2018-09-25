@@ -1,7 +1,8 @@
 from typing import List, Sequence, Optional
 
+from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.entity import concepts, directives
 from exactly_lib.definitions.section_info import SectionInfo
 from exactly_lib.definitions.test_case.phase_infos import TestCasePhaseInfo, TestCasePhaseWithoutInstructionsInfo
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
@@ -9,6 +10,7 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionInst
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class PhaseSequenceInfo(tuple):
@@ -98,6 +100,10 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentat
         """
         super().__init__(TestCasePhaseInfo(name))
         self._instruction_set = instruction_set
+        self.__tp = TextParser({
+            'directive': concepts.DIRECTIVE_CONCEPT_INFO.name,
+            'including': formatting.keyword(directives.INCLUDING_DIRECTIVE_INFO.singular_name),
+        })
 
     @property
     def has_instructions(self) -> bool:
@@ -108,7 +114,7 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentat
         return self._instruction_set
 
     def contents_description(self) -> doc.SectionContents:
-        return docs.section_contents([docs.para('Consists of zero or more instructions.')] +
+        return docs.section_contents(self.__tp.fnap(_CONTENTS_GENERIC_DESCRIPTION) +
                                      self.instruction_purpose_description())
 
     def instruction_purpose_description(self) -> List[ParagraphItem]:
@@ -116,7 +122,10 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentat
 
     @property
     def see_also_targets(self) -> List[SeeAlsoTarget]:
-        ret_val = [concepts.INSTRUCTION_CONCEPT_INFO.cross_reference_target]
+        ret_val = [
+            concepts.INSTRUCTION_CONCEPT_INFO.cross_reference_target,
+            concepts.DIRECTIVE_CONCEPT_INFO.cross_reference_target,
+        ]
         ret_val += self._see_also_targets_specific
         return ret_val
 
@@ -136,3 +145,11 @@ class TestCasePhaseDocumentationForPhaseWithoutInstructions(TestCasePhaseDocumen
     @property
     def instruction_set(self) -> Optional[SectionInstructionSet]:
         return None
+
+
+_CONTENTS_GENERIC_DESCRIPTION = """\
+Consists of zero or more instructions.
+
+
+Accepts the {including} {directive}.
+"""

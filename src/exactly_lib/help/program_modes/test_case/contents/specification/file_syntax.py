@@ -1,5 +1,5 @@
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.entity import directives
+from exactly_lib.definitions.entity import directives, concepts
 from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
@@ -76,6 +76,7 @@ class _InstructionsRenderer(_ConstructorBase):
 class _FileInclusionContentsRenderer(_ConstructorBase):
     def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
         see_also_items = see_also.items_of_targets([
+            concepts.DIRECTIVE_CONCEPT_INFO.cross_reference_target,
             directives.INCLUDING_DIRECTIVE_INFO.cross_reference_target,
         ])
         return docs.section_contents(self.parser.fnap(FILE_INCLUSION_DOC),
