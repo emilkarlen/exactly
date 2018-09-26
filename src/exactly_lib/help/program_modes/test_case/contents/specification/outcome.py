@@ -4,7 +4,7 @@ from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.doc_format import exit_value_text
-from exactly_lib.definitions.entity import conf_params
+from exactly_lib.definitions.entity import conf_params, directives
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
@@ -81,6 +81,7 @@ TEXT_PARSER = TextParser({
     'an_error_in_source': misc_texts.SYNTAX_ERROR_NAME.singular_determined,
     'an_exit_code': misc_texts.EXIT_CODE.singular_determined,
     'an_exit_identifier': misc_texts.EXIT_IDENTIFIER.singular_determined,
+    'including': formatting.keyword(directives.INCLUDING_DIRECTIVE_INFO.singular_name),
 })
 
 PREAMBLE = ''
@@ -351,7 +352,7 @@ def _other_non_cli_errors() -> ParagraphItem:
                                    )
 
 
-_FILE_ACCESS_ERROR = 'Failure of accessing a file on the command line.'
+_FILE_ACCESS_ERROR = 'Failure of accessing a file on the command line or referenced via {including}.'
 
 _SYNTAX_ERROR = """\
 Fails if the test case contains {an_error_in_source}.

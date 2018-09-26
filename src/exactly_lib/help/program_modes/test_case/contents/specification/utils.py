@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.definitions import misc_texts
@@ -8,6 +8,7 @@ from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor
+from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.structures import first_column_is_header_table, para, cell
 
@@ -52,6 +53,18 @@ def step_with_single_exit_value(purpose_paragraphs: List[ParagraphItem],
                                 failure_condition: ParagraphItem,
                                 exit_value_on_error: ExitValue) -> List[ParagraphItem]:
     return step_with_single_exit_value2(purpose_paragraphs, [failure_condition], exit_value_on_error)
+
+
+def step_with_multiple_exit_values(purpose_paragraphs: List[ParagraphItem],
+                                   failure_condition: List[ParagraphItem],
+                                   exit_value_on_errors: List[Tuple[str, ExitValue]]) -> List[ParagraphItem]:
+    def failure_item(header__exit_value: Tuple[str, ExitValue]) -> docs.lists.HeaderContentListItem:
+        return docs.list_item(header__exit_value[0],
+                              [singe_exit_value_display(header__exit_value[1])])
+
+    outcome_on_error = docs.simple_list(map(failure_item, exit_value_on_errors),
+                                        docs.lists.ListType.ITEMIZED_LIST)
+    return purpose_paragraphs + failure_condition + [outcome_on_error]
 
 
 def step_with_single_exit_value2(purpose_paragraphs: List[ParagraphItem],
