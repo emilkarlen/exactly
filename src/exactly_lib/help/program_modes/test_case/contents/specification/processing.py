@@ -3,11 +3,11 @@ from typing import List
 from exactly_lib import program_info
 from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib.definitions import formatting, misc_texts
-from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.entity import concepts, directives
 from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup, \
     post_setup_validation_step_name, \
-    step_with_single_exit_value
+    step_with_single_exit_value, step_with_multiple_exit_values
 from exactly_lib.help.render import see_also
 from exactly_lib.processing import exit_values
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
@@ -33,6 +33,8 @@ class ContentsConstructor(SectionContentsConstructor):
             'symbols': concepts.SYMBOL_CONCEPT_INFO.name.plural,
             'cli_option_for_preprocessor': formatting.cli_option(OPTION_FOR_PREPROCESSOR),
             'an_error_in_source': misc_texts.SYNTAX_ERROR_NAME.singular_determined,
+            'directive': concepts.DIRECTIVE_CONCEPT_INFO.name,
+            'including': formatting.keyword(directives.INCLUDING_DIRECTIVE_INFO.singular_name),
         })
 
     def apply(self, environment: ConstructionEnvironment) -> SectionContents:
@@ -52,25 +54,28 @@ class ContentsConstructor(SectionContentsConstructor):
 
     def processing_step_list(self) -> docs.ParagraphItem:
         items = [
-            docs.list_item('preprocessing',
+            docs.list_item('Preprocessing',
                            step_with_single_exit_value(
                                self._tp.fnap(PURPOSE_OF_PREPROCESSING),
                                self._tp.para(FAILURE_CONDITION_OF_PREPROCESSING),
                                exit_values.NO_EXECUTION__PRE_PROCESS_ERROR)
                            ),
-            docs.list_item('syntax checking',
-                           step_with_single_exit_value(
+            docs.list_item(self._tp.text('Syntax checking and {directive:s} processing'),
+                           step_with_multiple_exit_values(
                                self._tp.fnap(PURPOSE_OF_SYNTAX_CHECKING),
-                               self._tp.para(FAILURE_CONDITION_OF_SYNTAX_CHECKING),
-                               exit_values.NO_EXECUTION__SYNTAX_ERROR)
+                               self._tp.fnap(FAILURE_CONDITION_OF_SYNTAX_CHECKING),
+                               [
+                                   ('Syntax error', exit_values.NO_EXECUTION__SYNTAX_ERROR),
+                                   ('File inclusion error', exit_values.NO_EXECUTION__FILE_ACCESS_ERROR),
+                               ])
                            ),
-            docs.list_item('validation',
+            docs.list_item('Validation',
                            step_with_single_exit_value(
                                self._tp.fnap(PURPOSE_OF_VALIDATION),
                                self._tp.para(FAILURE_CONDITION_OF_VALIDATION),
                                exit_values.EXECUTION__VALIDATION_ERROR)
                            ),
-            docs.list_item('execution',
+            docs.list_item('Execution',
                            self._tp.fnap(EXECUTION_DESCRIPTION) +
                            [self.execution_sub_steps_description()] +
                            self._tp.fnap(OUTCOME_OF_EXECUTION)),
@@ -94,6 +99,7 @@ class ContentsConstructor(SectionContentsConstructor):
 def _see_also_targets() -> List[see_also.SeeAlsoTarget]:
     return [
         concepts.PREPROCESSOR_CONCEPT_INFO.cross_reference_target,
+        concepts.DIRECTIVE_CONCEPT_INFO.cross_reference_target,
         concepts.INSTRUCTION_CONCEPT_INFO.cross_reference_target,
         concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
     ]
@@ -133,9 +139,15 @@ Checks the syntax of all elements in the test case file
 phases,
 their {instructions},
 and the {ATC} of the {act_phase:syntax} phase.
+
+
+Processes {directive:s} ({including}).
 """
 
-FAILURE_CONDITION_OF_SYNTAX_CHECKING = 'Fails if {an_error_in_source} is found.'
+FAILURE_CONDITION_OF_SYNTAX_CHECKING = """\
+Fails if {an_error_in_source} is found,
+or if a {directive} fails.
+"""
 
 PURPOSE_OF_VALIDATION = """\
 Checks references to {symbols} and external resources (files etc).
