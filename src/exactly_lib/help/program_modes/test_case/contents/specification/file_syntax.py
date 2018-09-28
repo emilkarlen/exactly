@@ -19,9 +19,9 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
         return paragraphs.constant(tp.fnap(template))
 
     def initial_paragraphs_of(template: str) -> sections.SectionContentsConstructor:
-        return sections.contents2(paragraphs_of(template))
+        return sections.contents(paragraphs_of(template))
 
-    file_inclusion_doc = sections.contents2(
+    file_inclusion_doc = sections.contents(
         paragraphs_of(FILE_INCLUSION_DOC),
         [see_also.SeeAlsoSectionConstructor(
             see_also.items_of_targets(_FILE_INCLUSION_SEE_ALSO_TARGETS)

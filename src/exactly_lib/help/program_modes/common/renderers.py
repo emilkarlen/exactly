@@ -66,9 +66,11 @@ def instruction_set_constructor(
         instruction_group_by:
         Optional[Callable[[Sequence[InstructionDocumentation]], Sequence[InstructionGroup]]] = None
 ) -> sections.SectionContentsConstructor:
-    return sections.paragraphs_contents([InstructionSetSummaryConstructor(instruction_set,
-                                                                          name_2_name_text_fun,
-                                                                          instruction_group_by)])
+    return sections.contents(
+        InstructionSetSummaryConstructor(instruction_set,
+                                         name_2_name_text_fun,
+                                         instruction_group_by)
+    )
 
 
 def sections_short_list(sections: Sequence[SectionDocumentation],
