@@ -7,6 +7,7 @@ from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
+from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data import list_value
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
@@ -19,6 +20,7 @@ from exactly_lib_test.symbol.data.test_resources.list_values import ListResolver
 from exactly_lib_test.symbol.test_resources.command_resolvers import CommandDriverResolverForConstantTestImpl
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResolverConstantTestImpl
+from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.type_system.data.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
@@ -97,6 +99,9 @@ class TestValueTypeRestriction(unittest.TestCase):
 
         ValueType.FILE_MATCHER:
             FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
+
+        ValueType.STRING_MATCHER:
+            StringMatcherResolverConstantTestImpl(StringMatcherConstant(False)),
 
         ValueType.STRING_TRANSFORMER:
             StringTransformerResolverConstantTestImpl(FakeStringTransformer(), []),
