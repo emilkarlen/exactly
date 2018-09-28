@@ -253,6 +253,21 @@ class Is(ValueAssertion[T]):
                      message_builder.apply(self.message))
 
 
+class IsAny(ValueAssertion[Any]):
+    def __init__(self,
+                 expected: T,
+                 message: str = None):
+        self.expected = expected
+        self.message = message
+
+    def apply(self,
+              put: unittest.TestCase,
+              value: T,
+              message_builder: MessageBuilder = MessageBuilder()):
+        put.assertIs(self.expected, value,
+                     message_builder.apply(self.message))
+
+
 class IsNot(ValueAssertion[T]):
     def __init__(self,
                  expected: T,
@@ -621,6 +636,7 @@ def equals_sequence(expected: Sequence[T],
 
 is_instance = IsInstance
 is_ = Is
+is__any = IsAny
 not_ = Not
 
 is_none = ValueIsNone()
