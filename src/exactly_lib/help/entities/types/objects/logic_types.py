@@ -7,7 +7,6 @@ from exactly_lib.test_case_utils.string_transformer import parse_string_transfor
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import empty_section_contents
-from exactly_lib.util.textformat.textformat_parser import TextParser
 
 LINE_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     types.LINE_MATCHER_TYPE_INFO,
@@ -27,8 +26,10 @@ STRING_TRANSFORMER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     parse_string_transformer.GRAMMAR,
     empty_section_contents())
 
-_TEXT_PARSER = TextParser({
-})
+STRING_MATCHER_DOCUMENTATION = TypeDocumentation(TypeCategory.LOGIC,
+                                                 types.STRING_MATCHER_TYPE_INFO,
+                                                 syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
+                                                 docs.empty_section_contents())
 
 PROGRAM_DOCUMENTATION = TypeDocumentation(TypeCategory.LOGIC,
                                           types.PROGRAM_TYPE_INFO,

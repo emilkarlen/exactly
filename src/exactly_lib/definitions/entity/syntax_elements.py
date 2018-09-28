@@ -1,4 +1,7 @@
+from typing import List
+
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.doc_format import syntax_text
@@ -55,6 +58,8 @@ FILE_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.FILE_MATCHER_TY
 
 LINE_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.LINE_MATCHER_TYPE_INFO)
 
+STRING_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.STRING_MATCHER_TYPE_INFO)
+
 STRING_TRANSFORMER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.STRING_TRANSFORMER_TYPE_INFO)
 
 PROGRAM_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.PROGRAM_TYPE_INFO)
@@ -100,11 +105,6 @@ INTEGER_COMPARISON_SYNTAX_ELEMENT = name_and_ref_target(
     'Matches an integer value using relational comparison with a given ' + INTEGER_SYNTAX_ELEMENT.argument.name
 )
 
-STRING_MATCHER = name_and_ref_target(
-    'STRING-MATCHER',
-    'Matches a string (such as the contents of a regular file)'
-)
-
 ALL_SYNTAX_ELEMENTS = (
 
     SYMBOL_NAME_SYNTAX_ELEMENT,
@@ -118,19 +118,18 @@ ALL_SYNTAX_ELEMENTS = (
     INTEGER_SYNTAX_ELEMENT,
     INTEGER_COMPARISON_SYNTAX_ELEMENT,
 
-    STRING_MATCHER,
-
     STRING_SYNTAX_ELEMENT,
     LIST_SYNTAX_ELEMENT,
     PATH_SYNTAX_ELEMENT,
 
     FILE_MATCHER_SYNTAX_ELEMENT,
     LINE_MATCHER_SYNTAX_ELEMENT,
+    STRING_MATCHER_SYNTAX_ELEMENT,
     STRING_TRANSFORMER_SYNTAX_ELEMENT,
     PROGRAM_SYNTAX_ELEMENT,
 )
 
 
-def all_syntax_element_cross_refs() -> list:
+def all_syntax_element_cross_refs() -> List[CrossReferenceId]:
     return [x.cross_reference_target
             for x in ALL_SYNTAX_ELEMENTS]
