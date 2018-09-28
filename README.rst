@@ -495,7 +495,14 @@ DEVELOPMENT STATUS
 ========================================
 
 
-Current version is fully functional, but syntax and semantics are experimental.
+Current version is fully functional, but some syntax and semantics is inconsistent:
+
+* Some instructions allow arguments to span multiple lines, some do not.
+* Most instructions interpret symbol references in arguments, some do not.
+* Support for escapes characters in strings is missing.
+
+Incompatible changes to syntax and semantics may occur in every release until v 1.0.
+
 
 Comments are welcome!
 
