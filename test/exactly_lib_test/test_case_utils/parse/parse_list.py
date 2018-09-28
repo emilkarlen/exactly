@@ -24,6 +24,7 @@ from exactly_lib_test.symbol.test_resources import symbol_reference_assertions a
 from exactly_lib_test.test_case_utils.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -298,8 +299,8 @@ class TestMultipleElementList(unittest.TestCase):
 class Expectation:
     def __init__(self,
                  elements: List[Element],
-                 source: asrt.ValueAssertion[ParseSource],
-                 references: asrt.ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence):
+                 source: ValueAssertion[ParseSource],
+                 references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence):
         self.elements = elements
         self.source = source
         self.references = references

@@ -25,7 +25,7 @@ from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction, home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
 
 
 class ResultWithTransformationData:
@@ -36,23 +36,23 @@ class ResultWithTransformationData:
         self.result_of_transformation = result_of_transformation
 
 
-def assert_process_result_data(exitcode: asrt.ValueAssertion[int] = asrt.anything_goes(),
-                               stdout_contents: asrt.ValueAssertion[str] = asrt.anything_goes(),
-                               stderr_contents: asrt.ValueAssertion[str] = asrt.anything_goes(),
-                               contents_after_transformation: asrt.ValueAssertion[str] = asrt.anything_goes(),
-                               ) -> asrt.ValueAssertion[ResultWithTransformationData]:
+def assert_process_result_data(exitcode: ValueAssertion[int] = asrt.anything_goes(),
+                               stdout_contents: ValueAssertion[str] = asrt.anything_goes(),
+                               stderr_contents: ValueAssertion[str] = asrt.anything_goes(),
+                               contents_after_transformation: ValueAssertion[str] = asrt.anything_goes(),
+                               ) -> ValueAssertion[ResultWithTransformationData]:
     return ResultWithTransformationDataAssertion(exitcode,
                                                  stdout_contents,
                                                  stderr_contents,
                                                  contents_after_transformation)
 
 
-class ResultWithTransformationDataAssertion(asrt.ValueAssertion[ResultWithTransformationData]):
+class ResultWithTransformationDataAssertion(ValueAssertion[ResultWithTransformationData]):
     def __init__(self,
-                 exitcode: asrt.ValueAssertion[int] = asrt.anything_goes(),
-                 stdout_contents: asrt.ValueAssertion[str] = asrt.anything_goes(),
-                 stderr_contents: asrt.ValueAssertion[str] = asrt.anything_goes(),
-                 contents_after_transformation: asrt.ValueAssertion[str] = asrt.anything_goes()
+                 exitcode: ValueAssertion[int] = asrt.anything_goes(),
+                 stdout_contents: ValueAssertion[str] = asrt.anything_goes(),
+                 stderr_contents: ValueAssertion[str] = asrt.anything_goes(),
+                 contents_after_transformation: ValueAssertion[str] = asrt.anything_goes()
                  ):
         self.exitcode = exitcode
         self.stdout_contents = stdout_contents
@@ -108,13 +108,13 @@ class Arrangement(ArrangementWithSds):
 
 class Expectation:
     def __init__(self,
-                 result: asrt.ValueAssertion[ResultWithTransformationData] = assert_process_result_data(),
-                 validation_pre_sds: asrt.ValueAssertion[str] = asrt.is_none,
-                 validation_post_sds: asrt.ValueAssertion[str] = asrt.is_none,
-                 symbol_references: asrt.ValueAssertion = asrt.is_empty_sequence,
-                 main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                 main_side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                 source: asrt.ValueAssertion = asrt.anything_goes(),
+                 result: ValueAssertion[ResultWithTransformationData] = assert_process_result_data(),
+                 validation_pre_sds: ValueAssertion[str] = asrt.is_none,
+                 validation_post_sds: ValueAssertion[str] = asrt.is_none,
+                 symbol_references: ValueAssertion = asrt.is_empty_sequence,
+                 main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
+                 main_side_effects_on_home_and_sds: ValueAssertion = asrt.anything_goes(),
+                 source: ValueAssertion = asrt.anything_goes(),
                  ):
         self.source = source
         self.symbol_references = symbol_references

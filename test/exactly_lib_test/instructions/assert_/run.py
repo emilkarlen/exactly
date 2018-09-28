@@ -8,6 +8,7 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
     suite_for, Configuration
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -18,8 +19,9 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
     def instruction_setup(self) -> SingleInstructionSetup:
         return sut.setup('instruction name')
 
-    def expect_failure_because_specified_file_under_sds_is_missing(self,
-                                                                   symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence):
+    def expect_failure_because_specified_file_under_sds_is_missing(
+            self,
+            symbol_usages: ValueAssertion = asrt.is_empty_sequence):
         return Expectation(validation_post_sds=svh_assertions.is_validation_error(),
                            symbol_usages=symbol_usages)
 

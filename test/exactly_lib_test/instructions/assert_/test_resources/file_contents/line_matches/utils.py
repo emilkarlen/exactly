@@ -14,6 +14,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__multi_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class InstructionArgumentsConstructorForExpTypeAndQuantifier:
@@ -94,7 +95,7 @@ class TestCaseBase(unittest.TestCase):
             quantifier: Quantifier,
             actual_file_contents: str,
             symbols: SymbolTable = None,
-            expected_symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence):
+            expected_symbol_usages: ValueAssertion = asrt.is_empty_sequence):
         for expectation_type in ExpectationType:
             etc = ExpectationTypeConfig(expectation_type)
             with self.subTest(expectation_type=expectation_type,

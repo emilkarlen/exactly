@@ -39,6 +39,7 @@ from exactly_lib_test.test_case_utils.test_resources import relativity_options a
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -291,7 +292,7 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
         )
 
 
-class AssertStdinFileIsSetToFile(asrt.ValueAssertion):
+class AssertStdinFileIsSetToFile(ValueAssertion):
     def __init__(self,
                  expected_file_reference: file_ref.FileRef):
         self._expected_file_reference = expected_file_reference
@@ -311,7 +312,7 @@ class AssertStdinFileIsSetToFile(asrt.ValueAssertion):
                         'Name of stdin file in Setup Settings')
 
 
-class AssertStdinIsSetToContents(asrt.ValueAssertion):
+class AssertStdinIsSetToContents(ValueAssertion):
     def __init__(self,
                  expected_contents_resolver: StringResolver):
         self.expected_contents_resolver = expected_contents_resolver

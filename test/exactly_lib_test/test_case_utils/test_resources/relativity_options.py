@@ -33,6 +33,7 @@ from exactly_lib_test.test_resources import arguments_building
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources import symbol_tables
 
 
@@ -47,7 +48,7 @@ class SymbolsConfiguration:
     def entries_for_arrangement(self) -> list:
         return []
 
-    def usages_expectation(self) -> asrt.ValueAssertion:
+    def usages_expectation(self) -> ValueAssertion:
         return asrt.matches_sequence(self.usage_expectation_assertions())
 
     def in_arrangement(self) -> SymbolTable:
@@ -303,7 +304,7 @@ class RelativityOptionConfigurationForRelNonHome(RelativityOptionConfiguration):
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:
         raise NotImplementedError()
 
-    def assert_root_dir_contains_exactly(self, contents: DirContents) -> asrt.ValueAssertion:
+    def assert_root_dir_contains_exactly(self, contents: DirContents) -> ValueAssertion:
         raise NotImplementedError('abstract method')
 
 
@@ -346,7 +347,7 @@ class RelativityOptionConfigurationForRelNonHomeBase(RelativityOptionConfigurati
             relativity_sds = RelSdsOptionType(self.relativity_non_home.value)
             return sds_populator.contents_in(relativity_sds, contents)
 
-    def assert_root_dir_contains_exactly(self, contents: DirContents) -> asrt.ValueAssertion:
+    def assert_root_dir_contains_exactly(self, contents: DirContents) -> ValueAssertion:
         return sds_contents_check.non_home_dir_contains_exactly(self.root_dir__non_home,
                                                                 contents)
 

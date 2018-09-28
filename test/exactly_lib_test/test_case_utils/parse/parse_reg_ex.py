@@ -10,6 +10,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     import remaining_source
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes, surrounded_by_hard_quotes
 
 
@@ -25,7 +26,7 @@ class Expectation:
                  pattern_string: str,
                  matching_string_list: list,
                  non_matching_string: str,
-                 token_stream: asrt.ValueAssertion = asrt.anything_goes()):
+                 token_stream: ValueAssertion = asrt.anything_goes()):
         self.pattern_string = pattern_string
         self.non_matching_string = non_matching_string
         self.matching_string_list = matching_string_list

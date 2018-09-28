@@ -32,6 +32,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import R
 from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -46,8 +47,8 @@ def suite() -> unittest.TestSuite:
 class Expectation:
     def __init__(self,
                  elements: List[Element],
-                 validators: asrt.ValueAssertion[Sequence[PreOrPostSdsValidator]],
-                 references: asrt.ValueAssertion[Sequence[SymbolReference]]):
+                 validators: ValueAssertion[Sequence[PreOrPostSdsValidator]],
+                 references: ValueAssertion[Sequence[SymbolReference]]):
         self.elements = elements
         self.validators = validators
         self.references = references
@@ -265,8 +266,8 @@ class TestSingleElement(unittest.TestCase):
                 _test_case(self, _case)
 
 
-def is_single_validator_with(expectations: Sequence[NameAndValue[asrt.ValueAssertion[PreOrPostSdsValidator]]]
-                             ) -> asrt.ValueAssertion[Sequence[PreOrPostSdsValidator]]:
+def is_single_validator_with(expectations: Sequence[NameAndValue[ValueAssertion[PreOrPostSdsValidator]]]
+                             ) -> ValueAssertion[Sequence[PreOrPostSdsValidator]]:
     return asrt.and_([
         asrt.len_equals(1),
         asrt.on_transformed(pre_or_post_validation.all_of,

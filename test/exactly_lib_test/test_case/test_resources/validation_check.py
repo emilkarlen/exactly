@@ -9,6 +9,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.dir_populator impo
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class Arrangement:
@@ -21,8 +22,8 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 pre_sds: asrt.ValueAssertion[Optional[str]],
-                 post_sds: asrt.ValueAssertion[Optional[str]]):
+                 pre_sds: ValueAssertion[Optional[str]],
+                 post_sds: ValueAssertion[Optional[str]]):
         self.pre_sds = pre_sds
         self.post_sds = post_sds
 
@@ -50,7 +51,7 @@ def fails_post_sds() -> Expectation:
 
 
 def assert_with_files(arrangement: Arrangement,
-                      expectation: Expectation) -> asrt.ValueAssertion[PreOrPostSdsValidator]:
+                      expectation: Expectation) -> ValueAssertion[PreOrPostSdsValidator]:
     return ValidatorAssertion(arrangement, expectation)
 
 
@@ -64,7 +65,7 @@ class ValidationCase:
         self.expectation = expectation
 
 
-class ValidatorAssertion(asrt.ValueAssertion[PreOrPostSdsValidator]):
+class ValidatorAssertion(ValueAssertion[PreOrPostSdsValidator]):
     def __init__(self,
                  arrangement: Arrangement,
                  expectation: Expectation):

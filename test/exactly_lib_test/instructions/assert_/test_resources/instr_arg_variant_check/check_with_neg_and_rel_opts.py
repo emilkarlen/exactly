@@ -20,7 +20,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import R
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class InstructionArgumentsVariantConstructor:
@@ -158,7 +158,7 @@ class InstructionChecker:
     def check_rel_opt_variants_with_same_result_for_every_expectation_type(
             self,
             make_instruction_arguments: InstructionArgumentsVariantConstructor,
-            main_result: asrt.ValueAssertion,
+            main_result: ValueAssertion,
             contents_of_relativity_option_root: DirContents = empty_dir_contents()):
 
         for rel_opt_config in self.accepted_rel_opt_configurations:

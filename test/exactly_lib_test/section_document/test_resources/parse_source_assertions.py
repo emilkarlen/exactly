@@ -1,17 +1,18 @@
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def assert_source(is_at_eof: asrt.ValueAssertion = asrt.anything_goes(),
-                  is_at_eol: asrt.ValueAssertion = asrt.anything_goes(),
-                  is_at_eol__except_for_space: asrt.ValueAssertion = asrt.anything_goes(),
-                  has_current_line: asrt.ValueAssertion = asrt.anything_goes(),
-                  current_line_number: asrt.ValueAssertion = asrt.anything_goes(),
-                  current_line_text: asrt.ValueAssertion = asrt.anything_goes(),
-                  column_index: asrt.ValueAssertion = asrt.anything_goes(),
-                  remaining_part_of_current_line: asrt.ValueAssertion = asrt.anything_goes(),
-                  remaining_source: asrt.ValueAssertion = asrt.anything_goes(),
-                  ) -> asrt.ValueAssertion:
+def assert_source(is_at_eof: ValueAssertion = asrt.anything_goes(),
+                  is_at_eol: ValueAssertion = asrt.anything_goes(),
+                  is_at_eol__except_for_space: ValueAssertion = asrt.anything_goes(),
+                  has_current_line: ValueAssertion = asrt.anything_goes(),
+                  current_line_number: ValueAssertion = asrt.anything_goes(),
+                  current_line_text: ValueAssertion = asrt.anything_goes(),
+                  column_index: ValueAssertion = asrt.anything_goes(),
+                  remaining_part_of_current_line: ValueAssertion = asrt.anything_goes(),
+                  remaining_source: ValueAssertion = asrt.anything_goes(),
+                  ) -> ValueAssertion:
     return asrt.And([
         asrt.is_instance(ParseSource, 'Value to apply assertions on must be a {}'.format(ParseSource)),
         asrt.sub_component('is_at_eof', ParseSource.is_at_eof.fget, is_at_eof),
@@ -37,7 +38,7 @@ def assert_source(is_at_eof: asrt.ValueAssertion = asrt.anything_goes(),
 every_line_is_consumed = assert_source(has_current_line=asrt.Boolean(False))
 
 
-def is_at_beginning_of_line(current_line_number: int) -> asrt.ValueAssertion:
+def is_at_beginning_of_line(current_line_number: int) -> ValueAssertion:
     return assert_source(
         has_current_line=asrt.is_true,
         current_line_number=asrt.equals(current_line_number),
@@ -45,7 +46,7 @@ def is_at_beginning_of_line(current_line_number: int) -> asrt.ValueAssertion:
     )
 
 
-def is_at_end_of_line(current_line_number: int) -> asrt.ValueAssertion:
+def is_at_end_of_line(current_line_number: int) -> ValueAssertion:
     return assert_source(
         has_current_line=asrt.is_true,
         current_line_number=asrt.equals(current_line_number),
@@ -59,12 +60,12 @@ source_is_at_end = assert_source(is_at_eof=asrt.Boolean(True),
                                  )
 
 
-def source_is_not_at_end(is_at_eol: asrt.ValueAssertion = asrt.anything_goes(),
-                         current_line_number: asrt.ValueAssertion = asrt.anything_goes(),
-                         current_line_text: asrt.ValueAssertion = asrt.anything_goes(),
-                         remaining_part_of_current_line: asrt.ValueAssertion = asrt.anything_goes(),
-                         remaining_source: asrt.ValueAssertion = asrt.anything_goes(),
-                         ) -> asrt.ValueAssertion:
+def source_is_not_at_end(is_at_eol: ValueAssertion = asrt.anything_goes(),
+                         current_line_number: ValueAssertion = asrt.anything_goes(),
+                         current_line_text: ValueAssertion = asrt.anything_goes(),
+                         remaining_part_of_current_line: ValueAssertion = asrt.anything_goes(),
+                         remaining_source: ValueAssertion = asrt.anything_goes(),
+                         ) -> ValueAssertion:
     return assert_source(
         is_at_eof=asrt.is_false,
         has_current_line=asrt.is_true,
@@ -78,7 +79,7 @@ def source_is_not_at_end(is_at_eol: asrt.ValueAssertion = asrt.anything_goes(),
 
 def is_at_line(current_line_number: int,
                remaining_part_of_current_line: str,
-               ) -> asrt.ValueAssertion:
+               ) -> ValueAssertion:
     return assert_source(
         is_at_eof=asrt.is_false,
         has_current_line=asrt.is_true,

@@ -20,13 +20,14 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformerVa
 from exactly_lib.type_system.value_type import TypeCategory, ValueType, LogicValueType, DataValueType
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def matches_resolver(resolver_type: asrt.ValueAssertion[rs.SymbolValueResolver],
-                     references: asrt.ValueAssertion[Sequence[SymbolReference]],
-                     resolved_value: asrt.ValueAssertion,
-                     custom: asrt.ValueAssertion[rs.SymbolValueResolver] = asrt.anything_goes(),
-                     symbols: SymbolTable = None) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def matches_resolver(resolver_type: ValueAssertion[rs.SymbolValueResolver],
+                     references: ValueAssertion[Sequence[SymbolReference]],
+                     resolved_value: ValueAssertion,
+                     custom: ValueAssertion[rs.SymbolValueResolver] = asrt.anything_goes(),
+                     symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return _MatchesSymbolValueResolver(resolver_type,
                                        references,
                                        resolved_value,
@@ -35,7 +36,7 @@ def matches_resolver(resolver_type: asrt.ValueAssertion[rs.SymbolValueResolver],
 
 
 def is_resolver_of_data_type(data_value_type: DataValueType,
-                             value_type: ValueType) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+                             value_type: ValueType) -> ValueAssertion[rs.SymbolValueResolver]:
     return asrt.is_instance_with(DataValueResolver,
                                  asrt.and_([
                                      asrt.sub_component('type_category',
@@ -53,7 +54,7 @@ def is_resolver_of_data_type(data_value_type: DataValueType,
 
 
 def is_resolver_of_logic_type(logic_value_type: LogicValueType,
-                              value_type: ValueType) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+                              value_type: ValueType) -> ValueAssertion[rs.SymbolValueResolver]:
     return asrt.is_instance_with(LogicValueResolver,
                                  asrt.and_([
                                      asrt.sub_component('type_category',
@@ -70,38 +71,38 @@ def is_resolver_of_logic_type(logic_value_type: LogicValueType,
                                  ]))
 
 
-def is_resolver_of_string_type() -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def is_resolver_of_string_type() -> ValueAssertion[rs.SymbolValueResolver]:
     return is_resolver_of_data_type(DataValueType.STRING, ValueType.STRING)
 
 
-def is_resolver_of_path_type() -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def is_resolver_of_path_type() -> ValueAssertion[rs.SymbolValueResolver]:
     return is_resolver_of_data_type(DataValueType.PATH, ValueType.PATH)
 
 
-def is_resolver_of_list_type() -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def is_resolver_of_list_type() -> ValueAssertion[rs.SymbolValueResolver]:
     return is_resolver_of_data_type(DataValueType.LIST, ValueType.LIST)
 
 
-def is_resolver_of_file_matcher_type() -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def is_resolver_of_file_matcher_type() -> ValueAssertion[rs.SymbolValueResolver]:
     return is_resolver_of_logic_type(LogicValueType.FILE_MATCHER, ValueType.FILE_MATCHER)
 
 
-def is_resolver_of_line_matcher_type() -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def is_resolver_of_line_matcher_type() -> ValueAssertion[rs.SymbolValueResolver]:
     return is_resolver_of_logic_type(LogicValueType.LINE_MATCHER, ValueType.LINE_MATCHER)
 
 
-def is_resolver_of_string_transformer_type() -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def is_resolver_of_string_transformer_type() -> ValueAssertion[rs.SymbolValueResolver]:
     return is_resolver_of_logic_type(LogicValueType.STRING_TRANSFORMER, ValueType.STRING_TRANSFORMER)
 
 
-def is_resolver_of_program_type() -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def is_resolver_of_program_type() -> ValueAssertion[rs.SymbolValueResolver]:
     return is_resolver_of_logic_type(LogicValueType.PROGRAM, ValueType.PROGRAM)
 
 
-def matches_resolver_of_string(references: asrt.ValueAssertion[Sequence[SymbolReference]],
-                               resolved_value: asrt.ValueAssertion[StringValue],
-                               custom: asrt.ValueAssertion[StringResolver] = asrt.anything_goes(),
-                               symbols: SymbolTable = None) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def matches_resolver_of_string(references: ValueAssertion[Sequence[SymbolReference]],
+                               resolved_value: ValueAssertion[StringValue],
+                               custom: ValueAssertion[StringResolver] = asrt.anything_goes(),
+                               symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_string_type(),
                             references,
                             asrt.is_instance_with(StringValue, resolved_value),
@@ -109,10 +110,10 @@ def matches_resolver_of_string(references: asrt.ValueAssertion[Sequence[SymbolRe
                             symbol_table_from_none_or_value(symbols))
 
 
-def matches_resolver_of_list(references: asrt.ValueAssertion[Sequence[SymbolReference]],
-                             resolved_value: asrt.ValueAssertion[ListValue],
-                             custom: asrt.ValueAssertion[ListResolver] = asrt.anything_goes(),
-                             symbols: SymbolTable = None) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def matches_resolver_of_list(references: ValueAssertion[Sequence[SymbolReference]],
+                             resolved_value: ValueAssertion[ListValue],
+                             custom: ValueAssertion[ListResolver] = asrt.anything_goes(),
+                             symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_list_type(),
                             references,
                             asrt.is_instance_with(ListValue, resolved_value),
@@ -120,10 +121,10 @@ def matches_resolver_of_list(references: asrt.ValueAssertion[Sequence[SymbolRefe
                             symbol_table_from_none_or_value(symbols))
 
 
-def matches_resolver_of_path(references: asrt.ValueAssertion[Sequence[SymbolReference]],
-                             resolved_value: asrt.ValueAssertion[FileRef],
-                             custom: asrt.ValueAssertion[FileRefResolver] = asrt.anything_goes(),
-                             symbols: SymbolTable = None) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def matches_resolver_of_path(references: ValueAssertion[Sequence[SymbolReference]],
+                             resolved_value: ValueAssertion[FileRef],
+                             custom: ValueAssertion[FileRefResolver] = asrt.anything_goes(),
+                             symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_path_type(),
                             references,
                             asrt.is_instance_with(FileRef, resolved_value),
@@ -131,10 +132,10 @@ def matches_resolver_of_path(references: asrt.ValueAssertion[Sequence[SymbolRefe
                             symbol_table_from_none_or_value(symbols))
 
 
-def matches_resolver_of_file_matcher(references: asrt.ValueAssertion[Sequence[SymbolReference]],
-                                     resolved_value: asrt.ValueAssertion[FileMatcher],
-                                     custom: asrt.ValueAssertion[FileMatcherResolver] = asrt.anything_goes(),
-                                     symbols: SymbolTable = None) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def matches_resolver_of_file_matcher(references: ValueAssertion[Sequence[SymbolReference]],
+                                     resolved_value: ValueAssertion[FileMatcher],
+                                     custom: ValueAssertion[FileMatcherResolver] = asrt.anything_goes(),
+                                     symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_file_matcher_type(),
                             references,
                             asrt.is_instance_with(FileMatcher, resolved_value),
@@ -142,10 +143,10 @@ def matches_resolver_of_file_matcher(references: asrt.ValueAssertion[Sequence[Sy
                             symbol_table_from_none_or_value(symbols))
 
 
-def matches_resolver_of_line_matcher(references: asrt.ValueAssertion[Sequence[SymbolReference]],
-                                     resolved_value: asrt.ValueAssertion[LineMatcher],
-                                     custom: asrt.ValueAssertion[LineMatcherResolver] = asrt.anything_goes(),
-                                     symbols: SymbolTable = None) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def matches_resolver_of_line_matcher(references: ValueAssertion[Sequence[SymbolReference]],
+                                     resolved_value: ValueAssertion[LineMatcher],
+                                     custom: ValueAssertion[LineMatcherResolver] = asrt.anything_goes(),
+                                     symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_line_matcher_type(),
                             references,
                             asrt.is_instance_with(LineMatcher, resolved_value),
@@ -153,11 +154,11 @@ def matches_resolver_of_line_matcher(references: asrt.ValueAssertion[Sequence[Sy
                             symbol_table_from_none_or_value(symbols))
 
 
-def matches_resolver_of_string_transformer(references: asrt.ValueAssertion[Sequence[SymbolReference]],
-                                           resolved_value: asrt.ValueAssertion[StringTransformerValue],
-                                           custom: asrt.ValueAssertion[
+def matches_resolver_of_string_transformer(references: ValueAssertion[Sequence[SymbolReference]],
+                                           resolved_value: ValueAssertion[StringTransformerValue],
+                                           custom: ValueAssertion[
                                                StringTransformerResolver] = asrt.anything_goes(),
-                                           symbols: SymbolTable = None) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+                                           symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_string_transformer_type(),
                             references,
                             asrt.is_instance_with(StringTransformerValue, resolved_value),
@@ -165,10 +166,10 @@ def matches_resolver_of_string_transformer(references: asrt.ValueAssertion[Seque
                             symbol_table_from_none_or_value(symbols))
 
 
-def matches_resolver_of_program(references: asrt.ValueAssertion[Sequence[SymbolReference]],
-                                resolved_program_value: asrt.ValueAssertion[DirDependentValue],
-                                custom: asrt.ValueAssertion[ProgramResolver] = asrt.anything_goes(),
-                                symbols: SymbolTable = None) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def matches_resolver_of_program(references: ValueAssertion[Sequence[SymbolReference]],
+                                resolved_program_value: ValueAssertion[DirDependentValue],
+                                custom: ValueAssertion[ProgramResolver] = asrt.anything_goes(),
+                                symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_program_type(),
                             references,
                             asrt.is_instance_with(ProgramValue, resolved_program_value),
@@ -176,14 +177,14 @@ def matches_resolver_of_program(references: asrt.ValueAssertion[Sequence[SymbolR
                             symbol_table_from_none_or_value(symbols))
 
 
-class _MatchesSymbolValueResolver(asrt.ValueAssertion[rs.SymbolValueResolver]):
+class _MatchesSymbolValueResolver(ValueAssertion[rs.SymbolValueResolver]):
     """Implements as class to make it possible to set break points"""
 
     def __init__(self,
-                 resolver_type: asrt.ValueAssertion[rs.SymbolValueResolver],
-                 references: asrt.ValueAssertion[Sequence[SymbolReference]],
-                 resolved_value: asrt.ValueAssertion,
-                 custom: asrt.ValueAssertion[rs.SymbolValueResolver],
+                 resolver_type: ValueAssertion[rs.SymbolValueResolver],
+                 references: ValueAssertion[Sequence[SymbolReference]],
+                 resolved_value: ValueAssertion,
+                 custom: ValueAssertion[rs.SymbolValueResolver],
                  symbols: SymbolTable):
         self.resolver_type = resolver_type
         self.references = references

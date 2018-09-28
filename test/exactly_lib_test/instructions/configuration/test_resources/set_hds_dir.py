@@ -23,6 +23,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, em
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class Configuration:
@@ -82,8 +83,8 @@ class TestCaseForConfigurationBase(TestCaseBaseWithShortDescriptionOfTestClassAn
             Executor(self, arrangement, expectation).execute(self.conf.parser(), source)
 
     def conf_prop_equals(self, file_ref_rel_root_path_2_expected: Callable[[Path], Path]
-                         ) -> Callable[[Path], asrt.ValueAssertion[ConfigurationBuilder]]:
-        def ret_val(file_ref_rel_root_path: Path) -> asrt.ValueAssertion[ConfigurationBuilder]:
+                         ) -> Callable[[Path], ValueAssertion[ConfigurationBuilder]]:
+        def ret_val(file_ref_rel_root_path: Path) -> ValueAssertion[ConfigurationBuilder]:
             return asrt.sub_component('path prop value',
                                       self.conf.get_property_dir_path,
                                       asrt.equals(file_ref_rel_root_path_2_expected(file_ref_rel_root_path)))

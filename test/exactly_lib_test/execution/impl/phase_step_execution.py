@@ -17,7 +17,7 @@ from exactly_lib_test.execution.test_resources.phase_step_execution import Recor
 from exactly_lib_test.section_document.test_resources.elements import new_comment_element, new_instruction_element
 from exactly_lib_test.section_document.test_resources.source_location_assertions import \
     equals_single_line_source_location_path
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources import failure_details_assertions as asrt_failure_details
 
 
@@ -254,7 +254,7 @@ class Test(unittest.TestCase):
 
     def _standard_test_with_successful_instruction_executor(self,
                                                             phase_contents: SectionContents,
-                                                            expected_result: asrt.ValueAssertion[Optional[Failure]],
+                                                            expected_result: ValueAssertion[Optional[Failure]],
                                                             expected_recordings: list):
         recording_media = RecordingMedia()
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess(
@@ -272,7 +272,7 @@ class Test(unittest.TestCase):
                        recording_media: RecordingMedia,
                        phase_contents: SectionContents,
                        instruction_executor: ControlledInstructionExecutor,
-                       expected_result: asrt.ValueAssertion[Optional[Failure]],
+                       expected_result: ValueAssertion[Optional[Failure]],
                        expected_recordings: list):
         failure = self._run_std(recording_media,
                                 phase_contents,
@@ -296,7 +296,7 @@ class Test(unittest.TestCase):
             instruction_executor)
 
     def __check(self,
-                expected_result: asrt.ValueAssertion[Optional[Failure]],
+                expected_result: ValueAssertion[Optional[Failure]],
                 actual_result: Failure,
                 expected_recordings: list,
                 actual_recording_media: RecordingMedia):

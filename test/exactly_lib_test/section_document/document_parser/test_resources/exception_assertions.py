@@ -6,15 +6,16 @@ from exactly_lib.section_document.source_location import SourceLocation
 from exactly_lib.util.line_source import Line, line_sequence_from_line
 from exactly_lib_test.section_document.test_resources.source_location_assertions import equals_source_location_sequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
 
 
-def is_file_source_error(expected: asrt.ValueAssertion[FileSourceError]) -> asrt.ValueAssertion[Exception]:
+def is_file_source_error(expected: ValueAssertion[FileSourceError]) -> ValueAssertion[Exception]:
     return asrt.is_instance_with(FileSourceError, expected)
 
 
-def matches_file_source_error(maybe_section_name: asrt.ValueAssertion[str],
-                              location_path: Sequence[SourceLocation]) -> asrt.ValueAssertion[FileSourceError]:
+def matches_file_source_error(maybe_section_name: ValueAssertion[str],
+                              location_path: Sequence[SourceLocation]) -> ValueAssertion[FileSourceError]:
     return asrt.and_([
         asrt.sub_component('maybe_section_name',
                            FileSourceError.maybe_section_name.fget,
@@ -28,12 +29,12 @@ def matches_file_source_error(maybe_section_name: asrt.ValueAssertion[str],
     ])
 
 
-def is_file_access_error(expected: asrt.ValueAssertion[FileAccessError]) -> asrt.ValueAssertion[Exception]:
+def is_file_access_error(expected: ValueAssertion[FileAccessError]) -> ValueAssertion[Exception]:
     return asrt.is_instance_with(FileAccessError, expected)
 
 
 def matches_file_access_error(erroneous_path: Path,
-                              location_path: Sequence[SourceLocation]) -> asrt.ValueAssertion[FileAccessError]:
+                              location_path: Sequence[SourceLocation]) -> ValueAssertion[FileAccessError]:
     return asrt.and_([
         asrt.sub_component('erroneous_path',
                            FileAccessError.erroneous_path.fget,
@@ -48,8 +49,8 @@ def matches_file_access_error(erroneous_path: Path,
 
 
 def file_source_error_equals_line(line: Line,
-                                  maybe_section_name: asrt.ValueAssertion[str] = asrt.anything_goes()
-                                  ) -> asrt.ValueAssertion[FileSourceError]:
+                                  maybe_section_name: ValueAssertion[str] = asrt.anything_goes()
+                                  ) -> ValueAssertion[FileSourceError]:
     return asrt.and_([
         asrt.sub_component('maybe_section_name',
                            FileSourceError.maybe_section_name.fget,

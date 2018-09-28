@@ -7,9 +7,10 @@ from exactly_lib.util.textformat.structure.paragraph import Paragraph
 from exactly_lib.util.textformat.structure.table import Table, TableFormat, TableCell
 from exactly_lib.util.textformat.structure.utils import ParagraphItemVisitor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def is_paragraph_item_list(name: str = '') -> asrt.ValueAssertion:
+def is_paragraph_item_list(name: str = '') -> ValueAssertion:
     return asrt.every_element(name, is_paragraph_item)
 
 
@@ -42,7 +43,7 @@ is_cross_reference_text = asrt.is_instance_with(core.CrossReferenceText,
                                                 ]))
 
 
-def is_cross_reference_target_list(name: str = '') -> asrt.ValueAssertion:
+def is_cross_reference_target_list(name: str = '') -> ValueAssertion:
     return asrt.every_element(name, is_cross_reference_target)
 
 
@@ -73,7 +74,7 @@ is_text = asrt.Or([
 ])
 
 
-class _IsParagraphItem(ParagraphItemVisitor, asrt.ValueAssertion):
+class _IsParagraphItem(ParagraphItemVisitor, ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value,

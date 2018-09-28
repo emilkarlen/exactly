@@ -7,13 +7,14 @@ from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-class _ExpectedFailure(asrt.ValueAssertion[Optional[Failure]]):
+class _ExpectedFailure(ValueAssertion[Optional[Failure]]):
     def __init__(self,
                  status: PartialExeResultStatus,
-                 line: asrt.ValueAssertion[SourceLocationPath],
-                 failure_details: asrt.ValueAssertion[FailureDetails]):
+                 line: ValueAssertion[SourceLocationPath],
+                 failure_details: ValueAssertion[FailureDetails]):
         self._status = status
         self._line = line
         self._failure_details = failure_details
@@ -46,13 +47,13 @@ class _ExpectedFailure(asrt.ValueAssertion[Optional[Failure]]):
                                                      'failure_details')
 
 
-def is_not_present() -> asrt.ValueAssertion[Optional[Failure]]:
+def is_not_present() -> ValueAssertion[Optional[Failure]]:
     return asrt.is_none
 
 
 def is_present_with(status: PartialExeResultStatus,
-                    line: asrt.ValueAssertion[SourceLocationPath],
-                    failure_details: asrt.ValueAssertion[FailureDetails]) -> asrt.ValueAssertion[Optional[Failure]]:
+                    line: ValueAssertion[SourceLocationPath],
+                    failure_details: ValueAssertion[FailureDetails]) -> ValueAssertion[Optional[Failure]]:
     if status is PartialExeResultStatus.PASS:
         raise ValueError('{} is not a failure', status)
     return asrt.is_not_none_and_instance_with(Failure,

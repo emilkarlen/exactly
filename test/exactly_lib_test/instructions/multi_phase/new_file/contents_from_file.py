@@ -40,6 +40,7 @@ from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.string_transformers import \
     MyToUppercaseTransformer
 
@@ -421,7 +422,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                                     dst_file: fs.File,
                                     src_file_rel_opt_conf: RelativityOptionConfiguration,
                                     src_file: fs.File
-                                    ) -> asrt.ValueAssertion:
+                                    ) -> ValueAssertion:
         if dst_file_rel_opt_conf.option_argument_str == src_file_rel_opt_conf.option_string or \
                 (dst_file_rel_opt_conf.is_rel_cwd and src_file_rel_opt_conf.is_rel_cwd):
             return dst_file_rel_opt_conf.assert_root_dir_contains_exactly(fs.DirContents([dst_file,

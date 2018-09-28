@@ -17,7 +17,7 @@ from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, \
     process_result_info_assertions as asrt_process_result_info, \
     process_result_assertions as asrt_process_result
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
 
 
 def suite_that_requires_main_program_runner_with_default_setup(mpr: MainProgramRunner) -> unittest.TestSuite:
@@ -58,7 +58,7 @@ sys.exit({exit_code})
         )
         return test_case_source
 
-    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
         return asrt_process_result_info.assertion_on_process_result(
             asrt_process_result.sub_process_result(
                 exitcode=asrt.equals(self.exit_code),
@@ -76,7 +76,7 @@ class WhenParseFailsThenOutputShouldBeAsWithoutActOptionButOnStderr(SetupWithout
 """
         return test_case_source
 
-    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
         return asrt_process_result_info.assertion_on_process_result(
             StdoutIsEmptyAndStderrIsExitIdentifierFollowedByErrorMessage(exit_values.NO_EXECUTION__SYNTAX_ERROR))
 
@@ -97,7 +97,7 @@ ignored action
 """
         return test_case_source
 
-    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
         return asrt_process_result_info.assertion_on_process_result(
             StdoutIsEmptyAndStderrIsExitIdentifierFollowedByErrorMessage(exit_values.EXECUTION__VALIDATION_ERROR))
 
@@ -129,14 +129,14 @@ timeout = 1
 """ + py_src
         return test_case_source
 
-    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
+    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
         return asrt_process_result_info.assertion_on_process_result(
             OutputIsCombinationOfInterruptedAtcAndErrorReport(exit_values.EXECUTION__HARD_ERROR,
                                                               self.expected_atc_output)
         )
 
 
-class OutputIsCombinationOfInterruptedAtcAndErrorReport(asrt.ValueAssertion[SubProcessResult]):
+class OutputIsCombinationOfInterruptedAtcAndErrorReport(ValueAssertion[SubProcessResult]):
     def __init__(self,
                  expected_exit_value: ExitValue,
                  expected_atc_output: StdOutputFilesContents
@@ -168,7 +168,7 @@ class OutputIsCombinationOfInterruptedAtcAndErrorReport(asrt.ValueAssertion[SubP
                         'stderr should start with output from ATC followed by exit identifier' + msg_info)
 
 
-class StdoutIsEmptyAndStderrIsExitIdentifierFollowedByErrorMessage(asrt.ValueAssertion[SubProcessResult]):
+class StdoutIsEmptyAndStderrIsExitIdentifierFollowedByErrorMessage(ValueAssertion[SubProcessResult]):
     def __init__(self,
                  expected_exit_value: ExitValue,
                  ):

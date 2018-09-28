@@ -42,6 +42,7 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources.list_values import empty_list_value
 
 
@@ -94,7 +95,7 @@ class Case:
                  name: str,
                  source: str,
                  expectation: ExpectationOnExeFile,
-                 source_after_parse: asrt.ValueAssertion[ParseSource]):
+                 source_after_parse: ValueAssertion[ParseSource]):
         self.name = name
         self.source = source
         self.expectation = expectation
@@ -347,7 +348,7 @@ class TestParseAbsolutePath(unittest.TestCase):
 
     def _check(self,
                arguments_str: str,
-               expected_source_after_parse: asrt.ValueAssertion[ParseSource],
+               expected_source_after_parse: ValueAssertion[ParseSource],
                expectation_on_exe_file: ExpectationOnExeFile,
                validator_expectation: validator_util.Expectation):
         # ARRANGE #
@@ -381,7 +382,7 @@ def file_ref_of_default_relativity(path_suffix: str) -> FileRef:
                                    file_refs.constant_path_part(path_suffix))
 
 
-def has_remaining_part_of_first_line(remaining_part: str) -> asrt.ValueAssertion[ParseSource]:
+def has_remaining_part_of_first_line(remaining_part: str) -> ValueAssertion[ParseSource]:
     return asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
                                             remaining_part_of_current_line=asrt.equals(
                                                 remaining_part))

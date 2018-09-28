@@ -8,7 +8,7 @@ from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.value_assertions import file_assertions as fa
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.process_execution.test_resources import executables
 from exactly_lib_test.util.test_resources.py_program import program_that_prints_and_exits_with_exit_code
 
@@ -93,7 +93,7 @@ def assert_is_success_and_output_dir_contains_at_least_result_files(put: unittes
 
 def assert_dir_contains_at_least_result_files(expected: SubProcessResult,
                                               file_names: FileNames = process_output_files.FILE_NAMES
-                                              ) -> asrt.ValueAssertion:
+                                              ) -> ValueAssertion:
     return fa.dir_contains_at_least(DirContents([
         File(file_names.exit_code,
              str(expected.exitcode)),

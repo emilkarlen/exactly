@@ -11,12 +11,13 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
     equals_symbol_reference
 from exactly_lib_test.symbol.test_resources import resolver_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources.list_value_assertions import equals_list_value
 from exactly_lib_test.type_system.data.test_resources.string_value_assertions import equals_string_value
 
 
 def equals_list_resolver_element(expected: list_resolver.Element,
-                                 symbols: SymbolTable = None) -> asrt.ValueAssertion:
+                                 symbols: SymbolTable = None) -> ValueAssertion:
     if symbols is None:
         symbols = symbol_table_with_values_matching_references(list(expected.references))
     expected_resolved_value_list = expected.resolve(symbols)
@@ -44,14 +45,14 @@ def equals_list_resolver_element(expected: list_resolver.Element,
 
 
 def equals_list_resolver_elements(elements: List[list_resolver.Element],
-                                  symbols: SymbolTable = None) -> asrt.ValueAssertion:
+                                  symbols: SymbolTable = None) -> ValueAssertion:
     element_assertions = [equals_list_resolver_element(element, symbols)
                           for element in elements]
     return asrt.matches_sequence(element_assertions)
 
 
 def equals_list_resolver(expected: ListResolver,
-                         symbols: SymbolTable = None) -> asrt.ValueAssertion:
+                         symbols: SymbolTable = None) -> ValueAssertion:
     if symbols is None:
         symbols = symbol_table_with_values_matching_references(expected.references)
 
@@ -71,12 +72,12 @@ def equals_list_resolver(expected: ListResolver,
 
 
 def matches_list_resolver(expected_resolved_value: ListValue,
-                          expected_symbol_references: asrt.ValueAssertion,
-                          symbols: SymbolTable = None) -> asrt.ValueAssertion:
+                          expected_symbol_references: ValueAssertion,
+                          symbols: SymbolTable = None) -> ValueAssertion:
     return resolver_assertions.matches_resolver_of_list(expected_symbol_references,
                                                         equals_list_value(expected_resolved_value),
                                                         symbols=symbols)
 
 
-def equals_constant_list(expected_str_list: Iterable[str]) -> asrt.ValueAssertion:
+def equals_constant_list(expected_str_list: Iterable[str]) -> ValueAssertion:
     return equals_list_resolver(list_resolvers.from_str_constants(expected_str_list))

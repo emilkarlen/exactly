@@ -9,6 +9,7 @@ from exactly_lib_test.test_resources.files import file_structure
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class FileChecker:
@@ -110,11 +111,11 @@ class FileChecker:
         raise NotImplementedError()
 
 
-def file_does_not_exist() -> asrt.ValueAssertion[pathlib.Path]:
+def file_does_not_exist() -> ValueAssertion[pathlib.Path]:
     return _FileDoesNotExist()
 
 
-class _FileDoesNotExist(asrt.ValueAssertion[pathlib.Path]):
+class _FileDoesNotExist(ValueAssertion[pathlib.Path]):
     def apply(self,
               put: unittest.TestCase,
               value: pathlib.Path,

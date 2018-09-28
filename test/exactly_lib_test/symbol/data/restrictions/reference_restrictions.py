@@ -21,6 +21,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer
 from exactly_lib_test.util.test_resources import symbol_tables
 
@@ -132,7 +133,7 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
     def _check_direct_with_satisfied_variants_for_restriction_on_every_node(
             self,
             restriction_on_direct_node: vr.ValueRestriction,
-            expected_result: asrt.ValueAssertion):
+            expected_result: ValueAssertion):
         symbol_to_check = data_symbol_utils.entry('symbol_name')
         cases = [
             (

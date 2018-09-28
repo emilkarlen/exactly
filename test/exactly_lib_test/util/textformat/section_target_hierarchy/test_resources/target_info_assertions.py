@@ -4,6 +4,7 @@ from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetI
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.core import CrossReferenceTarget
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.textformat.test_resources.structure import is_string_text
 
 is_target_info = asrt.And([
@@ -19,13 +20,13 @@ is_target_info = asrt.And([
 
 def equals_target_info(expected: TargetInfo,
                        mk_equals_cross_ref_id=lambda x: asrt.anything_goes()
-                       ) -> asrt.ValueAssertion:
+                       ) -> ValueAssertion:
     return _IsTargetInfoAndEquals(expected, mk_equals_cross_ref_id)
 
 
 def equals_target_info_node(expected: TargetInfoNode,
                             mk_equals_cross_ref_id=lambda x: asrt.anything_goes()
-                            ) -> asrt.ValueAssertion:
+                            ) -> ValueAssertion:
     """
     Traverses every node in the node tree, and checks that it is equal to the corresponding
     node in the expected node tree.
@@ -33,7 +34,7 @@ def equals_target_info_node(expected: TargetInfoNode,
     return _TargetInfoNodeEqual(expected, mk_equals_cross_ref_id)
 
 
-class _IsTargetInfoAndEquals(asrt.ValueAssertion):
+class _IsTargetInfoAndEquals(ValueAssertion):
     def __init__(self,
                  expected: TargetInfo,
                  mk_equals_cross_ref_id
@@ -60,7 +61,7 @@ class _IsTargetInfoAndEquals(asrt.ValueAssertion):
                         message_builder.for_sub_component('target'))
 
 
-class _IsTargetInfoNode(asrt.ValueAssertion):
+class _IsTargetInfoNode(ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value,
@@ -87,7 +88,7 @@ is_target_info_node_list = asrt.every_element('nodes', is_target_info_node, '')
 
 
 def _equals_target_info_node__shallow(expected: TargetInfoNode,
-                                      mk_equals_cross_ref_id) -> asrt.ValueAssertion:
+                                      mk_equals_cross_ref_id) -> ValueAssertion:
     return asrt.And([
         _is_TargetInfoNodeObject_shallow,
         asrt.sub_component('target_info',
@@ -100,7 +101,7 @@ def _equals_target_info_node__shallow(expected: TargetInfoNode,
     ])
 
 
-class _TargetInfoNodeEqual(asrt.ValueAssertion):
+class _TargetInfoNodeEqual(ValueAssertion):
     def __init__(self,
                  expected: TargetInfoNode,
                  mk_equals_cross_ref_id,

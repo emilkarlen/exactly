@@ -15,6 +15,7 @@ from exactly_lib_test.test_case_utils.expression.test_resources import \
     NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class Configuration:
@@ -22,11 +23,11 @@ class Configuration:
         raise NotImplementedError('abstract method')
 
     def resolved_value_equals(self, value: Matcher,
-                              references: asrt.ValueAssertion = asrt.is_empty_sequence,
-                              symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
+                              references: ValueAssertion = asrt.is_empty_sequence,
+                              symbols: symbol_table.SymbolTable = None) -> ValueAssertion:
         raise NotImplementedError('abstract method')
 
-    def is_reference_to(self, symbol_name: str) -> asrt.ValueAssertion:
+    def is_reference_to(self, symbol_name: str) -> ValueAssertion:
         raise NotImplementedError('abstract method')
 
     def resolver_of_constant_matcher(self, matcher: Matcher) -> SymbolValueResolver:
@@ -50,8 +51,8 @@ class Configuration:
 
 class Expectation:
     def __init__(self,
-                 resolver: asrt.ValueAssertion,
-                 token_stream: asrt.ValueAssertion = asrt.anything_goes()):
+                 resolver: ValueAssertion,
+                 token_stream: ValueAssertion = asrt.anything_goes()):
         self.resolver = resolver
         self.token_stream = token_stream
 

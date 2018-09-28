@@ -12,6 +12,7 @@ from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent
     MultiDirDependentValueTestImpl
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.string_transformers import \
     MyNonIdentityTransformer, MyToUppercaseTransformer, MyCountNumUppercaseCharactersTransformer
 
@@ -23,7 +24,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-def equals_string_transformer(expected: StringTransformer) -> asrt.ValueAssertion[StringTransformer]:
+def equals_string_transformer(expected: StringTransformer) -> ValueAssertion[StringTransformer]:
     if isinstance(expected, IdentityStringTransformer):
         return asrt.is_instance(IdentityStringTransformer)
     if isinstance(expected, SequenceStringTransformer):
@@ -31,7 +32,7 @@ def equals_string_transformer(expected: StringTransformer) -> asrt.ValueAssertio
     raise TypeError('Unknown type of {}: {}'.format(StringTransformer, expected))
 
 
-def equals_sequence_transformer(expected: SequenceStringTransformer) -> asrt.ValueAssertion[StringTransformer]:
+def equals_sequence_transformer(expected: SequenceStringTransformer) -> ValueAssertion[StringTransformer]:
     return asrt.is_instance_with(
         SequenceStringTransformer,
         asrt.sub_component('transformers',

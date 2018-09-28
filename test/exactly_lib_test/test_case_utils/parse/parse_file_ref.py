@@ -54,6 +54,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import format_rel_
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
 from exactly_lib_test.type_system.data.test_resources.path_part_assertions import equals_path_part_string
 from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer
@@ -96,7 +97,7 @@ class Arrangement:
 class Expectation:
     def __init__(self,
                  file_ref_resolver: FileRefResolver,
-                 token_stream: asrt.ValueAssertion):
+                 token_stream: ValueAssertion):
         assert isinstance(file_ref_resolver, FileRefResolver)
         self.file_ref_resolver = file_ref_resolver
         self.token_stream = token_stream
@@ -104,8 +105,8 @@ class Expectation:
 
 class Expectation2:
     def __init__(self,
-                 file_ref_resolver: asrt.ValueAssertion,
-                 token_stream: asrt.ValueAssertion,
+                 file_ref_resolver: ValueAssertion,
+                 token_stream: ValueAssertion,
                  symbol_table_in_with_all_ref_restrictions_are_satisfied: SymbolTable = None):
         self.file_ref_resolver = file_ref_resolver
         self.token_stream = token_stream
@@ -1497,9 +1498,9 @@ def file_ref_or_string_reference_restrictions(accepted_relativities: PathRelativ
 
 
 def expect(resolved_file_ref: FileRef,
-           expected_symbol_references: asrt.ValueAssertion,
+           expected_symbol_references: ValueAssertion,
            symbol_table: SymbolTable,
-           token_stream: asrt.ValueAssertion,
+           token_stream: ValueAssertion,
            ) -> Expectation2:
     return Expectation2(
         file_ref_resolver=matches_file_ref_resolver(resolved_file_ref,

@@ -5,7 +5,7 @@ from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.test_case.result import pfh
 from exactly_lib.util.logic_types import ExpectationType, from_is_negated
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class PassOrFail(Enum):
@@ -28,7 +28,7 @@ class Case:
     def __init__(self,
                  expectation_type: ExpectationType,
                  negation_arguments: List,
-                 main_result_assertion: asrt.ValueAssertion[pfh.PassOrFailOrHardError]):
+                 main_result_assertion: ValueAssertion[pfh.PassOrFailOrHardError]):
         self.expectation_type = expectation_type
         self.negation_arguments = negation_arguments
         self.main_result_assertion = main_result_assertion
@@ -64,15 +64,15 @@ class ExpectationTypeConfig:
         return self._value('', NEGATION_ARGUMENT_STR)
 
     @property
-    def pass__if_positive__fail__if_negative(self) -> asrt.ValueAssertion[pfh.PassOrFailOrHardError]:
+    def pass__if_positive__fail__if_negative(self) -> ValueAssertion[pfh.PassOrFailOrHardError]:
         return self.main_result(PassOrFail.PASS)
 
     @property
-    def fail__if_positive__pass_if_negative(self) -> asrt.ValueAssertion[pfh.PassOrFailOrHardError]:
+    def fail__if_positive__pass_if_negative(self) -> ValueAssertion[pfh.PassOrFailOrHardError]:
         return self.main_result(PassOrFail.FAIL)
 
     def main_result(self, expected_result_of_positive_test: PassOrFail
-                    ) -> asrt.ValueAssertion[pfh.PassOrFailOrHardError]:
+                    ) -> ValueAssertion[pfh.PassOrFailOrHardError]:
         return _MAIN_RESULT_ASSERTION[self._expectation_type_of_test_case][expected_result_of_positive_test]
 
     def instruction_arguments(self, instruction_arguments_without_not_option: str) -> str:

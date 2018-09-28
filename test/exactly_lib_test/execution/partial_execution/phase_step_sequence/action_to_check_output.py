@@ -40,6 +40,7 @@ from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.files.capture_out_files import capture_stdout_err
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -68,9 +69,9 @@ def arr_for_py3_source(test_case: TestCaseGeneratorForExecutionRecording,
 
 class Expectation:
     def __init__(self,
-                 result: asrt.ValueAssertion[PartialExeResult],
-                 atc_stdout_output: asrt.ValueAssertion[str],
-                 atc_stderr_output: asrt.ValueAssertion[str],
+                 result: ValueAssertion[PartialExeResult],
+                 atc_stdout_output: ValueAssertion[str],
+                 atc_stderr_output: ValueAssertion[str],
                  step_recordings: list,
                  ):
         self.result = result

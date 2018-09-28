@@ -23,6 +23,7 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_u
     MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_test import Arrangement, Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources.path_part_assertions import equals_path_part_string
 
 
@@ -105,11 +106,11 @@ class TestCaseForCheckOfArgumentBase(sds_test.TestCaseBase):
                     expectation)
 
 
-def is_success() -> asrt.ValueAssertion:
+def is_success() -> ValueAssertion:
     return asrt.ValueIsNone()
 
 
-def is_failure() -> asrt.ValueAssertion:
+def is_failure() -> ValueAssertion:
     return asrt.ValueIsNotNone()
 
 

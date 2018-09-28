@@ -1,5 +1,6 @@
-import pathlib
 import sys
+
+import pathlib
 from typing import List
 
 from exactly_lib.util.process_execution.command import Command, CommandDriver
@@ -7,10 +8,11 @@ from exactly_lib.util.process_execution.commands import CommandDriverForShell, C
     CommandDriverForExecutableFile
 from exactly_lib_test.test_resources.programs import python_program_execution
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def equals_executable_file_command_driver(expected: CommandDriverForExecutableFile
-                                          ) -> asrt.ValueAssertion[CommandDriver]:
+                                          ) -> ValueAssertion[CommandDriver]:
     return asrt.is_instance_with_many(CommandDriverForExecutableFile,
                                       [
                                           asrt.sub_component('executable_file',
@@ -25,7 +27,7 @@ def equals_executable_file_command_driver(expected: CommandDriverForExecutableFi
 
 
 def equals_system_program_command_driver(expected: CommandDriverForSystemProgram
-                                         ) -> asrt.ValueAssertion[CommandDriver]:
+                                         ) -> ValueAssertion[CommandDriver]:
     return asrt.is_instance_with_many(CommandDriverForSystemProgram,
                                       [
                                           asrt.sub_component('executable_file',
@@ -39,7 +41,7 @@ def equals_system_program_command_driver(expected: CommandDriverForSystemProgram
                                       ])
 
 
-def equals_shell_command_driver(expected: CommandDriverForShell) -> asrt.ValueAssertion[CommandDriver]:
+def equals_shell_command_driver(expected: CommandDriverForShell) -> ValueAssertion[CommandDriver]:
     return asrt.is_instance_with_many(CommandDriverForShell,
                                       [
                                           asrt.sub_component('shell_command_line',
@@ -53,8 +55,8 @@ def equals_shell_command_driver(expected: CommandDriverForShell) -> asrt.ValueAs
                                       ])
 
 
-def matches_command(driver: asrt.ValueAssertion[CommandDriver],
-                    arguments: List[str]) -> asrt.ValueAssertion[Command]:
+def matches_command(driver: ValueAssertion[CommandDriver],
+                    arguments: List[str]) -> ValueAssertion[Command]:
     return asrt.is_instance_with_many(
         Command,
         [
@@ -70,24 +72,24 @@ def matches_command(driver: asrt.ValueAssertion[CommandDriver],
 
 
 def equals_executable_file_command(executable_file: pathlib.Path,
-                                   arguments: List[str]) -> asrt.ValueAssertion[Command]:
+                                   arguments: List[str]) -> ValueAssertion[Command]:
     return matches_command(equals_executable_file_command_driver(CommandDriverForExecutableFile(executable_file)),
                            arguments)
 
 
 def equals_system_program_command(program: str,
-                                  arguments: List[str]) -> asrt.ValueAssertion[Command]:
+                                  arguments: List[str]) -> ValueAssertion[Command]:
     return matches_command(equals_system_program_command_driver(CommandDriverForSystemProgram(program)),
                            arguments)
 
 
 def equals_shell_command(command_line: str,
-                         arguments: List[str]) -> asrt.ValueAssertion[Command]:
+                         arguments: List[str]) -> ValueAssertion[Command]:
     return matches_command(equals_shell_command_driver(CommandDriverForShell(command_line)),
                            arguments)
 
 
-def equals_execute_py_source_command(source: str) -> asrt.ValueAssertion[Command]:
+def equals_execute_py_source_command(source: str) -> ValueAssertion[Command]:
     return equals_executable_file_command(
         pathlib.Path(sys.executable),
         [python_program_execution.PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE, source]

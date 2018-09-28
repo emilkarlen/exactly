@@ -1,4 +1,5 @@
 import sys
+
 import unittest
 
 from exactly_lib.instructions.configuration.utils import actor_utils
@@ -11,6 +12,7 @@ from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_os_p
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -36,7 +38,7 @@ class _NonShellExecutionCheckHelper:
             put: unittest.TestCase,
             first_source_line_instruction_argument_source_template: str,
             act_phase_source_lines: list,
-            expected_cmd_and_args: asrt.ValueAssertion,
+            expected_cmd_and_args: ValueAssertion,
             hds_contents: home_populators.HomePopulator = home_populators.empty()):
         instruction_argument_source = first_source_line_instruction_argument_source_template.format_map(
             self.format_map_for_template_string)
@@ -61,7 +63,7 @@ class _NonShellExecutionCheckHelper:
             expected_cmd_and_args.apply_with_message(put, actual_cmd_and_args, 'actual_cmd_and_args')
 
 
-def equals_with_last_element_removed(expected: list) -> asrt.ValueAssertion:
+def equals_with_last_element_removed(expected: list) -> ValueAssertion:
     return asrt.sub_component('all elements except last',
                               lambda l: l[:-1],
                               asrt.Equals(expected))
@@ -103,7 +105,7 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
             self,
             instruction_argument_source_template: str,
             act_phase_source_lines: list,
-            cmd_and_args: asrt.ValueAssertion,
+            cmd_and_args: ValueAssertion,
             hds_contents: home_populators.HomePopulator = home_populators.empty()):
         self.helper.check_both_single_and_multiple_line_source(
             self,
@@ -146,8 +148,8 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
 
 def is_interpreter_with_source_file_and_arguments(interpreter: str,
                                                   source_file_relative_home_name: str,
-                                                  arguments: list) -> asrt.ValueAssertion:
-    class RetClass(asrt.ValueAssertion):
+                                                  arguments: list) -> ValueAssertion:
+    class RetClass(ValueAssertion):
         def apply(self,
                   put: unittest.TestCase,
                   cmd_and_args: list,

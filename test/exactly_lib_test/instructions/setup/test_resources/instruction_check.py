@@ -26,6 +26,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_home_po
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction, home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class SettingsBuilderAssertionModel(tuple):
@@ -78,15 +79,15 @@ class Expectation:
     """
 
     def __init__(self,
-                 pre_validation_result: asrt.ValueAssertion = svh_assertions.is_success(),
-                 main_result: asrt.ValueAssertion = sh_assertions.is_success(),
-                 post_validation_result: asrt.ValueAssertion = svh_assertions.is_success(),
-                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence,
-                 main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                 main_side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                 settings_builder: asrt.ValueAssertion = asrt.anything_goes(),
-                 source: asrt.ValueAssertion = asrt.anything_goes(),
-                 symbols_after_main: asrt.ValueAssertion = asrt.anything_goes(),
+                 pre_validation_result: ValueAssertion = svh_assertions.is_success(),
+                 main_result: ValueAssertion = sh_assertions.is_success(),
+                 post_validation_result: ValueAssertion = svh_assertions.is_success(),
+                 symbol_usages: ValueAssertion = asrt.is_empty_sequence,
+                 main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
+                 main_side_effects_on_home_and_sds: ValueAssertion = asrt.anything_goes(),
+                 settings_builder: ValueAssertion = asrt.anything_goes(),
+                 source: ValueAssertion = asrt.anything_goes(),
+                 symbols_after_main: ValueAssertion = asrt.anything_goes(),
                  ):
         self.pre_validation_result = pre_validation_result
         self.main_result = main_result

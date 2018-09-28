@@ -26,6 +26,7 @@ from exactly_lib_test.execution.test_resources.test_case_generation import TestC
     instruction_line_constructor
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_act_phase_handling
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class Result(tuple):
@@ -52,10 +53,10 @@ class Result(tuple):
         return self[1]
 
 
-def result_assertion(hds: asrt.ValueAssertion[HomeDirectoryStructure] = asrt.anything_goes(),
-                     sds: asrt.ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
-                     partial_result: asrt.ValueAssertion[PartialExeResult] = asrt.anything_goes(),
-                     ) -> asrt.ValueAssertion[Result]:
+def result_assertion(hds: ValueAssertion[HomeDirectoryStructure] = asrt.anything_goes(),
+                     sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
+                     partial_result: ValueAssertion[PartialExeResult] = asrt.anything_goes(),
+                     ) -> ValueAssertion[Result]:
     return asrt.and_([
         asrt.sub_component('hds',
                            Result.hds.fget,
@@ -176,7 +177,7 @@ def test(put: unittest.TestCase,
 def test__va(put: unittest.TestCase,
              test_case: TestCase,
              arrangement: Arrangement,
-             assertions_on_result: asrt.ValueAssertion[Result],
+             assertions_on_result: ValueAssertion[Result],
              is_keep_sandbox_during_assertions: bool = False):
     with preserved_cwd():
         result = _execute(test_case,

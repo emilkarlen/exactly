@@ -22,7 +22,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import R
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'
 
@@ -90,7 +90,7 @@ class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfig
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
         return SdsPopulatorForSubDir(SUB_DIR_RESOLVER, contents)
 
-    def assert_root_dir_contains_exactly(self, contents: DirContents) -> asrt.ValueAssertion:
+    def assert_root_dir_contains_exactly(self, contents: DirContents) -> ValueAssertion:
         return sub_dir_of_sds_contains_exactly(SUB_DIR_RESOLVER.population_dir,
                                                contents)
 

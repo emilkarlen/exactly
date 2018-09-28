@@ -16,6 +16,7 @@ from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import \
     symbol_table_with_string_values_from_name_and_value
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -84,8 +85,8 @@ class TestFailingScenarios(unittest.TestCase):
 class SuccessfulCase:
     def __init__(self,
                  source_lines: list,
-                 expected_document_contents: asrt.ValueAssertion,
-                 source_after_parse: asrt.ValueAssertion):
+                 expected_document_contents: ValueAssertion,
+                 source_after_parse: ValueAssertion):
         self.source_lines = source_lines
         self.expected_document_contents = expected_document_contents
         self.source_after_parse = source_after_parse

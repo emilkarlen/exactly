@@ -56,6 +56,7 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions as f_asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.string_transformers import \
     MyToUppercaseTransformer
 
@@ -139,7 +140,7 @@ class ProgramCase:
     def __init__(self,
                  name: str,
                  source: ArgumentElements,
-                 expected_reference: List[asrt.ValueAssertion[SymbolReference]]):
+                 expected_reference: List[ValueAssertion[SymbolReference]]):
         self.name = name
         self.source = source
         self.expected_references = expected_reference
@@ -173,7 +174,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
               expected_file_contents: str,
               make_arguments: Callable[[TransformableContentsConstructor], ArgumentElements],
               additional_symbols: Dict[str, SymbolContainer],
-              additional_symbol_references: List[asrt.ValueAssertion[SymbolReference]],
+              additional_symbol_references: List[ValueAssertion[SymbolReference]],
               ):
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
 

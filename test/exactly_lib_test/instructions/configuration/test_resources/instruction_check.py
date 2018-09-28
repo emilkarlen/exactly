@@ -17,6 +17,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import h
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class Arrangement(ArrangementBase):
@@ -35,10 +36,10 @@ class Arrangement(ArrangementBase):
 
 class Expectation:
     def __init__(self,
-                 main_result: asrt.ValueAssertion[SuccessOrHardError] = sh_assertions.is_success(),
-                 source: asrt.ValueAssertion[ParseSource] = asrt.anything_goes(),
-                 configuration: asrt.ValueAssertion[ConfigurationBuilder] = asrt.anything_goes(),
-                 file_ref_rel_root_2_conf: Callable[[pathlib.Path], asrt.ValueAssertion[ConfigurationBuilder]] =
+                 main_result: ValueAssertion[SuccessOrHardError] = sh_assertions.is_success(),
+                 source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+                 configuration: ValueAssertion[ConfigurationBuilder] = asrt.anything_goes(),
+                 file_ref_rel_root_2_conf: Callable[[pathlib.Path], ValueAssertion[ConfigurationBuilder]] =
                  lambda x: asrt.anything_goes()
                  ):
         self.main_result = main_result

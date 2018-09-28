@@ -11,7 +11,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite_for(configuration: InstructionTestConfiguration) -> unittest.TestSuite:
@@ -26,8 +26,8 @@ class Case:
     def __init__(self,
                  name: str,
                  source: ParseSource,
-                 source_assertion: asrt.ValueAssertion[ParseSource],
-                 main_result_assertion: asrt.ValueAssertion[pfh.PassOrFailOrHardError],
+                 source_assertion: ValueAssertion[ParseSource],
+                 main_result_assertion: ValueAssertion[pfh.PassOrFailOrHardError],
                  ):
         self.name = name
         self.source = source

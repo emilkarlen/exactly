@@ -26,6 +26,7 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_string_resolver
 from exactly_lib_test.test_case_utils.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -40,7 +41,7 @@ def suite() -> unittest.TestSuite:
 class Expectation:
     def __init__(self,
                  fragments: List[Fragment],
-                 token_stream: asrt.ValueAssertion):
+                 token_stream: ValueAssertion):
         self.fragments = fragments
         self.token_stream = token_stream
 
@@ -260,7 +261,7 @@ def _multi_line_source(lines: list,
     return TokenStream(all_lines)
 
 
-def assert_equals_string_resolver(fragments: list) -> asrt.ValueAssertion:
+def assert_equals_string_resolver(fragments: list) -> ValueAssertion:
     expected_resolver = string_resolver_from_fragments(fragments)
     return equals_string_resolver(expected_resolver)
 

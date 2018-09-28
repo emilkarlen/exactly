@@ -2,9 +2,10 @@ from exactly_lib.symbol.restriction import TypeCategoryRestriction, ValueTypeRes
 from exactly_lib.type_system import value_type
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def is_type_category_restriction(expected: TypeCategory) -> asrt.ValueAssertion[ReferenceRestrictions]:
+def is_type_category_restriction(expected: TypeCategory) -> ValueAssertion[ReferenceRestrictions]:
     """
     Assertion on a :class:`ReferenceRestrictions`,
     that it is a :class:`TypeCategoryRestriction`,
@@ -16,7 +17,7 @@ def is_type_category_restriction(expected: TypeCategory) -> asrt.ValueAssertion[
                                                     asrt.is_(expected)))
 
 
-def is_value_type_restriction(expected: ValueType) -> asrt.ValueAssertion[ReferenceRestrictions]:
+def is_value_type_restriction(expected: ValueType) -> ValueAssertion[ReferenceRestrictions]:
     """
     Assertion on a :class:`ReferenceRestrictions`,
     that it is a :class:`TypeCategoryRestriction`,

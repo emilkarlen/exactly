@@ -10,6 +10,7 @@ from exactly_lib.test_case_utils.condition.integer.integer_matcher import Intege
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
 
 
@@ -24,8 +25,8 @@ class Case:
     def __init__(self,
                  name: str,
                  source,
-                 source_assertion: asrt.ValueAssertion,
-                 result_assertion: asrt.ValueAssertion):
+                 source_assertion: ValueAssertion,
+                 result_assertion: ValueAssertion):
         self.name = name
         self.source = source
         self.source_assertion = source_assertion

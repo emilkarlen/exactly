@@ -3,29 +3,30 @@ import unittest
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def is_result_for_exit_value(expected: ExitValue) -> asrt.ValueAssertion[SubProcessResult]:
+def is_result_for_exit_value(expected: ExitValue) -> ValueAssertion[SubProcessResult]:
     return SubProcessExitValueAssertion(expected)
 
 
-def is_result_for_exit_code(exit_code: int) -> asrt.ValueAssertion[SubProcessResult]:
+def is_result_for_exit_code(exit_code: int) -> ValueAssertion[SubProcessResult]:
     return _SubProcessResultAssertion(exitcode=asrt.equals(exit_code))
 
 
-def is_result_for_empty_stdout(exit_code: int) -> asrt.ValueAssertion[SubProcessResult]:
+def is_result_for_empty_stdout(exit_code: int) -> ValueAssertion[SubProcessResult]:
     return _SubProcessResultAssertion(exitcode=asrt.equals(exit_code),
                                       stdout=asrt.equals(''))
 
 
-def stdout(assertion_on_str: asrt.ValueAssertion[str]) -> asrt.ValueAssertion[SubProcessResult]:
+def stdout(assertion_on_str: ValueAssertion[str]) -> ValueAssertion[SubProcessResult]:
     return _SubProcessResultAssertion(stdout=assertion_on_str)
 
 
-def sub_process_result(exitcode: asrt.ValueAssertion = asrt.anything_goes(),
-                       stdout: asrt.ValueAssertion = asrt.anything_goes(),
-                       stderr: asrt.ValueAssertion = asrt.anything_goes(),
-                       ) -> asrt.ValueAssertion[SubProcessResult]:
+def sub_process_result(exitcode: ValueAssertion = asrt.anything_goes(),
+                       stdout: ValueAssertion = asrt.anything_goes(),
+                       stderr: ValueAssertion = asrt.anything_goes(),
+                       ) -> ValueAssertion[SubProcessResult]:
     return asrt.is_instance_with(SubProcessResult,
                                  asrt.and_([
                                      asrt.sub_component('exitcode',
@@ -40,11 +41,11 @@ def sub_process_result(exitcode: asrt.ValueAssertion = asrt.anything_goes(),
                                  ]))
 
 
-class _SubProcessResultAssertion(asrt.ValueAssertion[SubProcessResult]):
+class _SubProcessResultAssertion(ValueAssertion[SubProcessResult]):
     def __init__(self,
-                 exitcode: asrt.ValueAssertion = asrt.anything_goes(),
-                 stdout: asrt.ValueAssertion = asrt.anything_goes(),
-                 stderr: asrt.ValueAssertion = asrt.anything_goes(),
+                 exitcode: ValueAssertion = asrt.anything_goes(),
+                 stdout: ValueAssertion = asrt.anything_goes(),
+                 stderr: ValueAssertion = asrt.anything_goes(),
                  ):
         self._exitcode = exitcode
         self._stdout = stdout
@@ -70,7 +71,7 @@ class _SubProcessResultAssertion(asrt.ValueAssertion[SubProcessResult]):
                            message_builder.for_sub_component('stderr' + msg_info))
 
 
-class SubProcessExitValueAssertion(asrt.ValueAssertion[SubProcessResult]):
+class SubProcessExitValueAssertion(ValueAssertion[SubProcessResult]):
     def __init__(self,
                  expected: ExitValue,
                  message: str = None):

@@ -15,6 +15,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source, source_is_at_end
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -275,21 +276,21 @@ class TestParseWithDescription(unittest.TestCase):
 
 class Expectation(tuple):
     def __new__(cls,
-                description: asrt.ValueAssertion[str] = asrt.anything_goes(),
-                instruction: asrt.ValueAssertion[model.Instruction] = asrt.anything_goes(),
-                source: asrt.ValueAssertion[ParseSource] = asrt.anything_goes()):
+                description: ValueAssertion[str] = asrt.anything_goes(),
+                instruction: ValueAssertion[model.Instruction] = asrt.anything_goes(),
+                source: ValueAssertion[ParseSource] = asrt.anything_goes()):
         return tuple.__new__(cls, (description, instruction, source))
 
     @property
-    def description(self) -> asrt.ValueAssertion:
+    def description(self) -> ValueAssertion:
         return self[0]
 
     @property
-    def instruction(self) -> asrt.ValueAssertion:
+    def instruction(self) -> ValueAssertion:
         return self[1]
 
     @property
-    def source(self) -> asrt.ValueAssertion:
+    def source(self) -> ValueAssertion:
         return self[2]
 
     def apply(self, put: unittest.TestCase,
@@ -337,7 +338,7 @@ def check(put: unittest.TestCase,
 
 
 def assert_instruction(first_line_number: int,
-                       source_string: str) -> asrt.ValueAssertion:
+                       source_string: str) -> ValueAssertion:
     return asrt.And([
         asrt.sub_component('first_line_number', Instruction.first_line_number.fget,
                            asrt.Equals(first_line_number)),

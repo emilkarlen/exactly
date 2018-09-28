@@ -22,7 +22,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import h
 from exactly_lib_test.test_resources.process import capture_process_executor_result, ProcessExecutor
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
 
 
 class HardErrorResultError(Exception):
@@ -50,13 +50,13 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 result_of_validate_pre_sds: asrt.ValueAssertion = svh_assertions.is_success(),
-                 result_of_prepare: asrt.ValueAssertion = sh_assertions.is_success(),
-                 result_of_execute: asrt.ValueAssertion = eh_assertions.is_any_exit_code,
-                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence,
-                 side_effects_on_files_after_execute: asrt.ValueAssertion = asrt.anything_goes(),
-                 side_effects_on_files_after_prepare: asrt.ValueAssertion = asrt.anything_goes(),
-                 sub_process_result_from_execute: asrt.ValueAssertion = asrt.anything_goes()):
+                 result_of_validate_pre_sds: ValueAssertion = svh_assertions.is_success(),
+                 result_of_prepare: ValueAssertion = sh_assertions.is_success(),
+                 result_of_execute: ValueAssertion = eh_assertions.is_any_exit_code,
+                 symbol_usages: ValueAssertion = asrt.is_empty_sequence,
+                 side_effects_on_files_after_execute: ValueAssertion = asrt.anything_goes(),
+                 side_effects_on_files_after_prepare: ValueAssertion = asrt.anything_goes(),
+                 sub_process_result_from_execute: ValueAssertion = asrt.anything_goes()):
         self.result_of_validate_pre_sds = result_of_validate_pre_sds
         self.symbol_usages = symbol_usages
         self.side_effects_on_files_after_prepare = side_effects_on_files_after_prepare

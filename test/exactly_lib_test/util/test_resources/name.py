@@ -1,8 +1,9 @@
 from exactly_lib.util.name import Name, NameWithGender
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def is_name() -> asrt.ValueAssertion:
+def is_name() -> ValueAssertion:
     return asrt.is_instance_with(Name,
                                  asrt.and_([
                                      asrt.sub_component('singular',
@@ -14,7 +15,7 @@ def is_name() -> asrt.ValueAssertion:
                                  ]))
 
 
-def equals_name(name: Name) -> asrt.ValueAssertion:
+def equals_name(name: Name) -> ValueAssertion:
     return asrt.is_instance_with(Name,
                                  asrt.and_([
                                      asrt.sub_component('singular',
@@ -26,7 +27,7 @@ def equals_name(name: Name) -> asrt.ValueAssertion:
                                  ]))
 
 
-def equals_name_with_gender(name: NameWithGender) -> asrt.ValueAssertion[NameWithGender]:
+def equals_name_with_gender(name: NameWithGender) -> ValueAssertion[NameWithGender]:
     return asrt.is_instance_with(Name,
                                  asrt.and_([
                                      asrt.sub_component('determinator_word',

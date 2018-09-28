@@ -6,12 +6,13 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources.value_a
     equals_string_transformer
 from exactly_lib_test.test_case_utils.test_resources import resolver_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def resolved_value_equals_string_transformer(value: StringTransformer,
-                                             references: asrt.ValueAssertion = asrt.is_empty_sequence,
+                                             references: ValueAssertion = asrt.is_empty_sequence,
                                              symbols: symbol_table.SymbolTable = None
-                                             ) -> asrt.ValueAssertion[LogicValueResolver]:
+                                             ) -> ValueAssertion[LogicValueResolver]:
     return resolver_assertions.matches_resolver_of_logic_type2(StringTransformerResolver,
                                                                LogicValueType.STRING_TRANSFORMER,
                                                                ValueType.STRING_TRANSFORMER,
