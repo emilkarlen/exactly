@@ -87,7 +87,7 @@ class StringTransformerResolverWithReferences(StringTransformerResolver):
     def __init__(self, references: Sequence[SymbolReference]):
         self._references = references
 
-    def resolve(self, named_elements: SymbolTable) -> StringTransformerValue:
+    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
         raise NotImplementedError('should not be used in these tests')
 
     @property

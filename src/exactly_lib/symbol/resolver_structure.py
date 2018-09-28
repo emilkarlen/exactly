@@ -79,7 +79,7 @@ class FileMatcherResolver(LogicValueResolver):
     def references(self) -> list:
         raise NotImplementedError('abstract method')
 
-    def resolve(self, named_elements: SymbolTable) -> FileMatcher:
+    def resolve(self, symbols: SymbolTable) -> FileMatcher:
         raise NotImplementedError('abstract method')
 
 
@@ -117,7 +117,7 @@ class StringTransformerResolver(LogicValueResolver):
     def references(self) -> list:
         raise NotImplementedError('abstract method')
 
-    def resolve(self, named_elements: SymbolTable) -> StringTransformerValue:
+    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
         raise NotImplementedError('abstract method')
 
 

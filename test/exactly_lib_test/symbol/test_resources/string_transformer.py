@@ -27,7 +27,7 @@ class StringTransformerResolverConstantTestImpl(StringTransformerResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    def resolve(self, named_elements: SymbolTable) -> StringTransformerValue:
+    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
         return StringTransformerConstantValue(self._resolved_value)
 
 

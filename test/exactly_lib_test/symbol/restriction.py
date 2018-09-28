@@ -44,13 +44,13 @@ class TestElementTypeRestriction(unittest.TestCase):
 
     def test_satisfied_restriction(self):
         # ARRANGE #
-        named_elements = empty_symbol_table()
+        symbols = empty_symbol_table()
         for expected_element_type in TypeCategory:
             container_of_resolver = container(self.element_type_2_resolver_of_type[expected_element_type])
             with self.subTest(element_type=str(expected_element_type)):
                 restriction_to_check = sut.TypeCategoryRestriction(expected_element_type)
                 # ACT
-                error_message = restriction_to_check.is_satisfied_by(named_elements,
+                error_message = restriction_to_check.is_satisfied_by(symbols,
                                                                      'name of element',
                                                                      container_of_resolver)
                 # ASSERT #
@@ -64,14 +64,14 @@ class TestElementTypeRestriction(unittest.TestCase):
             TypeCategory.LOGIC: TypeCategory.DATA,
         }
 
-        named_elements = empty_symbol_table()
+        symbols = empty_symbol_table()
         for expected_element_type, unexpected_element_type in cases.items():
             container_of_unexpected = container(self.element_type_2_resolver_of_type[unexpected_element_type])
             with self.subTest(expected_element_type=str(expected_element_type),
                               unexpected_element_type=str(unexpected_element_type)):
                 restriction_to_check = sut.TypeCategoryRestriction(expected_element_type)
                 # ACT
-                error_message = restriction_to_check.is_satisfied_by(named_elements,
+                error_message = restriction_to_check.is_satisfied_by(symbols,
                                                                      'name of element',
                                                                      container_of_unexpected)
                 # ASSERT #
@@ -116,13 +116,13 @@ class TestValueTypeRestriction(unittest.TestCase):
 
     def test_satisfied_restriction(self):
         # ARRANGE #
-        named_elements = empty_symbol_table()
+        symbols = empty_symbol_table()
         for expected_value_type in ValueType:
             container_of_resolver = container(self.value_type_2_resolver_of_type[expected_value_type])
             with self.subTest(element_type=str(expected_value_type)):
                 restriction_to_check = sut.ValueTypeRestriction(expected_value_type)
                 # ACT
-                error_message = restriction_to_check.is_satisfied_by(named_elements,
+                error_message = restriction_to_check.is_satisfied_by(symbols,
                                                                      'name of element',
                                                                      container_of_resolver)
                 # ASSERT #
@@ -139,14 +139,14 @@ class TestValueTypeRestriction(unittest.TestCase):
             ValueType.PROGRAM: ValueType.STRING_TRANSFORMER,
         }
 
-        named_elements = empty_symbol_table()
+        symbols = empty_symbol_table()
         for expected_value_type, unexpected_value_type in cases.items():
             container_of_unexpected = container(self.value_type_2_resolver_of_type[unexpected_value_type])
             with self.subTest(expected_element_type=str(expected_value_type),
                               unexpected_element_type=str(unexpected_value_type)):
                 restriction_to_check = sut.ValueTypeRestriction(expected_value_type)
                 # ACT
-                error_message = restriction_to_check.is_satisfied_by(named_elements,
+                error_message = restriction_to_check.is_satisfied_by(symbols,
                                                                      'name of element',
                                                                      container_of_unexpected)
                 # ASSERT #
