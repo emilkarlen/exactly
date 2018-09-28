@@ -9,6 +9,8 @@ def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestIsNone))
     ret_val.addTest(unittest.makeSuite(TestIsNotNone))
+    ret_val.addTest(unittest.makeSuite(TestIs))
+    ret_val.addTest(unittest.makeSuite(TestIsAny))
     ret_val.addTest(unittest.makeSuite(TestBoolean))
     ret_val.addTest(unittest.makeSuite(TestEquals))
     ret_val.addTest(unittest.makeSuite(TestConstant))
@@ -19,6 +21,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestOnTransformed))
     ret_val.addTest(unittest.makeSuite(TestSubComponent))
     ret_val.addTest(unittest.makeSuite(TestEveryElement))
+    ret_val.addTest(unittest.makeSuite(TestMatchesSequence))
     ret_val.addTest(unittest.makeSuite(TestMatchesDict))
     return ret_val
 
@@ -118,6 +121,54 @@ class TestIsInstance(unittest.TestCase):
         sut.IsInstance(int).apply(self.put, 1)
         sut.IsInstance(int).apply(self.put, 1,
                                   sut.MessageBuilder('head'))
+
+
+class TestIs(unittest.TestCase):
+    def setUp(self):
+        self.put = test_case_with_failure_exception_set_to_test_exception()
+
+    def test_false__sans_message_builder(self):
+        expected_object = 'expected object'
+        actual_object = 'actual object'
+        with self.assertRaises(TestException):
+            sut.is_(expected_object).apply(self.put, actual_object)
+
+    def test_false__with_message_builder(self):
+        expected_object = 'expected object'
+        actual_object = 'actual object'
+        with self.assertRaises(TestException):
+            sut.is_(expected_object).apply(self.put, actual_object,
+                                           sut.MessageBuilder('head'))
+
+    def test_true(self):
+        expected_object = 'expected object'
+        sut.is_(expected_object).apply(self.put, expected_object)
+        sut.is_(expected_object).apply(self.put, expected_object,
+                                       sut.MessageBuilder('head'))
+
+
+class TestIsAny(unittest.TestCase):
+    def setUp(self):
+        self.put = test_case_with_failure_exception_set_to_test_exception()
+
+    def test_false__sans_message_builder(self):
+        expected_object = 'expected object'
+        actual_object = 'actual object'
+        with self.assertRaises(TestException):
+            sut.is__any(expected_object).apply(self.put, actual_object)
+
+    def test_false__with_message_builder(self):
+        expected_object = 'expected object'
+        actual_object = 'actual object'
+        with self.assertRaises(TestException):
+            sut.is__any(expected_object).apply(self.put, actual_object,
+                                               sut.MessageBuilder('head'))
+
+    def test_true(self):
+        expected_object = 'expected object'
+        sut.is__any(expected_object).apply(self.put, expected_object)
+        sut.is__any(expected_object).apply(self.put, expected_object,
+                                           sut.MessageBuilder('head'))
 
 
 class TestBoolean(unittest.TestCase):
@@ -337,6 +388,92 @@ class TestEveryElement(unittest.TestCase):
 
     def test_two_element_list__true_true(self):
         self.every_element_is_none.apply(self.put, [None, None])
+
+
+class TestMatchesSequence(unittest.TestCase):
+    def test_not_matches__non_matching_element(self):
+        actual_element = 'actual element'
+        expected_element = 'expected element'
+        equals_expected_element = sut.equals(expected_element)
+        cases = [
+            NEA('one element / list',
+                expected=[equals_expected_element],
+                actual=[actual_element],
+                ),
+            NEA('one element / tuple',
+                expected=(equals_expected_element,),
+                actual=(actual_element,),
+                ),
+            NEA('two elements',
+                expected=[equals_expected_element, equals_expected_element],
+                actual=[actual_element, actual_element],
+                ),
+        ]
+        for nea in cases:
+            with self.subTest(nea.name):
+                assertion = sut.matches_sequence(nea.expected)
+                # ACT & ASSERT #
+                assert_that_assertion_fails(assertion, nea.actual)
+
+    def test_not_matches__different_size(self):
+        element = 'an element'
+        equals_element = sut.equals(element)
+        cases = [
+            NEA('actual is empty',
+                expected=[equals_element],
+                actual=[],
+                ),
+            NEA('actual is non empty',
+                expected=[],
+                actual=[element],
+                ),
+            NEA('both are non-empty tuples',
+                expected=(equals_element,),
+                actual=(element, element),
+                ),
+            NEA('both are non-empty / more elements in expected',
+                expected=[equals_element, equals_element],
+                actual=[element],
+                ),
+            NEA('both are non-empty / more elements in actual',
+                expected=[equals_element],
+                actual=[element, element],
+                ),
+        ]
+        for nea in cases:
+            with self.subTest(nea.name):
+                assertion = sut.matches_sequence(nea.expected)
+                # ACT & ASSERT #
+                assert_that_assertion_fails(assertion, nea.actual)
+
+    def test_matches(self):
+        value1 = 'a value'
+        value2 = 'a value'
+        cases = [
+            NEA('empty',
+                expected=[],
+                actual=[],
+                ),
+            NEA('single element / list',
+                expected=[sut.equals(value1)],
+                actual=[value1],
+                ),
+            NEA('single element / tuple',
+                expected=(sut.equals(value1),),
+                actual=(value1,),
+                ),
+            NEA('many values',
+                expected=[sut.equals(value1),
+                          sut.equals(value2)],
+                actual=[value1,
+                        value2],
+                ),
+        ]
+        for nea in cases:
+            with self.subTest(nea.name):
+                assertion = sut.matches_sequence(nea.expected)
+                # ACT & ASSERT #
+                assertion.apply_without_message(self, nea.actual)
 
 
 class TestMatchesDict(unittest.TestCase):
