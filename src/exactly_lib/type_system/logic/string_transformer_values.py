@@ -9,7 +9,7 @@ from exactly_lib.type_system.utils import resolving_dependencies_from_sequence
 
 class StringTransformerConstantValue(StringTransformerValue):
     """
-    A :class:`LinesTransformerResolver` that is a constant :class:`LinesTransformer`
+    A :class:`StringTransformerResolver` that is a constant :class:`StringTransformer`
     """
 
     def __init__(self, value: StringTransformer):

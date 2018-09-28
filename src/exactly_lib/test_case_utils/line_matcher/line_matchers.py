@@ -13,7 +13,7 @@ class LineMatcherConstant(LineMatcher):
 
     @property
     def option_description(self) -> str:
-        return 'any file' if self._result else 'no file'
+        return 'any line' if self._result else 'no line'
 
     @property
     def result_constant(self) -> bool:

@@ -31,7 +31,7 @@ class StringTransformerConstant(StringTransformerResolver):
 
 class StringTransformerConstantOfValue(StringTransformerResolver):
     """
-    A :class:`LinesTransformerResolver` that is a constant :class:`LinesTransformerValue`
+    A :class:`StringTransformerResolver` that is a constant :class:`StringTransformerValue`
     """
 
     def __init__(self, value: StringTransformerValue):
@@ -50,7 +50,7 @@ class StringTransformerConstantOfValue(StringTransformerResolver):
 
 class StringTransformerReference(StringTransformerResolver):
     """
-    A :class:`LinesTransformerResolver` that is a reference to a symbol
+    A :class:`StringTransformerResolver` that is a reference to a symbol
     """
 
     def __init__(self, name_of_referenced_resolver: str):
