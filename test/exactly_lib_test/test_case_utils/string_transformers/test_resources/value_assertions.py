@@ -7,17 +7,18 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformer, 
     SequenceStringTransformer, CustomStringTransformer
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import value_assertions as asrt_line_matcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def equals_string_transformer(expected: StringTransformer,
-                              description: str = '') -> asrt.ValueAssertion[StringTransformer]:
+                              description: str = '') -> ValueAssertion[StringTransformer]:
     """
     :return: A assertion on a :class:`LinesTransformer`
     """
     return _EqualsAssertion(expected, description)
 
 
-class _EqualsAssertion(asrt.ValueAssertion):
+class _EqualsAssertion(ValueAssertion):
     def __init__(self,
                  expected: StringTransformer,
                  description: str):

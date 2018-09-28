@@ -26,6 +26,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_util
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction, home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def arrangement(pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
@@ -51,13 +52,13 @@ def arrangement(pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAct
 
 class Expectation(ExpectationBase):
     def __init__(self,
-                 validation_pre_sds: asrt.ValueAssertion = svh_assertions.is_success(),
-                 validation_post_setup: asrt.ValueAssertion = svh_assertions.is_success(),
-                 main_result: asrt.ValueAssertion = sh_assertions.is_success(),
-                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence,
-                 main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                 main_side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                 source: asrt.ValueAssertion = asrt.anything_goes(),
+                 validation_pre_sds: ValueAssertion = svh_assertions.is_success(),
+                 validation_post_setup: ValueAssertion = svh_assertions.is_success(),
+                 main_result: ValueAssertion = sh_assertions.is_success(),
+                 symbol_usages: ValueAssertion = asrt.is_empty_sequence,
+                 main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
+                 main_side_effects_on_home_and_sds: ValueAssertion = asrt.anything_goes(),
+                 source: ValueAssertion = asrt.anything_goes(),
                  ):
         super().__init__(validation_pre_sds,
                          main_side_effects_on_sds,
@@ -101,7 +102,7 @@ class Executor(InstructionExecutionBase):
 
     def _check(self,
                component: str,
-               assertion: asrt.ValueAssertion,
+               assertion: ValueAssertion,
                actual):
         assertion.apply(self.put,
                         actual,

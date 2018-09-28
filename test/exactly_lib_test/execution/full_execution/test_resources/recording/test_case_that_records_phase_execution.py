@@ -18,7 +18,7 @@ from exactly_lib_test.test_case.act_phase_handling.test_resources.test_actions i
     execute_action_that_returns_exit_code, prepare_action_that_returns
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_assertions import is_sds_root_dir
 from exactly_lib_test.test_resources.actions import do_nothing
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class Arrangement(tuple):
@@ -63,14 +63,14 @@ class Arrangement(tuple):
 
 class Expectation(tuple):
     def __new__(cls,
-                expected_result: asrt.ValueAssertion[FullExeResult],
+                expected_result: ValueAssertion[FullExeResult],
                 expected_internal_recording: list):
         return tuple.__new__(cls, (expected_result,
                                    expected_internal_recording,
                                    ))
 
     @property
-    def full_result(self) -> asrt.ValueAssertion[FullExeResult]:
+    def full_result(self) -> ValueAssertion[FullExeResult]:
         return self[0]
 
     @property

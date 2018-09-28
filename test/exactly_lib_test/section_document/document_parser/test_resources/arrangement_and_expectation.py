@@ -7,7 +7,7 @@ from exactly_lib.section_document.section_parsing import SectionsConfiguration
 from exactly_lib_test.section_document.document_parser.test_resources.element_parser import SECTIONS_CONFIGURATION
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class Arrangement:
@@ -26,7 +26,7 @@ def std_conf_arrangement(cwd_dir_contents: DirContents,
 
 
 class Expectation:
-    def __init__(self, document: asrt.ValueAssertion[Document]):
+    def __init__(self, document: ValueAssertion[Document]):
         self.document = document
 
 
@@ -43,7 +43,7 @@ def check(put: unittest.TestCase,
 
 def check_and_expect_exception(put: unittest.TestCase,
                                arrangement: Arrangement,
-                               expected_exception: asrt.ValueAssertion[Exception]):
+                               expected_exception: ValueAssertion[Exception]):
     with tmp_dir_as_cwd(arrangement.cwd_dir_contents):
         with put.assertRaises(Exception) as cm:
             # ACT & ASSERT #

@@ -15,12 +15,13 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.symbol.test_resources import resolver_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources.file_ref_assertions import equals_file_ref
 from exactly_lib_test.type_system.data.test_resources.string_value_assertions import equals_string_value, \
     equals_string_fragment
 
 
-def equals_file_ref_resolver(expected: FileRefResolver) -> asrt.ValueAssertion:
+def equals_file_ref_resolver(expected: FileRefResolver) -> ValueAssertion:
     symbols = symbol_table_with_values_matching_references(expected.references)
     expected_file_ref = expected.resolve(symbols)
     return resolver_assertions.matches_resolver_of_path(equals_symbol_references(expected.references),
@@ -29,14 +30,14 @@ def equals_file_ref_resolver(expected: FileRefResolver) -> asrt.ValueAssertion:
 
 
 def matches_file_ref_resolver(expected_resolved_value: FileRef,
-                              expected_symbol_references: asrt.ValueAssertion,
-                              symbol_table: SymbolTable = None) -> asrt.ValueAssertion:
+                              expected_symbol_references: ValueAssertion,
+                              symbol_table: SymbolTable = None) -> ValueAssertion:
     return resolver_assertions.matches_resolver_of_path(expected_symbol_references,
                                                         equals_file_ref(expected_resolved_value),
                                                         symbols=symbol_table)
 
 
-def equals_string_fragment_resolver_with_exact_type(expected: StringFragmentResolver) -> asrt.ValueAssertion:
+def equals_string_fragment_resolver_with_exact_type(expected: StringFragmentResolver) -> ValueAssertion:
     if isinstance(expected, ConstantStringFragmentResolver):
         return _EqualsStringFragmentAssertionForStringConstant(expected)
     if isinstance(expected, SymbolStringFragmentResolver):
@@ -44,18 +45,18 @@ def equals_string_fragment_resolver_with_exact_type(expected: StringFragmentReso
     raise TypeError('Not a StringFragmentResolver: ' + str(expected))
 
 
-def equals_string_fragment_resolver(expected: StringFragmentResolver) -> asrt.ValueAssertion[StringFragmentResolver]:
+def equals_string_fragment_resolver(expected: StringFragmentResolver) -> ValueAssertion[StringFragmentResolver]:
     return _EqualsStringFragmentAssertion(expected)
 
 
-def equals_string_fragments(expected_fragments) -> asrt.ValueAssertion:
+def equals_string_fragments(expected_fragments) -> ValueAssertion:
     if isinstance(expected_fragments, list):
         expected_fragments = tuple(expected_fragments)
     return _EqualsStringFragments(expected_fragments)
 
 
 def equals_string_resolver(expected: StringResolver,
-                           symbols: SymbolTable = None) -> asrt.ValueAssertion[SymbolValueResolver]:
+                           symbols: SymbolTable = None) -> ValueAssertion[SymbolValueResolver]:
     if symbols is None:
         symbols = symbol_table_with_values_matching_references(expected.references)
 
@@ -74,7 +75,7 @@ def equals_string_resolver(expected: StringResolver,
                                                           symbols)
 
 
-class _EqualsStringFragmentAssertionForStringConstant(asrt.ValueAssertion):
+class _EqualsStringFragmentAssertionForStringConstant(ValueAssertion):
     def __init__(self, expected: ConstantStringFragmentResolver):
         self.expected = expected
 
@@ -93,7 +94,7 @@ class _EqualsStringFragmentAssertionForStringConstant(asrt.ValueAssertion):
                         'string_constant')
 
 
-class _EqualsStringFragmentAssertionForSymbolReference(asrt.ValueAssertion):
+class _EqualsStringFragmentAssertionForSymbolReference(ValueAssertion):
     def __init__(self, expected: SymbolStringFragmentResolver):
         self.expected = expected
 
@@ -112,7 +113,7 @@ class _EqualsStringFragmentAssertionForSymbolReference(asrt.ValueAssertion):
                         'symbol_name')
 
 
-class _EqualsStringFragmentAssertion(asrt.ValueAssertion[StringFragmentResolver]):
+class _EqualsStringFragmentAssertion(ValueAssertion[StringFragmentResolver]):
     def __init__(self,
                  expected: StringFragmentResolver):
         self.expected = expected
@@ -169,7 +170,7 @@ class _EqualsStringFragmentAssertion(asrt.ValueAssertion[StringFragmentResolver]
         assertion.apply(put, value, message_builder)
 
 
-class _EqualsStringFragments(asrt.ValueAssertion):
+class _EqualsStringFragments(ValueAssertion):
     def __init__(self, expected: tuple):
         self._expected = expected
         assert isinstance(expected, tuple), 'Value reference list must be a tuple'

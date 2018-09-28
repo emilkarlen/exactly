@@ -4,17 +4,18 @@ from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherStructureVisitor
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def equals_file_matcher(expected: FileMatcher,
-                        description: str = '') -> asrt.ValueAssertion:
+                        description: str = '') -> ValueAssertion:
     """
     :return: A assertion on a :class:`FileMatcher`
     """
     return _EqualsAssertion(expected, description)
 
 
-class _EqualsAssertion(asrt.ValueAssertion):
+class _EqualsAssertion(ValueAssertion):
     def __init__(self,
                  expected: FileMatcher,
                  description: str):

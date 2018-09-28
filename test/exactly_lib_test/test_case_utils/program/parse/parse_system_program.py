@@ -31,6 +31,7 @@ from exactly_lib_test.test_resources.arguments_building import ArgumentElementRe
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, empty_file, DirContents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val
 from exactly_lib_test.type_system.logic.test_resources import string_transformer_assertions as asrt_line_transformer
 from exactly_lib_test.util.test_resources import command_assertions as asrt_command
@@ -75,7 +76,7 @@ class ProgramNameCase:
                  name: str,
                  source_element,
                  expected_resolved_value: str,
-                 expected_symbol_references: List[asrt.ValueAssertion[SymbolReference]]):
+                 expected_symbol_references: List[ValueAssertion[SymbolReference]]):
         self.name = name
         self.source_element = source_element
         self.expected_resolved_value = expected_resolved_value
@@ -88,7 +89,7 @@ class ArgumentsCase:
                  source_elements: List,
                  expected_dir_dependencies: Set[DirectoryStructurePartition],
                  expected_resolved_values: Callable[[HomeAndSds], List[str]],
-                 expected_symbol_references: List[asrt.ValueAssertion[SymbolReference]]):
+                 expected_symbol_references: List[ValueAssertion[SymbolReference]]):
         self.name = name
         self.source_elements = source_elements
         self.expected_dir_dependencies = expected_dir_dependencies
@@ -196,7 +197,7 @@ def check_parsing_of_program(put: unittest.TestCase,
         expected_references_assertion = asrt.matches_sequence(program_case.expected_symbol_references +
                                                               argument_case.expected_symbol_references)
 
-        def expected_program(tcds: HomeAndSds) -> asrt.ValueAssertion[Program]:
+        def expected_program(tcds: HomeAndSds) -> ValueAssertion[Program]:
             return asrt_pgm_val.matches_program(
                 command=asrt_command.equals_system_program_command(
                     program=program_case.expected_resolved_value,

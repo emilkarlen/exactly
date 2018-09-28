@@ -8,14 +8,15 @@ from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util import symbol_table
 from exactly_lib_test.symbol.test_resources.resolver_assertions import is_resolver_of_logic_type
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def matches_resolver_of_logic_type(resolver_type: type,
                                    logic_value_type: LogicValueType,
                                    value_type: ValueType,
-                                   resolved_value: asrt.ValueAssertion = asrt.anything_goes(),
-                                   references: asrt.ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
-                                   symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion[Any]:
+                                   resolved_value: ValueAssertion = asrt.anything_goes(),
+                                   references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+                                   symbols: symbol_table.SymbolTable = None) -> ValueAssertion[Any]:
     symbols = symbol_table.symbol_table_from_none_or_value(symbols)
 
     def resolve_value(resolver: LogicValueResolver) -> LineMatcher:
@@ -38,10 +39,10 @@ def matches_resolver_of_logic_type(resolver_type: type,
 def matches_resolver_of_logic_type2(resolver_type: Type,
                                     logic_value_type: LogicValueType,
                                     value_type: ValueType,
-                                    resolved_value: asrt.ValueAssertion = asrt.anything_goes(),
-                                    references: asrt.ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+                                    resolved_value: ValueAssertion = asrt.anything_goes(),
+                                    references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                                     symbols: symbol_table.SymbolTable = None
-                                    ) -> asrt.ValueAssertion[LogicValueResolver]:
+                                    ) -> ValueAssertion[LogicValueResolver]:
     symbols = symbol_table.symbol_table_from_none_or_value(symbols)
 
     def resolve_value(resolver: SymbolValueResolver):

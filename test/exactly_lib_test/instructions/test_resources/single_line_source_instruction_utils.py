@@ -6,7 +6,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import every_line_is_consumed, \
     is_at_beginning_of_line
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def equivalent_source_variants__with_source_check(put: unittest.TestCase,
@@ -72,7 +72,7 @@ _SOURCE_VARIANT_TEST_CASES = [
 
 
 def _source_variant_test_cases__multi_line(num_source_lines: int
-                                           ) -> List[Tuple[List[str], asrt.ValueAssertion[ParseSource]]]:
+                                           ) -> List[Tuple[List[str], ValueAssertion[ParseSource]]]:
     return [
         ([], every_line_is_consumed),
         (['following line'], is_at_beginning_of_line(num_source_lines + 1)),

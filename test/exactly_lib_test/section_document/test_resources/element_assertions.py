@@ -10,6 +10,7 @@ from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib_test.section_document.test_resources.source_location_assertions import equals_file_inclusion_chain, \
     matches_source_location_info2
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
 
 
@@ -37,9 +38,9 @@ class InstructionInSectionWithParseSourceInfo(InstructionInSection):
 
 def matches_section_contents_element(
         element_type: ElementType,
-        instruction_info: asrt.ValueAssertion[model.InstructionInfo] = asrt.anything_goes(),
-        source_location_info: asrt.ValueAssertion[SourceLocationInfo] = asrt.anything_goes(),
-) -> asrt.ValueAssertion[model.SectionContentElement]:
+        instruction_info: ValueAssertion[model.InstructionInfo] = asrt.anything_goes(),
+        source_location_info: ValueAssertion[SourceLocationInfo] = asrt.anything_goes(),
+) -> ValueAssertion[model.SectionContentElement]:
     return asrt.and_([
         asrt.sub_component('element type',
                            model.SectionContentElement.element_type.fget,
@@ -53,7 +54,7 @@ def matches_section_contents_element(
     ])
 
 
-def equals_instruction_in_section(expected: InstructionInSection) -> asrt.ValueAssertion[model.Instruction]:
+def equals_instruction_in_section(expected: InstructionInSection) -> ValueAssertion[model.Instruction]:
     return asrt.is_instance_with(InstructionInSection,
                                  asrt.sub_component('section_name',
                                                     InstructionInSection.section_name.fget,
@@ -61,9 +62,9 @@ def equals_instruction_in_section(expected: InstructionInSection) -> asrt.ValueA
 
 
 def matches_instruction_with_parse_source_info(
-        section_name: asrt.ValueAssertion[str] = asrt.anything_goes(),
-        current_source_file: asrt.ValueAssertion[FileLocationInfo] = asrt.anything_goes(),
-) -> asrt.ValueAssertion[model.Instruction]:
+        section_name: ValueAssertion[str] = asrt.anything_goes(),
+        current_source_file: ValueAssertion[FileLocationInfo] = asrt.anything_goes(),
+) -> ValueAssertion[model.Instruction]:
     return asrt.is_instance_with_many(InstructionInSectionWithParseSourceInfo,
                                       [
                                           asrt.sub_component('section_name',
@@ -75,9 +76,9 @@ def matches_instruction_with_parse_source_info(
                                       ])
 
 
-def matches_instruction_info(assertion_on_description: asrt.ValueAssertion[str],
-                             assertion_on_instruction: asrt.ValueAssertion[model.Instruction],
-                             ) -> asrt.ValueAssertion[model.InstructionInfo]:
+def matches_instruction_info(assertion_on_description: ValueAssertion[str],
+                             assertion_on_instruction: ValueAssertion[model.Instruction],
+                             ) -> ValueAssertion[model.InstructionInfo]:
     return asrt.and_([
         asrt.sub_component('description',
                            model.InstructionInfo.description.fget,
@@ -88,8 +89,8 @@ def matches_instruction_info(assertion_on_description: asrt.ValueAssertion[str],
     ])
 
 
-def matches_instruction_info_without_description(assertion_on_instruction: asrt.ValueAssertion[model.Instruction],
-                                                 ) -> asrt.ValueAssertion[model.InstructionInfo]:
+def matches_instruction_info_without_description(assertion_on_instruction: ValueAssertion[model.Instruction],
+                                                 ) -> ValueAssertion[model.InstructionInfo]:
     return matches_instruction_info(assertion_on_description=asrt.is_none,
                                     assertion_on_instruction=assertion_on_instruction)
 
@@ -99,7 +100,7 @@ def equals_instruction_without_description(line_number: int,
                                            section_name: str,
                                            file_path_rel_referrer: pathlib.Path,
                                            file_inclusion_chain: List[SourceLocation],
-                                           ) -> asrt.ValueAssertion[model.SectionContentElement]:
+                                           ) -> ValueAssertion[model.SectionContentElement]:
     return matches_section_contents_element(
         ElementType.INSTRUCTION,
         instruction_info=
@@ -118,7 +119,7 @@ def equals_instruction_without_description2(line_number: int,
                                             section_name: str,
                                             file_path_rel_referrer: pathlib.Path,
                                             file_inclusion_chain: List[SourceLocation],
-                                            ) -> asrt.ValueAssertion[model.SectionContentElement]:
+                                            ) -> ValueAssertion[model.SectionContentElement]:
     return matches_section_contents_element(
         ElementType.INSTRUCTION,
         instruction_info=
@@ -136,7 +137,7 @@ def matches_single_line_source_location_info(line_number: int,
                                              line_text: str,
                                              file_path_rel_referrer: pathlib.Path,
                                              file_inclusion_chain: List[SourceLocation],
-                                             ) -> asrt.ValueAssertion[SourceLocationInfo]:
+                                             ) -> ValueAssertion[SourceLocationInfo]:
     return matches_source_location_info2(
         source=equals_line_sequence(single_line_sequence(line_number, line_text)),
         file_path_rel_referrer=asrt.equals(file_path_rel_referrer),
@@ -149,7 +150,7 @@ def equals_multi_line_instruction_without_description(line_number: int,
                                                       section_name: str,
                                                       file_path: pathlib.Path,
                                                       file_inclusion_chain: List[SourceLocation],
-                                                      ) -> asrt.ValueAssertion[model.SectionContentElement]:
+                                                      ) -> ValueAssertion[model.SectionContentElement]:
     return matches_section_contents_element(
         ElementType.INSTRUCTION,
         instruction_info=matches_instruction_info_without_description(
@@ -165,7 +166,7 @@ def equals_multi_line_instruction_without_description(line_number: int,
 
 
 def equals_empty_element(line_number: int,
-                         line_text: str) -> asrt.ValueAssertion[model.SectionContentElement]:
+                         line_text: str) -> ValueAssertion[model.SectionContentElement]:
     return matches_section_contents_element(ElementType.EMPTY,
                                             instruction_info=asrt.is_none,
                                             source_location_info=
@@ -177,7 +178,7 @@ def equals_empty_element(line_number: int,
 
 
 def equals_comment_element(line_number: int,
-                           line_text: str) -> asrt.ValueAssertion[model.SectionContentElement]:
+                           line_text: str) -> ValueAssertion[model.SectionContentElement]:
     return matches_section_contents_element(ElementType.COMMENT,
                                             instruction_info=asrt.is_none,
                                             source_location_info=

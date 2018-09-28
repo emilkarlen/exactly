@@ -1,13 +1,13 @@
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
-
 from exactly_lib_test.definitions.test_resources import cross_reference_id_va as asrt_cross_ref
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources.name import equals_name_with_gender
 
 
 def equals_entity_cross_ref(entity_type_names: EntityTypeNames,
-                            entity_name: str) -> asrt.ValueAssertion:
+                            entity_name: str) -> ValueAssertion:
     return asrt.is_instance_with(EntityCrossReferenceId,
                                  asrt.and_([
                                      asrt_cross_ref.is_any,
@@ -30,7 +30,7 @@ def equals_entity_cross_ref(entity_type_names: EntityTypeNames,
                                  ]))
 
 
-def equals_entity_type_names(entity_type_names: EntityTypeNames) -> asrt.ValueAssertion:
+def equals_entity_type_names(entity_type_names: EntityTypeNames) -> ValueAssertion:
     return asrt.is_instance_with(EntityTypeNames,
                                  asrt.and_([
                                      asrt.sub_component('identifier',

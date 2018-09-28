@@ -23,12 +23,13 @@ from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_value_on_command_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class Configuration(ConfigurationBase):
     def expect_failure_because_specified_file_under_sds_is_missing(
             self,
-            symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence):
+            symbol_usages: ValueAssertion = asrt.is_empty_sequence):
         raise NotImplementedError()
 
 

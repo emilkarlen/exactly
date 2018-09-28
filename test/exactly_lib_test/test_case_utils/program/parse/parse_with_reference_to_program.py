@@ -36,6 +36,7 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val
 from exactly_lib_test.type_system.logic.test_resources import string_transformer_assertions as asrt_line_transformer
 from exactly_lib_test.util.test_resources import command_assertions as asrt_command
@@ -114,7 +115,7 @@ class TestSymbolReferences(unittest.TestCase):
         for case in cases:
             source = parse_source_of(case.input_value)
             assertion = case.expected_value
-            assert isinstance(assertion, asrt.ValueAssertion)  # Type info for IDE
+            assert isinstance(assertion, ValueAssertion)  # Type info for IDE
 
             with self.subTest(case.name):
                 # ACT #
@@ -312,7 +313,7 @@ class ResolvingCase:
     def __init__(self,
                  name: str,
                  actual_resolver: ProgramResolver,
-                 expected: asrt.ValueAssertion[DirDependentValue[Program]]):
+                 expected: ValueAssertion[DirDependentValue[Program]]):
         self.name = name
         self.actual_resolver = actual_resolver
         self.expected = expected
@@ -326,7 +327,7 @@ class TestResolving(unittest.TestCase):
         def case(relativity: RelOptionType) -> ResolvingCase:
             exe_file_ref = file_refs.of_rel_option(relativity, file_refs.constant_path_part(file_name))
 
-            def assertion(tcds: HomeAndSds) -> asrt.ValueAssertion[Program]:
+            def assertion(tcds: HomeAndSds) -> ValueAssertion[Program]:
                 return asrt_pgm_val.matches_program(
                     command=asrt_command.equals_executable_file_command(
                         executable_file=exe_file_ref.value_of_any_dependency(tcds),
@@ -352,7 +353,7 @@ class TestResolving(unittest.TestCase):
                                  ) -> Sequence[ResolvingCase]:
         the_executable_program = 'the executable program'
 
-        def assertion(tcds: HomeAndSds) -> asrt.ValueAssertion[Program]:
+        def assertion(tcds: HomeAndSds) -> ValueAssertion[Program]:
             return asrt_pgm_val.matches_program(
                 command=asrt_command.equals_system_program_command(
                     program=the_executable_program,

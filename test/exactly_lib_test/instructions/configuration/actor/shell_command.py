@@ -12,6 +12,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import home_popula
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -31,7 +32,7 @@ class _ShellExecutionCheckerHelper:
               put: unittest.TestCase,
               instruction_argument_source_template: str,
               act_phase_source_lines: list,
-              expectation_of_cmd_and_args: asrt.ValueAssertion,
+              expectation_of_cmd_and_args: ValueAssertion,
               hds_contents: home_populators.HomePopulator = home_populators.empty(),
               ):
         instruction_argument_source = instruction_argument_source_template.format(
@@ -58,8 +59,8 @@ class _ShellExecutionCheckerHelper:
 
 
 def initial_part_of_command_without_file_argument_is(
-        expected_command_except_final_file_name_part: str) -> asrt.ValueAssertion:
-    class RetClass(asrt.ValueAssertion):
+        expected_command_except_final_file_name_part: str) -> ValueAssertion:
+    class RetClass(ValueAssertion):
         def apply(self,
                   put: unittest.TestCase,
                   actual_cmd_and_args: str,
@@ -75,8 +76,8 @@ def initial_part_of_command_without_file_argument_is(
 
 def is_interpreter_file_and_args(interpreter: str,
                                  file_name_base: str,
-                                 args: str) -> asrt.ValueAssertion:
-    class RetClass(asrt.ValueAssertion):
+                                 args: str) -> ValueAssertion:
+    class RetClass(ValueAssertion):
         def apply(self,
                   put: unittest.TestCase,
                   actual_cmd_and_args: str,
@@ -101,7 +102,7 @@ class TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForShel
     helper = _ShellExecutionCheckerHelper(actor_utils.SOURCE_INTERPRETER_OPTION)
 
     def _check(self, instruction_argument_source_template: str,
-               expected_command_except_final_file_name_part: asrt.ValueAssertion):
+               expected_command_except_final_file_name_part: ValueAssertion):
         self.helper.apply(self, instruction_argument_source_template,
                           ['this is act phase source code that is not used in the test'],
                           expected_command_except_final_file_name_part)
@@ -124,7 +125,7 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellC
 
     def _check(self, instruction_argument_source_template: str,
                act_phase_source_lines: list,
-               expected_command_except_final_file_name_part: asrt.ValueAssertion,
+               expected_command_except_final_file_name_part: ValueAssertion,
                hds_contents: home_populators.HomePopulator,
                ):
         self.helper.apply(self,

@@ -3,6 +3,7 @@ from exactly_lib.util.textformat.constructor.environment import ConstructionEnvi
 from exactly_lib.util.textformat.constructor.text import CrossReferenceTextConstructor
 from exactly_lib.util.textformat.structure.core import StringText, CrossReferenceTarget, Text
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class CustomCrossReferenceTargetTestImpl(CrossReferenceTarget):
@@ -14,7 +15,7 @@ class CustomCrossReferenceTargetTestImpl(CrossReferenceTarget):
         return self._identifier
 
 
-def equals_custom_cross_ref_test_impl(expected: CustomCrossReferenceTargetTestImpl) -> asrt.ValueAssertion:
+def equals_custom_cross_ref_test_impl(expected: CustomCrossReferenceTargetTestImpl) -> ValueAssertion:
     return asrt.is_instance_with(CustomCrossReferenceTargetTestImpl,
                                  asrt.sub_component('identifier',
                                                     CustomCrossReferenceTargetTestImpl.identifier.fget,

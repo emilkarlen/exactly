@@ -5,6 +5,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class InstructionExecutionBase:
@@ -45,7 +46,7 @@ class InstructionExecutionBase:
     def _check_instance_and(self,
                             object_name: str,
                             expected_class: type,
-                            additional: asrt.ValueAssertion,
+                            additional: ValueAssertion,
                             actual):
         asrt.And([
             asrt.IsInstance(expected_class),

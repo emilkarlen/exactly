@@ -30,6 +30,7 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources.resolve
     resolved_value_equals_string_transformer
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes, surrounded_by_hard_quotes
 
 
@@ -43,8 +44,8 @@ def suite() -> unittest.TestSuite:
 
 class Expectation:
     def __init__(self,
-                 resolver: asrt.ValueAssertion,
-                 token_stream: asrt.ValueAssertion = asrt.anything_goes()):
+                 resolver: ValueAssertion,
+                 token_stream: ValueAssertion = asrt.anything_goes()):
         self.resolver = resolver
         self.token_stream = token_stream
 
@@ -371,8 +372,8 @@ class TestParseLineTransformer(unittest.TestCase):
 
 def resolved_value_is_replace_transformer(regex_str: str,
                                           replacement_str: str,
-                                          references: asrt.ValueAssertion = asrt.is_empty_sequence
-                                          ) -> asrt.ValueAssertion[LogicValueResolver]:
+                                          references: ValueAssertion = asrt.is_empty_sequence
+                                          ) -> ValueAssertion[LogicValueResolver]:
     expected_transformer = replace_transformer(regex_str, replacement_str)
     return resolved_value_equals_string_transformer(expected_transformer,
                                                     references=references)
@@ -384,16 +385,16 @@ def replace_transformer(regex_str: str, replacement_str: str) -> ReplaceStringTr
 
 
 def resolved_value_is_select_regex_transformer(regex_str: str,
-                                               references: asrt.ValueAssertion = asrt.is_empty_sequence
-                                               ) -> asrt.ValueAssertion[LogicValueResolver]:
+                                               references: ValueAssertion = asrt.is_empty_sequence
+                                               ) -> ValueAssertion[LogicValueResolver]:
     expected_transformer = select_regex_transformer(regex_str)
     return resolved_value_equals_string_transformer(expected_transformer,
                                                     references=references)
 
 
 def resolved_value_is_select_transformer(line_matcher: LineMatcher,
-                                         references: asrt.ValueAssertion = asrt.is_empty_sequence
-                                         ) -> asrt.ValueAssertion[LogicValueResolver]:
+                                         references: ValueAssertion = asrt.is_empty_sequence
+                                         ) -> ValueAssertion[LogicValueResolver]:
     expected_transformer = select_transformer(line_matcher)
     return resolved_value_equals_string_transformer(expected_transformer,
                                                     references=references)

@@ -13,32 +13,33 @@ from exactly_lib_test.symbol.test_resources import symbol_reference_assertions a
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_type_category_restriction
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import matches_reference_2
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def equals_symbol_reference_with_restriction_on_direct_target(expected_name: str,
-                                                              assertion_on_direct_restriction: asrt.ValueAssertion
-                                                              ) -> asrt.ValueAssertion:
+                                                              assertion_on_direct_restriction: ValueAssertion
+                                                              ) -> ValueAssertion:
     return asrt_sym_ref.matches_reference_2(expected_name,
                                             matches_restrictions_on_direct_and_indirect(
                                                 assertion_on_direct=assertion_on_direct_restriction,
                                                 assertion_on_every=asrt.ValueIsNone()))
 
 
-def equals_symbol_reference(expected: SymbolReference) -> asrt.ValueAssertion[SymbolReference]:
+def equals_symbol_reference(expected: SymbolReference) -> ValueAssertion[SymbolReference]:
     return asrt_sym_ref.matches_reference_2(expected.name,
                                             equals_data_type_reference_restrictions(expected.restrictions))
 
 
-def is_reference_to_data_category_symbol(symbol_name: str) -> asrt.ValueAssertion[SymbolReference]:
+def is_reference_to_data_category_symbol(symbol_name: str) -> ValueAssertion[SymbolReference]:
     return asrt_sym_ref.matches_reference_2(symbol_name,
                                             is_type_category_restriction(TypeCategory.DATA))
 
 
-def equals_symbol_references(expected: Sequence[SymbolReference]) -> asrt.ValueAssertion[Sequence[SymbolReference]]:
+def equals_symbol_references(expected: Sequence[SymbolReference]) -> ValueAssertion[Sequence[SymbolReference]]:
     return _EqualsSymbolReferences(expected)
 
 
-class _EqualsSymbolReferences(asrt.ValueAssertion):
+class _EqualsSymbolReferences(ValueAssertion):
     def __init__(self, expected: Sequence[SymbolReference]):
         self._expected = expected
         assert isinstance(expected, Sequence), 'Symbol reference list must be a Sequence'
@@ -66,12 +67,12 @@ class _EqualsSymbolReferences(asrt.ValueAssertion):
                                     message_builder.for_sub_component('[%d]' % idx))
 
 
-def is_reference_to_data_type_symbol(symbol_name: str) -> asrt.ValueAssertion[su.SymbolReference]:
+def is_reference_to_data_type_symbol(symbol_name: str) -> ValueAssertion[su.SymbolReference]:
     return matches_reference_2(symbol_name,
                                is_any_data_type_reference_restrictions())
 
 
-def is_reference_to_string_made_up_of_just_plain_strings(symbol_name: str) -> asrt.ValueAssertion[SymbolReference]:
+def is_reference_to_string_made_up_of_just_plain_strings(symbol_name: str) -> ValueAssertion[SymbolReference]:
     return equals_symbol_reference(
         SymbolReference(symbol_name,
                         string_made_up_of_just_strings_reference_restrictions()))

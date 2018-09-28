@@ -6,11 +6,12 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.process_execution.command import Command
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import string_transformer_assertions as asrt_line_trans
 from exactly_lib_test.util.test_resources import command_assertions as asrt_command
 
 
-def no_stdin() -> asrt.ValueAssertion[StdinData]:
+def no_stdin() -> ValueAssertion[StdinData]:
     return asrt.is_instance_with(StdinData,
                                  asrt.sub_component('fragments',
                                                     StdinData.fragments.fget,
@@ -18,33 +19,33 @@ def no_stdin() -> asrt.ValueAssertion[StdinData]:
                                  )
 
 
-def matches_program(command: asrt.ValueAssertion[Command],
-                    stdin: asrt.ValueAssertion[StdinData],
-                    transformer: asrt.ValueAssertion[StringTransformer]) -> asrt.ValueAssertion[Program]:
+def matches_program(command: ValueAssertion[Command],
+                    stdin: ValueAssertion[StdinData],
+                    transformer: ValueAssertion[StringTransformer]) -> ValueAssertion[Program]:
     return _MatchesProgramAssertion(command, stdin, transformer)
 
 
-def matches_plain_program(command: asrt.ValueAssertion[Command]):
+def matches_plain_program(command: ValueAssertion[Command]):
     return matches_program(command,
                            no_stdin(),
                            asrt_line_trans.is_identity_transformer())
 
 
 def matches_py_source_on_cmd_line_program(py_source_to_interpret: str,
-                                          stdin: asrt.ValueAssertion[StdinData] = no_stdin(),
-                                          transformer: asrt.ValueAssertion[
+                                          stdin: ValueAssertion[StdinData] = no_stdin(),
+                                          transformer: ValueAssertion[
                                               StringTransformer] = asrt_line_trans.is_identity_transformer()
-                                          ) -> asrt.ValueAssertion[Program]:
+                                          ) -> ValueAssertion[Program]:
     return matches_program(asrt_command.equals_execute_py_source_command(py_source_to_interpret),
                            stdin=stdin,
                            transformer=transformer)
 
 
-class _MatchesProgramAssertion(asrt.ValueAssertion[Program]):
+class _MatchesProgramAssertion(ValueAssertion[Program]):
     def __init__(self,
-                 command: asrt.ValueAssertion[Command],
-                 stdin: asrt.ValueAssertion[StdinData],
-                 transformer: asrt.ValueAssertion[StringTransformer],
+                 command: ValueAssertion[Command],
+                 stdin: ValueAssertion[StdinData],
+                 transformer: ValueAssertion[StringTransformer],
                  ):
         self.command = command
         self.stdin = stdin

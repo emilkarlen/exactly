@@ -1,8 +1,9 @@
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def is_identity_transformer() -> asrt.ValueAssertion[StringTransformer]:
+def is_identity_transformer() -> ValueAssertion[StringTransformer]:
     def get_is_identity(x: StringTransformer) -> bool:
         return x.is_identity_transformer
 

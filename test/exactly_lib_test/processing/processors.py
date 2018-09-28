@@ -31,7 +31,7 @@ from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -127,7 +127,7 @@ class TestFileInclusionResultStatus(unittest.TestCase):
 class SourceAndStatus:
     def __init__(self,
                  failing_source_line: str,
-                 expected_result_statuses: asrt.ValueAssertion[Result]
+                 expected_result_statuses: ValueAssertion[Result]
                  ):
         self.failing_source_line = failing_source_line
         self.expected_result_statuses = expected_result_statuses

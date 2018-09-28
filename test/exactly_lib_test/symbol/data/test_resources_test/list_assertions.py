@@ -14,6 +14,7 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -244,7 +245,7 @@ class MatchesCase:
     def __init__(self,
                  name: str,
                  expected: lr.ListValue,
-                 expected_references: asrt.ValueAssertion,
+                 expected_references: ValueAssertion,
                  actual: lr.ListResolver,
                  symbols: SymbolTable = None):
         self.name = name

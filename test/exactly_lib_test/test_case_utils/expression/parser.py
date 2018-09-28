@@ -10,6 +10,7 @@ from exactly_lib_test.test_case_utils.expression import test_resources as ast
 from exactly_lib_test.test_case_utils.expression.test_resources import ComplexA, ComplexB, PrefixExprP
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes, surrounded_by_hard_quotes
 
 
@@ -35,7 +36,7 @@ class Arrangement:
 class Expectation:
     def __init__(self,
                  expression: ast.Expr,
-                 source: asrt.ValueAssertion):
+                 source: ValueAssertion):
         self.expression = expression
         self.source = source
 

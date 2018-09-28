@@ -14,6 +14,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import home_popula
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class BeforeAssertConfigurationBase(ConfigurationBase):
@@ -29,21 +30,21 @@ class BeforeAssertConfigurationBase(ConfigurationBase):
         return True
 
     def expect_success(self,
-                       main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                       symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence):
+                       main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
+                       symbol_usages: ValueAssertion = asrt.is_empty_sequence):
         return ic.Expectation(main_side_effects_on_sds=main_side_effects_on_sds,
                               symbol_usages=symbol_usages)
 
     def expect_failure_of_main(self,
-                               assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
+                               assertion_on_error_message: ValueAssertion = asrt.anything_goes()):
         return ic.Expectation(main_result=sh_assertions.is_hard_error(assertion_on_error_message))
 
     def expect_failing_validation_pre_sds(self,
-                                          assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
+                                          assertion_on_error_message: ValueAssertion = asrt.anything_goes()):
         return ic.Expectation(validation_pre_sds=svh_assertions.is_validation_error(assertion_on_error_message))
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
+                                             assertion_on_error_message: ValueAssertion = asrt.anything_goes()):
         return ic.Expectation(validation_post_setup=svh_assertions.is_validation_error(assertion_on_error_message))
 
     def arrangement(self,

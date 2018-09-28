@@ -4,13 +4,14 @@ from typing import Any
 from exactly_lib.test_case.result import sh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def is_success() -> asrt.ValueAssertion[sh.SuccessOrHardError]:
+def is_success() -> ValueAssertion[sh.SuccessOrHardError]:
     return _IsSuccess()
 
 
-class _IsSuccess(asrt.ValueAssertion[sh.SuccessOrHardError]):
+class _IsSuccess(ValueAssertion[sh.SuccessOrHardError]):
     def __init__(self):
         pass
 
@@ -26,8 +27,8 @@ class _IsSuccess(asrt.ValueAssertion[sh.SuccessOrHardError]):
             ]))
 
 
-def is_hard_error(assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()
-                  ) -> asrt.ValueAssertion[sh.SuccessOrHardError]:
+def is_hard_error(assertion_on_error_message: ValueAssertion = asrt.anything_goes()
+                  ) -> ValueAssertion[sh.SuccessOrHardError]:
     return is_sh_and(asrt.And([
         asrt.sub_component('is_hard_error',
                            sh.SuccessOrHardError.is_hard_error.fget,
@@ -39,5 +40,5 @@ def is_hard_error(assertion_on_error_message: asrt.ValueAssertion = asrt.anythin
     ]))
 
 
-def is_sh_and(assertion: asrt.ValueAssertion[sh.SuccessOrHardError]) -> asrt.ValueAssertion[Any]:
+def is_sh_and(assertion: ValueAssertion[sh.SuccessOrHardError]) -> ValueAssertion[Any]:
     return asrt.is_instance_with(sh.SuccessOrHardError, assertion)

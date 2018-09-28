@@ -34,7 +34,7 @@ class Arrangement:
 class Expectation:
     def __init__(self,
                  expected_action_result: ValueAssertion = anything_goes(),
-                 expected_sds_contents_after: asrt.ValueAssertion = asrt.anything_goes(),
+                 expected_sds_contents_after: ValueAssertion = asrt.anything_goes(),
                  post_action_check: PostActionCheck = PostActionCheck()):
         self.expected_action_result = expected_action_result
         self.expected_sds_contents_after = expected_sds_contents_after

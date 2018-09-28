@@ -4,17 +4,18 @@ from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherSt
     LineMatcherRegex, LineMatcherNot, LineMatcherAnd, LineMatcherOr, LineMatcherLineNumber
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def equals_line_matcher(expected: LineMatcher,
-                        description: str = '') -> asrt.ValueAssertion:
+                        description: str = '') -> ValueAssertion:
     """
     :return: A assertion on a :class:`LineMatcher`
     """
     return _EqualsAssertion(expected, description)
 
 
-class _EqualsAssertion(asrt.ValueAssertion):
+class _EqualsAssertion(ValueAssertion):
     def __init__(self,
                  expected: LineMatcher,
                  description: str):

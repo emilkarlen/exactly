@@ -10,13 +10,14 @@ from exactly_lib.execution.result import ActionToCheckOutcome
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.execution.test_resources import result_assertions as asrt_atc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def is_pass(sds: asrt.ValueAssertion[Optional[SandboxDirectoryStructure]] =
+def is_pass(sds: ValueAssertion[Optional[SandboxDirectoryStructure]] =
             asrt.is_instance(SandboxDirectoryStructure),
-            action_to_check_outcome: asrt.ValueAssertion[Optional[ActionToCheckOutcome]] =
+            action_to_check_outcome: ValueAssertion[Optional[ActionToCheckOutcome]] =
             asrt.is_instance(ActionToCheckOutcome)
-            ) -> asrt.ValueAssertion[PartialExeResult]:
+            ) -> ValueAssertion[PartialExeResult]:
     return matches(status=asrt.is_(PartialExeResultStatus.PASS),
                    failure_info=asrt.is_none,
                    has_sds=asrt.equals(True),
@@ -27,12 +28,12 @@ def is_pass(sds: asrt.ValueAssertion[Optional[SandboxDirectoryStructure]] =
 
 
 def is_failure(status: PartialExeResultStatus,
-               failure_info: asrt.ValueAssertion[Optional[FailureInfo]] = asrt.is_instance(FailureInfo),
-               sds: asrt.ValueAssertion[Optional[SandboxDirectoryStructure]] = asrt.anything_goes(),
-               has_sds: asrt.ValueAssertion[bool] = asrt.anything_goes(),
-               action_to_check_outcome: asrt.ValueAssertion[Optional[ActionToCheckOutcome]] = asrt.anything_goes(),
-               has_action_to_check_outcome: asrt.ValueAssertion[bool] = asrt.anything_goes(),
-               ) -> asrt.ValueAssertion[PartialExeResult]:
+               failure_info: ValueAssertion[Optional[FailureInfo]] = asrt.is_instance(FailureInfo),
+               sds: ValueAssertion[Optional[SandboxDirectoryStructure]] = asrt.anything_goes(),
+               has_sds: ValueAssertion[bool] = asrt.anything_goes(),
+               action_to_check_outcome: ValueAssertion[Optional[ActionToCheckOutcome]] = asrt.anything_goes(),
+               has_action_to_check_outcome: ValueAssertion[bool] = asrt.anything_goes(),
+               ) -> ValueAssertion[PartialExeResult]:
     return matches(status=asrt.is_(status),
                    sds=sds,
                    has_sds=has_sds,
@@ -41,49 +42,49 @@ def is_failure(status: PartialExeResultStatus,
                    failure_info=failure_info)
 
 
-def status_is(expected: PartialExeResultStatus) -> asrt.ValueAssertion[PartialExeResult]:
+def status_is(expected: PartialExeResultStatus) -> ValueAssertion[PartialExeResult]:
     return matches(status=asrt.is_(expected))
 
 
-def has_no_sds() -> asrt.ValueAssertion[PartialExeResult]:
+def has_no_sds() -> ValueAssertion[PartialExeResult]:
     return matches(
         has_sds=asrt.equals(False),
         sds=asrt.is_none,
     )
 
 
-def has_sds(sds: asrt.ValueAssertion[SandboxDirectoryStructure] =
-            asrt.is_instance(SandboxDirectoryStructure)) -> asrt.ValueAssertion[PartialExeResult]:
+def has_sds(sds: ValueAssertion[SandboxDirectoryStructure] =
+            asrt.is_instance(SandboxDirectoryStructure)) -> ValueAssertion[PartialExeResult]:
     return matches(
         has_sds=asrt.equals(True),
         sds=asrt.is_instance_with(SandboxDirectoryStructure, sds),
     )
 
 
-def has_no_action_to_check_outcome() -> asrt.ValueAssertion[PartialExeResult]:
+def has_no_action_to_check_outcome() -> ValueAssertion[PartialExeResult]:
     return matches(
         has_action_to_check_outcome=asrt.equals(False),
         action_to_check_outcome=asrt.is_none,
     )
 
 
-def has_action_to_check_outcome(action_to_check_outcome: asrt.ValueAssertion[ActionToCheckOutcome] =
-                                asrt.is_instance(ActionToCheckOutcome)) -> asrt.ValueAssertion[PartialExeResult]:
+def has_action_to_check_outcome(action_to_check_outcome: ValueAssertion[ActionToCheckOutcome] =
+                                asrt.is_instance(ActionToCheckOutcome)) -> ValueAssertion[PartialExeResult]:
     return matches(
         has_action_to_check_outcome=asrt.equals(True),
         action_to_check_outcome=asrt.is_instance_with(ActionToCheckOutcome, action_to_check_outcome),
     )
 
 
-def has_action_to_check_outcome_with_exit_code(exit_code: int) -> asrt.ValueAssertion[PartialExeResult]:
+def has_action_to_check_outcome_with_exit_code(exit_code: int) -> ValueAssertion[PartialExeResult]:
     return has_action_to_check_outcome(asrt_atc.is_exit_code(exit_code))
 
 
 def matches2(status: PartialExeResultStatus,
-             sds: asrt.ValueAssertion[PartialExeResult],
-             action_to_check_outcome: asrt.ValueAssertion[PartialExeResult],
-             failure_info: asrt.ValueAssertion[Optional[FailureInfo]] = asrt.anything_goes()
-             ) -> asrt.ValueAssertion[PartialExeResult]:
+             sds: ValueAssertion[PartialExeResult],
+             action_to_check_outcome: ValueAssertion[PartialExeResult],
+             failure_info: ValueAssertion[Optional[FailureInfo]] = asrt.anything_goes()
+             ) -> ValueAssertion[PartialExeResult]:
     return asrt.and_([
         matches(status=asrt.is_(status),
                 failure_info=failure_info),
@@ -93,13 +94,13 @@ def matches2(status: PartialExeResultStatus,
 
 
 def matches(
-        status: asrt.ValueAssertion[PartialExeResultStatus] = asrt.anything_goes(),
-        has_sds: asrt.ValueAssertion[bool] = asrt.anything_goes(),
-        sds: asrt.ValueAssertion[Optional[SandboxDirectoryStructure]] = asrt.anything_goes(),
-        has_action_to_check_outcome: asrt.ValueAssertion[bool] = asrt.anything_goes(),
-        action_to_check_outcome: asrt.ValueAssertion[Optional[ActionToCheckOutcome]] = asrt.anything_goes(),
-        failure_info: asrt.ValueAssertion[Optional[FailureInfo]] = asrt.anything_goes(),
-) -> asrt.ValueAssertion[PartialExeResult]:
+        status: ValueAssertion[PartialExeResultStatus] = asrt.anything_goes(),
+        has_sds: ValueAssertion[bool] = asrt.anything_goes(),
+        sds: ValueAssertion[Optional[SandboxDirectoryStructure]] = asrt.anything_goes(),
+        has_action_to_check_outcome: ValueAssertion[bool] = asrt.anything_goes(),
+        action_to_check_outcome: ValueAssertion[Optional[ActionToCheckOutcome]] = asrt.anything_goes(),
+        failure_info: ValueAssertion[Optional[FailureInfo]] = asrt.anything_goes(),
+) -> ValueAssertion[PartialExeResult]:
     return asrt.and_([
         asrt.sub_component('status',
                            PartialExeResult.status.fget,

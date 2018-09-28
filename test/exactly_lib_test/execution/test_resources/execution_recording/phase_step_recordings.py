@@ -18,9 +18,10 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-class Phase2step2recordedValueAssertion(asrt.ValueAssertion):
+class Phase2step2recordedValueAssertion(ValueAssertion):
     """ Custom comparison for better error messages. """
 
     def __init__(self,

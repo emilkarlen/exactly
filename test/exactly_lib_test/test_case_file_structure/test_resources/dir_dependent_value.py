@@ -6,14 +6,15 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependen
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 T = TypeVar('T')
 
 
 def matches_single_dir_dependent_value(expected: SingleDirDependentValue,
                                        value_assertion_from_expected:
-                                       Callable[[T], asrt.ValueAssertion[T]] = asrt.equals
-                                       ) -> asrt.ValueAssertion[DirDependentValue[T]]:
+                                       Callable[[T], ValueAssertion[T]] = asrt.equals
+                                       ) -> ValueAssertion[DirDependentValue[T]]:
     return SingleDirDependentValueAssertion(SingleDirDependentValue,
                                             expected,
                                             value_assertion_from_expected)
@@ -21,18 +22,18 @@ def matches_single_dir_dependent_value(expected: SingleDirDependentValue,
 
 def matches_multi_dir_dependent_value(expected: MultiDirDependentValue,
                                       value_assertion_from_expected:
-                                      Callable[[T], asrt.ValueAssertion[T]] = asrt.equals
-                                      ) -> asrt.ValueAssertion[DirDependentValue[T]]:
+                                      Callable[[T], ValueAssertion[T]] = asrt.equals
+                                      ) -> ValueAssertion[DirDependentValue[T]]:
     return MultiDirDependentValueAssertion(MultiDirDependentValue,
                                            expected,
                                            value_assertion_from_expected)
 
 
-class DirDependentValueAssertionBase(asrt.ValueAssertion[DirDependentValue[T]]):
+class DirDependentValueAssertionBase(ValueAssertion[DirDependentValue[T]]):
     def __init__(self,
                  expected_type,
                  expected: DirDependentValue,
-                 value_assertion_from_expected: Callable[[T], asrt.ValueAssertion[T]]):
+                 value_assertion_from_expected: Callable[[T], ValueAssertion[T]]):
         self._expected_type = expected_type
         self._expected = expected
         self._value_assertion_from_expected = value_assertion_from_expected
@@ -117,7 +118,7 @@ class SingleDirDependentValueAssertion(DirDependentValueAssertionBase):
     def __init__(self,
                  expected_type,
                  expected: SingleDirDependentValue,
-                 value_assertion_from_expected: Callable[[T], asrt.ValueAssertion[T]] = asrt.equals):
+                 value_assertion_from_expected: Callable[[T], ValueAssertion[T]] = asrt.equals):
         super().__init__(expected_type, expected, value_assertion_from_expected)
         self._expected_single_dep_value = expected
 
@@ -157,7 +158,7 @@ class MultiDirDependentValueAssertion(DirDependentValueAssertionBase):
     def __init__(self,
                  expected_type,
                  expected: MultiDirDependentValue,
-                 value_assertion_from_expected: Callable[[T], asrt.ValueAssertion[T]] = asrt.equals):
+                 value_assertion_from_expected: Callable[[T], ValueAssertion[T]] = asrt.equals):
         super().__init__(expected_type, expected, value_assertion_from_expected)
         self._expected_multi_dep_value = expected
 

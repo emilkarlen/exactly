@@ -1,6 +1,7 @@
+from time import strftime, localtime
+
 import os
 from contextlib import contextmanager
-from time import strftime, localtime
 
 from exactly_lib import program_info
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -14,9 +15,10 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_util
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import SdsAction, \
     MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def sds_2_home_and_sds_assertion(assertion_on_sds: asrt.ValueAssertion):
+def sds_2_home_and_sds_assertion(assertion_on_sds: ValueAssertion):
     return asrt.sub_component('sds',
                               HomeAndSds.sds.fget,
                               assertion_on_sds)

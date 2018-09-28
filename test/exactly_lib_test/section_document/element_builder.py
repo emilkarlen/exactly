@@ -12,6 +12,7 @@ from exactly_lib_test.section_document.test_resources.source_location_assertions
     matches_source_location_info2
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
 
 
@@ -64,8 +65,8 @@ class TestBuild(unittest.TestCase):
 
     def _test_all_element_types(self,
                                 builder: sut.SectionContentElementBuilder,
-                                assertion_on_file_path: asrt.ValueAssertion[pathlib.Path],
-                                assertion_on_file_inclusion_chain: asrt.ValueAssertion[Sequence[SourceLocation]]
+                                assertion_on_file_path: ValueAssertion[pathlib.Path],
+                                assertion_on_file_inclusion_chain: ValueAssertion[Sequence[SourceLocation]]
                                 ):
         # ARRANGE #
         description = 'a description'

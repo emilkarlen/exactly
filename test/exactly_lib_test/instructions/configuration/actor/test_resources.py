@@ -16,6 +16,7 @@ from exactly_lib_test.test_case.test_resources.act_phase_instruction import inst
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def shell_command_syntax_for(command: str) -> str:
@@ -37,8 +38,8 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 sub_process_result_from_execute: asrt.ValueAssertion = asrt.anything_goes(),
-                 source_after_parse: asrt.ValueAssertion = asrt.anything_goes()):
+                 sub_process_result_from_execute: ValueAssertion = asrt.anything_goes(),
+                 source_after_parse: ValueAssertion = asrt.anything_goes()):
         self.sub_process_result_from_execute = sub_process_result_from_execute
         self.source_after_parse = source_after_parse
 

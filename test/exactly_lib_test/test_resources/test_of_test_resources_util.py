@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class TestException(Exception):
@@ -14,7 +14,7 @@ def test_case_with_failure_exception_set_to_test_exception() -> unittest.TestCas
     return put
 
 
-def assert_that_assertion_fails(assertion: asrt.ValueAssertion,
+def assert_that_assertion_fails(assertion: ValueAssertion,
                                 actual):
     put = test_case_with_failure_exception_set_to_test_exception()
     with put.assertRaises(TestException):

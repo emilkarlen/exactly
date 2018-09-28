@@ -8,6 +8,7 @@ from exactly_lib.test_case.phases.common import TestCaseInstruction, Instruction
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def single_line_source() -> ParseSource:
@@ -36,7 +37,7 @@ class TestCaseBase(unittest.TestCase):
         raise NotImplementedError()
 
 
-class RaisesTestError(asrt.ValueAssertion):
+class RaisesTestError(ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value,
@@ -44,7 +45,7 @@ class RaisesTestError(asrt.ValueAssertion):
         raise TestError()
 
 
-def raises_test_error() -> asrt.ValueAssertion:
+def raises_test_error() -> ValueAssertion:
     return RaisesTestError()
 
 

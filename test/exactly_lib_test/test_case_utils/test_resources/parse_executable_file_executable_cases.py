@@ -24,6 +24,7 @@ from exactly_lib_test.test_resources.files.file_structure import File, executabl
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class RelativityConfiguration:
@@ -64,7 +65,7 @@ class Arrangement:
 token_stream_is_null = assert_token_stream(is_null=asrt.is_true)
 
 
-def token_stream_has_remaining_source(source: str) -> asrt.ValueAssertion:
+def token_stream_has_remaining_source(source: str) -> ValueAssertion:
     return assert_token_stream(is_null=asrt.is_false,
                                remaining_source=asrt.equals(source))
 
@@ -91,7 +92,7 @@ class ExpectationOnExeFile:
 
 class Expectation:
     def __init__(self,
-                 source: asrt.ValueAssertion[ParseSource],
+                 source: ValueAssertion[ParseSource],
                  validation_result: validator_util.Expectation,
                  file_resolver_value: FileRef,
                  expected_symbol_references_of_file: list,
@@ -240,7 +241,7 @@ class CheckNonExistingFile(CheckBase):
             self._assert_does_not_pass_validation(exe_file, environment)
 
 
-def has_remaining_part_of_first_line(remaining_part: str) -> asrt.ValueAssertion[ParseSource]:
+def has_remaining_part_of_first_line(remaining_part: str) -> ValueAssertion[ParseSource]:
     return asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
                                             remaining_part_of_current_line=asrt.equals(
                                                 remaining_part))

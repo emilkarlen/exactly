@@ -32,6 +32,7 @@ from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -51,7 +52,7 @@ class TestFileAccessErrorShouldBeRaisedWhenFileIsInvalid(unittest.TestCase):
     def _check(self,
                root_source_file_path: Path,
                name_of_invalid_file: str,
-               expected_exception: asrt.ValueAssertion[FileAccessError],
+               expected_exception: ValueAssertion[FileAccessError],
                additional_dir_contents: DirContents = empty_dir_contents()):
         # ARRANGE #
         cases = [
@@ -217,7 +218,7 @@ class SingleFileInclusionCheckSetup:
                  sections_conf: SectionsConfiguration,
                  root_file_lines: List[str],
                  included_file_lines: List[str],
-                 expected_doc: Dict[str, Sequence[asrt.ValueAssertion[SectionContentElement]]]
+                 expected_doc: Dict[str, Sequence[ValueAssertion[SectionContentElement]]]
                  ):
         self.sections_conf = sections_conf
         self.root_file_lines = root_file_lines

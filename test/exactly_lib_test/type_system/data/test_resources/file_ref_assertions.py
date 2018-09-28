@@ -7,10 +7,11 @@ from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_valu
     SingleDirDependentValueAssertion
 from exactly_lib_test.test_case_file_structure.test_resources.path_relativity import equals_path_relativity
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources.path_part_assertions import equals_path_part
 
 
-def equals_file_ref(expected: FileRef) -> asrt.ValueAssertion:
+def equals_file_ref(expected: FileRef) -> ValueAssertion:
     return _AssertFileRefHasSpecifiedProperties(expected)
 
 

@@ -21,6 +21,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments i
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.test_resources import matcher_parse_check
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -38,15 +39,15 @@ class Configuration(matcher_parse_check.Configuration):
 
     def resolved_value_equals(self,
                               value: FileMatcher,
-                              references: asrt.ValueAssertion = asrt.is_empty_sequence,
-                              symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
+                              references: ValueAssertion = asrt.is_empty_sequence,
+                              symbols: symbol_table.SymbolTable = None) -> ValueAssertion:
         return resolved_value_equals_file_matcher(
             value,
             references,
             symbols
         )
 
-    def is_reference_to(self, symbol_name: str) -> asrt.ValueAssertion:
+    def is_reference_to(self, symbol_name: str) -> ValueAssertion:
         return is_file_matcher_reference_to(symbol_name)
 
     def resolver_of_constant_matcher(self, matcher: FileMatcher) -> SymbolValueResolver:
@@ -74,8 +75,8 @@ DESCRIPTION_IS_SINGLE_STR = asrt.matches_sequence([asrt.is_instance(str)])
 
 class Expectation:
     def __init__(self,
-                 resolver: asrt.ValueAssertion,
-                 source: asrt.ValueAssertion,
+                 resolver: ValueAssertion,
+                 source: ValueAssertion,
                  ):
         self.selector = resolver
         self.source = source

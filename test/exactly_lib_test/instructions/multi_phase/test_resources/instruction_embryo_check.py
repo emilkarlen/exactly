@@ -11,6 +11,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class PostActionCheck:
@@ -22,16 +23,16 @@ class PostActionCheck:
 
 class Expectation:
     def __init__(self,
-                 validation_pre_sds: asrt.ValueAssertion = asrt.is_none,
-                 validation_post_sds: asrt.ValueAssertion = asrt.is_none,
-                 main_result: asrt.ValueAssertion = asrt.anything_goes(),
-                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence,
-                 symbols_after_main: asrt.ValueAssertion = asrt.anything_goes(),
-                 main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                 side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                 side_effects_on_home: asrt.ValueAssertion = asrt.anything_goes(),
-                 source: asrt.ValueAssertion = asrt.anything_goes(),
-                 main_side_effect_on_environment_variables: asrt.ValueAssertion = asrt.anything_goes(),
+                 validation_pre_sds: ValueAssertion = asrt.is_none,
+                 validation_post_sds: ValueAssertion = asrt.is_none,
+                 main_result: ValueAssertion = asrt.anything_goes(),
+                 symbol_usages: ValueAssertion = asrt.is_empty_sequence,
+                 symbols_after_main: ValueAssertion = asrt.anything_goes(),
+                 main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
+                 side_effects_on_home_and_sds: ValueAssertion = asrt.anything_goes(),
+                 side_effects_on_home: ValueAssertion = asrt.anything_goes(),
+                 source: ValueAssertion = asrt.anything_goes(),
+                 main_side_effect_on_environment_variables: ValueAssertion = asrt.anything_goes(),
                  ):
         self.validation_pre_sds = validation_pre_sds
         self.validation_post_sds = validation_post_sds

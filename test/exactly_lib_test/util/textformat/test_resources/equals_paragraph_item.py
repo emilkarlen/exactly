@@ -9,19 +9,20 @@ from exactly_lib.util.textformat.structure.paragraph import Paragraph
 from exactly_lib.util.textformat.structure.table import Table
 from exactly_lib.util.textformat.structure.utils import ParagraphItemVisitor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.textformat.test_resources.structure import is_string_text
 
 
-def equals_paragraph_items(expected_items: list) -> asrt.ValueAssertion:
+def equals_paragraph_items(expected_items: list) -> ValueAssertion:
     return asrt.equals_sequence(expected_items,
                                 equals_paragraph_item)
 
 
-def equals_paragraph_item(expected: ParagraphItem) -> asrt.ValueAssertion:
+def equals_paragraph_item(expected: ParagraphItem) -> ValueAssertion:
     return _EqualsParagraphItem(expected)
 
 
-def equals_list_item(expected: HeaderContentListItem) -> asrt.ValueAssertion:
+def equals_list_item(expected: HeaderContentListItem) -> ValueAssertion:
     return asrt.is_instance_with(HeaderContentListItem,
                                  asrt.and_([
                                      asrt.sub_component('header',
@@ -33,12 +34,12 @@ def equals_list_item(expected: HeaderContentListItem) -> asrt.ValueAssertion:
                                  ]))
 
 
-def equals_list_items(expected: list) -> asrt.ValueAssertion:
+def equals_list_items(expected: list) -> ValueAssertion:
     return asrt.equals_sequence(expected,
                                 equals_list_item)
 
 
-def equals_list_format(expected: lists.Format) -> asrt.ValueAssertion:
+def equals_list_format(expected: lists.Format) -> ValueAssertion:
     return asrt.is_instance_with(
         lists.Format,
         asrt.and_([
@@ -57,15 +58,15 @@ def equals_list_format(expected: lists.Format) -> asrt.ValueAssertion:
         ]))
 
 
-def equals_text(expected: Text) -> asrt.ValueAssertion:
+def equals_text(expected: Text) -> ValueAssertion:
     return _EqualsText(expected)
 
 
-def equals_cross_reference_target(expected: core.CrossReferenceTarget) -> asrt.ValueAssertion:
+def equals_cross_reference_target(expected: core.CrossReferenceTarget) -> ValueAssertion:
     return asrt.is_instance(type(expected))
 
 
-class _EqualsParagraphItem(asrt.ValueAssertion):
+class _EqualsParagraphItem(ValueAssertion):
     def __init__(self, expected: ParagraphItem):
         self.expected = expected
 
@@ -79,7 +80,7 @@ class _EqualsParagraphItem(asrt.ValueAssertion):
         checker.visit(self.expected)
 
 
-class _EqualsText(asrt.ValueAssertion):
+class _EqualsText(ValueAssertion):
     def __init__(self, expected: Text):
         self.expected = expected
 
@@ -233,7 +234,7 @@ class _EqualsTextVisitor(TextVisitor):
                                   self._msg('Expecting a %s' % expected))
 
 
-def is_string_text_that_equals(expected: str) -> asrt.ValueAssertion:
+def is_string_text_that_equals(expected: str) -> ValueAssertion:
     return asrt.And([
         is_string_text,
         asrt.sub_component('value',

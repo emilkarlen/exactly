@@ -5,10 +5,11 @@ from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget, CrossReferenceId
 from exactly_lib_test.definitions.test_resources import cross_reference_id_va
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
-class _IsSeeAlsoItemVa(asrt.ValueAssertion):
+class _IsSeeAlsoItemVa(ValueAssertion):
     _class_assertion = asrt.IsInstance(struct.SeeAlsoItem)
 
     def apply(self,
@@ -39,7 +40,7 @@ class _IsSeeAlsoItem(struct.SeeAlsoItemVisitor):
         assertion.apply(self.put, x, self.message_builder)
 
 
-class _IsSeeAlsoTarget(asrt.ValueAssertion):
+class _IsSeeAlsoTarget(ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value,

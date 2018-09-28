@@ -5,13 +5,14 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.data.string_value import StringValue, StringFragment
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import MultiDirDependentValueAssertion
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def equals_string_value(expected: StringValue) -> asrt.ValueAssertion[StringValue]:
+def equals_string_value(expected: StringValue) -> ValueAssertion[StringValue]:
     return _AssertStringValueHasSpecifiedProperties(expected)
 
 
-def equals_string_fragment(expected: MultiDirDependentValue) -> asrt.ValueAssertion[StringFragment]:
+def equals_string_fragment(expected: MultiDirDependentValue) -> ValueAssertion[StringFragment]:
     return _AssertStringFragmentHasSpecifiedProperties(expected)
 
 

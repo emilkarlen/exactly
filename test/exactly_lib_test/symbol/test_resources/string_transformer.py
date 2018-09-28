@@ -9,6 +9,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class StringTransformerResolverConstantTestImpl(StringTransformerResolver):
@@ -33,6 +34,6 @@ class StringTransformerResolverConstantTestImpl(StringTransformerResolver):
 IS_STRING_TRANSFORMER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.STRING_TRANSFORMER)
 
 
-def is_reference_to_string_transformer(name_of_transformer: str) -> asrt.ValueAssertion:
+def is_reference_to_string_transformer(name_of_transformer: str) -> ValueAssertion:
     return asrt_sym_usage.matches_reference(asrt.equals(name_of_transformer),
                                             IS_STRING_TRANSFORMER_REFERENCE_RESTRICTION)

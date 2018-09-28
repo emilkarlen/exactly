@@ -6,10 +6,11 @@ from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import MultiDirDependentValueAssertion
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources import string_value_assertions as asrt_sv
 
 
-def equals_list_value(expected: ListValue) -> asrt.ValueAssertion:
+def equals_list_value(expected: ListValue) -> ValueAssertion:
     return _AssertListValueHasSpecifiedProperties(expected)
 
 

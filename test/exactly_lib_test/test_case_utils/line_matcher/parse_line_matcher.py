@@ -27,6 +27,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.source_case import So
 from exactly_lib_test.test_case_utils.test_resources import matcher_parse_check
 from exactly_lib_test.test_case_utils.test_resources.matcher_parse_check import Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes, surrounded_by_hard_quotes
 
@@ -45,15 +46,15 @@ class Configuration(matcher_parse_check.Configuration):
 
     def resolved_value_equals(self,
                               value: LineMatcher,
-                              references: asrt.ValueAssertion = asrt.is_empty_sequence,
-                              symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
+                              references: ValueAssertion = asrt.is_empty_sequence,
+                              symbols: symbol_table.SymbolTable = None) -> ValueAssertion:
         return resolved_value_equals_line_matcher(
             value,
             references,
             symbols
         )
 
-    def is_reference_to(self, symbol_name: str) -> asrt.ValueAssertion:
+    def is_reference_to(self, symbol_name: str) -> ValueAssertion:
         return is_line_matcher_reference_to(symbol_name)
 
     def resolver_of_constant_matcher(self, matcher: LineMatcher) -> SymbolValueResolver:
@@ -326,7 +327,7 @@ class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase)
 
 
 def resolved_value_is_regex_matcher(regex_str: str,
-                                    references: asrt.ValueAssertion = asrt.is_empty_sequence) -> asrt.ValueAssertion:
+                                    references: ValueAssertion = asrt.is_empty_sequence) -> ValueAssertion:
     expected_matcher = regex_matcher(regex_str)
     return resolved_value_equals_line_matcher(expected_matcher,
                                               references=references)
@@ -334,7 +335,7 @@ def resolved_value_is_regex_matcher(regex_str: str,
 
 def resolved_value_is_line_number_matcher(integer_matcher: IntegerMatcher,
                                           model_infos: list,
-                                          references: asrt.ValueAssertion = asrt.is_empty_sequence) -> asrt.ValueAssertion:
+                                          references: ValueAssertion = asrt.is_empty_sequence) -> ValueAssertion:
     expected_matcher = is_equivalent_to(LineMatcherLineNumber(integer_matcher),
                                         model_infos)
     return resolver_assertions.matches_resolver_of_line_matcher(references,

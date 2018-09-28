@@ -1,17 +1,18 @@
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream, LookAheadState
 from exactly_lib.util.parse.token import TokenType, Token
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def assert_token_stream(
-        source: asrt.ValueAssertion[str] = asrt.anything_goes(),
-        remaining_source: asrt.ValueAssertion[str] = asrt.anything_goes(),
-        remaining_part_of_current_line: asrt.ValueAssertion[str] = asrt.anything_goes(),
-        remaining_source_after_head: asrt.ValueAssertion[str] = asrt.anything_goes(),
-        is_null: asrt.ValueAssertion[bool] = asrt.anything_goes(),
-        head_token: asrt.ValueAssertion[Token] = asrt.anything_goes(),
-        look_ahead_state: asrt.ValueAssertion[LookAheadState] = asrt.anything_goes(),
-        position: asrt.ValueAssertion[int] = asrt.anything_goes()) -> asrt.ValueAssertion:
+        source: ValueAssertion[str] = asrt.anything_goes(),
+        remaining_source: ValueAssertion[str] = asrt.anything_goes(),
+        remaining_part_of_current_line: ValueAssertion[str] = asrt.anything_goes(),
+        remaining_source_after_head: ValueAssertion[str] = asrt.anything_goes(),
+        is_null: ValueAssertion[bool] = asrt.anything_goes(),
+        head_token: ValueAssertion[Token] = asrt.anything_goes(),
+        look_ahead_state: ValueAssertion[LookAheadState] = asrt.anything_goes(),
+        position: ValueAssertion[int] = asrt.anything_goes()) -> ValueAssertion:
     return asrt.is_instance_with(
         TokenStream,
         asrt.and_([
@@ -37,9 +38,9 @@ def assert_token_stream(
         ]))
 
 
-def assert_token(token_type: asrt.ValueAssertion = asrt.anything_goes(),
-                 string: asrt.ValueAssertion = asrt.anything_goes(),
-                 source_string: asrt.ValueAssertion = asrt.anything_goes()) -> asrt.ValueAssertion:
+def assert_token(token_type: ValueAssertion = asrt.anything_goes(),
+                 string: ValueAssertion = asrt.anything_goes(),
+                 source_string: ValueAssertion = asrt.anything_goes()) -> ValueAssertion:
     return asrt.And([
         asrt.is_instance(Token, 'Value to apply assertions on must be a {}'.format(
             Token)),
@@ -49,17 +50,17 @@ def assert_token(token_type: asrt.ValueAssertion = asrt.anything_goes(),
     ])
 
 
-def assert_token_string_is(expected: str) -> asrt.ValueAssertion:
+def assert_token_string_is(expected: str) -> ValueAssertion:
     return assert_token(string=asrt.equals(expected))
 
 
 def assert_quoted(string: str,
-                  source_string: str) -> asrt.ValueAssertion:
+                  source_string: str) -> ValueAssertion:
     return assert_token(token_type=asrt.equals(TokenType.QUOTED),
                         string=asrt.equals(string),
                         source_string=asrt.equals(source_string))
 
 
-def assert_plain(string: str) -> asrt.ValueAssertion:
+def assert_plain(string: str) -> ValueAssertion:
     return assert_token(token_type=asrt.equals(TokenType.PLAIN),
                         string=asrt.equals(string))

@@ -3,6 +3,7 @@ import unittest
 
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class ModelInfo:
@@ -18,11 +19,11 @@ class ModelInfo:
 
 
 def is_equivalent_to(expected_equivalent: Matcher,
-                     model_infos: list) -> asrt.ValueAssertion:
+                     model_infos: list) -> ValueAssertion:
     return MatcherEquivalenceAssertion(expected_equivalent, model_infos)
 
 
-class MatcherEquivalenceAssertion(asrt.ValueAssertion):
+class MatcherEquivalenceAssertion(ValueAssertion):
     def __init__(self,
                  expected_equivalent: Matcher,
                  model_infos: list):
@@ -56,7 +57,7 @@ class MatcherEquivalenceAssertion(asrt.ValueAssertion):
         application_assertions.apply(put, value, message_builder.for_sub_component('application'))
 
 
-class MatcherEquivalenceOfCaseAssertion(asrt.ValueAssertion):
+class MatcherEquivalenceOfCaseAssertion(ValueAssertion):
     def __init__(self,
                  expected_equivalent: Matcher,
                  model_info: ModelInfo):

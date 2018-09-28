@@ -1,6 +1,7 @@
+import time
+
 import os
 import re
-import time
 import unittest
 
 from exactly_lib.execution import phase_step_simple as step
@@ -18,6 +19,7 @@ from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and
     ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.test_resources.functions import Sequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -152,7 +154,7 @@ class AddPhaseToRecorderIfEnvironmentVariableIsSetForProcess:
             self.phases_that_contains_the_environment_variable.add(self.phase_step)
 
 
-class AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(asrt.ValueAssertion):
+class AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(ValueAssertion):
     def __init__(self,
                  phases_that_contains_the_environment_variable: set):
         self.phases_that_contains_the_environment_variable = phases_that_contains_the_environment_variable

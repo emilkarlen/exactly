@@ -31,6 +31,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
     OptionStringConfigurationForRelativityOption
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources import concrete_path_parts
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes_str
 
@@ -407,7 +408,7 @@ class TestFileRef(unittest.TestCase):
 class CommonExpectation:
     def __init__(self,
                  symbol_references: list,
-                 source: asrt.ValueAssertion,
+                 source: ValueAssertion,
                  symbol_table: SymbolTable = None):
         self.symbol_references = symbol_references
         self.source = source

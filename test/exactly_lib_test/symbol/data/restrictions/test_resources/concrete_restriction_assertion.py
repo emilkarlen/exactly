@@ -12,28 +12,29 @@ from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions, Refere
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.path_relativity import equals_path_relativity_variants
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 is_any_data_type_restriction = asrt.is_instance(AnyDataTypeRestriction)
 
 is_string_value_restriction = asrt.is_instance(StringRestriction)
 
 
-def equals_string_restriction(expected: StringRestriction) -> asrt.ValueAssertion:
+def equals_string_restriction(expected: StringRestriction) -> ValueAssertion:
     return is_string_value_restriction
 
 
-def equals_file_ref_relativity_restriction(expected: FileRefRelativityRestriction) -> asrt.ValueAssertion:
+def equals_file_ref_relativity_restriction(expected: FileRefRelativityRestriction) -> ValueAssertion:
     return asrt.is_instance_with(FileRefRelativityRestriction,
                                  asrt.sub_component('accepted',
                                                     FileRefRelativityRestriction.accepted.fget,
                                                     equals_path_relativity_variants(expected.accepted)))
 
 
-def equals_value_restriction(expected: ValueRestriction) -> asrt.ValueAssertion:
+def equals_value_restriction(expected: ValueRestriction) -> ValueAssertion:
     return _EqualsValueRestriction(expected)
 
 
-def is_value_failure(message: asrt.ValueAssertion) -> asrt.ValueAssertion:
+def is_value_failure(message: ValueAssertion) -> ValueAssertion:
     return asrt.is_instance_with(
         ValueRestrictionFailure,
         asrt.and_([
@@ -47,7 +48,7 @@ def is_value_failure(message: asrt.ValueAssertion) -> asrt.ValueAssertion:
     )
 
 
-def is_failure_of_direct_reference(message: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
+def is_failure_of_direct_reference(message: ValueAssertion = asrt.is_instance(str)) -> ValueAssertion:
     return asrt.is_instance_with(
         FailureOfDirectReference,
         asrt.sub_component('error',
@@ -56,10 +57,10 @@ def is_failure_of_direct_reference(message: asrt.ValueAssertion = asrt.is_instan
 
 
 def is_failure_of_indirect_reference(
-        failing_symbol: asrt.ValueAssertion = asrt.is_instance(str),
-        path_to_failing_symbol: asrt.ValueAssertion = asrt.is_instance(list),
-        error_message: asrt.ValueAssertion = asrt.is_instance(str),
-        meaning_of_failure: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
+        failing_symbol: ValueAssertion = asrt.is_instance(str),
+        path_to_failing_symbol: ValueAssertion = asrt.is_instance(list),
+        error_message: ValueAssertion = asrt.is_instance(str),
+        meaning_of_failure: ValueAssertion = asrt.is_instance(str)) -> ValueAssertion:
     return asrt.is_instance_with(FailureOfIndirectReference,
                                  asrt.and_([
                                      asrt.sub_component('failing_symbol',
@@ -77,7 +78,7 @@ def is_failure_of_indirect_reference(
                                  ]))
 
 
-class _EqualsValueRestriction(asrt.ValueAssertion):
+class _EqualsValueRestriction(ValueAssertion):
     def __init__(self, expected: ValueRestriction):
         self.expected = expected
 
@@ -108,10 +109,10 @@ class _EqualsValueRestrictionVisitor(ValueRestrictionVisitor):
 
 
 def matches_restrictions_on_direct_and_indirect(
-        assertion_on_direct: asrt.ValueAssertion = asrt.anything_goes(),
-        assertion_on_every: asrt.ValueAssertion = asrt.anything_goes(),
-        meaning_of_failure_of_indirect_reference: asrt.ValueAssertion = asrt.is_instance(str),
-) -> asrt.ValueAssertion[ReferenceRestrictions]:
+        assertion_on_direct: ValueAssertion = asrt.anything_goes(),
+        assertion_on_every: ValueAssertion = asrt.anything_goes(),
+        meaning_of_failure_of_indirect_reference: ValueAssertion = asrt.is_instance(str),
+) -> ValueAssertion[ReferenceRestrictions]:
     return asrt.is_instance_with(
         ReferenceRestrictionsOnDirectAndIndirect,
         asrt.and_([
@@ -129,11 +130,11 @@ def matches_restrictions_on_direct_and_indirect(
 
 
 def equals_data_type_reference_restrictions(expected: DataTypeReferenceRestrictions
-                                            ) -> asrt.ValueAssertion[ReferenceRestrictions]:
+                                            ) -> ValueAssertion[ReferenceRestrictions]:
     return _EQUALS_REFERENCE_RESTRICTIONS_VISITOR.visit(expected)
 
 
-def is_any_data_type_reference_restrictions() -> asrt.ValueAssertion[ReferenceRestrictions]:
+def is_any_data_type_reference_restrictions() -> ValueAssertion[ReferenceRestrictions]:
     return equals_data_type_reference_restrictions(is_any_data_type())
 
 
@@ -142,7 +143,7 @@ REFERENCES_ARE_UNRESTRICTED = matches_restrictions_on_direct_and_indirect(
     assertion_on_every=asrt.ValueIsNone())
 
 
-def equals_or_reference_restrictions(expected: OrReferenceRestrictions) -> asrt.ValueAssertion:
+def equals_or_reference_restrictions(expected: OrReferenceRestrictions) -> ValueAssertion:
     expected_sub_restrictions = [
         asrt.is_instance_with(OrRestrictionPart,
                               asrt.and_([
@@ -163,7 +164,7 @@ def equals_or_reference_restrictions(expected: OrReferenceRestrictions) -> asrt.
 
 
 def _equals_reference_restriction_on_direct_and_indirect(expected: ReferenceRestrictionsOnDirectAndIndirect
-                                                         ) -> asrt.ValueAssertion[ReferenceRestrictions]:
+                                                         ) -> ValueAssertion[ReferenceRestrictions]:
     return matches_restrictions_on_direct_and_indirect(
         assertion_on_direct=equals_value_restriction(expected.direct),
         assertion_on_every=asrt.is_none if expected.indirect is None else equals_value_restriction(expected.indirect)
@@ -171,10 +172,10 @@ def _equals_reference_restriction_on_direct_and_indirect(expected: ReferenceRest
 
 
 class _EqualsDataTypeReferenceRestrictionsVisitor(DataTypeReferenceRestrictionsVisitor):
-    def visit_direct_and_indirect(self, x: ReferenceRestrictionsOnDirectAndIndirect) -> asrt.ValueAssertion:
+    def visit_direct_and_indirect(self, x: ReferenceRestrictionsOnDirectAndIndirect) -> ValueAssertion:
         return _equals_reference_restriction_on_direct_and_indirect(x)
 
-    def visit_or(self, x: OrReferenceRestrictions) -> asrt.ValueAssertion:
+    def visit_or(self, x: OrReferenceRestrictions) -> ValueAssertion:
         return equals_or_reference_restrictions(x)
 
 

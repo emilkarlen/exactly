@@ -18,7 +18,7 @@ from exactly_lib_test.test_case.act_phase_handling.test_resources.test_actions i
     execute_action_that_returns_exit_code, \
     prepare_action_that_returns
 from exactly_lib_test.test_resources.actions import do_nothing, do_return
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class Arrangement(tuple):
@@ -70,13 +70,13 @@ class Arrangement(tuple):
 
 class Expectation(tuple):
     def __new__(cls,
-                result: asrt.ValueAssertion[PartialExeResult],
+                result: ValueAssertion[PartialExeResult],
                 step_recordings: list):
         return tuple.__new__(cls, (result,
                                    step_recordings))
 
     @property
-    def result(self) -> asrt.ValueAssertion[PartialExeResult]:
+    def result(self) -> ValueAssertion[PartialExeResult]:
         return self[0]
 
     @property
