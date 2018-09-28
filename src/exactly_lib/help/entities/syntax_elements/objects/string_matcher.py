@@ -15,6 +15,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_as
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import FILE_ARGUMENT_OPTION
+from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -26,7 +27,8 @@ _RELATIVITY_OF_EXPECTED_PATH_NAME = 'RELATIVITY-OF-EXPECTED-PATH'
 
 class _StringMatcherDocumentation(SyntaxElementDocumentation):
     def __init__(self):
-        super().__init__(None, syntax_elements.STRING_MATCHER)
+        super().__init__(TypeCategory.LOGIC,
+                         syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT)
 
         self.expected_file_arg = a.Option(FILE_ARGUMENT_OPTION,
                                           _EXPECTED_PATH_NAME)
@@ -49,7 +51,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
 
     def syntax_element_description(self) -> SyntaxElementDescription:
         return SyntaxElementDescription(
-            syntax_elements.STRING_MATCHER.argument.name,
+            syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.argument.name,
             [],
             self.invokation_variants()
         )

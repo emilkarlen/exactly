@@ -139,7 +139,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         from exactly_lib.definitions.entity import types
         name_and_cross_refs = [types.FILE_MATCHER_TYPE_INFO,
                                types.STRING_TRANSFORMER_TYPE_INFO,
-                               syntax_elements.STRING_MATCHER,
+                               syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
                                syntax_elements.PATH_SYNTAX_ELEMENT,
                                syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT]
         name_and_cross_refs += rel_path_doc.see_also_name_and_cross_refs(ACTUAL_RELATIVITY_CONFIGURATION.options)
