@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 
 
-class FileMatcher(Matcher):
+class FileMatcher(Matcher[pathlib.Path]):
     """Matches a path of an existing file."""
 
     def matches(self, path: pathlib.Path) -> bool:
