@@ -13,24 +13,13 @@ from exactly_lib.util.textformat.structure.core import Text
 from exactly_lib.util.textformat.structure.document import ArticleContents
 
 
-def paragraphs_contents(paragraphs: Iterable[ParagraphItemsConstructor]) -> SectionContentsConstructor:
-    return contents(paragraphs)
-
-
 def constant_contents(section_contents: docs.SectionContents) -> SectionContentsConstructor:
     return _ConstantSectionContentsConstructor(section_contents)
 
 
-def contents(initial_paragraphs: Iterable[ParagraphItemsConstructor] = (),
+def contents(initial_paragraphs: ParagraphItemsConstructor = paragraphs.empty(),
              sub_sections: Iterable[SectionConstructor] = (),
              ) -> SectionContentsConstructor:
-    return _SectionContents(initial_paragraphs,
-                            sub_sections)
-
-
-def contents2(initial_paragraphs: ParagraphItemsConstructor = paragraphs.empty(),
-              sub_sections: Iterable[SectionConstructor] = (),
-              ) -> SectionContentsConstructor:
     return _SectionContents([initial_paragraphs],
                             sub_sections)
 
