@@ -105,6 +105,9 @@ A suite is made up of "sections". The sections are:
 """
 
 _FILE_SYNTAX = """\
+Syntax is line oriented.
+
+
 "{generic_section:syntax}" on a single line declares the start of section "{generic_section:plain}".
 
 
