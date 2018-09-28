@@ -25,7 +25,7 @@ class FileMatcherResolverConstantTestImpl(FileMatcherResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    def resolve(self, named_elements: SymbolTable) -> FileMatcher:
+    def resolve(self, symbols: SymbolTable) -> FileMatcher:
         return self._resolved_value
 
 
