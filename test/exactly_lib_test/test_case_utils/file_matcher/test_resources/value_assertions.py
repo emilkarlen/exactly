@@ -4,7 +4,7 @@ from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherStructureVisitor
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 def equals_file_matcher(expected: FileMatcher,
@@ -15,17 +15,17 @@ def equals_file_matcher(expected: FileMatcher,
     return _EqualsAssertion(expected, description)
 
 
-class _EqualsAssertion(ValueAssertion):
+class _EqualsAssertion(ValueAssertionBase):
     def __init__(self,
                  expected: FileMatcher,
                  description: str):
         self.expected = expected
         self.description = description
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         assert_is_file_selector_type = asrt.is_instance(FileMatcher, self.description)
         assert_is_file_selector_type.apply_with_message(put, value,
                                                         'Value must be a ' + str(FileMatcher))

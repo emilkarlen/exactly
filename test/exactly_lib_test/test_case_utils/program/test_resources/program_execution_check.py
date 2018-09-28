@@ -25,7 +25,8 @@ from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction, home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion, \
+    ValueAssertionBase
 
 
 class ResultWithTransformationData:
@@ -47,7 +48,7 @@ def assert_process_result_data(exitcode: ValueAssertion[int] = asrt.anything_goe
                                                  contents_after_transformation)
 
 
-class ResultWithTransformationDataAssertion(ValueAssertion[ResultWithTransformationData]):
+class ResultWithTransformationDataAssertion(ValueAssertionBase[ResultWithTransformationData]):
     def __init__(self,
                  exitcode: ValueAssertion[int] = asrt.anything_goes(),
                  stdout_contents: ValueAssertion[str] = asrt.anything_goes(),
@@ -59,10 +60,10 @@ class ResultWithTransformationDataAssertion(ValueAssertion[ResultWithTransformat
         self.stderr_contents = stderr_contents
         self.contents_after_transformation = contents_after_transformation
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: MessageBuilder = MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: MessageBuilder):
         put.assertIsInstance(value, ResultWithTransformationData,
                              message_builder.apply("result object class"))
         assert isinstance(value, ResultWithTransformationData)  # Type info for IDE

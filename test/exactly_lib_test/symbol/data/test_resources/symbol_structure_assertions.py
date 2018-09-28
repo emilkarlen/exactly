@@ -4,7 +4,7 @@ from exactly_lib.symbol import resolver_structure as rs, symbol_usage as su
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib_test.symbol.data.test_resources.any_resolver_assertions import equals_resolver
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
 
 
@@ -45,7 +45,7 @@ def equals_symbol_table(expected: rs.SymbolTable,
     return _EqualsSymbolTable(expected, ignore_source_line)
 
 
-class _EqualsSymbolTable(ValueAssertion):
+class _EqualsSymbolTable(ValueAssertionBase):
     def __init__(self,
                  expected: rs.SymbolTable,
                  ignore_source_line: bool = True
@@ -53,10 +53,10 @@ class _EqualsSymbolTable(ValueAssertion):
         self.ignore_source_line = ignore_source_line
         self.expected = expected
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, rs.SymbolTable)
         assert isinstance(value, rs.SymbolTable)
         put.assertEqual(self.expected.names_set,

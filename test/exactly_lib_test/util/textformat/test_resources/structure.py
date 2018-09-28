@@ -7,7 +7,7 @@ from exactly_lib.util.textformat.structure.paragraph import Paragraph
 from exactly_lib.util.textformat.structure.table import Table, TableFormat, TableCell
 from exactly_lib.util.textformat.structure.utils import ParagraphItemVisitor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 def is_paragraph_item_list(name: str = '') -> ValueAssertion:
@@ -74,11 +74,11 @@ is_text = asrt.Or([
 ])
 
 
-class _IsParagraphItem(ParagraphItemVisitor, ValueAssertion):
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+class _IsParagraphItem(ParagraphItemVisitor, ValueAssertionBase):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         self.put = put
         self.message_builder = message_builder
         self.visit(value)

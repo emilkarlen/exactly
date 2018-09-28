@@ -6,18 +6,17 @@ from exactly_lib.execution.phase_step import PhaseStep, SimplePhaseStep
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib_test.test_case.test_resources.phase_assertions import equals_simple_phase_step
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources import failure_details_assertions as asrt_failure_details
 from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line_sequence
 
 
-class ExpectedFailure(ValueAssertion[Optional[FailureInfo]]):
-
-    def apply(self,
-              put: unittest.TestCase,
-              value: FailureInfo,
-              message_builder: MessageBuilder = MessageBuilder()):
+class ExpectedFailure(ValueAssertionBase[Optional[FailureInfo]]):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: FailureInfo,
+               message_builder: MessageBuilder):
         self._assertions(put, value)
 
     def _assertions(self,

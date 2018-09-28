@@ -9,7 +9,7 @@ from exactly_lib.util.textformat.structure.paragraph import Paragraph
 from exactly_lib.util.textformat.structure.table import Table
 from exactly_lib.util.textformat.structure.utils import ParagraphItemVisitor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 from exactly_lib_test.util.textformat.test_resources.structure import is_string_text
 
 
@@ -66,28 +66,28 @@ def equals_cross_reference_target(expected: core.CrossReferenceTarget) -> ValueA
     return asrt.is_instance(type(expected))
 
 
-class _EqualsParagraphItem(ValueAssertion):
+class _EqualsParagraphItem(ValueAssertionBase):
     def __init__(self, expected: ParagraphItem):
         self.expected = expected
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         checker = _EqualsParagraphItemVisitor(value,
                                               put,
                                               message_builder)
         checker.visit(self.expected)
 
 
-class _EqualsText(ValueAssertion):
+class _EqualsText(ValueAssertionBase):
     def __init__(self, expected: Text):
         self.expected = expected
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         checker = _EqualsTextVisitor(value,
                                      put,
                                      message_builder)

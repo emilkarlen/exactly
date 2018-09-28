@@ -13,7 +13,7 @@ from exactly_lib_test.symbol.test_resources import symbol_reference_assertions a
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_type_category_restriction
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import matches_reference_2
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 def equals_symbol_reference_with_restriction_on_direct_target(expected_name: str,
@@ -39,7 +39,7 @@ def equals_symbol_references(expected: Sequence[SymbolReference]) -> ValueAssert
     return _EqualsSymbolReferences(expected)
 
 
-class _EqualsSymbolReferences(ValueAssertion):
+class _EqualsSymbolReferences(ValueAssertionBase):
     def __init__(self, expected: Sequence[SymbolReference]):
         self._expected = expected
         assert isinstance(expected, Sequence), 'Symbol reference list must be a Sequence'
@@ -47,10 +47,10 @@ class _EqualsSymbolReferences(ValueAssertion):
             assert isinstance(element,
                               su.SymbolReference), 'Element must be a SymbolReference #' + str(idx)
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, Sequence,
                              'Expects a Sequence of symbol references')
         put.assertEqual(len(self._expected),

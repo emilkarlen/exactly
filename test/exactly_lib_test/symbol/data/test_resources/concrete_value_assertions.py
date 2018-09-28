@@ -15,7 +15,7 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.symbol.test_resources import resolver_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 from exactly_lib_test.type_system.data.test_resources.file_ref_assertions import equals_file_ref
 from exactly_lib_test.type_system.data.test_resources.string_value_assertions import equals_string_value, \
     equals_string_fragment
@@ -75,33 +75,33 @@ def equals_string_resolver(expected: StringResolver,
                                                           symbols)
 
 
-class _EqualsStringFragmentAssertionForStringConstant(ValueAssertion):
+class _EqualsStringFragmentAssertionForStringConstant(ValueAssertionBase):
     def __init__(self, expected: ConstantStringFragmentResolver):
         self.expected = expected
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, ConstantStringFragmentResolver)
         assert isinstance(value, ConstantStringFragmentResolver)  # Type info for IDE
 
         put.assertTrue(value.is_string_constant,
-                       'is_string_constant')
+                       message_builder.apply('is_string_constant'))
 
         put.assertEqual(self.expected.string_constant,
                         value.string_constant,
-                        'string_constant')
+                        message_builder.apply('string_constant'))
 
 
-class _EqualsStringFragmentAssertionForSymbolReference(ValueAssertion):
+class _EqualsStringFragmentAssertionForSymbolReference(ValueAssertionBase):
     def __init__(self, expected: SymbolStringFragmentResolver):
         self.expected = expected
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, SymbolStringFragmentResolver)
         assert isinstance(value, SymbolStringFragmentResolver)  # Type info for IDE
 
@@ -113,15 +113,15 @@ class _EqualsStringFragmentAssertionForSymbolReference(ValueAssertion):
                         'symbol_name')
 
 
-class _EqualsStringFragmentAssertion(ValueAssertion[StringFragmentResolver]):
+class _EqualsStringFragmentAssertion(ValueAssertionBase[StringFragmentResolver]):
     def __init__(self,
                  expected: StringFragmentResolver):
         self.expected = expected
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, StringFragmentResolver)
         assert isinstance(value, StringFragmentResolver)  # Type info for IDE
         symbols = symbol_table_with_values_matching_references(self.expected.references)
@@ -170,7 +170,7 @@ class _EqualsStringFragmentAssertion(ValueAssertion[StringFragmentResolver]):
         assertion.apply(put, value, message_builder)
 
 
-class _EqualsStringFragments(ValueAssertion):
+class _EqualsStringFragments(ValueAssertionBase):
     def __init__(self, expected: tuple):
         self._expected = expected
         assert isinstance(expected, tuple), 'Value reference list must be a tuple'
@@ -179,10 +179,10 @@ class _EqualsStringFragments(ValueAssertion):
             assert isinstance(element, StringFragmentResolver), 'Element must be a StringFragment #' + str(idx)
             self._sequence_of_element_assertions.append(equals_string_fragment_resolver_with_exact_type(element))
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, tuple,
                              'Expects a tuple of StringFragments')
         asrt.matches_sequence(self._sequence_of_element_assertions).apply(put, value, message_builder)

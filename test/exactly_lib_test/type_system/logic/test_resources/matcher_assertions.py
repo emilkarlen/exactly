@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 class ModelInfo:
@@ -23,17 +23,17 @@ def is_equivalent_to(expected_equivalent: Matcher,
     return MatcherEquivalenceAssertion(expected_equivalent, model_infos)
 
 
-class MatcherEquivalenceAssertion(ValueAssertion):
+class MatcherEquivalenceAssertion(ValueAssertionBase):
     def __init__(self,
                  expected_equivalent: Matcher,
                  model_infos: list):
         self.expected_equivalent = expected_equivalent
         self._model_infos = model_infos
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, Matcher)
         assert isinstance(value, Matcher)  # Type info for IDE
 
@@ -57,17 +57,17 @@ class MatcherEquivalenceAssertion(ValueAssertion):
         application_assertions.apply(put, value, message_builder.for_sub_component('application'))
 
 
-class MatcherEquivalenceOfCaseAssertion(ValueAssertion):
+class MatcherEquivalenceOfCaseAssertion(ValueAssertionBase):
     def __init__(self,
                  expected_equivalent: Matcher,
                  model_info: ModelInfo):
         self._expected_equivalent = expected_equivalent
         self._model_info = model_info
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, Matcher)
         assert isinstance(value, Matcher)  # Type info for IDE
 

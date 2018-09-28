@@ -4,7 +4,7 @@ from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherSt
     LineMatcherRegex, LineMatcherNot, LineMatcherAnd, LineMatcherOr, LineMatcherLineNumber
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 def equals_line_matcher(expected: LineMatcher,
@@ -15,17 +15,17 @@ def equals_line_matcher(expected: LineMatcher,
     return _EqualsAssertion(expected, description)
 
 
-class _EqualsAssertion(ValueAssertion):
+class _EqualsAssertion(ValueAssertionBase):
     def __init__(self,
                  expected: LineMatcher,
                  description: str):
         self.expected = expected
         self.description = description
 
-    def apply(self,
-              put: unittest.TestCase,
-              actual,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               actual,
+               message_builder: asrt.MessageBuilder):
         assert_is_file_selector_type = asrt.is_instance(LineMatcher, self.description)
         assert_is_file_selector_type.apply_with_message(put, actual,
                                                         'Value must be a ' + type(LineMatcher).__name__)

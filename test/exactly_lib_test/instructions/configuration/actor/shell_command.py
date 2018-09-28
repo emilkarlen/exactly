@@ -12,7 +12,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import home_popula
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 def suite() -> unittest.TestSuite:
@@ -60,11 +60,11 @@ class _ShellExecutionCheckerHelper:
 
 def initial_part_of_command_without_file_argument_is(
         expected_command_except_final_file_name_part: str) -> ValueAssertion:
-    class RetClass(ValueAssertion):
-        def apply(self,
-                  put: unittest.TestCase,
-                  actual_cmd_and_args: str,
-                  message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    class RetClass(ValueAssertionBase):
+        def _apply(self,
+                   put: unittest.TestCase,
+                   actual_cmd_and_args: str,
+                   message_builder: asrt.MessageBuilder):
             put.assertTrue(len(actual_cmd_and_args) > len(expected_command_except_final_file_name_part),
                            'Command line string is expected to contain at least the argument of the instruction')
             command_head = actual_cmd_and_args[:len(expected_command_except_final_file_name_part)]
@@ -77,11 +77,11 @@ def initial_part_of_command_without_file_argument_is(
 def is_interpreter_file_and_args(interpreter: str,
                                  file_name_base: str,
                                  args: str) -> ValueAssertion:
-    class RetClass(ValueAssertion):
-        def apply(self,
-                  put: unittest.TestCase,
-                  actual_cmd_and_args: str,
-                  message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    class RetClass(ValueAssertionBase):
+        def _apply(self,
+                   put: unittest.TestCase,
+                   actual_cmd_and_args: str,
+                   message_builder: asrt.MessageBuilder):
             put.assertEqual(interpreter + ' ',
                             actual_cmd_and_args[:len(interpreter) + 1],
                             'First part of string should be equal to the interpreter')

@@ -20,7 +20,7 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformerVa
 from exactly_lib.type_system.value_type import TypeCategory, ValueType, LogicValueType, DataValueType
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 def matches_resolver(resolver_type: ValueAssertion[rs.SymbolValueResolver],
@@ -177,7 +177,7 @@ def matches_resolver_of_program(references: ValueAssertion[Sequence[SymbolRefere
                             symbol_table_from_none_or_value(symbols))
 
 
-class _MatchesSymbolValueResolver(ValueAssertion[rs.SymbolValueResolver]):
+class _MatchesSymbolValueResolver(ValueAssertionBase[rs.SymbolValueResolver]):
     """Implements as class to make it possible to set break points"""
 
     def __init__(self,
@@ -192,10 +192,10 @@ class _MatchesSymbolValueResolver(ValueAssertion[rs.SymbolValueResolver]):
         self.custom = custom
         self.symbols = symbols
 
-    def apply(self,
-              put: unittest.TestCase,
-              value: rs.SymbolValueResolver,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: rs.SymbolValueResolver,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, rs.SymbolValueResolver,
                              message_builder.apply("resolver type"))
 

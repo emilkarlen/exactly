@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 def is_result_for_exit_value(expected: ExitValue) -> ValueAssertion[SubProcessResult]:
@@ -41,7 +41,7 @@ def sub_process_result(exitcode: ValueAssertion = asrt.anything_goes(),
                                  ]))
 
 
-class _SubProcessResultAssertion(ValueAssertion[SubProcessResult]):
+class _SubProcessResultAssertion(ValueAssertionBase[SubProcessResult]):
     def __init__(self,
                  exitcode: ValueAssertion = asrt.anything_goes(),
                  stdout: ValueAssertion = asrt.anything_goes(),
@@ -51,10 +51,10 @@ class _SubProcessResultAssertion(ValueAssertion[SubProcessResult]):
         self._stdout = stdout
         self._stderr = stderr
 
-    def apply(self,
-              put: unittest.TestCase,
-              value: SubProcessResult,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: SubProcessResult,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value,
                              SubProcessResult,
                              message_builder.for_sub_component('class of result object').apply(
@@ -71,17 +71,17 @@ class _SubProcessResultAssertion(ValueAssertion[SubProcessResult]):
                            message_builder.for_sub_component('stderr' + msg_info))
 
 
-class SubProcessExitValueAssertion(ValueAssertion[SubProcessResult]):
+class SubProcessExitValueAssertion(ValueAssertionBase[SubProcessResult]):
     def __init__(self,
                  expected: ExitValue,
                  message: str = None):
         self.expected = expected
         self.message = message
 
-    def apply(self,
-              put: unittest.TestCase,
-              value: SubProcessResult,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: SubProcessResult,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value,
                              SubProcessResult,
                              message_builder.for_sub_component('class of result object').apply(

@@ -34,7 +34,7 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as va_str
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 from exactly_lib_test.util.process_execution.sub_process_execution import assert_dir_contains_at_least_result_files
 from exactly_lib_test.util.test_resources import py_program as py
 
@@ -253,7 +253,7 @@ class TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessag
             self.conf.expect_failure_of_main(va_str.contains('output on stderr')))
 
 
-class _InstructionLogDirContainsOutFiles(ValueAssertion):
+class _InstructionLogDirContainsOutFiles(ValueAssertionBase[SandboxDirectoryStructure]):
     def __init__(self,
                  phase: Phase,
                  source_info: InstructionSourceInfo,
@@ -262,10 +262,10 @@ class _InstructionLogDirContainsOutFiles(ValueAssertion):
         self.source_info = source_info
         self.expected_files_contents = expected_files_contents
 
-    def apply(self,
-              put: unittest.TestCase,
-              sds: SandboxDirectoryStructure,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               sds: SandboxDirectoryStructure,
+               message_builder: asrt.MessageBuilder):
         logging_paths = PhaseLoggingPaths(sds.log_dir, self.phase.identifier)
         the_instruction_log_dir = instruction_log_dir(logging_paths, self.source_info)
         assert_dir_contains_at_least_result_files(self.expected_files_contents).apply(put,

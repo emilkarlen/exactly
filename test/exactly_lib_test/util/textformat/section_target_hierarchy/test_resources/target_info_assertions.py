@@ -4,7 +4,7 @@ from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetI
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.core import CrossReferenceTarget
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 from exactly_lib_test.util.textformat.test_resources.structure import is_string_text
 
 is_target_info = asrt.And([
@@ -34,7 +34,7 @@ def equals_target_info_node(expected: TargetInfoNode,
     return _TargetInfoNodeEqual(expected, mk_equals_cross_ref_id)
 
 
-class _IsTargetInfoAndEquals(ValueAssertion):
+class _IsTargetInfoAndEquals(ValueAssertionBase):
     def __init__(self,
                  expected: TargetInfo,
                  mk_equals_cross_ref_id
@@ -42,10 +42,10 @@ class _IsTargetInfoAndEquals(ValueAssertion):
         self.expected = expected
         self.mk_equals_cross_ref_id = mk_equals_cross_ref_id
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         is_target_info.apply(put, value, message_builder)
         assert isinstance(value, TargetInfo)
         put.assertEqual(self.expected.presentation_text.value,
@@ -61,11 +61,11 @@ class _IsTargetInfoAndEquals(ValueAssertion):
                         message_builder.for_sub_component('target'))
 
 
-class _IsTargetInfoNode(ValueAssertion):
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+class _IsTargetInfoNode(ValueAssertionBase):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         _is_TargetInfoNodeObject_shallow.apply(put, value, message_builder)
         asrt.sub_component_list('children',
                                 TargetInfoNode.children.fget,
@@ -101,7 +101,7 @@ def _equals_target_info_node__shallow(expected: TargetInfoNode,
     ])
 
 
-class _TargetInfoNodeEqual(ValueAssertion):
+class _TargetInfoNodeEqual(ValueAssertionBase):
     def __init__(self,
                  expected: TargetInfoNode,
                  mk_equals_cross_ref_id,
@@ -109,10 +109,10 @@ class _TargetInfoNodeEqual(ValueAssertion):
         self.expected = expected
         self.mk_equals_cross_ref_id = mk_equals_cross_ref_id
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         assertion_on_shallow = _equals_target_info_node__shallow(self.expected,
                                                                  self.mk_equals_cross_ref_id)
         assertion_on_shallow.apply(put, value, message_builder)

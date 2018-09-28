@@ -5,17 +5,17 @@ from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget, CrossReferenceId
 from exactly_lib_test.definitions.test_resources import cross_reference_id_va
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
-class _IsSeeAlsoItemVa(ValueAssertion):
+class _IsSeeAlsoItemVa(ValueAssertionBase):
     _class_assertion = asrt.IsInstance(struct.SeeAlsoItem)
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         self._class_assertion.apply(put, value, message_builder)
         _IsSeeAlsoItem(put, message_builder).visit(value)
 
@@ -40,11 +40,11 @@ class _IsSeeAlsoItem(struct.SeeAlsoItemVisitor):
         assertion.apply(self.put, x, self.message_builder)
 
 
-class _IsSeeAlsoTarget(ValueAssertion):
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+class _IsSeeAlsoTarget(ValueAssertionBase):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         if isinstance(value, CrossReferenceId):
             cross_reference_id_va.is_any.apply_with_message(put,
                                                             value,

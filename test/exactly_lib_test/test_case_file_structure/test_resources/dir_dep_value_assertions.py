@@ -7,7 +7,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 T = TypeVar('T')
 
@@ -33,7 +33,7 @@ def matches_multi_dir_dependent_value(dir_dependencies: DirDependencies,
                                            resolved_value)
 
 
-class DirDependentValueAssertionBase(Generic[T], ValueAssertion[DirDependentValue[T]]):
+class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[DirDependentValue[T]]):
     def __init__(self,
                  resolving_dependencies: ValueAssertion[Set[DirectoryStructurePartition]],
                  resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
@@ -48,10 +48,10 @@ class DirDependentValueAssertionBase(Generic[T], ValueAssertion[DirDependentValu
                                     message_builder: asrt.MessageBuilder):
         raise NotImplementedError('abstract method')
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         asrt.is_instance(DirDependentValue).apply(put, value, message_builder)
         assert isinstance(value, DirDependentValue)  # Type info for IDE
 
