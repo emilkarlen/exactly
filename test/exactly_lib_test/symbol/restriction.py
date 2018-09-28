@@ -51,7 +51,7 @@ class TestElementTypeRestriction(unittest.TestCase):
                 restriction_to_check = sut.TypeCategoryRestriction(expected_element_type)
                 # ACT
                 error_message = restriction_to_check.is_satisfied_by(symbols,
-                                                                     'name of element',
+                                                                     'symbol name',
                                                                      container_of_resolver)
                 # ASSERT #
                 self.assertIsNone(error_message)
@@ -72,7 +72,7 @@ class TestElementTypeRestriction(unittest.TestCase):
                 restriction_to_check = sut.TypeCategoryRestriction(expected_element_type)
                 # ACT
                 error_message = restriction_to_check.is_satisfied_by(symbols,
-                                                                     'name of element',
+                                                                     'symbol name',
                                                                      container_of_unexpected)
                 # ASSERT #
                 self.assertIsNotNone(error_message)
@@ -123,7 +123,7 @@ class TestValueTypeRestriction(unittest.TestCase):
                 restriction_to_check = sut.ValueTypeRestriction(expected_value_type)
                 # ACT
                 error_message = restriction_to_check.is_satisfied_by(symbols,
-                                                                     'name of element',
+                                                                     'symbol name',
                                                                      container_of_resolver)
                 # ASSERT #
                 self.assertIsNone(error_message)
@@ -147,7 +147,7 @@ class TestValueTypeRestriction(unittest.TestCase):
                 restriction_to_check = sut.ValueTypeRestriction(expected_value_type)
                 # ACT
                 error_message = restriction_to_check.is_satisfied_by(symbols,
-                                                                     'name of element',
+                                                                     'symbol name',
                                                                      container_of_unexpected)
                 # ASSERT #
                 self.assertIsNotNone(error_message)
