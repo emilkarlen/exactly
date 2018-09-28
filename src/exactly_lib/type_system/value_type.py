@@ -1,24 +1,30 @@
+import enum
 from enum import Enum
 
 
+@enum.unique
 class TypeCategory(Enum):
     DATA = 1
     LOGIC = 2
 
 
+@enum.unique
 class DataValueType(Enum):
     STRING = 0
     PATH = 1
     LIST = 2
 
 
+@enum.unique
 class LogicValueType(Enum):
     LINE_MATCHER = 1
     FILE_MATCHER = 2
-    STRING_TRANSFORMER = 3
-    PROGRAM = 4
+    STRING_MATCHER = 3
+    STRING_TRANSFORMER = 4
+    PROGRAM = 5
 
 
+@enum.unique
 class ValueType(Enum):
     STRING = 0
     PATH = 1
@@ -26,8 +32,9 @@ class ValueType(Enum):
 
     LINE_MATCHER = 3
     FILE_MATCHER = 4
-    STRING_TRANSFORMER = 5
-    PROGRAM = 6
+    STRING_MATCHER = 5
+    STRING_TRANSFORMER = 6
+    PROGRAM = 7
 
 
 VALUE_TYPE_2_TYPE_CATEGORY = {
@@ -37,6 +44,7 @@ VALUE_TYPE_2_TYPE_CATEGORY = {
 
     ValueType.FILE_MATCHER: TypeCategory.LOGIC,
     ValueType.LINE_MATCHER: TypeCategory.LOGIC,
+    ValueType.STRING_MATCHER: TypeCategory.LOGIC,
     ValueType.STRING_TRANSFORMER: TypeCategory.LOGIC,
     ValueType.PROGRAM: TypeCategory.LOGIC,
 }
