@@ -6,6 +6,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.type_system.logic.string_matcher import StringMatcherValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
 from exactly_lib.type_system.value_type import DataValueType, ValueType, TypeCategory, LogicValueType
 from exactly_lib.util.line_source import LineSequence
@@ -99,6 +100,25 @@ class LineMatcherResolver(LogicValueResolver):
         raise NotImplementedError('abstract method')
 
     def resolve(self, symbols: SymbolTable) -> LineMatcher:
+        raise NotImplementedError('abstract method')
+
+
+class StringMatcherResolver(LogicValueResolver):
+    """ Base class for resolvers of :class:`StringMatcherValue`. """
+
+    @property
+    def logic_value_type(self) -> LogicValueType:
+        return LogicValueType.STRING_MATCHER
+
+    @property
+    def value_type(self) -> ValueType:
+        return ValueType.STRING_MATCHER
+
+    @property
+    def references(self) -> list:
+        raise NotImplementedError('abstract method')
+
+    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
         raise NotImplementedError('abstract method')
 
 

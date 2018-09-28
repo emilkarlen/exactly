@@ -3,7 +3,7 @@ from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.resolver_structure import SymbolContainer, StringTransformerResolver, LineMatcherResolver, \
-    FileMatcherResolver
+    FileMatcherResolver, StringMatcherResolver
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue
@@ -56,6 +56,13 @@ def lookup_file_matcher(symbols: SymbolTable, name: str) -> FileMatcherResolver:
     container = lookup_container(symbols, name)
     ret_val = container.resolver
     assert isinstance(ret_val, FileMatcherResolver), 'Referenced symbol must be FileMatcherResolver'
+    return ret_val
+
+
+def lookup_string_matcher(symbols: SymbolTable, name: str) -> StringMatcherResolver:
+    container = lookup_container(symbols, name)
+    ret_val = container.resolver
+    assert isinstance(ret_val, StringMatcherResolver), 'Referenced symbol must be StringMatcherResolver'
     return ret_val
 
 
