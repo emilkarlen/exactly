@@ -10,7 +10,7 @@ class FailureInfo:
 
 class ReferenceRestrictions:
     """
-    Restrictions on a referenced named element
+    Restrictions on a referenced symbol
     """
 
     def is_satisfied_by(self,

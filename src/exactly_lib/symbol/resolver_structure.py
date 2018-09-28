@@ -160,7 +160,7 @@ def get_data_value_type(resolver: DataValueResolver) -> DataValueType:
 
 class SymbolContainer(SymbolTableValue):
     """
-    The info about a named element resolver that is stored in a symbol table.
+    The info about a symbol resolver that is stored in a symbol table.
 
     A value together with meta info
     """
