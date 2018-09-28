@@ -5,7 +5,7 @@ from exactly_lib.type_system.logic.program.stdin_data_values import StdinData
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.process_execution.command import Command
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import string_transformer_assertions as asrt_line_trans
 from exactly_lib_test.util.test_resources import command_assertions as asrt_command
@@ -41,7 +41,7 @@ def matches_py_source_on_cmd_line_program(py_source_to_interpret: str,
                            transformer=transformer)
 
 
-class _MatchesProgramAssertion(ValueAssertion[Program]):
+class _MatchesProgramAssertion(ValueAssertionBase[Program]):
     def __init__(self,
                  command: ValueAssertion[Command],
                  stdin: ValueAssertion[StdinData],
@@ -51,10 +51,10 @@ class _MatchesProgramAssertion(ValueAssertion[Program]):
         self.stdin = stdin
         self.transformer = transformer
 
-    def apply(self,
-              put: unittest.TestCase,
-              value: Program,
-              message_builder: MessageBuilder = MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: Program,
+               message_builder: MessageBuilder):
         asrt.is_instance(Program).apply(put, value, message_builder.for_sub_component('class'))
 
         assert isinstance(value, Program)

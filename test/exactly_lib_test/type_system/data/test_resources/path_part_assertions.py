@@ -4,7 +4,7 @@ from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
     PathPartAsNothing, \
     PathPart, PathPartVisitor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 def equals_path_part_string(file_name: str) -> ValueAssertion:
@@ -38,12 +38,12 @@ class _EqualsPathPartVisitor(PathPartVisitor):
         return equals_path_part_nothing().apply(self.put, self.actual, self.message_builder)
 
 
-class _EqualsPathPart(ValueAssertion):
+class _EqualsPathPart(ValueAssertionBase):
     def __init__(self, expected: PathPart):
         self.expected = expected
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         _EqualsPathPartVisitor(value, put, message_builder).visit(self.expected)

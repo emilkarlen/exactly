@@ -6,7 +6,8 @@ from exactly_lib_test.test_resources.files.file_checks import FileChecker, file_
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.file_assertions import DirContainsExactly
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion, \
+    ValueAssertionBase
 
 
 def is_sandbox_directory_structure_after_execution(fc: FileChecker,
@@ -27,11 +28,11 @@ def is_sds_root_dir() -> ValueAssertion[str]:
     return _IsSdsRootDir()
 
 
-class _IsSdsRootDir(ValueAssertion[str]):
-    def apply(self,
-              put: unittest.TestCase,
-              value: str,
-              message_builder: MessageBuilder = MessageBuilder()):
+class _IsSdsRootDir(ValueAssertionBase[str]):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: str,
+               message_builder: MessageBuilder):
         put.assertIsInstance(value, str)
 
         fc = FileChecker(put, message_builder.apply(''))
@@ -69,11 +70,11 @@ def is_existing_sds_with_post_execution_w_only_exitcode_result_files(exit_code: 
     ])
 
 
-class _SdsRootDirExistsAndContainsPostExecutionFiles(ValueAssertion[SandboxDirectoryStructure]):
-    def apply(self,
-              put: unittest.TestCase,
-              value: SandboxDirectoryStructure,
-              message_builder: MessageBuilder = MessageBuilder()):
+class _SdsRootDirExistsAndContainsPostExecutionFiles(ValueAssertionBase[SandboxDirectoryStructure]):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: SandboxDirectoryStructure,
+               message_builder: MessageBuilder):
         put.assertIsInstance(value, SandboxDirectoryStructure)
 
         fc = FileChecker(put, message_builder.apply(''))
@@ -81,11 +82,11 @@ class _SdsRootDirExistsAndContainsPostExecutionFiles(ValueAssertion[SandboxDirec
         is_sandbox_directory_structure_after_execution(fc, str(value.root_dir))
 
 
-class _SdsRootDirExistsAndContainsPostExecutionWOnlyExitCodeResultFiles(ValueAssertion[SandboxDirectoryStructure]):
-    def apply(self,
-              put: unittest.TestCase,
-              value: SandboxDirectoryStructure,
-              message_builder: MessageBuilder = MessageBuilder()):
+class _SdsRootDirExistsAndContainsPostExecutionWOnlyExitCodeResultFiles(ValueAssertionBase[SandboxDirectoryStructure]):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: SandboxDirectoryStructure,
+               message_builder: MessageBuilder):
         put.assertIsInstance(value, SandboxDirectoryStructure)
 
         fc = FileChecker(put, message_builder.apply(''))

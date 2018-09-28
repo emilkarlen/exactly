@@ -10,7 +10,7 @@ from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions impor
     equals_string_resolver
 from exactly_lib_test.symbol.data.test_resources.list_assertions import equals_list_resolver
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 def equals_resolver(expected: DataValueResolver) -> ValueAssertion:
@@ -36,14 +36,14 @@ class _EqualsDataValueResolverVisitor(DataValueResolverVisitor):
         return equals_list_resolver(expected).apply(self.put, self.actual, self.message_builder)
 
 
-class _EqualsResolver(ValueAssertion):
+class _EqualsResolver(ValueAssertionBase):
     def __init__(self, expected: DataValueResolver):
         self.expected = expected
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, DataValueResolver)
         assert isinstance(value, DataValueResolver)
         put.assertEqual(TypeCategory.DATA,

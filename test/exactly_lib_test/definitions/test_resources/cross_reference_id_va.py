@@ -3,14 +3,14 @@ import unittest
 
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import *
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
-class _IsCrossReferenceId(ValueAssertion):
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+class _IsCrossReferenceId(ValueAssertionBase):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         self._assertion_for(value).apply(put, value, message_builder)
 
     @staticmethod
@@ -109,14 +109,14 @@ def equals(expected: CrossReferenceId) -> ValueAssertion:
     return _CrossReferenceIdEquals(expected)
 
 
-class _CrossReferenceIdEquals(ValueAssertion):
+class _CrossReferenceIdEquals(ValueAssertionBase):
     def __init__(self, expected: CrossReferenceId):
         self.expected = expected
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, type(self.expected), message_builder.apply('type of CrossReferenceId'))
         equality_checker = _CrossReferenceIdEqualsWhenClassIsEqual(self.expected, put, message_builder)
         equality_checker.visit(value)

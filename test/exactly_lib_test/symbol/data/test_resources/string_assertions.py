@@ -6,7 +6,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 def matches_primitive_string(resolved_str: ValueAssertion,
@@ -17,7 +17,7 @@ def matches_primitive_string(resolved_str: ValueAssertion,
                                                         symbols)
 
 
-class MatchesPrimitiveValueResolvedOfAnyDependency(ValueAssertion):
+class MatchesPrimitiveValueResolvedOfAnyDependency(ValueAssertionBase):
     def __init__(self,
                  expected_resolved_primitive_value: ValueAssertion,
                  symbol_references: list,
@@ -26,10 +26,10 @@ class MatchesPrimitiveValueResolvedOfAnyDependency(ValueAssertion):
         self.symbols = symbols
         self.expected_resolved_primitive_value = expected_resolved_primitive_value
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, StringResolver)
         assert isinstance(value, StringResolver)  # Type info for IDE
         equals_symbol_references(self.symbol_references).apply_with_message(put,

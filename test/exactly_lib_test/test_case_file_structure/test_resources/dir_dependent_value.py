@@ -6,7 +6,7 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependen
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 T = TypeVar('T')
 
@@ -29,7 +29,7 @@ def matches_multi_dir_dependent_value(expected: MultiDirDependentValue,
                                            value_assertion_from_expected)
 
 
-class DirDependentValueAssertionBase(ValueAssertion[DirDependentValue[T]]):
+class DirDependentValueAssertionBase(ValueAssertionBase[DirDependentValue[T]]):
     def __init__(self,
                  expected_type,
                  expected: DirDependentValue,
@@ -38,10 +38,10 @@ class DirDependentValueAssertionBase(ValueAssertion[DirDependentValue[T]]):
         self._expected = expected
         self._value_assertion_from_expected = value_assertion_from_expected
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         self._check_type(put, value, message_builder)
         assert isinstance(value, DirDependentValue)
 

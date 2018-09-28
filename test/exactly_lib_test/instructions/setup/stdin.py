@@ -39,7 +39,7 @@ from exactly_lib_test.test_case_utils.test_resources import relativity_options a
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
 
 
 def suite() -> unittest.TestSuite:
@@ -292,44 +292,44 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
         )
 
 
-class AssertStdinFileIsSetToFile(ValueAssertion):
+class AssertStdinFileIsSetToFile(ValueAssertionBase):
     def __init__(self,
                  expected_file_reference: file_ref.FileRef):
         self._expected_file_reference = expected_file_reference
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         model = value
         assert isinstance(model, SettingsBuilderAssertionModel)  # Type info for IDE
         put.assertIsNone(model.actual.stdin.contents,
-                         'contents should not be set when using file')
+                         message_builder.apply('contents should not be set when using file'))
         expected_file_name = self._expected_file_reference.value_of_any_dependency(
             model.environment.path_resolving_environment_pre_or_post_sds.home_and_sds)
         put.assertEqual(expected_file_name,
                         model.actual.stdin.file_name,
-                        'Name of stdin file in Setup Settings')
+                        message_builder.apply('Name of stdin file in Setup Settings'))
 
 
-class AssertStdinIsSetToContents(ValueAssertion):
+class AssertStdinIsSetToContents(ValueAssertionBase):
     def __init__(self,
                  expected_contents_resolver: StringResolver):
         self.expected_contents_resolver = expected_contents_resolver
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         model = value
         assert isinstance(model, SettingsBuilderAssertionModel)  # Type info for IDE
         put.assertIsNone(model.actual.stdin.file_name,
-                         'file name should not be set when using here doc')
+                         message_builder.apply('file name should not be set when using here doc'))
         expected_contents_str = self.expected_contents_resolver.resolve_value_of_any_dependency(
             model.environment.path_resolving_environment_pre_or_post_sds)
         put.assertEqual(expected_contents_str,
                         model.actual.stdin.contents,
-                        'stdin as contents')
+                        message_builder.apply('stdin as contents'))
 
 
 def assignment_of_list_of_args(arguments: List[str],

@@ -3,7 +3,7 @@ from typing import Optional, Type
 
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -25,7 +25,7 @@ def is_exception(exception_class: Type[Exception]) -> ValueAssertion[FailureDeta
     return _ExpectedFailureDetails(None, exception_class)
 
 
-class _ExpectedFailureDetails(ValueAssertion[FailureDetails]):
+class _ExpectedFailureDetails(ValueAssertionBase[FailureDetails]):
     def __init__(self,
                  error_message_or_none: Optional[ValueAssertion[str]],
                  exception_class_or_none: Optional[type]):
@@ -35,10 +35,10 @@ class _ExpectedFailureDetails(ValueAssertion[FailureDetails]):
         self._error_message_or_none = error_message_or_none
         self._exception_class_or_none = exception_class_or_none
 
-    def apply(self,
-              put: unittest.TestCase,
-              value: FailureDetails,
-              message_builder: MessageBuilder = MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: FailureDetails,
+               message_builder: MessageBuilder):
         self.assertions(put, value, message_builder.apply(''))
 
     @property

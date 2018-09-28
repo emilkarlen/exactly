@@ -17,7 +17,8 @@ from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, \
     process_result_info_assertions as asrt_process_result_info, \
     process_result_assertions as asrt_process_result
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion, \
+    ValueAssertionBase
 
 
 def suite_that_requires_main_program_runner_with_default_setup(mpr: MainProgramRunner) -> unittest.TestSuite:
@@ -136,7 +137,7 @@ timeout = 1
         )
 
 
-class OutputIsCombinationOfInterruptedAtcAndErrorReport(ValueAssertion[SubProcessResult]):
+class OutputIsCombinationOfInterruptedAtcAndErrorReport(ValueAssertionBase[SubProcessResult]):
     def __init__(self,
                  expected_exit_value: ExitValue,
                  expected_atc_output: StdOutputFilesContents
@@ -144,20 +145,20 @@ class OutputIsCombinationOfInterruptedAtcAndErrorReport(ValueAssertion[SubProces
         self.expected_exit_value = expected_exit_value
         self.expected_atc_output = expected_atc_output
 
-    def apply(self,
-              put: unittest.TestCase,
-              value: SubProcessResult,
-              message_builder: MessageBuilder = MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: SubProcessResult,
+               message_builder: MessageBuilder):
         msg_info = '\nInfo from actual value:\nstdout = "{stdout}"\nstderr="{stderr}"'.format(stdout=value.stdout,
                                                                                               stderr=value.stderr)
 
         put.assertEqual(self.expected_exit_value.exit_code,
                         value.exitcode,
-                        'exit code' + msg_info)
+                        message_builder.apply('exit code' + msg_info))
 
         put.assertEqual(self.expected_atc_output.out,
                         value.stdout,
-                        'stdout should be output from ATC' + msg_info)
+                        message_builder.apply('stdout should be output from ATC' + msg_info))
 
         expected_initial_contents_of_stderr = (self.expected_atc_output.err +
                                                self.expected_exit_value.exit_identifier)
@@ -165,19 +166,20 @@ class OutputIsCombinationOfInterruptedAtcAndErrorReport(ValueAssertion[SubProces
 
         put.assertEqual(expected_initial_contents_of_stderr,
                         actual_initial_contents_of_stderr,
-                        'stderr should start with output from ATC followed by exit identifier' + msg_info)
+                        message_builder.apply(
+                            'stderr should start with output from ATC followed by exit identifier' + msg_info))
 
 
-class StdoutIsEmptyAndStderrIsExitIdentifierFollowedByErrorMessage(ValueAssertion[SubProcessResult]):
+class StdoutIsEmptyAndStderrIsExitIdentifierFollowedByErrorMessage(ValueAssertionBase[SubProcessResult]):
     def __init__(self,
                  expected_exit_value: ExitValue,
                  ):
         self.expected_exit_value = expected_exit_value
 
-    def apply(self,
-              put: unittest.TestCase,
-              value: SubProcessResult,
-              message_builder: MessageBuilder = MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: SubProcessResult,
+               message_builder: MessageBuilder):
         msg_info = '\nInfo from actual value:\nstdout = "{stdout}"\nstderr="{stderr}"'.format(stdout=value.stdout,
                                                                                               stderr=value.stderr)
 

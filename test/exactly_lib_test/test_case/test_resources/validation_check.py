@@ -9,7 +9,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.dir_populator impo
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 class Arrangement:
@@ -65,17 +65,17 @@ class ValidationCase:
         self.expectation = expectation
 
 
-class ValidatorAssertion(ValueAssertion[PreOrPostSdsValidator]):
+class ValidatorAssertion(ValueAssertionBase[PreOrPostSdsValidator]):
     def __init__(self,
                  arrangement: Arrangement,
                  expectation: Expectation):
         self.arrangement = arrangement
         self.expectation = expectation
 
-    def apply(self,
-              put: unittest.TestCase,
-              value: PreOrPostSdsValidator,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: PreOrPostSdsValidator,
+               message_builder: asrt.MessageBuilder):
         check(put, value, self.arrangement, self.expectation, message_builder)
 
 

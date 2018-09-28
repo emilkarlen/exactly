@@ -12,7 +12,7 @@ from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_os_p
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 def suite() -> unittest.TestSuite:
@@ -149,11 +149,11 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
 def is_interpreter_with_source_file_and_arguments(interpreter: str,
                                                   source_file_relative_home_name: str,
                                                   arguments: list) -> ValueAssertion:
-    class RetClass(ValueAssertion):
-        def apply(self,
-                  put: unittest.TestCase,
-                  cmd_and_args: list,
-                  message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    class RetClass(ValueAssertionBase):
+        def _apply(self,
+                   put: unittest.TestCase,
+                   cmd_and_args: list,
+                   message_builder: asrt.MessageBuilder):
             msg = 'Expecting cmd-and-args to be [interpreter, argument..., source-file]. Found: ' + str(
                 cmd_and_args)
             put.assertEqual(1 + 1 + len(arguments), len(cmd_and_args),

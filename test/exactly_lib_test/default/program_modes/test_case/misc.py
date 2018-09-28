@@ -22,7 +22,7 @@ from exactly_lib_test.test_resources.process import SubProcessResultInfo
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, process_result_info_assertions
 from exactly_lib_test.test_resources.value_assertions.process_result_info_assertions import \
     process_result_for_exit_value
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
@@ -85,11 +85,11 @@ class EnvironmentVariablesAreSetCorrectly(SetupWithoutPreprocessorAndTestActor):
         ])
 
 
-class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(ValueAssertion):
-    def apply(self,
-              put: unittest.TestCase,
-              value: SubProcessResultInfo,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(ValueAssertionBase):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: SubProcessResultInfo,
+               message_builder: asrt.MessageBuilder):
         actual_sds_directory = get_printed_sds_or_fail(put, value.sub_process_result)
         sds = sandbox_directory_structure.SandboxDirectoryStructure(actual_sds_directory)
         actually_printed_variables = _get_act_output_to_stdout(sds).splitlines()
@@ -100,7 +100,7 @@ class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(ValueAssertion):
         ]
         put.assertEqual(expected_printed_variables,
                         actually_printed_variables,
-                        'Environment variables printed by the act script')
+                        message_builder.apply('Environment variables printed by the act script'))
         remove_if_is_directory(actual_sds_directory)
 
 

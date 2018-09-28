@@ -18,20 +18,20 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
 
 
-class Phase2step2recordedValueAssertion(ValueAssertion):
+class Phase2step2recordedValueAssertion(ValueAssertionBase):
     """ Custom comparison for better error messages. """
 
     def __init__(self,
                  expected_phase_2_step_2_recorded_value: dict):
         self.expected_phase_2_step_2_recorded_value = expected_phase_2_step_2_recorded_value
 
-    def apply(self,
-              put: unittest.TestCase,
-              actual_phase_2_step_2_recorded_value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               actual_phase_2_step_2_recorded_value,
+               message_builder: asrt.MessageBuilder):
         put.assertIsInstance(actual_phase_2_step_2_recorded_value, dict,
                              'actual value should be a dictionary')
 

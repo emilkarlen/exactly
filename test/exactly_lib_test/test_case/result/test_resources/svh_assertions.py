@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case.result import svh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -28,14 +28,14 @@ def is_success() -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
     return _IsSuccess()
 
 
-class _IsSuccess(ValueAssertion):
+class _IsSuccess(ValueAssertionBase):
     def __init__(self):
         pass
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: MessageBuilder = MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: MessageBuilder):
         put.assertIsInstance(value, svh.SuccessOrValidationErrorOrHardError)
         if not value.is_success:
             put.fail('\n'.join([

@@ -6,11 +6,11 @@ from exactly_lib.execution.partial_execution.result import PartialExeResultStatu
 from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-class _ExpectedFailure(ValueAssertion[Optional[Failure]]):
+class _ExpectedFailure(ValueAssertionBase[Optional[Failure]]):
     def __init__(self,
                  status: PartialExeResultStatus,
                  line: ValueAssertion[SourceLocationPath],
@@ -19,10 +19,10 @@ class _ExpectedFailure(ValueAssertion[Optional[Failure]]):
         self._line = line
         self._failure_details = failure_details
 
-    def apply(self,
-              put: unittest.TestCase,
-              value: Optional[Failure],
-              message_builder: MessageBuilder = MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: Optional[Failure],
+               message_builder: MessageBuilder):
         self._assertions(put, value)
 
     def _assertions(self,

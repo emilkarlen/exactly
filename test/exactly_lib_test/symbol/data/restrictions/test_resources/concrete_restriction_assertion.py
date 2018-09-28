@@ -12,7 +12,7 @@ from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions, Refere
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.path_relativity import equals_path_relativity_variants
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 is_any_data_type_restriction = asrt.is_instance(AnyDataTypeRestriction)
 
@@ -78,14 +78,14 @@ def is_failure_of_indirect_reference(
                                  ]))
 
 
-class _EqualsValueRestriction(ValueAssertion):
+class _EqualsValueRestriction(ValueAssertionBase):
     def __init__(self, expected: ValueRestriction):
         self.expected = expected
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
         _EqualsValueRestrictionVisitor(value, put, message_builder).visit(self.expected)
 
 
