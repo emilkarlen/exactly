@@ -5,7 +5,7 @@ from exactly_lib.type_system.logic.matcher_base_class import Matcher
 LineMatcherLine = Tuple[int, str]
 
 
-class LineMatcher(Matcher):
+class LineMatcher(Matcher[LineMatcherLine]):
     """
     Matches text lines.
 
