@@ -5,23 +5,23 @@ from exactly_lib.test_case_file_structure import sandbox_directory_structure as 
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _DESCRIPTION_HOME = """\
-The absolute path of the {case_home_directory}.
+The absolute path of the directory that corresponds to the {case_home_directory} {conf_param}.
 """
 
 _DESCRIPTION_ACT_HOME = """\
-The absolute path of the {act_home_directory}.
+The absolute path of the directory that corresponds to the {act_home_directory} {conf_param}.
 """
 
 _DESCRIPTION_ACT = """\
-The absolute path of the {act_sub_dir}/ sub directory of the {sandbox}.
+The absolute path of the {act_sub_dir}/ sub directory of the {sandbox:/q}.
 """
 
 _DESCRIPTION_TMP = """\
-The absolute path of the {tmp_sub_dir}/ sub directory of the {sandbox}.
+The absolute path of the {tmp_sub_dir}/ sub directory of the {sandbox:/q}.
 """
 
 _DESCRIPTION_RESULT = """\
-The absolute path of the {result_sub_dir}/ sub directory of the {sandbox}.
+The absolute path of the {result_sub_dir}/ sub directory of the {sandbox:/q}.
 """
 
 ENVIRONMENT_VARIABLES_SET_BEFORE_ACT = [
@@ -46,7 +46,8 @@ class EnvironmentVariableDescription:
             'act_sub_dir': sds.SUB_DIRECTORY__ACT,
             'tmp_sub_dir': sds.PATH__TMP_USER,
             'result_sub_dir': sds.SUB_DIRECTORY__RESULT,
-            'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
+            'sandbox': concepts.SANDBOX_CONCEPT_INFO.name,
+            'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
         }
         )
         self.all_variables_dict = dict(ENVIRONMENT_VARIABLES_SET_BEFORE_ACT + ENVIRONMENT_VARIABLES_SET_AFTER_ACT)
