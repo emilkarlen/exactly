@@ -17,7 +17,7 @@ class SymbolUsage:
 
 class SymbolReference(SymbolUsage):
     """
-    A reference to a named element that is assumed to have been previously defined.
+    A reference to a symbol that is assumed to have been previously defined.
     """
 
     def __init__(self,
@@ -33,7 +33,7 @@ class SymbolReference(SymbolUsage):
 
 class SymbolDefinition(SymbolUsage, ObjectWithSymbolReferences):
     """
-    Defines a named element so that it can be used via references to it.
+    Defines a symbol so that it can be used via references to it.
     """
 
     def __init__(self,
