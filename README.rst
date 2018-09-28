@@ -350,7 +350,7 @@ stdout, stderr and exit code
 
     [assert]
 
-    stdout num-lines == 2
+    stdout num-lines == 314
 
 ::
 
@@ -359,7 +359,8 @@ stdout, stderr and exit code
     a-file
 
 
-The test case is executed in a temporary sandbox, as usual.
+The test case is executed in a temporary sandbox, as usual,
+but assertions are ignored.
 
 
 Testing existing OS environment - tests without ``[act]``
