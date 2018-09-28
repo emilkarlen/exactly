@@ -7,33 +7,54 @@ from exactly_lib.help.render import see_also
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
 from exactly_lib.section_document.syntax import section_header, LINE_COMMENT_MARKER
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
-from exactly_lib.util.textformat.constructor import paragraphs
-from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
-from exactly_lib.util.textformat.constructor.section import \
-    SectionContentsConstructor
+from exactly_lib.util.textformat.constructor import paragraphs, sections
 from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
-from exactly_lib.util.textformat.structure import document as doc
-from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
-    text_parser = _text_parser(setup)
+    tp = _text_parser(setup)
+
+    def paragraphs_of(template: str) -> paragraphs.ParagraphItemsConstructor:
+        return paragraphs.constant(tp.fnap(template))
+
+    def initial_paragraphs_of(template: str) -> sections.SectionContentsConstructor:
+        return sections.contents2(paragraphs_of(template))
+
+    file_inclusion_doc = sections.contents2(
+        paragraphs_of(FILE_INCLUSION_DOC),
+        [see_also.SeeAlsoSectionConstructor(
+            see_also.items_of_targets(_FILE_INCLUSION_SEE_ALSO_TARGETS)
+        )]
+    )
     return h.hierarchy(
         header,
+        initial_paragraphs=paragraphs_of(_INTRO),
         children=[
-            h.child('phases', h.leaf('Phases', _PhaseRenderer(text_parser))),
-            h.child('phase-contents', h.leaf('Phase contents', _PhaseContentsRenderer(text_parser))),
-            h.child('instructions',
-                    h.hierarchy('Instructions',
-                                paragraphs.constant(text_parser.fnap(INSTRUCTIONS_DOC)),
-                                [h.child_leaf('description',
-                                              'Instruction descriptions',
-                                              _InstructionsRenderer(text_parser))
-                                 ])
-                    ),
-            h.child('file-inclusion', h.leaf('File inclusion', _FileInclusionContentsRenderer(text_parser))),
-            h.child('com-empty', h.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
+            h.child_leaf('phases',
+                         'Phases',
+                         initial_paragraphs_of(PHASES_DOC)
+                         ),
+            h.child_leaf('phase-contents',
+                         'Phase contents',
+                         initial_paragraphs_of(PHASES_CONTENTS_DOC)
+                         ),
+            h.child_hierarchy('instructions',
+                              'Instructions',
+                              paragraphs_of(INSTRUCTIONS_DOC),
+                              [h.child_leaf('description',
+                                            'Instruction descriptions',
+                                            initial_paragraphs_of(INSTRUCTIONS_DESCRIPTION_DOC))
+                               ]
+                              ),
+            h.child_leaf('file-inclusion',
+                         'File inclusion',
+                         file_inclusion_doc
+                         ),
+            h.child_leaf('com-empty',
+                         'Comments and empty lines',
+                         initial_paragraphs_of(OTHER_DOC)
+                         ),
         ]
     )
 
@@ -53,42 +74,18 @@ def _text_parser(setup: Setup) -> TextParser:
     })
 
 
-class _ConstructorBase(SectionContentsConstructor):
-    def __init__(self, parser: TextParser):
-        self.parser = parser
+_FILE_INCLUSION_SEE_ALSO_TARGETS = [
+    concepts.DIRECTIVE_CONCEPT_INFO.cross_reference_target,
+    directives.INCLUDING_DIRECTIVE_INFO.cross_reference_target,
+]
+
+_INTRO = """\
+Syntax is line oriented.
 
 
-class _PhaseRenderer(_ConstructorBase):
-    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
-        return docs.section_contents(self.parser.fnap(PHASES_DOC))
-
-
-class _PhaseContentsRenderer(_ConstructorBase):
-    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
-        return docs.section_contents(self.parser.fnap(PHASES_CONTENTS_DOC))
-
-
-class _InstructionsRenderer(_ConstructorBase):
-    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
-        return docs.section_contents(self.parser.fnap(INSTRUCTIONS_DESCRIPTION_DOC))
-
-
-class _FileInclusionContentsRenderer(_ConstructorBase):
-    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
-        see_also_items = see_also.items_of_targets([
-            concepts.DIRECTIVE_CONCEPT_INFO.cross_reference_target,
-            directives.INCLUDING_DIRECTIVE_INFO.cross_reference_target,
-        ])
-        return docs.section_contents(self.parser.fnap(FILE_INCLUSION_DOC),
-                                     [
-                                         see_also.SeeAlsoSectionConstructor(see_also_items).apply(environment)
-                                     ])
-
-
-class _OtherContentsRenderer(_ConstructorBase):
-    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
-        return docs.section_contents(self.parser.fnap(OTHER_DOC))
-
+Top level elements start at the beginning of a line,
+and line ends mark the end of elements, although some may span several lines.
+"""
 
 PHASES_DOC = """\
 "{phase_declaration_for_NAME}" on a single line declares the start of phase NAME.
@@ -152,7 +149,7 @@ is the name of the instruction.
 The name may optionally be followed by arguments. Most instructions use a syntax for
 options, arguments and quoting that resembles the unix shell.
 
-The exact syntax depends on the particular instruction, though.
+The exact syntax depends on the particular instruction.
 
 
 An instruction may span several lines, as this form of {instruction[stdout]} does:
