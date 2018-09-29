@@ -1,40 +1,8 @@
 from typing import List
 
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
-    PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.result import pfh
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.util.string import line_separated
-from exactly_lib.util.symbol_table import SymbolTable
-
-
-class ErrorMessageResolvingEnvironment:
-    def __init__(self,
-                 tcds: HomeAndSds,
-                 symbols: SymbolTable = None):
-        self._tcds = tcds
-        self._symbols = SymbolTable() if symbols is None else symbols
-
-    @property
-    def tcds(self) -> HomeAndSds:
-        return self._tcds
-
-    @property
-    def sds(self) -> _sds.SandboxDirectoryStructure:
-        return self._tcds.sds
-
-    @property
-    def symbols(self) -> SymbolTable:
-        return self._symbols
-
-    @property
-    def path_resolving_environment(self) -> PathResolvingEnvironmentPostSds:
-        return PathResolvingEnvironmentPostSds(self.sds, self.symbols)
-
-    @property
-    def path_resolving_environment_pre_or_post_sds(self) -> PathResolvingEnvironmentPreOrPostSds:
-        return PathResolvingEnvironmentPreOrPostSds(self.tcds, self.symbols)
 
 
 class ErrorInfo:

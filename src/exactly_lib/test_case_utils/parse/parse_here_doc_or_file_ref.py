@@ -4,6 +4,7 @@ import shlex
 from typing import Tuple
 
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.instructions.utils.error_messages import path_resolving_env_from_err_msg_env
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
@@ -11,11 +12,11 @@ from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.program.string_or_file import SourceType, StringOrFileRefResolver
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessageResolvingEnvironment
 from exactly_lib.test_case_utils.err_msg.path_description import path_value_with_relativity_name_prefix
 from exactly_lib.test_case_utils.parse import parse_here_document, parse_file_ref
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 
@@ -78,7 +79,7 @@ class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
         return prefix + self._expected_obj_description(environment)
 
     def _expected_obj_description(self, environment: ErrorMessageResolvingEnvironment) -> str:
-        resolving_env = environment.path_resolving_environment_pre_or_post_sds
+        resolving_env = path_resolving_env_from_err_msg_env(environment)
         source_type = self.expected_contents.source_type
         if source_type is SourceType.HERE_DOC:
             return instruction_arguments.HERE_DOCUMENT.name

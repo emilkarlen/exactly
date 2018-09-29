@@ -7,8 +7,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessageResolvingEnvironment
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.util.logic_types import ExpectationType
 
 

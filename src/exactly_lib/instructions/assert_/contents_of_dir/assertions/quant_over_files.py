@@ -18,9 +18,9 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import path_description
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 
