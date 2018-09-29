@@ -7,7 +7,7 @@ from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
-from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import ResolvedComparisonActualFile
+from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.data import file_ref_resolvers
@@ -131,14 +131,14 @@ class _Checker:
         selected_files = file_matcher_type.matching_files_in_dir(file_matcher, path_to_check)
         return map(self.new_resolved_actual_file, selected_files)
 
-    def check_file(self, actual_file: ResolvedComparisonActualFile):
+    def check_file(self, actual_file: ComparisonActualFile):
         self._assertion_on_file_to_check.check(self.environment,
                                                self.os_services,
                                                None,
                                                actual_file)
 
-    def new_resolved_actual_file(self, path: pathlib.Path) -> ResolvedComparisonActualFile:
-        return ResolvedComparisonActualFile(
+    def new_resolved_actual_file(self, path: pathlib.Path) -> ComparisonActualFile:
+        return ComparisonActualFile(
             path,
             _path_value_for_file_in_checked_dir(self._dir_to_check, path),
             _FilePropertyDescriptorConstructorForFileInDir(self._dir_to_check,
@@ -167,7 +167,7 @@ class _ErrorReportingHelper:
 
     def err_msg_for_file_in_dir(self,
                                 single_line_value: str,
-                                actual_file: ResolvedComparisonActualFile) -> str:
+                                actual_file: ComparisonActualFile) -> str:
         failing_file_description_lines = path_description.lines_for_path_value(
             _path_value_for_file_in_checked_dir(self._dir_to_check, actual_file.actual_file_path),
             self.environment.tcds,

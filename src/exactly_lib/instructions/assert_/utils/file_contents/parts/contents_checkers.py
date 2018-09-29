@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile, \
+from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileResolver, \
     ComparisonActualFileConstructor
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
@@ -17,7 +17,7 @@ from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironme
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 
 
-class ResolvedComparisonActualFile(tuple):
+class ComparisonActualFile(tuple):
     def __new__(cls,
                 actual_file_path: pathlib.Path,
                 actual_file: FileRef,
@@ -47,7 +47,7 @@ class FileConstructorAssertionPart(AssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               custom_environment: InstructionSourceInfo,
-              value_to_check: ComparisonActualFileConstructor) -> ComparisonActualFile:
+              value_to_check: ComparisonActualFileConstructor) -> ComparisonActualFileResolver:
         return value_to_check.construct(custom_environment,
                                         environment,
                                         os_services)
@@ -66,8 +66,8 @@ class FileExistenceAssertionPart(AssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               custom_environment,
-              actual_file: ComparisonActualFile,
-              ) -> ResolvedComparisonActualFile:
+              actual_file: ComparisonActualFileResolver,
+              ) -> ComparisonActualFile:
         """
         :return: The resolved path
         """
@@ -76,9 +76,9 @@ class FileExistenceAssertionPart(AssertionPart):
             raise PfhFailException(failure_message)
 
         actual_path_value = actual_file.file_ref_resolver().resolve(environment.symbols)
-        return ResolvedComparisonActualFile(actual_path_value.value_of_any_dependency(environment.home_and_sds),
-                                            actual_path_value,
-                                            actual_file.property_descriptor_constructor)
+        return ComparisonActualFile(actual_path_value.value_of_any_dependency(environment.home_and_sds),
+                                    actual_path_value,
+                                    actual_file.property_descriptor_constructor)
 
 
 class FileTransformerAsAssertionPart(AssertionPart):
@@ -87,7 +87,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
 
     Does not check any property.
 
-    :raises PfhPfhHardErrorException: The transformation fails
+    :raises PfhHardErrorException: The transformation fails
     """
 
     def __init__(self, string_transformer_resolver: StringTransformerResolver):
@@ -106,7 +106,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               custom_environment,
-              file_to_transform: ResolvedComparisonActualFile,
+              file_to_transform: ComparisonActualFile,
               ) -> FileToCheck:
         """
         :param file_to_transform: The file that should be transformed
@@ -132,7 +132,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
 
     def _err_msg(self,
                  environment: ErrorMessageResolvingEnvironment,
-                 file_to_transform: ResolvedComparisonActualFile,
+                 file_to_transform: ComparisonActualFile,
                  actual_file_properties: file_properties.Properties) -> str:
         from exactly_lib.symbol.data import file_ref_resolvers
         from exactly_lib.util.logic_types import ExpectationType

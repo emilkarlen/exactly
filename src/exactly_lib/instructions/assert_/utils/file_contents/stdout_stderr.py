@@ -8,7 +8,7 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts, syntax_elements, types
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor, \
-    ComparisonActualFile
+    ComparisonActualFileResolver
 from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
 from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_checker import \
     FileContentsCheckerHelp
@@ -95,7 +95,7 @@ class Parser(ComparisonActualFileParser):
                                                          OUTPUT_FROM_PROGRAM_OPTION_NAME)
 
 
-class ActComparisonActualFileForStdFile(actual_files.ComparisonActualFileConstantWithReferences):
+class ActComparisonActualFileForStdFile(actual_files.ComparisonActualFileResolverConstantWithReferences):
     def __init__(self, checked_file: process_output_files.ProcOutputFile):
         super().__init__(())
         self.checked_file = checked_file
@@ -122,14 +122,14 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
     def construct(self,
                   source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep,
-                  os_services: OsServices) -> ComparisonActualFile:
+                  os_services: OsServices) -> ComparisonActualFileResolver:
         program = self._program.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
         result = make_transformed_file_from_output_in_instruction_tmp_dir(environment,
                                                                           os_services.executable_factory__detect_ex(),
                                                                           source_info,
                                                                           self._checked_output,
                                                                           program)
-        return actual_files.ComparisonActualFileForProgramOutput(result.path_of_file_with_transformed_contents)
+        return actual_files.ComparisonActualFileResolverForProgramOutput(result.path_of_file_with_transformed_contents)
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
