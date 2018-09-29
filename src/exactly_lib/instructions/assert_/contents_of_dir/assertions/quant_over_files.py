@@ -1,6 +1,7 @@
 import pathlib
 from typing import Sequence
 
+import exactly_lib.type_system.error_message
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
@@ -191,14 +192,16 @@ class _ErrorReportingHelper:
                          'satisfies FILE-CONTENTS-ASSERTION'])
 
 
-class _FilePropertyDescriptorConstructorForFileInDir(actual_files.FilePropertyDescriptorConstructor):
+class _FilePropertyDescriptorConstructorForFileInDir(
+    exactly_lib.type_system.error_message.FilePropertyDescriptorConstructor):
     def __init__(self,
                  dir_to_check: FileRef,
                  file_in_dir: pathlib.Path):
         self._dir_to_check = dir_to_check
         self._path = file_in_dir
 
-    def construct_for_contents_attribute(self, contents_attribute: str) -> actual_files.PropertyDescriptor:
+    def construct_for_contents_attribute(self,
+                                         contents_attribute: str) -> exactly_lib.type_system.error_message.PropertyDescriptor:
         path_resolver = file_ref_resolvers.constant(
             _path_value_for_file_in_checked_dir(self._dir_to_check, self._path)
         )

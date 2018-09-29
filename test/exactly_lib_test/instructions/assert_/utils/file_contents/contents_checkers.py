@@ -2,16 +2,17 @@ import pathlib
 import unittest
 from typing import Sequence
 
+import exactly_lib.type_system.error_message
 from exactly_lib.instructions.assert_.utils.file_contents.parts import contents_checkers as sut
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhHardErrorException
 from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
-from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor, \
-    property_descriptor_with_just_a_constant_name
+from exactly_lib.test_case_utils.err_msg.property_description import property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.error_message import PropertyDescriptor
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue, IdentityStringTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -95,7 +96,8 @@ class StringTransformerResolverWithReferences(StringTransformerResolver):
         return self._references
 
 
-class FilePropertyDescriptorConstructorTestImpl(sut.FilePropertyDescriptorConstructor):
+class FilePropertyDescriptorConstructorTestImpl(
+    exactly_lib.type_system.error_message.FilePropertyDescriptorConstructor):
     def __init__(self):
         pass
 

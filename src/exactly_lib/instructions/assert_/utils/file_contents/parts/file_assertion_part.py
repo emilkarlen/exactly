@@ -2,9 +2,9 @@ import pathlib
 from contextlib import contextmanager
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import FilePropertyDescriptorConstructor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist, TmpFileSpace
 

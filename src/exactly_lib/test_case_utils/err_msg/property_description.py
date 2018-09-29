@@ -1,8 +1,9 @@
-from typing import List, Sequence
+from typing import Sequence
 
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor, NoErrorMessagePartConstructor, \
     MultipleErrorMessagePartConstructor
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescription, \
+    PropertyDescriptor
 
 OBJECT_DESCRIPTOR_PARTS_SEPARATOR_LINES = ['']
 
@@ -10,28 +11,6 @@ OBJECT_DESCRIPTOR_PARTS_SEPARATOR_LINES = ['']
 def multiple_object_descriptors(
         part_constructors: Sequence[ErrorMessagePartConstructor]) -> ErrorMessagePartConstructor:
     return MultipleErrorMessagePartConstructor(OBJECT_DESCRIPTOR_PARTS_SEPARATOR_LINES, part_constructors)
-
-
-class PropertyDescription:
-    def __init__(self,
-                 name: str,
-                 object_description_lines: List[str]):
-        self._name = name
-        self._details_lines = object_description_lines
-
-    @property
-    def name(self) -> str:
-        return self._name
-
-    @property
-    def object_description_lines(self) -> List[str]:
-        return self._details_lines
-
-
-class PropertyDescriptor:
-    def description(self, environment: ErrorMessageResolvingEnvironment
-                    ) -> PropertyDescription:
-        raise NotImplementedError('abstract method')
 
 
 class PropertyDescriptorWithConstantPropertyName(PropertyDescriptor):

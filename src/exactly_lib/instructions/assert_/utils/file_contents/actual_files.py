@@ -11,10 +11,10 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.err_msg.path_description import path_value_description
-from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
 from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.error_message import PropertyDescriptor, FilePropertyDescriptorConstructor
 
 CONTENTS_ATTRIBUTE = 'contents'
 
@@ -23,11 +23,6 @@ PLAIN_FILE_OBJECT_NAME = 'file'
 PLAIN_DIR_OBJECT_NAME = 'directory'
 
 OUTPUT_FROM_PROGRAM_OBJECT_NAME = 'output from program'
-
-
-class FilePropertyDescriptorConstructor:
-    def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
-        raise NotImplementedError('abstract method')
 
 
 def file_property_name(contents_attribute: str, object_name: str) -> str:

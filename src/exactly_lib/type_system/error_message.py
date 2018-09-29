@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.symbol_table import SymbolTable
@@ -21,3 +23,30 @@ class ErrorMessageResolvingEnvironment:
     @property
     def symbols(self) -> SymbolTable:
         return self._symbols
+
+
+class PropertyDescription:
+    def __init__(self,
+                 name: str,
+                 object_description_lines: List[str]):
+        self._name = name
+        self._details_lines = object_description_lines
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def object_description_lines(self) -> List[str]:
+        return self._details_lines
+
+
+class PropertyDescriptor:
+    def description(self, environment: ErrorMessageResolvingEnvironment
+                    ) -> PropertyDescription:
+        raise NotImplementedError('abstract method')
+
+
+class FilePropertyDescriptorConstructor:
+    def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
+        raise NotImplementedError('abstract method')
