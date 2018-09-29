@@ -1,5 +1,6 @@
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor, NoErrorMessagePartConstructor, \
-    MultipleErrorMessagePartConstructor, ErrorMessageResolvingEnvironment
+    MultipleErrorMessagePartConstructor
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 
 OBJECT_DESCRIPTOR_PARTS_SEPARATOR_LINES = ['']
 

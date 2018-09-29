@@ -7,12 +7,13 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import string_transformer
 from exactly_lib.symbol.resolver_structure import StringTransformerResolver
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor, ErrorMessageResolvingEnvironment
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.parse import parse_reg_ex
 from exactly_lib.test_case_utils.string_transformer import resolvers
 from exactly_lib.test_case_utils.string_transformer.transformers import ReplaceStringTransformer
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser

@@ -7,14 +7,15 @@ from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import S
     DirContentsAssertionPart
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
-from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
+from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env, \
+    path_resolving_env_from_err_msg_env
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import property_description, diff_msg
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 from exactly_lib.util.logic_types import ExpectationType
 
@@ -38,7 +39,9 @@ class _ErrorMessageResolver:
             self.property_descriptor.description(environment),
             self.expectation_type,
             self.expected_description_str,
-            self.resolve_actual_info(actual_files, environment.path_resolving_environment_pre_or_post_sds))
+            self.resolve_actual_info(actual_files,
+                                     path_resolving_env_from_err_msg_env(environment))
+        )
 
     def resolve_actual_info(self,
                             actual_files: List[pathlib.Path],

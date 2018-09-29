@@ -14,8 +14,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import path_description
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.data.file_ref import FileRef
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 
 
 class ResolvedComparisonActualFile(tuple):

@@ -15,7 +15,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor, ErrorMessageResolvingEnvironment
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import file_matchers
@@ -24,6 +24,7 @@ from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_F
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_reg_ex
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
