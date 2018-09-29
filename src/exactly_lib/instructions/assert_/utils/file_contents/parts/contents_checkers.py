@@ -1,4 +1,5 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
@@ -7,6 +8,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.resolver_structure import StringTransformerResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
 from exactly_lib.test_case_utils import file_properties
@@ -38,7 +40,7 @@ class ComparisonActualFile(tuple):
         return self[2]
 
 
-class FileConstructorAssertionPart(AssertionPart):
+class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor, ComparisonActualFileResolver]):
     """
     Constructs the actual file.
     """
@@ -53,7 +55,7 @@ class FileConstructorAssertionPart(AssertionPart):
                                         os_services)
 
 
-class FileExistenceAssertionPart(AssertionPart):
+class FileExistenceAssertionPart(AssertionPart[ComparisonActualFileResolver, ComparisonActualFile]):
     """
     Checks existence of a :class:`ComparisonActualFile`,
 
@@ -81,7 +83,7 @@ class FileExistenceAssertionPart(AssertionPart):
                                     actual_file.property_descriptor_constructor)
 
 
-class FileTransformerAsAssertionPart(AssertionPart):
+class FileTransformerAsAssertionPart(AssertionPart[ComparisonActualFile, FileToCheck]):
     """
     Transforms a given existing file.
 
@@ -99,7 +101,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
                                                                              follow_symlinks=True)
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._string_transformer_resolver.references
 
     def check(self,

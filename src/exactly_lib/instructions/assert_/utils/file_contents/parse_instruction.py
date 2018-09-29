@@ -1,5 +1,6 @@
-from exactly_lib.instructions.assert_.utils.assertion_part import SequenceOfCooperativeAssertionParts, \
-    AssertionInstructionFromAssertionPart, IdentityAssertionPartWithValidationAndReferences
+from exactly_lib.instructions.assert_.utils import assertion_part
+from exactly_lib.instructions.assert_.utils.assertion_part import AssertionInstructionFromAssertionPart, \
+    IdentityAssertionPartWithValidationAndReferences
 from exactly_lib.instructions.assert_.utils.file_contents import parse_file_contents_assertion_part
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileExistenceAssertionPart, \
@@ -35,14 +36,19 @@ class Parser(AssertPhaseInstructionTokenParser):
         actual_file_constructor = self._actual_file_parser.parse_from_token_parser(parser)
         actual_file_assertion_part = parse_file_contents_assertion_part.parse(parser)
 
+        assertion_part_sequence = assertion_part.compose(
+            IdentityAssertionPartWithValidationAndReferences(actual_file_constructor.validator,
+                                                             actual_file_constructor.references),
+            FileConstructorAssertionPart(),
+        )
+        assertion_part_sequence = assertion_part.compose_with_sequence(assertion_part_sequence,
+                                                                       FileExistenceAssertionPart(),
+                                                                       )
+        assertion_part_sequence = assertion_part.compose_with_sequence(assertion_part_sequence,
+                                                                       actual_file_assertion_part,
+                                                                       )
         return AssertionInstructionFromAssertionPart(
-            SequenceOfCooperativeAssertionParts([
-                IdentityAssertionPartWithValidationAndReferences(actual_file_constructor.validator,
-                                                                 actual_file_constructor.references),
-                FileConstructorAssertionPart(),
-                FileExistenceAssertionPart(),
-                actual_file_assertion_part,
-            ]),
+            assertion_part_sequence,
             source_info,
             lambda env: actual_file_constructor
         )

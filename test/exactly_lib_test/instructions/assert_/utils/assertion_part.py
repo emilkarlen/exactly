@@ -1,5 +1,5 @@
 import unittest
-from typing import Sequence
+from typing import Sequence, Any
 
 from exactly_lib.instructions.assert_.utils import assertion_part as sut
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
@@ -326,7 +326,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
                                      'post setup validation should fail')
 
 
-class PartForValidation(sut.AssertionPart):
+class PartForValidation(sut.AssertionPart[int, int]):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
@@ -335,7 +335,7 @@ class PartForValidation(sut.AssertionPart):
         raise NotImplementedError('this method should not be used')
 
 
-class SuccessfulPartThatReturnsConstructorArgPlusOne(sut.AssertionPart):
+class SuccessfulPartThatReturnsConstructorArgPlusOne(sut.AssertionPart[int, int]):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
@@ -344,7 +344,7 @@ class SuccessfulPartThatReturnsConstructorArgPlusOne(sut.AssertionPart):
         return arg + 1
 
 
-class PartThatRaisesFailureExceptionIfArgumentIsEqualToOne(sut.AssertionPart):
+class PartThatRaisesFailureExceptionIfArgumentIsEqualToOne(sut.AssertionPart[int, int]):
     ERROR_MESSAGE = 'error message of FAILING assertion_part'
 
     def check(self,
@@ -358,7 +358,7 @@ class PartThatRaisesFailureExceptionIfArgumentIsEqualToOne(sut.AssertionPart):
             return arg + 1
 
 
-class PartWithReference(sut.AssertionPart):
+class PartWithReference(sut.AssertionPart[int, None]):
     def __init__(self, references: Sequence[SymbolReference]):
         super().__init__()
         self._references = references
@@ -375,7 +375,7 @@ class PartWithReference(sut.AssertionPart):
         pass
 
 
-class PartThatRegistersCustomEnvironment(sut.AssertionPart):
+class PartThatRegistersCustomEnvironment(sut.AssertionPart[Any, None]):
     def __init__(self, output: list):
         super().__init__()
         self._output = output
