@@ -1,14 +1,12 @@
 import pathlib
 from typing import Sequence
 
-import exactly_lib.type_system.error_message
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
-from exactly_lib.instructions.assert_.utils.file_contents.parts import file_assertion_part
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import ResolvedComparisonActualFile
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
@@ -21,8 +19,10 @@ from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
+    FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
+from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 
 
@@ -73,7 +73,7 @@ class _Checker:
         self._assertion_on_file_to_check = assertion_on_file_to_check
         self.environment = environment
         self.os_services = os_services
-        self._destination_file_path_getter = file_assertion_part.DestinationFilePathGetter()
+        self._destination_file_path_getter = DestinationFilePathGetter()
         self._dir_to_check = settings.path_to_check.resolve(environment.symbols)
         self.error_reporting = _ErrorReportingHelper(settings,
                                                      quantifier,
@@ -154,7 +154,7 @@ class _ErrorReportingHelper:
         self.settings = settings
         self.quantifier = quantifier
         self.environment = environment
-        self._destination_file_path_getter = file_assertion_part.DestinationFilePathGetter()
+        self._destination_file_path_getter = DestinationFilePathGetter()
         self._dir_to_check = settings.path_to_check.resolve(environment.symbols)
 
     def err_msg_for_dir__all_satisfies(self) -> str:
@@ -192,8 +192,7 @@ class _ErrorReportingHelper:
                          'satisfies FILE-CONTENTS-ASSERTION'])
 
 
-class _FilePropertyDescriptorConstructorForFileInDir(
-    exactly_lib.type_system.error_message.FilePropertyDescriptorConstructor):
+class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConstructor):
     def __init__(self,
                  dir_to_check: FileRef,
                  file_in_dir: pathlib.Path):
@@ -201,7 +200,7 @@ class _FilePropertyDescriptorConstructorForFileInDir(
         self._path = file_in_dir
 
     def construct_for_contents_attribute(self,
-                                         contents_attribute: str) -> exactly_lib.type_system.error_message.PropertyDescriptor:
+                                         contents_attribute: str) -> PropertyDescriptor:
         path_resolver = file_ref_resolvers.constant(
             _path_value_for_file_in_checked_dir(self._dir_to_check, self._path)
         )

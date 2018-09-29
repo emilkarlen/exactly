@@ -2,7 +2,7 @@ import pathlib
 import tempfile
 from contextlib import contextmanager
 
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import DestinationFilePathGetter
+from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter
 from exactly_lib.util.file_utils import TmpFileSpace
 
 

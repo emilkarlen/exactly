@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.assert_.utils.file_contents.parts import file_assertion_part as sut
+from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.contents_transformation import \
     ToUppercaseStringTransformer
@@ -68,11 +68,11 @@ class Test(unittest.TestCase):
                     for trans_name, lines_trans, corresponding_expected_trans in line_trans_cases:
                         with self.subTest(case=case.name,
                                           trans=trans_name):
-                            ftc = sut.FileToCheck(actual_file_path,
-                                                  checked_file_describer,
-                                                  environment.phase_logging,
-                                                  lines_trans,
-                                                  dst_file_path_getter)
+                            ftc = FileToCheck(actual_file_path,
+                                              checked_file_describer,
+                                              environment.phase_logging,
+                                              lines_trans,
+                                              dst_file_path_getter)
                             # ACT #
                             with ftc.lines() as lines:
                                 # ASSERT #

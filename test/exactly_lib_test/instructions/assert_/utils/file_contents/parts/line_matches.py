@@ -5,6 +5,7 @@ from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
@@ -53,11 +54,11 @@ class TestCaseBase(unittest.TestCase):
                     for expectation_type in ExpectationType:
                         with self.subTest(case=case.name,
                                           expectation_type=expectation_type):
-                            ftc = sut.FileToCheck(actual_file_path,
-                                                  checked_file_describer,
-                                                  environment.phase_logging,
-                                                  IdentityStringTransformer(),
-                                                  dst_file_path_getter)
+                            ftc = FileToCheck(actual_file_path,
+                                              checked_file_describer,
+                                              environment.phase_logging,
+                                              IdentityStringTransformer(),
+                                              dst_file_path_getter)
                             matcher_resolver = LineMatcherConstantResolver(case.matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_resolver)
@@ -88,11 +89,11 @@ class TestCaseBase(unittest.TestCase):
                     for matcher_name, matcher in matchers:
                         with self.subTest(expectation_type=expectation_type,
                                           matcher_name=matcher_name):
-                            ftc = sut.FileToCheck(actual_file_path,
-                                                  checked_file_describer,
-                                                  environment.phase_logging,
-                                                  IdentityStringTransformer(),
-                                                  dst_file_path_getter)
+                            ftc = FileToCheck(actual_file_path,
+                                              checked_file_describer,
+                                              environment.phase_logging,
+                                              IdentityStringTransformer(),
+                                              dst_file_path_getter)
                             matcher_resolver = LineMatcherConstantResolver(matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_resolver)

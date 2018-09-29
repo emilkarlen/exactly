@@ -4,8 +4,7 @@ import pathlib
 from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CONTENTS_ATTRIBUTE
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart, \
-    FileToCheck
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -22,6 +21,7 @@ from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import ExpectedValueResolver
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor
+from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import tmp_text_file_containing
 from exactly_lib.util.logic_types import ExpectationType
