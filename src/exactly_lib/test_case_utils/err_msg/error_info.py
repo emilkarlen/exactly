@@ -2,7 +2,6 @@ from typing import List
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -13,10 +12,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 class ErrorMessageResolvingEnvironment:
     def __init__(self,
                  tcds: HomeAndSds,
-                 phase_logging: PhaseLoggingPaths,
                  symbols: SymbolTable = None):
         self._tcds = tcds
-        self._phase_logging = phase_logging
         self._symbols = SymbolTable() if symbols is None else symbols
 
     @property
@@ -26,10 +23,6 @@ class ErrorMessageResolvingEnvironment:
     @property
     def sds(self) -> _sds.SandboxDirectoryStructure:
         return self._tcds.sds
-
-    @property
-    def phase_logging(self) -> PhaseLoggingPaths:
-        return self._phase_logging
 
     @property
     def symbols(self) -> SymbolTable:
