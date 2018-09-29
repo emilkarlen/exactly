@@ -1,3 +1,5 @@
+from typing import Sequence, Optional, List
+
 from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorInfo
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescription
@@ -7,8 +9,8 @@ from exactly_lib.util.string import line_separated
 
 class ActualInfo:
     def __init__(self,
-                 single_line_value: str,
-                 description_lines: list = ()):
+                 single_line_value: Optional[str],
+                 description_lines: Sequence[str] = ()):
         self.single_line_value = single_line_value
         self.description_lines = list(description_lines)
 
@@ -22,12 +24,12 @@ class ActualInfo:
 
 
 def actual_with_single_line_value(single_line_value: str,
-                                  description_lines: list = ()) -> ActualInfo:
+                                  description_lines: Sequence[str] = ()) -> ActualInfo:
     return ActualInfo(single_line_value, list(description_lines))
 
 
-def actual_with_just_description_lines(description_lines: list) -> ActualInfo:
-    return ActualInfo(None, list(description_lines))
+def actual_with_just_description_lines(description_lines: Sequence[str]) -> ActualInfo:
+    return ActualInfo(None, description_lines)
 
 
 class DiffErrorInfo(ErrorInfo):
@@ -63,7 +65,7 @@ class DiffErrorInfo(ErrorInfo):
 
         return line_separated(lines)
 
-    def _err_msg_expected_and_actual_lines(self) -> list:
+    def _err_msg_expected_and_actual_lines(self) -> List[str]:
         negation_str = self._negation_str()
         expected_str = negation_str + self.expected
 
