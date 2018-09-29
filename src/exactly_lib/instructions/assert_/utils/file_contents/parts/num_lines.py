@@ -19,10 +19,10 @@ from exactly_lib.util.logic_types import ExpectationType
 def assertion_part_for_num_lines(expectation_type: ExpectationType,
                                  cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand,
                                  ) -> FileContentsAssertionPart:
-    return FileContentsAssertionPart(expectation_type, cmp_op_and_rhs)
+    return NumLinesContentsAssertionPart(expectation_type, cmp_op_and_rhs)
 
 
-class FileContentsAssertionPart(FileContentsAssertionPart):
+class NumLinesContentsAssertionPart(FileContentsAssertionPart):
     def __init__(self,
                  expectation_type: ExpectationType,
                  cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand):
