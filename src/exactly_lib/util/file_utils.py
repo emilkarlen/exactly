@@ -1,6 +1,7 @@
 import os
 import pathlib
 import tempfile
+from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from stat import S_IREAD, S_IRGRP, S_IROTH
 from typing import List
@@ -116,3 +117,14 @@ def ensure_directory_exists_as_a_directory__impl_error(dir_path: pathlib.Path):
     err_msg = ensure_directory_exists_as_a_directory(dir_path)
     if err_msg:
         raise exception.ImplementationError(err_msg)
+
+
+class TmpFileSpace(ABC):
+    @abstractmethod
+    def new_path(self) -> pathlib.Path:
+        pass
+
+    def new_path_as_existing_dir(self) -> pathlib.Path:
+        path = self.new_path()
+        path.mkdir(parents=True, exist_ok=False)
+        return path

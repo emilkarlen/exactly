@@ -9,6 +9,7 @@ from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
+from exactly_lib.util.file_utils import TmpFileSpace
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -56,7 +57,7 @@ class InstructionEnvironmentForPreSdsStep:
         return PathResolvingEnvironmentPreSds(self.__hds, self.__symbols)
 
 
-class PhaseLoggingPaths:
+class PhaseLoggingPaths(TmpFileSpace):
     """
     Generator of unique logging directories for instructions in a given phase.
     """
@@ -74,6 +75,9 @@ class PhaseLoggingPaths:
     def dir_path(self) -> pathlib.Path:
         return self._phase_dir_path
 
+    def new_path(self) -> pathlib.Path:
+        return self.unique_instruction_file()
+
     def unique_instruction_file(self) -> pathlib.Path:
         instruction_number = self._next_instruction_number
         self._next_instruction_number += 1
@@ -81,9 +85,7 @@ class PhaseLoggingPaths:
         return self.dir_path / base_name
 
     def unique_instruction_file_as_existing_dir(self) -> pathlib.Path:
-        path = self.unique_instruction_file()
-        path.mkdir(parents=True, exist_ok=False)
-        return path
+        return self.new_path_as_existing_dir()
 
     def for_line(self,
                  line_number: int,

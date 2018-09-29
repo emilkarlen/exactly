@@ -3,7 +3,7 @@ import tempfile
 from contextlib import contextmanager
 
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import DestinationFilePathGetter
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.util.file_utils import TmpFileSpace
 
 
 @contextmanager
@@ -19,7 +19,7 @@ class _DestinationFilePathGetter(DestinationFilePathGetter):
         self._file_num = 0
 
     def get(self,
-            environment: InstructionEnvironmentForPostSdsStep,
+            tmp_file_space: TmpFileSpace,
             src_file_path: pathlib.Path) -> pathlib.Path:
         self._file_num += 1
         return self.tmp_dir / (str(self._file_num) + '.txt')
