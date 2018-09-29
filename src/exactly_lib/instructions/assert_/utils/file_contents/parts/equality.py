@@ -8,6 +8,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CO
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart, \
     FileToCheck
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
+from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.program.string_or_file import StringOrFileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -114,7 +115,8 @@ class EqualityContentsAssertionPart(FileContentsAssertionPart):
               checked_file_describer: FilePropertyDescriptorConstructor,
               actual_info: ActualInfo
               ):
-        failure_info = self._failure_resolver(checked_file_describer).resolve(environment, actual_info)
+        err_msg_env = err_msg_env_from_instr_env(environment)
+        failure_info = self._failure_resolver(checked_file_describer).resolve(err_msg_env, actual_info)
         raise PfhFailException(failure_info.error_message())
 
     def _failure_resolver(self, checked_file_describer: FilePropertyDescriptorConstructor) -> DiffFailureInfoResolver:

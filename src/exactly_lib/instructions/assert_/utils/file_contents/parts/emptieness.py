@@ -4,6 +4,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_p
     FileToCheck
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
+from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -45,7 +46,8 @@ class EmptinessContentsAssertionPart(FileContentsAssertionPart):
                     actual: str,
                     ):
         diff_failure_info_resolver = self._failure_info_resolver(actual_file_prop_descriptor_constructor)
-        failure_info = diff_failure_info_resolver.resolve(environment,
+        err_msg_env = err_msg_env_from_instr_env(environment)
+        failure_info = diff_failure_info_resolver.resolve(err_msg_env,
                                                           diff_msg.actual_with_single_line_value(actual))
         raise PfhFailException(failure_info.error_message())
 

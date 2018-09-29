@@ -1,4 +1,5 @@
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
+from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -6,6 +7,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.err_msg import diff_msg
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessageResolvingEnvironment
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.util.logic_types import ExpectationType
 
@@ -92,7 +94,7 @@ class ComparisonHandler:
                              lhs,
                              rhs,
                              self.operator,
-                             environment,
+                             err_msg_env_from_instr_env(environment),
                              self.description_of_actual)
         )
         executor.execute_and_return_pfh_via_exceptions()
@@ -105,7 +107,7 @@ class _FailureReporter:
                  lhs_actual_property_value: int,
                  rhs: int,
                  operator: ComparisonOperator,
-                 environment: InstructionEnvironmentForPostSdsStep,
+                 environment: ErrorMessageResolvingEnvironment,
                  description_of_actual: ErrorMessageConstructor):
         self.property_descriptor = property_descriptor
         self.expectation_type = expectation_type
