@@ -70,7 +70,7 @@ class Test(unittest.TestCase):
                                           trans=trans_name):
                             ftc = sut.FileToCheck(actual_file_path,
                                                   checked_file_describer,
-                                                  environment,
+                                                  environment.phase_logging,
                                                   lines_trans,
                                                   dst_file_path_getter)
                             # ACT #

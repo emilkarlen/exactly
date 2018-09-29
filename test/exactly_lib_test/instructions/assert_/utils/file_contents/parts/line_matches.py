@@ -55,7 +55,7 @@ class TestCaseBase(unittest.TestCase):
                                           expectation_type=expectation_type):
                             ftc = sut.FileToCheck(actual_file_path,
                                                   checked_file_describer,
-                                                  environment,
+                                                  environment.phase_logging,
                                                   IdentityStringTransformer(),
                                                   dst_file_path_getter)
                             matcher_resolver = LineMatcherConstantResolver(case.matcher)
@@ -90,7 +90,7 @@ class TestCaseBase(unittest.TestCase):
                                           matcher_name=matcher_name):
                             ftc = sut.FileToCheck(actual_file_path,
                                                   checked_file_describer,
-                                                  environment,
+                                                  environment.phase_logging,
                                                   IdentityStringTransformer(),
                                                   dst_file_path_getter)
                             matcher_resolver = LineMatcherConstantResolver(matcher)

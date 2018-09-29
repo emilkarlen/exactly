@@ -127,7 +127,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
 
         return FileToCheck(actual_file_path,
                            file_to_transform.checked_file_describer,
-                           environment,
+                           environment.phase_logging,
                            string_transformer,
                            self._destination_file_path_getter)
 
