@@ -4,8 +4,6 @@ from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile, \
     ComparisonActualFileConstructor
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileToCheck, \
-    DestinationFilePathGetter
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.resolver_structure import StringTransformerResolver
@@ -16,6 +14,7 @@ from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, FilePropertyDescriptorConstructor
+from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 
 
 class ResolvedComparisonActualFile(tuple):
