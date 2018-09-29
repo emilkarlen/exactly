@@ -1,6 +1,5 @@
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor, NoErrorMessagePartConstructor, \
-    MultipleErrorMessagePartConstructor
+    MultipleErrorMessagePartConstructor, ErrorMessageResolvingEnvironment
 
 OBJECT_DESCRIPTOR_PARTS_SEPARATOR_LINES = ['']
 
@@ -26,7 +25,7 @@ class PropertyDescription:
 
 
 class PropertyDescriptor:
-    def description(self, environment: InstructionEnvironmentForPostSdsStep
+    def description(self, environment: ErrorMessageResolvingEnvironment
                     ) -> PropertyDescription:
         raise NotImplementedError('abstract method')
 
@@ -38,7 +37,7 @@ class PropertyDescriptorWithConstantPropertyName(PropertyDescriptor):
         self._name = name
         self._object_descriptor = object_descriptor
 
-    def description(self, environment: InstructionEnvironmentForPostSdsStep
+    def description(self, environment: ErrorMessageResolvingEnvironment
                     ) -> PropertyDescription:
         return PropertyDescription(self._name,
                                    self._object_descriptor.lines(environment))

@@ -14,9 +14,8 @@ from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor, ErrorMessageResolvingEnvironment
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import file_matchers
@@ -64,7 +63,7 @@ class FileSelectionDescriptor(ErrorMessagePartConstructor):
     def __init__(self, resolver: FileMatcherResolver):
         self.resolver = resolver
 
-    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
+    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
         matcher = self.resolver.resolve(environment.symbols)
         line = SELECTION.name.capitalize() + ' : ' + matcher.option_description
         return [line]

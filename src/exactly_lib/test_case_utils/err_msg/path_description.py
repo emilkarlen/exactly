@@ -2,12 +2,11 @@ import pathlib
 from typing import List
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure import path_relativity as pr
 from exactly_lib.test_case_file_structure import relative_path_options as rpo
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor, ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.data.file_ref import FileRef
 
 EXACTLY_SANDBOX_ROOT_DIR_NAME = 'EXACTLY_SANDBOX'
@@ -17,14 +16,14 @@ class PathValuePartConstructor(ErrorMessagePartConstructor):
     def __init__(self, path_resolver: FileRefResolver):
         self.path_resolver = path_resolver
 
-    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
+    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
         path_resolve_env = environment.path_resolving_environment_pre_or_post_sds
         path_value = self.path_resolver.resolve(path_resolve_env.symbols)
 
-        return lines_for_path_value(path_value, environment.home_and_sds)
+        return lines_for_path_value(path_value, environment.tcds)
 
 
-def lines_for_path_value(path_value: FileRef, tcds: HomeAndSds) -> list:
+def lines_for_path_value(path_value: FileRef, tcds: HomeAndSds) -> List[str]:
     the_cwd = pathlib.Path.cwd()
 
     presentation_str = path_value_with_relativity_name_prefix(path_value,

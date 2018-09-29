@@ -7,8 +7,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import string_transformer
 from exactly_lib.symbol.resolver_structure import StringTransformerResolver
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor, ErrorMessageResolvingEnvironment
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.parse import parse_reg_ex
@@ -39,7 +38,7 @@ class StringTransformerDescriptor(ErrorMessagePartConstructor):
     def __init__(self, resolver: StringTransformerResolver):
         self.resolver = resolver
 
-    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
+    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
         transformer = self.resolver.resolve(environment.symbols)
         # FIXME
         line = types.STRING_TRANSFORMER_TYPE_INFO.syntax_element_name + ' : (FIXME) ' + str(transformer)

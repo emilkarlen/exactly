@@ -10,8 +10,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.program.string_or_file import SourceType, StringOrFileRefResolver
-from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessageResolvingEnvironment
 from exactly_lib.test_case_utils.err_msg.path_description import path_value_with_relativity_name_prefix
 from exactly_lib.test_case_utils.parse import parse_here_document, parse_file_ref
 from exactly_lib.test_case_utils.parse import parse_string
@@ -71,13 +71,13 @@ class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
         self._prefix = prefix
         self.expected_contents = expected_contents
 
-    def resolve(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
+    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
         prefix = ''
         if self._prefix:
             prefix = self._prefix + ' '
         return prefix + self._expected_obj_description(environment)
 
-    def _expected_obj_description(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
+    def _expected_obj_description(self, environment: ErrorMessageResolvingEnvironment) -> str:
         resolving_env = environment.path_resolving_environment_pre_or_post_sds
         source_type = self.expected_contents.source_type
         if source_type is SourceType.HERE_DOC:

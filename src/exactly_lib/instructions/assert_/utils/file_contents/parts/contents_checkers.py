@@ -7,12 +7,14 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileToCheck, \
     DestinationFilePathGetter
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
+from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import path_description
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.data.file_ref import FileRef
 
 
@@ -115,7 +117,8 @@ class FileTransformerAsAssertionPart(AssertionPart):
         failure_info_properties = self._file_prop_check.resolve_failure_info(file_to_transform.actual_file_path)
 
         if failure_info_properties:
-            err_msg = self._err_msg(environment, file_to_transform, failure_info_properties)
+            err_msg_env = err_msg_env_from_instr_env(environment)
+            err_msg = self._err_msg(err_msg_env, file_to_transform, failure_info_properties)
             raise PfhHardErrorException(err_msg)
 
         string_transformer = self._string_transformer_resolver \
@@ -129,7 +132,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
                            self._destination_file_path_getter)
 
     def _err_msg(self,
-                 environment: InstructionEnvironmentForPostSdsStep,
+                 environment: ErrorMessageResolvingEnvironment,
                  file_to_transform: ResolvedComparisonActualFile,
                  actual_file_properties: file_properties.Properties) -> str:
         from exactly_lib.symbol.data import file_ref_resolvers

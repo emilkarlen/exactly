@@ -10,6 +10,7 @@ from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.parts import file_assertion_part
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import ResolvedComparisonActualFile
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
+from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -17,6 +18,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import path_description
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
@@ -72,7 +74,9 @@ class _Checker:
         self.os_services = os_services
         self._destination_file_path_getter = file_assertion_part.DestinationFilePathGetter()
         self._dir_to_check = settings.path_to_check.resolve(environment.symbols)
-        self.error_reporting = _ErrorReportingHelper(settings, quantifier, environment)
+        self.error_reporting = _ErrorReportingHelper(settings,
+                                                     quantifier,
+                                                     err_msg_env_from_instr_env(environment))
 
     def check(self) -> str:
         if self.quantifier is Quantifier.ALL:
@@ -144,7 +148,7 @@ class _ErrorReportingHelper:
     def __init__(self,
                  settings: common.Settings,
                  quantifier: Quantifier,
-                 environment: InstructionEnvironmentForPostSdsStep,
+                 environment: ErrorMessageResolvingEnvironment,
                  ):
         self.settings = settings
         self.quantifier = quantifier
@@ -165,7 +169,7 @@ class _ErrorReportingHelper:
                                 actual_file: ResolvedComparisonActualFile) -> str:
         failing_file_description_lines = path_description.lines_for_path_value(
             _path_value_for_file_in_checked_dir(self._dir_to_check, actual_file.actual_file_path),
-            self.environment.home_and_sds,
+            self.environment.tcds,
         )
         actual_info = diff_msg.ActualInfo(single_line_value, failing_file_description_lines)
         return self._diff_failure_info_for_dir().resolve(self.environment,

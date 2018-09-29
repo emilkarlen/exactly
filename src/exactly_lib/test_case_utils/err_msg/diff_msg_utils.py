@@ -1,7 +1,6 @@
-import exactly_lib.test_case_utils.err_msg.error_info
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor, ExplanationErrorInfo, \
+    ErrorMessageResolvingEnvironment
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.util.logic_types import ExpectationType
 
@@ -22,15 +21,15 @@ class ExplanationFailureInfoResolver:
         self.object_descriptor = object_descriptor
 
     def resolve(self,
-                environment: InstructionEnvironmentForPostSdsStep,
-                explanation: str) -> exactly_lib.test_case_utils.err_msg.error_info.ExplanationErrorInfo:
-        return exactly_lib.test_case_utils.err_msg.error_info.ExplanationErrorInfo(explanation,
-                                                                                   self.object_descriptor.lines(
-                                                                                       environment))
+                environment: ErrorMessageResolvingEnvironment,
+                explanation: str) -> ExplanationErrorInfo:
+        return ExplanationErrorInfo(explanation,
+                                    self.object_descriptor.lines(
+                                        environment))
 
 
 class ExpectedValueResolver:
-    def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> str:
+    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
         raise NotImplementedError('abstract method')
 
 
@@ -38,7 +37,7 @@ class ConstantExpectedValueResolver(ExpectedValueResolver):
     def __init__(self, value: str):
         self.value = value
 
-    def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> str:
+    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
         return self.value
 
 
@@ -70,7 +69,7 @@ class DiffFailureInfoResolver:
         self.expected = expected
 
     def resolve(self,
-                environment: InstructionEnvironmentForPostSdsStep,
+                environment: ErrorMessageResolvingEnvironment,
                 actual: diff_msg.ActualInfo) -> diff_msg.DiffErrorInfo:
         return diff_msg.DiffErrorInfo(
             self.property_descriptor.description(environment),

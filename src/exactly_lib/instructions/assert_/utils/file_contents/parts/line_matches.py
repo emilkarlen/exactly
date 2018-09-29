@@ -6,6 +6,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CO
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart, \
     FileToCheck
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
+from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -79,7 +80,7 @@ class FileContentsAssertionPart(FileContentsAssertionPart):
                      actual_single_line_value: str,
                      description_lines: list = ()):
         failure_info_resolver = self._diff_failure_info_resolver(checked_file_describer)
-        failure_info = failure_info_resolver.resolve(environment,
+        failure_info = failure_info_resolver.resolve(err_msg_env_from_instr_env(environment),
                                                      diff_msg.actual_with_single_line_value(
                                                          actual_single_line_value,
                                                          description_lines))
@@ -93,7 +94,7 @@ class FileContentsAssertionPart(FileContentsAssertionPart):
         single_line_actual_value = 'Line {} {}'.format(number__contents[0], cause)
 
         failure_info_resolver = self._diff_failure_info_resolver(checked_file_describer)
-        failure_info = failure_info_resolver.resolve(environment,
+        failure_info = failure_info_resolver.resolve(err_msg_env_from_instr_env(environment),
                                                      diff_msg.actual_with_single_line_value(
                                                          single_line_actual_value,
                                                          [number__contents[1]]))

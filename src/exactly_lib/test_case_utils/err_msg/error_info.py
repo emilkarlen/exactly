@@ -1,8 +1,47 @@
 from typing import List
 
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
+    PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.result import pfh
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.string import line_separated
+from exactly_lib.util.symbol_table import SymbolTable
+
+
+class ErrorMessageResolvingEnvironment:
+    def __init__(self,
+                 tcds: HomeAndSds,
+                 phase_logging: PhaseLoggingPaths,
+                 symbols: SymbolTable = None):
+        self._tcds = tcds
+        self._phase_logging = phase_logging
+        self._symbols = SymbolTable() if symbols is None else symbols
+
+    @property
+    def tcds(self) -> HomeAndSds:
+        return self._tcds
+
+    @property
+    def sds(self) -> _sds.SandboxDirectoryStructure:
+        return self._tcds.sds
+
+    @property
+    def phase_logging(self) -> PhaseLoggingPaths:
+        return self._phase_logging
+
+    @property
+    def symbols(self) -> SymbolTable:
+        return self._symbols
+
+    @property
+    def path_resolving_environment(self) -> PathResolvingEnvironmentPostSds:
+        return PathResolvingEnvironmentPostSds(self.sds, self.symbols)
+
+    @property
+    def path_resolving_environment_pre_or_post_sds(self) -> PathResolvingEnvironmentPreOrPostSds:
+        return PathResolvingEnvironmentPreOrPostSds(self.tcds, self.symbols)
 
 
 class ErrorInfo:
@@ -36,7 +75,7 @@ class ExplanationErrorInfo(ErrorInfo):
 class ErrorMessagePartConstructor:
     """Constructs lines that are a part of an error message."""
 
-    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
+    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
         """
         :return: empty list if there is nothing to say
         """
@@ -44,7 +83,7 @@ class ErrorMessagePartConstructor:
 
 
 class NoErrorMessagePartConstructor(ErrorMessagePartConstructor):
-    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
+    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
         return []
 
 
@@ -55,7 +94,7 @@ class MultipleErrorMessagePartConstructor(ErrorMessagePartConstructor):
         self.separator_lines = tuple(separator_lines)
         self.constructors = tuple(constructors)
 
-    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
+    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
 
         ret_val = []
 
