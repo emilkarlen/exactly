@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import List
 
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
@@ -23,6 +24,12 @@ class ErrorMessageResolvingEnvironment:
     @property
     def symbols(self) -> SymbolTable:
         return self._symbols
+
+
+class ErrorMessageResolver(ABC):
+    @abstractmethod
+    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+        pass
 
 
 class PropertyDescription:
