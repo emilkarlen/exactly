@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.test_case.result import pfh
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
@@ -51,7 +51,7 @@ class NoErrorMessagePartConstructor(ErrorMessagePartConstructor):
 class MultipleErrorMessagePartConstructor(ErrorMessagePartConstructor):
     def __init__(self,
                  separator_lines: List[str],
-                 constructors: List[ErrorMessagePartConstructor]):
+                 constructors: Sequence[ErrorMessagePartConstructor]):
         self.separator_lines = tuple(separator_lines)
         self.constructors = tuple(constructors)
 
