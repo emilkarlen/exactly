@@ -1,6 +1,6 @@
 from exactly_lib.definitions import instruction_arguments
-from exactly_lib.instructions.assert_.utils.assertion_part import SequenceOfCooperativeAssertionParts, \
-    AssertionPart
+from exactly_lib.instructions.assert_.utils import assertion_part
+from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileTransformerAsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
@@ -28,8 +28,8 @@ def parse(token_parser: TokenParser) -> AssertionPart:
     )
     expectation_type = token_parser.consume_optional_negation_operator()
     file_contents_assertion_part = ParseFileContentsAssertionPart(expectation_type).parse(token_parser)
-    return SequenceOfCooperativeAssertionParts([FileTransformerAsAssertionPart(actual_lines_transformer),
-                                                file_contents_assertion_part])
+    return assertion_part.compose(FileTransformerAsAssertionPart(actual_lines_transformer),
+                                  file_contents_assertion_part)
 
 
 _EXPECTED_SYNTAX_ELEMENT_FOR_EQUALS = 'EXPECTED'

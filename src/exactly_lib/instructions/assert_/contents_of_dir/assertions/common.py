@@ -37,7 +37,7 @@ class Settings:
         )
 
 
-class DirContentsAssertionPart(AssertionPart):
+class DirContentsAssertionPart(AssertionPart[Settings, Settings]):
     def __init__(self,
                  settings: Settings,
                  validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()):

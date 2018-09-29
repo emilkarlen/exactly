@@ -4,7 +4,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 
 
-class FileContentsAssertionPart(AssertionPart):
+class FileContentsAssertionPart(AssertionPart[FileToCheck, FileToCheck]):
     """
     A :class:`AssertionPart` that is given
     the path of a file to operate on.

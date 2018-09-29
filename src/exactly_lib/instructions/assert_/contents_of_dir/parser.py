@@ -57,10 +57,10 @@ class _CheckInstructionParser:
     def parse(self, parser: TokenParser) -> AssertPhaseInstruction:
         assertion_variant = parser.parse_mandatory_command(self.command_parsers,
                                                            self.missing_check_description)
-        assertions = assertion_part.SequenceOfCooperativeAssertionParts([
+        assertions = assertion_part.compose(
             common.AssertPathIsExistingDirectory(self.settings),
             assertion_variant,
-        ])
+        )
         return assertion_part.AssertionInstructionFromAssertionPart(assertions,
                                                                     None,
                                                                     lambda x: self.settings)

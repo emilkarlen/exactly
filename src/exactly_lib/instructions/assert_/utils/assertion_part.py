@@ -1,4 +1,4 @@
-from typing import Sequence, Any, Callable
+from typing import Sequence, Any, Callable, TypeVar, Generic, List
 
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import translate_pfh_exception_to_pfh
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
@@ -13,8 +13,12 @@ from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, 
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.test_case.result import pfh, svh
 
+A = TypeVar('A')
+B = TypeVar('B')
+C = TypeVar('C')
 
-class AssertionPart(ObjectWithSymbolReferencesAndValidation):
+
+class AssertionPart(ObjectWithSymbolReferencesAndValidation, Generic[A, B]):
     """
     A part of an assertion instruction that
     executes one part of the whole assertion.
@@ -37,8 +41,8 @@ class AssertionPart(ObjectWithSymbolReferencesAndValidation):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               custom_environment,
-              value_to_check
-              ):
+              value_to_check: A
+              ) -> B:
         """
         :param value_to_check: A value that the concrete assertion parts.
         knows what to do with - either as being the object or check,
@@ -54,7 +58,7 @@ class AssertionPart(ObjectWithSymbolReferencesAndValidation):
                              environment: InstructionEnvironmentForPostSdsStep,
                              os_services: OsServices,
                              custom_environment,
-                             value_to_check
+                             value_to_check: A
                              ) -> pfh.PassOrFailOrHardError:
         return translate_pfh_exception_to_pfh(self.check,
                                               environment,
@@ -63,7 +67,7 @@ class AssertionPart(ObjectWithSymbolReferencesAndValidation):
                                               value_to_check)
 
 
-class IdentityAssertionPartWithValidationAndReferences(AssertionPart):
+class IdentityAssertionPartWithValidationAndReferences(AssertionPart[A, A]):
     def __init__(self,
                  validator: PreOrPostSdsValidator,
                  references: Sequence[SymbolReference]):
@@ -78,12 +82,12 @@ class IdentityAssertionPartWithValidationAndReferences(AssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               custom_environment,
-              value_to_check
-              ):
+              value_to_check: A
+              ) -> A:
         return value_to_check
 
 
-class SequenceOfCooperativeAssertionParts(AssertionPart):
+class SequenceOfCooperativeAssertionParts(AssertionPart[A, B]):
     """
     Executes a sequence of assertions,
     by executing a sequence of :class:`AssertionPart`s.
@@ -97,11 +101,15 @@ class SequenceOfCooperativeAssertionParts(AssertionPart):
         self._assertion_parts = tuple(assertion_parts)
         self._references = references_from_objects_with_symbol_references(assertion_parts)
 
+    @property
+    def parts(self) -> List[AssertionPart]:
+        return list(self._assertion_parts)
+
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               custom_environment,
-              value_to_check):
+              value_to_check: A) -> B:
         for assertion_part in self._assertion_parts:
             value_to_check = assertion_part.check(environment, os_services, custom_environment, value_to_check)
         return value_to_check
@@ -111,14 +119,29 @@ class SequenceOfCooperativeAssertionParts(AssertionPart):
         return self._references
 
 
+def compose(first: AssertionPart[A, B],
+            second: AssertionPart[B, C]) -> SequenceOfCooperativeAssertionParts[A, C]:
+    return SequenceOfCooperativeAssertionParts([first, second])
+
+
+def compose_with_sequence(first: SequenceOfCooperativeAssertionParts[A, B],
+                          second: AssertionPart[B, C]) -> SequenceOfCooperativeAssertionParts[A, C]:
+    """
+    "Flat"/weird composition.
+
+    For getting "flat" list of validators.  Do not remember why this is nice, though.
+    """
+    return SequenceOfCooperativeAssertionParts(first.parts + [second])
+
+
 class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
     """ An :class:`AssertPhaseInstruction` in terms of a :class:`AssertionPart`'
     """
 
     def __init__(self,
-                 assertion_part: AssertionPart,
+                 assertion_part: AssertionPart[A, Any],
                  custom_environment,
-                 get_argument_to_part: Callable[[InstructionEnvironmentForPostSdsStep], Any],
+                 get_argument_to_part: Callable[[InstructionEnvironmentForPostSdsStep], A],
                  ):
         """
         :param get_argument_to_part: Returns the argument to give to
