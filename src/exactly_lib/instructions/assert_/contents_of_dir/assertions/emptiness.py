@@ -1,20 +1,21 @@
 import pathlib
 from typing import Sequence, List
 
+import exactly_lib.type_system.error_message
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import Settings, \
     DirContentsAssertionPart
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
-from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env, \
-    path_resolving_env_from_err_msg_env
+from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_utils.err_msg import property_description, diff_msg
+from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 from exactly_lib.util.logic_types import ExpectationType
@@ -23,7 +24,7 @@ from exactly_lib.util.logic_types import ExpectationType
 class _ErrorMessageResolver:
     def __init__(self,
                  root_dir_path_resolver: FileRefResolver,
-                 property_descriptor: property_description.PropertyDescriptor,
+                 property_descriptor: exactly_lib.type_system.error_message.PropertyDescriptor,
                  expectation_type: ExpectationType,
                  expected_description_str: str,
                  ):
@@ -74,7 +75,7 @@ class _ErrorMessageResolver:
 
 class _EmptinessChecker:
     def __init__(self,
-                 property_descriptor: property_description.PropertyDescriptor,
+                 property_descriptor: exactly_lib.type_system.error_message.PropertyDescriptor,
                  environment: InstructionEnvironmentForPostSdsStep,
                  settings: common.Settings):
         self.property_descriptor = property_descriptor

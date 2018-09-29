@@ -1,5 +1,6 @@
 from typing import Sequence
 
+import exactly_lib.type_system.error_message
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
@@ -26,7 +27,7 @@ class Settings:
         self.path_to_check = path_to_check
         self.file_matcher = file_matcher
 
-    def property_descriptor(self, property_name: str) -> property_description.PropertyDescriptor:
+    def property_descriptor(self, property_name: str) -> exactly_lib.type_system.error_message.PropertyDescriptor:
         return property_description.PropertyDescriptorWithConstantPropertyName(
             property_name,
             property_description.multiple_object_descriptors([
