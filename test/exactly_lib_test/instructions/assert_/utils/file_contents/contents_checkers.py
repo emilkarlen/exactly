@@ -61,7 +61,7 @@ class TestFileTransformerAsAssertionPart(unittest.TestCase):
             file_name = 'a file that does not exist'
             assertion_part.check(self.environment, self.the_os_services,
                                  'custom environment',
-                                 sut.ResolvedComparisonActualFile(
+                                 sut.ComparisonActualFile(
                                      pathlib.Path(file_name),
                                      file_refs.rel_cwd(file_refs.constant_path_part(file_name)),
                                      FilePropertyDescriptorConstructorTestImpl(),
@@ -76,7 +76,7 @@ class TestFileTransformerAsAssertionPart(unittest.TestCase):
             with self.assertRaises(PfhHardErrorException):
                 assertion_part.check(self.environment, self.the_os_services,
                                      'custom environment',
-                                     sut.ResolvedComparisonActualFile(
+                                     sut.ComparisonActualFile(
                                          path_of_existing_directory,
                                          file_refs.absolute_file_name(str(path_of_existing_directory)),
                                          FilePropertyDescriptorConstructorTestImpl(),

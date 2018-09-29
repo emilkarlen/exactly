@@ -29,7 +29,7 @@ def file_property_name(contents_attribute: str, object_name: str) -> str:
     return contents_attribute + ' of ' + object_name
 
 
-class ComparisonActualFile:
+class ComparisonActualFileResolver:
     @property
     def property_descriptor_constructor(self) -> FilePropertyDescriptorConstructor:
         return _ActualFilePropertyDescriptorConstructorForComparisonFile(self.file_ref_resolver(),
@@ -52,11 +52,11 @@ class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndValidation):
     def construct(self,
                   source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep,
-                  os_services: OsServices) -> ComparisonActualFile:
+                  os_services: OsServices) -> ComparisonActualFileResolver:
         raise NotImplementedError('abstract method')
 
 
-class ComparisonActualFileConstantWithReferences(ComparisonActualFile):
+class ComparisonActualFileResolverConstantWithReferences(ComparisonActualFileResolver):
     def __init__(self, references: Sequence[SymbolReference]):
         self._references = references
 
@@ -66,13 +66,13 @@ class ComparisonActualFileConstantWithReferences(ComparisonActualFile):
 
 
 class ComparisonActualFileConstructorForConstant(ComparisonActualFileConstructor):
-    def __init__(self, constructed_value: ComparisonActualFileConstantWithReferences):
+    def __init__(self, constructed_value: ComparisonActualFileResolverConstantWithReferences):
         self._constructed_value = constructed_value
 
     def construct(self,
                   source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep,
-                  os_services: OsServices) -> ComparisonActualFile:
+                  os_services: OsServices) -> ComparisonActualFileResolver:
         return self._constructed_value
 
     @property
@@ -96,7 +96,7 @@ class _ActualFilePropertyDescriptorConstructorForComparisonFile(FilePropertyDesc
                                       self._file_ref)
 
 
-class ActComparisonActualFileForFileRef(ComparisonActualFileConstantWithReferences):
+class ActComparisonActualFileForFileRef(ComparisonActualFileResolverConstantWithReferences):
     def __init__(self, file_ref_resolver: FileRefResolver):
         super().__init__(file_ref_resolver.references)
         self._file_ref_resolver = file_ref_resolver
@@ -113,7 +113,7 @@ class ActComparisonActualFileForFileRef(ComparisonActualFileConstantWithReferenc
                                                        environment.path_resolving_environment_pre_or_post_sds)
 
 
-class ComparisonActualFileForProgramOutput(ComparisonActualFile):
+class ComparisonActualFileResolverForProgramOutput(ComparisonActualFileResolver):
     def __init__(self, file_with_program_output: pathlib.Path):
         self._file_with_program_output = file_with_program_output
         if not file_with_program_output.is_absolute():
