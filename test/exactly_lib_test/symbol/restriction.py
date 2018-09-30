@@ -101,7 +101,7 @@ class TestValueTypeRestriction(unittest.TestCase):
             FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
 
         ValueType.STRING_MATCHER:
-            StringMatcherResolverConstantTestImpl(StringMatcherConstant(False)),
+            StringMatcherResolverConstantTestImpl(StringMatcherConstant(None)),
 
         ValueType.STRING_TRANSFORMER:
             StringTransformerResolverConstantTestImpl(FakeStringTransformer(), []),

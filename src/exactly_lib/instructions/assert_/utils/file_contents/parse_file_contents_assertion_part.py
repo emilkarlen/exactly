@@ -66,7 +66,7 @@ class ParseFileContentsAssertionPart:
         token_parser.report_superfluous_arguments_if_not_at_eol()
         token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         from exactly_lib.instructions.assert_.utils.file_contents.parts import emptieness
-        return emptieness.EmptinessContentsAssertionPart(self.expectation_type)
+        return emptieness.emptiness_via_string_matcher(self.expectation_type)
 
     def _parse_equals_checker(self, token_parser: TokenParser) -> FileContentsAssertionPart:
         token_parser.require_has_valid_head_token(_EXPECTED_SYNTAX_ELEMENT_FOR_EQUALS)
