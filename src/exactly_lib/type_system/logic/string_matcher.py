@@ -1,12 +1,12 @@
 import pathlib
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
-from typing import Set
+from typing import Set, Optional
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor
+from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.file_utils import TmpFileSpace, ensure_parent_directory_does_exist
@@ -100,9 +100,9 @@ class FileToCheck:
 StringMatcherModel = str
 
 
-class StringMatcher(Matcher[StringMatcherModel], ABC):
+class StringMatcher(Matcher[FileToCheck], ABC):
     @abstractmethod
-    def matches(self, model: StringMatcherModel) -> bool:
+    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         raise NotImplementedError('abstract method')
 
 

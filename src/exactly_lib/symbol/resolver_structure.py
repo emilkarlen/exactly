@@ -3,6 +3,8 @@ from typing import Sequence, Optional
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolReferences
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case import pre_or_post_validation
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
@@ -117,6 +119,10 @@ class StringMatcherResolver(LogicValueResolver):
     @property
     def references(self) -> list:
         raise NotImplementedError('abstract method')
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return pre_or_post_validation.ConstantSuccessValidator()
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
         raise NotImplementedError('abstract method')

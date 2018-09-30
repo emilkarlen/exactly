@@ -66,8 +66,7 @@ class DiffErrorInfo(ErrorInfo):
         return line_separated(lines)
 
     def _err_msg_expected_and_actual_lines(self) -> List[str]:
-        negation_str = self._negation_str()
-        expected_str = negation_str + self.expected
+        expected_str = negation_str(self.expectation_type) + self.expected
 
         ret_val = [_EXPECTED_HEADER + expected_str]
 
@@ -76,11 +75,12 @@ class DiffErrorInfo(ErrorInfo):
 
         return ret_val
 
-    def _negation_str(self) -> str:
-        if self.expectation_type is ExpectationType.POSITIVE:
-            return ''
-        else:
-            return NEGATION_ARGUMENT_STR + ' '
+
+def negation_str(expectation_type: ExpectationType) -> str:
+    if expectation_type is ExpectationType.POSITIVE:
+        return ''
+    else:
+        return NEGATION_ARGUMENT_STR + ' '
 
 
 _EXPECTED_HEADER = 'Expected : '
