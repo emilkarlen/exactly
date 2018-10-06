@@ -1,5 +1,5 @@
 help:
-	echo clean build install uninstall36 upload
+	echo clean build install uninstall36 uninstall-venv upload
 
 clean:
 	rm -rf build
