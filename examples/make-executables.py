@@ -44,6 +44,8 @@ PRINT_ENVIRONMENT_VARIABLES = 'print-environment-variables'
 
 MY_CONTACTS_PROGRAM = 'my-contacts-program'
 
+PROGRAM_THAT_WRITES_LOG_FILE = 'program-that-writes-log-file'
+
 ########################################
 # Directories
 ########################################
@@ -113,6 +115,9 @@ README_FILES = itertools.chain.from_iterable([
          MY_SETUP_HELPER_PROGRAM,
          SYSTEM_UNDER_TEST,
          ]),
+    sts(Path('transform'),
+        [PROGRAM_THAT_WRITES_LOG_FILE]
+        ),
 ])
 
 BUILTIN_HELP_FILES = [

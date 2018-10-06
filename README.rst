@@ -6,10 +6,7 @@ Or tests properties of existing files, directories etc.
 Supports individual test cases and test suites.
 
 Exactly has a `Wiki
-<https://github.com/emilkarlen/exactly/wiki>`_,
-and an `introduction by examples
-<https://github.com/emilkarlen/exactly/wiki/Exactly-by-example>`_.
-
+<https://github.com/emilkarlen/exactly/wiki>`_.
 It also has a built in help system,
 which can, among other things,
 generate this `Reference manual
@@ -201,9 +198,9 @@ The following case
 tests that "timing lines" are output as part of a log file "log.txt".
 
 The challenge is that the (fictive) log file contains
-non-timing lines that we are not interested in,
+non-timing lines that the test is not interested in,
 and that timing lines contains a time stamp of the form
-"NN:NN", who's exact value we are also not interested in.
+"NN:NN", who's exact value also is not interesting.
 
 A "string transformer" is used to extract all timing lines
 and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
@@ -219,11 +216,13 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
     [act]
 
-    $ python @[EXACTLY_HOME]@/program-that-writes-log-file.py
+    program-that-writes-log-file
 
     [assert]
 
-    contents log.txt -transformed-by GET_TIMING_LINES equals <<EOF
+    contents log.txt
+             -transformed-by GET_TIMING_LINES
+             equals <<EOF
     timing TIMESTAMP begin
     timing TIMESTAMP preprocessing
     timing TIMESTAMP validation
@@ -334,7 +333,8 @@ Print output from the tested program
 ------------------------------------
 
 
-If ``--act`` is used, the output of the "act" phase (the tested program) will become the output of ``exactly`` -
+If ``--act`` is used, the output of the "act" phase (the "action to check")
+will become the output of ``exactly`` -
 stdout, stderr and exit code
 ::
 
@@ -368,7 +368,7 @@ Testing existing OS environment - tests without ``[act]``
 
 A test case does not need to have an ``[act]`` phase.
 
-For example, to just check that files names are correct::
+For example, to just check that the names of some SQL files are correct::
 
     [assert]
 
@@ -465,10 +465,10 @@ to all cases in the suite. For example::
 The common functionality is included in each test case.
 
 
-EXAMPLES
+MORE EXAMPLES
 ========================================
 
-The ``examples/`` directory of the source distribution contains examples.
+The ``examples/`` directory of the source distribution contains more examples.
 
 
 INSTALLING
@@ -512,8 +512,6 @@ Future development
 ------------------------------------
 
 More functionality is needed, smaller and larger.
-
-
 Including (but not limited to):
 
 * More string transformers
