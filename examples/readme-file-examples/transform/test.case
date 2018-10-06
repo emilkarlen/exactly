@@ -8,11 +8,13 @@ def string-transformer GET_TIMING_LINES   = select IS_TIMING_LINE | REPLACE_TIME
 
 [act]
 
-$ python @[EXACTLY_HOME]@/program-that-writes-log-file.py
+program-that-writes-log-file
 
 [assert]
 
-contents log.txt -transformed-by GET_TIMING_LINES equals <<EOF
+contents log.txt
+         -transformed-by GET_TIMING_LINES
+         equals <<EOF
 timing TIMESTAMP begin
 timing TIMESTAMP preprocessing
 timing TIMESTAMP validation
