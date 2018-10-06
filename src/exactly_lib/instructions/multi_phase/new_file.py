@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
+    InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import path_syntax
@@ -44,7 +44,7 @@ def parts_parser(instruction_name: str,
 RUN_PROGRAM_TOKEN = instruction_names.RUN_INSTRUCTION_NAME
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
+class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                   IsAHelperIfInAssertPhase):
     def __init__(self, name: str,
                  phase_is_after_act: bool):

@@ -3,7 +3,8 @@ from typing import Sequence, List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
+    invokation_variant_from_args
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
@@ -50,10 +51,10 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return [
-            InvokationVariant(self._cl_syntax_for_args([
+            invokation_variant_from_args([
                 a.Single(a.Multiplicity.OPTIONAL,
                          _DIR_ARGUMENT),
-            ])),
+            ]),
         ]
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:

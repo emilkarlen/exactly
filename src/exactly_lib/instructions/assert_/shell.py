@@ -23,7 +23,7 @@ class TheDocumentation(TheInstructionDocumentationBase, WithAssertPhasePurpose):
     def assert_phase_purpose(self) -> AssertPhasePurpose:
         return AssertPhasePurpose.BOTH
 
-    def _main_description_rest_prelude(self) -> List[ParagraphItem]:
+    def _main_description_rest_prologue(self) -> List[ParagraphItem]:
         text = _PRELUDE
         return self._tp.fnap(text)
 
