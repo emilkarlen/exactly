@@ -4,17 +4,17 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## Next release
+## [0.8.9.5] - 2018-10-06
 
 ### Added
 
  - Test case phase contents in corresponding suites sections
- - Run test case as part of suite if the default suite file - exactly.suite - exists
+ - Run test case as part of suite if the default suite file - "exactly.suite" - exists
  - Run suites - accepts DIR as suite file CLI arg if DIR contains default suite file
  - Sub suite list accepts DIR if DIR contains default suite file
  - Improved description of Test case execution environment
+ - Improved built in help
  - More examples in README
- - More built in help
  
 ### Changed
 
