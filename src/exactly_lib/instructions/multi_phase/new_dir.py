@@ -2,7 +2,8 @@ from typing import Sequence, List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, \
+    invokation_variant_from_args, InvokationVariant
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
@@ -37,13 +38,13 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def _main_description_rest_body(self) -> List[ParagraphItem]:
         return self._tp.fnap(_MAIN_DESCRIPTION_REST_BODY)
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         arguments = path_syntax.mandatory_path_with_optional_relativity(
             _PATH_ARGUMENT,
             RELATIVITY_VARIANTS.path_suffix_is_required)
         return [
-            InvokationVariant(self._cl_syntax_for_args(arguments),
-                              []),
+            invokation_variant_from_args(arguments,
+                                         []),
         ]
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:

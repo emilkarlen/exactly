@@ -1,8 +1,8 @@
 from typing import List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+    InstructionDocumentationWithTextParserBase
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -24,7 +24,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
                                   TheInstructionDocumentation(instruction_name))
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
+class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
         super().__init__(name, {
             'preprocessor': formatting.concept_(concepts.PREPROCESSOR_CONCEPT_INFO),
@@ -39,8 +39,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         shell_cmd_arg = a.Single(a.Multiplicity.MANDATORY,
                                  syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT.argument)
         return [
-            InvokationVariant(self._cl_syntax_for_args([MANDATORY_EQ_ARG,
-                                                        shell_cmd_arg])),
+            invokation_variant_from_args([MANDATORY_EQ_ARG,
+                                          shell_cmd_arg]),
         ]
 
     def main_description_rest(self) -> List[ParagraphItem]:

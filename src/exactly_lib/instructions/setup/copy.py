@@ -2,8 +2,9 @@ import pathlib
 from typing import Sequence, List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+    InstructionDocumentationWithTextParserBase
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
+    invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
@@ -56,7 +57,7 @@ REL_OPTION_ARG_CONF_FOR_DESTINATION = rel_opts_configuration.RelOptionArgumentCo
     path_suffix_is_required=False)
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
+class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
         format_map = {
             'current_dir': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
@@ -81,12 +82,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return [
-            InvokationVariant(self._cl_syntax_for_args([
+            invokation_variant_from_args([
                 a.Single(a.Multiplicity.MANDATORY,
                          instruction_arguments.SOURCE_PATH_ARGUMENT),
                 a.Single(a.Multiplicity.OPTIONAL,
                          instruction_arguments.DESTINATION_PATH_ARGUMENT)]
-            )),
+            ),
         ]
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:

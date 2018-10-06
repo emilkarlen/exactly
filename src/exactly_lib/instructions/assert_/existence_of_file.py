@@ -1,8 +1,9 @@
 from typing import Sequence, List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+    InstructionDocumentationWithTextParserBase
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
+    invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import path_syntax
@@ -65,7 +66,7 @@ _REL_OPTION_CONFIG = RelOptionArgumentConfiguration(
     True)
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
+class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                   WithAssertPhasePurpose):
     def __init__(self, name: str):
         self.type_argument = a.Named(_TYPE_ARGUMENT_STR)
@@ -92,8 +93,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         arguments = negation_arguments + type_arguments + path_arguments
 
         return [
-            InvokationVariant(self._cl_syntax_for_args(arguments),
-                              []),
+            invokation_variant_from_args(arguments,
+                                         []),
         ]
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:

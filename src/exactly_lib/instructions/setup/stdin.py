@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
+    InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import instruction_arguments
@@ -38,7 +38,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 RELATIVITY_OPTIONS_CONFIGURATION = parse_here_doc_or_file_ref.CONFIGURATION
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
+class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
         super().__init__(name, {})
         self.path_arg = instruction_arguments.PATH_ARGUMENT

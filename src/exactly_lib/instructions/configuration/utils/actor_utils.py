@@ -6,8 +6,9 @@ from exactly_lib.act_phase_setups import command_line
 from exactly_lib.act_phase_setups import file_interpreter
 from exactly_lib.act_phase_setups import source_interpreter as source_interpreter
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+    InstructionDocumentationWithTextParserBase
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
+    invokation_variant_from_args
 from exactly_lib.definitions import formatting, instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
@@ -39,7 +40,7 @@ FILE_INTERPRETER_OPTION_NAME = a.OptionName(long_name='file')
 FILE_INTERPRETER_OPTION = long_option_syntax(FILE_INTERPRETER_OPTION_NAME.long)
 
 
-class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
+class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str,
                  single_line_description_un_formatted: str,
                  main_description_rest_un_formatted: str = None):
@@ -88,29 +89,29 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY,
                                           a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
         return [
-            InvokationVariant(self._cl_syntax_for_args([MANDATORY_EQ_ARG, command_line_actor_arg]),
-                              self._description_of_command_line()),
+            invokation_variant_from_args([MANDATORY_EQ_ARG, command_line_actor_arg],
+                                         self._description_of_command_line()),
         ]
 
     def _interpreter_actor_invokation_variants(self,
                                                actor: SingularNameAndCrossReferenceId,
-                                               cli_option: a.Single) -> list:
+                                               cli_option: a.Single) -> List[InvokationVariant]:
         shell_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
                                               a.Constant(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD))
         command_argument = a.Single(a.Multiplicity.MANDATORY, self.command_line_syntax.command)
         executable_arg = a.Single(a.Multiplicity.MANDATORY, self.command_line_syntax.executable)
         optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.command_line_syntax.argument)
         return [
-            InvokationVariant(self._cl_syntax_for_args([MANDATORY_EQ_ARG,
-                                                        cli_option,
-                                                        executable_arg,
-                                                        optional_arguments_arg]),
-                              self._description_of_executable_program_interpreter(actor)),
-            InvokationVariant(self._cl_syntax_for_args([MANDATORY_EQ_ARG,
-                                                        cli_option,
-                                                        shell_interpreter_argument,
-                                                        command_argument]),
-                              self._description_of_shell_command_interpreter(actor)),
+            invokation_variant_from_args([MANDATORY_EQ_ARG,
+                                          cli_option,
+                                          executable_arg,
+                                          optional_arguments_arg],
+                                         self._description_of_executable_program_interpreter(actor)),
+            invokation_variant_from_args([MANDATORY_EQ_ARG,
+                                          cli_option,
+                                          shell_interpreter_argument,
+                                          command_argument],
+                                         self._description_of_shell_command_interpreter(actor)),
 
         ]
 

@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
+    InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
@@ -30,7 +30,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
                                   TheInstructionDocumentation(instruction_name))
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
+class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                   WithAssertPhasePurpose):
     def __init__(self, name: str):
         self.actual_file_arg = ACTUAL_PATH_ARGUMENT
@@ -51,9 +51,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return self._help_parts.invokation_variants__file(self.actual_file_arg)
-
-    def _cls(self, additional_argument_usages: list) -> str:
-        return self._cl_syntax_for_args([self.actual_file] + additional_argument_usages)
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         actual_file_arg_sed = path_element(

@@ -1,9 +1,10 @@
 from typing import List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+    InstructionDocumentationWithTextParserBase
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.processing import exit_values
@@ -33,7 +34,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 _PROPERTY_NAME = 'exit code'
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
+class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                   WithAssertPhasePurpose):
     def __init__(self, name: str):
         super().__init__(name, {
@@ -48,15 +49,15 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def main_description_rest(self) -> List[ParagraphItem]:
         return self._tp.fnap(_MAIN_DESCRIPTION)
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         return [
-            InvokationVariant(self._cl_syntax_for_args([
+            invokation_variant_from_args([
                 negation_of_predicate.optional_negation_argument_usage(),
                 syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory,
-            ])),
+            ]),
         ]
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
             syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.cross_reference_target
         ]

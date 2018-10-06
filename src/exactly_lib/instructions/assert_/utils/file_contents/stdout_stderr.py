@@ -2,7 +2,7 @@ from typing import Sequence, Optional, List
 
 from exactly_lib.common.help import syntax_contents_structure
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
+    InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts, syntax_elements, types
@@ -37,7 +37,7 @@ _SINGLE_LINE_DESCRIPTION = 'Tests the contents of {checked_file} from the {actio
 OUTPUT_FROM_PROGRAM_OPTION_NAME = a.OptionName(long_name='from')
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
+class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                   WithAssertPhasePurpose):
     def __init__(self, name: str,
                  name_of_checked_file: str):

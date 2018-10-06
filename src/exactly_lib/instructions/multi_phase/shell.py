@@ -1,8 +1,9 @@
 from typing import List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+    InstructionDocumentationWithSplittedPartsForRestDocBase
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
+    invokation_variant_from_args
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
@@ -38,7 +39,7 @@ SINGLE_LINE_DESCRIPTION_FOR_ASSERT_PHASE_INSTRUCTION = (
     " and PASS if, and only if, its exit code is 0")
 
 
-class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase,
+class TheInstructionDocumentationBase(InstructionDocumentationWithSplittedPartsForRestDocBase,
                                       IsBothAssertionAndHelperIfInAssertPhase):
     def __init__(self,
                  name: str,
@@ -56,15 +57,15 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRen
     def _main_description_rest_body(self) -> list:
         return []
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         return [
-            InvokationVariant(self._cl_syntax_for_args([
+            invokation_variant_from_args([
                 a.Single(a.Multiplicity.MANDATORY,
-                         self.command_arg)]),
+                         self.command_arg)],
                 []),
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return [
             SyntaxElementDescription(self.command_arg.name,
                                      self._tp.fnap(_COMMAND_SYNTAX_ELEMENT_DESCRIPTION))
@@ -81,7 +82,7 @@ class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
         super().__init__(name,
                          _SINGLE_LINE_DESCRIPTION_FOR_NON_ASSERT_PHASE_INSTRUCTIONS)
 
-    def _main_description_rest_prelude(self) -> List[ParagraphItem]:
+    def _main_description_rest_prologue(self) -> List[ParagraphItem]:
         return self._tp.fnap(_NON_ASSERT_PHASE_REST_PRELUDE)
 
 

@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
+    InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.entity import conf_params
@@ -25,7 +25,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name))
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
+class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     _INTEGER_ARG_NAME = a.Named('INTEGER')
 
     def __init__(self, name: str):

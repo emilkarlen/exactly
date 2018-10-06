@@ -1,8 +1,9 @@
 from typing import List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+    InstructionDocumentationWithTextParserBase
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
+    invokation_variant_from_args
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
@@ -26,7 +27,7 @@ from . import config
 DIR_CONTENTS_MATCHER = a.Named('DIR-CONTENTS-MATCHER')
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
+class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                   WithAssertPhasePurpose):
 
     def __init__(self, name: str):
@@ -65,8 +66,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                      ]
 
         return [
-            InvokationVariant(self._cl_syntax_for_args(arguments),
-                              self._tp.fnap(_MAIN_INVOKATION_SYNTAX_DESCRIPTION)),
+            invokation_variant_from_args(arguments,
+                                         self._tp.fnap(_MAIN_INVOKATION_SYNTAX_DESCRIPTION)),
 
         ]
 
@@ -115,17 +116,18 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         file_contents_args = ([quantifier_arg,
                                file_arg,
-                               separator_arg] + file_contents_checker.file_contents_checker_arguments__non_program()
+                               separator_arg] +
+                              file_contents_checker.file_contents_checker_arguments__non_program()
                               )
 
         invokation_variants = [
-            InvokationVariant(self._cl_syntax_for_args(arguments_for_empty_check),
-                              self._tp.fnap(_CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY)),
+            invokation_variant_from_args(arguments_for_empty_check,
+                                         self._tp.fnap(_CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY)),
 
-            InvokationVariant(self._cl_syntax_for_args(arguments_for_num_files_check),
-                              self._tp.fnap(_CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES)),
-            InvokationVariant(self._cl_syntax_for_args(file_contents_args),
-                              self._tp.fnap(_DESCRIPTION_OF_FILE_QUANTIFICATION))
+            invokation_variant_from_args(arguments_for_num_files_check,
+                                         self._tp.fnap(_CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES)),
+            invokation_variant_from_args(file_contents_args,
+                                         self._tp.fnap(_DESCRIPTION_OF_FILE_QUANTIFICATION))
         ]
         return SyntaxElementDescription(
             DIR_CONTENTS_MATCHER.name,
@@ -142,10 +144,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT]
         name_and_cross_refs += rel_path_doc.see_also_name_and_cross_refs(ACTUAL_RELATIVITY_CONFIGURATION.options)
         return cross_reference_id_list(name_and_cross_refs)
-
-    def _cls(self, additional_argument_usages: list) -> str:
-        return self._cl_syntax_for_args([self.actual_file] + additional_argument_usages)
-
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
