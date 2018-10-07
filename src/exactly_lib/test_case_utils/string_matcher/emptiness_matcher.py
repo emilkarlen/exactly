@@ -24,14 +24,14 @@ class EmptinessStringMatcher(StringMatcher):
         first_line = self._first_line(model)
         if self.expectation_type is ExpectationType.POSITIVE:
             if first_line != '':
-                return _EqualityErrorMessageResolver(self.expectation_type,
-                                                     model.describer,
-                                                     repr(first_line) + '...')
+                return _ErrorMessageResolver(self.expectation_type,
+                                             model.describer,
+                                             repr(first_line) + '...')
         else:
             if first_line == '':
-                return _EqualityErrorMessageResolver(self.expectation_type,
-                                                     model.describer,
-                                                     EMPTINESS_CHECK_EXPECTED_VALUE)
+                return _ErrorMessageResolver(self.expectation_type,
+                                             model.describer,
+                                             EMPTINESS_CHECK_EXPECTED_VALUE)
         return None
 
     @staticmethod
@@ -42,7 +42,7 @@ class EmptinessStringMatcher(StringMatcher):
         return ''
 
 
-class _EqualityErrorMessageResolver(ErrorMessageResolver):
+class _ErrorMessageResolver(ErrorMessageResolver):
     def __init__(self,
                  expectation_type: ExpectationType,
                  actual_file_prop_descriptor_constructor: FilePropertyDescriptorConstructor,
