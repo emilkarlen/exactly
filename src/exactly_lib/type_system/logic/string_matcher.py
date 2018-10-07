@@ -97,9 +97,6 @@ class FileToCheck:
                     dst_file.write(line)
 
 
-StringMatcherModel = str
-
-
 class StringMatcher(Matcher[FileToCheck], ABC):
     @abstractmethod
     def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
