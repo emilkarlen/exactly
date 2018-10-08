@@ -13,9 +13,6 @@ class StringMatcherConstantValue(StringMatcherValue):
     def __init__(self, value: StringMatcher):
         self._value = value
 
-    def value_when_no_dir_dependencies(self) -> StringMatcher:
-        return self._value
-
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
         return self._value
 
