@@ -33,7 +33,7 @@ class StdinDataResolver(ObjectWithTypedSymbolReferences):
         return references_from_objects_with_symbol_references(self._fragments)
 
     def resolve_value(self, symbols: SymbolTable) -> StdinDataValue:
-        return StdinDataValue([f.resolve_value(symbols) for f in self._fragments])
+        return StdinDataValue([f.resolve(symbols) for f in self._fragments])
 
 
 def no_stdin() -> StdinDataResolver:

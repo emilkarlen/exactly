@@ -56,7 +56,7 @@ class StringOrFileRefResolver(DirDepValueResolver[StringOrFileRefValue]):
         """
         return self._file_ref
 
-    def resolve_value(self, symbols: SymbolTable) -> StringOrFileRefValue:
+    def resolve(self, symbols: SymbolTable) -> StringOrFileRefValue:
         if self.is_file_ref:
             return StringOrFileRefValue(None, self._file_ref.resolve(symbols))
         else:

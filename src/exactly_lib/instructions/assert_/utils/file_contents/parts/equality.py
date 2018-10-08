@@ -106,7 +106,7 @@ class EqualityStringMatcher(StringMatcher):
                                                 model.describer)
 
     def _file_path_for_file_with_expected_contents(self) -> pathlib.Path:
-        expected_contents = self._expected_contents.resolve_value(self._environment.symbols)
+        expected_contents = self._expected_contents.resolve(self._environment.symbols)
         if expected_contents.is_file_ref:
             return expected_contents.file_ref_value.value_of_any_dependency(self._environment.home_and_sds)
         else:
