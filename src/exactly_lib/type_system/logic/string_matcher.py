@@ -111,7 +111,7 @@ class StringMatcherValue(MultiDirDependentValue[StringMatcher]):
         """
         :raises DirDependencyError: This value has dir dependencies.
         """
-        raise NotImplementedError()
+        raise ValueError(str(type(self)) + ' do not support this short cut.')
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
         """Gives the value, regardless of actual dependency."""

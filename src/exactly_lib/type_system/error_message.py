@@ -32,6 +32,14 @@ class ErrorMessageResolver(ABC):
         pass
 
 
+class ConstantErrorMessageResolver(ErrorMessageResolver):
+    def __init__(self, constant: str):
+        self._constant = constant
+
+    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+        return self._constant
+
+
 class PropertyDescription:
     def __init__(self,
                  name: str,

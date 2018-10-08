@@ -1,9 +1,10 @@
-from typing import Sequence
+from typing import Sequence, Callable
 
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.logic import string_matcher_values
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue
 from exactly_lib.type_system.value_type import ValueType
@@ -46,6 +47,30 @@ class StringMatcherConstantOfValueResolver(StringMatcherResolver):
 
     def __str__(self):
         return str(type(self)) + '\'' + str(self._value) + '\''
+
+
+class StringMatcherResolverOfParts(StringMatcherResolver):
+    def __init__(self,
+                 references: Sequence[SymbolReference],
+                 validator: PreOrPostSdsValidator,
+                 value_resolver: Callable[[SymbolTable], StringMatcherValue]):
+        self._validator = validator
+        self._references = references
+        self._value_resolver = value_resolver
+
+    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
+        return self._value_resolver(symbols)
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._references
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return self._validator
+
+    def __str__(self):
+        return str(type(self))
 
 
 class StringMatcherReferenceResolver(StringMatcherResolver):

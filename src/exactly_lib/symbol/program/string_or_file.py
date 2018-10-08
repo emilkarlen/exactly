@@ -5,6 +5,9 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.utils import DirDepValueResolver
+from exactly_lib.test_case import pre_or_post_validation
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.file_properties import FileType, must_exist_as
 from exactly_lib.type_system.logic.program.string_or_file_ref_values import StringOrFileRefValue
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -66,3 +69,15 @@ class StringOrFileRefResolver(DirDepValueResolver[StringOrFileRefValue]):
     @property
     def symbol_usages(self) -> Sequence[SymbolReference]:
         return self._references
+
+    def validator__file_must_exist_as(self,
+                                      file_type: FileType,
+                                      follow_symlinks: bool = True
+                                      ) -> PreOrPostSdsValidator:
+        if not self.is_file_ref:
+            return pre_or_post_validation.ConstantSuccessValidator()
+        from exactly_lib.test_case_utils.file_ref_check import FileRefCheck
+        from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator
+        frc = FileRefCheck(self.file_reference_resolver,
+                           must_exist_as(file_type, follow_symlinks))
+        return FileRefCheckValidator(frc)

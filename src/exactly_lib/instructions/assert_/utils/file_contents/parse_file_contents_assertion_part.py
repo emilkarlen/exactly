@@ -78,7 +78,7 @@ class ParseFileContentsAssertionPart:
             token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
 
         from exactly_lib.instructions.assert_.utils.file_contents.parts import equality
-        return equality.EqualityContentsAssertionPart(
+        return equality.assertion_part_via_string_matcher(
             self.expectation_type,
             expected_contents,
         )
