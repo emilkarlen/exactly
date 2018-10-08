@@ -1,7 +1,7 @@
 import difflib
 import filecmp
 import pathlib
-from typing import Sequence
+from typing import Sequence, List
 
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CONTENTS_ATTRIBUTE
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
@@ -20,7 +20,8 @@ from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoRe
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import ExpectedValueResolver
-from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor
+from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver, \
+    ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import tmp_text_file_containing
@@ -115,18 +116,12 @@ class EqualityContentsAssertionPart(FileContentsAssertionPart):
               checked_file_describer: FilePropertyDescriptorConstructor,
               actual_info: ActualInfo
               ):
+        error_message_resolver = _ErrorMessageResolver(self._expectation_type,
+                                                       self._expected_contents,
+                                                       checked_file_describer,
+                                                       actual_info)
         err_msg_env = err_msg_env_from_instr_env(environment)
-        failure_info = self._failure_resolver(checked_file_describer).resolve(err_msg_env, actual_info)
-        raise PfhFailException(failure_info.error_message())
-
-    def _failure_resolver(self, checked_file_describer: FilePropertyDescriptorConstructor) -> DiffFailureInfoResolver:
-        description_of_actual_file = checked_file_describer.construct_for_contents_attribute(CONTENTS_ATTRIBUTE)
-        return DiffFailureInfoResolver(
-            description_of_actual_file,
-            self._expectation_type,
-            ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
-                                  self._expected_contents),
-        )
+        raise PfhFailException(error_message_resolver.resolve(err_msg_env))
 
 
 def _validator_of_expected(expected_contents: StringOrFileRefResolver) -> PreOrPostSdsValidator:
@@ -138,7 +133,7 @@ def _validator_of_expected(expected_contents: StringOrFileRefResolver) -> PreOrP
 
 
 def _file_diff_description(actual_file_path: pathlib.Path,
-                           expected_file_path: pathlib.Path) -> list:
+                           expected_file_path: pathlib.Path) -> List[str]:
     expected_lines = file_utils.lines_of(expected_file_path)
     actual_lines = file_utils.lines_of(actual_file_path)
     diff = difflib.unified_diff(expected_lines,
@@ -146,3 +141,27 @@ def _file_diff_description(actual_file_path: pathlib.Path,
                                 fromfile='Expected',
                                 tofile='Actual')
     return list(diff)
+
+
+class _ErrorMessageResolver(ErrorMessageResolver):
+    def __init__(self,
+                 expectation_type: ExpectationType,
+                 expected_contents: StringOrFileRefResolver,
+                 checked_file_describer: FilePropertyDescriptorConstructor,
+                 actual_info: ActualInfo
+                 ):
+        self._expected_contents = expected_contents
+        self._expectation_type = expectation_type
+        self._checked_file_describer = checked_file_describer
+        self._actual_info = actual_info
+
+    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+        description_of_actual_file = self._checked_file_describer.construct_for_contents_attribute(CONTENTS_ATTRIBUTE)
+        failure_info_resolver = DiffFailureInfoResolver(
+            description_of_actual_file,
+            self._expectation_type,
+            ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
+                                  self._expected_contents),
+        )
+        failure_info = failure_info_resolver.resolve(environment, self._actual_info)
+        return failure_info.error_message()
