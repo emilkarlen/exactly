@@ -1,34 +1,30 @@
 import difflib
 import filecmp
 import pathlib
-from typing import Sequence, List, Set, Optional
+from typing import List, Set, Optional
 
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CONTENTS_ATTRIBUTE
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.string_matcher_assertion_part import \
     StringMatcherAssertionPart
-from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
-from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.program.string_or_file import StringOrFileRefResolver
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
-from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases import common as i
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, SingleStepValidator, ValidationStep
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, SingleStepValidator, ValidationStep, \
+    PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import ExpectedValueResolver
-from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverOfParts
+from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverOfParts2
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver, \
     ErrorMessageResolvingEnvironment, ConstantErrorMessageResolver
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherValue, StringMatcher
+from exactly_lib.type_system.logic.program.string_or_file_ref_values import StringOrPath
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util import file_utils
-from exactly_lib.util.file_utils import tmp_text_file_containing
+from exactly_lib.util.file_utils import tmp_text_file_containing, TmpFileSpace
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -43,60 +39,65 @@ def assertion_part_via_string_matcher(expectation_type: ExpectationType,
 def value_resolver(expectation_type: ExpectationType,
                    expected_contents: StringOrFileRefResolver) -> StringMatcherResolver:
     validator = _validator_of_expected(expected_contents)
-    return StringMatcherResolverOfParts(
-        expected_contents.symbol_usages,
+    error_message_constructor = _ErrorMessageResolverConstructor(expectation_type,
+                                                                 ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
+                                                                                       expected_contents))
+
+    def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
+        return EqualityStringMatcher(
+            expectation_type,
+            expected_contents.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds),
+            error_message_constructor,
+            FixedPreOrPostSdsValidator(environment, validator)
+        )
+
+    def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
+        return expected_contents.resolve(symbols).resolving_dependencies()
+
+    return StringMatcherResolverOfParts2(
+        expected_contents.references,
         SingleStepValidator(ValidationStep.PRE_SDS,
                             validator),
-        lambda symbols: EqualityStringMatcherValue(symbols,
-                                                   expectation_type,
-                                                   expected_contents,
-                                                   validator)
+        get_resolving_dependencies,
+        get_matcher,
     )
 
 
-class EqualityStringMatcherValue(StringMatcherValue):
+class _ErrorMessageResolverConstructor:
     def __init__(self,
-                 symbols: SymbolTable,
                  expectation_type: ExpectationType,
-                 expected_contents: StringOrFileRefResolver,
-                 validator: PreOrPostSdsValidator,
+                 expected_value: ExpectedValueResolver,
                  ):
-        self._symbols = symbols
         self._expectation_type = expectation_type
-        self._expected_contents = expected_contents
-        self._validator = validator
+        self._expected_value = expected_value
 
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._expected_contents.resolve(self._symbols).resolving_dependencies()
-
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
-        return EqualityStringMatcher(PathResolvingEnvironmentPreOrPostSds(home_and_sds,
-                                                                          self._symbols),
-                                     self._expectation_type,
-                                     self._expected_contents,
-                                     self._validator)
+    def construct(self,
+                  checked_file: FilePropertyDescriptorConstructor,
+                  actual_info: ActualInfo) -> ErrorMessageResolver:
+        return _ErrorMessageResolver(self._expectation_type,
+                                     self._expected_value,
+                                     checked_file,
+                                     actual_info)
 
 
 class EqualityStringMatcher(StringMatcher):
     def __init__(self,
-                 environment: PathResolvingEnvironmentPreOrPostSds,
                  expectation_type: ExpectationType,
-                 expected_contents: StringOrFileRefResolver,
-                 validator: PreOrPostSdsValidator,
+                 expected_contents: StringOrPath,
+                 error_message_constructor: _ErrorMessageResolverConstructor,
+                 validator: PreOrPostSdsValidatorPrimitive,
                  ):
-        self._environment = environment
         self._expectation_type = expectation_type
         self._expected_contents = expected_contents
         self._validator = validator
-        self._err_msg_constructor = _ErrorMessageResolverConstructor(expectation_type,
-                                                                     expected_contents)
+        self._err_msg_constructor = error_message_constructor
 
     def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         error_from_validation = self._do_post_setup_validation()
         if error_from_validation is not None:
             return error_from_validation
 
-        expected_file_path = self._file_path_for_file_with_expected_contents()
+        expected_file_path = self._file_path_for_file_with_expected_contents(model.tmp_file_space)
         actual_file_path = model.transformed_file_path()
 
         files_are_equal = self._do_compare(expected_file_path, actual_file_path)
@@ -105,16 +106,15 @@ class EqualityStringMatcher(StringMatcher):
                                                 actual_file_path,
                                                 model.describer)
 
-    def _file_path_for_file_with_expected_contents(self) -> pathlib.Path:
-        expected_contents = self._expected_contents.resolve(self._environment.symbols)
-        if expected_contents.is_file_ref:
-            return expected_contents.file_ref_value.value_of_any_dependency(self._environment.home_and_sds)
+    def _file_path_for_file_with_expected_contents(self, tmp_file_space: TmpFileSpace) -> pathlib.Path:
+        if self._expected_contents.is_path:
+            return self._expected_contents.file_ref_value
         else:
-            contents = expected_contents.string_value.value_of_any_dependency(self._environment.home_and_sds)
+            contents = self._expected_contents.string_value
             return tmp_text_file_containing(contents,
                                             prefix='contents-',
                                             suffix='.txt',
-                                            directory=str(self._environment.sds.internal_tmp_dir))
+                                            directory=str(tmp_file_space.new_path_as_existing_dir()))
 
     @staticmethod
     def _do_compare(expected_file_path: pathlib.Path,
@@ -146,21 +146,12 @@ class EqualityStringMatcher(StringMatcher):
 
         return None
 
-    def _fail(self,
-              checked_file_describer: FilePropertyDescriptorConstructor,
-              actual_info: ActualInfo
-              ) -> Optional[ErrorMessageResolver]:
-        return _ErrorMessageResolver(self._expectation_type,
-                                     self._expected_contents,
-                                     checked_file_describer,
-                                     actual_info)
-
     @property
     def option_description(self) -> str:
         return diff_msg.negation_str(self._expectation_type) + _EQUALITY_CHECK_EXPECTED_VALUE
 
     def _do_post_setup_validation(self) -> Optional[ErrorMessageResolver]:
-        error_message = self._validator.validate_post_sds_if_applicable(self._environment)
+        error_message = self._validator.validate_post_sds_if_applicable()
         if error_message is None:
             return None
         else:
@@ -182,31 +173,14 @@ def _file_diff_description(actual_file_path: pathlib.Path,
     return list(diff)
 
 
-class _ErrorMessageResolverConstructor:
-    def __init__(self,
-                 expectation_type: ExpectationType,
-                 expected_contents: StringOrFileRefResolver,
-                 ):
-        self._expected_contents = expected_contents
-        self._expectation_type = expectation_type
-
-    def construct(self,
-                  checked_file: FilePropertyDescriptorConstructor,
-                  actual_info: ActualInfo) -> ErrorMessageResolver:
-        return _ErrorMessageResolver(self._expectation_type,
-                                     self._expected_contents,
-                                     checked_file,
-                                     actual_info)
-
-
 class _ErrorMessageResolver(ErrorMessageResolver):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 expected_contents: StringOrFileRefResolver,
+                 expected_value: ExpectedValueResolver,
                  checked_file_describer: FilePropertyDescriptorConstructor,
                  actual_info: ActualInfo
                  ):
-        self._expected_contents = expected_contents
+        self._expected_value = expected_value
         self._expectation_type = expectation_type
         self._checked_file_describer = checked_file_describer
         self._actual_info = actual_info
@@ -216,8 +190,7 @@ class _ErrorMessageResolver(ErrorMessageResolver):
         failure_info_resolver = DiffFailureInfoResolver(
             description_of_actual_file,
             self._expectation_type,
-            ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
-                                  self._expected_contents),
+            self._expected_value,
         )
         failure_info = failure_info_resolver.resolve(environment, self._actual_info)
         return failure_info.error_message()

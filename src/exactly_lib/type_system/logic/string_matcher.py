@@ -52,6 +52,10 @@ class FileToCheck:
         self._destination_file_path_getter = destination_file_path_getter
 
     @property
+    def tmp_file_space(self) -> TmpFileSpace:
+        return self._tmp_file_space
+
+    @property
     def describer(self) -> FilePropertyDescriptorConstructor:
         return self._checked_file_describer
 

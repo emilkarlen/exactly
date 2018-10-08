@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Iterable, Sequence, Optional
 
@@ -42,6 +43,55 @@ class PreOrPostSdsValidator:
         if error_message is not None:
             return error_message
         return self.validate_post_sds_if_applicable(environment)
+
+
+class PreOrPostSdsValidatorPrimitive(ABC):
+    """
+    Validates an object - usually a path - either pre or post creation of SDS.
+
+    Whether validation is done pre or post SDS depends on whether the validated
+    object is outside or inside the SDS.
+    """
+
+    @abstractmethod
+    def validate_pre_sds_if_applicable(self) -> Optional[str]:
+        """
+        Validates the object if it is expected to exist pre-SDS.
+        :return: Error message iff validation was applicable and validation failed.
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def validate_post_sds_if_applicable(self) -> Optional[str]:
+        """
+        Validates the object if it is expected to NOT exist pre-SDS.
+        :return: Error message iff validation was applicable and validation failed.
+        """
+        raise NotImplementedError()
+
+    def validate_pre_or_post_sds(self) -> Optional[str]:
+        """
+        Validates the object using either pre- or post- SDS.
+        :return: Error message iff validation failed.
+        """
+        error_message = self.validate_pre_sds_if_applicable()
+        if error_message is not None:
+            return error_message
+        return self.validate_post_sds_if_applicable()
+
+
+class FixedPreOrPostSdsValidator(PreOrPostSdsValidatorPrimitive):
+    def __init__(self,
+                 environment: PathResolvingEnvironmentPreOrPostSds,
+                 validator: PreOrPostSdsValidator):
+        self._environment = environment
+        self._validator = validator
+
+    def validate_pre_sds_if_applicable(self) -> Optional[str]:
+        return self._validator.validate_pre_sds_if_applicable(self._environment)
+
+    def validate_post_sds_if_applicable(self) -> Optional[str]:
+        return self._validator.validate_post_sds_if_applicable(self._environment)
 
 
 def all_of(validators: Sequence[PreOrPostSdsValidator]) -> PreOrPostSdsValidator:
