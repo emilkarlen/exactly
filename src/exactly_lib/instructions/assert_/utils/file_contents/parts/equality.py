@@ -18,7 +18,7 @@ from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import ExpectedValueResolver
-from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverOfParts2
+from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver, \
     ErrorMessageResolvingEnvironment, ConstantErrorMessageResolver
 from exactly_lib.type_system.logic.program.string_or_file_ref_values import StringOrPath
@@ -54,7 +54,7 @@ def value_resolver(expectation_type: ExpectationType,
     def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
         return expected_contents.resolve(symbols).resolving_dependencies()
 
-    return StringMatcherResolverOfParts2(
+    return StringMatcherResolverFromParts(
         expected_contents.references,
         SingleStepValidator(ValidationStep.PRE_SDS,
                             validator),
