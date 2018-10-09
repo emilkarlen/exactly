@@ -41,16 +41,6 @@ class OperandResolver(Generic[T]):
         raise NotImplementedError('abstract method')
 
 
-class ErrorMessageConstructor:
-    def error_message_lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
-        raise NotImplementedError('abstract method')
-
-
-class EmptyErrorMessage(ErrorMessageConstructor):
-    def error_message_lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
-        return []
-
-
 class ComparisonHandler(Generic[T]):
     """A comparison operator, resolvers for left and right operands, and an `ExpectationType`"""
 
@@ -59,14 +49,12 @@ class ComparisonHandler(Generic[T]):
                  expectation_type: ExpectationType,
                  actual_value_lhs: OperandResolver[T],
                  operator: comparators.ComparisonOperator,
-                 expected_value_rhs: OperandResolver[T],
-                 description_of_actual: ErrorMessageConstructor = EmptyErrorMessage()):
+                 expected_value_rhs: OperandResolver[T]):
         self.property_descriptor = property_descriptor
         self.expectation_type = expectation_type
         self.actual_value_lhs = actual_value_lhs
         self.integer_resolver = expected_value_rhs
         self.operator = operator
-        self.description_of_actual = description_of_actual
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -98,8 +86,7 @@ class ComparisonHandler(Generic[T]):
                              lhs,
                              rhs,
                              self.operator,
-                             err_msg_env_from_instr_env(environment),
-                             self.description_of_actual)
+                             err_msg_env_from_instr_env(environment))
         )
         executor.execute_and_return_pfh_via_exceptions()
 
@@ -111,15 +98,13 @@ class _FailureReporter(Generic[T]):
                  lhs_actual_property_value: T,
                  rhs: T,
                  operator: ComparisonOperator,
-                 environment: ErrorMessageResolvingEnvironment,
-                 description_of_actual: ErrorMessageConstructor):
+                 environment: ErrorMessageResolvingEnvironment):
         self.property_descriptor = property_descriptor
         self.expectation_type = expectation_type
         self.lhs_actual_property_value = lhs_actual_property_value
         self.rhs = rhs
         self.operator = operator
         self.environment = environment
-        self.description_of_actual = description_of_actual
 
     def unexpected_value_message(self) -> str:
         return self.failure_info().error_message()
