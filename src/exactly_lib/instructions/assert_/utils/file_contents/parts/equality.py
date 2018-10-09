@@ -24,7 +24,7 @@ from exactly_lib.type_system.error_message import FilePropertyDescriptorConstruc
 from exactly_lib.type_system.logic.program.string_or_file_ref_values import StringOrPath
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util import file_utils
-from exactly_lib.util.file_utils import tmp_text_file_containing, TmpFileSpace
+from exactly_lib.util.file_utils import tmp_text_file_containing, TmpFileSpace, TmpDirFileSpace
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -106,7 +106,7 @@ class EqualityStringMatcher(StringMatcher):
                                                 actual_file_path,
                                                 model.describer)
 
-    def _file_path_for_file_with_expected_contents(self, tmp_file_space: TmpFileSpace) -> pathlib.Path:
+    def _file_path_for_file_with_expected_contents(self, tmp_file_space: TmpDirFileSpace) -> pathlib.Path:
         if self._expected_contents.is_path:
             return self._expected_contents.file_ref_value
         else:

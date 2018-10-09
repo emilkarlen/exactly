@@ -128,7 +128,7 @@ class FileTransformerAsAssertionPart(AssertionPart[ComparisonActualFile, FileToC
 
         return FileToCheck(actual_file_path,
                            file_to_transform.checked_file_describer,
-                           environment.phase_logging,
+                           environment.phase_logging.space_for_instruction(),
                            string_transformer,
                            self._destination_file_path_getter)
 

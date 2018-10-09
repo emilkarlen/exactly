@@ -9,7 +9,7 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
-from exactly_lib.util.file_utils import TmpFileSpace, ensure_parent_directory_does_exist
+from exactly_lib.util.file_utils import ensure_parent_directory_does_exist, TmpDirFileSpace
 
 
 class DestinationFilePathGetter:
@@ -21,7 +21,7 @@ class DestinationFilePathGetter:
         self._existing_unique_instruction_dir = None
 
     def get(self,
-            tmp_file_space: TmpFileSpace,
+            tmp_file_space: TmpDirFileSpace,
             src_file_path: pathlib.Path) -> pathlib.Path:
         """
         :return: Path of a non-existing file.
@@ -41,7 +41,7 @@ class FileToCheck:
     def __init__(self,
                  original_file_path: pathlib.Path,
                  checked_file_describer: FilePropertyDescriptorConstructor,
-                 tmp_file_space: TmpFileSpace,
+                 tmp_file_space: TmpDirFileSpace,
                  string_transformer: StringTransformer,
                  destination_file_path_getter: DestinationFilePathGetter):
         self._original_file_path = original_file_path
@@ -52,7 +52,7 @@ class FileToCheck:
         self._destination_file_path_getter = destination_file_path_getter
 
     @property
-    def tmp_file_space(self) -> TmpFileSpace:
+    def tmp_file_space(self) -> TmpDirFileSpace:
         return self._tmp_file_space
 
     @property

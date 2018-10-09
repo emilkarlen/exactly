@@ -9,7 +9,7 @@ from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.util.file_utils import TmpFileSpace
+from exactly_lib.util.file_utils import TmpFileSpace, TmpDirFileSpace, TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -86,6 +86,9 @@ class PhaseLoggingPaths(TmpFileSpace):
 
     def unique_instruction_file_as_existing_dir(self) -> pathlib.Path:
         return self.new_path_as_existing_dir()
+
+    def space_for_instruction(self) -> TmpDirFileSpace:
+        return TmpDirFileSpaceAsDirCreatedOnDemand(self.unique_instruction_file())
 
     def for_line(self,
                  line_number: int,
