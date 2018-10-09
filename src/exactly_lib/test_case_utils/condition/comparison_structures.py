@@ -1,7 +1,10 @@
+from typing import Sequence, TypeVar, Generic, List
+
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case_utils.condition import comparators
@@ -10,15 +13,17 @@ from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor
 from exactly_lib.util.logic_types import ExpectationType
 
+T = TypeVar('T')
 
-class OperandResolver:
+
+class OperandResolver(Generic[T]):
     """Resolves an operand used in a comparision"""
 
     def __init__(self, property_name: str):
         self.property_name = property_name
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return []
 
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
@@ -27,7 +32,7 @@ class OperandResolver:
         """
         pass
 
-    def resolve(self, environment: InstructionEnvironmentForPostSdsStep):
+    def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> T:
         """
         Reports errors by raising exceptions from `return_pfh_via_exceptions`
         
@@ -37,24 +42,24 @@ class OperandResolver:
 
 
 class ErrorMessageConstructor:
-    def error_message_lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
+    def error_message_lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
         raise NotImplementedError('abstract method')
 
 
 class EmptyErrorMessage(ErrorMessageConstructor):
-    def error_message_lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
+    def error_message_lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
         return []
 
 
-class ComparisonHandler:
+class ComparisonHandler(Generic[T]):
     """A comparison operator, resolvers for left and right operands, and an `ExpectationType`"""
 
     def __init__(self,
                  property_descriptor: PropertyDescriptor,
                  expectation_type: ExpectationType,
-                 actual_value_lhs: OperandResolver,
+                 actual_value_lhs: OperandResolver[T],
                  operator: comparators.ComparisonOperator,
-                 expected_value_rhs: OperandResolver,
+                 expected_value_rhs: OperandResolver[T],
                  description_of_actual: ErrorMessageConstructor = EmptyErrorMessage()):
         self.property_descriptor = property_descriptor
         self.expectation_type = expectation_type
@@ -64,8 +69,8 @@ class ComparisonHandler:
         self.description_of_actual = description_of_actual
 
     @property
-    def references(self) -> list:
-        return self.actual_value_lhs.references + self.integer_resolver.references
+    def references(self) -> Sequence[SymbolReference]:
+        return list(self.actual_value_lhs.references) + list(self.integer_resolver.references)
 
     @property
     def validator(self) -> SvhPreSdsValidatorViaExceptions:
@@ -99,12 +104,12 @@ class ComparisonHandler:
         executor.execute_and_return_pfh_via_exceptions()
 
 
-class _FailureReporter:
+class _FailureReporter(Generic[T]):
     def __init__(self,
                  property_descriptor: PropertyDescriptor,
                  expectation_type: ExpectationType,
-                 lhs_actual_property_value: int,
-                 rhs: int,
+                 lhs_actual_property_value: T,
+                 rhs: T,
                  operator: ComparisonOperator,
                  environment: ErrorMessageResolvingEnvironment,
                  description_of_actual: ErrorMessageConstructor):
@@ -129,11 +134,11 @@ class _FailureReporter:
         )
 
 
-class _ComparisonExecutor:
+class _ComparisonExecutor(Generic[T]):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 lhs_actual_property_value: int,
-                 rhs: int,
+                 lhs_actual_property_value: T,
+                 rhs: T,
                  operator: ComparisonOperator,
                  failure_reporter: _FailureReporter):
         self.expectation_type = expectation_type

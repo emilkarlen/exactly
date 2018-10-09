@@ -79,11 +79,11 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         return instruction.Instruction(cmp_setup)
 
 
-class ExitCodeResolver(comparison_structures.OperandResolver):
+class ExitCodeResolver(comparison_structures.OperandResolver[int]):
     def __init__(self):
         super().__init__(_PROPERTY_NAME)
 
-    def resolve(self, environment: InstructionEnvironmentForPostSdsStep):
+    def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> int:
         sds = environment.sds
         try:
             f = sds.result.exitcode_file.open()

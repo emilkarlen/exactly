@@ -16,7 +16,7 @@ from exactly_lib.test_case_utils.condition.integer import parse_integer_conditio
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 
 
-class NumFilesResolver(comparison_structures.OperandResolver):
+class NumFilesResolver(comparison_structures.OperandResolver[int]):
     def __init__(self,
                  path_to_check: FileRefResolver,
                  file_matcher: FileMatcherResolver):

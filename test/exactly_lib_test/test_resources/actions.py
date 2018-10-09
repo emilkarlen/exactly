@@ -5,6 +5,10 @@ def do_nothing(*args, **kwargs):
     pass
 
 
+def do_nothing__single_arg(args):
+    pass
+
+
 def do_return(x):
     def ret_val(*args, **kwargs):
         return x
