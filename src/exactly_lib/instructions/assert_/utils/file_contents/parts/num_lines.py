@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
@@ -6,6 +6,7 @@ from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreSds
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
@@ -47,18 +48,18 @@ class NumLinesContentsAssertionPart(FileContentsAssertionPart):
         return file_to_check
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self.cmp_op_and_rhs.right_operand.references
 
 
-class NumLinesResolver(comparison_structures.OperandResolver):
+class NumLinesResolver(comparison_structures.OperandResolver[int]):
     def __init__(self,
                  file_to_check: FileToCheck):
         super().__init__(instruction_options.NUM_LINES_DESCRIPTION)
         self.file_to_check = file_to_check
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return []
 
     def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> int:

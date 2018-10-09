@@ -1,9 +1,10 @@
-import types
+from typing import Sequence, Optional, Callable
 
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import NotAnIntegerException, python_evaluate
@@ -24,7 +25,7 @@ class _IntResolver:
 class _Validator(SvhPreSdsValidatorViaExceptions):
     def __init__(self,
                  int_resolver: _IntResolver,
-                 custom_integer_validator: types.FunctionType):
+                 custom_integer_validator: Optional[Callable[[int], Optional[str]]]):
         self._int_resolver = int_resolver
         self._custom_integer_validator = custom_integer_validator
 
@@ -45,11 +46,11 @@ class _Validator(SvhPreSdsValidatorViaExceptions):
                 raise return_svh_via_exceptions.SvhValidationException(err_msg)
 
 
-class IntegerResolver(OperandResolver):
+class IntegerResolver(OperandResolver[int]):
     def __init__(self,
                  property_name: str,
                  value_resolver: StringResolver,
-                 custom_integer_validator: types.FunctionType = None):
+                 custom_integer_validator: Optional[Callable[[int], Optional[str]]] = None):
         """
 
         :param property_name:
@@ -64,7 +65,7 @@ class IntegerResolver(OperandResolver):
         self._validator = _Validator(self._int_resolver, custom_integer_validator)
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self.value_resolver.references
 
     @property
