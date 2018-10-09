@@ -52,31 +52,7 @@ class StringMatcherConstantOfValueResolver(StringMatcherResolver):
         return str(type(self)) + '\'' + str(self._value) + '\''
 
 
-class StringMatcherResolverOfParts(StringMatcherResolver):
-    def __init__(self,
-                 references: Sequence[SymbolReference],
-                 validator: PreOrPostSdsValidator,
-                 value_resolver: Callable[[SymbolTable], StringMatcherValue]):
-        self._validator = validator
-        self._references = references
-        self._value_resolver = value_resolver
-
-    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
-        return self._value_resolver(symbols)
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._references
-
-    @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return self._validator
-
-    def __str__(self):
-        return str(type(self))
-
-
-class StringMatcherResolverOfParts2(StringMatcherResolver):
+class StringMatcherResolverFromParts(StringMatcherResolver):
     def __init__(self,
                  references: Sequence[SymbolReference],
                  validator: PreOrPostSdsValidator,
