@@ -5,7 +5,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_p
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
-    PathResolvingEnvironmentPreSds
+    PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -44,7 +44,7 @@ class NumLinesContentsAssertionPart(FileContentsAssertionPart):
             self.cmp_op_and_rhs.operator,
             self.cmp_op_and_rhs.right_operand)
 
-        comparison_handler.execute(environment)
+        comparison_handler.execute(environment.path_resolving_environment_pre_or_post_sds)
         return file_to_check
 
     @property
@@ -62,7 +62,7 @@ class NumLinesResolver(comparison_structures.OperandResolver[int]):
     def references(self) -> Sequence[SymbolReference]:
         return []
 
-    def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> int:
+    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
         ret_val = 0
         with self.file_to_check.lines() as lines:
             for line in lines:
