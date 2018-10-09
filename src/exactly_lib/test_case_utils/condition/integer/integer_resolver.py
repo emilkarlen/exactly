@@ -3,7 +3,8 @@ from typing import Sequence, Optional, Callable
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
+    PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver
@@ -75,9 +76,9 @@ class IntegerResolver(OperandResolver[int]):
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         self._validator.validate_pre_sds(environment)
 
-    def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> int:
+    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
         try:
-            return self._int_resolver.resolve(environment.path_resolving_environment_pre_or_post_sds)
+            return self._int_resolver.resolve(environment)
         except NotAnIntegerException as ex:
             msg = ('Argument is not an integer,'
                    ' even though this should have been checked by the validation: `{}\''.format(ex.value_string))

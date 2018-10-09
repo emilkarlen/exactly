@@ -1,12 +1,10 @@
-from typing import Sequence, TypeVar, Generic, List
+from typing import Sequence, TypeVar, Generic
 
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
-from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
+    PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
-    InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.err_msg import diff_msg
@@ -32,7 +30,7 @@ class OperandResolver(Generic[T]):
         """
         pass
 
-    def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> T:
+    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> T:
         """
         Reports errors by raising exceptions from `return_pfh_via_exceptions`
         
@@ -64,16 +62,18 @@ class ComparisonHandler(Generic[T]):
     def validator(self) -> SvhPreSdsValidatorViaExceptions:
         return Validator(self.actual_value_lhs, self.integer_resolver)
 
-    def validate_pre_sds(self, environment: InstructionEnvironmentForPreSdsStep):
+    def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         """
         Validates by raising exceptions from `return_svh_via_exceptions`
         """
-        self.validator.validate_pre_sds(environment.path_resolving_environment)
+        self.validator.validate_pre_sds(environment)
 
-    def execute(self, environment: InstructionEnvironmentForPostSdsStep):
+    def execute(self, environment: PathResolvingEnvironmentPreOrPostSds):
         """
         Reports failure by raising exceptions from `return_efh_via_exceptions`
         """
+        err_msg_env = ErrorMessageResolvingEnvironment(environment.home_and_sds,
+                                                       environment.symbols)
         lhs = self.actual_value_lhs.resolve(environment)
         rhs = self.integer_resolver.resolve(environment)
         executor = _ComparisonExecutor(
@@ -86,7 +86,7 @@ class ComparisonHandler(Generic[T]):
                              lhs,
                              rhs,
                              self.operator,
-                             err_msg_env_from_instr_env(environment))
+                             err_msg_env)
         )
         executor.execute_and_return_pfh_via_exceptions()
 

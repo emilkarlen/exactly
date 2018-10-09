@@ -26,11 +26,11 @@ class Instruction(AssertPhaseInstruction):
                          ) -> svh.SuccessOrValidationErrorOrHardError:
         return return_svh_via_exceptions.translate_svh_exception_to_svh(
             self.comparison_setup.validate_pre_sds,
-            environment)
+            environment.path_resolving_environment)
 
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         return return_pfh_via_exceptions.translate_pfh_exception_to_pfh(
             self.comparison_setup.execute,
-            environment)
+            environment.path_resolving_environment_pre_or_post_sds)

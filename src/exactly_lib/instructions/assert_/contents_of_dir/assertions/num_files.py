@@ -7,6 +7,7 @@ from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import D
 from exactly_lib.instructions.utils.validators import PreOrPostSdsValidatorFromValidatorViaExceptions, \
     SvhValidatorViaExceptionsFromPreAndPostSdsValidators
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
@@ -24,9 +25,8 @@ class NumFilesResolver(comparison_structures.OperandResolver[int]):
         self.path_to_check = path_to_check
         self.file_matcher = file_matcher
 
-    def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> int:
-        path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
-        path_to_check = self.path_to_check.resolve_value_of_any_dependency(path_resolving_env)
+    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
+        path_to_check = self.path_to_check.resolve_value_of_any_dependency(environment)
         assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
         file_matcher = self.file_matcher.resolve(environment.symbols)
         selected_files = file_matcher_type.matching_files_in_dir(file_matcher, path_to_check)
@@ -51,12 +51,12 @@ class NumFilesAssertion(DirContentsAssertionPart):
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self._comparison_handler.references + self._settings.file_matcher.references
+        return list(self._comparison_handler.references) + list(self._settings.file_matcher.references)
 
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               custom_environment,
               settings: common.Settings) -> common.Settings:
-        self._comparison_handler.execute(environment)
+        self._comparison_handler.execute(environment.path_resolving_environment_pre_or_post_sds)
         return self._settings
