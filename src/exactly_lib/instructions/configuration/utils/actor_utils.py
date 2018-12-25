@@ -1,13 +1,15 @@
 import pathlib
 import shlex
+from typing import List
 
 from exactly_lib.act_phase_setups import command_line
 from exactly_lib.act_phase_setups import file_interpreter
 from exactly_lib.act_phase_setups import source_interpreter as source_interpreter
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import formatting, instruction_arguments
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity import concepts, actors
 from exactly_lib.definitions.entity.actors import FILE_INTERPRETER_ACTOR
@@ -23,6 +25,7 @@ from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.process_execution.command import Command
 from exactly_lib.util.process_execution.commands import executable_file_command, shell_command
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 COMMAND_LINE_ACTOR_OPTION_NAME = a.OptionName(long_name='command')
 COMMAND_LINE_ACTOR_OPTION = long_option_syntax(COMMAND_LINE_ACTOR_OPTION_NAME.long)
@@ -52,7 +55,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         })
 
     def single_line_description(self) -> str:
-        return self._format(self.single_line_description_un_formatted)
+        return self._tp.format(self.single_line_description_un_formatted)
 
     def invokation_variants(self) -> list:
         from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
@@ -64,16 +67,16 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
                 self._interpreter_actor_invokation_variants(SOURCE_INTERPRETER_ACTOR,
                                                             source_interpreter_arg))
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return self.command_line_syntax.syntax_element_descriptions()
 
-    def main_description_rest(self) -> list:
+    def main_description_rest(self) -> List[ParagraphItem]:
         if self.main_description_rest_un_formatted:
-            return self._paragraphs(self.main_description_rest_un_formatted)
+            return self._tp.fnap(self.main_description_rest_un_formatted)
         else:
             return []
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         from exactly_lib.definitions.entity.actors import all_actor_cross_refs
         return ([concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
                  concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target]
@@ -81,7 +84,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
                 all_actor_cross_refs()
                 )
 
-    def _command_line_invokation_variants(self) -> list:
+    def _command_line_invokation_variants(self) -> List[InvokationVariant]:
         command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY,
                                           a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
         return [
@@ -111,23 +114,24 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
 
         ]
 
-    def _description_of_file_interpreter(self) -> list:
-        return self._paragraphs(_DESCRIPTION_OF_FILE_INTERPRETER, {
+    def _description_of_file_interpreter(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_DESCRIPTION_OF_FILE_INTERPRETER, {
             'interpreter_actor': formatting.entity(FILE_INTERPRETER_ACTOR.singular_name)
         })
 
-    def _description_of_executable_program_interpreter(self, actor: SingularNameAndCrossReferenceId) -> list:
-        return self._paragraphs(_DESCRIPTION_OF_SOURCE_INTERPRETER, {
+    def _description_of_executable_program_interpreter(self,
+                                                       actor: SingularNameAndCrossReferenceId) -> List[ParagraphItem]:
+        return self._tp.fnap(_DESCRIPTION_OF_SOURCE_INTERPRETER, {
             'interpreter_actor': formatting.entity(actor.singular_name)
         })
 
-    def _description_of_shell_command_interpreter(self, actor: SingularNameAndCrossReferenceId) -> list:
-        return self._paragraphs(_DESCRIPTION_OF_SHELL_COMMAND_SOURCE_INTERPRETER, {
+    def _description_of_shell_command_interpreter(self, actor: SingularNameAndCrossReferenceId) -> List[ParagraphItem]:
+        return self._tp.fnap(_DESCRIPTION_OF_SHELL_COMMAND_SOURCE_INTERPRETER, {
             'interpreter_actor': formatting.entity(actor.singular_name)
         })
 
-    def _description_of_command_line(self) -> list:
-        return self._paragraphs(_DESCRIPTION_OF_SHELL)
+    def _description_of_command_line(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_DESCRIPTION_OF_SHELL)
 
 
 def parse(instruction_argument: str) -> ActPhaseHandling:

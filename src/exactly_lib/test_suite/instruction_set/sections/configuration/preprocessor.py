@@ -33,7 +33,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         })
 
     def single_line_description(self) -> str:
-        return self._format('Sets a {preprocessor} to transform each test case file in the suite')
+        return self._tp.format('Sets a {preprocessor} to transform each test case file in the suite')
 
     def invokation_variants(self) -> List[InvokationVariant]:
         shell_cmd_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -44,7 +44,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def main_description_rest(self) -> List[ParagraphItem]:
-        return self._paragraphs(_DESCRIPTION)
+        return self._tp.fnap(_DESCRIPTION)
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [

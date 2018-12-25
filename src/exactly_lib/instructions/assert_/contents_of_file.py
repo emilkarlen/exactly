@@ -2,8 +2,10 @@ from typing import List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ActComparisonActualFileForFileRef, \
@@ -47,24 +49,24 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def main_description_rest(self) -> List[ParagraphItem]:
         return self._tp.fnap(_MAIN_DESCRIPTION_REST)
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         return self._help_parts.invokation_variants__file(self.actual_file_arg)
 
     def _cls(self, additional_argument_usages: list) -> str:
         return self._cl_syntax_for_args([self.actual_file] + additional_argument_usages)
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         actual_file_arg_sed = path_element(
             self.actual_file_arg.name,
             ACTUAL_RELATIVITY_CONFIGURATION.options,
-            self._paragraphs(the_path_of("the file who's contents is checked."))
+            self._tp.fnap(the_path_of("the file who's contents is checked."))
         )
 
         return (self._help_parts.syntax_element_descriptions_at_top() +
                 [actual_file_arg_sed] +
                 self._help_parts.syntax_element_descriptions_at_bottom())
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return self._help_parts.see_also_targets__file()
 
 

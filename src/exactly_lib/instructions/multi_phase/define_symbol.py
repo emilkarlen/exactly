@@ -67,7 +67,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                          is_in_assert_phase)
 
     def single_line_description(self) -> str:
-        return self._format('Defines a ' + concepts.SYMBOL_CONCEPT_INFO.singular_name)
+        return self._tp.format('Defines a ' + concepts.SYMBOL_CONCEPT_INFO.singular_name)
 
     def _main_description_rest_body(self) -> List[ParagraphItem]:
         return self._tp.fnap(_MAIN_DESCRIPTION_REST)
@@ -91,10 +91,10 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                 def_instruction_rel_cd_description(_PATH_ARGUMENT.name)),
 
             SyntaxElementDescription(self.string_value.name,
-                                     self._paragraphs(syntax_descriptions.STRING_SYNTAX_ELEMENT_DESCRIPTION)),
+                                     self._tp.fnap(syntax_descriptions.STRING_SYNTAX_ELEMENT_DESCRIPTION)),
 
             SyntaxElementDescription(self.name.name,
-                                     self._paragraphs(syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
+                                     self._tp.fnap(syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
         ])
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:

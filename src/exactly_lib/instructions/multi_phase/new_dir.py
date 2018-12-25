@@ -1,12 +1,13 @@
-from typing import Sequence
+from typing import Sequence, List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase.utils.assert_phase_info import IsAHelperIfInAssertPhase
@@ -22,6 +23,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase,
@@ -30,16 +32,10 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         super().__init__(name, {}, is_in_assert_phase)
 
     def single_line_description(self) -> str:
-        return self._format('Creates a directory')
+        return self._tp.format('Creates a directory')
 
-    def _main_description_rest_body(self) -> list:
-        text = """\
-            Creates parent directories if needed.
-
-
-            Does nothing if the given directory already exists.
-            """
-        return self._paragraphs(text)
+    def _main_description_rest_body(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_MAIN_DESCRIPTION_REST_BODY)
 
     def invokation_variants(self) -> list:
         arguments = path_syntax.mandatory_path_with_optional_relativity(
@@ -50,14 +46,14 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                               []),
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return [
             rel_path_doc.path_element(_PATH_ARGUMENT.name,
                                       RELATIVITY_VARIANTS.options,
                                       docs.paras(the_path_of('a non-existing file.')))
         ]
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         name_and_cross_refs = [syntax_elements.PATH_SYNTAX_ELEMENT]
         return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
 
@@ -110,3 +106,10 @@ PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
 RELATIVITY_VARIANTS = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)
+
+_MAIN_DESCRIPTION_REST_BODY = """\
+Creates parent directories if needed.
+
+
+Does nothing if the given directory already exists.
+"""

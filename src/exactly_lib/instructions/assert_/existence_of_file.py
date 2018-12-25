@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
@@ -6,6 +6,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import path_syntax
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
@@ -27,6 +28,7 @@ from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtr
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument
 from exactly_lib.util.textformat.structure import lists, structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
@@ -78,10 +80,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def single_line_description(self) -> str:
         return 'Tests the existence, and optionally type, of a file'
 
-    def main_description_rest(self) -> list:
-        return self._paragraphs(_PART_OF_MAIN_DESCRIPTION_REST_THAT_IS_SPECIFIC_FOR_THIS_INSTRUCTION)
+    def main_description_rest(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_PART_OF_MAIN_DESCRIPTION_REST_THAT_IS_SPECIFIC_FOR_THIS_INSTRUCTION)
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         type_arguments = [a.Single(a.Multiplicity.OPTIONAL, self.type_argument)]
         negation_arguments = [negation_of_predicate.optional_negation_argument_usage()]
         path_arguments = path_syntax.mandatory_path_with_optional_relativity(
@@ -94,7 +96,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                               []),
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         negation_elements = [
             negation_of_predicate.syntax_element_description()
         ]
@@ -107,25 +109,25 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         return all_elements
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
             syntax_elements.PATH_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
-    def _type_element_description(self):
-        return (self._paragraphs(_TYPE_ELEMENT_DESCRIPTION_INTRO)
+    def _type_element_description(self) -> List[ParagraphItem]:
+        return (self._tp.fnap(_TYPE_ELEMENT_DESCRIPTION_INTRO)
                 +
                 [transform_list_to_table(self._file_type_list())])
 
     def _file_type_list(self) -> lists.HeaderContentList:
-        def type_description(file_type: file_properties.FileType) -> list:
+        def type_description(file_type: file_properties.FileType) -> List[ParagraphItem]:
             text = 'Tests if {PATH} is a {file_type}, or a {SYM_LNK} to a {file_type}.'
             if file_type is file_properties.FileType.SYMLINK:
                 text = 'Tests if {PATH} is a {SYM_LNK} (link target may or may not exist).'
             extra = {
                 'file_type': file_properties.TYPE_INFO[file_type].description,
             }
-            return self._paragraphs(text, extra)
+            return self._tp.fnap(text, extra)
 
         sort_value__list_items = [
             (file_properties.TYPE_INFO[file_type],

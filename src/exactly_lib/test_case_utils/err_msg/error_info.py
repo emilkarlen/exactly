@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh
 from exactly_lib.util.string import line_separated
@@ -14,7 +16,7 @@ class ErrorInfo:
 class ExplanationErrorInfo(ErrorInfo):
     def __init__(self,
                  explanation: str,
-                 object_description_lines: list):
+                 object_description_lines: List[str]):
         """
         :param object_description_lines: Describes the object that the failure relates to.
         :param explanation: A single line explanation of the cause of the failure.
@@ -23,8 +25,7 @@ class ExplanationErrorInfo(ErrorInfo):
         self.object_description_lines = object_description_lines
 
     def error_message(self) -> str:
-        lines = []
-        lines.append(self.explanation)
+        lines = [self.explanation]
         if self.object_description_lines:
             lines.append('')
             lines.extend(self.object_description_lines)
@@ -35,7 +36,7 @@ class ExplanationErrorInfo(ErrorInfo):
 class ErrorMessagePartConstructor:
     """Constructs lines that are a part of an error message."""
 
-    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
+    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
         """
         :return: empty list if there is nothing to say
         """
@@ -43,20 +44,18 @@ class ErrorMessagePartConstructor:
 
 
 class NoErrorMessagePartConstructor(ErrorMessagePartConstructor):
-    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
+    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
         return []
 
 
 class MultipleErrorMessagePartConstructor(ErrorMessagePartConstructor):
     def __init__(self,
-                 separator_lines: list,
-                 constructors: list):
-        for c in constructors:
-            pass
+                 separator_lines: List[str],
+                 constructors: List[ErrorMessagePartConstructor]):
         self.separator_lines = tuple(separator_lines)
         self.constructors = tuple(constructors)
 
-    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
+    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
 
         ret_val = []
 

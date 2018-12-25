@@ -1,10 +1,11 @@
 import os
-from typing import Sequence
+from typing import Sequence, List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import instruction_arguments, formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, syntax_elements
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo as embryo
@@ -24,6 +25,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase,
@@ -41,12 +43,12 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                          is_in_assert_phase)
 
     def single_line_description(self) -> str:
-        return self._format('Sets the {cwd_concept}')
+        return self._tp.format('Sets the {cwd_concept}')
 
-    def _main_description_rest_body(self) -> list:
-        return self._paragraphs(_NO_DIR_ARG_MEANING)
+    def _main_description_rest_body(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_NO_DIR_ARG_MEANING)
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         return [
             InvokationVariant(self._cl_syntax_for_args([
                 a.Single(a.Multiplicity.OPTIONAL,
@@ -54,12 +56,12 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             ])),
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return relative_path_options_documentation.path_elements(
             _DIR_ARGUMENT.name,
             self.relativity_options.options)
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return cross_reference_id_list([
             syntax_elements.PATH_SYNTAX_ELEMENT,
             concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,

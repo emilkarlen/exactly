@@ -1,12 +1,13 @@
-from typing import List
+from typing import List, Dict, Sequence
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose, AssertPhasePurpose
+from exactly_lib.util.cli_syntax.elements.argument import ArgumentUsage
 from exactly_lib.util.cli_syntax.render import cli_program_syntax
-from exactly_lib.util.textformat.structure.core import Text, ParagraphItem
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
@@ -21,20 +22,11 @@ class InstructionDocumentationWithTextParserBase(InstructionDocumentation):
 
     def __init__(self,
                  instruction_name: str,
-                 format_map: dict):
+                 format_map: Dict[str, str]):
         super().__init__(instruction_name)
         fm = {'instruction_name': InstructionName(instruction_name)}
         fm.update(format_map)
         self._tp = TextParser(fm)
-
-    def _format(self, s: str, extra: dict = None) -> str:
-        return self._tp.format(s, extra)
-
-    def _text(self, s: str, extra: dict = None) -> Text:
-        return self._tp.text(s, extra)
-
-    def _paragraphs(self, s: str, extra: dict = None) -> List[ParagraphItem]:
-        return self._tp.fnap(s, extra)
 
 
 class InstructionDocumentationWithCommandLineRenderingBase(InstructionDocumentationWithTextParserBase):
@@ -47,10 +39,10 @@ class InstructionDocumentationWithCommandLineRenderingBase(InstructionDocumentat
 
     def __init__(self,
                  instruction_name: str,
-                 format_map: dict):
+                 format_map: Dict[str, str]):
         super().__init__(instruction_name, format_map)
 
-    def _cl_syntax_for_args(self, argument_usages: list) -> str:
+    def _cl_syntax_for_args(self, argument_usages: Sequence[ArgumentUsage]) -> str:
         return cl_syntax.cl_syntax_for_args(argument_usages)
 
 
@@ -68,18 +60,18 @@ class InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDoc
     Sub classes must _not_ override `main_description_rest`.
     """
 
-    def main_description_rest(self) -> list:
+    def main_description_rest(self) -> List[ParagraphItem]:
         return (self._main_description_rest_prelude() +
                 self._main_description_rest_body() +
                 self._main_description_rest_prologue())
 
-    def _main_description_rest_prelude(self) -> list:
+    def _main_description_rest_prelude(self) -> List[ParagraphItem]:
         return []
 
-    def _main_description_rest_body(self) -> list:
+    def _main_description_rest_body(self) -> List[ParagraphItem]:
         raise NotImplementedError()
 
-    def _main_description_rest_prologue(self) -> list:
+    def _main_description_rest_prologue(self) -> List[ParagraphItem]:
         return []
 
 
@@ -87,7 +79,7 @@ class InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase(
     InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase,
     WithAssertPhasePurpose):
     def __init__(self, instruction_name: str,
-                 format_map: dict,
+                 format_map: Dict[str, str],
                  is_in_assert_phase: bool):
         the_format_map = {
             'assert_phase': phase_names.ASSERT,
@@ -103,7 +95,7 @@ class InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase(
 
     def _main_description_rest_prelude(self) -> List[ParagraphItem]:
         if self._is_in_assert_phase:
-            return self._paragraphs(_NOT_AN_ASSERTION_IN_ASSERT_PHASE)
+            return self._tp.fnap(_NOT_AN_ASSERTION_IN_ASSERT_PHASE)
         else:
             return []
 

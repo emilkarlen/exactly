@@ -3,6 +3,7 @@ from typing import Sequence, Optional, List
 from exactly_lib.common.help import syntax_contents_structure
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts, syntax_elements, types
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
@@ -29,6 +30,9 @@ from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution import process_output_files
+from exactly_lib.util.textformat.structure.core import ParagraphItem
+
+_SINGLE_LINE_DESCRIPTION = 'Tests the contents of {checked_file} from the {action_to_check}, or from a {program_type}'
 
 OUTPUT_FROM_PROGRAM_OPTION_NAME = a.OptionName(long_name='from')
 
@@ -51,15 +55,15 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self.checked_file = name_of_checked_file
 
     def single_line_description(self) -> str:
-        return self._format('Tests the contents of {checked_file} from the {action_to_check}, or from a {program_type}')
+        return self._tp.format(_SINGLE_LINE_DESCRIPTION)
 
-    def main_description_rest(self) -> list:
+    def main_description_rest(self) -> List[ParagraphItem]:
         return []
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         return self._help_parts.invokation_variants__stdout_err(OUTPUT_FROM_PROGRAM_OPTION_NAME)
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return (self._help_parts.syntax_element_descriptions_at_top() +
                 self._help_parts.syntax_element_descriptions_at_bottom())
 
