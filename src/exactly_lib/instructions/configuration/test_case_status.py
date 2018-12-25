@@ -1,6 +1,8 @@
+from typing import List
+
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
-from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import conf_params, concepts
@@ -14,6 +16,7 @@ from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruc
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case.test_case_status import TestCaseStatus, NAME_2_STATUS
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -32,15 +35,15 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         })
 
     def single_line_description(self) -> str:
-        return self._format('Sets the {status_config_param} {conf_param}')
+        return self._tp.format('Sets the {status_config_param} {conf_param}')
 
-    def main_description_rest(self) -> list:
-        return self._paragraphs(_MAIN_DESCRIPTION_REST)
+    def main_description_rest(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_MAIN_DESCRIPTION_REST)
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         return single_eq_invokation_variants(a.Named(_ARG_NAME))
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         from exactly_lib.help.entities.configuration_parameters.objects.test_case_status import \
             execution_modes_list
         return [

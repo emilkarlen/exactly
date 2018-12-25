@@ -1,6 +1,8 @@
+from typing import List
+
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.entity import conf_params
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
@@ -14,6 +16,7 @@ from exactly_lib.section_document.element_parsers.instruction_parsers import \
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -32,18 +35,18 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         })
 
     def single_line_description(self) -> str:
-        return self._format(_SINGLE_LINE_DESCRIPTION)
+        return self._tp.format(_SINGLE_LINE_DESCRIPTION)
 
-    def main_description_rest(self) -> list:
-        return self._paragraphs(_MAIN_DESCRIPTION_REST)
+    def main_description_rest(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_MAIN_DESCRIPTION_REST)
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         return single_eq_invokation_variants(self._INTEGER_ARG_NAME)
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[ParagraphItem]:
         return [
             SyntaxElementDescription(self._INTEGER_ARG_NAME.name,
-                                     self._paragraphs('Timeout in seconds.'))
+                                     self._tp.fnap('Timeout in seconds.'))
         ]
 
     def see_also_targets(self) -> list:

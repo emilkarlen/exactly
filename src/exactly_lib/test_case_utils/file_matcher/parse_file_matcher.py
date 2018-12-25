@@ -1,4 +1,6 @@
 """Functionality for accessing a subset of the files in a directory."""
+from typing import List
+
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant, \
     cli_argument_syntax_element_description
 from exactly_lib.definitions import doc_format
@@ -62,7 +64,7 @@ class FileSelectionDescriptor(ErrorMessagePartConstructor):
     def __init__(self, resolver: FileMatcherResolver):
         self.resolver = resolver
 
-    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
+    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
         matcher = self.resolver.resolve(environment.symbols)
         line = SELECTION.name.capitalize() + ' : ' + matcher.option_description
         return [line]

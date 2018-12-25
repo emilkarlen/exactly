@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Iterable, List
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.util.name import Name, NameWithGender, NameWithGenderWithFormatting
@@ -93,6 +93,7 @@ class SingularAndPluralAndAcronymNameAndCrossReferenceId(SingularAndPluralNameAn
         return self._acronym
 
 
-def cross_reference_id_list(singular_name_and_cross_reference_id_iterable) -> list:
+def cross_reference_id_list(names: Iterable[SingularNameAndCrossReferenceId]) -> List[CrossReferenceId]:
     return [x.cross_reference_target
-            for x in singular_name_and_cross_reference_id_iterable]
+            for x in names
+            ]

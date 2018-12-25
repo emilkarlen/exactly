@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
@@ -18,6 +20,7 @@ from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from . import config
 
 DIR_CONTENTS_MATCHER = a.Named('DIR-CONTENTS-MATCHER')
@@ -45,10 +48,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def single_line_description(self) -> str:
         return _SINGLE_LINE_DESCRIPTION
 
-    def main_description_rest(self) -> list:
-        return self._paragraphs(_MAIN_DESCRIPTION_REST)
+    def main_description_rest(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_MAIN_DESCRIPTION_REST)
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         negation_argument = negation_of_predicate.optional_negation_argument_usage()
         selection_arg = a.Single(a.Multiplicity.OPTIONAL,
                                  instruction_arguments.SELECTION)
@@ -63,11 +66,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
-                              self._paragraphs(_MAIN_INVOKATION_SYNTAX_DESCRIPTION)),
+                              self._tp.fnap(_MAIN_INVOKATION_SYNTAX_DESCRIPTION)),
 
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         negation = negation_of_predicate.syntax_element_description(_ADDITIONAL_TEXT_OF_NEGATION_SED)
 
         selection = parse_file_matcher.selection_syntax_element_description()
@@ -117,12 +120,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         invokation_variants = [
             InvokationVariant(self._cl_syntax_for_args(arguments_for_empty_check),
-                              self._paragraphs(_CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY)),
+                              self._tp.fnap(_CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY)),
 
             InvokationVariant(self._cl_syntax_for_args(arguments_for_num_files_check),
-                              self._paragraphs(_CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES)),
+                              self._tp.fnap(_CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES)),
             InvokationVariant(self._cl_syntax_for_args(file_contents_args),
-                              self._paragraphs(_DESCRIPTION_OF_FILE_QUANTIFICATION))
+                              self._tp.fnap(_DESCRIPTION_OF_FILE_QUANTIFICATION))
         ]
         return SyntaxElementDescription(
             DIR_CONTENTS_MATCHER.name,

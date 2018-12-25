@@ -37,13 +37,13 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return 'Manipulates environment variables'
 
     def _main_description_rest_body(self) -> List[ParagraphItem]:
-        return self._paragraphs(_MAIN_DESCRIPTION_REST_BODY)
+        return self._tp.fnap(_MAIN_DESCRIPTION_REST_BODY)
 
     def invokation_variants(self) -> Sequence[InvokationVariant]:
         return [
             InvokationVariant(
                 _format('{NAME} = {VALUE}'),
-                self._paragraphs(_DESCRIPTION_OF_SET)),
+                self._tp.fnap(_DESCRIPTION_OF_SET)),
             InvokationVariant(
                 _format('unset {NAME}'),
                 paras(_format('Removes the environment variable {NAME}.'))),

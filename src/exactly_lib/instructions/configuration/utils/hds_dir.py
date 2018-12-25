@@ -33,7 +33,7 @@ class DirConfParamInstructionDocumentationBase(InstructionDocumentationWithTextP
         })
 
     def single_line_description(self) -> str:
-        return self._format('Sets the {conf_param} directory')
+        return self._tp.format('Sets the {conf_param} directory')
 
     def invokation_variants(self) -> list:
         return single_eq_invokation_variants(_DIR_ARG)

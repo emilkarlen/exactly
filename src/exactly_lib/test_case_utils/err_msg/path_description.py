@@ -1,4 +1,5 @@
 import pathlib
+from typing import List
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -16,7 +17,7 @@ class PathValuePartConstructor(ErrorMessagePartConstructor):
     def __init__(self, path_resolver: FileRefResolver):
         self.path_resolver = path_resolver
 
-    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
+    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
         path_resolve_env = environment.path_resolving_environment_pre_or_post_sds
         path_value = self.path_resolver.resolve(path_resolve_env.symbols)
 

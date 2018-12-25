@@ -1,12 +1,13 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
+from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.instructions.utils.documentation import src_dst
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
@@ -26,6 +27,7 @@ from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.failure_details import new_failure_details_from_message
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -72,12 +74,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         )
 
     def single_line_description(self) -> str:
-        return self._format('Copies files and directories into the {sandbox}')
+        return self._tp.format('Copies files and directories into the {sandbox}')
 
-    def main_description_rest(self) -> list:
-        return self._paragraphs(_MAIN_DESCRIPTION_REST)
+    def main_description_rest(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_MAIN_DESCRIPTION_REST)
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         return [
             InvokationVariant(self._cl_syntax_for_args([
                 a.Single(a.Multiplicity.MANDATORY,
@@ -87,10 +89,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             )),
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return self._doc_elements.syntax_element_descriptions()
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[CrossReferenceId]:
         return self._doc_elements.see_also_targets()
 
 

@@ -17,6 +17,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_parts import \
 from exactly_lib.processing.exit_values import EXECUTION__HARD_ERROR
 from exactly_lib.test_case_utils.program.parse import parse_shell_command
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 def parts_parser(instruction_name: str) -> InstructionPartsParser:
@@ -66,7 +67,7 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRen
     def syntax_element_descriptions(self) -> list:
         return [
             SyntaxElementDescription(self.command_arg.name,
-                                     self._paragraphs(_COMMAND_SYNTAX_ELEMENT_DESCRIPTION))
+                                     self._tp.fnap(_COMMAND_SYNTAX_ELEMENT_DESCRIPTION))
         ]
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
@@ -80,8 +81,8 @@ class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
         super().__init__(name,
                          _SINGLE_LINE_DESCRIPTION_FOR_NON_ASSERT_PHASE_INSTRUCTIONS)
 
-    def _main_description_rest_prelude(self) -> list:
-        return self._paragraphs(_NON_ASSERT_PHASE_REST_PRELUDE)
+    def _main_description_rest_prelude(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_NON_ASSERT_PHASE_REST_PRELUDE)
 
 
 _NON_ASSERT_PHASE_REST_PRELUDE = """\

@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.section_document.element_parsers import token_stream_parser
@@ -37,7 +39,7 @@ class StringTransformerDescriptor(ErrorMessagePartConstructor):
     def __init__(self, resolver: StringTransformerResolver):
         self.resolver = resolver
 
-    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
+    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> List[str]:
         transformer = self.resolver.resolve(environment.symbols)
         # FIXME
         line = types.STRING_TRANSFORMER_TYPE_INFO.syntax_element_name + ' : (FIXME) ' + str(transformer)
