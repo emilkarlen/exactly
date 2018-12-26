@@ -37,16 +37,6 @@ def assertion_part_for_any_line_matches(expectation_type: ExpectationType,
     return StringMatcherAssertionPart(matcher_for_any_line_matches(expectation_type, line_matcher_resolver))
 
 
-def parse_any_line_matches_checker(expectation_type: ExpectationType,
-                                   token_parser: TokenParser) -> FileContentsAssertionPart:
-    return StringMatcherAssertionPart(parse_any_line_matches_matcher(expectation_type, token_parser))
-
-
-def parse_every_line_matches_checker(expectation_type: ExpectationType,
-                                     token_parser: TokenParser) -> FileContentsAssertionPart:
-    return StringMatcherAssertionPart(parse_every_line_matches_matcher(expectation_type, token_parser))
-
-
 def parse_any_line_matches_matcher(expectation_type: ExpectationType,
                                    token_parser: TokenParser) -> StringMatcherResolver:
     line_matcher_resolver = _parse_line_matches_tokens_and_line_matcher(token_parser)

@@ -4,9 +4,6 @@ import pathlib
 from typing import List, Set, Optional
 
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CONTENTS_ATTRIBUTE
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
-from exactly_lib.instructions.assert_.utils.file_contents.string_matcher_assertion_part import \
-    StringMatcherAssertionPart
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.program.string_or_file import StringOrFileRefResolver, SourceType
@@ -38,7 +35,7 @@ EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
 
 
 def parse(expectation_type: ExpectationType,
-          token_parser: TokenParser) -> FileContentsAssertionPart:
+          token_parser: TokenParser) -> StringMatcherResolver:
     token_parser.require_has_valid_head_token(_EXPECTED_SYNTAX_ELEMENT_FOR_EQUALS)
     expected_contents = parse_here_doc_or_file_ref.parse_from_token_parser(
         token_parser,
@@ -47,15 +44,10 @@ def parse(expectation_type: ExpectationType,
         token_parser.report_superfluous_arguments_if_not_at_eol()
         token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
 
-    return _assertion_part_via_string_matcher(
+    return value_resolver(
         expectation_type,
         expected_contents,
     )
-
-
-def _assertion_part_via_string_matcher(expectation_type: ExpectationType,
-                                       expected_contents: StringOrFileRefResolver) -> FileContentsAssertionPart:
-    return StringMatcherAssertionPart(value_resolver(expectation_type, expected_contents))
 
 
 def value_resolver(expectation_type: ExpectationType,
