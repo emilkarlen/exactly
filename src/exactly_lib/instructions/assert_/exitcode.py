@@ -11,10 +11,8 @@ from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.element_parsers.token_stream_parser import new_token_parser
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.condition import comparison_structures, instruction
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
@@ -85,7 +83,7 @@ class ExitCodeResolver(comparison_structures.OperandResolver[int]):
     def __init__(self):
         super().__init__(_PROPERTY_NAME)
 
-    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
+    def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
         sds = environment.sds
         try:
             f = sds.result.exitcode_file.open()

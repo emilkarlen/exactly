@@ -39,5 +39,5 @@ class _OperandResolverThat(OperandResolver[T]):
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         self._validate_pre_sds(environment)
 
-    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> T:
+    def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> T:
         return self._resolve(environment)

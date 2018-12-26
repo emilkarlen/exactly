@@ -53,7 +53,7 @@ class OperandResolver(Generic[T]):
         """
         pass
 
-    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> T:
+    def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> T:
         """
         Reports errors by raising exceptions from `return_pfh_via_exceptions`
         
@@ -61,11 +61,7 @@ class OperandResolver(Generic[T]):
         """
         raise NotImplementedError('abstract method')
 
-    def resolve_value(self, symbols: SymbolTable) -> OperandValue[T]:
-        # TODO Name of this method should be "resolve" - to be inline with
-        # rest of resolver structure.
-        # But have to rename method above to achieve this.
-        # And maybe should do even more things to get inline with that structure.
+    def resolve(self, symbols: SymbolTable) -> OperandValue[T]:
         return OperandValueFromOperandResolver(self, symbols)
 
 
@@ -82,7 +78,7 @@ class OperandValueFromOperandResolver(Generic[T], OperandValue[T]):
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> T:
         environment = PathResolvingEnvironmentPreOrPostSds(tcds, self._symbols)
-        return self._operand_resolver.resolve(environment)
+        return self._operand_resolver.resolve_value_of_any_dependency(environment)
 
 
 def resolving_dependencies_from_references(references: Iterable[SymbolReference],
@@ -129,8 +125,8 @@ class ComparisonHandler(Generic[T]):
         """
         err_msg_env = ErrorMessageResolvingEnvironment(environment.home_and_sds,
                                                        environment.symbols)
-        lhs = self.actual_value_lhs.resolve(environment)
-        rhs = self.integer_resolver.resolve(environment)
+        lhs = self.actual_value_lhs.resolve_value_of_any_dependency(environment)
+        rhs = self.integer_resolver.resolve_value_of_any_dependency(environment)
         executor = _ComparisonExecutor(
             self.expectation_type,
             lhs,

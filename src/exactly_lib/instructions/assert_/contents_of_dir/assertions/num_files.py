@@ -25,7 +25,7 @@ class NumFilesResolver(comparison_structures.OperandResolver[int]):
         self.path_to_check = path_to_check
         self.file_matcher = file_matcher
 
-    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
+    def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
         path_to_check = self.path_to_check.resolve_value_of_any_dependency(environment)
         assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
         file_matcher = self.file_matcher.resolve(environment.symbols)

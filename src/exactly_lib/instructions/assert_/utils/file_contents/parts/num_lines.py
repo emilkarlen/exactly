@@ -47,7 +47,7 @@ def value_resolver(expectation_type: ExpectationType,
                    cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand,
                    ) -> StringMatcherResolver:
     def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
-        return cmp_op_and_rhs.right_operand.resolve_value(symbols).resolving_dependencies()
+        return cmp_op_and_rhs.right_operand.resolve(symbols).resolving_dependencies()
 
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
         return NumLinesStringMatcher(
@@ -103,7 +103,7 @@ class NumLinesResolver(comparison_structures.OperandResolver[int]):
     def references(self) -> Sequence[SymbolReference]:
         return []
 
-    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
+    def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
         ret_val = 0
         with self.file_to_check.lines() as lines:
             for line in lines:
