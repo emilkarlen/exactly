@@ -2,12 +2,14 @@ import unittest
 
 from typing import Callable
 
-from exactly_lib.instructions.assert_.utils.file_contents.parts import line_matches as sut
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.string_matcher_assertion_part import \
+    StringMatcherAssertionPart
 from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
+from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches as sut
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
@@ -112,7 +114,7 @@ class TestCaseBase(unittest.TestCase):
 
 class TestEveryLineMatches(TestCaseBase):
     def test_WHEN_no_lines_THEN_result_SHOULD_be_pass(self):
-        self._check_cases_for_no_lines(sut.assertion_part_for_every_line_matches,
+        self._check_cases_for_no_lines(assertion_part_for_every_line_matches,
                                        PassOrFail.PASS)
 
     def test_multiple_lines(self):
@@ -130,14 +132,14 @@ class TestEveryLineMatches(TestCaseBase):
                 expected_result_for_positive_expectation=PassOrFail.FAIL),
         ]
 
-        self._check_cases_with_non_empty_file(sut.assertion_part_for_every_line_matches,
+        self._check_cases_with_non_empty_file(assertion_part_for_every_line_matches,
                                               file_contents,
                                               matcher_cases)
 
 
 class TestAnyLineMatches(TestCaseBase):
     def test_WHEN_no_lines_THEN_result_SHOULD_be_fail(self):
-        self._check_cases_for_no_lines(sut.assertion_part_for_any_line_matches,
+        self._check_cases_for_no_lines(assertion_part_for_any_line_matches,
                                        PassOrFail.FAIL)
 
     def test_multiple_lines(self):
@@ -159,6 +161,16 @@ class TestAnyLineMatches(TestCaseBase):
             ),
         ]
 
-        self._check_cases_with_non_empty_file(sut.assertion_part_for_any_line_matches,
+        self._check_cases_with_non_empty_file(assertion_part_for_any_line_matches,
                                               file_contents,
                                               matcher_cases)
+
+
+def assertion_part_for_every_line_matches(expectation_type: ExpectationType,
+                                          line_matcher_resolver: LineMatcherResolver) -> FileContentsAssertionPart:
+    return StringMatcherAssertionPart(sut.matcher_for_every_line_matches(expectation_type, line_matcher_resolver))
+
+
+def assertion_part_for_any_line_matches(expectation_type: ExpectationType,
+                                        line_matcher_resolver: LineMatcherResolver) -> FileContentsAssertionPart:
+    return StringMatcherAssertionPart(sut.matcher_for_any_line_matches(expectation_type, line_matcher_resolver))

@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
-from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
+from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -44,7 +44,7 @@ class InstructionArgumentsVariantConstructor:
         return '{transformation} {maybe_not} {num_lines} {operator} {operand}{superfluous_args_str}'.format(
             transformation=transformation,
             maybe_not=ExpectationTypeConfig(expectation_type).nothing__if_positive__not_option__if_negative,
-            num_lines=instruction_options.NUM_LINES_ARGUMENT,
+            num_lines=matcher_options.NUM_LINES_ARGUMENT,
             operator=self.operator,
             operand=self.operand,
             superfluous_args_str=superfluous_args_str,

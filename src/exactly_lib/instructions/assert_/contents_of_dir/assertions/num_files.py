@@ -4,8 +4,6 @@ from typing import Sequence
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
-from exactly_lib.instructions.utils.validators import PreOrPostSdsValidatorFromValidatorViaExceptions, \
-    SvhValidatorViaExceptionsFromPreAndPostSdsValidators
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
@@ -14,6 +12,8 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_expr
+from exactly_lib.test_case_utils.validators import PreOrPostSdsValidatorFromValidatorViaExceptions, \
+    SvhValidatorViaExceptionsFromPreAndPostSdsValidators
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 
 

@@ -4,9 +4,9 @@ from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
 from exactly_lib.help.render import see_also
-from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
 from exactly_lib.section_document.syntax import section_header, LINE_COMMENT_MARKER
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
+from exactly_lib.test_case_utils.string_matcher import matcher_options as contents_opts
 from exactly_lib.util.textformat.constructor import paragraphs, sections
 from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
 from exactly_lib.util.textformat.textformat_parser import TextParser

@@ -1,9 +1,5 @@
 from typing import Optional, Sequence, Set
 
-from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
-from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
-from exactly_lib.instructions.utils import return_svh_via_exceptions
-from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPreOrPostSds
@@ -11,13 +7,16 @@ from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils import return_pfh_via_exceptions, return_svh_via_exceptions
 from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
     IntegerComparisonOperatorAndRightOperand
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import validator_for_non_negative
 from exactly_lib.test_case_utils.err_msg import diff_msg
+from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
+from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util.logic_types import ExpectationType
@@ -58,7 +57,7 @@ def value_resolver(expectation_type: ExpectationType,
 class NumLinesStringMatcher(StringMatcher):
     @property
     def option_description(self) -> str:
-        return diff_msg.negation_str(self._expectation_type) + instruction_options.NUM_LINES_DESCRIPTION
+        return diff_msg.negation_str(self._expectation_type) + matcher_options.NUM_LINES_DESCRIPTION
 
     def __init__(self,
                  cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand,
@@ -72,7 +71,7 @@ class NumLinesStringMatcher(StringMatcher):
     def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         comparison_handler = comparison_structures.ComparisonHandler(
             model.describer.construct_for_contents_attribute(
-                instruction_options.NUM_LINES_DESCRIPTION),
+                matcher_options.NUM_LINES_DESCRIPTION),
             self._expectation_type,
             NumLinesResolver(model),
             self._cmp_op_and_rhs.operator,
@@ -87,7 +86,7 @@ class NumLinesStringMatcher(StringMatcher):
 class NumLinesResolver(comparison_structures.OperandResolver[int]):
     def __init__(self,
                  file_to_check: FileToCheck):
-        super().__init__(instruction_options.NUM_LINES_DESCRIPTION)
+        super().__init__(matcher_options.NUM_LINES_DESCRIPTION)
         self.file_to_check = file_to_check
 
     @property

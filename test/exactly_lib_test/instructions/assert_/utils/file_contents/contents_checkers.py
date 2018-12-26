@@ -1,15 +1,16 @@
-import pathlib
 import unittest
+
+import pathlib
 from typing import Sequence
 
 import exactly_lib.type_system.error_message
 from exactly_lib.instructions.assert_.utils.file_contents.parts import contents_checkers as sut
-from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhHardErrorException
 from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.err_msg.property_description import property_descriptor_with_just_a_constant_name
+from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhHardErrorException
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.error_message import PropertyDescriptor

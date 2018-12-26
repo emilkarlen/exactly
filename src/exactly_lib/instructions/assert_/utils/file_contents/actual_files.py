@@ -1,6 +1,7 @@
 import pathlib
 from typing import Sequence, Optional
 
+from exactly_lib.definitions.actual_file_attributes import PLAIN_FILE_OBJECT_NAME, OUTPUT_FROM_PROGRAM_OBJECT_NAME
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
@@ -15,14 +16,6 @@ from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.error_message import PropertyDescriptor, FilePropertyDescriptorConstructor
-
-CONTENTS_ATTRIBUTE = 'contents'
-
-PLAIN_FILE_OBJECT_NAME = 'file'
-
-PLAIN_DIR_OBJECT_NAME = 'directory'
-
-OUTPUT_FROM_PROGRAM_OBJECT_NAME = 'output from program'
 
 
 def file_property_name(contents_attribute: str, object_name: str) -> str:

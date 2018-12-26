@@ -1,14 +1,15 @@
-import pathlib
 import unittest
+
+import pathlib
 from typing import List
 
 from exactly_lib.default.program_modes.test_case.builtin_symbols import test_case_dir_symbols, string_transformers
 from exactly_lib.definitions.entity.types import PATH_TYPE_INFO
 from exactly_lib.definitions.test_case.instructions import instruction_names
-from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.processing import exit_values
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case import phase_identifier
+from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.program_modes.test_case.act_phase import PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0
 from exactly_lib_test.default.test_resources.actors import SET_ACTOR_TO__FILE_INTERPRETER__WITH_PYTHON_INTERPRETER
@@ -98,7 +99,7 @@ class TheTestCaseDirReplacementTransformerShouldBeAvailableInTheSetupPhase(Setup
                     transform_by_pre_def_replacement_of_test_case_dirs=
                     argument_syntax.syntax_for_transformer_option(
                         string_transformers.EXACTLY_TEST_CASE_DIRS_REPLACEMENT),
-                    equals=instruction_options.EQUALS_ARGUMENT,
+                    equals=matcher_options.EQUALS_ARGUMENT,
                 ),
                 test_case_dir_symbols.SYMBOL_ACT.name,
                 'EOF',

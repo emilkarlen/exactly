@@ -6,8 +6,6 @@ from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import Settings, \
     DirContentsAssertionPart
-from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
-from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
@@ -15,7 +13,9 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case_utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.test_case_utils.err_msg import diff_msg
+from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 from exactly_lib.util.logic_types import ExpectationType

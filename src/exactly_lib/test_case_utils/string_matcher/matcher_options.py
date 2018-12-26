@@ -1,6 +1,6 @@
 from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR, EXISTS_QUANTIFIER_ARGUMENT, \
     ALL_QUANTIFIER_ARGUMENT
-from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
+from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_ARGUMENT
 
 NOT_ARGUMENT = NEGATION_ARGUMENT_STR
 EMPTY_ARGUMENT = EMPTINESS_CHECK_ARGUMENT

@@ -1,13 +1,8 @@
 from typing import Set, Optional
 
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.instruction_arguments import LINE_MATCHER
-from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CONTENTS_ATTRIBUTE
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
-from exactly_lib.instructions.assert_.utils.file_contents.string_matcher_assertion_part import \
-    StringMatcherAssertionPart
-from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_structure import LineMatcherResolver, StringMatcherResolver
@@ -17,6 +12,8 @@ from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
+from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhFailException
+from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_from_references
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver, \
@@ -25,16 +22,6 @@ from exactly_lib.type_system.logic.line_matcher import LineMatcher, model_iter_f
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
-
-
-def assertion_part_for_every_line_matches(expectation_type: ExpectationType,
-                                          line_matcher_resolver: LineMatcherResolver) -> FileContentsAssertionPart:
-    return StringMatcherAssertionPart(matcher_for_every_line_matches(expectation_type, line_matcher_resolver))
-
-
-def assertion_part_for_any_line_matches(expectation_type: ExpectationType,
-                                        line_matcher_resolver: LineMatcherResolver) -> FileContentsAssertionPart:
-    return StringMatcherAssertionPart(matcher_for_any_line_matches(expectation_type, line_matcher_resolver))
 
 
 def parse_any_line_matches_matcher(expectation_type: ExpectationType,
@@ -54,11 +41,11 @@ def parse_every_line_matches_matcher(expectation_type: ExpectationType,
 
 
 def _parse_line_matches_tokens_and_line_matcher(token_parser: TokenParser) -> LineMatcherResolver:
-    token_parser.consume_mandatory_constant_unquoted_string(instruction_options.LINE_ARGUMENT,
+    token_parser.consume_mandatory_constant_unquoted_string(matcher_options.LINE_ARGUMENT,
                                                             must_be_on_current_line=True)
     token_parser.consume_mandatory_constant_unquoted_string(instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
                                                             must_be_on_current_line=True)
-    token_parser.consume_mandatory_constant_unquoted_string(instruction_options.MATCHES_ARGUMENT,
+    token_parser.consume_mandatory_constant_unquoted_string(matcher_options.MATCHES_ARGUMENT,
                                                             must_be_on_current_line=True)
     token_parser.require_is_not_at_eol('Missing {_MATCHER_}')
     line_matcher_resolver = parse_line_matcher_from_token_parser(token_parser)
@@ -141,9 +128,9 @@ class _StringMatcherBase(StringMatcher):
     @property
     def option_description(self) -> str:
         components = [self._any_or_every_keyword,
-                      instruction_options.LINE_ARGUMENT,
+                      matcher_options.LINE_ARGUMENT,
                       instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
-                      instruction_options.MATCHES_ARGUMENT,
+                      matcher_options.MATCHES_ARGUMENT,
                       self._line_matcher.option_description]
         return ' '.join(components)
 
@@ -190,9 +177,9 @@ class _StringMatcherBase(StringMatcher):
             self._expectation_type,
             diff_msg_utils.expected_constant(' '.join([
                 self._any_or_every_keyword,
-                instruction_options.LINE_ARGUMENT,
+                matcher_options.LINE_ARGUMENT,
                 instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
-                instruction_options.MATCHES_ARGUMENT,
+                matcher_options.MATCHES_ARGUMENT,
                 LINE_MATCHER.name])
             ))
 

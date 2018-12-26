@@ -6,14 +6,13 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.element_parsers.token_stream_parser import new_token_parser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
-from exactly_lib.test_case_utils import negation_of_predicate
+from exactly_lib.test_case_utils import negation_of_predicate, return_pfh_via_exceptions
 from exactly_lib.test_case_utils.condition import comparison_structures, instruction
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
     parse_integer_comparison_operator_and_rhs
