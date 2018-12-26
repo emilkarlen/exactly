@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Sequence, TypeVar, Generic, Set, Iterable
+from typing import Sequence, TypeVar, Generic, Set
 
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
-from exactly_lib.symbol.lookups import lookup_container
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -13,7 +12,7 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.type_system import utils
+from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_from_references
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -79,15 +78,6 @@ class OperandValueFromOperandResolver(Generic[T], OperandValue[T]):
     def value_of_any_dependency(self, tcds: HomeAndSds) -> T:
         environment = PathResolvingEnvironmentPreOrPostSds(tcds, self._symbols)
         return self._operand_resolver.resolve_value_of_any_dependency(environment)
-
-
-def resolving_dependencies_from_references(references: Iterable[SymbolReference],
-                                           symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
-    values = [
-        lookup_container(symbols, reference.name).resolver.resolve(symbols)
-        for reference in references
-    ]
-    return utils.resolving_dependencies_from_sequence(values)
 
 
 class ComparisonHandler(Generic[T]):
