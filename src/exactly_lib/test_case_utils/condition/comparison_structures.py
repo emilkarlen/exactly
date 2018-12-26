@@ -1,17 +1,40 @@
-from typing import Sequence, TypeVar, Generic
+from abc import ABC, abstractmethod
+from typing import Sequence, TypeVar, Generic, Set, Iterable
 
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
+from exactly_lib.symbol.lookups import lookup_container
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.err_msg import diff_msg
+from exactly_lib.type_system import utils
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.symbol_table import SymbolTable
 
 T = TypeVar('T')
+
+
+class OperandValue(ABC, Generic[T], MultiDirDependentValue[T]):
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
+        return set()
+
+    def value_when_no_dir_dependencies(self) -> T:
+        """
+        :raises DirDependencyError: This value has dir dependencies.
+        """
+        raise ValueError(str(type(self)) + ' do not support this short cut.')
+
+    @abstractmethod
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> T:
+        """Gives the value, regardless of actual dependency."""
+        pass
 
 
 class OperandResolver(Generic[T]):
@@ -37,6 +60,38 @@ class OperandResolver(Generic[T]):
         :returns The value that can be used as one of the operands in a comparision.
         """
         raise NotImplementedError('abstract method')
+
+    def resolve_value(self, symbols: SymbolTable) -> OperandValue[T]:
+        # TODO Name of this method should be "resolve" - to be inline with
+        # rest of resolver structure.
+        # But have to rename method above to achieve this.
+        # And maybe should do even more things to get inline with that structure.
+        return OperandValueFromOperandResolver(self, symbols)
+
+
+class OperandValueFromOperandResolver(Generic[T], OperandValue[T]):
+    def __init__(self,
+                 operand_resolver: OperandResolver[T],
+                 symbols: SymbolTable):
+        self._operand_resolver = operand_resolver
+        self._symbols = symbols
+
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
+        return resolving_dependencies_from_references(self._operand_resolver.references,
+                                                      self._symbols)
+
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> T:
+        environment = PathResolvingEnvironmentPreOrPostSds(tcds, self._symbols)
+        return self._operand_resolver.resolve(environment)
+
+
+def resolving_dependencies_from_references(references: Iterable[SymbolReference],
+                                           symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
+    values = [
+        lookup_container(symbols, reference.name).resolver.resolve(symbols)
+        for reference in references
+    ]
+    return utils.resolving_dependencies_from_sequence(values)
 
 
 class ComparisonHandler(Generic[T]):

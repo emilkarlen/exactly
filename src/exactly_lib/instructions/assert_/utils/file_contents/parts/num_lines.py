@@ -1,23 +1,30 @@
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Set
 
+from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.string_matcher_assertion_part import \
+    StringMatcherAssertionPart
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
     IntegerComparisonOperatorAndRightOperand
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import validator_for_non_negative
-from exactly_lib.type_system.logic.string_matcher import FileToCheck
+from exactly_lib.test_case_utils.err_msg import diff_msg
+from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
+from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 def parse(expectation_type: ExpectationType,
@@ -26,43 +33,64 @@ def parse(expectation_type: ExpectationType,
                                                                             validator_for_non_negative)
     token_parser.report_superfluous_arguments_if_not_at_eol()
     token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
-    return _assertion_part_for_num_lines(expectation_type,
-                                         cmp_op_and_rhs)
+    return _assertion_part_via_string_matcher(expectation_type,
+                                              cmp_op_and_rhs)
 
 
-def _assertion_part_for_num_lines(expectation_type: ExpectationType,
-                                  cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand,
-                                  ) -> FileContentsAssertionPart:
-    return NumLinesContentsAssertionPart(expectation_type, cmp_op_and_rhs)
+def _assertion_part_via_string_matcher(expectation_type: ExpectationType,
+                                       cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand,
+                                       ) -> FileContentsAssertionPart:
+    return StringMatcherAssertionPart(value_resolver(expectation_type, cmp_op_and_rhs))
 
 
-class NumLinesContentsAssertionPart(FileContentsAssertionPart):
-    def __init__(self,
-                 expectation_type: ExpectationType,
-                 cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand):
-        super().__init__(_PreOrPostSdsValidator(cmp_op_and_rhs.right_operand.validator))
-        self.expectation_type = expectation_type
-        self.cmp_op_and_rhs = cmp_op_and_rhs
+def value_resolver(expectation_type: ExpectationType,
+                   cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand,
+                   ) -> StringMatcherResolver:
+    def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
+        return cmp_op_and_rhs.right_operand.resolve_value(symbols).resolving_dependencies()
 
-    def check(self,
-              environment: InstructionEnvironmentForPostSdsStep,
-              os_services: OsServices,
-              custom_environment,
-              file_to_check: FileToCheck) -> FileToCheck:
-        comparison_handler = comparison_structures.ComparisonHandler(
-            file_to_check.describer.construct_for_contents_attribute(
-                instruction_options.NUM_LINES_DESCRIPTION),
-            self.expectation_type,
-            NumLinesResolver(file_to_check),
-            self.cmp_op_and_rhs.operator,
-            self.cmp_op_and_rhs.right_operand)
+    def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
+        return NumLinesStringMatcher(
+            cmp_op_and_rhs,
+            expectation_type,
+            environment,
+        )
 
-        comparison_handler.execute(environment.path_resolving_environment_pre_or_post_sds)
-        return file_to_check
+    return StringMatcherResolverFromParts(
+        cmp_op_and_rhs.right_operand.references,
+        _PreOrPostSdsValidator(cmp_op_and_rhs.right_operand.validator),
+        get_resolving_dependencies,
+        get_matcher,
+    )
 
+
+class NumLinesStringMatcher(StringMatcher):
     @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self.cmp_op_and_rhs.right_operand.references
+    def option_description(self) -> str:
+        return diff_msg.negation_str(self._expectation_type) + instruction_options.NUM_LINES_DESCRIPTION
+
+    def __init__(self,
+                 cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand,
+                 expectation_type: ExpectationType,
+                 environment: PathResolvingEnvironmentPreOrPostSds,
+                 ):
+        self._cmp_op_and_rhs = cmp_op_and_rhs
+        self._environment = environment
+        self._expectation_type = expectation_type
+
+    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+        comparison_handler = comparison_structures.ComparisonHandler(
+            model.describer.construct_for_contents_attribute(
+                instruction_options.NUM_LINES_DESCRIPTION),
+            self._expectation_type,
+            NumLinesResolver(model),
+            self._cmp_op_and_rhs.operator,
+            self._cmp_op_and_rhs.right_operand)
+
+        try:
+            comparison_handler.execute(self._environment)
+        except return_pfh_via_exceptions.PfhException as ex:
+            return ConstantErrorMessageResolver(ex.err_msg)
 
 
 class NumLinesResolver(comparison_structures.OperandResolver[int]):

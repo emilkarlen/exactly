@@ -4,8 +4,8 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import WithDirDepe
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 
 
-def resolving_dependencies_from_sequence(dir_dependent_values: Iterable[WithDirDependencies]) -> Set[
-    DirectoryStructurePartition]:
+def resolving_dependencies_from_sequence(dir_dependent_values: Iterable[WithDirDependencies]
+                                         ) -> Set[DirectoryStructurePartition]:
     return unions(map(lambda value: value.resolving_dependencies(),
                       dir_dependent_values))
 
