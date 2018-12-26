@@ -49,13 +49,6 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
     def main_description_rest_paragraphs(self) -> List[ParagraphItem]:
         return self._parser.fnap(_MAIN_DESCRIPTION_REST)
 
-    def syntax_element_description(self) -> SyntaxElementDescription:
-        return SyntaxElementDescription(
-            syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.argument.name,
-            [],
-            self.invokation_variants()
-        )
-
     def invokation_variants(self) -> List[InvokationVariant]:
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
                                        a.Constant(EMPTY_ARGUMENT))
