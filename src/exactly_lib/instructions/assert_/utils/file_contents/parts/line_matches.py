@@ -1,41 +1,66 @@
-from typing import Sequence
+from typing import Set, Optional
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.instruction_arguments import LINE_MATCHER
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CONTENTS_ATTRIBUTE
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.string_matcher_assertion_part import \
+    StringMatcherAssertionPart
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
-from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.resolver_structure import LineMatcherResolver
-from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.resolver_structure import LineMatcherResolver, StringMatcherResolver
+from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
-from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor
+from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
+from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_from_references
+from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver, \
+    ErrorMessageResolvingEnvironment, ConstantErrorMessageResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, model_iter_from_file_line_iter
-from exactly_lib.type_system.logic.string_matcher import FileToCheck
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.symbol_table import SymbolTable
+
+
+def assertion_part_for_every_line_matches(expectation_type: ExpectationType,
+                                          line_matcher_resolver: LineMatcherResolver) -> FileContentsAssertionPart:
+    return StringMatcherAssertionPart(matcher_for_every_line_matches(expectation_type, line_matcher_resolver))
+
+
+def assertion_part_for_any_line_matches(expectation_type: ExpectationType,
+                                        line_matcher_resolver: LineMatcherResolver) -> FileContentsAssertionPart:
+    return StringMatcherAssertionPart(matcher_for_any_line_matches(expectation_type, line_matcher_resolver))
 
 
 def parse_any_line_matches_checker(expectation_type: ExpectationType,
                                    token_parser: TokenParser) -> FileContentsAssertionPart:
-    line_matcher_resolver = _parse_line_matches_tokens_and_line_matcher(token_parser)
-
-    return assertion_part_for_any_line_matches(expectation_type,
-                                               line_matcher_resolver)
+    return StringMatcherAssertionPart(parse_any_line_matches_matcher(expectation_type, token_parser))
 
 
 def parse_every_line_matches_checker(expectation_type: ExpectationType,
                                      token_parser: TokenParser) -> FileContentsAssertionPart:
+    return StringMatcherAssertionPart(parse_every_line_matches_matcher(expectation_type, token_parser))
+
+
+def parse_any_line_matches_matcher(expectation_type: ExpectationType,
+                                   token_parser: TokenParser) -> StringMatcherResolver:
     line_matcher_resolver = _parse_line_matches_tokens_and_line_matcher(token_parser)
 
-    return assertion_part_for_every_line_matches(expectation_type,
-                                                 line_matcher_resolver)
+    return matcher_for_any_line_matches(expectation_type,
+                                        line_matcher_resolver)
+
+
+def parse_every_line_matches_matcher(expectation_type: ExpectationType,
+                                     token_parser: TokenParser) -> StringMatcherResolver:
+    line_matcher_resolver = _parse_line_matches_tokens_and_line_matcher(token_parser)
+
+    return matcher_for_every_line_matches(expectation_type,
+                                          line_matcher_resolver)
 
 
 def _parse_line_matches_tokens_and_line_matcher(token_parser: TokenParser) -> LineMatcherResolver:
@@ -53,84 +78,115 @@ def _parse_line_matches_tokens_and_line_matcher(token_parser: TokenParser) -> Li
     return line_matcher_resolver
 
 
-def assertion_part_for_any_line_matches(expectation_type: ExpectationType,
-                                        line_matcher_resolver: LineMatcherResolver) -> FileContentsAssertionPart:
-    if expectation_type is ExpectationType.POSITIVE:
-        return _AnyLineMatchesAssertionPartForPositiveMatch(
-            instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
-            expectation_type,
-            line_matcher_resolver)
-    else:
-        return _AnyLineMatchesAssertionPartForNegativeMatch(
-            instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
-            expectation_type,
-            line_matcher_resolver)
+def matcher_for_any_line_matches(expectation_type: ExpectationType,
+                                 line_matcher_resolver: LineMatcherResolver) -> StringMatcherResolver:
+    def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
+        err_msg_env = ErrorMessageResolvingEnvironment(environment.home_and_sds,
+                                                       environment.symbols)
+        if expectation_type is ExpectationType.POSITIVE:
+            return _AnyLineMatchesStringMatcherForPositiveMatch(
+                instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
+                expectation_type,
+                line_matcher_resolver.resolve(environment.symbols),
+                err_msg_env)
+        else:
+            return _AnyLineMatchesStringMatcherForNegativeMatch(
+                instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
+                expectation_type,
+                line_matcher_resolver.resolve(environment.symbols),
+                err_msg_env)
+
+    def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
+        return resolving_dependencies_from_references(line_matcher_resolver.references, symbols)
+
+    return StringMatcherResolverFromParts(
+        line_matcher_resolver.references,
+        ConstantSuccessValidator(),
+        get_resolving_dependencies,
+        get_matcher,
+    )
 
 
-def assertion_part_for_every_line_matches(expectation_type: ExpectationType,
-                                          line_matcher_resolver: LineMatcherResolver) -> FileContentsAssertionPart:
-    if expectation_type is ExpectationType.POSITIVE:
-        return _EveryLineMatchesAssertionPartForPositiveMatch(
-            instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
-            expectation_type,
-            line_matcher_resolver)
-    else:
-        return _EveryLineMatchesAssertionPartForNegativeMatch(
-            instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
-            expectation_type,
-            line_matcher_resolver)
+def matcher_for_every_line_matches(expectation_type: ExpectationType,
+                                   line_matcher_resolver: LineMatcherResolver) -> StringMatcherResolver:
+    def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
+        err_msg_env = ErrorMessageResolvingEnvironment(environment.home_and_sds,
+                                                       environment.symbols)
+        if expectation_type is ExpectationType.POSITIVE:
+            return _EveryLineMatchesStringMatcherForPositiveMatch(
+                instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
+                expectation_type,
+                line_matcher_resolver.resolve(environment.symbols),
+                err_msg_env)
+        else:
+            return _EveryLineMatchesStringMatcherForNegativeMatch(
+                instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
+                expectation_type,
+                line_matcher_resolver.resolve(environment.symbols),
+                err_msg_env)
+
+    def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
+        return resolving_dependencies_from_references(line_matcher_resolver.references, symbols)
+
+    return StringMatcherResolverFromParts(
+        line_matcher_resolver.references,
+        ConstantSuccessValidator(),
+        get_resolving_dependencies,
+        get_matcher,
+    )
 
 
-class _AssertionPartBase(FileContentsAssertionPart):
+class _StringMatcherBase(StringMatcher):
     def __init__(self,
                  any_or_every_keyword: str,
                  expectation_type: ExpectationType,
-                 line_matcher_resolver: LineMatcherResolver):
+                 line_matcher: LineMatcher,
+                 err_msg_environment: ErrorMessageResolvingEnvironment):
         super().__init__()
         self._any_or_every_keyword = any_or_every_keyword
         self._expectation_type = expectation_type
-        self._line_matcher_resolver = line_matcher_resolver
+        self._line_matcher = line_matcher
+        self._err_msg_environment = err_msg_environment
 
     @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._line_matcher_resolver.references
+    def option_description(self) -> str:
+        components = [self._any_or_every_keyword,
+                      instruction_options.LINE_ARGUMENT,
+                      instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+                      instruction_options.MATCHES_ARGUMENT,
+                      self._line_matcher.option_description]
+        return ' '.join(components)
 
-    def check(self,
-              environment: InstructionEnvironmentForPostSdsStep,
-              os_services: OsServices,
-              custom_environment,
-              file_to_check: FileToCheck) -> FileToCheck:
-        line_matcher = self._line_matcher_resolver.resolve(environment.symbols)
-        self._check(environment, line_matcher, file_to_check)
-        return file_to_check
+    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+        try:
+            self._check(self._line_matcher, model)
+        except PfhFailException as ex:
+            return ConstantErrorMessageResolver(ex.err_msg)
 
     def _check(self,
-               environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
                file_to_check: FileToCheck):
         raise NotImplementedError('abstract method')
 
     def _report_fail(self,
-                     environment: InstructionEnvironmentForPostSdsStep,
                      checked_file_describer: FilePropertyDescriptorConstructor,
                      actual_single_line_value: str,
                      description_lines: list = ()):
         failure_info_resolver = self._diff_failure_info_resolver(checked_file_describer)
-        failure_info = failure_info_resolver.resolve(err_msg_env_from_instr_env(environment),
+        failure_info = failure_info_resolver.resolve(self._err_msg_environment,
                                                      diff_msg.actual_with_single_line_value(
                                                          actual_single_line_value,
                                                          description_lines))
         raise PfhFailException(failure_info.error_message())
 
     def _report_fail_with_line(self,
-                               environment: InstructionEnvironmentForPostSdsStep,
                                checked_file_describer: FilePropertyDescriptorConstructor,
                                cause: str,
                                number__contents: str):
         single_line_actual_value = 'Line {} {}'.format(number__contents[0], cause)
 
         failure_info_resolver = self._diff_failure_info_resolver(checked_file_describer)
-        failure_info = failure_info_resolver.resolve(err_msg_env_from_instr_env(environment),
+        failure_info = failure_info_resolver.resolve(self._err_msg_environment,
                                                      diff_msg.actual_with_single_line_value(
                                                          single_line_actual_value,
                                                          [number__contents[1]]))
@@ -151,57 +207,49 @@ class _AssertionPartBase(FileContentsAssertionPart):
             ))
 
 
-class _AnyLineMatchesAssertionPartForPositiveMatch(_AssertionPartBase):
+class _AnyLineMatchesStringMatcherForPositiveMatch(_StringMatcherBase):
     def _check(self,
-               environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
                file_to_check: FileToCheck):
         with file_to_check.lines() as file_lines:
             for line in model_iter_from_file_line_iter(file_lines):
                 if line_matcher.matches(line):
                     return
-        self._report_fail(environment,
-                          file_to_check.describer,
+        self._report_fail(file_to_check.describer,
                           'no line matches')
 
 
-class _AnyLineMatchesAssertionPartForNegativeMatch(_AssertionPartBase):
+class _AnyLineMatchesStringMatcherForNegativeMatch(_StringMatcherBase):
     def _check(self,
-               environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
                file_to_check: FileToCheck):
         with file_to_check.lines() as file_lines:
             for line in model_iter_from_file_line_iter(file_lines):
                 if line_matcher.matches(line):
-                    self._report_fail_with_line(environment,
-                                                file_to_check.describer,
+                    self._report_fail_with_line(file_to_check.describer,
                                                 'matches',
                                                 line)
 
 
-class _EveryLineMatchesAssertionPartForPositiveMatch(_AssertionPartBase):
+class _EveryLineMatchesStringMatcherForPositiveMatch(_StringMatcherBase):
     def _check(self,
-               environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
                file_to_check: FileToCheck):
         with file_to_check.lines() as file_lines:
             for line in model_iter_from_file_line_iter(file_lines):
                 if not line_matcher.matches(line):
-                    self._report_fail_with_line(environment,
-                                                file_to_check.describer,
+                    self._report_fail_with_line(file_to_check.describer,
                                                 'does not match',
                                                 line)
 
 
-class _EveryLineMatchesAssertionPartForNegativeMatch(_AssertionPartBase):
+class _EveryLineMatchesStringMatcherForNegativeMatch(_StringMatcherBase):
     def _check(self,
-               environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
                file_to_check: FileToCheck):
         with file_to_check.lines() as file_lines:
             for line in model_iter_from_file_line_iter(file_lines):
                 if not line_matcher.matches(line):
                     return
-        self._report_fail(environment,
-                          file_to_check.describer,
+        self._report_fail(file_to_check.describer,
                           'every line matches')
