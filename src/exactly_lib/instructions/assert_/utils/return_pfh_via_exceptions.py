@@ -19,6 +19,10 @@ class PfhException(Exception):
         return pfh.PassOrFailOrHardError(self._status,
                                          self._err_msg)
 
+    @property
+    def err_msg(self) -> str:
+        return self._err_msg
+
 
 class PfhFailException(PfhException):
     def __init__(self, err_msg: str):
@@ -26,20 +30,12 @@ class PfhFailException(PfhException):
                          err_msg)
         self._err_msg = err_msg
 
-    @property
-    def err_msg(self) -> str:
-        return self._err_msg
-
 
 class PfhHardErrorException(PfhException):
     def __init__(self, err_msg: str):
         super().__init__(pfh.PassOrFailOrHardErrorEnum.HARD_ERROR,
                          err_msg)
         self._err_msg = err_msg
-
-    @property
-    def err_msg(self) -> str:
-        return self._err_msg
 
 
 def translate_pfh_exception_to_pfh(action,
