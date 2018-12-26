@@ -6,12 +6,6 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checker
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     token_parser_with_additional_error_message_format_map
-from exactly_lib.symbol.program.string_or_file import SourceType
-from exactly_lib.symbol.resolver_structure import LineMatcherResolver
-from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
-from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import validator_for_non_negative
-from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
-from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.messages import grammar_options_syntax
@@ -32,11 +26,7 @@ def parse(token_parser: TokenParser) -> AssertionPart:
                                   file_contents_assertion_part)
 
 
-_EXPECTED_SYNTAX_ELEMENT_FOR_EQUALS = 'EXPECTED'
-
 _OPERATION = 'OPERATION'
-
-EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
 
 COMPARISON_OPERATOR = 'COMPARISON OPERATOR'
 
@@ -63,61 +53,21 @@ class ParseFileContentsAssertionPart:
         return token_parser.parse_mandatory_command(self.parsers, _FORMAT_MAP['_CHECK_'])
 
     def _parse_emptiness_checker(self, token_parser: TokenParser) -> FileContentsAssertionPart:
-        token_parser.report_superfluous_arguments_if_not_at_eol()
-        token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         from exactly_lib.instructions.assert_.utils.file_contents.parts import emptieness
-        return emptieness.emptiness_via_string_matcher(self.expectation_type)
+        return emptieness.parse(self.expectation_type, token_parser)
 
     def _parse_equals_checker(self, token_parser: TokenParser) -> FileContentsAssertionPart:
-        token_parser.require_has_valid_head_token(_EXPECTED_SYNTAX_ELEMENT_FOR_EQUALS)
-        expected_contents = parse_here_doc_or_file_ref.parse_from_token_parser(
-            token_parser,
-            EXPECTED_FILE_REL_OPT_ARG_CONFIG)
-        if expected_contents.source_type is not SourceType.HERE_DOC:
-            token_parser.report_superfluous_arguments_if_not_at_eol()
-            token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
-
         from exactly_lib.instructions.assert_.utils.file_contents.parts import equality
-        return equality.assertion_part_via_string_matcher(
-            self.expectation_type,
-            expected_contents,
-        )
-
-    def _parse_any_line_matches_checker(self, token_parser: TokenParser) -> FileContentsAssertionPart:
-        line_matcher_resolver = self._parse_line_matches_tokens_and_line_matcher(token_parser)
-
-        from exactly_lib.instructions.assert_.utils.file_contents.parts import line_matches
-        return line_matches.assertion_part_for_any_line_matches(self.expectation_type,
-                                                                line_matcher_resolver)
-
-    def _parse_every_line_matches_checker(self, token_parser: TokenParser) -> FileContentsAssertionPart:
-        line_matcher_resolver = self._parse_line_matches_tokens_and_line_matcher(token_parser)
-
-        from exactly_lib.instructions.assert_.utils.file_contents.parts import line_matches
-        return line_matches.assertion_part_for_every_line_matches(self.expectation_type,
-                                                                  line_matcher_resolver)
+        return equality.parse(self.expectation_type, token_parser)
 
     def _parse_num_lines_checker(self, token_parser: TokenParser) -> FileContentsAssertionPart:
-        cmp_op_and_rhs = parse_cmp_op.parse_integer_comparison_operator_and_rhs(token_parser,
-                                                                                validator_for_non_negative)
-        token_parser.report_superfluous_arguments_if_not_at_eol()
-        token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
-        from exactly_lib.instructions.assert_.utils.file_contents.parts.num_lines import \
-            assertion_part_for_num_lines
-        return assertion_part_for_num_lines(self.expectation_type,
-                                            cmp_op_and_rhs)
+        from exactly_lib.instructions.assert_.utils.file_contents.parts import num_lines
+        return num_lines.parse(self.expectation_type, token_parser)
 
-    @staticmethod
-    def _parse_line_matches_tokens_and_line_matcher(token_parser: TokenParser) -> LineMatcherResolver:
-        token_parser.consume_mandatory_constant_unquoted_string(instruction_options.LINE_ARGUMENT,
-                                                                must_be_on_current_line=True)
-        token_parser.consume_mandatory_constant_unquoted_string(instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
-                                                                must_be_on_current_line=True)
-        token_parser.consume_mandatory_constant_unquoted_string(instruction_options.MATCHES_ARGUMENT,
-                                                                must_be_on_current_line=True)
-        token_parser.require_is_not_at_eol('Missing {_MATCHER_}')
-        line_matcher_resolver = parse_line_matcher_from_token_parser(token_parser)
-        token_parser.report_superfluous_arguments_if_not_at_eol()
-        token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
+    def _parse_any_line_matches_checker(self, token_parser: TokenParser) -> FileContentsAssertionPart:
+        from exactly_lib.instructions.assert_.utils.file_contents.parts import line_matches
+        return line_matches.parse_any_line_matches_checker(self.expectation_type, token_parser)
 
-        return line_matcher_resolver
+    def _parse_every_line_matches_checker(self, token_parser: TokenParser) -> FileContentsAssertionPart:
+        from exactly_lib.instructions.assert_.utils.file_contents.parts import line_matches
+        return line_matches.parse_every_line_matches_checker(self.expectation_type, token_parser)

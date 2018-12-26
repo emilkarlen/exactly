@@ -7,8 +7,9 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CO
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.string_matcher_assertion_part import \
     StringMatcherAssertionPart
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.program.string_or_file import StringOrFileRefResolver
+from exactly_lib.symbol.program.string_or_file import StringOrFileRefResolver, SourceType
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, SingleStepValidator, ValidationStep, \
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
@@ -17,6 +18,7 @@ from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import ExpectedValueResolver
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver, \
@@ -30,9 +32,29 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 _EQUALITY_CHECK_EXPECTED_VALUE = 'equals'
 
+_EXPECTED_SYNTAX_ELEMENT_FOR_EQUALS = 'EXPECTED'
 
-def assertion_part_via_string_matcher(expectation_type: ExpectationType,
-                                      expected_contents: StringOrFileRefResolver) -> FileContentsAssertionPart:
+EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
+
+
+def parse(expectation_type: ExpectationType,
+          token_parser: TokenParser) -> FileContentsAssertionPart:
+    token_parser.require_has_valid_head_token(_EXPECTED_SYNTAX_ELEMENT_FOR_EQUALS)
+    expected_contents = parse_here_doc_or_file_ref.parse_from_token_parser(
+        token_parser,
+        EXPECTED_FILE_REL_OPT_ARG_CONFIG)
+    if expected_contents.source_type is not SourceType.HERE_DOC:
+        token_parser.report_superfluous_arguments_if_not_at_eol()
+        token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
+
+    return _assertion_part_via_string_matcher(
+        expectation_type,
+        expected_contents,
+    )
+
+
+def _assertion_part_via_string_matcher(expectation_type: ExpectationType,
+                                       expected_contents: StringOrFileRefResolver) -> FileContentsAssertionPart:
     return StringMatcherAssertionPart(value_resolver(expectation_type, expected_contents))
 
 
