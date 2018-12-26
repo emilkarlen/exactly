@@ -81,7 +81,7 @@ def assertion_part_for_every_line_matches(expectation_type: ExpectationType,
             line_matcher_resolver)
 
 
-class FileContentsAssertionPart(FileContentsAssertionPart):
+class _AssertionPartBase(FileContentsAssertionPart):
     def __init__(self,
                  any_or_every_keyword: str,
                  expectation_type: ExpectationType,
@@ -151,7 +151,7 @@ class FileContentsAssertionPart(FileContentsAssertionPart):
             ))
 
 
-class _AnyLineMatchesAssertionPartForPositiveMatch(FileContentsAssertionPart):
+class _AnyLineMatchesAssertionPartForPositiveMatch(_AssertionPartBase):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
@@ -165,7 +165,7 @@ class _AnyLineMatchesAssertionPartForPositiveMatch(FileContentsAssertionPart):
                           'no line matches')
 
 
-class _AnyLineMatchesAssertionPartForNegativeMatch(FileContentsAssertionPart):
+class _AnyLineMatchesAssertionPartForNegativeMatch(_AssertionPartBase):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
@@ -179,7 +179,7 @@ class _AnyLineMatchesAssertionPartForNegativeMatch(FileContentsAssertionPart):
                                                 line)
 
 
-class _EveryLineMatchesAssertionPartForPositiveMatch(FileContentsAssertionPart):
+class _EveryLineMatchesAssertionPartForPositiveMatch(_AssertionPartBase):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
@@ -193,7 +193,7 @@ class _EveryLineMatchesAssertionPartForPositiveMatch(FileContentsAssertionPart):
                                                 line)
 
 
-class _EveryLineMatchesAssertionPartForNegativeMatch(FileContentsAssertionPart):
+class _EveryLineMatchesAssertionPartForNegativeMatch(_AssertionPartBase):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
