@@ -1,6 +1,5 @@
 import pathlib
-import types
-from typing import Iterable
+from typing import Iterable, Callable
 
 from exactly_lib.test_case_utils.string_transformer import transformers as sut
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
@@ -40,8 +39,8 @@ def is_identical_to(line_num: int, line_contents: str) -> LineMatcher:
 
 class LineMatcherFromPredicates(LineMatcher):
     def __init__(self,
-                 line_num_predicate: types.FunctionType = lambda x: True,
-                 line_contents_predicate: types.FunctionType = lambda x: True):
+                 line_num_predicate: Callable[[int], bool] = lambda x: True,
+                 line_contents_predicate: Callable[[str], bool] = lambda x: True):
         self.line_num = line_num_predicate
         self.line_contents = line_contents_predicate
 
