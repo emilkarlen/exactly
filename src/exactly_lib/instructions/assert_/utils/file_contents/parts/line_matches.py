@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.instruction_arguments import LINE_MATCHER
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
@@ -7,6 +9,7 @@ from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import Pfh
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.resolver_structure import LineMatcherResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg
@@ -89,7 +92,7 @@ class FileContentsAssertionPart(FileContentsAssertionPart):
         self._line_matcher_resolver = line_matcher_resolver
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._line_matcher_resolver.references
 
     def check(self,
