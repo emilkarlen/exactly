@@ -1,5 +1,5 @@
 import pathlib
-from typing import Optional
+from typing import Optional, Set
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import SingleDirDependentValue
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
@@ -34,7 +34,7 @@ class FileRef(SingleDirDependentValue):
         else:
             return RESOLVING_DEPENDENCY_OF[relativity.relativity_type]
 
-    def resolving_dependencies(self) -> set:
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         relativity = self.relativity()
         if relativity.is_absolute:
             return set()
