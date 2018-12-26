@@ -24,7 +24,7 @@ from exactly_lib.type_system.error_message import FilePropertyDescriptorConstruc
 from exactly_lib.type_system.logic.program.string_or_file_ref_values import StringOrPath
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util import file_utils
-from exactly_lib.util.file_utils import tmp_text_file_containing, TmpFileSpace, TmpDirFileSpace
+from exactly_lib.util.file_utils import tmp_text_file_containing, TmpDirFileSpace
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
