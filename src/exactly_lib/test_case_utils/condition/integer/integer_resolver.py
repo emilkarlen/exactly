@@ -6,7 +6,6 @@ from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import NotAnIntegerException, python_evaluate
 
@@ -76,7 +75,7 @@ class IntegerResolver(OperandResolver[int]):
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         self._validator.validate_pre_sds(environment)
 
-    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
+    def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
         try:
             return self._int_resolver.resolve(environment)
         except NotAnIntegerException as ex:
