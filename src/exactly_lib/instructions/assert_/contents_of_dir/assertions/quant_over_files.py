@@ -1,6 +1,7 @@
 import pathlib
 from typing import Sequence
 
+from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
@@ -8,7 +9,6 @@ from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import D
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import ComparisonActualFile
-from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
@@ -17,6 +17,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import path_description
+from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
@@ -178,7 +179,8 @@ class _ErrorReportingHelper:
 
     def _diff_failure_info_for_dir(self) -> diff_msg_utils.DiffFailureInfoResolver:
         property_descriptor = path_description.path_value_description(
-            actual_files.file_property_name(actual_files.CONTENTS_ATTRIBUTE, actual_files.PLAIN_DIR_OBJECT_NAME),
+            actual_files.file_property_name(actual_file_attributes.CONTENTS_ATTRIBUTE,
+                                            actual_file_attributes.PLAIN_DIR_OBJECT_NAME),
             self.settings.path_to_check)
         return diff_msg_utils.DiffFailureInfoResolver(
             property_descriptor,
@@ -206,7 +208,7 @@ class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConst
         )
         return path_description.path_value_description(
             actual_files.file_property_name(contents_attribute,
-                                            actual_files.PLAIN_FILE_OBJECT_NAME),
+                                            actual_file_attributes.PLAIN_FILE_OBJECT_NAME),
             path_resolver)
 
 

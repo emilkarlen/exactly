@@ -1,7 +1,6 @@
 from typing import Sequence
 
 import exactly_lib.type_system.error_message
-from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
@@ -10,7 +9,7 @@ from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils import file_properties, return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.test_case_utils import file_ref_check
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg.path_description import PathValuePartConstructor

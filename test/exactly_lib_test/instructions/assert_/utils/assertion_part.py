@@ -1,14 +1,15 @@
 import unittest
+
 from typing import Sequence, Any
 
 from exactly_lib.instructions.assert_.utils import assertion_part as sut
-from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
+from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction

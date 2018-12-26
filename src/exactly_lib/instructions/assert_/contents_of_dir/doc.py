@@ -10,7 +10,6 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.instructions.assert_.utils.file_contents.syntax import file_contents_checker
-from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTY_ARGUMENT_CONSTANT
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element
 from exactly_lib.processing import exit_values
@@ -18,6 +17,7 @@ from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTY_ARGUMENT_CONSTANT
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs

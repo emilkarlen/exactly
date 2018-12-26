@@ -1,7 +1,7 @@
 from exactly_lib.definitions import instruction_arguments, file_ref as file_ref_texts
 from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
-from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
+from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
@@ -67,7 +67,7 @@ class ImplicitActualFileArgumentsConstructor:
 
 class EmptyAssertionArgumentsConstructor(FileContentsArgumentsConstructor):
     def __str__(self):
-        return instruction_options.EMPTY_ARGUMENT
+        return matcher_options.EMPTY_ARGUMENT
 
 
 class NumLinesAssertionArgumentsConstructor(FileContentsArgumentsConstructor):
@@ -75,7 +75,7 @@ class NumLinesAssertionArgumentsConstructor(FileContentsArgumentsConstructor):
         self._condition = condition
 
     def __str__(self):
-        return instruction_options.NUM_LINES_ARGUMENT + ' ' + self._condition
+        return matcher_options.NUM_LINES_ARGUMENT + ' ' + self._condition
 
 
 class EqualsStringAssertionArgumentsConstructor(FileContentsArgumentsConstructor):
@@ -86,7 +86,7 @@ class EqualsStringAssertionArgumentsConstructor(FileContentsArgumentsConstructor
         self._string_argument = string_argument
 
     def __str__(self):
-        return instruction_options.EQUALS_ARGUMENT + ' ' + self._string_argument
+        return matcher_options.EQUALS_ARGUMENT + ' ' + self._string_argument
 
 
 class LineMatchesAssertionArgumentsConstructor(FileContentsArgumentsConstructor):
@@ -99,9 +99,9 @@ class LineMatchesAssertionArgumentsConstructor(FileContentsArgumentsConstructor)
     def __str__(self):
         return '{any_or_every} {line} {quantifier_separator} {matches} {condition}'.format(
             any_or_every=instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier],
-            line=instruction_options.LINE_ARGUMENT,
+            line=matcher_options.LINE_ARGUMENT,
             quantifier_separator=instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
-            matches=instruction_options.MATCHES_ARGUMENT,
+            matches=matcher_options.MATCHES_ARGUMENT,
             condition=self._condition,
         )
 
@@ -116,11 +116,11 @@ def args(arg_str: str, **kwargs) -> str:
 _FORMAT_MAP = {
     'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
     'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
-    'line_matches': instruction_options.LINE_ARGUMENT + ' ' + instruction_options.MATCHES_ARGUMENT,
-    'empty': instruction_options.EMPTY_ARGUMENT,
-    'equals': instruction_options.EQUALS_ARGUMENT,
+    'line_matches': matcher_options.LINE_ARGUMENT + ' ' + matcher_options.MATCHES_ARGUMENT,
+    'empty': matcher_options.EMPTY_ARGUMENT,
+    'equals': matcher_options.EQUALS_ARGUMENT,
     'file_option': option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
-    'not': instruction_options.NOT_ARGUMENT,
+    'not': matcher_options.NOT_ARGUMENT,
     'transform_option': option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
     'rel_home_case_option': file_ref_texts.REL_HOME_CASE_OPTION,
     'rel_cwd_option': file_ref_texts.REL_CWD_OPTION,

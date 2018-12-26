@@ -1,13 +1,13 @@
 from typing import Sequence, Optional, Callable
 
-from exactly_lib.instructions.utils import return_svh_via_exceptions
-from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case_utils import return_svh_via_exceptions
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import NotAnIntegerException, python_evaluate
+from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
 
 
 class _IntResolver:

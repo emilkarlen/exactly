@@ -1,18 +1,18 @@
 from abc import ABC, abstractmethod
 from typing import Sequence, TypeVar, Generic, Set
 
-from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
-from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils import return_pfh_via_exceptions
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_from_references
+from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable

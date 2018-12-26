@@ -81,8 +81,8 @@ class _SymbolConcept(ConceptDocumentation):
 
     def _reference_paragraphs(self) -> List[ParagraphItem]:
         from exactly_lib.test_case_utils.string_transformer.parse_string_transformer import SELECT_TRANSFORMER_NAME
-        from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
-        from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EQUALS_ARGUMENT
+        from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_ARGUMENT
+        from exactly_lib.test_case_utils.string_matcher.matcher_options import EQUALS_ARGUMENT
 
         from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import FILE_ARGUMENT_OPTION
         from exactly_lib.definitions.file_ref import REL_symbol_OPTION

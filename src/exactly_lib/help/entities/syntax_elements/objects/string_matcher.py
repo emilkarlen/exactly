@@ -8,13 +8,13 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
-from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
-from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EMPTY_ARGUMENT
-from exactly_lib.instructions.assert_.utils.file_contents.parts.equality import \
-    EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import FILE_ARGUMENT_OPTION
+from exactly_lib.test_case_utils.string_matcher import matcher_options
+from exactly_lib.test_case_utils.string_matcher.matcher_options import EMPTY_ARGUMENT
+from exactly_lib.test_case_utils.string_matcher.parse.parts.equality import \
+    EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -68,19 +68,19 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
                                   ])
         equals_arg = a.Single(a.Multiplicity.MANDATORY,
                               a.Constant(
-                                  instruction_options.EQUALS_ARGUMENT))
+                                  matcher_options.EQUALS_ARGUMENT))
         line_arg = a.Single(a.Multiplicity.MANDATORY,
-                            a.Constant(instruction_options.LINE_ARGUMENT))
+                            a.Constant(matcher_options.LINE_ARGUMENT))
 
         quantifier_separator_arg = a.Single(a.Multiplicity.MANDATORY,
                                             a.Constant(instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT))
 
         matches_arg = a.Single(a.Multiplicity.MANDATORY,
-                               a.Constant(instruction_options.MATCHES_ARGUMENT))
+                               a.Constant(matcher_options.MATCHES_ARGUMENT))
         line_matcher_arg = a.Single(a.Multiplicity.MANDATORY,
                                     instruction_arguments.LINE_MATCHER)
         num_lines_arg = a.Single(a.Multiplicity.MANDATORY,
-                                 a.Constant(instruction_options.NUM_LINES_ARGUMENT))
+                                 a.Constant(matcher_options.NUM_LINES_ARGUMENT))
 
         return [
             invokation_variant_from_args([mandatory_empty_arg],
