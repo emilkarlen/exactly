@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_assertion_part import \
+from exactly_lib.instructions.assert_.utils.file_contents.parts.equality import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name

@@ -5,16 +5,49 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CO
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
+from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, model_iter_from_file_line_iter
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.logic_types import ExpectationType
+
+
+def parse_any_line_matches_checker(expectation_type: ExpectationType,
+                                   token_parser: TokenParser) -> FileContentsAssertionPart:
+    line_matcher_resolver = _parse_line_matches_tokens_and_line_matcher(token_parser)
+
+    return assertion_part_for_any_line_matches(expectation_type,
+                                               line_matcher_resolver)
+
+
+def parse_every_line_matches_checker(expectation_type: ExpectationType,
+                                     token_parser: TokenParser) -> FileContentsAssertionPart:
+    line_matcher_resolver = _parse_line_matches_tokens_and_line_matcher(token_parser)
+
+    return assertion_part_for_every_line_matches(expectation_type,
+                                                 line_matcher_resolver)
+
+
+def _parse_line_matches_tokens_and_line_matcher(token_parser: TokenParser) -> LineMatcherResolver:
+    token_parser.consume_mandatory_constant_unquoted_string(instruction_options.LINE_ARGUMENT,
+                                                            must_be_on_current_line=True)
+    token_parser.consume_mandatory_constant_unquoted_string(instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+                                                            must_be_on_current_line=True)
+    token_parser.consume_mandatory_constant_unquoted_string(instruction_options.MATCHES_ARGUMENT,
+                                                            must_be_on_current_line=True)
+    token_parser.require_is_not_at_eol('Missing {_MATCHER_}')
+    line_matcher_resolver = parse_line_matcher_from_token_parser(token_parser)
+    token_parser.report_superfluous_arguments_if_not_at_eol()
+    token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
+
+    return line_matcher_resolver
 
 
 def assertion_part_for_any_line_matches(expectation_type: ExpectationType,
