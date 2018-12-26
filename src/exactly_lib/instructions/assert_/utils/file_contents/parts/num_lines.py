@@ -2,9 +2,6 @@ from typing import Optional, Sequence, Set
 
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
-from exactly_lib.instructions.assert_.utils.file_contents.string_matcher_assertion_part import \
-    StringMatcherAssertionPart
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -28,19 +25,13 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def parse(expectation_type: ExpectationType,
-          token_parser: TokenParser) -> FileContentsAssertionPart:
+          token_parser: TokenParser) -> StringMatcherResolver:
     cmp_op_and_rhs = parse_cmp_op.parse_integer_comparison_operator_and_rhs(token_parser,
                                                                             validator_for_non_negative)
     token_parser.report_superfluous_arguments_if_not_at_eol()
     token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
-    return _assertion_part_via_string_matcher(expectation_type,
-                                              cmp_op_and_rhs)
-
-
-def _assertion_part_via_string_matcher(expectation_type: ExpectationType,
-                                       cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand,
-                                       ) -> FileContentsAssertionPart:
-    return StringMatcherAssertionPart(value_resolver(expectation_type, cmp_op_and_rhs))
+    return value_resolver(expectation_type,
+                          cmp_op_and_rhs)
 
 
 def value_resolver(expectation_type: ExpectationType,
