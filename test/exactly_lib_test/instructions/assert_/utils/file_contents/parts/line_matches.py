@@ -1,6 +1,10 @@
 import unittest
 
+from typing import Callable
+
 from exactly_lib.instructions.assert_.utils.file_contents.parts import line_matches as sut
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
+from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
@@ -37,10 +41,11 @@ class Case:
 
 
 class TestCaseBase(unittest.TestCase):
-    def _check_cases_with_non_empty_file(self,
-                                         get_assertion_part_function,
-                                         actual_file_contents: str,
-                                         matcher_cases: list):
+    def _check_cases_with_non_empty_file(
+            self,
+            get_assertion_part_function: Callable[[ExpectationType, LineMatcherResolver], FileContentsAssertionPart],
+            actual_file_contents: str,
+            matcher_cases: list):
 
         environment = fake_post_sds_environment()
         checked_file_describer = FilePropertyDescriptorConstructorTestImpl()
