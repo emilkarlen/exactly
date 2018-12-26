@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.symbol import lookups
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
@@ -40,9 +41,7 @@ class LineMatcherReferenceResolver(LineMatcherResolver):
                                             ValueTypeRestriction(ValueType.LINE_MATCHER))]
 
     def resolve(self, symbols: SymbolTable) -> LineMatcher:
-        container = symbols.lookup(self._name_of_referenced_resolver)
-        resolver = container.resolver
-        assert isinstance(resolver, LineMatcherResolver)
+        resolver = lookups.lookup_line_matcher(symbols, self._name_of_referenced_resolver)
         return resolver.resolve(symbols)
 
     @property
