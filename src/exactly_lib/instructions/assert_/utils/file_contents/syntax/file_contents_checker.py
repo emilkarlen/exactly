@@ -56,15 +56,12 @@ class FileContentsCheckerHelp:
         return []
 
     def syntax_element_descriptions_at_bottom(self) -> List[SyntaxElementDescription]:
-        transformation = transformation_syntax_element_description(self._checked_file)
-
-        return [transformation]
+        return []
 
     @staticmethod
     def see_also_targets__file() -> List[SeeAlsoTarget]:
         return [
             syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.cross_reference_target,
-            syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
     @staticmethod
@@ -72,7 +69,6 @@ class FileContentsCheckerHelp:
         return [
             syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.cross_reference_target,
             syntax_elements.PROGRAM_SYNTAX_ELEMENT.cross_reference_target,
-            syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
             concepts.ACTION_TO_CHECK_CONCEPT_INFO.cross_reference_target,
         ]
 
@@ -81,10 +77,7 @@ def file_contents_checker_arguments__non_program() -> List[a.ArgumentUsage]:
     file_contents_arg = a.Single(a.Multiplicity.MANDATORY,
                                  syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.argument)
 
-    optional_transformation_option = a.Single(a.Multiplicity.OPTIONAL,
-                                              instruction_arguments.STRING_TRANSFORMATION_ARGUMENT)
     return [
-        optional_transformation_option,
         file_contents_arg,
     ]
 
