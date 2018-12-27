@@ -3,6 +3,8 @@ from typing import Sequence
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case import pre_or_post_validation
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue
 from exactly_lib.type_system.logic.string_matcher_values import StringMatcherConstantValue
 from exactly_lib.type_system.value_type import ValueType
@@ -16,9 +18,11 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 class StringMatcherResolverConstantTestImpl(StringMatcherResolver):
     def __init__(self,
                  resolved_value: StringMatcher,
-                 references: Sequence[SymbolReference] = ()):
+                 references: Sequence[SymbolReference] = (),
+                 validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()):
         self._resolved_value = resolved_value
         self._references = list(references)
+        self._validator = validator
 
     @property
     def resolved_value(self) -> StringMatcher:
@@ -27,6 +31,10 @@ class StringMatcherResolverConstantTestImpl(StringMatcherResolver):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return self._validator
 
     def resolve(self, named_elements: SymbolTable) -> StringMatcherValue:
         return StringMatcherConstantValue(self._resolved_value)
