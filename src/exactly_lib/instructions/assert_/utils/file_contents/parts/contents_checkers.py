@@ -6,7 +6,6 @@ from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileResolver, \
     ComparisonActualFileConstructor
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
-from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
@@ -149,36 +148,3 @@ class IsExistingRegularFileAssertionPart(AssertionPart[ComparisonActualFile, Com
         )
         actual_info = diff_msg.ActualInfo(actual_info_single_line_value())
         return diff_failure_resolver.resolve(environment, actual_info).error_message()
-
-
-class FileTransformerAsAssertionPart(AssertionPart[ComparisonActualFile, FileToCheck]):
-    """
-    Transforms a given existing regular file.
-    """
-
-    def __init__(self, string_transformer_resolver: StringTransformerResolver):
-        super().__init__()
-        self._string_transformer_resolver = string_transformer_resolver
-        self._destination_file_path_getter = DestinationFilePathGetter()
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._string_transformer_resolver.references
-
-    def check(self,
-              environment: InstructionEnvironmentForPostSdsStep,
-              os_services: OsServices,
-              custom_environment,
-              file_to_transform: ComparisonActualFile,
-              ) -> FileToCheck:
-        actual_file_path = file_to_transform.actual_file_path
-
-        string_transformer = self._string_transformer_resolver \
-            .resolve(environment.symbols) \
-            .value_of_any_dependency(environment.home_and_sds)
-
-        return FileToCheck(actual_file_path,
-                           file_to_transform.checked_file_describer,
-                           environment.phase_logging.space_for_instruction(),
-                           string_transformer,
-                           self._destination_file_path_getter)
