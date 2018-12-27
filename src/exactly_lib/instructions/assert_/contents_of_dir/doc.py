@@ -72,7 +72,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         ]
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
-        negation = negation_of_predicate.syntax_element_description(_ADDITIONAL_TEXT_OF_NEGATION_SED)
+        negation = negation_of_predicate.assertion_syntax_element_description(_ADDITIONAL_TEXT_OF_NEGATION_SED)
 
         selection = parse_file_matcher.selection_syntax_element_description()
 
