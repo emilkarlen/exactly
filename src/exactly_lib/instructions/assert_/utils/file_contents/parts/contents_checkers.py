@@ -83,54 +83,30 @@ class FileExistenceAssertionPart(AssertionPart[ComparisonActualFileResolver, Com
                                     actual_file.property_descriptor_constructor)
 
 
-class FileTransformerAsAssertionPart(AssertionPart[ComparisonActualFile, FileToCheck]):
+class IsExistingRegularFileAssertionPart(AssertionPart[ComparisonActualFile, ComparisonActualFile]):
     """
-    Transforms a given existing file.
-
-    Does not check any property.
-
-    :raises PfhHardErrorException: The transformation fails
+    :raises PfhHardErrorException: The file is not an existing regular file (symlinks followed).
     """
 
-    def __init__(self, string_transformer_resolver: StringTransformerResolver):
+    def __init__(self):
         super().__init__()
-        self._string_transformer_resolver = string_transformer_resolver
-        self._destination_file_path_getter = DestinationFilePathGetter()
-
         self._file_prop_check = file_properties.ActualFilePropertiesResolver(file_properties.FileType.REGULAR,
                                                                              follow_symlinks=True)
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._string_transformer_resolver.references
 
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               custom_environment,
-              file_to_transform: ComparisonActualFile,
-              ) -> FileToCheck:
-        """
-        :param file_to_transform: The file that should be transformed
-        :return: The path of the transformed file.
-        """
-        actual_file_path = file_to_transform.actual_file_path
-        failure_info_properties = self._file_prop_check.resolve_failure_info(file_to_transform.actual_file_path)
+              actual_file: ComparisonActualFile,
+              ) -> ComparisonActualFile:
+        failure_info_properties = self._file_prop_check.resolve_failure_info(actual_file.actual_file_path)
 
         if failure_info_properties:
             err_msg_env = err_msg_env_from_instr_env(environment)
-            err_msg = self._err_msg(err_msg_env, file_to_transform, failure_info_properties)
+            err_msg = self._err_msg(err_msg_env, actual_file, failure_info_properties)
             raise PfhHardErrorException(err_msg)
 
-        string_transformer = self._string_transformer_resolver \
-            .resolve(environment.symbols) \
-            .value_of_any_dependency(environment.home_and_sds)
-
-        return FileToCheck(actual_file_path,
-                           file_to_transform.checked_file_describer,
-                           environment.phase_logging.space_for_instruction(),
-                           string_transformer,
-                           self._destination_file_path_getter)
+        return actual_file
 
     def _err_msg(self,
                  environment: ErrorMessageResolvingEnvironment,
@@ -152,3 +128,36 @@ class FileTransformerAsAssertionPart(AssertionPart[ComparisonActualFile, FileToC
         )
         actual_info = diff_msg.ActualInfo(actual_info_single_line_value())
         return diff_failure_resolver.resolve(environment, actual_info).error_message()
+
+
+class FileTransformerAsAssertionPart(AssertionPart[ComparisonActualFile, FileToCheck]):
+    """
+    Transforms a given existing regular file.
+    """
+
+    def __init__(self, string_transformer_resolver: StringTransformerResolver):
+        super().__init__()
+        self._string_transformer_resolver = string_transformer_resolver
+        self._destination_file_path_getter = DestinationFilePathGetter()
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._string_transformer_resolver.references
+
+    def check(self,
+              environment: InstructionEnvironmentForPostSdsStep,
+              os_services: OsServices,
+              custom_environment,
+              file_to_transform: ComparisonActualFile,
+              ) -> FileToCheck:
+        actual_file_path = file_to_transform.actual_file_path
+
+        string_transformer = self._string_transformer_resolver \
+            .resolve(environment.symbols) \
+            .value_of_any_dependency(environment.home_and_sds)
+
+        return FileToCheck(actual_file_path,
+                           file_to_transform.checked_file_describer,
+                           environment.phase_logging.space_for_instruction(),
+                           string_transformer,
+                           self._destination_file_path_getter)

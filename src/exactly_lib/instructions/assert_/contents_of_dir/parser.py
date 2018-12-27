@@ -3,6 +3,9 @@ from exactly_lib.instructions.assert_.contents_of_dir.assertions import common, 
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
 from exactly_lib.instructions.assert_.contents_of_dir.config import PATH_ARGUMENT, ACTUAL_RELATIVITY_CONFIGURATION
 from exactly_lib.instructions.assert_.utils import assertion_part
+from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import \
+    IsExistingRegularFileAssertionPart, ComparisonActualFile
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
     InstructionParserWithoutSourceFileLocationInfo
@@ -12,6 +15,7 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as expression_parse
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.parse import parse_file_ref
+from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.logic_types import Quantifier
 from exactly_lib.util.messages import grammar_options_syntax
 from . import config
@@ -87,14 +91,24 @@ class _CheckInstructionParser:
     def _file_quantified_assertion(self,
                                    quantifier: Quantifier,
                                    parser: TokenParser) -> DirContentsAssertionPart:
+        from exactly_lib.instructions.assert_.utils.file_contents import parse_file_contents_assertion_part
+
         parser.consume_mandatory_constant_unquoted_string(config.QUANTIFICATION_OVER_FILE_ARGUMENT,
                                                           must_be_on_current_line=True)
         parser.consume_mandatory_constant_unquoted_string(
             instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
             must_be_on_current_line=True)
-        from exactly_lib.instructions.assert_.utils.file_contents import parse_file_contents_assertion_part
-        actual_file_assertion_part = parse_file_contents_assertion_part.parse(parser)
-        return quant_over_files.QuantifiedAssertion(self.settings, quantifier, actual_file_assertion_part)
+        assertion_on_existing_regular_file = parse_file_contents_assertion_part.parse(parser)
+
+        return self._file_quantified_assertion_part(quantifier, assertion_on_existing_regular_file)
+
+    def _file_quantified_assertion_part(self,
+                                        quantifier: Quantifier,
+                                        on_existing_regular_file: AssertionPart[ComparisonActualFile, FileToCheck]
+                                        ) -> DirContentsAssertionPart:
+        assertion_on_file = assertion_part.compose(IsExistingRegularFileAssertionPart(),
+                                                   on_existing_regular_file)
+        return quant_over_files.QuantifiedAssertion(self.settings, quantifier, assertion_on_file)
 
     @staticmethod
     def _expect_no_more_args_and_consume_current_line(parser: TokenParser):
