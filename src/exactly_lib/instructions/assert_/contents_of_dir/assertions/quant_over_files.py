@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, Any
 
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import instruction_arguments
@@ -31,7 +31,7 @@ class QuantifiedAssertion(DirContentsAssertionPart):
     def __init__(self,
                  settings: common.Settings,
                  quantifier: Quantifier,
-                 assertion_on_file_to_check: AssertionPart):
+                 assertion_on_file_to_check: AssertionPart[ComparisonActualFile, Any]):
         super().__init__(settings, assertion_on_file_to_check.validator)
         self._quantifier = quantifier
         self._assertion_on_file_to_check = assertion_on_file_to_check
@@ -65,7 +65,7 @@ class _Checker:
     def __init__(self,
                  settings: common.Settings,
                  quantifier: Quantifier,
-                 assertion_on_file_to_check: AssertionPart,
+                 assertion_on_file_to_check: AssertionPart[ComparisonActualFile, Any],
                  environment: InstructionEnvironmentForPostSdsStep,
                  os_services: OsServices
                  ):

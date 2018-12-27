@@ -1,4 +1,4 @@
-from typing import Set, Optional
+from typing import Set, Optional, Sequence
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
@@ -148,7 +148,7 @@ class _StringMatcherBase(StringMatcher):
     def _report_fail(self,
                      checked_file_describer: FilePropertyDescriptorConstructor,
                      actual_single_line_value: str,
-                     description_lines: list = ()):
+                     description_lines: Sequence[str] = ()):
         failure_info_resolver = self._diff_failure_info_resolver(checked_file_describer)
         failure_info = failure_info_resolver.resolve(self._err_msg_environment,
                                                      diff_msg.actual_with_single_line_value(
