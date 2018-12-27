@@ -5,6 +5,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import cl_syntax
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts, syntax_elements, types
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -14,7 +15,7 @@ class FileContentsCheckerHelp:
     def __init__(self,
                  instruction_name: str,
                  checked_file: str,
-                 initial_args_of_invokation_variants: list):
+                 initial_args_of_invokation_variants: List[a.ArgumentUsage]):
         self._checked_file = checked_file
         self.instruction_name = instruction_name
         self.initial_args_of_invokation_variants = initial_args_of_invokation_variants
@@ -25,7 +26,7 @@ class FileContentsCheckerHelp:
             'program_type': formatting.entity_(types.PROGRAM_TYPE_INFO),
         })
 
-    def _cls(self, additional_argument_usages: list) -> str:
+    def _cls(self, additional_argument_usages: List[a.ArgumentUsage]) -> str:
         return cl_syntax.cl_syntax_for_args(self.initial_args_of_invokation_variants +
                                             additional_argument_usages)
 
@@ -60,14 +61,14 @@ class FileContentsCheckerHelp:
         return [transformation]
 
     @staticmethod
-    def see_also_targets__file() -> list:
+    def see_also_targets__file() -> List[SeeAlsoTarget]:
         return [
             syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.cross_reference_target,
             syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
     @staticmethod
-    def see_also_targets__stdout_err() -> list:
+    def see_also_targets__stdout_err() -> List[SeeAlsoTarget]:
         return [
             syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.cross_reference_target,
             syntax_elements.PROGRAM_SYNTAX_ELEMENT.cross_reference_target,
