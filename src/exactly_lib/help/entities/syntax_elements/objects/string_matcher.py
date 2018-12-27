@@ -10,6 +10,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
+from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import FILE_ARGUMENT_OPTION
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.matcher_options import EMPTY_ARGUMENT
@@ -30,6 +31,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
         super().__init__(TypeCategory.LOGIC,
                          syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT)
 
+        self.matcher_element_name = 'MATCHER'
         self.expected_file_arg = a.Option(FILE_ARGUMENT_OPTION,
                                           _EXPECTED_PATH_NAME)
         self.string_or_here_doc_or_file_arg = StringOrHereDocOrFile(
@@ -50,6 +52,25 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
         return self._parser.fnap(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> List[InvokationVariant]:
+        matcher_arg = a.Single(a.Multiplicity.MANDATORY,
+                               a.Named(self.matcher_element_name))
+        return [
+            invokation_variant_from_args([
+                negation_of_predicate.optional_negation_argument_usage(),
+                matcher_arg,
+            ])
+        ]
+
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
+        return (
+                [
+                    self._matcher_sed(),
+                    negation_of_predicate.matcher_syntax_element_description(),
+                ] +
+                self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
+        )
+
+    def _matcher_sed(self) -> SyntaxElementDescription:
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
                                        a.Constant(EMPTY_ARGUMENT))
         quantifier_arg = a.Choice(a.Multiplicity.MANDATORY,
@@ -75,31 +96,32 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
         num_lines_arg = a.Single(a.Multiplicity.MANDATORY,
                                  a.Constant(matcher_options.NUM_LINES_ARGUMENT))
 
-        return [
-            invokation_variant_from_args([mandatory_empty_arg],
-                                         self._parser.fnap(_DESCRIPTION_OF_EMPTY)),
+        return SyntaxElementDescription(
+            self.matcher_element_name,
+            [],
+            [
+                invokation_variant_from_args([mandatory_empty_arg],
+                                             self._parser.fnap(_DESCRIPTION_OF_EMPTY)),
 
-            invokation_variant_from_args([equals_arg,
-                                          self.string_or_here_doc_or_file_arg.argument_usage(a.Multiplicity.MANDATORY),
-                                          ],
-                                         self._parser.fnap(_DESCRIPTION_OF_EQUALS_STRING)),
+                invokation_variant_from_args([equals_arg,
+                                              self.string_or_here_doc_or_file_arg.argument_usage(
+                                                  a.Multiplicity.MANDATORY),
+                                              ],
+                                             self._parser.fnap(_DESCRIPTION_OF_EQUALS_STRING)),
 
-            invokation_variant_from_args([num_lines_arg,
-                                          syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory,
-                                          ],
-                                         self._parser.fnap(_DESCRIPTION_OF_NUM_LINES)),
+                invokation_variant_from_args([num_lines_arg,
+                                              syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory,
+                                              ],
+                                             self._parser.fnap(_DESCRIPTION_OF_NUM_LINES)),
 
-            invokation_variant_from_args([quantifier_arg,
-                                          line_arg,
-                                          quantifier_separator_arg,
-                                          matches_arg,
-                                          line_matcher_arg,
-                                          ],
-                                         self._parser.fnap(_DESCRIPTION_OF_LINE_MATCHES)),
-        ]
-
-    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
-        return self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
+                invokation_variant_from_args([quantifier_arg,
+                                              line_arg,
+                                              quantifier_separator_arg,
+                                              matches_arg,
+                                              line_matcher_arg,
+                                              ],
+                                             self._parser.fnap(_DESCRIPTION_OF_LINE_MATCHES)),
+            ])
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         name_and_cross_ref_elements = rel_opts.see_also_name_and_cross_refs(

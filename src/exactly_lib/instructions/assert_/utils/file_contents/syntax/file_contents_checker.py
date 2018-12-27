@@ -6,7 +6,6 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.entity import concepts, syntax_elements, types
-from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -58,9 +57,7 @@ class FileContentsCheckerHelp:
     def syntax_element_descriptions_at_bottom(self) -> List[SyntaxElementDescription]:
         transformation = transformation_syntax_element_description(self._checked_file)
 
-        return ([transformation,
-                 negation_of_predicate.syntax_element_description()]
-        )
+        return [transformation]
 
     @staticmethod
     def see_also_targets__file() -> list:
@@ -83,13 +80,10 @@ def file_contents_checker_arguments__non_program() -> List[a.ArgumentUsage]:
     file_contents_arg = a.Single(a.Multiplicity.MANDATORY,
                                  syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.argument)
 
-    optional_not_arg = negation_of_predicate.optional_negation_argument_usage()
-
     optional_transformation_option = a.Single(a.Multiplicity.OPTIONAL,
                                               instruction_arguments.STRING_TRANSFORMATION_ARGUMENT)
     return [
         optional_transformation_option,
-        optional_not_arg,
         file_contents_arg,
     ]
 
@@ -97,8 +91,6 @@ def file_contents_checker_arguments__non_program() -> List[a.ArgumentUsage]:
 def file_contents_checker_arguments__program(program_option: a.OptionName) -> List[a.ArgumentUsage]:
     file_contents_arg = a.Single(a.Multiplicity.MANDATORY,
                                  syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.argument)
-
-    optional_not_arg = negation_of_predicate.optional_negation_argument_usage()
 
     program_output_option = a.Single(a.Multiplicity.MANDATORY,
                                      a.Option(program_option))
@@ -108,7 +100,6 @@ def file_contents_checker_arguments__program(program_option: a.OptionName) -> Li
     return [
         program_output_option,
         program_arg,
-        optional_not_arg,
         file_contents_arg,
     ]
 

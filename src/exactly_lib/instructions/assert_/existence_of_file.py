@@ -99,7 +99,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         negation_elements = [
-            negation_of_predicate.syntax_element_description()
+            negation_of_predicate.assertion_syntax_element_description()
         ]
         type_elements = [
             SyntaxElementDescription(self.type_argument.name,
