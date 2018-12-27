@@ -1,5 +1,15 @@
 -*- org -*-
 
+* type for files selection
+<2018-12-27 Thu>
+Should be something like a find expression.
+Something that can be applied to one or more
+"base paths" (as "find" does - applies the expression
+on the first path arguments).
+* type for DIR-CONTENTS-MATCHER
+<2018-12-27 Thu>
+Should be possible to define DIR-CONTENTS-MATCHER values,
+in same manner as other matchers.
 * Nu: varje fil direkt i DIR
 
 * För varje fil i DIR (direkt/indirekt)
