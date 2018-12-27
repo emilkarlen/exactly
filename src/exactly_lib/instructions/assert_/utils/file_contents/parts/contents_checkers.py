@@ -17,6 +17,7 @@ from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhFailExcepti
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
+from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 
 
 class ComparisonActualFile(tuple):
@@ -53,6 +54,26 @@ class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor
         return value_to_check.construct(custom_environment,
                                         environment,
                                         os_services)
+
+
+class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, FileToCheck]):
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return ()
+
+    def check(self,
+              environment: InstructionEnvironmentForPostSdsStep,
+              os_services: OsServices,
+              custom_environment,
+              file_to_transform: ComparisonActualFile,
+              ) -> FileToCheck:
+        actual_file_path = file_to_transform.actual_file_path
+
+        return FileToCheck(actual_file_path,
+                           file_to_transform.checked_file_describer,
+                           environment.phase_logging.space_for_instruction(),
+                           IdentityStringTransformer(),
+                           DestinationFilePathGetter())
 
 
 class FileExistenceAssertionPart(AssertionPart[ComparisonActualFileResolver, ComparisonActualFile]):
