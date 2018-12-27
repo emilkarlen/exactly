@@ -51,6 +51,13 @@ class FileToCheck:
         self._string_transformer = string_transformer
         self._destination_file_path_getter = destination_file_path_getter
 
+    def with_transformation(self, string_transformer: StringTransformer):
+        return FileToCheck(self._original_file_path,
+                           self._checked_file_describer,
+                           self._tmp_file_space,
+                           string_transformer,
+                           self._destination_file_path_getter)
+
     @property
     def tmp_file_space(self) -> TmpDirFileSpace:
         return self._tmp_file_space
