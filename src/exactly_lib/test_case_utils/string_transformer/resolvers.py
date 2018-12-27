@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.symbol import lookups
 from exactly_lib.symbol.resolver_structure import StringTransformerResolver, LineMatcherResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -59,9 +60,7 @@ class StringTransformerReference(StringTransformerResolver):
                                             ValueTypeRestriction(ValueType.STRING_TRANSFORMER))]
 
     def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
-        container = symbols.lookup(self._name_of_referenced_resolver)
-        resolver = container.resolver
-        assert isinstance(resolver, StringTransformerResolver)
+        resolver = lookups.lookup_string_transformer(symbols, self._name_of_referenced_resolver)
         return resolver.resolve(symbols)
 
     @property
