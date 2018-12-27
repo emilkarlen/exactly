@@ -3,6 +3,7 @@ from typing import Sequence, Any
 
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
@@ -191,7 +192,8 @@ class _ErrorReportingHelper:
     def _description_of_expected(self):
         return ' '.join([instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier],
                          config.QUANTIFICATION_OVER_FILE_ARGUMENT,
-                         'satisfies FILE-CONTENTS-ASSERTION'])
+                         'satisfies',
+                         syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.singular_name])
 
 
 class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConstructor):
