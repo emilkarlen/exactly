@@ -6,6 +6,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
     invokation_variant_from_args
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
@@ -84,7 +85,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
             self._files_assertion_sed(),
             selection,
             actual_file_arg_sed,
-            file_contents_checker.transformation_syntax_element_description('each file'),
             negation,
         ]
 
@@ -135,15 +135,14 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
             invokation_variants
         )
 
-    def see_also_targets(self) -> list:
-        from exactly_lib.definitions.entity import types
-        name_and_cross_refs = [types.FILE_MATCHER_TYPE_INFO,
-                               types.STRING_TRANSFORMER_TYPE_INFO,
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
+        name_and_cross_refs = [syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
                                syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
                                syntax_elements.PATH_SYNTAX_ELEMENT,
                                syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT]
         name_and_cross_refs += rel_path_doc.see_also_name_and_cross_refs(ACTUAL_RELATIVITY_CONFIGURATION.options)
         return cross_reference_id_list(name_and_cross_refs)
+
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 

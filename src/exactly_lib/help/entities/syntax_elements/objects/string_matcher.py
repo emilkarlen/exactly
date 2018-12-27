@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, \
-    invokation_variant_from_args, InvokationVariant
+    invokation_variant_from_args, InvokationVariant, cli_argument_syntax_element_description
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -46,6 +46,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
             'LINE_MATCHER': instruction_arguments.LINE_MATCHER.name,
             'HERE_DOCUMENT': formatting.syntax_element_(syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT),
             'INTEGER_COMPARISON': syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name,
+            'PRIMITIVE_MATCHER': self.matcher_element_name,
         })
 
     def main_description_rest_paragraphs(self) -> List[ParagraphItem]:
@@ -54,8 +55,12 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
     def invokation_variants(self) -> List[InvokationVariant]:
         matcher_arg = a.Single(a.Multiplicity.MANDATORY,
                                a.Named(self.matcher_element_name))
+
+        optional_transformation_option = a.Single(a.Multiplicity.OPTIONAL,
+                                                  instruction_arguments.STRING_TRANSFORMATION_ARGUMENT)
         return [
             invokation_variant_from_args([
+                optional_transformation_option,
                 negation_of_predicate.optional_negation_argument_usage(),
                 matcher_arg,
             ])
@@ -66,6 +71,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
                 [
                     self._matcher_sed(),
                     negation_of_predicate.matcher_syntax_element_description(),
+                    self._transformation_sed(),
                 ] +
                 self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
         )
@@ -124,13 +130,14 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
             ])
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
-        name_and_cross_ref_elements = rel_opts.see_also_name_and_cross_refs(
-            EXPECTED_FILE_REL_OPT_ARG_CONFIG.options)
-
-        name_and_cross_ref_elements += [
+        name_and_cross_ref_elements = [
+            syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
             syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT,
             syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
         ]
+
+        name_and_cross_ref_elements += rel_opts.see_also_name_and_cross_refs(
+            EXPECTED_FILE_REL_OPT_ARG_CONFIG.options)
 
         return (
                 cross_reference_id_list(name_and_cross_ref_elements)
@@ -138,11 +145,25 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
                 self.string_or_here_doc_or_file_arg.see_also_targets()
         )
 
+    def _transformation_sed(self) -> SyntaxElementDescription:
+        return cli_argument_syntax_element_description(
+            instruction_arguments.STRING_TRANSFORMATION_ARGUMENT,
+            self._parser.fnap(_TRANSFORMATION_DESCRIPTION),
+            [
+                invokation_variant_from_args([a.Single(a.Multiplicity.MANDATORY,
+                                                       instruction_arguments.TRANSFORMATION_OPTION)]),
+            ]
+        )
+
 
 _MAIN_DESCRIPTION_REST = """\
 Lines are separated by a single new-line character
 (or a sequence representing a single new-line, on platforms
 that use multiple characters as new-line).
+"""
+
+_TRANSFORMATION_DESCRIPTION = """\
+Applies {PRIMITIVE_MATCHER} to a transformed variant of the original string.
 """
 
 _DESCRIPTION_OF_EMPTY = """\

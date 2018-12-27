@@ -1,11 +1,13 @@
-from typing import Sequence
+from typing import Sequence, List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
-from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args
+from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args, InvokationVariant, \
+    SyntaxElementDescription
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo as embryo
@@ -59,7 +61,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
     def single_line_description(self) -> str:
         return 'Creates a file'
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         arguments = path_syntax.mandatory_path_with_optional_relativity(
             _DST_PATH_ARGUMENT,
             REL_OPT_ARG_CONF.path_suffix_is_required)
@@ -74,7 +76,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                          self._tp.paras('Creates a file with contents given by {CONTENTS}.')),
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         ret_val = [
             rel_path_doc.path_element(_DST_PATH_ARGUMENT.name,
                                       REL_OPT_ARG_CONF.options,
@@ -84,7 +86,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
 
         return ret_val
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [syntax_elements.PATH_SYNTAX_ELEMENT.cross_reference_target] + self._file_contents_doc.see_also_targets()
 
 
