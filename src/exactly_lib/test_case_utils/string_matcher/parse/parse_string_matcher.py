@@ -5,6 +5,8 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.test_case_utils.string_matcher import matcher_options
+from exactly_lib.test_case_utils.string_matcher import resolvers
+from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.messages import grammar_options_syntax
 
@@ -21,11 +23,16 @@ def string_matcher_parser() -> Parser[StringMatcherResolver]:
 
 
 def parse_string_matcher(parser: TokenParser) -> StringMatcherResolver:
+    model_transformer = parse_string_transformer.parse_optional_transformer_resolver_preceding_mandatory_element(
+        parser,
+        COMPARISON_OPERATOR,
+    )
     expectation_type = parser.consume_optional_negation_operator()
-    return StringMatcherParser(expectation_type).parse(parser)
+    matcher_except_transformation = _StringMatcherParser(expectation_type).parse(parser)
+    return resolvers.new_with_transformation(model_transformer, matcher_except_transformation)
 
 
-class StringMatcherParser:
+class _StringMatcherParser:
     def __init__(self, expectation_type: ExpectationType):
         self.expectation_type = expectation_type
         self.parsers = {
