@@ -1,5 +1,8 @@
+from typing import Callable
+
 from exactly_lib.instructions.assert_ import contents_of_file as sut
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
@@ -38,7 +41,7 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
         )
 
     def arrangement_for_contents_from_fun(self,
-                                          home_and_sds_2_str,
+                                          home_and_sds_2_str: Callable[[HomeAndSds], str],
                                           home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
                                           post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                           symbols: SymbolTable = None,
@@ -72,7 +75,9 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
 
 
 class _ActResultProducer(ActResultProducer):
-    def __init__(self, home_and_sds_2_str, file_name: str):
+    def __init__(self,
+                 home_and_sds_2_str: Callable[[HomeAndSds], str],
+                 file_name: str):
         self.home_and_sds_2_str = home_and_sds_2_str
         self.file_name = file_name
 
