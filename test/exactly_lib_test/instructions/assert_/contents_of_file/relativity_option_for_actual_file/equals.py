@@ -13,7 +13,7 @@ from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.test_
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    suite_for__conf__rel_opts__negations, MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+    suite_for__conf__rel_opts__negations
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -26,6 +26,8 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
+    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources import symbol_tables

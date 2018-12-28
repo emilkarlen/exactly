@@ -20,8 +20,6 @@ from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instru
     CommonArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources import expression, instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.contents_transformation import \
-    ToUppercaseStringTransformer
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionChecker
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -36,6 +34,8 @@ from exactly_lib_test.test_case.result.test_resources import pfh_assertions as a
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import \
     EmptyAssertionArgumentsConstructor, NumLinesAssertionArgumentsConstructor, EqualsStringAssertionArgumentsConstructor
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.contents_transformation import \
+    ToUppercaseStringTransformer
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, pfh_expectation_type_config
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File, Dir, empty_dir, sym_link

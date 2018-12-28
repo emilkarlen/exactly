@@ -3,7 +3,7 @@ import unittest
 import pathlib
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelSdsOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
@@ -14,21 +14,15 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_popul
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     sub_dir_of_sds_contains_exactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsPopulator, \
-    SdsPopulatorForSubDir, SdsSubDirResolverWithRelSdsRoot
+    SdsPopulatorForSubDir
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import SUB_DIR_RESOLVER
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     pfh_expectation_type_config
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
     RelativityOptionConfigurationForRelNonHome, \
     OptionStringConfigurationForRelativityOptionRelNonHome
 from exactly_lib_test.test_resources.files.file_structure import DirContents
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
-    MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-
-_SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'
-
-SUB_DIR_RESOLVER = SdsSubDirResolverWithRelSdsRoot(RelSdsOptionType.REL_ACT,
-                                                   _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD)
 
 
 class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurationBase):
@@ -97,6 +91,3 @@ class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfig
 
     def population_dir(self, tds: HomeAndSds) -> pathlib.Path:
         return SUB_DIR_RESOLVER.population_dir(tds.sds)
-
-
-MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY = MkSubDirAndMakeItCurrentDirectory(SUB_DIR_RESOLVER)
