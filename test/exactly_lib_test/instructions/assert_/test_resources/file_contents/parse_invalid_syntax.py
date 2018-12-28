@@ -3,7 +3,6 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.util.cli_syntax import option_syntax
-from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import args
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationAndNegationArgumentBase, \
     suite_for__conf__not_argument, InstructionTestConfiguration
@@ -12,6 +11,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.tra
 from exactly_lib_test.section_document.element_parsers.test_resources.exception_assertions import \
     assert_is_single_instruction_invalid_argument_exception
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 

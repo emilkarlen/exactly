@@ -24,7 +24,7 @@ from exactly_lib_test.test_case.result.test_resources import pfh_assertions as a
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    expectation_type_config
+    pfh_expectation_type_config
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
@@ -55,7 +55,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
         for rel_opt_config in [DEFAULT_REL_OPT_CONFIG,
                                ARBITRARY_ACCEPTED_REL_OPT_CONFIG]:
             for expectation_type in ExpectationType:
-                etc = expectation_type_config(expectation_type)
+                etc = pfh_expectation_type_config(expectation_type)
                 instruction_arguments_without_valid_file_matcher_arg = instruction_args_without_valid_file_matcher.apply(
                     etc, rel_opt_config)
                 with self.subTest(arguments=instruction_arguments_without_valid_file_matcher_arg,
@@ -72,7 +72,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
         for rel_opt_config in [DEFAULT_REL_OPT_CONFIG,
                                ARBITRARY_ACCEPTED_REL_OPT_CONFIG]:
             for expectation_type in ExpectationType:
-                etc = expectation_type_config(expectation_type)
+                etc = pfh_expectation_type_config(expectation_type)
                 valid_instruction_arguments = valid_instruction_arguments_con.apply(etc, rel_opt_config)
                 instruction_args_with_superfluous_arguments = '{valid_arguments} superfluous'.format(
                     valid_arguments=valid_instruction_arguments,
@@ -90,7 +90,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
         for rel_opt_config in [DEFAULT_REL_OPT_CONFIG,
                                ARBITRARY_ACCEPTED_REL_OPT_CONFIG]:
             for expectation_type in ExpectationType:
-                etc = expectation_type_config(expectation_type)
+                etc = pfh_expectation_type_config(expectation_type)
                 valid_instruction_arguments = valid_instruction_arguments_con.apply(etc, rel_opt_config)
                 instruction_args_with_invalid_initial_option = '{invalid_option} {valid_arguments}'.format(
                     invalid_option=long_option_syntax('illegalOption'),
@@ -108,7 +108,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
         parser = sut.parser.Parser()
         for rel_opt_config in UNACCEPTED_REL_OPT_CONFIGURATIONS:
             for expectation_type in ExpectationType:
-                etc = expectation_type_config(expectation_type)
+                etc = pfh_expectation_type_config(expectation_type)
                 first_line_arguments = valid_instruction_argument_syntax_con.apply(etc, rel_opt_config)
                 with self.subTest(arguments=first_line_arguments,
                                   expectation_type=str(expectation_type)):
@@ -171,7 +171,7 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
                                        file_matcher=name_of_file_matcher),
             self.assertion_variant_without_symbol_references)
 
-        arguments = arguments_constructor.apply(expectation_type_config(ExpectationType.NEGATIVE),
+        arguments = arguments_constructor.apply(pfh_expectation_type_config(ExpectationType.NEGATIVE),
                                                 DEFAULT_REL_OPT_CONFIG)
 
         source = remaining_source(arguments)
@@ -205,7 +205,7 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
                                                            path_sym_ref.name,
                                                            EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS)
 
-        arguments = arguments_constructor.apply(expectation_type_config(ExpectationType.POSITIVE),
+        arguments = arguments_constructor.apply(pfh_expectation_type_config(ExpectationType.POSITIVE),
                                                 rel_symbol_conf)
 
         source = remaining_source(arguments)

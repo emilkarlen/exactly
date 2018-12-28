@@ -1,10 +1,13 @@
+from abc import ABC, abstractmethod
 from enum import Enum
-from typing import List, Sequence
+from typing import List, Sequence, TypeVar, Generic, Optional
 
 from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.test_case.result import pfh
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.util.logic_types import ExpectationType, from_is_negated
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -34,7 +37,10 @@ class Case:
         self.main_result_assertion = main_result_assertion
 
 
-class ExpectationTypeConfig:
+RET_TYPE = TypeVar('RET_TYPE')
+
+
+class ExpectationTypeConfig(Generic[RET_TYPE], ABC):
     def __init__(self, expectation_type_of_test_case: ExpectationType):
         self._expectation_type_of_test_case = expectation_type_of_test_case
 
@@ -64,16 +70,17 @@ class ExpectationTypeConfig:
         return self._value('', NEGATION_ARGUMENT_STR)
 
     @property
-    def pass__if_positive__fail__if_negative(self) -> ValueAssertion[pfh.PassOrFailOrHardError]:
+    def pass__if_positive__fail__if_negative(self) -> ValueAssertion[RET_TYPE]:
         return self.main_result(PassOrFail.PASS)
 
     @property
-    def fail__if_positive__pass_if_negative(self) -> ValueAssertion[pfh.PassOrFailOrHardError]:
+    def fail__if_positive__pass_if_negative(self) -> ValueAssertion[RET_TYPE]:
         return self.main_result(PassOrFail.FAIL)
 
+    @abstractmethod
     def main_result(self, expected_result_of_positive_test: PassOrFail
-                    ) -> ValueAssertion[pfh.PassOrFailOrHardError]:
-        return _MAIN_RESULT_ASSERTION[self._expectation_type_of_test_case][expected_result_of_positive_test]
+                    ) -> ValueAssertion[RET_TYPE]:
+        pass
 
     def instruction_arguments(self, instruction_arguments_without_not_option: str) -> str:
         return prepend_not_operator_if_expectation_is_negative(instruction_arguments_without_not_option,
@@ -85,16 +92,29 @@ class ExpectationTypeConfig:
         return value_for_positive if self.expectation_type is ExpectationType.POSITIVE else value_for_negative
 
 
-def expectation_type_conf_from_is_negated(is_negated: bool) -> ExpectationTypeConfig:
+class ExpectationTypeConfigForPfh(ExpectationTypeConfig[pfh.PassOrFailOrHardError]):
+    def main_result(self, expected_result_of_positive_test: PassOrFail
+                    ) -> ValueAssertion[pfh.PassOrFailOrHardError]:
+        return _MAIN_RESULT_ASSERTION_FOR_PFH[self._expectation_type_of_test_case][expected_result_of_positive_test]
+
+
+class ExpectationTypeConfigForNoneIsSuccess(ExpectationTypeConfig[Optional[ErrorMessageResolver]]):
+    def main_result(self, expected_result_of_positive_test: PassOrFail
+                    ) -> ValueAssertion[Optional[ErrorMessageResolver]]:
+        return _MAIN_RESULT_ASSERTION_ERR_MSG_FOR_FAIL[self._expectation_type_of_test_case][
+            expected_result_of_positive_test]
+
+
+def pfh_expectation_type_conf_from_is_negated(is_negated: bool) -> ExpectationTypeConfigForPfh:
     expectation_type = from_is_negated(is_negated)
-    return ExpectationTypeConfig(expectation_type)
+    return ExpectationTypeConfigForPfh(expectation_type)
 
 
-def expectation_type_config(expectation_type_of_test_case: ExpectationType) -> ExpectationTypeConfig:
-    return ExpectationTypeConfig(expectation_type_of_test_case)
+def pfh_expectation_type_config(expectation_type_of_test_case: ExpectationType) -> ExpectationTypeConfigForPfh:
+    return ExpectationTypeConfigForPfh(expectation_type_of_test_case)
 
 
-_MAIN_RESULT_ASSERTION = {
+_MAIN_RESULT_ASSERTION_FOR_PFH = {
     ExpectationType.POSITIVE: {
         PassOrFail.PASS: asrt_pfh.is_pass(),
         PassOrFail.FAIL: asrt_pfh.is_fail(),
@@ -102,5 +122,18 @@ _MAIN_RESULT_ASSERTION = {
     ExpectationType.NEGATIVE: {
         PassOrFail.PASS: asrt_pfh.is_fail(),
         PassOrFail.FAIL: asrt_pfh.is_pass(),
+    },
+}
+
+_ASSERT_IS_FAILURE_FOR_ERR_MSG = asrt.is_not_none_and_instance_with(ErrorMessageResolver, asrt.anything_goes())
+
+_MAIN_RESULT_ASSERTION_ERR_MSG_FOR_FAIL = {
+    ExpectationType.POSITIVE: {
+        PassOrFail.PASS: asrt.is_none,
+        PassOrFail.FAIL: _ASSERT_IS_FAILURE_FOR_ERR_MSG,
+    },
+    ExpectationType.NEGATIVE: {
+        PassOrFail.PASS: asrt.is_none,
+        PassOrFail.FAIL: _ASSERT_IS_FAILURE_FOR_ERR_MSG,
     },
 }

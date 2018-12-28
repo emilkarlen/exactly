@@ -11,7 +11,7 @@ from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instru
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import equivalent_source_variants
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    expectation_type_config
+    pfh_expectation_type_config
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
@@ -52,7 +52,7 @@ class TestParseInvalidSyntax(tr.TestCaseBaseForParser):
             for rel_opt_config in [tr.DEFAULT_REL_OPT_CONFIG,
                                    tr.ARBITRARY_ACCEPTED_REL_OPT_CONFIG]:
                 for expectation_type in ExpectationType:
-                    etc = expectation_type_config(expectation_type)
+                    etc = pfh_expectation_type_config(expectation_type)
                     instruction_arguments = case.value.apply(etc, rel_opt_config)
                     with self.subTest(case_name=case.name,
                                       expectation_type=str(expectation_type)):

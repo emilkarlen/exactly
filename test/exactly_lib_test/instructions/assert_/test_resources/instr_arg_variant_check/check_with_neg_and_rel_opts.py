@@ -13,7 +13,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    ExpectationTypeConfig, expectation_type_config
+    ExpectationTypeConfigForPfh, pfh_expectation_type_config
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
@@ -30,7 +30,7 @@ class InstructionArgumentsVariantConstructor:
     """
 
     def apply(self,
-              etc: ExpectationTypeConfig,
+              etc: ExpectationTypeConfigForPfh,
               rel_opt_config: RelativityOptionConfiguration,
               ) -> str:
         raise NotImplementedError('abstract method')
@@ -46,7 +46,7 @@ class InstructionArgumentsVariantConstructorWithTemplateStringBase(InstructionAr
         self.instruction_argument_template = instruction_argument_template
 
     def apply(self,
-              etc: ExpectationTypeConfig,
+              etc: ExpectationTypeConfigForPfh,
               rel_opt_config: RelativityOptionConfiguration,
               ) -> str:
         raise NotImplementedError('abstract method')
@@ -70,7 +70,7 @@ class InstructionChecker:
     def _check_(
             self,
             instruction_source: ParseSource,
-            etc: ExpectationTypeConfig,
+            etc: ExpectationTypeConfigForPfh,
             main_result_for_positive_expectation: PassOrFail,
             rel_opt_config: RelativityOptionConfiguration,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
@@ -110,7 +110,7 @@ class InstructionChecker:
 
         for rel_opt_config in rel_opt_configs:
             for expectation_type_of_test_case in ExpectationType:
-                etc = expectation_type_config(expectation_type_of_test_case)
+                etc = pfh_expectation_type_config(expectation_type_of_test_case)
                 instruction_arguments = make_instruction_arguments.apply(etc, rel_opt_config)
 
                 for source in equivalent_source_variants__with_source_check(self.put, instruction_arguments):
@@ -130,7 +130,7 @@ class InstructionChecker:
             test_case_name: str = ''):
 
         for expectation_type_of_test_case in ExpectationType:
-            etc = expectation_type_config(expectation_type_of_test_case)
+            etc = pfh_expectation_type_config(expectation_type_of_test_case)
             instruction_arguments = make_instruction_arguments.apply(etc, rel_opt_config)
             self._check_(
                 remaining_source(instruction_arguments),
@@ -164,7 +164,7 @@ class InstructionChecker:
         for rel_opt_config in self.accepted_rel_opt_configurations:
 
             for expectation_type_of_test_case in ExpectationType:
-                etc = expectation_type_config(expectation_type_of_test_case)
+                etc = pfh_expectation_type_config(expectation_type_of_test_case)
                 instruction_arguments = make_instruction_arguments.apply(etc, rel_opt_config)
                 instruction_source = remaining_source(instruction_arguments)
 
@@ -194,7 +194,7 @@ class InstructionChecker:
             test_case_name: str = ''):
 
         for rel_opt_config in self.accepted_rel_opt_configurations:
-            etc = expectation_type_config(ExpectationType.POSITIVE)
+            etc = pfh_expectation_type_config(ExpectationType.POSITIVE)
             instruction_arguments = make_instruction_arguments.apply(etc, rel_opt_config)
             self._check_(
                 remaining_source(instruction_arguments),

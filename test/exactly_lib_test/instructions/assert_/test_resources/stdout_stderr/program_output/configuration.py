@@ -9,7 +9,7 @@ from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    ExpectationTypeConfig
+    ExpectationTypeConfigForPfh
 from exactly_lib_test.test_resources.arguments_building import Stringable
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
@@ -45,7 +45,7 @@ class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
 
     def _check_positive_and_negated(
             self,
-            expectation_of_positive: ExpectationTypeConfig,
+            expectation_of_positive: ExpectationTypeConfigForPfh,
             program: ArgumentElements,
             contents_matcher: List[Stringable],
             expectation_without_main_result_assertion: Expectation,

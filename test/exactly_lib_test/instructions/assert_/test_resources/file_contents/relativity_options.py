@@ -16,7 +16,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsPopulator, \
     SdsPopulatorForSubDir, SdsSubDirResolverWithRelSdsRoot
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    expectation_type_config
+    pfh_expectation_type_config
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
     RelativityOptionConfigurationForRelNonHome, \
     OptionStringConfigurationForRelativityOptionRelNonHome
@@ -38,7 +38,7 @@ class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurat
                  expectation_type: ExpectationType):
         super().__init__(instruction_configuration)
         self.rel_opt = option_configuration
-        self.not_opt = expectation_type_config(expectation_type)
+        self.not_opt = pfh_expectation_type_config(expectation_type)
 
     def shortDescription(self):
         return (str(type(self)) + ' /\n' +

@@ -15,7 +15,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators as home_or_sds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    expectation_type_config
+    pfh_expectation_type_config
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -77,7 +77,7 @@ class TestWithConfigurationAndNegationArgumentBase(TestWithConfigurationBase):
                  configuration: InstructionTestConfiguration,
                  expectation_type: ExpectationType):
         super().__init__(configuration)
-        self.maybe_not = expectation_type_config(expectation_type)
+        self.maybe_not = pfh_expectation_type_config(expectation_type)
 
     def shortDescription(self):
         return (str(type(self)) + ' /\n' +

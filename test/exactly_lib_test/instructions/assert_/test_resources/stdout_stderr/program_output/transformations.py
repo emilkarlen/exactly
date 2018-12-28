@@ -13,7 +13,7 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
     test_transformers_setup as transformers_setup
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    expectation_type_config
+    pfh_expectation_type_config
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -31,7 +31,7 @@ class TestWithoutTransformation(TestCaseBase):
         program_that_outputs_nothing = pgm_args.program(
             pgm_args.interpret_py_source_line(self.configuration.py_source_for_print(output))
         )
-        result_when_positive = expectation_type_config(ExpectationType.POSITIVE)
+        result_when_positive = pfh_expectation_type_config(ExpectationType.POSITIVE)
 
         self._check_positive_and_negated(
             result_when_positive,
@@ -48,7 +48,7 @@ class TestWithTransformationFromProgram(TestCaseBase):
                 self.configuration.py_source_for_print(output_from_program)),
             transformation=transformers_setup.DELETE_INITIAL_WORD_TRANSFORMER.name
         )
-        result_when_positive = expectation_type_config(ExpectationType.POSITIVE)
+        result_when_positive = pfh_expectation_type_config(ExpectationType.POSITIVE)
 
         self._check_positive_and_negated(
             result_when_positive,
@@ -74,7 +74,7 @@ class TestWithTransformationFromProgramAndInstruction(TestCaseBase):
                 self.configuration.py_source_for_print(output_from_program)),
             transformation=transformer_of_program.name
         )
-        result_when_positive = expectation_type_config(ExpectationType.POSITIVE)
+        result_when_positive = pfh_expectation_type_config(ExpectationType.POSITIVE)
 
         self._check_positive_and_negated(
             result_when_positive,
