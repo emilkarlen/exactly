@@ -2,13 +2,13 @@ import unittest
 
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.contents_transformation import \
-    ToUppercaseStringTransformer
 from exactly_lib_test.instructions.assert_.utils.file_contents.contents_checkers import \
     FilePropertyDescriptorConstructorTestImpl
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
     destination_file_path_getter_that_gives_seq_of_unique_paths
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.contents_transformation import \
+    ToUppercaseStringTransformer
 from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing
 
 

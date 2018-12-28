@@ -15,10 +15,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     suite_for__conf__rel_opts__negations, RelativityOptionConfigurationForRelCwdForTestCwdDir, \
-    TestWithConfigurationAndRelativityOptionAndNegationBase, MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.util import contents_transformation
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.arrangement_utils import \
-    populator_for_relativity_option_root_for_contents_from_fun
+    TestWithConfigurationAndRelativityOptionAndNegationBase
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -32,7 +29,12 @@ from exactly_lib_test.symbol.test_resources.string_transformer import is_referen
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import contents_transformation
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arrangement_utils import \
+    populator_for_relativity_option_root_for_contents_from_fun
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
+    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
