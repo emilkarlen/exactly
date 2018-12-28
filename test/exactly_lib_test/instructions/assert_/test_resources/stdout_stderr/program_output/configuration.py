@@ -4,12 +4,12 @@ from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhas
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import matcher_arguments
-from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
-    ExpectationTypeConfig
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output import arguments_building as args
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
+from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
+    ExpectationTypeConfig
 from exactly_lib_test.test_resources.arguments_building import Stringable
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \

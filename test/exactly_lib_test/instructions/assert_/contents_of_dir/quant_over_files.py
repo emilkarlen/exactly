@@ -1,6 +1,7 @@
+import unittest
+
 import pathlib
 import shlex
-import unittest
 
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
@@ -26,8 +27,6 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.con
     ToUppercaseStringTransformer
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionChecker
-from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
-    ExpectationTypeConfig, PassOrFail
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -37,6 +36,8 @@ from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
+from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
+    PassOrFail, expectation_type_config
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File, Dir, empty_dir, sym_link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -112,7 +113,7 @@ class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesChec
             FilesContentsAssertionVariant(
                 Quantifier.ALL,
                 file_contents_arg(NumLinesAssertionArgumentsConstructor(condition_str))))
-        return arguments_constructor.apply(ExpectationTypeConfig(ExpectationType.POSITIVE),
+        return arguments_constructor.apply(expectation_type_config(ExpectationType.POSITIVE),
                                            tr.DEFAULT_REL_OPT_CONFIG)
 
 
@@ -134,7 +135,7 @@ class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
                 Quantifier.ALL,
                 file_contents_arg(NumLinesAssertionArgumentsConstructor(condition_str))))
 
-        argument = arguments_constructor.apply(ExpectationTypeConfig(ExpectationType.NEGATIVE),
+        argument = arguments_constructor.apply(expectation_type_config(ExpectationType.NEGATIVE),
                                                tr.DEFAULT_REL_OPT_CONFIG)
 
         source = remaining_source(argument)
@@ -217,7 +218,7 @@ class TestHardErrorWhenAFileThatIsNotARegularFileIsTested(unittest.TestCase):
                         quantifier,
                         file_contents_arg(file_contents_assertion)))
                 for expectation_type in ExpectationType:
-                    arguments = arguments_constructor.apply(ExpectationTypeConfig(expectation_type),
+                    arguments = arguments_constructor.apply(expectation_type_config(expectation_type),
                                                             relativity_root_conf)
                     for non_regular_file in non_regular_files:
                         with self.subTest(
@@ -414,7 +415,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                     Quantifier.ALL,
                     file_contents_arg(file_is_empty_assertion)))
             for expectation_type in ExpectationType:
-                etc = ExpectationTypeConfig(expectation_type)
+                etc = expectation_type_config(expectation_type)
                 arguments = arguments_constructor.apply(etc,
                                                         relativity_root_conf)
                 with self.subTest(
@@ -481,7 +482,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                     Quantifier.EXISTS,
                     file_contents_arg(file_is_empty_assertion)))
             for expectation_type in ExpectationType:
-                etc = ExpectationTypeConfig(expectation_type)
+                etc = expectation_type_config(expectation_type)
                 arguments = arguments_constructor.apply(etc,
                                                         relativity_root_conf)
                 with self.subTest(
@@ -548,7 +549,7 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
                     EqualsStringAssertionArgumentsConstructor(expected_transformer_contents)),
             ))
         relativity_root_conf = tr.DEFAULT_REL_OPT_CONFIG
-        etc = ExpectationTypeConfig(ExpectationType.POSITIVE)
+        etc = expectation_type_config(ExpectationType.POSITIVE)
         arguments = for_all__equals__arguments.apply(
             etc,
             relativity_root_conf,

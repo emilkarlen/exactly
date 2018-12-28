@@ -2,8 +2,6 @@ import unittest
 
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import matcher_arguments
-from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
-    ExpectationTypeConfig
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output import \
     configuration
@@ -14,6 +12,8 @@ from exactly_lib_test.symbol.test_resources.string_transformer import is_referen
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import \
     test_transformers_setup as transformers_setup
+from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
+    expectation_type_config
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -30,7 +30,7 @@ class TestOutputIsEmpty(TestCaseBase):
         program_that_outputs_nothing = pgm_args.program(
             pgm_args.interpret_py_source_line(self.configuration.py_source_for_print(''))
         )
-        result_when_positive = ExpectationTypeConfig(ExpectationType.POSITIVE)
+        result_when_positive = expectation_type_config(ExpectationType.POSITIVE)
 
         self._check_positive_and_negated(
             result_when_positive,
@@ -46,7 +46,7 @@ class TestOutputIsEmptyAfterTransformation(TestCaseBase):
                 self.configuration.py_source_for_print('some output')),
             transformation=transformers_setup.DELETE_EVERYTHING_TRANSFORMER.name
         )
-        result_when_positive = ExpectationTypeConfig(ExpectationType.POSITIVE)
+        result_when_positive = expectation_type_config(ExpectationType.POSITIVE)
 
         self._check_positive_and_negated(
             result_when_positive,
@@ -68,7 +68,7 @@ class TestOutputIsNotEmpty(TestCaseBase):
                 self.configuration.py_source_for_print('some output'))
         )
 
-        result_when_positive = ExpectationTypeConfig(ExpectationType.NEGATIVE)
+        result_when_positive = expectation_type_config(ExpectationType.NEGATIVE)
 
         self._check_positive_and_negated(
             result_when_positive,

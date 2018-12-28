@@ -90,6 +90,10 @@ def expectation_type_conf_from_is_negated(is_negated: bool) -> ExpectationTypeCo
     return ExpectationTypeConfig(expectation_type)
 
 
+def expectation_type_config(expectation_type_of_test_case: ExpectationType) -> ExpectationTypeConfig:
+    return ExpectationTypeConfig(expectation_type_of_test_case)
+
+
 _MAIN_RESULT_ASSERTION = {
     ExpectationType.POSITIVE: {
         PassOrFail.PASS: asrt_pfh.is_pass(),
