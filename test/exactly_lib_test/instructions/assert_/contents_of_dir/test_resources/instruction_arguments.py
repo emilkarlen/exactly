@@ -6,10 +6,10 @@ from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import arguments_building
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionArgumentsVariantConstructor
-from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
-    ExpectationTypeConfig
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import file_matcher_arguments, \
     selection_arguments_for_matcher
+from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
+    ExpectationTypeConfig, expectation_type_config
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 
 
@@ -101,7 +101,7 @@ class FilesContentsAssertionVariant(AssertionVariantArgumentsConstructor):
                  contents_argument_expectation_type: ExpectationType = ExpectationType.POSITIVE):
         self._quantifier = quantifier
         self._file_contents_assertion = file_contents_assertion
-        self._contents_argument_expectation_type = ExpectationTypeConfig(contents_argument_expectation_type)
+        self._contents_argument_expectation_type = expectation_type_config(contents_argument_expectation_type)
 
     def __str__(self):
         return '{quantifier} {file} {separator} {contents_assertion}'.format(
@@ -126,7 +126,7 @@ def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfigura
                                               file_name: str) -> str:
     complete_args = arguments_constructor_for_variant(file_name,
                                                       EmptyAssertionVariant())
-    return complete_args.apply(ExpectationTypeConfig(ExpectationType.POSITIVE),
+    return complete_args.apply(expectation_type_config(ExpectationType.POSITIVE),
                                rel_opt)
 
 

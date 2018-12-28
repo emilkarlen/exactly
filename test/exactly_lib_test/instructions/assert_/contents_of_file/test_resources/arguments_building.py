@@ -4,9 +4,9 @@ from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier
-from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
-    ExpectationTypeConfig
 from exactly_lib_test.section_document.test_resources.parse_source import ParseSourceBuilder
+from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
+    ExpectationTypeConfig
 
 
 class FileContentsArgumentsConstructor:

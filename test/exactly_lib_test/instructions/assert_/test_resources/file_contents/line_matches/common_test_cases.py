@@ -8,12 +8,12 @@ from exactly_lib_test.instructions.assert_.contents_of_file.test_resources impor
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.line_matches import utils
-from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
-    ExpectationTypeConfig
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
+from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
+    expectation_type_config
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -87,7 +87,7 @@ class _TestSymbolReferenceForStringTransformerIsReported(_TestCaseBase):
         ])
 
         for expectation_type in ExpectationType:
-            etc = ExpectationTypeConfig(expectation_type)
+            etc = expectation_type_config(expectation_type)
             for quantifier in Quantifier:
                 with self.subTest(expectation_type=expectation_type,
                                   quantifier=quantifier.name):
@@ -118,7 +118,7 @@ class _TestSymbolReferenceForLineMatcherIsReported(_TestCaseBase):
         ])
 
         for expectation_type in ExpectationType:
-            etc = ExpectationTypeConfig(expectation_type)
+            etc = expectation_type_config(expectation_type)
             for quantifier in Quantifier:
                 with self.subTest(expectation_type=expectation_type,
                                   quantifier=quantifier.name):

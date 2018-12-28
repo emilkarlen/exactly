@@ -17,11 +17,11 @@ from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instru
     CommonArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources import expression
 from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
-from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
-    PassOrFail, ExpectationTypeConfig
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
+    PassOrFail, expectation_type_config
 from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, empty_file
 
 
@@ -91,7 +91,7 @@ class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
             CommonArgumentsConstructor('ignored-dir-path'),
             NumFilesAssertionVariant(condition_str))
 
-        argument = arguments_constructor.apply(ExpectationTypeConfig(ExpectationType.NEGATIVE),
+        argument = arguments_constructor.apply(expectation_type_config(ExpectationType.NEGATIVE),
                                                tr.DEFAULT_REL_OPT_CONFIG)
 
         source = remaining_source(argument)

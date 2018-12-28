@@ -10,11 +10,11 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
-from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
-    PassOrFail, ExpectationTypeConfig
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__multi_line
+from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
+    PassOrFail, expectation_type_config
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -43,7 +43,7 @@ class InstructionArgumentsVariantConstructor:
 
         return '{transformation} {maybe_not} {num_lines} {operator} {operand}{superfluous_args_str}'.format(
             transformation=transformation,
-            maybe_not=ExpectationTypeConfig(expectation_type).nothing__if_positive__not_option__if_negative,
+            maybe_not=expectation_type_config(expectation_type).nothing__if_positive__not_option__if_negative,
             num_lines=matcher_options.NUM_LINES_ARGUMENT,
             operator=self.operator,
             operand=self.operand,
@@ -86,7 +86,7 @@ class TestCaseBase(unittest.TestCase):
             symbols: SymbolTable = None,
             expected_symbol_usages: ValueAssertion = asrt.is_empty_sequence):
         for expectation_type in ExpectationType:
-            etc = ExpectationTypeConfig(expectation_type)
+            etc = expectation_type_config(expectation_type)
             with self.subTest(expectation_type=expectation_type):
 
                 args_variant = args_variant_constructor.construct(expectation_type)

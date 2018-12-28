@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
     CompleteArgumentsConstructor, EmptyAssertionVariant, arguments_with_selection_options, \
     AssertionVariantArgumentsConstructor
-from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
+from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir, Dir
 

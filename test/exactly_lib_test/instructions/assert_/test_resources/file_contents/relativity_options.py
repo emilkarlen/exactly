@@ -1,5 +1,6 @@
-import pathlib
 import unittest
+
+import pathlib
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelSdsOptionType
@@ -7,8 +8,6 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationBase, InstructionTestConfiguration
-from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
-    ExpectationTypeConfig
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator
@@ -16,6 +15,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
     sub_dir_of_sds_contains_exactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsPopulator, \
     SdsPopulatorForSubDir, SdsSubDirResolverWithRelSdsRoot
+from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
+    expectation_type_config
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
     RelativityOptionConfigurationForRelNonHome, \
     OptionStringConfigurationForRelativityOptionRelNonHome
@@ -37,7 +38,7 @@ class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurat
                  expectation_type: ExpectationType):
         super().__init__(instruction_configuration)
         self.rel_opt = option_configuration
-        self.not_opt = ExpectationTypeConfig(expectation_type)
+        self.not_opt = expectation_type_config(expectation_type)
 
     def shortDescription(self):
         return (str(type(self)) + ' /\n' +
