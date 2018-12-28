@@ -133,7 +133,7 @@ _MAIN_RESULT_ASSERTION_ERR_MSG_FOR_FAIL = {
         PassOrFail.FAIL: _ASSERT_IS_FAILURE_FOR_ERR_MSG,
     },
     ExpectationType.NEGATIVE: {
-        PassOrFail.PASS: asrt.is_none,
-        PassOrFail.FAIL: _ASSERT_IS_FAILURE_FOR_ERR_MSG,
+        PassOrFail.PASS: _ASSERT_IS_FAILURE_FOR_ERR_MSG,
+        PassOrFail.FAIL: asrt.is_none,
     },
 }
