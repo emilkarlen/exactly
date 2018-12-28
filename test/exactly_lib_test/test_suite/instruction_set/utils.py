@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_suite.instruction_set import utils as sut
-from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check, equivalent_source_variants
 
 

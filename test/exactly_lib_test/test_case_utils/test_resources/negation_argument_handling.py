@@ -16,14 +16,24 @@ class PassOrFail(Enum):
     FAIL = 1
 
 
+def choice(expectation_type: ExpectationType,
+           value_for_positive,
+           value_for_negative):
+    return value_for_positive if expectation_type is ExpectationType.POSITIVE else value_for_negative
+
+
 def with_negation_argument(instruction_arguments: str) -> str:
     return NEGATION_ARGUMENT_STR + ' ' + instruction_arguments
+
+
+def nothing__if_positive__not_option__if_negative(expectation_type: ExpectationType) -> str:
+    return choice(expectation_type, '', NEGATION_ARGUMENT_STR)
 
 
 def prepend_not_operator_if_expectation_is_negative(instruction_arguments_without_not_option: str,
                                                     expectation_type: ExpectationType) -> str:
     if expectation_type is ExpectationType.NEGATIVE:
-        return NEGATION_ARGUMENT_STR + ' ' + instruction_arguments_without_not_option
+        return with_negation_argument(instruction_arguments_without_not_option)
     return instruction_arguments_without_not_option
 
 

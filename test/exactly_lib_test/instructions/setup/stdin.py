@@ -1,4 +1,5 @@
 import unittest
+
 from typing import List
 
 from exactly_lib.definitions import file_ref as file_ref_syntax
@@ -25,8 +26,6 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation, SettingsBuilderAssertionModel
-from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import argument_list_source, source4
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
@@ -35,6 +34,8 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, here_
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
+from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue

@@ -3,8 +3,9 @@ import unittest
 from exactly_lib.instructions.assert_ import contents_of_file as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import equivalent_source_variants
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
 
 

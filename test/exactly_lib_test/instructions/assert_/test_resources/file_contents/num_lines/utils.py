@@ -1,54 +1,21 @@
 import unittest
 
-from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
-from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__multi_line
+from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
+    InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, pfh_expectation_type_config
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-
-
-class InstructionArgumentsVariantConstructor:
-    """"Constructs instruction arguments for a variant of (TRANSFORMER, [!]  OPERATOR OPERAND)."""
-
-    def __init__(self,
-                 operator: str,
-                 operand: str,
-                 superfluous_args_str: str = '',
-                 transformer: str = ''):
-        self.transformer = transformer
-        self.operator = operator
-        self.operand = operand
-        self.superfluous_args_str = superfluous_args_str
-
-    def construct(self, expectation_type: ExpectationType) -> str:
-        transformation = ''
-        if self.transformer:
-            transformation = option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME) + ' ' + self.transformer
-
-        superfluous_args_str = self.superfluous_args_str
-        if superfluous_args_str:
-            superfluous_args_str = ' ' + superfluous_args_str
-
-        return '{transformation} {maybe_not} {num_lines} {operator} {operand}{superfluous_args_str}'.format(
-            transformation=transformation,
-            maybe_not=pfh_expectation_type_config(expectation_type).nothing__if_positive__not_option__if_negative,
-            num_lines=matcher_options.NUM_LINES_ARGUMENT,
-            operator=self.operator,
-            operand=self.operand,
-            superfluous_args_str=superfluous_args_str,
-        )
 
 
 class TestCaseBase(unittest.TestCase):

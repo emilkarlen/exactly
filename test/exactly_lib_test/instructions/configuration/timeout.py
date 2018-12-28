@@ -7,12 +7,12 @@ from exactly_lib_test.common.help.test_resources.check_documentation import suit
 from exactly_lib_test.instructions.configuration.test_resources import configuration_builder_assertions as asrt_conf
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation
-from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants, \
-    equivalent_source_variants__with_source_check
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import \
     act_phase_handling_that_runs_constant_actions
+from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants, \
+    equivalent_source_variants__with_source_check
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
