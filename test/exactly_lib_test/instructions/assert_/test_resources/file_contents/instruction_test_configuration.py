@@ -1,8 +1,10 @@
 import unittest
-from typing import List
+
+from typing import List, Callable
 
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
@@ -43,7 +45,7 @@ class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfigurati
         return self.arguments_for(argument_tail).followed_by_lines(following_lines).as_remaining_source
 
     def arrangement_for_contents_from_fun(self,
-                                          home_and_sds_2_str,
+                                          home_and_sds_2_str: Callable[[HomeAndSds], str],
                                           home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
                                           post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                           symbols: SymbolTable = None,
