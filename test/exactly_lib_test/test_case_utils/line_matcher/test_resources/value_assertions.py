@@ -26,9 +26,9 @@ class _EqualsAssertion(ValueAssertionBase):
                put: unittest.TestCase,
                actual,
                message_builder: asrt.MessageBuilder):
-        assert_is_file_selector_type = asrt.is_instance(LineMatcher, self.description)
-        assert_is_file_selector_type.apply_with_message(put, actual,
-                                                        'Value must be a ' + type(LineMatcher).__name__)
+        assert_is_line_matcher_type = asrt.is_instance(LineMatcher, self.description)
+        assert_is_line_matcher_type.apply_with_message(put, actual,
+                                                       'Value must be a ' + type(LineMatcher).__name__)
         assert isinstance(actual, LineMatcher)  # Type info for IDE
         checker = _EqualityChecker(put,
                                    message_builder,
