@@ -6,11 +6,11 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.line_matches import utils
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
+from exactly_lib_test.test_case_utils.string_matcher.parse.line_matches import test_resources as tr
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     pfh_expectation_type_config
@@ -40,7 +40,7 @@ class _TestCaseBase(unittest.TestCase):
 
     def _check_variants_with_expectation_type_and_any_or_every(
             self,
-            args_variant_constructor: utils.InstructionArgumentsConstructorForExpTypeAndQuantifier):
+            args_variant_constructor: tr.InstructionArgumentsConstructorForExpTypeAndQuantifier):
         for expectation_type in ExpectationType:
             for quantifier in Quantifier:
                 with self.subTest(expectation_type=expectation_type,
@@ -56,20 +56,20 @@ class _TestCaseBase(unittest.TestCase):
 class _ParseWithMissingLineMatcherArgument(_TestCaseBase):
     def runTest(self):
         self._check_variants_with_expectation_type_and_any_or_every(
-            utils.args_constructor_for(line_matcher=''))
+            tr.args_constructor_for(line_matcher=''))
 
 
 class _ParseWithSuperfluousArgument(_TestCaseBase):
     def runTest(self):
         self._check_variants_with_expectation_type_and_any_or_every(
-            utils.ArgumentsConstructorForPossiblyInvalidSyntax(line_matcher=syntax_for_regex_matcher('regex'),
-                                                               superfluous_args_str='superfluous'))
+            tr.ArgumentsConstructorForPossiblyInvalidSyntax(line_matcher=syntax_for_regex_matcher('regex'),
+                                                            superfluous_args_str='superfluous'))
 
 
 class _ParseWithInvalidLineMatcher(_TestCaseBase):
     def runTest(self):
         self._check_variants_with_expectation_type_and_any_or_every(
-            utils.args_constructor_for(line_matcher=syntax_for_regex_matcher('**')))
+            tr.args_constructor_for(line_matcher=syntax_for_regex_matcher('**')))
 
 
 class _TestSymbolReferenceForStringTransformerIsReported(_TestCaseBase):

@@ -7,10 +7,11 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.line_matches.utils import \
-    TestCaseBase, args_constructor_for
+    TestCaseBase
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
+from exactly_lib_test.test_case_utils.string_matcher.parse.line_matches.test_resources import args_constructor_for
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import contents_transformation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail

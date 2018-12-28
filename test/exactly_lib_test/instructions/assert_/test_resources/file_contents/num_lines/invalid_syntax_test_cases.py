@@ -6,10 +6,10 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.num_lines.utils import \
-    InstructionArgumentsVariantConstructor
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
+from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
+    InstructionArgumentsVariantConstructor
 
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:

@@ -6,9 +6,9 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_suite.instruction_set.sections import suites as sut
-from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check, equivalent_source_variants
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check, equivalent_source_variants
 from exactly_lib_test.test_resources.files.file_structure import empty_file, empty_dir, DirContents, empty_dir_contents, \
     Dir
 from exactly_lib_test.test_suite.instruction_set.sections.test_resources.file_resolving_test_base import \
