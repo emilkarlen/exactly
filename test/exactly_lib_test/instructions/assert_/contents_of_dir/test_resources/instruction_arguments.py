@@ -3,13 +3,13 @@ from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
-from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import arguments_building
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import file_matcher_arguments, \
     selection_arguments_for_matcher
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    ExpectationTypeConfig, expectation_type_config
+    ExpectationTypeConfigForPfh, pfh_expectation_type_config
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 
 
@@ -42,7 +42,7 @@ class CommonArgumentsConstructor(InstructionArgumentsVariantConstructor):
         self._file_matcher = file_matcher
 
     def apply(self,
-              etc: ExpectationTypeConfig,
+              etc: ExpectationTypeConfigForPfh,
               rel_opt_config: RelativityOptionConfiguration) -> str:
         return '{relativity} {path} {selection} {negation}'.format(
             relativity=rel_opt_config.option_argument,
@@ -71,7 +71,7 @@ class CompleteArgumentsConstructor(InstructionArgumentsVariantConstructor):
         self._assertion_variant = assertion_variant
 
     def apply(self,
-              etc: ExpectationTypeConfig,
+              etc: ExpectationTypeConfigForPfh,
               rel_opt_config: RelativityOptionConfiguration) -> str:
         return '{common} {assertion_variant}'.format(
             common=self._common_arguments.apply(etc, rel_opt_config),
@@ -101,7 +101,7 @@ class FilesContentsAssertionVariant(AssertionVariantArgumentsConstructor):
                  contents_argument_expectation_type: ExpectationType = ExpectationType.POSITIVE):
         self._quantifier = quantifier
         self._file_contents_assertion = file_contents_assertion
-        self._contents_argument_expectation_type = expectation_type_config(contents_argument_expectation_type)
+        self._contents_argument_expectation_type = pfh_expectation_type_config(contents_argument_expectation_type)
 
     def __str__(self):
         return '{quantifier} {file} {separator} {contents_assertion}'.format(
@@ -111,7 +111,7 @@ class FilesContentsAssertionVariant(AssertionVariantArgumentsConstructor):
             contents_assertion=self._file_contents_assertion.apply(self._contents_argument_expectation_type))
 
 
-def replace_not_op(etc: ExpectationTypeConfig, s: str) -> str:
+def replace_not_op(etc: ExpectationTypeConfigForPfh, s: str) -> str:
     return s.replace('<not_opt>', etc.nothing__if_positive__not_option__if_negative)
 
 
@@ -126,7 +126,7 @@ def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfigura
                                               file_name: str) -> str:
     complete_args = arguments_constructor_for_variant(file_name,
                                                       EmptyAssertionVariant())
-    return complete_args.apply(expectation_type_config(ExpectationType.POSITIVE),
+    return complete_args.apply(pfh_expectation_type_config(ExpectationType.POSITIVE),
                                rel_opt)
 
 

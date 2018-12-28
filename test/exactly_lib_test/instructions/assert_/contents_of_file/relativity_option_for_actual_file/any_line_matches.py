@@ -3,8 +3,6 @@ import unittest
 from exactly_lib.util.logic_types import Quantifier
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
-from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import \
-    LineMatchesAssertionArgumentsConstructor
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.test_base_classes import \
     TestWithConfigurationAndRelativityOptionAndNegationForConstArgsBase
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
@@ -16,6 +14,8 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.exp
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import \
+    LineMatchesAssertionArgumentsConstructor
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File
 
 

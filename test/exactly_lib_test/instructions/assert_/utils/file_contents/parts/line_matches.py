@@ -20,7 +20,7 @@ from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources im
     destination_file_path_getter_that_gives_seq_of_unique_paths
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    PassOrFail, expectation_type_config
+    PassOrFail, pfh_expectation_type_config
 from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing
 from exactly_lib_test.type_system.logic.test_resources.values import is_identical_to, LineMatcherFromPredicates
 
@@ -72,7 +72,7 @@ class TestCaseBase(unittest.TestCase):
                             # ACT #
                             actual = assertion_part.check_and_return_pfh(environment, os_services, 'custom env', ftc)
                             # ASSERT #
-                            pfh_assertion = expectation_type_config(
+                            pfh_assertion = pfh_expectation_type_config(
                                 expectation_type).main_result(case.expected_result_for_positive_expectation)
                             pfh_assertion.apply_without_message(self, actual)
 
@@ -107,7 +107,7 @@ class TestCaseBase(unittest.TestCase):
                             # ACT #
                             actual = assertion_part.check_and_return_pfh(environment, os_services, 'custom env', ftc)
                             # ASSERT #
-                            pfh_assertion = expectation_type_config(
+                            pfh_assertion = pfh_expectation_type_config(
                                 expectation_type).main_result(expected_result_when_positive_expectation)
                             pfh_assertion.apply_without_message(self, actual)
 

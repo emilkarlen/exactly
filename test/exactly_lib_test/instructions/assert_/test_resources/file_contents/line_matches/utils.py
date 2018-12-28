@@ -2,7 +2,6 @@ import unittest
 
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import arguments_building
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
@@ -11,8 +10,9 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__multi_line
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    PassOrFail, expectation_type_config
+    PassOrFail, pfh_expectation_type_config
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -45,7 +45,7 @@ class ArgumentsConstructorForPossiblyInvalidSyntax(InstructionArgumentsConstruct
             self._common_arguments,
             arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier, self.line_matcher),
         )
-        etc = expectation_type_config(expectation_type)
+        etc = pfh_expectation_type_config(expectation_type)
 
         superfluous_args_str = self.superfluous_args_str
         if superfluous_args_str:
@@ -69,7 +69,7 @@ class InstructionArgumentsConstructorForValidSyntax(InstructionArgumentsConstruc
             self._common_arguments,
             arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier, self.line_matcher),
         )
-        etc = expectation_type_config(expectation_type)
+        etc = pfh_expectation_type_config(expectation_type)
         return arguments_constructor.apply(etc)
 
 
@@ -97,7 +97,7 @@ class TestCaseBase(unittest.TestCase):
             symbols: SymbolTable = None,
             expected_symbol_usages: ValueAssertion = asrt.is_empty_sequence):
         for expectation_type in ExpectationType:
-            etc = expectation_type_config(expectation_type)
+            etc = pfh_expectation_type_config(expectation_type)
             with self.subTest(expectation_type=expectation_type,
                               quantifier=quantifier.name):
 

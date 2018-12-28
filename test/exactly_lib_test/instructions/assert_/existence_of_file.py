@@ -17,7 +17,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    with_negation_argument, PassOrFail, ExpectationTypeConfig
+    with_negation_argument, PassOrFail, ExpectationTypeConfigForPfh
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, Link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -87,7 +87,7 @@ class TheInstructionArgumentsVariantConstructor(InstructionArgumentsVariantConst
     """
 
     def apply(self,
-              etc: ExpectationTypeConfig,
+              etc: ExpectationTypeConfigForPfh,
               rel_opt_config: RelativityOptionConfiguration,
               ) -> str:
         ret_val = self.instruction_argument_template.replace('<rel_opt>', str(rel_opt_config.option_argument))
