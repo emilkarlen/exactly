@@ -7,7 +7,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
@@ -20,6 +19,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc i
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -50,7 +50,7 @@ class ParseShouldFailWhenThereAreSuperfluousArguments(TestWithConfigurationAndNe
                          maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
                 )
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+                    parser.parse(source)
 
 
 class ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(
@@ -66,7 +66,7 @@ class ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(
                     ['single line',
                      'MARKER'])
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+                    parser.parse(source)
 
 
 class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
@@ -78,8 +78,8 @@ class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
                         args('{maybe_with_transformer_option} {maybe_not} {empty}',
                              maybe_with_transformer_option=maybe_with_transformer_option,
                              maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
+                    model_construction.empty_model(),
                     self.configuration.arrangement_for_contents(
-                        '',
                         post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
                     Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative),
                 )
@@ -94,8 +94,8 @@ class ActualFileIsNonEmpty(TestWithConfigurationAndNegationArgumentBase):
                         args('{maybe_with_transformer_option} {maybe_not} {empty}',
                              maybe_with_transformer_option=maybe_with_transformer_option,
                              maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
+                    model_construction.model_of('contents that makes the file non-empty'),
                     self.configuration.arrangement_for_contents(
-                        'contents that makes the file non-empty',
                         post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
                     Expectation(main_result=self.maybe_not.fail__if_positive__pass_if_negative),
                 )
@@ -123,8 +123,8 @@ class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgum
                 args('{transform_option} {the_transformer} {maybe_not} {empty}',
                      the_transformer=named_transformer.name,
                      maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
+            model_construction.model_of(original_file_contents),
             self.configuration.arrangement_for_contents(
-                original_file_contents,
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=symbols),
             Expectation(

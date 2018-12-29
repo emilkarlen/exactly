@@ -124,6 +124,11 @@ def pfh_expectation_type_config(expectation_type_of_test_case: ExpectationType) 
     return ExpectationTypeConfigForPfh(expectation_type_of_test_case)
 
 
+def expectation_type_config__non_is_success(
+        expectation_type_of_test_case: ExpectationType) -> ExpectationTypeConfigForNoneIsSuccess:
+    return ExpectationTypeConfigForNoneIsSuccess(expectation_type_of_test_case)
+
+
 _MAIN_RESULT_ASSERTION_FOR_PFH = {
     ExpectationType.POSITIVE: {
         PassOrFail.PASS: asrt_pfh.is_pass(),
