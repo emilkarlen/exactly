@@ -1,4 +1,5 @@
 import unittest
+
 from typing import List, Callable, Dict
 
 from exactly_lib.instructions.multi_phase import new_file as sut
@@ -22,7 +23,6 @@ from exactly_lib_test.instructions.multi_phase.new_file.test_resources.common_te
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils import \
     IS_FAILURE, IS_SUCCESS, AN_ALLOWED_DST_FILE_RELATIVITY
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import \
     TransformableContentsConstructor, output_from_program
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
@@ -36,6 +36,7 @@ from exactly_lib_test.symbol.test_resources.string_transformer import StringTran
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptFileRefArgument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly, dir_contains_exactly

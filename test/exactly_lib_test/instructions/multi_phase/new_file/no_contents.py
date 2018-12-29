@@ -11,13 +11,13 @@ from exactly_lib_test.instructions.multi_phase.new_file.test_resources.common_te
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils import \
     DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES, IS_SUCCESS, just_parse
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import \
     empty_file_contents_arguments
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.format_rel_option import format_rel_options
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly

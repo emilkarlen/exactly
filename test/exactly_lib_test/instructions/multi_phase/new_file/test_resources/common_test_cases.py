@@ -1,4 +1,5 @@
 import unittest
+
 from typing import Sequence
 
 from exactly_lib.instructions.multi_phase import new_file as sut
@@ -9,8 +10,8 @@ from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils imp
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements

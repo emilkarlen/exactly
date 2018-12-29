@@ -9,8 +9,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import check, Expectation
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators, home_and_sds_populators, \
     sds_populator
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \

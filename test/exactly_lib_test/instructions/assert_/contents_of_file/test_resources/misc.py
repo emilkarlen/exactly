@@ -8,7 +8,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
-from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment, ActResultProducer
+from exactly_lib_test.test_case.test_resources.arrangements import ActEnvironment, ActResultProducer
 from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators as home_or_sds, \
     sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \

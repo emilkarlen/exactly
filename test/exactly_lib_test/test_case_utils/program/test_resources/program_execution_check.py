@@ -1,5 +1,6 @@
-import pathlib
 import unittest
+
+import pathlib
 from typing import Optional
 
 from exactly_lib.execution import phase_step
@@ -17,7 +18,7 @@ from exactly_lib.util.process_execution.executable_factory import ExecutableFact
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators, \
     home_and_sds_populators, sds_populator
 from exactly_lib_test.test_resources.files import tmp_dir

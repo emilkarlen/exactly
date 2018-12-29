@@ -16,7 +16,7 @@ from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.configur
     TestConfigurationForStdFile
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.utils import \
     ActResultProducerFromHomeAndSds2Str
-from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment
+from exactly_lib_test.test_case.test_resources.arrangements import ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators as home_or_sds
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
