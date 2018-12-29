@@ -1,6 +1,7 @@
-import os
 import unittest
-from typing import TypeVar, Sequence, Callable, Any, Generic, Type, Sized, List, Dict
+
+import os
+from typing import TypeVar, Sequence, Callable, Any, Generic, Type, Sized, List, Dict, Set
 
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
@@ -401,8 +402,13 @@ def is_list_of(element_assertion: ValueAssertion[T]) -> ValueAssertion[List[T]]:
                             every_element('', element_assertion, component_separator=''))
 
 
-def is_sequence_of(element_assertion: ValueAssertion[T]) -> ValueAssertion[List[T]]:
+def is_sequence_of(element_assertion: ValueAssertion[T]) -> ValueAssertion[Sequence[T]]:
     return is_instance_with(Sequence,
+                            every_element('', element_assertion, component_separator=''))
+
+
+def is_set_of(element_assertion: ValueAssertion[T]) -> ValueAssertion[Set[T]]:
+    return is_instance_with(Set,
                             every_element('', element_assertion, component_separator=''))
 
 
