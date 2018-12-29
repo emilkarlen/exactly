@@ -8,12 +8,12 @@ from exactly_lib.test_case_utils.string_transformer.resolvers import StringTrans
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.string import lines_content, line_separated
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.num_lines.utils import \
-    TestCaseBase
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     InstructionArgumentsVariantConstructor
+from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
+    TestCaseBase
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
     TestConfigurationForMatcher
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
