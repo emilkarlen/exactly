@@ -7,8 +7,8 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     configuration_phase_instruction_that
 from exactly_lib_test.instructions.configuration.test_resources import instruction_check
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import Arrangement, Expectation
-from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
-from exactly_lib_test.instructions.test_resources.test_of_test_framework_utils import ParserThatGives, \
+from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as test_misc
+from exactly_lib_test.test_case.test_resources.test_of_test_framework_utils import ParserThatGives, \
     single_line_source
 
 
