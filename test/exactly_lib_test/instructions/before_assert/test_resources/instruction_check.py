@@ -1,5 +1,6 @@
-import os
 import unittest
+
+import os
 
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
@@ -14,12 +15,12 @@ from exactly_lib.test_case.result import sh, svh
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
-    ActEnvironment, ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
+    ActEnvironment, ActResultProducerFromActResult
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators, \
     home_and_sds_populators, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result

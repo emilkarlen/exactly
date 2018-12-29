@@ -5,8 +5,8 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output import \
     configuration
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output.configuration import TestCaseBase
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import matcher_arguments
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import \

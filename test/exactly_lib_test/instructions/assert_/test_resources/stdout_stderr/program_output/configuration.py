@@ -5,7 +5,7 @@ from exactly_lib.util.process_execution.process_output_files import ProcOutputFi
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output import arguments_building as args
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import matcher_arguments
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \

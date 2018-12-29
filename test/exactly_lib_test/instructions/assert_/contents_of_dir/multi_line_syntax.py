@@ -6,10 +6,10 @@ from exactly_lib.instructions.assert_.contents_of_dir.config import EMPTINESS_CH
 from exactly_lib.test_case.result.pfh import PassOrFailOrHardErrorEnum
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source_lines
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 

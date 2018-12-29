@@ -1,4 +1,5 @@
 import unittest
+
 from typing import Callable
 
 from exactly_lib.definitions import file_ref as file_ref_texts
@@ -23,7 +24,6 @@ from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils imp
     DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES, ACCEPTED_RELATIVITY_VARIANTS, IS_SUCCESS, just_parse, \
     AN_ALLOWED_DST_FILE_RELATIVITY
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources import arguments as file_maker_args
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import \
     here_document_contents_arguments, \
@@ -33,6 +33,7 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
     is_at_beginning_of_line
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly, dir_contains_exactly
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args

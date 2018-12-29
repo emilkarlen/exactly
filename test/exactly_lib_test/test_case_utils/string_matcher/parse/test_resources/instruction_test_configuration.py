@@ -10,8 +10,8 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment, ActResultProducer
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.test_case.test_resources.arrangements import ActEnvironment, ActResultProducer
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators as home_or_sds, \
     sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \

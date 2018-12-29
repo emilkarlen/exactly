@@ -8,7 +8,6 @@ from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as vs_asrt
@@ -16,6 +15,7 @@ from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import string
     container
 from exactly_lib_test.symbol.data.test_resources.here_doc_assertion_utils import here_doc_lines
 from exactly_lib_test.symbol.data.test_resources.symbol_structure_assertions import equals_container
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.parse_string import string_resolver_from_fragments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
