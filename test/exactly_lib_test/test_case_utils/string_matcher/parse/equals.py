@@ -21,8 +21,6 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_popul
     HomeOrSdsPopulator
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import contents_transformation
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arrangement_utils import \
-    populator_for_relativity_option_root_for_contents_from_fun
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
     suite_for__conf__not_argument
@@ -38,6 +36,8 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.expectation_
     expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
+from exactly_lib_test.test_case_utils.test_resources.tcds_populators import \
+    populator_for_relativity_option_root_for_contents_from_fun
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
