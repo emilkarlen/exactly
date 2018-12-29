@@ -11,10 +11,11 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instru
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    PassOrFail, pfh_expectation_type_config
+    PassOrFail, expectation_type_config__non_is_success
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     nothing__if_positive__not_option__if_negative
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -65,6 +66,7 @@ class TestCaseBase(unittest.TestCase):
             self,
             args_variant_constructor: InstructionArgumentsVariantConstructor,
             expectation_type: ExpectationType,
+            model: ModelBuilder,
             arrangement: integration_check.ArrangementPostAct,
             expectation: Expectation):
 
@@ -76,6 +78,7 @@ class TestCaseBase(unittest.TestCase):
                 self,
                 self.configuration.new_parser(),
                 source,
+                model,
                 arrangement=arrangement,
                 expectation=expectation,
             )
@@ -88,7 +91,7 @@ class TestCaseBase(unittest.TestCase):
             symbols: SymbolTable = None,
             expected_symbol_usages: ValueAssertion = asrt.is_empty_sequence):
         for expectation_type in ExpectationType:
-            etc = pfh_expectation_type_config(expectation_type)
+            etc = expectation_type_config__non_is_success(expectation_type)
             with self.subTest(expectation_type=expectation_type):
 
                 args_variant = args_variant_constructor.construct(expectation_type)
@@ -100,9 +103,9 @@ class TestCaseBase(unittest.TestCase):
                         self,
                         self.configuration.new_parser(),
                         source,
+                        model_construction.model_of(actual_file_contents),
                         arrangement=
                         self.configuration.arrangement_for_contents(
-                            actual_file_contents,
                             post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                             symbols=symbols),
                         expectation=

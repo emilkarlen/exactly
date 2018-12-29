@@ -2,7 +2,6 @@ import unittest
 
 from exactly_lib_test.test_case_utils.string_matcher.parse import empty, equals, parse_invalid_syntax, \
     parse_with_line_breaks
-from exactly_lib_test.test_case_utils.string_matcher.parse.line_matches import z_package_suite as line_matches
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines import z_package_suite as num_lines
 
 
@@ -13,7 +12,7 @@ def suite() -> unittest.TestSuite:
         equals.suite(),
         parse_with_line_breaks.suite(),
         num_lines.suite(),
-        line_matches.suite(),
+        #    line_matches.suite(),
     ])
 
 
