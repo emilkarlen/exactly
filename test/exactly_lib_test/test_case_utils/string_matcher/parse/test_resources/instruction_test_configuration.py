@@ -3,11 +3,12 @@ import unittest
 from typing import Callable
 from typing import List
 
-from exactly_lib.instructions.assert_ import contents_of_file as sut
-from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.arrangements import ActEnvironment, ActResultProducer
@@ -21,8 +22,9 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
     equivalent_source_variants__with_source_check__multi_line
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    pfh_expectation_type_config
+    expectation_type_config__non_is_success
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
@@ -32,11 +34,10 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
 
 
 class InstructionTestConfiguration:
-    def new_parser(self) -> InstructionParser:
+    def new_parser(self) -> Parser[StringMatcherResolver]:
         raise NotImplementedError()
 
     def arrangement_for_contents(self,
-                                 actual_contents: str,
                                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                  symbols: SymbolTable = None,
                                  ) -> integration_check.ArrangementPostAct:
@@ -64,7 +65,6 @@ class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfigurati
 
 class InstructionTestConfigurationForEquals(InstructionTestConfigurationForContentsOrEquals):
     def arrangement_for_actual_and_expected(self,
-                                            actual_contents: str,
                                             expected: HomeOrSdsPopulator,
                                             post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                             symbols: SymbolTable = None,
@@ -74,21 +74,18 @@ class InstructionTestConfigurationForEquals(InstructionTestConfigurationForConte
 
 class TestConfigurationForMatcher(InstructionTestConfigurationForEquals):
     FILE_NAME_REL_ACT = 'actual.txt'
-    FILE_NAME_REL_CWD = '../actual.txt'
 
-    def new_parser(self) -> InstructionParser:
-        return sut.parser('the-instruction-name')
+    def new_parser(self) -> Parser[StringMatcherResolver]:
+        return sut.string_matcher_parser()
 
     def arguments_for(self, additional_arguments: str) -> Arguments:
-        return Arguments(self.FILE_NAME_REL_CWD + ' ' + additional_arguments)
+        return Arguments(additional_arguments)
 
     def arrangement_for_contents(self,
-                                 actual_contents: str,
                                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                  symbols: SymbolTable = None,
                                  ) -> integration_check.ArrangementPostAct:
         return integration_check.ArrangementPostAct(
-            sds_contents=self._populator_for_actual(actual_contents),
             post_sds_population_action=post_sds_population_action,
             symbols=symbols,
         )
@@ -108,23 +105,15 @@ class TestConfigurationForMatcher(InstructionTestConfigurationForEquals):
         )
 
     def arrangement_for_actual_and_expected(self,
-                                            actual_contents: str,
                                             expected: HomeOrSdsPopulator,
                                             post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                             symbols: SymbolTable = None,
                                             ) -> integration_check.ArrangementPostAct:
         return integration_check.ArrangementPostAct(
-            sds_contents=self._populator_for_actual(actual_contents),
             home_or_sds_contents=expected,
             post_sds_population_action=post_sds_population_action,
             symbols=symbols,
         )
-
-    def _populator_for_actual(self, actual_contents) -> sds_populator.SdsPopulator:
-        return sds_populator.contents_in(RelSdsOptionType.REL_ACT,
-                                         DirContents([
-                                             File(self.FILE_NAME_REL_ACT, actual_contents)
-                                         ]))
 
 
 class _ActResultProducer(ActResultProducer):
@@ -154,16 +143,18 @@ class TestWithConfigurationBase(TestCaseBaseWithShortDescriptionOfTestClassAndAn
 
     def _check(self,
                source: ParseSource,
+               model: ModelBuilder,
                arrangement: ArrangementPostAct,
                expectation: Expectation):
-        integration_check.check(self, self.configuration.new_parser(), source, arrangement, expectation)
+        integration_check.check(self, self.configuration.new_parser(), source, model, arrangement, expectation)
 
     def _check_with_source_variants(self,
                                     instruction_argument: Arguments,
+                                    model: ModelBuilder,
                                     arrangement: ArrangementPostAct,
                                     expectation: Expectation):
         for source in equivalent_source_variants__with_source_check__multi_line(self, instruction_argument):
-            integration_check.check(self, self.configuration.new_parser(), source, arrangement, expectation)
+            integration_check.check(self, self.configuration.new_parser(), source, model, arrangement, expectation)
 
 
 class TestWithConfigurationAndNegationArgumentBase(TestWithConfigurationBase):
@@ -171,7 +162,7 @@ class TestWithConfigurationAndNegationArgumentBase(TestWithConfigurationBase):
                  configuration: InstructionTestConfiguration,
                  expectation_type: ExpectationType):
         super().__init__(configuration)
-        self.maybe_not = pfh_expectation_type_config(expectation_type)
+        self.maybe_not = expectation_type_config__non_is_success(expectation_type)
 
     def shortDescription(self):
         return (str(type(self)) + ' /\n' +
