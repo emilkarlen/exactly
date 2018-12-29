@@ -8,7 +8,6 @@ from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.num_lines.utils import \
     TestCaseBase
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.symbol.test_resources.string import is_string_made_up_of_just_strings_reference_to
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
@@ -16,6 +15,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resour
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
     TestConfigurationForMatcher
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
