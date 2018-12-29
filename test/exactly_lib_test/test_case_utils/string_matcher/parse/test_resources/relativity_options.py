@@ -6,8 +6,6 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
-    TestWithConfigurationBase, InstructionTestConfiguration
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator
@@ -15,6 +13,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
     sub_dir_of_sds_contains_exactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsPopulator, \
     SdsPopulatorForSubDir
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
+    TestWithConfigurationBase, InstructionTestConfiguration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import SUB_DIR_RESOLVER
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     pfh_expectation_type_config
