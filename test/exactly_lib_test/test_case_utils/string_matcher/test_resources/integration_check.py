@@ -1,22 +1,26 @@
 import unittest
 
 import os
+from typing import Optional
 
 from exactly_lib.execution import phase_step
-from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
+    PathResolvingEnvironmentPostSds
+from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases import common as i
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
-    InstructionEnvironmentForPreSdsStep
-from exactly_lib.test_case.result import pfh, svh
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
+from exactly_lib.type_system.value_type import TypeCategory, ValueType, LogicValueType
 from exactly_lib.util.file_utils import preserved_cwd
-from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder, \
+    ModelConstructor
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -26,13 +30,11 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 class Expectation:
     def __init__(
             self,
-            validation_post_sds: ValueAssertion[svh.SuccessOrValidationErrorOrHardError] =
-            svh_assertions.is_success(),
+            validation_post_sds: ValueAssertion[Optional[str]] = asrt.is_none,
 
-            validation_pre_sds: ValueAssertion[svh.SuccessOrValidationErrorOrHardError] =
-            svh_assertions.is_success(),
+            validation_pre_sds: ValueAssertion[Optional[str]] = asrt.is_none,
 
-            main_result: ValueAssertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
+            main_result: ValueAssertion[Optional[ErrorMessageResolver]] = asrt.is_none,
             symbol_usages: ValueAssertion = asrt.is_empty_sequence,
             main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
             main_side_effects_on_home_and_sds: ValueAssertion = asrt.anything_goes(),
@@ -47,41 +49,58 @@ class Expectation:
         self.symbol_usages = symbol_usages
 
 
+def arbitrary_validation_failure() -> ValueAssertion[Optional[str]]:
+    return asrt.is_instance(str)
+
+
+def arbitrary_matching_failure() -> ValueAssertion[Optional[ErrorMessageResolver]]:
+    return asrt.is_instance(ErrorMessageResolver)
+
+
 is_pass = Expectation
 
 
 class TestCaseBase(unittest.TestCase):
     def _check(self,
-               parser: InstructionParser,
+               parser: Parser[StringMatcherResolver],
                source: ParseSource,
+               model: ModelBuilder,
                arrangement: ArrangementPostAct,
                expectation: Expectation):
-        check(self, parser, source, arrangement, expectation)
+        check(self, parser, source, model, arrangement, expectation)
 
 
 def check(put: unittest.TestCase,
-          parser: InstructionParser,
+          parser: Parser[StringMatcherResolver],
           source: ParseSource,
+          model: ModelBuilder,
           arrangement: ArrangementPostAct,
           expectation: Expectation):
-    Executor(put, parser, arrangement, expectation).execute(source)
+    Executor(put, parser, model, arrangement, expectation).execute(source)
 
 
 class Executor:
     def __init__(self,
                  put: unittest.TestCase,
-                 parser: InstructionParser,
+                 parser: Parser[StringMatcherResolver],
+                 model: ModelBuilder,
                  arrangement: ArrangementPostAct,
                  expectation: Expectation):
+        self.model_builder = model
         self.put = put
         self.parser = parser
         self.arrangement = arrangement
         self.expectation = expectation
 
     def execute(self, source: ParseSource):
-        instruction = self._parse(source)
+        resolver = self._parse(source)
+
+        self.put.assertIs(resolver.type_category, TypeCategory.LOGIC)
+        self.put.assertIs(resolver.logic_value_type, LogicValueType.STRING_MATCHER)
+        self.put.assertIs(resolver.value_type, ValueType.STRING_MATCHER)
+
         self.expectation.symbol_usages.apply_with_message(self.put,
-                                                          instruction.symbol_usages(),
+                                                          resolver.references,
                                                           'symbol-usages after parse')
         with home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
@@ -99,12 +118,12 @@ class Executor:
                 environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.hds,
                                                                     self.arrangement.process_execution_settings.environ,
                                                                     symbols=self.arrangement.symbols)
-                validate_result = self._execute_validate_pre_sds(environment, instruction)
+                validate_result = self._execute_validate_pre_sds(environment.path_resolving_environment, resolver)
                 self.expectation.symbol_usages.apply_with_message(self.put,
-                                                                  instruction.symbol_usages(),
+                                                                  resolver.references,
                                                                   'symbol-usages after ' +
                                                                   phase_step.STEP__VALIDATE_PRE_SDS)
-                if not validate_result.is_success:
+                if validate_result is not None:
                     return
 
             environment = i.InstructionEnvironmentForPostSdsStep(
@@ -114,60 +133,77 @@ class Executor:
                 phase_identifier.ASSERT.identifier,
                 timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
                 symbols=self.arrangement.symbols)
-            validate_result = self._execute_validate_post_setup(environment, instruction)
+            validate_result = self._execute_validate_post_setup(environment.path_resolving_environment, resolver)
             self.expectation.symbol_usages.apply_with_message(self.put,
-                                                              instruction.symbol_usages(),
+                                                              resolver.references,
                                                               'symbol-usages after ' +
                                                               phase_step.STEP__VALIDATE_POST_SETUP)
-            if not validate_result.is_success:
+            if validate_result is not None:
                 return
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
             write_act_result(home_and_sds.sds, act_result)
-            self._execute_main(environment, instruction)
+            matcher = self._resolve(resolver, environment)
+            model = self._new_model(environment.sds)
+            self._execute_main(model, matcher)
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
             self.expectation.main_side_effects_on_home_and_sds.apply(self.put, home_and_sds)
             self.expectation.symbol_usages.apply_with_message(self.put,
-                                                              instruction.symbol_usages(),
+                                                              resolver.references,
                                                               'symbol-usages after ' +
                                                               phase_step.STEP__MAIN)
 
-    def _parse(self, source: ParseSource) -> AssertPhaseInstruction:
-        instruction = self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
-        self.put.assertIsNotNone(instruction,
+    def _parse(self, source: ParseSource) -> StringMatcherResolver:
+        resolver = self.parser.parse(source)
+        self.put.assertIsNotNone(resolver,
                                  'Result from parser cannot be None')
-        self.put.assertIsInstance(instruction,
-                                  AssertPhaseInstruction,
-                                  'The instruction must be an instance of ' + str(AssertPhaseInstruction))
+        self.put.assertIsInstance(resolver,
+                                  StringMatcherResolver,
+                                  'The resolver must be an instance of ' + str(StringMatcherResolver))
         self.expectation.source.apply_with_message(self.put, source, 'source')
-        assert isinstance(instruction, AssertPhaseInstruction)
-        return instruction
+        assert isinstance(resolver, StringMatcherResolver)
+        return resolver
+
+    def _resolve(self,
+                 resolver: StringMatcherResolver,
+                 environment: i.InstructionEnvironmentForPostSdsStep) -> StringMatcher:
+        matcher_value = resolver.resolve(environment.symbols)
+
+        self.put.assertIsInstance(matcher_value, StringMatcherValue)
+
+        _RESOLVING_DEPENDENCIES_IS_SET.apply_with_message(self.put,
+                                                          matcher_value.resolving_dependencies(),
+                                                          'resolving dependencies')
+
+        matcher = matcher_value.value_of_any_dependency(environment.home_and_sds)
+        self.put.assertIsInstance(matcher, StringMatcher)
+
+        return matcher
 
     def _execute_validate_pre_sds(self,
-                                  environment: InstructionEnvironmentForPreSdsStep,
-                                  instruction: AssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
-        result = instruction.validate_pre_sds(environment)
-        self.put.assertIsNotNone(result,
-                                 'Result from validate method cannot be None')
+                                  environment: PathResolvingEnvironmentPreSds,
+                                  resolver: StringMatcherResolver) -> Optional[str]:
+        result = resolver.validator.validate_pre_sds_if_applicable(environment)
         self.expectation.validation_pre_sds.apply(self.put, result,
                                                   asrt.MessageBuilder('result of validate/pre sds'))
         return result
 
     def _execute_validate_post_setup(self,
-                                     environment: InstructionEnvironmentForPostSdsStep,
-                                     instruction: AssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
-        result = instruction.validate_post_setup(environment)
-        self.put.assertIsNotNone(result,
-                                 'Result from validate method cannot be None')
+                                     environment: PathResolvingEnvironmentPostSds,
+                                     resolver: StringMatcherResolver) -> Optional[str]:
+        result = resolver.validator.validate_post_sds_if_applicable(environment)
         self.expectation.validation_post_sds.apply(self.put, result,
                                                    asrt.MessageBuilder('result of validate/post setup'))
         return result
 
     def _execute_main(self,
-                      environment: InstructionEnvironmentForPostSdsStep,
-                      instruction: AssertPhaseInstruction) -> pfh.PassOrFailOrHardError:
-        main_result = instruction.main(environment, self.arrangement.os_services)
-        self.put.assertIsNotNone(main_result,
-                                 'Result from main method cannot be None')
+                      model: FileToCheck,
+                      matcher: StringMatcher) -> Optional[ErrorMessageResolver]:
+        main_result = matcher.matches(model)
         self.expectation.main_result.apply(self.put, main_result)
-        self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
         return main_result
+
+    def _new_model(self, sds: SandboxDirectoryStructure) -> FileToCheck:
+        return ModelConstructor(self.model_builder, sds).construct()
+
+
+_RESOLVING_DEPENDENCIES_IS_SET = asrt.is_set_of(asrt.is_instance(DirectoryStructurePartition))

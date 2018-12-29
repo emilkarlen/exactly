@@ -1,6 +1,6 @@
 import unittest
 
-from . import integration_check_test
+from exactly_lib_test.test_case_utils.string_matcher.test_resources_test import integration_check_test
 
 
 def suite() -> unittest.TestSuite:
