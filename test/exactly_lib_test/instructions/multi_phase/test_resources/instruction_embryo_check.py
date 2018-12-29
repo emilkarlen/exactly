@@ -123,6 +123,7 @@ class Executor:
                 return
 
             self._execute_main(environment, instruction)
+
             self.expectation.main_side_effects_on_sds.apply_with_message(self.put, home_and_sds.sds,
                                                                          'side_effects_on_files')
             self.expectation.side_effects_on_home_and_sds.apply_with_message(self.put, home_and_sds,
