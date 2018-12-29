@@ -12,12 +12,12 @@ from exactly_lib.test_case.result import sh
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     cleanup_phase_instruction_that
 from exactly_lib_test.instructions.cleanup.test_resources import instruction_check as sut
-from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.instructions.test_resources.symbol_table_check_help import do_fail_if_symbol_table_does_not_equal, \
     get_symbol_table_from_path_resolving_environment_that_is_first_arg, \
     get_symbol_table_from_instruction_environment_that_is_first_arg
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
+from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly

@@ -64,29 +64,22 @@ def check(put: unittest.TestCase,
           source: ParseSource,
           arrangement: ArrangementPostAct,
           expectation: Expectation):
-    Executor(put, arrangement, expectation).execute(parser, source)
+    Executor(put, parser, arrangement, expectation).execute(source)
 
 
 class Executor:
     def __init__(self,
                  put: unittest.TestCase,
+                 parser: InstructionParser,
                  arrangement: ArrangementPostAct,
                  expectation: Expectation):
         self.put = put
+        self.parser = parser
         self.arrangement = arrangement
         self.expectation = expectation
 
-    def execute(self,
-                parser: InstructionParser,
-                source: ParseSource):
-        instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
-        self.put.assertIsNotNone(instruction,
-                                 'Result from parser cannot be None')
-        self.put.assertIsInstance(instruction,
-                                  AssertPhaseInstruction,
-                                  'The instruction must be an instance of ' + str(AssertPhaseInstruction))
-        self.expectation.source.apply_with_message(self.put, source, 'source')
-        assert isinstance(instruction, AssertPhaseInstruction)
+    def execute(self, source: ParseSource):
+        instruction = self._parse(source)
         self.expectation.symbol_usages.apply_with_message(self.put,
                                                           instruction.symbol_usages(),
                                                           'symbol-usages after parse')
@@ -137,6 +130,17 @@ class Executor:
                                                               instruction.symbol_usages(),
                                                               'symbol-usages after ' +
                                                               phase_step.STEP__MAIN)
+
+    def _parse(self, source: ParseSource) -> AssertPhaseInstruction:
+        instruction = self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+        self.put.assertIsNotNone(instruction,
+                                 'Result from parser cannot be None')
+        self.put.assertIsInstance(instruction,
+                                  AssertPhaseInstruction,
+                                  'The instruction must be an instance of ' + str(AssertPhaseInstruction))
+        self.expectation.source.apply_with_message(self.put, source, 'source')
+        assert isinstance(instruction, AssertPhaseInstruction)
+        return instruction
 
     def _execute_validate_pre_sds(self,
                                   environment: InstructionEnvironmentForPreSdsStep,
