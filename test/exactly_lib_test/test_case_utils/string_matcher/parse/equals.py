@@ -9,16 +9,6 @@ from exactly_lib.test_case_utils.string_matcher.parse.parts.equality import \
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
-    InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
-    suite_for__conf__not_argument
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    suite_for__conf__rel_opts__negations, RelativityOptionConfigurationForRelCwdForTestCwdDir, \
-    TestWithConfigurationAndRelativityOptionAndNegationBase
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.expectation_utils import \
-    expectation_that_file_for_expected_contents_is_invalid
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
@@ -34,9 +24,19 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.argume
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arrangement_utils import \
     populator_for_relativity_option_root_for_contents_from_fun
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
+    InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
+    suite_for__conf__not_argument
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
     TestConfigurationForMatcher
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.relativity_options import \
+    suite_for__conf__rel_opts__negations, RelativityOptionConfigurationForRelCwdForTestCwdDir, \
+    TestWithConfigurationAndRelativityOptionAndNegationBase
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.expectation_utils import \
+    expectation_that_file_for_expected_contents_is_invalid
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -52,7 +52,7 @@ class InstructionTestConfigurationForEquals(InstructionTestConfigurationForConte
                                             expected: HomeOrSdsPopulator,
                                             post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                             symbols: SymbolTable = None,
-                                            ) -> instruction_check.ArrangementPostAct:
+                                            ) -> integration_check.ArrangementPostAct:
         raise NotImplementedError()
 
 

@@ -7,7 +7,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
@@ -21,6 +20,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc i
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

@@ -4,7 +4,6 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.result import pfh
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationBase
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import SB
@@ -12,6 +11,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instru
     TestConfigurationForMatcher
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 

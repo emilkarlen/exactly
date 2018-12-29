@@ -4,7 +4,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
-from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.misc import TestConfigurationForFile
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO

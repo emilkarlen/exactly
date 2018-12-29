@@ -9,7 +9,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     suite_for__conf__rel_opts__negations
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.expectation_utils import \
-    expectation_that_file_for_expected_contents_is_invalid
+    expectation_that_file_for_actual_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
@@ -45,7 +45,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
                         post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                         symbols=self.rel_opt.symbols.in_arrangement(),
                     ),
-                    expectation_that_file_for_expected_contents_is_invalid(self.rel_opt),
+                    expectation_that_file_for_actual_contents_is_invalid(self.rel_opt),
                 )
 
 
@@ -64,7 +64,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
                         post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                         symbols=self.rel_opt.symbols.in_arrangement(),
                     ),
-                    expectation_that_file_for_expected_contents_is_invalid(self.rel_opt),
+                    expectation_that_file_for_actual_contents_is_invalid(self.rel_opt),
                 )
 
 
