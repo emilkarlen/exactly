@@ -13,8 +13,7 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.arrangements import ActEnvironment, ActResultProducer
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators as home_or_sds, \
-    sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -54,14 +53,6 @@ class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfigurati
     def source_for(self, argument_tail: str, following_lines=()) -> ParseSource:
         return self.arguments_for(argument_tail).followed_by_lines(following_lines).as_remaining_source
 
-    def arrangement_for_contents_from_fun(self,
-                                          home_and_sds_2_str: Callable[[HomeAndSds], str],
-                                          home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
-                                          post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-                                          symbols: SymbolTable = None,
-                                          ) -> integration_check.ArrangementPostAct:
-        raise NotImplementedError()
-
 
 class InstructionTestConfigurationForEquals(InstructionTestConfigurationForContentsOrEquals):
     def arrangement_for_actual_and_expected(self,
@@ -86,20 +77,6 @@ class TestConfigurationForMatcher(InstructionTestConfigurationForEquals):
                                  symbols: SymbolTable = None,
                                  ) -> integration_check.ArrangementPostAct:
         return integration_check.ArrangementPostAct(
-            post_sds_population_action=post_sds_population_action,
-            symbols=symbols,
-        )
-
-    def arrangement_for_contents_from_fun(self,
-                                          home_and_sds_2_str: Callable[[HomeAndSds], str],
-                                          home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
-                                          post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-                                          symbols: SymbolTable = None,
-                                          ) -> integration_check.ArrangementPostAct:
-        act_result_producer = _ActResultProducer(home_and_sds_2_str, self.FILE_NAME_REL_ACT)
-        return integration_check.ArrangementPostAct(
-            act_result_producer=act_result_producer,
-            home_or_sds_contents=home_or_sds_contents,
             post_sds_population_action=post_sds_population_action,
             symbols=symbols,
         )

@@ -34,8 +34,6 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.argume
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
-from exactly_lib_test.test_case_utils.test_resources.tcds_populators import \
-    populator_for_relativity_option_root_for_contents_from_fun
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -277,7 +275,7 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
                                          StringTransformerConstant(
                                              contents_transformation.ToUppercaseStringTransformer()))
 
-        contents_generator = contents_transformation.TransformedContentsSetupWithDependenceOnHomeAndSds(
+        contents_generator = contents_transformation.TransformedContentsSetup(
             original='some\ntext',
             transformed='SOME\nTEXT',
         )
@@ -300,13 +298,11 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
                     transformer=named_transformer.name,
                     maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                     relativity_option=self.rel_opt.option_argument)),
-            self.configuration.arrangement_for_contents_from_fun(
-                contents_generator.contents_before_replacement,
-                home_or_sds_contents=populator_for_relativity_option_root_for_contents_from_fun(
-                    self.rel_opt,
-                    'expected.txt',
-                    contents_generator.expected_contents_after_replacement
-                ),
+            self.configuration.arrangement_for_contents(
+                contents_generator.original,
+                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(DirContents([
+                    File('expected.txt', contents_generator.transformed)
+                ])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=symbols,
             ),

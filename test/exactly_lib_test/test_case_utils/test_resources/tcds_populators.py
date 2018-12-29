@@ -1,3 +1,5 @@
+from typing import Callable
+
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator
@@ -18,12 +20,8 @@ def populator_for_relativity_option_root_for_contents_from_fun(conf: RelativityO
 class _HomeOrSdsPopulatorForContentsThatDependOnHomeAndSds(HomeOrSdsPopulator):
     def __init__(self,
                  file_name: str,
-                 home_and_sds_2_file_contents_str,
-                 dir_contents__2_home_or_sds_populator):
-        """
-        :type home_and_sds_2_file_contents_str: `HomeAndAds` -> str
-        :type dir_contents__2_home_or_sds_populator: `DirContents` -> `HomeOrSdsPopulator`
-        """
+                 home_and_sds_2_file_contents_str: Callable[[HomeAndSds], str],
+                 dir_contents__2_home_or_sds_populator: Callable[[DirContents], HomeOrSdsPopulator]):
         self.file_name = file_name
         self.home_and_sds_2_file_contents_str = home_and_sds_2_file_contents_str
         self.dir_contents__2_home_or_sds_populator = dir_contents__2_home_or_sds_populator
