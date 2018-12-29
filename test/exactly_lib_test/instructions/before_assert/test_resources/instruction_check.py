@@ -163,6 +163,7 @@ class Executor(InstructionExecutionBase):
             write_act_result(home_and_sds.sds, act_result)
 
             self._execute_main(environment, instruction)
+
             self._check_main_side_effects_on_sds(home_and_sds)
             self._check_side_effects_on_home_and_sds(home_and_sds)
             self.expectation.symbol_usages.apply_with_message(self.put,

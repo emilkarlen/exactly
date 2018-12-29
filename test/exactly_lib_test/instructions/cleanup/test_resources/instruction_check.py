@@ -145,7 +145,9 @@ class Executor(InstructionExecutionBase):
                 phase_identifier.CLEANUP.identifier,
                 timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
                 symbols=self.arrangement.symbols)
+
             self._execute_main(environment, instruction)
+
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
             self.expectation.main_side_effects_on_home_and_sds.apply(self.put, home_and_sds)
             self.expectation.symbol_usages.apply_with_message(self.put,
@@ -169,5 +171,4 @@ class Executor(InstructionExecutionBase):
                                   self.arrangement.previous_phase)
         self._check_result_of_main__sh(result)
         self.expectation.main_result.apply(self.put, result)
-        self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
         return result

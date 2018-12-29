@@ -130,7 +130,9 @@ class Executor:
                 return
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
             write_act_result(home_and_sds.sds, act_result)
+
             self._execute_main(environment, instruction)
+
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
             self.expectation.main_side_effects_on_home_and_sds.apply(self.put, home_and_sds)
             self.expectation.symbol_usages.apply_with_message(self.put,
@@ -165,5 +167,4 @@ class Executor:
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
         self.expectation.main_result.apply(self.put, main_result)
-        self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
         return main_result

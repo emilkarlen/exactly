@@ -15,7 +15,6 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.symbol_table import SymbolTable
@@ -182,7 +181,9 @@ class Executor:
             home_and_sds = path_resolving_environment.home_and_sds
             sds = home_and_sds.sds
 
-            main_result = self._execute_main(sds, instruction_environment, instruction)
+            main_result = self._execute_main(instruction_environment, instruction)
+
+            self.expectation.main_side_effects_on_sds.apply(self.put, sds)
             self.expectation.symbol_usages.apply_with_message(self.put,
                                                               instruction.symbol_usages(),
                                                               'symbol-usages after ' +
@@ -220,7 +221,6 @@ class Executor:
         return pre_validate_result
 
     def _execute_main(self,
-                      sds: SandboxDirectoryStructure,
                       instruction_environment: i.InstructionEnvironmentForPostSdsStep,
                       instruction: SetupPhaseInstruction) -> sh.SuccessOrHardError:
         settings_builder = self.arrangement.initial_settings_builder
@@ -233,7 +233,6 @@ class Executor:
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
         self.expectation.main_result.apply(self.put, main_result)
-        self.expectation.main_side_effects_on_sds.apply(self.put, sds)
         return main_result
 
     def _execute_post_validate(self,
