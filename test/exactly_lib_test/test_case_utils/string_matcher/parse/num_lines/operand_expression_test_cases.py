@@ -8,13 +8,13 @@ from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.string import is_string_made_up_of_just_strings_reference_to
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     TestCaseBase
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
     TestConfigurationForMatcher
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
@@ -139,9 +139,9 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
                 self._check_single_expression_type(
                     args_variant_constructor,
                     ExpectationType.POSITIVE,
+                    model_construction.model_of(actual_file_contents),
                     arrangement=
-                    self.configuration.arrangement_for_contents(
-                        actual_file_contents),
+                    self.configuration.arrangement_for_contents(),
                     expectation=
-                    Expectation(validation_pre_sds=asrt_svh.is_validation_error(asrt.anything_goes()))
+                    Expectation(validation_pre_sds=integration_check.arbitrary_validation_failure())
                 )
