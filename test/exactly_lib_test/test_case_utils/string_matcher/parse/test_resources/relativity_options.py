@@ -17,7 +17,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instru
     TestWithConfigurationBase, InstructionTestConfiguration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import SUB_DIR_RESOLVER
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    pfh_expectation_type_config
+    expectation_type_config__non_is_success
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
     RelativityOptionConfigurationForRelNonHome, \
     OptionStringConfigurationForRelativityOptionRelNonHome
@@ -32,7 +32,7 @@ class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurat
                  expectation_type: ExpectationType):
         super().__init__(instruction_configuration)
         self.rel_opt = option_configuration
-        self.not_opt = pfh_expectation_type_config(expectation_type)
+        self.not_opt = expectation_type_config__non_is_success(expectation_type)
 
     def shortDescription(self):
         return (str(type(self)) + ' /\n' +

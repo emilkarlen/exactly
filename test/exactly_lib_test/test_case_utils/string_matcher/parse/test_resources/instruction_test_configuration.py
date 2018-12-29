@@ -13,6 +13,7 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.arrangements import ActEnvironment, ActResultProducer
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators as home_or_sds
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator
@@ -37,6 +38,7 @@ class InstructionTestConfiguration:
         raise NotImplementedError()
 
     def arrangement_for_contents(self,
+                                 home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
                                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                  symbols: SymbolTable = None,
                                  ) -> integration_check.ArrangementPostAct:
@@ -73,10 +75,12 @@ class TestConfigurationForMatcher(InstructionTestConfigurationForEquals):
         return Arguments(additional_arguments)
 
     def arrangement_for_contents(self,
+                                 home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
                                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                  symbols: SymbolTable = None,
                                  ) -> integration_check.ArrangementPostAct:
         return integration_check.ArrangementPostAct(
+            home_or_sds_contents=home_or_sds_contents,
             post_sds_population_action=post_sds_population_action,
             symbols=symbols,
         )
