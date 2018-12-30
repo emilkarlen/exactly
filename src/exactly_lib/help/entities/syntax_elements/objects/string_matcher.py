@@ -173,7 +173,7 @@ that use multiple characters as new-line).
 """
 
 _TRANSFORMATION_DESCRIPTION = """\
-Applies {PRIMITIVE_MATCHER} to a transformed variant of the original string.
+Applies the matching to a transformed variant of the original string.
 """
 
 _DESCRIPTION_OF_EMPTY = """\
