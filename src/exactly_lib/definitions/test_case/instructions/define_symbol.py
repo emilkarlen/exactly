@@ -119,7 +119,8 @@ ANY_TYPE_INFO_DICT = {
 
     ValueType.STRING_MATCHER:
         TypeInfo(types.STRING_MATCHER_TYPE_INFO,
-                 _standard_type_value_args(types.STRING_MATCHER_TYPE_INFO)),
+                 _standard_type_value_args(types.STRING_MATCHER_TYPE_INFO,
+                                           a.Multiplicity.MANDATORY)),
 
     ValueType.STRING_TRANSFORMER:
         TypeInfo(types.STRING_TRANSFORMER_TYPE_INFO,
