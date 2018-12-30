@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, Dict
 
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
@@ -30,7 +30,7 @@ class InstructionEnvironmentForPreSdsStep:
         return self.__hds
 
     @property
-    def environ(self) -> dict:
+    def environ(self) -> Dict[str, str]:
         """
         The set of environment variables available to instructions.
         These may be both read and written by instructions.

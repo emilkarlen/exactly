@@ -1,12 +1,18 @@
 import unittest
 
+import pathlib
+from typing import Optional, Sequence, Dict
+
 from exactly_lib.execution import phase_step
 from exactly_lib.instructions.multi_phase.utils.instruction_embryo import InstructionEmbryoParser, \
     InstructionEmbryo
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
@@ -23,16 +29,16 @@ class PostActionCheck:
 
 class Expectation:
     def __init__(self,
-                 validation_pre_sds: ValueAssertion = asrt.is_none,
-                 validation_post_sds: ValueAssertion = asrt.is_none,
+                 validation_pre_sds: ValueAssertion[Optional[str]] = asrt.is_none,
+                 validation_post_sds: ValueAssertion[Optional[str]] = asrt.is_none,
                  main_result: ValueAssertion = asrt.anything_goes(),
-                 symbol_usages: ValueAssertion = asrt.is_empty_sequence,
-                 symbols_after_main: ValueAssertion = asrt.anything_goes(),
-                 main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
-                 side_effects_on_home_and_sds: ValueAssertion = asrt.anything_goes(),
-                 side_effects_on_home: ValueAssertion = asrt.anything_goes(),
-                 source: ValueAssertion = asrt.anything_goes(),
-                 main_side_effect_on_environment_variables: ValueAssertion = asrt.anything_goes(),
+                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                 symbols_after_main: ValueAssertion[SymbolTable] = asrt.anything_goes(),
+                 main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
+                 side_effects_on_home_and_sds: ValueAssertion[HomeAndSds] = asrt.anything_goes(),
+                 side_effects_on_home: ValueAssertion[pathlib.Path] = asrt.anything_goes(),
+                 source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+                 main_side_effect_on_environment_variables: ValueAssertion[Dict[str, str]] = asrt.anything_goes(),
                  ):
         self.validation_pre_sds = validation_pre_sds
         self.validation_post_sds = validation_post_sds
