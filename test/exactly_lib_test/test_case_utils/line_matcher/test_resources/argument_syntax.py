@@ -25,3 +25,7 @@ def syntax_for_and(matchers: list) -> str:
 
 def syntax_for_arbitrary_line_matcher_without_symbol_references() -> str:
     return syntax_for_regex_matcher('regex')
+
+
+def syntax_for_arbitrary_line_matcher() -> str:
+    return syntax_for_regex_matcher('regex')

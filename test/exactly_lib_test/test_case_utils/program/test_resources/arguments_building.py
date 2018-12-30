@@ -59,3 +59,7 @@ def program(program_arg: Stringable,
                                 transformation)])
 
     return ArgumentElements([program_arg], extra)
+
+
+def arbitrary_value_on_single_line() -> str:
+    return shell_command('ls').as_arguments.lines[0]
