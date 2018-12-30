@@ -1,5 +1,6 @@
-import re
 import unittest
+
+import re
 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -14,10 +15,10 @@ from exactly_lib.util import symbol_table
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import name_glob_pattern_matcher_of, \
+    type_matcher_of, name_reg_ex_pattern_matcher_of
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
     resolved_value_equals_file_matcher
-from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_glob_pattern_matcher_of, \
-    type_matcher_of, name_reg_ex_pattern_matcher_of
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.test_resources import matcher_parse_check
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

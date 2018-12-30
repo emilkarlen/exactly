@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionArgumentsVariantConstructor
-from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import file_matcher_arguments, \
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import file_matcher_arguments, \
     selection_arguments_for_matcher
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \

@@ -10,7 +10,7 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source_lines
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import selection_arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 
 
