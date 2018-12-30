@@ -3,10 +3,10 @@ from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTE
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
-from exactly_lib.util.logic_types import Quantifier
+from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib_test.section_document.test_resources.parse_source import ParseSourceBuilder
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    ExpectationTypeConfig
+    nothing__if_positive__not_option__if_negative
 
 
 class FileContentsArgumentsConstructor:
@@ -30,14 +30,13 @@ class CommonArgumentsConstructor:
     - [NEGATION]
     """
 
-    def __init__(self,
-                 file_transformer: str = ''):
+    def __init__(self, file_transformer: str = ''):
         self._file_transformer = file_transformer
 
-    def apply(self, etc: ExpectationTypeConfig) -> str:
+    def apply(self, expectation_type: ExpectationType) -> str:
         return '{transformation} {negation}'.format(
             transformation=self._empty_if_no_file_transformer_otherwise_selection(),
-            negation=etc.nothing__if_positive__not_option__if_negative)
+            negation=nothing__if_positive__not_option__if_negative(expectation_type))
 
     def _empty_if_no_file_transformer_otherwise_selection(self) -> str:
         if self._file_transformer:
@@ -59,9 +58,9 @@ class ImplicitActualFileArgumentsConstructor:
         self._common_arguments = common_arguments
         self._assertion_variant = assertion_variant
 
-    def apply(self, etc: ExpectationTypeConfig) -> str:
+    def apply(self, expectation_type: ExpectationType) -> str:
         return '{common} {assertion_variant}'.format(
-            common=self._common_arguments.apply(etc),
+            common=self._common_arguments.apply(expectation_type),
             assertion_variant=str(self._assertion_variant))
 
 

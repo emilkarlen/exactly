@@ -101,7 +101,7 @@ class FilesContentsAssertionVariant(AssertionVariantArgumentsConstructor):
                  contents_argument_expectation_type: ExpectationType = ExpectationType.POSITIVE):
         self._quantifier = quantifier
         self._file_contents_assertion = file_contents_assertion
-        self._contents_argument_expectation_type = pfh_expectation_type_config(contents_argument_expectation_type)
+        self._contents_argument_expectation_type = contents_argument_expectation_type
 
     def __str__(self):
         return '{quantifier} {file} {separator} {contents_assertion}'.format(

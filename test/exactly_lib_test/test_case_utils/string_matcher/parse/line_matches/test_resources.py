@@ -12,7 +12,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc i
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    PassOrFail, pfh_expectation_type_config, expectation_type_config__non_is_success
+    PassOrFail, expectation_type_config__non_is_success
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -45,12 +45,11 @@ class ArgumentsConstructorForPossiblyInvalidSyntax(InstructionArgumentsConstruct
             self._common_arguments,
             arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier, self.line_matcher),
         )
-        etc = pfh_expectation_type_config(expectation_type)
 
         superfluous_args_str = self.superfluous_args_str
         if superfluous_args_str:
             superfluous_args_str = ' ' + superfluous_args_str
-        return arguments_constructor.apply(etc) + superfluous_args_str
+        return arguments_constructor.apply(expectation_type) + superfluous_args_str
 
 
 class InstructionArgumentsConstructorForValidSyntax(InstructionArgumentsConstructorForExpTypeAndQuantifier):
@@ -69,8 +68,7 @@ class InstructionArgumentsConstructorForValidSyntax(InstructionArgumentsConstruc
             self._common_arguments,
             arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier, self.line_matcher),
         )
-        etc = pfh_expectation_type_config(expectation_type)
-        return arguments_constructor.apply(etc)
+        return arguments_constructor.apply(expectation_type)
 
 
 def args_constructor_for(line_matcher: str,
