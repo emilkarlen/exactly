@@ -1,8 +1,12 @@
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.entity import concepts
 from exactly_lib.section_document import parser_classes
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     token_parser_with_additional_error_message_format_map
 from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher import resolvers
@@ -45,7 +49,13 @@ class _StringMatcherParser:
 
     def parse(self, token_parser: TokenParser) -> StringMatcherResolver:
         token_parser = token_parser_with_additional_error_message_format_map(token_parser, _FORMAT_MAP)
-        return token_parser.parse_mandatory_command(self.parsers, _FORMAT_MAP['_CHECK_'])
+        matcher_name = token_parser.consume_mandatory_unquoted_string(
+            instruction_arguments.STRING_MATCHER_PRIMITIVE_SYNTAX_ELEMENT,
+            False)
+        if matcher_name in self.parsers:
+            return self.parsers[matcher_name](token_parser)
+        else:
+            return self._symbol_reference(matcher_name, token_parser)
 
     def _parse_emptiness_checker(self, token_parser: TokenParser) -> StringMatcherResolver:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import emptieness
@@ -66,3 +76,14 @@ class _StringMatcherParser:
     def _parse_every_line_matches_checker(self, token_parser: TokenParser) -> StringMatcherResolver:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches
         return line_matches.parse_every_line_matches_matcher(self.expectation_type, token_parser)
+
+    def _symbol_reference(self, parsed_symbol_name: str, token_parser: TokenParser) -> StringMatcherResolver:
+        if symbol_syntax.is_symbol_name(parsed_symbol_name):
+            token_parser.report_superfluous_arguments_if_not_at_eol()
+            token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
+            return resolvers.new_reference(parsed_symbol_name, self.expectation_type)
+        else:
+            err_msg_header = 'Neither a {matcher} nor the plain name of a {symbol}: '.format(
+                matcher=instruction_arguments.STRING_MATCHER_PRIMITIVE_SYNTAX_ELEMENT,
+                symbol=concepts.SYMBOL_CONCEPT_INFO.singular_name)
+            raise SingleInstructionInvalidArgumentException(err_msg_header + parsed_symbol_name)

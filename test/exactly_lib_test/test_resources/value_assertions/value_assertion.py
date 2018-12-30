@@ -1,7 +1,7 @@
 import unittest
 
 import os
-from typing import TypeVar, Sequence, Callable, Any, Generic, Type, Sized, List, Dict, Set
+from typing import TypeVar, Sequence, Callable, Any, Generic, Type, Sized, List, Dict, Set, Optional
 
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
@@ -308,6 +308,22 @@ class ValueIsNotNone(ValueAssertionBase[T]):
                message_builder: MessageBuilder):
         put.assertIsNotNone(value,
                             message_builder.apply(self.message))
+
+
+class ValueIsNotNoneAnd(Generic[T], ValueAssertionBase[Optional[T]]):
+    def __init__(self,
+                 present_value: ValueAssertion[T]
+                 ):
+        self.present_value = present_value
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: Optional[T],
+               message_builder: MessageBuilder):
+        put.assertIsNotNone(value,
+                            message_builder.apply(''))
+        assert value is not None
+        self.present_value.apply(put, value, message_builder)
 
 
 class Equals(ValueAssertionBase[T]):
@@ -711,6 +727,10 @@ def matches_dict(expected: Dict[TYPE_WITH_EQUALS, ValueAssertion[T]]) -> ValueAs
 
 def is_not(value) -> ValueAssertion[T]:
     return IsNot(value)
+
+
+def is_not_none_and(also: ValueAssertion[T]) -> ValueAssertion[Optional[T]]:
+    return ValueIsNotNoneAnd(also)
 
 
 def and_(assertions: Sequence[ValueAssertion[T]]) -> ValueAssertion[T]:

@@ -6,7 +6,7 @@ from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.entity import syntax_elements, concepts, types
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
@@ -31,7 +31,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
         super().__init__(TypeCategory.LOGIC,
                          syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT)
 
-        self.matcher_element_name = 'MATCHER'
+        self.matcher_element_name = instruction_arguments.STRING_MATCHER_PRIMITIVE_SYNTAX_ELEMENT
         self.expected_file_arg = a.Option(FILE_ARGUMENT_OPTION,
                                           _EXPECTED_PATH_NAME)
         self.string_or_here_doc_or_file_arg = StringOrHereDocOrFile(
@@ -40,6 +40,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
             EXPECTED_FILE_REL_OPT_ARG_CONFIG,
             the_path_of('the file that contains the expected contents.'))
         self._parser = TextParser({
+            'symbol_concept': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
             'expected_file_arg': _EXPECTED_PATH_NAME,
             'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
@@ -47,6 +48,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
             'HERE_DOCUMENT': formatting.syntax_element_(syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT),
             'INTEGER_COMPARISON': syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name,
             'PRIMITIVE_MATCHER': self.matcher_element_name,
+            'this_type': types.STRING_MATCHER_TYPE_INFO.singular_name,
         })
 
     def main_description_rest_paragraphs(self) -> List[ParagraphItem]:
@@ -102,6 +104,9 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
         num_lines_arg = a.Single(a.Multiplicity.MANDATORY,
                                  a.Constant(matcher_options.NUM_LINES_ARGUMENT))
 
+        symbol_argument = a.Single(a.Multiplicity.MANDATORY,
+                                   syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument)
+
         return SyntaxElementDescription(
             self.matcher_element_name,
             [],
@@ -127,6 +132,10 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
                                               line_matcher_arg,
                                               ],
                                              self._parser.fnap(_DESCRIPTION_OF_LINE_MATCHES)),
+
+                invokation_variant_from_args([symbol_argument],
+                                             self._parser.fnap(_SYMBOL_REF_DESCRIPTION)),
+
             ])
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
@@ -134,6 +143,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
             syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
             syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT,
             syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
+            syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
         ]
 
         name_and_cross_ref_elements += rel_opts.see_also_name_and_cross_refs(
@@ -181,6 +191,11 @@ Matches if {any}/{every} line of the string matches {LINE_MATCHER}.
 
 _DESCRIPTION_OF_NUM_LINES = """\
 Matches if the number of lines of the string matches {INTEGER_COMPARISON}.
+"""
+
+_SYMBOL_REF_DESCRIPTION = """\
+Reference to a {symbol_concept},
+that must have been defined as a {this_type}.
 """
 
 DOCUMENTATION = _StringMatcherDocumentation()

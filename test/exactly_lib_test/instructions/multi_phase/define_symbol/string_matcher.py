@@ -8,17 +8,22 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.symbol import lookups
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition import comparators
+from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.string import lines_content
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_container
+from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher, \
+    StringMatcherResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building as arg_syntax
@@ -74,6 +79,52 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # ACT & ASSERT #
 
         self._check(source, ArrangementWithSds(), expectation)
+
+    def test_successful_parse_of_reference(self):
+        defined_name = 'defined_name'
+
+        referenced_symbol = NameAndValue('referenced_name',
+                                         ARBITRARY_RESOLVER)
+
+        symbols = SymbolTable({
+            referenced_symbol.name:
+                symbol_utils.container(referenced_symbol.value)
+        })
+
+        # ARRANGE #
+
+        source = single_line_source(
+            src('{string_matcher_type} {defined_name} = {matcher_argument}',
+                defined_name=defined_name,
+                matcher_argument=referenced_symbol.name),
+        )
+
+        arrangement = ArrangementWithSds()
+
+        # EXPECTATION #
+
+        expected_container = matches_container(
+            matches_string_matcher_resolver(
+                references=asrt.matches_sequence([
+                    is_reference_to_string_matcher(referenced_symbol.name)
+                ]),
+                symbols=symbols)
+        )
+
+        expectation = Expectation(
+            symbol_usages=asrt.matches_sequence([
+                asrt_sym_usage.matches_definition(asrt.equals(defined_name),
+                                                  expected_container),
+            ]),
+            symbols_after_main=assert_symbol_table_is_singleton(
+                defined_name,
+                expected_container,
+            )
+        )
+
+        # ACT & ASSERT #
+
+        self._check(source, arrangement, expectation)
 
     def test_successful_parse_and_application_of_non_trivial_matcher(self):
         defined_name = 'defined_name'
@@ -193,6 +244,9 @@ class AssertApplicationOfMatcherInSymbolTable(ValueAssertionBase[InstructionEnvi
         model_builder = model_construction.model_of(self.actual_model_contents)
         return model_construction.ModelConstructor(model_builder, environment.sds).construct()
 
+
+ARBITRARY_RESOLVER = StringMatcherResolverConstantTestImpl(StringMatcherConstant(None),
+                                                           [])
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

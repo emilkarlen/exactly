@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Iterable, Sequence, Optional
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
+    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironment
 from exactly_lib.test_case.result import sh, svh
 
 
@@ -205,3 +205,21 @@ class PreOrPostSdsSvhValidationForSuccessOrHardError:
         if error_message_or_none is not None:
             return sh.new_sh_hard_error(error_message_or_none)
         return sh.new_sh_success()
+
+
+class ValidatorOfReferredResolverBase(PreOrPostSdsValidator):
+    """
+    Validates an object using a referred resolvers validator.
+    """
+
+    def __init__(self, symbol_name: str):
+        self.symbol_name = symbol_name
+
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
+        return self._referred_validator(environment).validate_pre_sds_if_applicable(environment)
+
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
+        return self._referred_validator(environment).validate_post_sds_if_applicable(environment)
+
+    def _referred_validator(self, environment: PathResolvingEnvironment) -> PreOrPostSdsValidator:
+        raise NotImplementedError('abstract method')

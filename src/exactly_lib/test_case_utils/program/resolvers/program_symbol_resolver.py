@@ -1,8 +1,7 @@
-from typing import Sequence, Optional
+from typing import Sequence
 
 from exactly_lib.symbol import lookups
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds, PathResolvingEnvironment
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironment
 from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.program.stdin_data_resolver import StdinDataResolver
@@ -10,7 +9,7 @@ from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, ValidatorOfReferredResolverBase
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.accumulator import ProgramElementsAccumulator
@@ -77,23 +76,7 @@ def plain(symbol_name: str,
                                              accumulator.new_with_arguments(arguments))
 
 
-class _ValidatorOfReferredProgram(PreOrPostSdsValidator):
-    def __init__(self, symbol_name: str):
-        self.symbol_name = symbol_name
-
-    """
-    Validates an object - usually a path - either pre or post creation of SDS.
-
-    Whether validation is done pre or post SDS depends on whether the validated
-    object is outside or inside the SDS.
-    """
-
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
-        return self._referred_validator(environment).validate_pre_sds_if_applicable(environment)
-
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
-        return self._referred_validator(environment).validate_post_sds_if_applicable(environment)
-
+class _ValidatorOfReferredProgram(ValidatorOfReferredResolverBase):
     def _referred_validator(self, environment: PathResolvingEnvironment) -> PreOrPostSdsValidator:
         program_of_symbol = lookups.lookup_program(environment.symbols, self.symbol_name)
         return program_of_symbol.validator

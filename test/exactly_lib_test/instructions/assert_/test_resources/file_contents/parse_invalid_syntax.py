@@ -72,8 +72,6 @@ class ParseShouldFailWhenCheckIsMissing(TestWithConfigurationAndNegationArgument
 class ParseShouldFailWhenCheckIsIllegal(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         cases = [
-            NameAndValue('unknown check',
-                         'unknown_check'),
             NameAndValue('illegal option',
                          'this-is-an-illegal-argument'),
         ]
