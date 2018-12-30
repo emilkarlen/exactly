@@ -474,7 +474,7 @@ def is_instance_with(expected_type: Type,
     return _IsInstanceWith(expected_type, value_assertion, description)
 
 
-def is_instance_with_many(expected_type: Type[T],
+def is_instance_with_many(expected_type: Type,
                           value_assertions: List[ValueAssertion[T]],
                           description: str = '') -> ValueAssertion[Any]:
     return _IsInstanceWith(expected_type,

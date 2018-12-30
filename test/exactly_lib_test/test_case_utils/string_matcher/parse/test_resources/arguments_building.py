@@ -129,3 +129,7 @@ _FORMAT_MAP = {
 }
 
 SB = ParseSourceBuilder(_FORMAT_MAP)
+
+
+def arbitrary_single_line_value_that_must_not_be_quoted() -> str:
+    return matcher_options.EMPTY_ARGUMENT

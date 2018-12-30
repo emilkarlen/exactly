@@ -27,7 +27,7 @@ from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.program.string_or_file import SourceType
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver, \
-    FileMatcherResolver, LineMatcherResolver, SymbolValueResolver
+    FileMatcherResolver, LineMatcherResolver, SymbolValueResolver, StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
@@ -39,6 +39,7 @@ from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import parse_s
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.program.parse import parse_program
+from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.test_case_utils.string_transformer import resolvers as line_transformer_resolvers, \
     parse_string_transformer
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
@@ -273,6 +274,11 @@ def _parse_line_matcher(fs_location_info: FileSystemLocationInfo,
         return parse_line_matcher.parse_line_matcher_from_token_parser(token_parser)
 
 
+def _parse_string_matcher(fs_location_info: FileSystemLocationInfo,
+                          token_parser: TokenParser) -> StringMatcherResolver:
+    return parse_string_matcher.parse_string_matcher(token_parser)
+
+
 def _parse_file_matcher(fs_location_info: FileSystemLocationInfo,
                         token_parser: TokenParser) -> FileMatcherResolver:
     if token_parser.is_at_eol:
@@ -299,6 +305,7 @@ _TYPE_SETUPS = {
     types.STRING_TYPE_INFO.identifier: _parse_string,
     types.LIST_TYPE_INFO.identifier: _parse_not_whole_line(_parse_list),
     types.LINE_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_line_matcher),
+    types.STRING_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_string_matcher),
     types.FILE_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_file_matcher),
     types.STRING_TRANSFORMER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_string_transformer),
     types.PROGRAM_TYPE_INFO.identifier: _parse_program,
