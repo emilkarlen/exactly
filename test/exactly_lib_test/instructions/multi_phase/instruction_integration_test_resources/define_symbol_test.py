@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.instructions.multi_phase.define_symbol.common_failing_cases import \
-    FAILING_SYNTAX_CASES
+    INVALID_SYNTAX_CASES
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import src
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
@@ -41,7 +41,7 @@ class TestCaseBase(unittest.TestCase):
 class TestFailWhenInvalidSyntax(TestCaseBase):
     def runTest(self):
         parser = self.conf.parser()
-        for (source_str, case_name) in FAILING_SYNTAX_CASES:
+        for (source_str, case_name) in INVALID_SYNTAX_CASES:
             source = remaining_source(source_str)
             with self.subTest(msg=case_name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
