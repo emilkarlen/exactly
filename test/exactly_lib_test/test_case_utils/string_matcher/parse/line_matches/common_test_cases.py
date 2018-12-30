@@ -18,8 +18,6 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instru
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
     TestConfigurationForMatcher
-from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    expectation_type_config__non_is_success
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -87,7 +85,6 @@ class _TestSymbolReferencesBase(_TestCaseBase):
         parser = self.configuration.new_parser()
 
         for expectation_type in ExpectationType:
-            etc = expectation_type_config__non_is_success(expectation_type)
             for quantifier in Quantifier:
                 with self.subTest(expectation_type=expectation_type,
                                   quantifier=quantifier.name):
@@ -95,7 +92,7 @@ class _TestSymbolReferencesBase(_TestCaseBase):
                         common_arguments,
                         arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier,
                                                                                     line_matcher)
-                    ).apply(etc)
+                    ).apply(expectation_type)
                     source = self.configuration.arguments_for(arguments_for_implicit_file).as_remaining_source
                     resolver = parser.parse(source)
                     assert isinstance(resolver, StringMatcherResolver)  # Sanity check

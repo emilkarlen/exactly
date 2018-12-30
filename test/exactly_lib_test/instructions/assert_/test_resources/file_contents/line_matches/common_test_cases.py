@@ -12,8 +12,6 @@ from exactly_lib_test.symbol.test_resources.string_transformer import is_referen
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_case_utils.string_matcher.parse.line_matches import test_resources as tr
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
-from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    pfh_expectation_type_config
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -87,7 +85,6 @@ class _TestSymbolReferenceForStringTransformerIsReported(_TestCaseBase):
         ])
 
         for expectation_type in ExpectationType:
-            etc = pfh_expectation_type_config(expectation_type)
             for quantifier in Quantifier:
                 with self.subTest(expectation_type=expectation_type,
                                   quantifier=quantifier.name):
@@ -96,7 +93,7 @@ class _TestSymbolReferenceForStringTransformerIsReported(_TestCaseBase):
                         arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier,
                                                                                     syntax_for_regex_matcher(
                                                                                         'regex'))
-                    ).apply(etc)
+                    ).apply(expectation_type)
                     source = self.configuration.arguments_for(arguments_for_implicit_file).as_remaining_source
                     instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
                     assert isinstance(instruction, AssertPhaseInstruction)  # Sanity check
@@ -118,7 +115,6 @@ class _TestSymbolReferenceForLineMatcherIsReported(_TestCaseBase):
         ])
 
         for expectation_type in ExpectationType:
-            etc = pfh_expectation_type_config(expectation_type)
             for quantifier in Quantifier:
                 with self.subTest(expectation_type=expectation_type,
                                   quantifier=quantifier.name):
@@ -126,7 +122,7 @@ class _TestSymbolReferenceForLineMatcherIsReported(_TestCaseBase):
                         common_arguments,
                         arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier,
                                                                                     line_matcher_name)
-                    ).apply(etc)
+                    ).apply(expectation_type)
                     source = self.configuration.arguments_for(arguments_for_implicit_file).as_remaining_source
                     instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
                     assert isinstance(instruction, AssertPhaseInstruction)  # Sanity check
