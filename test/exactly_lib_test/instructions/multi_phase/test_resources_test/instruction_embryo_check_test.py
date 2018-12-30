@@ -108,6 +108,15 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
             sut.Expectation(symbols_after_main=asrt.is_instance(SymbolTable)),
         )
 
+    def test_assertion_on_instruction_environment(self):
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            single_line_source(),
+            ArrangementWithSds(),
+            sut.Expectation(
+                assertion_on_instruction_environment=asrt.is_instance(InstructionEnvironmentForPostSdsStep)),
+        )
+
 
 class TestSymbols(TestCaseBase):
     def test_that_default_expectation_assumes_no_symbol_usages(self):
@@ -332,6 +341,15 @@ class TestMiscCases(TestCaseBase):
                 single_line_source(),
                 ArrangementWithSds(),
                 sut.Expectation(side_effects_on_home_and_sds=asrt.IsInstance(bool)),
+            )
+
+    def test_fail_due_to_assertion_on_instruction_environment(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+                single_line_source(),
+                ArrangementWithSds(),
+                sut.Expectation(assertion_on_instruction_environment=asrt.fail('unconditional failure')),
             )
 
     def test_manipulate_environment_variables(self):
