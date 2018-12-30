@@ -86,3 +86,7 @@ def type_matcher_of(file_type: file_properties.FileType) -> str:
     return parse_file_matcher.TYPE_MATCHER_NAME + \
            ' ' + \
            file_properties.TYPE_INFO[file_type].type_argument
+
+
+def arbitrary_value_on_single_line() -> str:
+    return type_matcher_of(file_properties.FileType.DIRECTORY)

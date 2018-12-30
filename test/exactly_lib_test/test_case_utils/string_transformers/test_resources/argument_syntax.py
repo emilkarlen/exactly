@@ -28,3 +28,7 @@ def syntax_for_select_transformer(line_matcher: str) -> str:
 
 def syntax_for_sequence_of_transformers(transformer_syntax_list: list) -> str:
     return (' ' + parse_string_transformer.SEQUENCE_OPERATOR_NAME + ' ').join(transformer_syntax_list)
+
+
+def arbitrary_value_on_single_line() -> str:
+    return syntax_for_replace_transformer('REGEX', 'REPLACEMENT')
