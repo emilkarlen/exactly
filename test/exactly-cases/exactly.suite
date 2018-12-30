@@ -8,4 +8,6 @@ program/exactly.suite
 
 string-transformer/exactly.suite
 
+string-matcher/exactly.suite
+
 suites/exactly.suite
