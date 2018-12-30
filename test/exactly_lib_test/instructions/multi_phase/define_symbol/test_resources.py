@@ -5,6 +5,13 @@ from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueRe
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR, HARD_QUOTE_CHAR
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, ParseSourceBuilder
 from exactly_lib_test.symbol.test_resources.symbol_utils import single_line_sequence
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax as file_matcher_syntax
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax as line_matcher_syntax
+from exactly_lib_test.test_case_utils.parse.test_resources import \
+    string_argument_syntax, list_argument_syntax, path_argument_syntax
+from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_syntax
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import \
+    argument_syntax as string_transformers_syntax
 
 
 def src(s: str,
@@ -34,6 +41,17 @@ _STD_FORMAT_MAP = {
     'rel_act_home': file_ref.REL_HOME_ACT_OPTION,
     'rel_symbol': file_ref.REL_symbol_OPTION,
     'rel_source_file': file_ref.REL_source_file_dir_OPTION,
+}
+
+TYPE_IDENT_2_VALID_VALID = {
+    types.STRING_TYPE_INFO.identifier: string_argument_syntax.arbitrary_value_on_single_line(),
+    types.LIST_TYPE_INFO.identifier: list_argument_syntax.arbitrary_value_on_single_line(),
+    types.PATH_TYPE_INFO.identifier: path_argument_syntax.arbitrary_value_on_single_line(),
+
+    types.LINE_MATCHER_TYPE_INFO.identifier: line_matcher_syntax.syntax_for_arbitrary_line_matcher(),
+    types.FILE_MATCHER_TYPE_INFO.identifier: file_matcher_syntax.arbitrary_value_on_single_line(),
+    types.STRING_TRANSFORMER_TYPE_INFO.identifier: string_transformers_syntax.arbitrary_value_on_single_line(),
+    types.PROGRAM_TYPE_INFO.identifier: program_syntax.arbitrary_value_on_single_line(),
 }
 
 
