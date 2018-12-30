@@ -1,13 +1,13 @@
 [suites]
 
-file/exactly.suite
+file
 
-file-contents/exactly.suite
+file-contents
 
-program/exactly.suite
+program
 
-string-transformer/exactly.suite
+string-transformer
 
-string-matcher/exactly.suite
+string-matcher
 
-suites/exactly.suite
+suites
