@@ -39,6 +39,8 @@ class Expectation:
                  side_effects_on_home: ValueAssertion[pathlib.Path] = asrt.anything_goes(),
                  source: ValueAssertion[ParseSource] = asrt.anything_goes(),
                  main_side_effect_on_environment_variables: ValueAssertion[Dict[str, str]] = asrt.anything_goes(),
+                 assertion_on_instruction_environment:
+                 ValueAssertion[InstructionEnvironmentForPostSdsStep] = asrt.anything_goes(),
                  ):
         self.validation_pre_sds = validation_pre_sds
         self.validation_post_sds = validation_post_sds
@@ -50,6 +52,7 @@ class Expectation:
         self.symbol_usages = symbol_usages
         self.symbols_after_main = symbols_after_main
         self.main_side_effect_on_environment_variables = main_side_effect_on_environment_variables
+        self.assertion_on_instruction_environment = assertion_on_instruction_environment
 
 
 class TestCaseBase(unittest.TestCase):
@@ -148,6 +151,10 @@ class Executor:
                                                               phase_step.STEP__MAIN)
             self.expectation.side_effects_on_home.apply_with_message(self.put, home_and_sds.hds.case_dir,
                                                                      'side_effects_on_home')
+
+            self.expectation.assertion_on_instruction_environment.apply_with_message(self.put,
+                                                                                     environment,
+                                                                                     'assertion_on_environment')
 
     def _execute_validate_pre_sds(
             self,
