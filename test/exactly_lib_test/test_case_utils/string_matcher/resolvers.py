@@ -5,6 +5,7 @@ from exactly_lib.test_case_utils.string_matcher import resolvers as sut
 from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerReference
 from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl
@@ -33,7 +34,7 @@ class TestWithTransformation(unittest.TestCase):
 
         resolver = sut.new_with_transformation(
             StringTransformerReference(trans_ref_info.name),
-            sut.new_reference(matcher_ref_info.name),
+            sut.new_reference(matcher_ref_info.name, ExpectationType.POSITIVE),
         )
         # ACT #
 
