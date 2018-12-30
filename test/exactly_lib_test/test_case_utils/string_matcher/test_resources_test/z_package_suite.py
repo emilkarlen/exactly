@@ -1,12 +1,12 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.string_matcher.test_resources_test import integration_check_test, assertions
+from exactly_lib_test.test_case_utils.string_matcher.test_resources_test import integration_check, assertions
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         assertions.suite(),
-        integration_check_test.suite(),
+        integration_check.suite(),
     ])
 
 

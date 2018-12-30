@@ -11,7 +11,6 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases import common as i
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
@@ -19,6 +18,7 @@ from exactly_lib.type_system.value_type import TypeCategory, ValueType, LogicVal
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.assertions import matches_string_matcher_resolver
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder, \
     ModelConstructor
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -170,16 +170,18 @@ class Executor:
     def _resolve(self,
                  resolver: StringMatcherResolver,
                  environment: i.InstructionEnvironmentForPostSdsStep) -> StringMatcher:
+
+        resolver_health_check = matches_string_matcher_resolver(references=asrt.anything_goes(),
+                                                                symbols=environment.symbols,
+                                                                tcds=environment.home_and_sds)
+        resolver_health_check.apply_with_message(self.put, resolver,
+                                                 'resolver structure')
+
         matcher_value = resolver.resolve(environment.symbols)
-
-        self.put.assertIsInstance(matcher_value, StringMatcherValue)
-
-        _RESOLVING_DEPENDENCIES_IS_SET.apply_with_message(self.put,
-                                                          matcher_value.resolving_dependencies(),
-                                                          'resolving dependencies')
+        assert isinstance(matcher_value, StringMatcherValue)
 
         matcher = matcher_value.value_of_any_dependency(environment.home_and_sds)
-        self.put.assertIsInstance(matcher, StringMatcher)
+        assert isinstance(matcher, StringMatcher)
 
         return matcher
 
@@ -208,6 +210,3 @@ class Executor:
 
     def _new_model(self, sds: SandboxDirectoryStructure) -> FileToCheck:
         return ModelConstructor(self.model_builder, sds).construct()
-
-
-_RESOLVING_DEPENDENCIES_IS_SET = asrt.is_set_of(asrt.is_instance(DirectoryStructurePartition))
