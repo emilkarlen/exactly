@@ -2,7 +2,7 @@ from typing import Optional
 
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib.type_system.logic.string_transformer import StringTransformer, SequenceStringTransformer
 
 
 class StringMatcherConstant(StringMatcher):
@@ -37,5 +37,15 @@ class StringMatcherOnTransformedFileToCheck(StringMatcher):
         return 'transformed: ' + self._on_transformed.option_description
 
     def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        transformed_model = model.with_transformation(self._transformer)
+        complete_transformer = self._complete_transformer(model)
+        transformed_model = model.with_transformation(complete_transformer)
         return self._on_transformed.matches(transformed_model)
+
+    def _complete_transformer(self, model: FileToCheck) -> StringTransformer:
+        if model.string_transformer.is_identity_transformer:
+            return self._transformer
+        else:
+            return SequenceStringTransformer([
+                model.string_transformer,
+                self._transformer,
+            ])
