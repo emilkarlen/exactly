@@ -44,14 +44,14 @@ def matches_string_matcher_resolver(primitive_value: ValueAssertion[StringMatche
             is_resolver_of_logic_type(LogicValueType.STRING_MATCHER,
                                       ValueType.STRING_MATCHER),
 
+            asrt.sub_component('references',
+                               resolver_structure.get_references,
+                               references),
+
             asrt.sub_component('validator',
                                lambda resolver: resolver.validator,
                                asrt.is_instance(PreOrPostSdsValidator)
                                ),
-
-            asrt.sub_component('references',
-                               resolver_structure.get_references,
-                               references),
 
             asrt.sub_component('resolved value',
                                resolve_value,

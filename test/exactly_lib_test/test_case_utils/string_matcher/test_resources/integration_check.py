@@ -14,7 +14,6 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
-from exactly_lib.type_system.value_type import TypeCategory, ValueType, LogicValueType
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
@@ -99,13 +98,15 @@ class Executor:
     def execute(self, source: ParseSource):
         resolver = self._parse(source)
 
-        self.put.assertIs(resolver.type_category, TypeCategory.LOGIC)
-        self.put.assertIs(resolver.logic_value_type, LogicValueType.STRING_MATCHER)
-        self.put.assertIs(resolver.value_type, ValueType.STRING_MATCHER)
-
         self.expectation.symbol_usages.apply_with_message(self.put,
                                                           resolver.references,
                                                           'symbol-usages after parse')
+
+        matches_string_matcher_resolver(
+            references=asrt.anything_goes(),
+            symbols=self.arrangement.symbols).apply_with_message(self.put, resolver,
+                                                                 'resolver structure')
+
         with home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 hds_contents=self.arrangement.hds_contents,
