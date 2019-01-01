@@ -1,0 +1,18 @@
+[setup]
+
+def string-transformer RM_FIRST_LINE = select line-num > 1
+
+def string-matcher NUM_LINES_AFTER_FIRST_LINE_EQ_1 = -transformed-by RM_FIRST_LINE num-lines == 1
+
+file 3-lines.txt = <<-
+1
+2
+3
+-
+
+
+[assert]
+
+contents 3-lines.txt
+         -transformed-by RM_FIRST_LINE
+         NUM_LINES_AFTER_FIRST_LINE_EQ_1
