@@ -1,4 +1,5 @@
 import unittest
+
 from typing import TypeVar, Callable, Set, Optional, Generic
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue, SingleDirDependentValue, \
@@ -27,19 +28,23 @@ def matches_single_dir_dependent_value(resolving_dependency: Optional[DirectoryS
 
 
 def matches_multi_dir_dependent_value(dir_dependencies: DirDependencies,
-                                      resolved_value: Callable[[HomeAndSds], ValueAssertion[T]]
+                                      resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
+                                      tcds: HomeAndSds = fake_home_and_sds(),
                                       ) -> ValueAssertion[DirDependentValue[T]]:
     return MultiDirDependentValueAssertion(dir_dependencies,
-                                           resolved_value)
+                                           resolved_value,
+                                           tcds)
 
 
 class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[DirDependentValue[T]]):
     def __init__(self,
                  resolving_dependencies: ValueAssertion[Set[DirectoryStructurePartition]],
                  resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
+                 tcds: HomeAndSds,
                  ):
         self.resolving_dependencies = resolving_dependencies
         self.resolved_value = resolved_value
+        self.tcds = tcds
 
     def _check_sub_class_properties(self,
                                     put: unittest.TestCase,
@@ -57,11 +62,9 @@ class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[DirDependent
 
         self._check_resolving_dependencies(put, value, message_builder)
 
-        tcds = fake_home_and_sds()
+        self._check_sub_class_properties(put, value, self.tcds, message_builder)
 
-        self._check_sub_class_properties(put, value, tcds, message_builder)
-
-        self._check_resolved_value(put, value, tcds, message_builder)
+        self._check_resolved_value(put, value, self.tcds, message_builder)
 
     def _check_resolving_dependencies(self,
                                       put: unittest.TestCase,
@@ -107,8 +110,9 @@ class ArbitraryDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
     def __init__(self,
                  resolving_dependencies: ValueAssertion[Set[DirectoryStructurePartition]],
                  resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
+                 tcds: HomeAndSds = fake_home_and_sds(),
                  ):
-        super().__init__(resolving_dependencies, resolved_value)
+        super().__init__(resolving_dependencies, resolved_value, tcds)
 
     def _check_sub_class_properties(self,
                                     put: unittest.TestCase,
@@ -122,9 +126,10 @@ class SingleDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
     def __init__(self,
                  resolving_dependency: Optional[DirectoryStructurePartition],
                  resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
+                 tcds: HomeAndSds = fake_home_and_sds(),
                  ):
         resolving_dependencies = asrt.is_empty if resolving_dependency is None else asrt.equals({resolving_dependency})
-        super().__init__(resolving_dependencies, resolved_value)
+        super().__init__(resolving_dependencies, resolved_value, tcds)
         self._resolving_dependency = resolving_dependency
 
     def _check_sub_class_properties(self,
@@ -160,9 +165,11 @@ class MultiDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
     def __init__(self,
                  dir_dependencies: DirDependencies,
                  resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
+                 tcds: HomeAndSds = fake_home_and_sds(),
                  ):
         super().__init__(asrt.equals(resolving_dependencies_from_dir_dependencies(dir_dependencies)),
-                         resolved_value)
+                         resolved_value,
+                         tcds)
         self._dir_dependencies = dir_dependencies
 
     def _check_sub_class_properties(self,

@@ -36,7 +36,7 @@ class StringMatcherResolverConstantTestImpl(StringMatcherResolver):
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
 
-    def resolve(self, named_elements: SymbolTable) -> StringMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
         return StringMatcherConstantValue(self._resolved_value)
 
 
