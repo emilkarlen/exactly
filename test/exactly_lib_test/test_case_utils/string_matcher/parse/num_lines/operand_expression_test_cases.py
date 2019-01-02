@@ -12,8 +12,6 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resour
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     TestCaseBase
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
-    TestConfigurationForMatcher
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -23,20 +21,12 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def suite() -> unittest.TestSuite:
-    configuration = TestConfigurationForMatcher()
-
-    test_case_constructors = [
-
-        _NumLinesMatchesWithOperandAsSymbolReference,
-        _NumLinesMatchesWithOperandAsPythonExpression,
-        _NumLinesMatchesWithOperandAsSymbolReferenceAsPartOfPythonExpression,
-
-        _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInteger,
-    ]
-
     return unittest.TestSuite([
-        test_case_constructor(configuration)
-        for test_case_constructor in test_case_constructors
+        _NumLinesMatchesWithOperandAsSymbolReference(),
+        _NumLinesMatchesWithOperandAsPythonExpression(),
+        _NumLinesMatchesWithOperandAsSymbolReferenceAsPartOfPythonExpression(),
+
+        _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInteger(),
     ])
 
 

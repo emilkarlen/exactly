@@ -7,10 +7,10 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__multi_line
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
-    InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
+    TestConfigurationForMatcher
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder
@@ -55,9 +55,11 @@ class InstructionArgumentsVariantConstructor:
 
 
 class TestCaseBase(unittest.TestCase):
-    def __init__(self, configuration: InstructionTestConfigurationForContentsOrEquals):
-        super().__init__()
-        self.configuration = configuration
+    _CONFIGURATION = TestConfigurationForMatcher()
+
+    @property
+    def configuration(self) -> TestConfigurationForMatcher:
+        return self._CONFIGURATION
 
     def shortDescription(self):
         return str(type(self.configuration))

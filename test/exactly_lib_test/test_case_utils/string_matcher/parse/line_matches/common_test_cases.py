@@ -14,36 +14,27 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.line_matches import t
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import \
     CommonArgumentsConstructor
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
-    InstructionTestConfigurationForContentsOrEquals
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
     TestConfigurationForMatcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
-    configuration = TestConfigurationForMatcher()
-
-    test_case_constructors = [
-        _ParseWithMissingLineMatcherArgument,
-        _ParseWithSuperfluousArgument,
-        _ParseWithInvalidLineMatcher,
-
-        _TestSymbolReferenceForStringTransformerIsReported,
-        _TestSymbolReferenceForLineMatcherIsReported,
-    ]
     return unittest.TestSuite([
-        test_case_constructor(configuration)
-        for test_case_constructor in test_case_constructors
+        _ParseWithMissingLineMatcherArgument(),
+        _ParseWithSuperfluousArgument(),
+        _ParseWithInvalidLineMatcher(),
+
+        _TestSymbolReferenceForStringTransformerIsReported(),
+        _TestSymbolReferenceForLineMatcherIsReported(),
     ])
 
 
 class _TestCaseBase(unittest.TestCase):
-    def __init__(self,
-                 configuration: InstructionTestConfigurationForContentsOrEquals):
+    def __init__(self):
         super().__init__()
-        self.configuration = configuration
+        self.configuration = TestConfigurationForMatcher()
 
     def _check_variants_with_expectation_type_and_any_or_every(
             self,
