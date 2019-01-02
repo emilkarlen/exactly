@@ -14,8 +14,6 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resour
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     TestCaseBase
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
-    TestConfigurationForMatcher
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -23,20 +21,14 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def suite() -> unittest.TestSuite:
-    configuration = TestConfigurationForMatcher()
-
-    test_case_constructors = [
-        _NumLinesMatches_NewLineCharacterAfterLastLine,
-        _NumLinesMatches_NoNewLineCharacterAfterLastLine,
-        _NumberOfLinesShouldBe0WhenFileIsEmpty,
-
-        _NumLinesDoesNotMatch,
-
-        _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents,
-    ]
     return unittest.TestSuite([
-        test_case_constructor(configuration)
-        for test_case_constructor in test_case_constructors
+        _NumLinesMatches_NewLineCharacterAfterLastLine(),
+        _NumLinesMatches_NoNewLineCharacterAfterLastLine(),
+        _NumberOfLinesShouldBe0WhenFileIsEmpty(),
+
+        _NumLinesDoesNotMatch(),
+
+        _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents(),
     ])
 
 

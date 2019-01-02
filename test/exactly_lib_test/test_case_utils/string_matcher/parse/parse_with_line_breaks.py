@@ -6,12 +6,10 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import SB
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
-    TestConfigurationForMatcher
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
-    TestWithConfigurationBase
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
+    TestCaseBase
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation, \
     matching_matching_success, arbitrary_matching_failure
@@ -20,13 +18,9 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 
 def suite() -> unittest.TestSuite:
-    configuration = TestConfigurationForMatcher()
-
-    test_cases = [
-        TestLineBreaksWithEmptyActualFile,
-    ]
-    return unittest.TestSuite(
-        [tc(configuration) for tc in test_cases])
+    return unittest.TestSuite([
+        TestLineBreaksWithEmptyActualFile(),
+    ])
 
 
 class Case:
@@ -42,7 +36,7 @@ class Case:
         self.main_result_assertion = main_result_assertion
 
 
-class TestLineBreaksWithEmptyActualFile(TestWithConfigurationBase):
+class TestLineBreaksWithEmptyActualFile(TestCaseBase):
     def runTest(self):
         sb = SB.new_with(constant_transformation_arguments=argument_syntax.syntax_for_transformer_option(
             argument_syntax.syntax_for_replace_transformer('a', 'A')

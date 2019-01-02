@@ -13,30 +13,25 @@ from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherR
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl, \
     is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration as tc
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
-    TestConfigurationForMatcher
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
-    TestWithConfigurationAndNegationArgumentBase, \
-    suite_for__conf__not_argument
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as str_trans_syntax
+from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
+    ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
-    configuration = TestConfigurationForMatcher()
-
-    test_cases = [
-        ActualFileIsEmpty,
-    ]
-    return suite_for__conf__not_argument(configuration, test_cases)
+    return unittest.TestSuite([
+        ActualFileIsEmpty(),
+    ])
 
 
-class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
-    def runTest(self):
+class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
+    def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         # ARRANGE #
         string_to_prepend = '.'
 
@@ -87,13 +82,13 @@ class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
             self.configuration.arguments_for(
                 args('{prepend_trans_arg} {maybe_not} {prepend_and_equals_expected_matcher}',
                      prepend_trans_arg=prepend_trans_arg,
-                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative,
+                     maybe_not=maybe_not.nothing__if_positive__not_option__if_negative,
                      prepend_and_equals_expected_matcher=prepend_and_equals_expected_matcher.name)),
             initial_model,
             self.configuration.arrangement_for_contents(
                 symbols=symbols),
             Expectation(
-                main_result=self.maybe_not.pass__if_positive__fail__if_negative,
+                main_result=maybe_not.pass__if_positive__fail__if_negative,
                 symbol_usages=expected_symbol_references),
         )
 

@@ -1,6 +1,7 @@
 import unittest
 
 import pathlib
+from typing import List, Callable
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType
@@ -13,9 +14,9 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
     sub_dir_of_sds_contains_exactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsPopulator, \
     SdsPopulatorForSubDir
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
-    TestWithConfigurationBase, InstructionTestConfiguration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import SUB_DIR_RESOLVER
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
+    TestCaseBase
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
@@ -25,12 +26,11 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurationBase):
+class TestWithRelativityOptionAndNegationBase(TestCaseBase):
     def __init__(self,
-                 instruction_configuration: InstructionTestConfiguration,
                  option_configuration: RelativityOptionConfiguration,
                  expectation_type: ExpectationType):
-        super().__init__(instruction_configuration)
+        super().__init__()
         self.rel_opt = option_configuration
         self.not_opt = expectation_type_config__non_is_success(expectation_type)
 
@@ -42,13 +42,14 @@ class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurat
                 )
 
 
-def suite_for__conf__rel_opts__negations(instruction_configuration: InstructionTestConfiguration,
-                                         relativity_options: list,
-                                         test_cases: list) -> unittest.TestSuite:
+def suite_for__rel_opts__negations(
+        relativity_options: List[RelativityOptionConfiguration],
+        test_cases: Callable[[RelativityOptionConfiguration, ExpectationType], unittest.TestCase]
+) -> unittest.TestSuite:
     def suite_for_option(option_configuration: RelativityOptionConfiguration) -> unittest.TestSuite:
-        not_negated = [tc(instruction_configuration, option_configuration, ExpectationType.POSITIVE)
+        not_negated = [tc(option_configuration, ExpectationType.POSITIVE)
                        for tc in test_cases]
-        negated = [tc(instruction_configuration, option_configuration, ExpectationType.POSITIVE)
+        negated = [tc(option_configuration, ExpectationType.POSITIVE)
                    for tc in test_cases]
         return unittest.TestSuite(not_negated + negated)
 

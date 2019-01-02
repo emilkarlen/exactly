@@ -7,32 +7,25 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     InstructionArgumentsVariantConstructor
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
-    InstructionTestConfigurationForContentsOrEquals
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.instruction_test_configuration import \
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
     TestConfigurationForMatcher
 
 
 def suite() -> unittest.TestSuite:
-    configuration = TestConfigurationForMatcher()
-
-    test_case_constructors = [
-        _ParseShouldFailWhenOperandIsMissing,
-        _ParseShouldFailWhenOperatorIsInvalid,
-        _ParseShouldFailWhenThereAreSuperfluousArguments,
-        _ParseShouldFailWhenTransformerIsInvalid,
-    ]
     return unittest.TestSuite([
-        test_case_constructor(configuration)
-        for test_case_constructor in test_case_constructors
+        _ParseShouldFailWhenOperandIsMissing(),
+        _ParseShouldFailWhenOperatorIsInvalid(),
+        _ParseShouldFailWhenThereAreSuperfluousArguments(),
+        _ParseShouldFailWhenTransformerIsInvalid(),
     ])
 
 
 class _TestCaseBase(unittest.TestCase):
-    def __init__(self,
-                 configuration: InstructionTestConfigurationForContentsOrEquals):
-        super().__init__()
-        self.configuration = configuration
+    _CONFIGURATION = TestConfigurationForMatcher()
+
+    @property
+    def configuration(self) -> TestConfigurationForMatcher:
+        return self._CONFIGURATION
 
     def _check_variants_with_expectation_type(
             self,
