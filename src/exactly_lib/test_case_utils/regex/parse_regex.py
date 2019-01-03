@@ -1,21 +1,19 @@
 import re
-from typing import Sequence, Set, Pattern, Optional, Callable
+from typing import Sequence, Set, Pattern, Optional
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
-    PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.parse import parse_reg_ex
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import parse_string_or_here_doc_from_token_parser
-from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue, PreOrPostSdsValueValidator
+from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -43,25 +41,17 @@ class _RegexResolver(RegexResolver):
                  string: StringResolver):
         self._is_ignore_case = is_ignore_case
         self._string = string
-        self._validator = _PreOrPostSdsValidatorFromValueValidator(self._get_validator)
         self._value = None
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._string.references
 
-    @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return self._validator
-
     def resolve(self, symbols: SymbolTable) -> RegexValue:
         if self._value is None:
             self._value = _RegexValue(self._is_ignore_case,
                                       self._string.resolve(symbols))
         return self._value
-
-    def _get_validator(self, symbols: SymbolTable) -> PreOrPostSdsValueValidator:
-        return self.resolve(symbols).validator()
 
 
 class _ValidatorWhichCreatesRegex(PreOrPostSdsValueValidator):
@@ -117,20 +107,3 @@ class _RegexValue(RegexValue):
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> Pattern:
         return self._validator.pattern
-
-
-class _PreOrPostSdsValidatorFromValueValidator(PreOrPostSdsValidator):
-    def __init__(self, get_value_validator: Callable[[SymbolTable], PreOrPostSdsValueValidator]):
-        self._get_value_validator = get_value_validator
-        self._value_validator = None
-        self._hds = None
-
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
-        if self._value_validator is None:
-            self._hds = environment.hds
-            self._value_validator = self._get_value_validator(environment.symbols)
-        return self._value_validator.validate_pre_sds_if_applicable(environment.hds)
-
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
-        tcds = HomeAndSds(self._hds, environment.sds)
-        return self._value_validator.validate_post_sds_if_applicable(tcds)

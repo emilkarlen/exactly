@@ -5,6 +5,7 @@ from typing import Callable, Optional
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds, PathResolvingEnvironment
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_resources.actions import do_nothing
@@ -167,6 +168,29 @@ class PreOrPostSdsValidationAssertion(ValueAssertionBase[PreOrPostSdsValidator])
                                                     message_builder.apply('pre sds validation'))
         if validation_result is None:
             validation_result = value.validate_post_sds_if_applicable(environment)
+            self.expectation.post_sds.apply_with_message(put,
+                                                         validation_result,
+                                                         message_builder.apply('post sds validation'))
+
+
+class PreOrPostSdsValueValidationAssertion(ValueAssertionBase[PreOrPostSdsValueValidator]):
+    def __init__(self,
+                 tcds: HomeAndSds,
+                 expectation: ValidationExpectation,
+                 ):
+        self.tcds = tcds
+        self.expectation = expectation
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: PreOrPostSdsValueValidator,
+               message_builder: MessageBuilder):
+        validation_result = value.validate_pre_sds_if_applicable(self.tcds.hds)
+        self.expectation.pre_sds.apply_with_message(put,
+                                                    validation_result,
+                                                    message_builder.apply('pre sds validation'))
+        if validation_result is None:
+            validation_result = value.validate_post_sds_if_applicable(self.tcds)
             self.expectation.post_sds.apply_with_message(put,
                                                          validation_result,
                                                          message_builder.apply('post sds validation'))

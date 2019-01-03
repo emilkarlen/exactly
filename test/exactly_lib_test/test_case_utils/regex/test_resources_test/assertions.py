@@ -5,14 +5,13 @@ from typing import Sequence, Pattern
 
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case.pre_or_post_value_validation import ConstantPreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
-from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.instruction_from_parts_that_executes_sub_process import \
-    ConstantResultValidator
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_utils.regex.test_resources import assertions as sut
@@ -83,7 +82,7 @@ class TestMatchesRegexResolver(unittest.TestCase):
 
         ]
         resolver_of_actual = RegexResolverConstantTestImpl(ARBITRARY_PATTERN,
-                                                           validator=None)
+                                                           value_validator=None)
 
         for case in cases:
             with self.subTest(name=case.name):
@@ -222,7 +221,7 @@ class TestMatchesRegexResolver(unittest.TestCase):
 
         resolver_of_actual = RegexResolverConstantTestImpl(
             ARBITRARY_PATTERN,
-            validator=ConstantResultValidator(pre_sds='expected pre sds failure'),
+            value_validator=ConstantPreOrPostSdsValueValidator(pre_sds_result='expected failure'),
         )
 
         assertion_to_check = sut.matches_regex_resolver(
@@ -239,7 +238,7 @@ class TestMatchesRegexResolver(unittest.TestCase):
 
         resolver_of_actual = RegexResolverConstantTestImpl(
             ARBITRARY_PATTERN,
-            validator=ConstantResultValidator(post_setup='expected pre sds failure'),
+            value_validator=ConstantPreOrPostSdsValueValidator(post_sds_result='expected failure'),
         )
 
         assertion_to_check = sut.matches_regex_resolver(
@@ -266,7 +265,7 @@ def arbitrary_resolver_with_references(references: Sequence[SymbolReference]) ->
 
 
 def check_of_primitive_value_fails_expectedly(tcds: HomeAndSds) -> ValueAssertion[Pattern]:
-    return asrt.fail('expectedly')
+    return asrt.fail('unconditional failure')
 
 
 if __name__ == '__main__':

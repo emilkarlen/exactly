@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Iterable, Sequence, Optional
+from typing import Iterable, Sequence, Optional, Callable
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironment
+from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case.result import sh, svh
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 class ValidationStep(Enum):
@@ -223,3 +226,20 @@ class ValidatorOfReferredResolverBase(PreOrPostSdsValidator):
 
     def _referred_validator(self, environment: PathResolvingEnvironment) -> PreOrPostSdsValidator:
         raise NotImplementedError('abstract method')
+
+
+class PreOrPostSdsValidatorFromValueValidator(PreOrPostSdsValidator):
+    def __init__(self, get_value_validator: Callable[[SymbolTable], PreOrPostSdsValueValidator]):
+        self._get_value_validator = get_value_validator
+        self._value_validator = None
+        self._hds = None
+
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
+        if self._value_validator is None:
+            self._hds = environment.hds
+            self._value_validator = self._get_value_validator(environment.symbols)
+        return self._value_validator.validate_pre_sds_if_applicable(environment.hds)
+
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
+        tcds = HomeAndSds(self._hds, environment.sds)
+        return self._value_validator.validate_post_sds_if_applicable(tcds)

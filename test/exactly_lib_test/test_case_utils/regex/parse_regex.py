@@ -7,7 +7,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import string_resolvers, file_ref_resolvers
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -27,7 +26,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.regex.test_resources.assertions import matches_regex_resolver
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidationExpectation, \
-    all_validations_passes, PreOrPostSdsValidatorAssertion, pre_sds_validation_fails, post_sds_validation_fails
+    all_validations_passes, pre_sds_validation_fails, post_sds_validation_fails
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
@@ -601,15 +600,6 @@ def _check(put: unittest.TestCase,
     resolver_assertion.apply_with_message(put,
                                           actual_resolver,
                                           'resolver')
-
-    environment_post_sds = PathResolvingEnvironmentPreOrPostSds(tcds,
-                                                                arrangement.symbols)
-
-    validation_assertion = PreOrPostSdsValidatorAssertion(expectation.validation,
-                                                          environment_post_sds)
-    validation_assertion.apply_with_message(put,
-                                            actual_resolver.validator,
-                                            'validation')
 
 
 def matches_for_case_insensitive(matches_for_case_sensitive: List[str]) -> List[str]:
