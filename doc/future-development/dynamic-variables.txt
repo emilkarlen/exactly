@@ -60,3 +60,30 @@ var x = $( my-prog )
 
 @ PROGRAM-SYMBOL @[x]@
 ----------------------------------------
+
+* Integrate into sym structure using new resolving dependency?
+<2019-01-03 Thu>
+Static symbols have a resolving dependency in the form
+of directory partitions that are referred.
+Given this inforamtion, there are different ways to resolve
+a value:
+ - value_when_no_dependencies
+ - value_of_any_dependency
+
+Maybe dynamic values could be represented as a variant
+of this resolving dependency.
+The dependency should be something like "execution time",
+and a new method would be introduced:
+ - value_of_execution_time_dep(env: ExecutionTimeEnvironment)
+
+** Validation of symbol references
+References to symbols would probably need to add a condition
+on resolving dependency to prevent dynamic values from appearing
+in static ones.
+
+Today there are restrictions on resolving dependencies on
+some PATH values.  These are validated by resolving PathValue
+(FileRef) and checking the relativity.
+This relativity could be included in the general resolving
+dependency reported by any type, to make it independent of
+types.
