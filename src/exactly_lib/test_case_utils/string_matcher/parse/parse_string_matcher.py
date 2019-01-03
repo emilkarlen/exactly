@@ -42,6 +42,7 @@ class _StringMatcherParser:
         self.parsers = {
             matcher_options.EMPTY_ARGUMENT: self._parse_emptiness_checker,
             matcher_options.EQUALS_ARGUMENT: self._parse_equals_checker,
+            matcher_options.MATCHES_ARGUMENT: self._parse_matches_checker,
             instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT: self._parse_any_line_matches_checker,
             instruction_arguments.ALL_QUANTIFIER_ARGUMENT: self._parse_every_line_matches_checker,
             matcher_options.NUM_LINES_ARGUMENT: self._parse_num_lines_checker,
@@ -64,6 +65,10 @@ class _StringMatcherParser:
     def _parse_equals_checker(self, token_parser: TokenParser) -> StringMatcherResolver:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import equality
         return equality.parse(self.expectation_type, token_parser)
+
+    def _parse_matches_checker(self, token_parser: TokenParser) -> StringMatcherResolver:
+        from exactly_lib.test_case_utils.string_matcher.parse.parts import matches
+        return matches.parse(self.expectation_type, token_parser)
 
     def _parse_num_lines_checker(self, token_parser: TokenParser) -> StringMatcherResolver:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import num_lines

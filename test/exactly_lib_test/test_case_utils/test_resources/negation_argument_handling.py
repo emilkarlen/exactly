@@ -80,6 +80,10 @@ class ExpectationTypeConfig(Generic[RET_TYPE], ABC):
         return self._value('', NEGATION_ARGUMENT_STR)
 
     @property
+    def empty__if_positive__not_option__if_negative(self) -> List[str]:
+        return self._value([], [NEGATION_ARGUMENT_STR])
+
+    @property
     def pass__if_positive__fail__if_negative(self) -> ValueAssertion[RET_TYPE]:
         return self.main_result(PassOrFail.PASS)
 

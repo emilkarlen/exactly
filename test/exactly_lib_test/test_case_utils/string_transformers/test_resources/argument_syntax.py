@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
@@ -8,6 +10,13 @@ def syntax_for_transformer_option(transformer_expression: str) -> str:
         option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
         transformer_expression,
     ])
+
+
+def arguments_for_transformer_option(transformer_expression: str) -> List[str]:
+    return [
+        option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+        transformer_expression,
+    ]
 
 
 def syntax_for_replace_transformer(regex_token_str: str,

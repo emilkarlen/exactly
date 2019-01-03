@@ -118,6 +118,7 @@ _FORMAT_MAP = {
     'line_matches': matcher_options.LINE_ARGUMENT + ' ' + matcher_options.MATCHES_ARGUMENT,
     'empty': matcher_options.EMPTY_ARGUMENT,
     'equals': matcher_options.EQUALS_ARGUMENT,
+    'matches': matcher_options.MATCHES_ARGUMENT,
     'file_option': option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
     'not': matcher_options.NOT_ARGUMENT,
     'transform_option': option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME),

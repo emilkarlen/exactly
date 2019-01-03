@@ -1,11 +1,12 @@
 import re
-from typing import Sequence, Set, Pattern, Optional
+from typing import Sequence, Set, Pattern, Optional, Tuple
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.program.string_or_file import SourceType
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -23,13 +24,17 @@ def regex_parser() -> Parser[RegexResolver]:
 
 
 def parse_regex(parser: TokenParser) -> RegexResolver:
+    return parse_regex2(parser)[1]
+
+
+def parse_regex2(parser: TokenParser) -> Tuple[SourceType, RegexResolver]:
     parser.require_is_not_at_eol(parse_reg_ex.MISSING_REGEX_ARGUMENT_ERR_MSG)
     is_ignore_case = parser.consume_and_handle_optional_option(False,
                                                                lambda x: True,
                                                                parse_reg_ex.IGNORE_CASE_OPTION_NAME)
     parser.require_is_not_at_eol(parse_reg_ex.MISSING_STRING_ARGUMENT_FOR_REGEX_ERR_MSG)
     source_type, regex_pattern = parse_string_or_here_doc_from_token_parser(parser)
-    return _RegexResolver(is_ignore_case, regex_pattern)
+    return source_type, _RegexResolver(is_ignore_case, regex_pattern)
 
 
 _PARSER = parser_classes.ParserFromTokenParserFunction(parse_regex)
