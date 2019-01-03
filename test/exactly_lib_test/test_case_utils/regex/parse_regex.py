@@ -619,44 +619,6 @@ def matches_for_case_insensitive(matches_for_case_sensitive: List[str]) -> List[
     ]
 
 
-def _check2(put: unittest.TestCase,
-            source: TokenParser,
-            arrangement: Arrangement,
-            expected_pattern: ValueAssertion[Pattern],
-            expectation: ExpectationExceptPattern):
-    # ARRANGE #
-    tcds = fake_home_and_sds()
-
-    def on_primitive_value(tcds: HomeAndSds) -> ValueAssertion[Pattern]:
-        return expected_pattern
-
-    resolver_assertion = matches_regex_resolver(primitive_value=on_primitive_value,
-                                                references=expectation.references,
-                                                validation=expectation.validation,
-                                                tcds=tcds,
-                                                symbols=arrangement.symbols)
-
-    # ACT #
-    actual_resolver = sut.parse_regex(source)
-    # ASSERT #
-    expectation.token_stream.apply_with_message(put,
-                                                source.token_stream,
-                                                'token stream')
-
-    resolver_assertion.apply_with_message(put,
-                                          actual_resolver,
-                                          'resolver')
-
-    environment_post_sds = PathResolvingEnvironmentPreOrPostSds(tcds,
-                                                                arrangement.symbols)
-
-    validation_assertion = PreOrPostSdsValidatorAssertion(expectation.validation,
-                                                          environment_post_sds)
-    validation_assertion.apply_with_message(put,
-                                            actual_resolver.validator,
-                                            'validation')
-
-
 class _AssertPattern(ValueAssertionBase[Pattern]):
     def __init__(self,
                  pattern_string: str,

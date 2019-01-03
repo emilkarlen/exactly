@@ -5,16 +5,19 @@ from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
+from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue, PreOrPostSdsValueValidator, \
+    ConstantPreOrPostSdsValueValidator
 from exactly_lib.util.symbol_table import SymbolTable
 
 
 class RegexConstantValueTestImpl(RegexValue):
     def __init__(self,
                  value: Pattern,
-                 resolving_dependencies: Optional[Set[DirectoryStructurePartition]] = None
+                 resolving_dependencies: Optional[Set[DirectoryStructurePartition]] = None,
+                 validator: PreOrPostSdsValueValidator = ConstantPreOrPostSdsValueValidator(None, None),
                  ):
         self._value = value
+        self._validator = validator
         self._resolving_dependencies = set() if resolving_dependencies is None else resolving_dependencies
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
@@ -25,6 +28,9 @@ class RegexConstantValueTestImpl(RegexValue):
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> Pattern:
         return self._value
+
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return self._validator
 
 
 class RegexResolverConstantTestImpl(RegexResolver):

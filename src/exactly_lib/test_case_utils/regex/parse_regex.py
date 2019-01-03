@@ -1,5 +1,5 @@
 import re
-from typing import Sequence, Set, Pattern, Optional
+from typing import Sequence, Set, Pattern, Optional, Callable
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.section_document import parser_classes
@@ -11,10 +11,11 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.parse import parse_reg_ex
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import parse_string_or_here_doc_from_token_parser
-from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
+from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue, PreOrPostSdsValueValidator
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -42,7 +43,8 @@ class _RegexResolver(RegexResolver):
                  string: StringResolver):
         self._is_ignore_case = is_ignore_case
         self._string = string
-        self._validator = _Validator(is_ignore_case, string)
+        self._validator = _PreOrPostSdsValidatorFromValueValidator(self._get_validator)
+        self._value = None
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -53,75 +55,82 @@ class _RegexResolver(RegexResolver):
         return self._validator
 
     def resolve(self, symbols: SymbolTable) -> RegexValue:
-        return _RegexValue(self._is_ignore_case,
-                           self._string.resolve(symbols))
+        if self._value is None:
+            self._value = _RegexValue(self._is_ignore_case,
+                                      self._string.resolve(symbols))
+        return self._value
+
+    def _get_validator(self, symbols: SymbolTable) -> PreOrPostSdsValueValidator:
+        return self.resolve(symbols).validator()
+
+
+class _ValidatorWhichCreatesRegex(PreOrPostSdsValueValidator):
+    def __init__(self,
+                 is_ignore_case: bool,
+                 string: StringValue):
+        self._is_ignore_case = is_ignore_case
+        self.string = string
+        self.pattern = None
+
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
+        return self.string.resolving_dependencies()
+
+    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[str]:
+        if self.pattern is None:
+            if not self.string.resolving_dependencies():
+                return self._compile_and_set_pattern(self.string.value_when_no_dir_dependencies())
+        else:
+            return None
+
+    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[str]:
+        if self.pattern is None:
+            return self._compile_and_set_pattern(self.string.value_of_any_dependency(tcds))
+        else:
+            return None
+
+    def _compile_and_set_pattern(self, regex_pattern: str) -> Optional[str]:
+        try:
+            flags = 0
+            if self._is_ignore_case:
+                flags = re.IGNORECASE
+            self.pattern = re.compile(regex_pattern, flags)
+            return None
+        except Exception as ex:
+            err_msg = "Invalid {}: '{}'".format(instruction_arguments.REG_EX.name, str(ex))
+            return err_msg
 
 
 class _RegexValue(RegexValue):
     def __init__(self,
                  is_ignore_case: bool,
                  string: StringValue):
-        self._is_ignore_case = is_ignore_case
-        self._string = string
-        self._pattern = None
+        self._validator = _ValidatorWhichCreatesRegex(is_ignore_case, string)
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._string.resolving_dependencies()
+        return self._validator.resolving_dependencies()
+
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return self._validator
 
     def value_when_no_dir_dependencies(self) -> Pattern:
-        if self._pattern is None:
-            self._compile_and_set_pattern(self._string.value_when_no_dir_dependencies())
-        return self._pattern
+        return self._validator.pattern
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> Pattern:
-        if self._pattern is None:
-            self._compile_and_set_pattern(self._string.value_of_any_dependency(tcds))
-        return self._pattern
-
-    def _compile_and_set_pattern(self, regex_pattern: str):
-        try:
-            flags = 0
-            if self._is_ignore_case:
-                flags = re.IGNORECASE
-            self._pattern = re.compile(regex_pattern, flags)
-        except Exception as ex:
-            err_msg = "Invalid {}: '{}'".format(instruction_arguments.REG_EX.name, str(ex))
-            raise ValueError(err_msg)
+        return self._validator.pattern
 
 
-class _Validator(PreOrPostSdsValidator):
-    def __init__(self,
-                 is_ignore_case: bool,
-                 string: StringResolver):
-        self._is_ignore_case = is_ignore_case
-        self._string = string
+class _PreOrPostSdsValidatorFromValueValidator(PreOrPostSdsValidator):
+    def __init__(self, get_value_validator: Callable[[SymbolTable], PreOrPostSdsValueValidator]):
+        self._get_value_validator = get_value_validator
+        self._value_validator = None
         self._hds = None
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
-        self._hds = environment.hds
-        string_value = self._string.resolve(environment.symbols)
-        if not string_value.has_dir_dependency():
-            string = string_value.value_when_no_dir_dependencies()
-            return self._compile(string)
-        else:
-            return None
+        if self._value_validator is None:
+            self._hds = environment.hds
+            self._value_validator = self._get_value_validator(environment.symbols)
+        return self._value_validator.validate_pre_sds_if_applicable(environment.hds)
 
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
-        string_value = self._string.resolve(environment.symbols)
-        if string_value.has_dir_dependency():
-            tcds = HomeAndSds(self._hds, environment.sds)
-            string = string_value.value_of_any_dependency(tcds)
-            return self._compile(string)
-        else:
-            return None
-
-    def _compile(self, regex_pattern: str) -> Optional[str]:
-        try:
-            flags = 0
-            if self._is_ignore_case:
-                flags = re.IGNORECASE
-            re.compile(regex_pattern, flags)
-            return None
-        except Exception as ex:
-            err_msg = "Invalid {}: '{}'".format(instruction_arguments.REG_EX.name, str(ex))
-            return err_msg
+        tcds = HomeAndSds(self._hds, environment.sds)
+        return self._value_validator.validate_post_sds_if_applicable(tcds)
