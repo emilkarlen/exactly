@@ -5,9 +5,12 @@ from typing import Callable, Optional
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds, PathResolvingEnvironment
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_resources.actions import do_nothing
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
+    MessageBuilder
 
 
 class Expectation:
@@ -117,3 +120,30 @@ def post_sds_validation_fails(expected_err_msg: ValueAssertion[str] = asrt.anyth
         pre_sds=asrt.is_none,
         post_sds=asrt.is_not_none_and(expected_err_msg),
     )
+
+
+class PreOrPostSdsValidationAssertion(ValueAssertionBase[PreOrPostSdsValidator]):
+    def __init__(self,
+                 symbols: SymbolTable,
+                 tcds: HomeAndSds,
+                 expectation: ValidationExpectation,
+                 ):
+        self.symbols = symbols
+        self.tcds = tcds
+        self.expectation = expectation
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: PreOrPostSdsValidator,
+               message_builder: MessageBuilder):
+        environment = PathResolvingEnvironmentPreOrPostSds(self.tcds, self.symbols)
+
+        validation_result = value.validate_pre_sds_if_applicable(environment)
+        self.expectation.pre_sds.apply_with_message(put,
+                                                    validation_result,
+                                                    message_builder.apply('pre sds validation'))
+        if validation_result is None:
+            validation_result = value.validate_post_sds_if_applicable(environment)
+            self.expectation.post_sds.apply_with_message(put,
+                                                         validation_result,
+                                                         message_builder.apply('post sds validation'))

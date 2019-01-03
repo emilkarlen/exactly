@@ -374,6 +374,11 @@ class OnTransformed(ValueAssertionBase[T]):
                              message_builder)
 
 
+def if_(condition: Callable[[T], bool],
+        assertion: ValueAssertion[T]) -> ValueAssertion[T]:
+    return _IfAssertion(condition, assertion)
+
+
 def sub_component(component_name: str,
                   component_getter: Callable[[T], U],
                   component_assertion: ValueAssertion[U],
@@ -751,3 +756,19 @@ def or_(assertions: Sequence[ValueAssertion[T]]) -> ValueAssertion[T]:
 
 def all_named(assertions: Sequence[NameAndValue[ValueAssertion[T]]]) -> ValueAssertion[T]:
     return AllNamed(assertions)
+
+
+class _IfAssertion(ValueAssertionBase[T]):
+    def __init__(self,
+                 condition: Callable[[T], bool],
+                 assertion: ValueAssertion[T]
+                 ):
+        self.condition = condition
+        self.assertion = assertion
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: T,
+               message_builder: MessageBuilder):
+        if self.condition(value):
+            self.assertion.apply(put, value, message_builder)

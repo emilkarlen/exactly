@@ -1,22 +1,28 @@
 import unittest
 
 import re
-from typing import Sequence
+from typing import Sequence, Pattern
 
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
+from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.instruction_from_parts_that_executes_sub_process import \
+    ConstantResultValidator
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_utils.regex.test_resources import assertions as sut
 from exactly_lib_test.test_case_utils.regex.test_resources.regex_values import RegexResolverConstantTestImpl
+from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import pre_sds_validation_fails, \
+    post_sds_validation_fails
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.values import FileMatcherTestImpl
 
 
@@ -64,7 +70,7 @@ class TestMatchesRegexResolver(unittest.TestCase):
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check, resolver_of_actual)
 
-    def test_SHOULD_not_match_WHEN_validator_is_none(self):
+    def test_validator_SHOULD_not_be_none(self):
         # ARRANGE #
         cases = [
             NameAndValue('without symbol table',
@@ -211,6 +217,40 @@ class TestMatchesRegexResolver(unittest.TestCase):
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion_to_check, resolver_of_actual)
 
+    def test_SHOULD_match_WHEN_pre_sds_validation_fails_expectedly_but_primitive_value_is_unexpected(self):
+        # ARRANGE #
+
+        resolver_of_actual = RegexResolverConstantTestImpl(
+            ARBITRARY_PATTERN,
+            validator=ConstantResultValidator(pre_sds='expected pre sds failure'),
+        )
+
+        assertion_to_check = sut.matches_regex_resolver(
+            dir_dependencies=DirDependencies.NONE,
+            validation=pre_sds_validation_fails(),
+            primitive_value=check_of_primitive_value_fails_expectedly,
+        )
+
+        # ACT & ASSERT #
+        assertion_to_check.apply_without_message(self, resolver_of_actual)
+
+    def test_SHOULD_match_WHEN_post_sds_validation_fails_expectedly_but_primitive_value_is_unexpected(self):
+        # ARRANGE #
+
+        resolver_of_actual = RegexResolverConstantTestImpl(
+            ARBITRARY_PATTERN,
+            validator=ConstantResultValidator(post_setup='expected pre sds failure'),
+        )
+
+        assertion_to_check = sut.matches_regex_resolver(
+            dir_dependencies=DirDependencies.NONE,
+            validation=post_sds_validation_fails(),
+            primitive_value=check_of_primitive_value_fails_expectedly,
+        )
+
+        # ACT & ASSERT #
+        assertion_to_check.apply_without_message(self, resolver_of_actual)
+
 
 ARBITRARY_PATTERN = re.compile('.')
 
@@ -223,6 +263,10 @@ CONSTANT_STRING_RESOLVER = string_resolvers.str_constant('constant string')
 def arbitrary_resolver_with_references(references: Sequence[SymbolReference]) -> RegexResolver:
     return RegexResolverConstantTestImpl(ARBITRARY_PATTERN,
                                          references)
+
+
+def check_of_primitive_value_fails_expectedly(tcds: HomeAndSds) -> ValueAssertion[Pattern]:
+    return asrt.fail('expectedly')
 
 
 if __name__ == '__main__':
