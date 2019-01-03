@@ -1,5 +1,22 @@
--*-org -*-
+-*- org -*-
 
+* Move sym ref assertion utils to single module
+<2018-04-15 Sun>
+Now they are hard to find because they are spread out in multiple
+modules.
+* Add failure reporting for unsupported OS / unfulfilled dependencies
+<2018-04-14 Sat>
+** Unsuported platform.system()
+Detect that the platform (e.g. Windows)
+is not supported.
+** declare dependenies in conf phase
+E.g.
+----------------------------------------
+requires system program grep
+requires system program grep --version REG-EX (el version > STRING)
+requires executable @ MY_PROGRAM
+# Checks that the program reffed by MY_PROGRAM is executable
+# Only relevenat if it refers to a system program, e.g. grep, ls
 * env: ability to read multiline string
 <2018-07-08 Sun>
 Currently reads just single line.
