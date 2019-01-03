@@ -1,7 +1,8 @@
-from typing import Callable
+from typing import Callable, Set
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue, DirDependencies
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringFragment, StringValue
@@ -35,7 +36,7 @@ class _StringFragmentFromDirDependentValue(StringFragment):
     def __init__(self, value: DirDependentValue):
         self.value = value
 
-    def resolving_dependencies(self) -> set:
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self.value.resolving_dependencies()
 
     def has_dir_dependency(self) -> bool:
