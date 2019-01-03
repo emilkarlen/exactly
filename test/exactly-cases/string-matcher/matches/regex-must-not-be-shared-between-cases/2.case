@@ -1,0 +1,5 @@
+[setup]
+
+def string DEFINED_IN_EACH_CASE = 2
+
+file case-file.txt = @[DEFINED_IN_EACH_CASE]@

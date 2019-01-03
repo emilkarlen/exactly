@@ -1,0 +1,3 @@
+[suites]
+
+regex-must-not-be-shared-between-cases

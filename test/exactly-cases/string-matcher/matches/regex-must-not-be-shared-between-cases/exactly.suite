@@ -1,0 +1,16 @@
+[cases]
+
+1.case
+2.case
+
+
+[assert]
+
+contents case-file.txt matches @[DEFINED_IN_EACH_CASE]@
+
+# The matcher above has a regex-resolver that stores the compilation
+# of the regex, so that it is not done every time it is requested.
+#
+# A consequence is that it is compiled only when used in the first test case,
+# which happen to use a different value of the referenced symbol than the
+# other case.
