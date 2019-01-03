@@ -55,6 +55,10 @@ class Arguments:
     def num_lines(self) -> int:
         return 1 + len(self.following_lines)
 
+    def prepend_to_first_line(self, prefix: str):
+        return Arguments(prefix + self.first_line,
+                         self.following_lines)
+
 
 class ArgumentElements:
     """Instruction arguments, in the form of a first line and following lines."""
