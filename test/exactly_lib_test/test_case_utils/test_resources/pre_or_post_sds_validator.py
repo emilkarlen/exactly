@@ -99,7 +99,7 @@ class ValidationExpectation:
         return self._post_sds
 
 
-def all_validation_passes() -> ValidationExpectation:
+def all_validations_passes() -> ValidationExpectation:
     return ValidationExpectation(
         pre_sds=asrt.is_none,
         post_sds=asrt.is_none,
@@ -120,6 +120,29 @@ def post_sds_validation_fails(expected_err_msg: ValueAssertion[str] = asrt.anyth
         pre_sds=asrt.is_none,
         post_sds=asrt.is_not_none_and(expected_err_msg),
     )
+
+
+class PreOrPostSdsValidatorAssertion(ValueAssertionBase[PreOrPostSdsValidator]):
+    def __init__(self,
+                 expectation: ValidationExpectation,
+                 environment: PathResolvingEnvironmentPreOrPostSds):
+        self.expectation = expectation
+        self.environment = environment
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: PreOrPostSdsValidator,
+               message_builder: MessageBuilder):
+        pre_sds_result = value.validate_pre_sds_if_applicable(self.environment)
+        self.expectation.pre_sds.apply_with_message(put,
+                                                    pre_sds_result,
+                                                    'pre sds validation')
+
+        if pre_sds_result is None:
+            post_sds_result = value.validate_post_sds_if_applicable(self.environment)
+            self.expectation.post_sds.apply_with_message(put,
+                                                         post_sds_result,
+                                                         'post sds validation')
 
 
 class PreOrPostSdsValidationAssertion(ValueAssertionBase[PreOrPostSdsValidator]):

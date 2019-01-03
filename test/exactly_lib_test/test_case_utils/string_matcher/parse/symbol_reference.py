@@ -25,7 +25,7 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidatorThat, \
-    pre_sds_validation_fails, post_sds_validation_fails, all_validation_passes
+    pre_sds_validation_fails, post_sds_validation_fails, all_validations_passes
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -107,7 +107,7 @@ class ValidationShouldFailIffItFailsForReferencedMatcher(tc.TestWithNegationArgu
                 actual=ValidatorThat(post_setup_return_value='post sds validation error'),
                 ),
             NEA('no failure',
-                expected=all_validation_passes(),
+                expected=all_validations_passes(),
                 actual=ValidatorThat(),
                 ),
         ]

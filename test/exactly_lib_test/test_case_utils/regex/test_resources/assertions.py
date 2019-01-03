@@ -12,7 +12,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.dir_dep_value_asse
     matches_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidationExpectation, \
-    all_validation_passes, PreOrPostSdsValidationAssertion
+    PreOrPostSdsValidationAssertion, all_validations_passes
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -21,7 +21,7 @@ def matches_regex_resolver(
         primitive_value: Callable[[HomeAndSds], ValueAssertion[Pattern]] = lambda tcds: asrt.anything_goes(),
         references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
         dir_dependencies: DirDependencies = DirDependencies.NONE,
-        validation: ValidationExpectation = all_validation_passes(),
+        validation: ValidationExpectation = all_validations_passes(),
         symbols: symbol_table.SymbolTable = None,
         tcds: HomeAndSds = fake_home_and_sds(),
 ) -> ValueAssertion[RegexResolver]:
