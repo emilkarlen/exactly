@@ -47,6 +47,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
             'LINE_MATCHER': instruction_arguments.LINE_MATCHER.name,
             'HERE_DOCUMENT': formatting.syntax_element_(syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT),
             'INTEGER_COMPARISON': syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name,
+            'REGEX': syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
             'PRIMITIVE_MATCHER': self.matcher_element_name,
             'this_type': types.STRING_MATCHER_TYPE_INFO.singular_name,
         })
@@ -91,6 +92,11 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
         equals_arg = a.Single(a.Multiplicity.MANDATORY,
                               a.Constant(
                                   matcher_options.EQUALS_ARGUMENT))
+
+        matches_regex_arg = a.Single(a.Multiplicity.MANDATORY,
+                                     a.Constant(
+                                         matcher_options.MATCHES_ARGUMENT))
+
         line_arg = a.Single(a.Multiplicity.MANDATORY,
                             a.Constant(matcher_options.LINE_ARGUMENT))
 
@@ -119,6 +125,11 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
                                                   a.Multiplicity.MANDATORY),
                                               ],
                                              self._parser.fnap(_DESCRIPTION_OF_EQUALS_STRING)),
+
+                invokation_variant_from_args([matches_regex_arg,
+                                              syntax_elements.REGEX_SYNTAX_ELEMENT.single_mandatory,
+                                              ],
+                                             self._parser.fnap(_DESCRIPTION_OF_MATCHES_REGEX)),
 
                 invokation_variant_from_args([num_lines_arg,
                                               syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory,
@@ -183,6 +194,10 @@ Matches if the string is empty.
 _DESCRIPTION_OF_EQUALS_STRING = """\
 Matches if the string is equal to a given
 string, {HERE_DOCUMENT} or file.
+"""
+
+_DESCRIPTION_OF_MATCHES_REGEX = """\
+Matches if the string is matches the given {REGEX}.
 """
 
 _DESCRIPTION_OF_LINE_MATCHES = """\
