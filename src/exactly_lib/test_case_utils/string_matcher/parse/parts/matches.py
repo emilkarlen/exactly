@@ -3,6 +3,7 @@ import pathlib
 from typing import List, Optional, Pattern
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.program.string_or_file import SourceType
@@ -14,6 +15,7 @@ from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoRe
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
+from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromValueWithValidation, \
     StringMatcherValueWithValidation
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver, \
@@ -23,16 +25,12 @@ from exactly_lib.util import file_utils
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
-_MATCHES_CHECK_EXPECTED_VALUE = 'matches'
-
-_EXPECTED_SYNTAX_ELEMENT_FOR_MATCHES = 'REGEX'
-
 EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
 
 
 def parse(expectation_type: ExpectationType,
           token_parser: TokenParser) -> StringMatcherResolver:
-    token_parser.require_has_valid_head_token(_EXPECTED_SYNTAX_ELEMENT_FOR_MATCHES)
+    token_parser.require_has_valid_head_token(syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
     source_type, regex_resolver = parse_regex.parse_regex2(token_parser)
     if source_type is not SourceType.HERE_DOC:
         token_parser.report_superfluous_arguments_if_not_at_eol()
@@ -47,7 +45,7 @@ def parse(expectation_type: ExpectationType,
 def value_resolver(expectation_type: ExpectationType,
                    contents_matcher: RegexResolver) -> StringMatcherResolver:
     error_message_constructor = _ErrorMessageResolverConstructor(expectation_type,
-                                                                 ExpectedValueResolver(_MATCHES_CHECK_EXPECTED_VALUE,
+                                                                 ExpectedValueResolver(matcher_options.MATCHES_ARGUMENT,
                                                                                        contents_matcher))
 
     def get_value_with_validator(symbols: SymbolTable) -> StringMatcherValueWithValidation:
@@ -139,7 +137,7 @@ class MatchesRegexStringMatcher(StringMatcher):
 
     @property
     def option_description(self) -> str:
-        return diff_msg.negation_str(self._expectation_type) + _MATCHES_CHECK_EXPECTED_VALUE
+        return diff_msg.negation_str(self._expectation_type) + matcher_options.MATCHES_ARGUMENT
 
 
 def _file_diff_description(actual_file_path: pathlib.Path,
