@@ -1,6 +1,6 @@
 import difflib
 import pathlib
-from typing import List, Optional, Pattern
+from typing import List, Optional, Pattern, Match
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.entity import syntax_elements
@@ -12,7 +12,6 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import diff_msg, diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
-from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
 from exactly_lib.test_case_utils.string_matcher import matcher_options
@@ -25,11 +24,12 @@ from exactly_lib.util import file_utils
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
-EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
-
 
 def parse(expectation_type: ExpectationType,
           token_parser: TokenParser) -> StringMatcherResolver:
+    is_full_match = token_parser.consume_and_handle_optional_option(False,
+                                                                    lambda parser: True,
+                                                                    matcher_options.FULL_MATCH_ARGUMENT_OPTION)
     token_parser.require_has_valid_head_token(syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
     source_type, regex_resolver = parse_regex.parse_regex2(token_parser)
     if source_type is not SourceType.HERE_DOC:
@@ -38,11 +38,13 @@ def parse(expectation_type: ExpectationType,
 
     return value_resolver(
         expectation_type,
+        is_full_match,
         regex_resolver,
     )
 
 
 def value_resolver(expectation_type: ExpectationType,
+                   is_full_match: bool,
                    contents_matcher: RegexResolver) -> StringMatcherResolver:
     error_message_constructor = _ErrorMessageResolverConstructor(expectation_type,
                                                                  ExpectedValueResolver(matcher_options.MATCHES_ARGUMENT,
@@ -54,6 +56,7 @@ def value_resolver(expectation_type: ExpectationType,
         def get_matcher(tcds: HomeAndSds) -> StringMatcher:
             return MatchesRegexStringMatcher(
                 expectation_type,
+                is_full_match,
                 regex_value.value_of_any_dependency(tcds),
                 error_message_constructor,
             )
@@ -110,16 +113,18 @@ class _ErrorMessageResolverConstructor:
 class MatchesRegexStringMatcher(StringMatcher):
     def __init__(self,
                  expectation_type: ExpectationType,
+                 is_full_match: bool,
                  pattern: Pattern[str],
                  error_message_constructor: _ErrorMessageResolverConstructor,
                  ):
         self._expectation_type = expectation_type
+        self._is_full_match = is_full_match
         self._pattern = pattern
         self._err_msg_constructor = error_message_constructor
 
     def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         actual_contents = self._actual_contents(model)
-        match = self._pattern.fullmatch(actual_contents)
+        match = self._find_match(actual_contents)
         if match is None:
             if self._expectation_type is ExpectationType.POSITIVE:
                 return ConstantErrorMessageResolver('Not found: ' + self._pattern.pattern)
@@ -130,6 +135,12 @@ class MatchesRegexStringMatcher(StringMatcher):
                 return None
             else:
                 return ConstantErrorMessageResolver('Found: ' + self._pattern.pattern)
+
+    def _find_match(self, actual_contents: str) -> Match:
+        if self._is_full_match:
+            return self._pattern.fullmatch(actual_contents)
+        else:
+            return self._pattern.search(actual_contents)
 
     def _actual_contents(self, model: FileToCheck) -> str:
         with model.lines() as lines:

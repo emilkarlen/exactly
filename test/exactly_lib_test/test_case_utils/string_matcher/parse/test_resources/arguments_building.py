@@ -112,6 +112,8 @@ def args(arg_str: str, **kwargs) -> str:
     return arg_str.format_map(_FORMAT_MAP)
 
 
+FULL_MATCH_ARGUMENT = option_syntax(matcher_options.FULL_MATCH_ARGUMENT_OPTION)
+
 _FORMAT_MAP = {
     'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
     'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
@@ -120,6 +122,7 @@ _FORMAT_MAP = {
     'equals': matcher_options.EQUALS_ARGUMENT,
     'matches': matcher_options.MATCHES_ARGUMENT,
     'file_option': option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
+    'full_match': FULL_MATCH_ARGUMENT,
     'not': matcher_options.NOT_ARGUMENT,
     'transform_option': option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
     'rel_home_case_option': file_ref_texts.REL_HOME_CASE_OPTION,

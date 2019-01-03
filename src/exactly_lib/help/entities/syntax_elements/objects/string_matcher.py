@@ -17,6 +17,7 @@ from exactly_lib.test_case_utils.string_matcher.matcher_options import EMPTY_ARG
 from exactly_lib.test_case_utils.string_matcher.parse.parts.equality import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.type_system.value_type import TypeCategory
+from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -48,6 +49,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
             'HERE_DOCUMENT': formatting.syntax_element_(syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT),
             'INTEGER_COMPARISON': syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name,
             'REGEX': syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
+            'full_regex_match': option_syntax.option_syntax(matcher_options.FULL_MATCH_ARGUMENT_OPTION),
             'PRIMITIVE_MATCHER': self.matcher_element_name,
             'this_type': types.STRING_MATCHER_TYPE_INFO.singular_name,
         })
@@ -93,10 +95,6 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
                               a.Constant(
                                   matcher_options.EQUALS_ARGUMENT))
 
-        matches_regex_arg = a.Single(a.Multiplicity.MANDATORY,
-                                     a.Constant(
-                                         matcher_options.MATCHES_ARGUMENT))
-
         line_arg = a.Single(a.Multiplicity.MANDATORY,
                             a.Constant(matcher_options.LINE_ARGUMENT))
 
@@ -126,10 +124,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
                                               ],
                                              self._parser.fnap(_DESCRIPTION_OF_EQUALS_STRING)),
 
-                invokation_variant_from_args([matches_regex_arg,
-                                              syntax_elements.REGEX_SYNTAX_ELEMENT.single_mandatory,
-                                              ],
-                                             self._parser.fnap(_DESCRIPTION_OF_MATCHES_REGEX)),
+                self._matches_regex_invokation_variant(),
 
                 invokation_variant_from_args([num_lines_arg,
                                               syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory,
@@ -155,6 +150,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
             syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT,
             syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
             syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
+            syntax_elements.REGEX_SYNTAX_ELEMENT,
         ]
 
         name_and_cross_ref_elements += rel_opts.see_also_name_and_cross_refs(
@@ -175,6 +171,18 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
                                                        instruction_arguments.TRANSFORMATION_OPTION)]),
             ]
         )
+
+    def _matches_regex_invokation_variant(self) -> InvokationVariant:
+        matches_regex_arg = a.Single(a.Multiplicity.MANDATORY,
+                                     a.Constant(
+                                         matcher_options.MATCHES_ARGUMENT))
+
+        return invokation_variant_from_args([matches_regex_arg,
+                                             a.Single(a.Multiplicity.OPTIONAL,
+                                                      a.Option(matcher_options.FULL_MATCH_ARGUMENT_OPTION)),
+                                             syntax_elements.REGEX_SYNTAX_ELEMENT.single_mandatory,
+                                             ],
+                                            self._parser.fnap(_DESCRIPTION_OF_MATCHES_REGEX))
 
 
 _MAIN_DESCRIPTION_REST = """\
@@ -197,7 +205,11 @@ string, {HERE_DOCUMENT} or file.
 """
 
 _DESCRIPTION_OF_MATCHES_REGEX = """\
-Matches if the string is matches the given {REGEX}.
+Matches if {REGEX} matches any part of the string.
+
+
+If {full_regex_match} is given,
+then {REGEX} must match the full string.
 """
 
 _DESCRIPTION_OF_LINE_MATCHES = """\
