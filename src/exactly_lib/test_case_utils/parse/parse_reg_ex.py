@@ -1,4 +1,5 @@
 import re
+from typing import Pattern
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
@@ -13,20 +14,20 @@ IGNORE_CASE_OPTION_NAME = a.OptionName(long_name='ignore-case')
 IGNORE_CASE_OPTION = option_syntax.option_syntax(IGNORE_CASE_OPTION_NAME)
 
 
-def parse_regex(parser: TokenParser):
+def parse_regex(parser: TokenParser) -> Pattern:
     """Returns a reg-ex object"""
-    parser.require_is_not_at_eol(_MISSING_REGEX_ARGUMENT_ERR_MSG)
+    parser.require_is_not_at_eol(MISSING_REGEX_ARGUMENT_ERR_MSG)
     is_ignore_case = parser.consume_and_handle_optional_option(False,
                                                                lambda x: True,
                                                                IGNORE_CASE_OPTION_NAME)
-    parser.require_is_not_at_eol(_MISSING_STRING_ARGUMENT_FOR_REGEX_ERR_MSG)
-    regex_pattern = parser.consume_mandatory_token(_MISSING_STRING_ARGUMENT_FOR_REGEX_ERR_MSG)
+    parser.require_is_not_at_eol(MISSING_STRING_ARGUMENT_FOR_REGEX_ERR_MSG)
+    regex_pattern = parser.consume_mandatory_token(MISSING_STRING_ARGUMENT_FOR_REGEX_ERR_MSG)
     return compile_regex(regex_pattern.string, is_ignore_case)
 
 
-_MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name
+MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name
 
-_MISSING_STRING_ARGUMENT_FOR_REGEX_ERR_MSG = 'Missing {} argument for {}'.format(
+MISSING_STRING_ARGUMENT_FOR_REGEX_ERR_MSG = 'Missing {} argument for {}'.format(
     syntax_elements.STRING_SYNTAX_ELEMENT.argument.name,
     syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name,
 )
