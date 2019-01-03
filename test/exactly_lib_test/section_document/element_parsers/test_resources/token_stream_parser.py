@@ -1,9 +1,11 @@
+from typing import List, Sequence
+
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 
 
 def remaining_source(remaining_contents_of_first_line: str,
-                     following_lines: list = ()) -> TokenParser:
+                     following_lines: Sequence[str] = ()) -> TokenParser:
     """
     :param remaining_contents_of_first_line: Part of the first line that has not been consumed.
     :return: Source with some initial content of the first line that has been consumed.
@@ -13,7 +15,7 @@ def remaining_source(remaining_contents_of_first_line: str,
     return TokenParser(token_stream)
 
 
-def remaining_source_lines(lines: list) -> TokenParser:
+def remaining_source_lines(lines: List[str]) -> TokenParser:
     """
     A variant of 'remaining_source'.
     """
