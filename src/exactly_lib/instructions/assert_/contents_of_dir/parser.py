@@ -1,6 +1,7 @@
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common, emptiness, num_files, quant_over_files
-from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart, FilesSource
+from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart, FilesSource, \
+    FilesMatcherAsDirContentsAssertionPart
 from exactly_lib.instructions.assert_.contents_of_dir.config import PATH_ARGUMENT, ACTUAL_RELATIVITY_CONFIGURATION
 from exactly_lib.instructions.assert_.utils import assertion_part
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart, \
@@ -65,7 +66,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
         )
 
 
-def parse_files_matcher(parser: TokenParser) -> DirContentsAssertionPart:
+def parse_files_matcher(parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
     file_selection = parse_file_matcher.parse_optional_selection_resolver(parser)
     expectation_type = parser.consume_optional_negation_operator()
 
@@ -86,13 +87,14 @@ class _FilesMatcherParserForSettings:
         self.missing_check_description = 'Missing argument for check :' + grammar_options_syntax.alternatives_list(
             self.command_parsers)
 
-    def parse(self, parser: TokenParser) -> DirContentsAssertionPart:
+    def parse(self, parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
         return parser.parse_mandatory_command(self.command_parsers,
                                               self.missing_check_description)
 
-    def parse_empty_check(self, parser: TokenParser) -> DirContentsAssertionPart:
+    def parse_empty_check(self, parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
         self._expect_no_more_args_and_consume_current_line(parser)
-        return emptiness.EmptinessAssertion(self.settings)
+        matcher_resolver = emptiness.EmptinessAssertion(self.settings)
+        return FilesMatcherAsDirContentsAssertionPart(matcher_resolver)
 
     def parse_num_files_check(self, parser: TokenParser) -> DirContentsAssertionPart:
         cmp_op_and_rhs = expression_parse.parse_integer_comparison_operator_and_rhs(

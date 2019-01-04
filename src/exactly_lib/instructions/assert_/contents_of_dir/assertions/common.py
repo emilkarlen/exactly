@@ -108,6 +108,24 @@ class FilesMatcherResolver(ObjectWithTypedSymbolReferences, ABC):
         pass
 
 
+class FilesMatcherResolverBase(FilesMatcherResolver, ABC):
+    def __init__(self,
+                 settings: Settings,
+                 validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()):
+        self._settings = settings
+        self._validator = validator
+
+    def validator(self) -> PreOrPostSdsValidator:
+        return self._validator
+
+    @abstractmethod
+    def matches(self,
+                environment: InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices,
+                files_source: FilesSource) -> Optional[ErrorMessageResolver]:
+        pass
+
+
 class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSource]):
     def __init__(self, files_matcher: FilesMatcherResolver):
         super().__init__(files_matcher.validator())
