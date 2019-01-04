@@ -1,5 +1,5 @@
 from exactly_lib.definitions import instruction_arguments
-from exactly_lib.instructions.assert_.contents_of_dir import files_matcher
+from exactly_lib.instructions.assert_.contents_of_dir import files_matchers
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common, emptiness, num_files, quant_over_files
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart, \
     FilesMatcherAsDirContentsAssertionPart
@@ -73,13 +73,13 @@ def parse_files_matcher(parser: TokenParser) -> AssertionPart[FilesSource, Files
     expectation_type = parser.consume_optional_negation_operator()
 
     files_matcher_parser = _FilesMatcherParserForSettings(
-        files_matcher.Settings(expectation_type,
-                               file_selection))
+        files_matchers.Settings(expectation_type,
+                                file_selection))
     return files_matcher_parser.parse(parser)
 
 
 class _FilesMatcherParserForSettings:
-    def __init__(self, settings: files_matcher.Settings):
+    def __init__(self, settings: files_matchers.Settings):
         self.settings = settings
         self.command_parsers = {
             config.NUM_FILES_CHECK_ARGUMENT: self.parse_num_files_check,

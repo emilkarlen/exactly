@@ -1,7 +1,7 @@
 import pathlib
 from typing import Sequence
 
-from exactly_lib.instructions.assert_.contents_of_dir import config, files_matcher
+from exactly_lib.instructions.assert_.contents_of_dir import config, files_matchers
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
 from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
@@ -36,7 +36,7 @@ class NumFilesResolver(comparison_structures.OperandResolver[int]):
 
 class NumFilesAssertion(DirContentsAssertionPart):
     def __init__(self,
-                 settings: files_matcher.Settings,
+                 settings: files_matchers.Settings,
                  operator_and_r_operand: parse_expr.IntegerComparisonOperatorAndRightOperand):
         self._settings = settings
         self._operator_and_r_operand = operator_and_r_operand

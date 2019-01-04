@@ -1,7 +1,8 @@
 from typing import Sequence
 
-from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import Settings, FilesSource, \
+from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource, \
     FilesMatcherResolver
+from exactly_lib.instructions.assert_.contents_of_dir.files_matchers import Settings
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.symbol_usage import SymbolReference
