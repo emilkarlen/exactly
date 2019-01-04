@@ -2,7 +2,7 @@ import pathlib
 from typing import Sequence, List, Optional
 
 from exactly_lib.instructions.assert_.contents_of_dir import config, files_matchers
-from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource
+from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource, FilesMatcherResolver
 from exactly_lib.instructions.assert_.contents_of_dir.files_matchers import FilesMatcherResolverBase
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
@@ -18,7 +18,11 @@ from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 from exactly_lib.util.logic_types import ExpectationType
 
 
-class EmptinessAssertion(FilesMatcherResolverBase):
+def emptiness_matcher(settings: files_matchers.Settings) -> FilesMatcherResolver:
+    return _EmptinessMatcher(settings)
+
+
+class _EmptinessMatcher(FilesMatcherResolverBase):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._settings.file_matcher.references

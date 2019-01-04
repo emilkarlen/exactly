@@ -96,7 +96,7 @@ class _FilesMatcherParserForSettings:
 
     def parse_empty_check(self, parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
         self._expect_no_more_args_and_consume_current_line(parser)
-        matcher_resolver = emptiness.EmptinessAssertion(self.settings)
+        matcher_resolver = emptiness.emptiness_matcher(self.settings)
         return FilesMatcherAsDirContentsAssertionPart(matcher_resolver)
 
     def parse_num_files_check(self, parser: TokenParser) -> DirContentsAssertionPart:
