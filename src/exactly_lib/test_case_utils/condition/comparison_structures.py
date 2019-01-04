@@ -92,16 +92,16 @@ class ComparisonHandler(Generic[T]):
         self.property_descriptor = property_descriptor
         self.expectation_type = expectation_type
         self.actual_value_lhs = actual_value_lhs
-        self.integer_resolver = expected_value_rhs
+        self.expected_value_rhs = expected_value_rhs
         self.operator = operator
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return list(self.actual_value_lhs.references) + list(self.integer_resolver.references)
+        return list(self.actual_value_lhs.references) + list(self.expected_value_rhs.references)
 
     @property
     def validator(self) -> SvhPreSdsValidatorViaExceptions:
-        return Validator(self.actual_value_lhs, self.integer_resolver)
+        return Validator(self.actual_value_lhs, self.expected_value_rhs)
 
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         """
@@ -116,7 +116,7 @@ class ComparisonHandler(Generic[T]):
         err_msg_env = ErrorMessageResolvingEnvironment(environment.home_and_sds,
                                                        environment.symbols)
         lhs = self.actual_value_lhs.resolve_value_of_any_dependency(environment)
-        rhs = self.integer_resolver.resolve_value_of_any_dependency(environment)
+        rhs = self.expected_value_rhs.resolve_value_of_any_dependency(environment)
         executor = _ComparisonExecutor(
             self.expectation_type,
             lhs,
@@ -194,8 +194,8 @@ class Validator(SvhPreSdsValidatorViaExceptions):
                  actual_value_lhs: OperandResolver,
                  expected_value_rhs: OperandResolver):
         self.actual_value_lhs = actual_value_lhs
-        self.integer_resolver = expected_value_rhs
+        self.expected_value_rhs = expected_value_rhs
 
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         self.actual_value_lhs.validate_pre_sds(environment)
-        self.integer_resolver.validate_pre_sds(environment)
+        self.expected_value_rhs.validate_pre_sds(environment)
