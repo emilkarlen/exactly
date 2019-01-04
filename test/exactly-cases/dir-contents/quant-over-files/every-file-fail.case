@@ -1,0 +1,18 @@
+[conf]
+
+
+status = FAIL
+
+
+[setup]
+
+
+file the-dir/empty-1.txt
+file the-dir/empty-2.txt
+
+
+[assert]
+
+
+dir-contents the-dir
+             every file : ! empty

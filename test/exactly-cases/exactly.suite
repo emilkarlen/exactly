@@ -2,12 +2,14 @@
 
 file
 
-file-contents
-
 program
 
 string-transformer
 
 string-matcher
+
+file-contents
+
+dir-contents
 
 suites

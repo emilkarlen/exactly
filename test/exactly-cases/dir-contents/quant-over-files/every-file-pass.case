@@ -1,0 +1,31 @@
+[setup]
+
+
+def string CONTENTS_OF_NON_EMPTY_FILE = 'contents of non empty file'
+
+
+file the-dir/non-empty-1.txt = @[CONTENTS_OF_NON_EMPTY_FILE]@
+file the-dir/non-empty-2.txt = @[CONTENTS_OF_NON_EMPTY_FILE]@
+
+file the-dir/empty-1.txt
+file the-dir/empty-2.txt
+
+
+[assert]
+
+
+dir-contents the-dir
+             -selection name empty*.txt
+             every file : empty
+
+dir-contents the-dir
+             -selection name non-empty*.txt
+             every file : ! empty
+
+dir-contents the-dir
+             -selection name empty*.txt
+             every file : empty
+
+dir-contents the-dir
+             -selection name non-empty*.txt
+             every file : ! empty

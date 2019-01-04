@@ -1,0 +1,16 @@
+[conf]
+
+
+status = FAIL
+
+
+[setup]
+
+
+dir empty-dir
+
+
+[assert]
+
+
+dir-contents empty-dir num-files > 0
