@@ -1,8 +1,7 @@
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.assert_.contents_of_dir import files_matchers
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common, emptiness, num_files, quant_over_files
-from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart, \
-    FilesMatcherAsDirContentsAssertionPart
+from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import FilesMatcherAsDirContentsAssertionPart
 from exactly_lib.instructions.assert_.contents_of_dir.config import PATH_ARGUMENT, ACTUAL_RELATIVITY_CONFIGURATION
 from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource
 from exactly_lib.instructions.assert_.utils import assertion_part
@@ -110,15 +109,15 @@ class _FilesMatcherParserForSettings:
 
         return FilesMatcherAsDirContentsAssertionPart(matcher_resolver)
 
-    def parse_file_quantified_assertion__all(self, parser: TokenParser) -> DirContentsAssertionPart:
+    def parse_file_quantified_assertion__all(self, parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
         return self._file_quantified_assertion(Quantifier.ALL, parser)
 
-    def parse_file_quantified_assertion__exists(self, parser: TokenParser) -> DirContentsAssertionPart:
+    def parse_file_quantified_assertion__exists(self, parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
         return self._file_quantified_assertion(Quantifier.EXISTS, parser)
 
     def _file_quantified_assertion(self,
                                    quantifier: Quantifier,
-                                   parser: TokenParser) -> DirContentsAssertionPart:
+                                   parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
         from exactly_lib.instructions.assert_.utils.file_contents import parse_file_contents_assertion_part
 
         parser.consume_mandatory_constant_unquoted_string(config.QUANTIFICATION_OVER_FILE_ARGUMENT,
@@ -133,10 +132,12 @@ class _FilesMatcherParserForSettings:
     def _file_quantified_assertion_part(self,
                                         quantifier: Quantifier,
                                         on_existing_regular_file: AssertionPart[ComparisonActualFile, FileToCheck]
-                                        ) -> DirContentsAssertionPart:
+                                        ) -> AssertionPart[FilesSource, FilesSource]:
         assertion_on_file = assertion_part.compose(IsExistingRegularFileAssertionPart(),
                                                    on_existing_regular_file)
-        return quant_over_files.QuantifiedAssertion(self.settings, quantifier, assertion_on_file)
+        matcher_resolver = quant_over_files.quantified_matcher(self.settings, quantifier, assertion_on_file)
+
+        return FilesMatcherAsDirContentsAssertionPart(matcher_resolver)
 
     @staticmethod
     def _expect_no_more_args_and_consume_current_line(parser: TokenParser):

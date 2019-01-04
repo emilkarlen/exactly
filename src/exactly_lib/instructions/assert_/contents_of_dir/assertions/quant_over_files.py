@@ -1,12 +1,12 @@
 import pathlib
-from typing import Sequence, Any
+from typing import Sequence, Any, Optional
 
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.assert_.contents_of_dir import config, files_matchers
-from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
-from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource
+from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource, FilesMatcherResolver
+from exactly_lib.instructions.assert_.contents_of_dir.files_matchers import FilesMatcherResolverBase
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import ComparisonActualFile
@@ -23,13 +23,22 @@ from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhFailExcepti
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
-    FilePropertyDescriptorConstructor
+    FilePropertyDescriptorConstructor, ErrorMessageResolver, ConstantErrorMessageResolver
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 
 
-class QuantifiedAssertion(DirContentsAssertionPart):
+def quantified_matcher(settings: files_matchers.Settings,
+                       quantifier: Quantifier,
+                       assertion_on_file_to_check: AssertionPart[ComparisonActualFile, Any]
+                       ) -> FilesMatcherResolver:
+    return _QuantifiedMatcher(settings,
+                              quantifier,
+                              assertion_on_file_to_check)
+
+
+class _QuantifiedMatcher(FilesMatcherResolverBase):
     def __init__(self,
                  settings: files_matchers.Settings,
                  quantifier: Quantifier,
@@ -42,11 +51,10 @@ class QuantifiedAssertion(DirContentsAssertionPart):
     def references(self) -> Sequence[SymbolReference]:
         return self._settings.file_matcher.references + self._assertion_on_file_to_check.references
 
-    def check(self,
-              environment: InstructionEnvironmentForPostSdsStep,
-              os_services: OsServices,
-              custom_environment,
-              files_source: FilesSource) -> FilesSource:
+    def matches(self,
+                environment: InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices,
+                files_source: FilesSource) -> Optional[ErrorMessageResolver]:
         checker = _Checker(self._settings,
                            self._quantifier,
                            self._assertion_on_file_to_check,
@@ -55,8 +63,9 @@ class QuantifiedAssertion(DirContentsAssertionPart):
                            os_services)
         err_msg = checker.check()
         if err_msg:
-            raise PfhFailException(err_msg)
-        return files_source
+            return ConstantErrorMessageResolver(err_msg)
+        else:
+            return None
 
 
 class _Checker:
