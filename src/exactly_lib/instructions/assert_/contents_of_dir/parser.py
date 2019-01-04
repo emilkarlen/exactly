@@ -39,22 +39,43 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 
             path_to_check = parse_file_ref.parse_file_ref_from_token_parser(ACTUAL_RELATIVITY_CONFIGURATION,
                                                                             token_parser)
-            file_selection = parse_file_matcher.parse_optional_selection_resolver(token_parser)
-            expectation_type = token_parser.consume_optional_negation_operator()
-            instructions_parser = _CheckInstructionParser(path_to_check,
-                                                          common.Settings(expectation_type,
-                                                                          file_selection),
-                                                          )
 
-            instruction = instructions_parser.parse(token_parser)
-            return instruction
+            actual_path_checker_assertion_part = self._actual_path_checker_assertion_part(path_to_check)
+
+            files_matcher = parse_files_matcher(token_parser)
+
+            assertions = assertion_part.compose(
+                actual_path_checker_assertion_part,
+                files_matcher,
+            )
+
+            return assertion_part.AssertionInstructionFromAssertionPart(assertions,
+                                                                        None,
+                                                                        lambda x: FilesSource(path_to_check))
+
+    @staticmethod
+    def _actual_path_checker_assertion_part(path_to_check: FileRefResolver
+                                            ) -> AssertionPart[FilesSource, FilesSource]:
+        return assertion_part.compose(
+            IdentityAssertionPartWithValidationAndReferences(
+                ConstantSuccessValidator(),
+                path_to_check.references,
+            ),
+            common.AssertPathIsExistingDirectory(),
+        )
 
 
-class _CheckInstructionParser:
-    def __init__(self,
-                 path_to_check: FileRefResolver,
-                 settings: common.Settings):
-        self.path_to_check = path_to_check
+def parse_files_matcher(parser: TokenParser) -> DirContentsAssertionPart:
+    file_selection = parse_file_matcher.parse_optional_selection_resolver(parser)
+    expectation_type = parser.consume_optional_negation_operator()
+
+    files_matcher_parser = _FilesMatcherParserForSettings(common.Settings(expectation_type,
+                                                                          file_selection))
+    return files_matcher_parser.parse(parser)
+
+
+class _FilesMatcherParserForSettings:
+    def __init__(self, settings: common.Settings):
         self.settings = settings
         self.command_parsers = {
             config.NUM_FILES_CHECK_ARGUMENT: self.parse_num_files_check,
@@ -65,23 +86,9 @@ class _CheckInstructionParser:
         self.missing_check_description = 'Missing argument for check :' + grammar_options_syntax.alternatives_list(
             self.command_parsers)
 
-    def parse(self, parser: TokenParser) -> AssertPhaseInstruction:
-        assertion_variant = parser.parse_mandatory_command(self.command_parsers,
-                                                           self.missing_check_description)
-        assertions = assertion_part.compose(
-            IdentityAssertionPartWithValidationAndReferences(
-                ConstantSuccessValidator(),
-                self.path_to_check.references,
-            ),
-            common.AssertPathIsExistingDirectory(),
-        )
-        assertions = assertion_part.compose(
-            assertions,
-            assertion_variant,
-        )
-        return assertion_part.AssertionInstructionFromAssertionPart(assertions,
-                                                                    None,
-                                                                    lambda x: FilesSource(self.path_to_check))
+    def parse(self, parser: TokenParser) -> DirContentsAssertionPart:
+        return parser.parse_mandatory_command(self.command_parsers,
+                                              self.missing_check_description)
 
     def parse_empty_check(self, parser: TokenParser) -> DirContentsAssertionPart:
         self._expect_no_more_args_and_consume_current_line(parser)
