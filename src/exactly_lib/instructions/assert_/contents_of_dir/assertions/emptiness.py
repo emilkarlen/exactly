@@ -4,8 +4,7 @@ from typing import Sequence, List
 import exactly_lib.type_system.error_message
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
-from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import Settings, \
-    DirContentsAssertionPart
+from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart, FilesSource
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
@@ -129,7 +128,7 @@ class EmptinessAssertion(DirContentsAssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               custom_environment,
-              settings: Settings) -> Settings:
+              files_source: FilesSource) -> FilesSource:
         checker = _EmptinessChecker(self._settings.property_descriptor(config.EMPTINESS_PROPERTY_NAME),
                                     environment,
                                     self._settings)

@@ -1,9 +1,10 @@
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common, emptiness, num_files, quant_over_files
-from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
+from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart, FilesSource
 from exactly_lib.instructions.assert_.contents_of_dir.config import PATH_ARGUMENT, ACTUAL_RELATIVITY_CONFIGURATION
 from exactly_lib.instructions.assert_.utils import assertion_part
-from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
+from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart, \
+    IdentityAssertionPartWithValidationAndReferences
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import \
     IsExistingRegularFileAssertionPart, ComparisonActualFile
 from exactly_lib.section_document.element_parsers import token_stream_parser
@@ -12,6 +13,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as expression_parse
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.parse import parse_file_ref
@@ -62,12 +64,19 @@ class _CheckInstructionParser:
         assertion_variant = parser.parse_mandatory_command(self.command_parsers,
                                                            self.missing_check_description)
         assertions = assertion_part.compose(
-            common.AssertPathIsExistingDirectory(self.settings),
+            IdentityAssertionPartWithValidationAndReferences(
+                ConstantSuccessValidator(),
+                self.settings.path_to_check.references,
+            ),
+            common.AssertPathIsExistingDirectory(),
+        )
+        assertions = assertion_part.compose(
+            assertions,
             assertion_variant,
         )
         return assertion_part.AssertionInstructionFromAssertionPart(assertions,
                                                                     None,
-                                                                    lambda x: self.settings)
+                                                                    lambda x: FilesSource(self.settings.path_to_check))
 
     def parse_empty_check(self, parser: TokenParser) -> DirContentsAssertionPart:
         self._expect_no_more_args_and_consume_current_line(parser)

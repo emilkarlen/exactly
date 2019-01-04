@@ -6,7 +6,7 @@ from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
-from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
+from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart, FilesSource
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import ComparisonActualFile
@@ -45,7 +45,7 @@ class QuantifiedAssertion(DirContentsAssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               custom_environment,
-              settings: common.Settings) -> common.Settings:
+              files_source: FilesSource) -> FilesSource:
         checker = _Checker(self._settings,
                            self._quantifier,
                            self._assertion_on_file_to_check,
@@ -54,7 +54,7 @@ class QuantifiedAssertion(DirContentsAssertionPart):
         err_msg = checker.check()
         if err_msg:
             raise PfhFailException(err_msg)
-        return settings
+        return files_source
 
 
 class _Checker:

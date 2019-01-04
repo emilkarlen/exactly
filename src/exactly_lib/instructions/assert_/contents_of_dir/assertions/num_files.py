@@ -3,7 +3,7 @@ from typing import Sequence
 
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
-from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
+from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart, FilesSource
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
@@ -57,6 +57,6 @@ class NumFilesAssertion(DirContentsAssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               custom_environment,
-              settings: common.Settings) -> common.Settings:
+              files_source: FilesSource) -> FilesSource:
         self._comparison_handler.execute(environment.path_resolving_environment_pre_or_post_sds)
         return self._settings
