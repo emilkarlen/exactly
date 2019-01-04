@@ -5,6 +5,7 @@ from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart, FilesSource
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -37,26 +38,37 @@ class NumFilesAssertion(DirContentsAssertionPart):
     def __init__(self,
                  settings: common.Settings,
                  operator_and_r_operand: parse_expr.IntegerComparisonOperatorAndRightOperand):
-        self._comparison_handler = comparison_structures.ComparisonHandler(
-            settings.property_descriptor(config.NUM_FILES_PROPERTY_NAME),
-            settings.expectation_type,
-            NumFilesResolver(settings.path_to_check,
-                             settings.file_matcher),
-            operator_and_r_operand.operator,
-            operator_and_r_operand.right_operand)
+        self._settings = settings
+        self._operator_and_r_operand = operator_and_r_operand
+        self._references = references_from_objects_with_symbol_references([
+            self._operator_and_r_operand.right_operand,
+            self._settings.file_matcher
+        ])
+
+        validator = PreOrPostSdsValidatorFromValidatorViaExceptions(
+            SvhValidatorViaExceptionsFromPreAndPostSdsValidators(
+                pre_sds=comparison_structures.OperandValidator(operator_and_r_operand.right_operand))
+        )
         super().__init__(settings,
-                         PreOrPostSdsValidatorFromValidatorViaExceptions(
-                             SvhValidatorViaExceptionsFromPreAndPostSdsValidators(
-                                 pre_sds=self._comparison_handler.validator)))
+                         validator)
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return list(self._comparison_handler.references) + list(self._settings.file_matcher.references)
+        return self._references
 
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               custom_environment,
               files_source: FilesSource) -> FilesSource:
-        self._comparison_handler.execute(environment.path_resolving_environment_pre_or_post_sds)
-        return self._settings
+        comparison_handler = comparison_structures.ComparisonHandler(
+            self._settings.property_descriptor(config.NUM_FILES_PROPERTY_NAME),
+            self._settings.expectation_type,
+            NumFilesResolver(files_source.path_of_dir,
+                             self._settings.file_matcher),
+            self._operator_and_r_operand.operator,
+            self._operator_and_r_operand.right_operand)
+
+        comparison_handler.execute(environment.path_resolving_environment_pre_or_post_sds)
+
+        return files_source

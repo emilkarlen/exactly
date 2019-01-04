@@ -199,3 +199,11 @@ class Validator(SvhPreSdsValidatorViaExceptions):
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         self.actual_value_lhs.validate_pre_sds(environment)
         self.expected_value_rhs.validate_pre_sds(environment)
+
+
+class OperandValidator(SvhPreSdsValidatorViaExceptions):
+    def __init__(self, operand: OperandResolver):
+        self.operand = operand
+
+    def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
+        self.operand.validate_pre_sds(environment)
