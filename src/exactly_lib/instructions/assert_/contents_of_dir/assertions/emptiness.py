@@ -1,9 +1,8 @@
 import pathlib
 from typing import Sequence, List, Optional
 
-from exactly_lib.instructions.assert_.contents_of_dir import config
-from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
-from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import FilesSource, \
+from exactly_lib.instructions.assert_.contents_of_dir import config, files_matcher
+from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource, \
     FilesMatcherResolverBase
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
@@ -59,7 +58,7 @@ class _EmptinessExecutor:
     def __init__(self,
                  err_msg_setup: _ErrMsgSetup,
                  environment: InstructionEnvironmentForPostSdsStep,
-                 settings: common.Settings,
+                 settings: files_matcher.Settings,
                  files_source: FilesSource):
         self.err_msg_setup = err_msg_setup
         self.path_resolving_env = environment.path_resolving_environment_pre_or_post_sds

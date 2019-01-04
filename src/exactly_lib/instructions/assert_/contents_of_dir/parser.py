@@ -1,8 +1,10 @@
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.instructions.assert_.contents_of_dir import files_matcher
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common, emptiness, num_files, quant_over_files
-from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart, FilesSource, \
+from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart, \
     FilesMatcherAsDirContentsAssertionPart
 from exactly_lib.instructions.assert_.contents_of_dir.config import PATH_ARGUMENT, ACTUAL_RELATIVITY_CONFIGURATION
+from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource
 from exactly_lib.instructions.assert_.utils import assertion_part
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart, \
     IdentityAssertionPartWithValidationAndReferences
@@ -70,13 +72,14 @@ def parse_files_matcher(parser: TokenParser) -> AssertionPart[FilesSource, Files
     file_selection = parse_file_matcher.parse_optional_selection_resolver(parser)
     expectation_type = parser.consume_optional_negation_operator()
 
-    files_matcher_parser = _FilesMatcherParserForSettings(common.Settings(expectation_type,
-                                                                          file_selection))
+    files_matcher_parser = _FilesMatcherParserForSettings(
+        files_matcher.Settings(expectation_type,
+                               file_selection))
     return files_matcher_parser.parse(parser)
 
 
 class _FilesMatcherParserForSettings:
-    def __init__(self, settings: common.Settings):
+    def __init__(self, settings: files_matcher.Settings):
         self.settings = settings
         self.command_parsers = {
             config.NUM_FILES_CHECK_ARGUMENT: self.parse_num_files_check,

@@ -4,9 +4,9 @@ from typing import Sequence, Any
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.instructions.assert_.contents_of_dir import config
-from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
-from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart, FilesSource
+from exactly_lib.instructions.assert_.contents_of_dir import config, files_matcher
+from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
+from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import ComparisonActualFile
@@ -31,7 +31,7 @@ from exactly_lib.util.logic_types import Quantifier, ExpectationType
 
 class QuantifiedAssertion(DirContentsAssertionPart):
     def __init__(self,
-                 settings: common.Settings,
+                 settings: files_matcher.Settings,
                  quantifier: Quantifier,
                  assertion_on_file_to_check: AssertionPart[ComparisonActualFile, Any]):
         super().__init__(settings, assertion_on_file_to_check.validator)
@@ -66,7 +66,7 @@ class _Checker:
     """
 
     def __init__(self,
-                 settings: common.Settings,
+                 settings: files_matcher.Settings,
                  quantifier: Quantifier,
                  assertion_on_file_to_check: AssertionPart[ComparisonActualFile, Any],
                  environment: InstructionEnvironmentForPostSdsStep,
@@ -154,7 +154,7 @@ class _Checker:
 
 class _ErrorReportingHelper:
     def __init__(self,
-                 settings: common.Settings,
+                 settings: files_matcher.Settings,
                  path_to_check: FileRefResolver,
                  quantifier: Quantifier,
                  environment: ErrorMessageResolvingEnvironment,
