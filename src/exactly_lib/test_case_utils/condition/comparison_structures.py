@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Sequence, TypeVar, Generic, Set
+from typing import Sequence, TypeVar, Generic, Set, Optional, Callable
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPreOrPostSds
@@ -13,10 +13,12 @@ from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_from_references
 from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
+    ErrorMessageResolver
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
+A = TypeVar('A')
 T = TypeVar('T')
 
 
@@ -110,54 +112,69 @@ class ComparisonHandler(Generic[T]):
         self.validator.validate_pre_sds(environment)
 
     def execute(self, environment: PathResolvingEnvironmentPreOrPostSds):
-        """
-        Reports failure by raising exceptions from `return_efh_via_exceptions`
-        """
+        self._executor(environment).execute_and_return_pfh_via_exceptions()
+
+    def execute_and_report_as_err_msg_resolver(self, environment: PathResolvingEnvironmentPreOrPostSds
+                                               ) -> Optional[ErrorMessageResolver]:
+        return self._executor(environment).execute_and_return_failure_via_err_msg_resolver()
+
+    def _executor(self, environment: PathResolvingEnvironmentPreOrPostSds):
         err_msg_env = ErrorMessageResolvingEnvironment(environment.home_and_sds,
                                                        environment.symbols)
         lhs = self.actual_value_lhs.resolve_value_of_any_dependency(environment)
         rhs = self.expected_value_rhs.resolve_value_of_any_dependency(environment)
-        executor = _ComparisonExecutor(
+        return _ComparisonExecutor(
             self.expectation_type,
             lhs,
             rhs,
             self.operator,
-            _FailureReporter(self.property_descriptor,
-                             self.expectation_type,
-                             lhs,
-                             rhs,
-                             self.operator,
+            _FailureReporter(_ErrorMessageResolver(self.property_descriptor,
+                                                   self.expectation_type,
+                                                   lhs,
+                                                   rhs,
+                                                   self.operator),
                              err_msg_env)
         )
-        executor.execute_and_return_pfh_via_exceptions()
 
 
-class _FailureReporter(Generic[T]):
+class _ErrorMessageResolver(Generic[T], ErrorMessageResolver):
     def __init__(self,
                  property_descriptor: PropertyDescriptor,
                  expectation_type: ExpectationType,
                  lhs_actual_property_value: T,
                  rhs: T,
-                 operator: ComparisonOperator,
-                 environment: ErrorMessageResolvingEnvironment):
+                 operator: ComparisonOperator):
         self.property_descriptor = property_descriptor
         self.expectation_type = expectation_type
         self.lhs_actual_property_value = lhs_actual_property_value
         self.rhs = rhs
         self.operator = operator
-        self.environment = environment
 
-    def unexpected_value_message(self) -> str:
-        return self.failure_info().error_message()
+    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+        return self.failure_info(environment).error_message()
 
-    def failure_info(self) -> diff_msg.DiffErrorInfo:
+    def failure_info(self, environment: ErrorMessageResolvingEnvironment) -> diff_msg.DiffErrorInfo:
         expected_str = self.operator.name + ' ' + str(self.rhs)
         return diff_msg.DiffErrorInfo(
-            self.property_descriptor.description(self.environment),
+            self.property_descriptor.description(environment),
             self.expectation_type,
             expected_str,
             diff_msg.actual_with_single_line_value(str(self.lhs_actual_property_value))
         )
+
+
+class _FailureReporter(Generic[T]):
+    def __init__(self,
+                 err_msg_resolver: _ErrorMessageResolver[T],
+                 environment: ErrorMessageResolvingEnvironment):
+        self.err_msg_resolver = err_msg_resolver
+        self.environment = environment
+
+    def unexpected_value_message(self) -> str:
+        return self.err_msg_resolver.resolve(self.environment)
+
+    def failure_info(self) -> diff_msg.DiffErrorInfo:
+        return self.err_msg_resolver.failure_info(self.environment)
 
 
 class _ComparisonExecutor(Generic[T]):
@@ -173,20 +190,29 @@ class _ComparisonExecutor(Generic[T]):
         self.operator = operator
         self.failure_reporter = failure_reporter
 
+    def execute_and_return_failure_via_err_msg_resolver(self) -> Optional[ErrorMessageResolver]:
+        return self._execute(self._get_err_msg_resolver)
+
     def execute_and_return_pfh_via_exceptions(self):
+        self._execute(self._raise_fail_exception)
+
+    def _execute(self, failure_reporter: Callable[[], A]) -> Optional[A]:
         comparison_fun = self.operator.operator_fun
         condition_is_satisfied = bool(comparison_fun(self.lhs_actual_property_value,
                                                      self.rhs))
         if condition_is_satisfied:
             if self.expectation_type is ExpectationType.NEGATIVE:
-                self._raise_fail_exception()
+                return failure_reporter()
         else:
             if self.expectation_type is ExpectationType.POSITIVE:
-                self._raise_fail_exception()
+                return failure_reporter()
 
     def _raise_fail_exception(self):
         err_msg = self.failure_reporter.unexpected_value_message()
         raise return_pfh_via_exceptions.PfhFailException(err_msg)
+
+    def _get_err_msg_resolver(self) -> ErrorMessageResolver:
+        return self.failure_reporter.err_msg_resolver
 
 
 class Validator(SvhPreSdsValidatorViaExceptions):
