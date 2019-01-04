@@ -3,7 +3,7 @@ from exactly_lib.instructions.assert_.contents_of_dir import files_matchers
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common, emptiness, num_files, quant_over_files
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import FilesMatcherAsDirContentsAssertionPart
 from exactly_lib.instructions.assert_.contents_of_dir.config import PATH_ARGUMENT, ACTUAL_RELATIVITY_CONFIGURATION
-from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource
+from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource, FilesMatcherResolver
 from exactly_lib.instructions.assert_.utils import assertion_part
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart, \
     IdentityAssertionPartWithValidationAndReferences
@@ -44,11 +44,11 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 
             actual_path_checker_assertion_part = self._actual_path_checker_assertion_part(path_to_check)
 
-            files_matcher = parse_files_matcher(token_parser)
+            files_matcher_resolver = parse_files_matcher(token_parser)
 
             assertions = assertion_part.compose(
                 actual_path_checker_assertion_part,
-                files_matcher,
+                FilesMatcherAsDirContentsAssertionPart(files_matcher_resolver),
             )
 
             return assertion_part.AssertionInstructionFromAssertionPart(assertions,
@@ -67,7 +67,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
         )
 
 
-def parse_files_matcher(parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
+def parse_files_matcher(parser: TokenParser) -> FilesMatcherResolver:
     file_selection = parse_file_matcher.parse_optional_selection_resolver(parser)
     expectation_type = parser.consume_optional_negation_operator()
 
@@ -89,35 +89,32 @@ class _FilesMatcherParserForSettings:
         self.missing_check_description = 'Missing argument for check :' + grammar_options_syntax.alternatives_list(
             self.command_parsers)
 
-    def parse(self, parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
+    def parse(self, parser: TokenParser) -> FilesMatcherResolver:
         return parser.parse_mandatory_command(self.command_parsers,
                                               self.missing_check_description)
 
-    def parse_empty_check(self, parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
+    def parse_empty_check(self, parser: TokenParser) -> FilesMatcherResolver:
         self._expect_no_more_args_and_consume_current_line(parser)
-        matcher_resolver = emptiness.emptiness_matcher(self.settings)
-        return FilesMatcherAsDirContentsAssertionPart(matcher_resolver)
+        return emptiness.emptiness_matcher(self.settings)
 
-    def parse_num_files_check(self, parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
+    def parse_num_files_check(self, parser: TokenParser) -> FilesMatcherResolver:
         cmp_op_and_rhs = expression_parse.parse_integer_comparison_operator_and_rhs(
             parser,
             expression_parse.validator_for_non_negative)
 
         self._expect_no_more_args_and_consume_current_line(parser)
 
-        matcher_resolver = num_files.num_files_matcher(self.settings, cmp_op_and_rhs)
+        return num_files.num_files_matcher(self.settings, cmp_op_and_rhs)
 
-        return FilesMatcherAsDirContentsAssertionPart(matcher_resolver)
-
-    def parse_file_quantified_assertion__all(self, parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
+    def parse_file_quantified_assertion__all(self, parser: TokenParser) -> FilesMatcherResolver:
         return self._file_quantified_assertion(Quantifier.ALL, parser)
 
-    def parse_file_quantified_assertion__exists(self, parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
+    def parse_file_quantified_assertion__exists(self, parser: TokenParser) -> FilesMatcherResolver:
         return self._file_quantified_assertion(Quantifier.EXISTS, parser)
 
     def _file_quantified_assertion(self,
                                    quantifier: Quantifier,
-                                   parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
+                                   parser: TokenParser) -> FilesMatcherResolver:
         from exactly_lib.instructions.assert_.utils.file_contents import parse_file_contents_assertion_part
 
         parser.consume_mandatory_constant_unquoted_string(config.QUANTIFICATION_OVER_FILE_ARGUMENT,
@@ -132,12 +129,10 @@ class _FilesMatcherParserForSettings:
     def _file_quantified_assertion_part(self,
                                         quantifier: Quantifier,
                                         on_existing_regular_file: AssertionPart[ComparisonActualFile, FileToCheck]
-                                        ) -> AssertionPart[FilesSource, FilesSource]:
+                                        ) -> FilesMatcherResolver:
         assertion_on_file = assertion_part.compose(IsExistingRegularFileAssertionPart(),
                                                    on_existing_regular_file)
-        matcher_resolver = quant_over_files.quantified_matcher(self.settings, quantifier, assertion_on_file)
-
-        return FilesMatcherAsDirContentsAssertionPart(matcher_resolver)
+        return quant_over_files.quantified_matcher(self.settings, quantifier, assertion_on_file)
 
     @staticmethod
     def _expect_no_more_args_and_consume_current_line(parser: TokenParser):
