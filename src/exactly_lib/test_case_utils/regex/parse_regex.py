@@ -53,10 +53,8 @@ class _RegexResolver(RegexResolver):
         return self._string.references
 
     def resolve(self, symbols: SymbolTable) -> RegexValue:
-        if self._value is None:
-            self._value = _RegexValue(self._is_ignore_case,
-                                      self._string.resolve(symbols))
-        return self._value
+        return _RegexValue(self._is_ignore_case,
+                           self._string.resolve(symbols))
 
 
 class _ValidatorWhichCreatesRegex(PreOrPostSdsValueValidator):
@@ -83,6 +81,16 @@ class _ValidatorWhichCreatesRegex(PreOrPostSdsValueValidator):
         else:
             return None
 
+    def pattern_when_no_dir_dependencies(self) -> Pattern:
+        if self.pattern is None:
+            self._compile_and_set_pattern(self.string.value_when_no_dir_dependencies())
+        return self.pattern
+
+    def pattern_of_any_dependency(self, tcds: HomeAndSds) -> Pattern:
+        if self.pattern is None:
+            self._compile_and_set_pattern(self.string.value_of_any_dependency(tcds))
+        return self.pattern
+
     def _compile_and_set_pattern(self, regex_pattern: str) -> Optional[str]:
         try:
             flags = 0
@@ -108,7 +116,7 @@ class _RegexValue(RegexValue):
         return self._validator
 
     def value_when_no_dir_dependencies(self) -> Pattern:
-        return self._validator.pattern
+        return self._validator.pattern_when_no_dir_dependencies()
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> Pattern:
-        return self._validator.pattern
+        return self._validator.pattern_of_any_dependency(tcds)

@@ -39,6 +39,8 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFailingParse),
         unittest.makeSuite(TestValidRegex),
         unittest.makeSuite(TestFailingValidationDueToInvalidRegexSyntax),
+
+        unittest.makeSuite(TestResolvingOfSymbolReferences),
     ])
 
 
@@ -542,6 +544,56 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
             with self.subTest(option_str=option_str):
                 source = remaining_source(option_str + regex_source_string)
                 _check(self, source, arrangement, expectation)
+
+
+class TestResolvingOfSymbolReferences(unittest.TestCase):
+    def test_resolving_object_with_different_symbol_values_SHOULD_give_different_values(self):
+        # ARRANGE #
+
+        STRING_SYMBOL_NAME = 'STRING_SYMBOL'
+
+        single_sym_ref_source = remaining_source(symbol_reference_syntax_for_name(STRING_SYMBOL_NAME))
+
+        actual_resolver = sut.parse_regex(single_sym_ref_source)
+
+        non_matching_string = '0'
+
+        for symbol_value in ['A', 'B']:
+            with self.subTest(symbol_value=symbol_value):
+                symbols = SymbolTable({
+                    STRING_SYMBOL_NAME: container(string_resolvers.str_constant(symbol_value)),
+                })
+
+                # ACT & ASSERT #
+
+                self._assert_resolved_pattern_has_pattern_string(
+                    actual_resolver,
+                    expected_pattern_string=symbol_value,
+                    matching_string=symbol_value,
+                    non_matching_string=non_matching_string,
+                    symbols=symbols,
+                )
+
+    def _assert_resolved_pattern_has_pattern_string(self,
+                                                    actual_resolver: RegexResolver,
+                                                    expected_pattern_string: str,
+                                                    matching_string: str,
+                                                    non_matching_string: str,
+                                                    symbols: SymbolTable):
+        def equals_expected_pattern_string(tcds: HomeAndSds) -> ValueAssertion[Pattern]:
+            return _AssertPattern(
+                pattern_string=expected_pattern_string,
+                matching_strings=[matching_string],
+                non_matching_string=non_matching_string,
+            )
+
+        resolved_value_has_expected_pattern_string = matches_regex_resolver(
+            primitive_value=equals_expected_pattern_string,
+            references=asrt.anything_goes(),
+            symbols=symbols,
+        )
+
+        resolved_value_has_expected_pattern_string.apply_without_message(self, actual_resolver)
 
 
 OPTION_CASES = [
