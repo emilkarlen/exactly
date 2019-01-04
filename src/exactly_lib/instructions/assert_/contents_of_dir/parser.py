@@ -99,14 +99,16 @@ class _FilesMatcherParserForSettings:
         matcher_resolver = emptiness.emptiness_matcher(self.settings)
         return FilesMatcherAsDirContentsAssertionPart(matcher_resolver)
 
-    def parse_num_files_check(self, parser: TokenParser) -> DirContentsAssertionPart:
+    def parse_num_files_check(self, parser: TokenParser) -> AssertionPart[FilesSource, FilesSource]:
         cmp_op_and_rhs = expression_parse.parse_integer_comparison_operator_and_rhs(
             parser,
             expression_parse.validator_for_non_negative)
 
         self._expect_no_more_args_and_consume_current_line(parser)
 
-        return num_files.NumFilesAssertion(self.settings, cmp_op_and_rhs)
+        matcher_resolver = num_files.num_files_matcher(self.settings, cmp_op_and_rhs)
+
+        return FilesMatcherAsDirContentsAssertionPart(matcher_resolver)
 
     def parse_file_quantified_assertion__all(self, parser: TokenParser) -> DirContentsAssertionPart:
         return self._file_quantified_assertion(Quantifier.ALL, parser)
