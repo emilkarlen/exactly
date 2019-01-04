@@ -12,6 +12,7 @@ from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import ComparisonActualFile
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.data import file_ref_resolvers
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
@@ -50,6 +51,7 @@ class QuantifiedAssertion(DirContentsAssertionPart):
                            self._quantifier,
                            self._assertion_on_file_to_check,
                            environment,
+                           files_source,
                            os_services)
         err_msg = checker.check()
         if err_msg:
@@ -68,16 +70,19 @@ class _Checker:
                  quantifier: Quantifier,
                  assertion_on_file_to_check: AssertionPart[ComparisonActualFile, Any],
                  environment: InstructionEnvironmentForPostSdsStep,
+                 files_source: FilesSource,
                  os_services: OsServices
                  ):
         self.settings = settings
         self.quantifier = quantifier
         self._assertion_on_file_to_check = assertion_on_file_to_check
         self.environment = environment
+        self.files_source = files_source
         self.os_services = os_services
         self._destination_file_path_getter = DestinationFilePathGetter()
-        self._dir_to_check = settings.path_to_check.resolve(environment.symbols)
+        self._dir_to_check = files_source.path_of_dir.resolve(environment.symbols)
         self.error_reporting = _ErrorReportingHelper(settings,
+                                                     files_source.path_of_dir,
                                                      quantifier,
                                                      err_msg_env_from_instr_env(environment))
 
@@ -127,7 +132,7 @@ class _Checker:
 
     def resolved_actual_file_iter(self) -> iter:
         path_resolving_env = self.environment.path_resolving_environment_pre_or_post_sds
-        path_to_check = self.settings.path_to_check.resolve_value_of_any_dependency(path_resolving_env)
+        path_to_check = self.files_source.path_of_dir.resolve_value_of_any_dependency(path_resolving_env)
         assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
         file_matcher = self.settings.file_matcher.resolve(self.environment.symbols)
         selected_files = file_matcher_type.matching_files_in_dir(file_matcher, path_to_check)
@@ -150,14 +155,16 @@ class _Checker:
 class _ErrorReportingHelper:
     def __init__(self,
                  settings: common.Settings,
+                 path_to_check: FileRefResolver,
                  quantifier: Quantifier,
                  environment: ErrorMessageResolvingEnvironment,
                  ):
+        self.path_to_check = path_to_check
         self.settings = settings
         self.quantifier = quantifier
         self.environment = environment
         self._destination_file_path_getter = DestinationFilePathGetter()
-        self._dir_to_check = settings.path_to_check.resolve(environment.symbols)
+        self._dir_to_check = path_to_check.resolve(environment.symbols)
 
     def err_msg_for_dir__all_satisfies(self) -> str:
         single_line_value = instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier] + ' file satisfies'
@@ -182,7 +189,7 @@ class _ErrorReportingHelper:
         property_descriptor = path_description.path_value_description(
             actual_files.file_property_name(actual_file_attributes.CONTENTS_ATTRIBUTE,
                                             actual_file_attributes.PLAIN_DIR_OBJECT_NAME),
-            self.settings.path_to_check)
+            self.path_to_check)
         return diff_msg_utils.DiffFailureInfoResolver(
             property_descriptor,
             self.settings.expectation_type,

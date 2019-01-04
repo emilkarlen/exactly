@@ -62,7 +62,8 @@ class NumFilesAssertion(DirContentsAssertionPart):
               custom_environment,
               files_source: FilesSource) -> FilesSource:
         comparison_handler = comparison_structures.ComparisonHandler(
-            self._settings.property_descriptor(config.NUM_FILES_PROPERTY_NAME),
+            self._settings.property_descriptor(config.NUM_FILES_PROPERTY_NAME,
+                                               files_source.path_of_dir),
             self._settings.expectation_type,
             NumFilesResolver(files_source.path_of_dir,
                              self._settings.file_matcher),

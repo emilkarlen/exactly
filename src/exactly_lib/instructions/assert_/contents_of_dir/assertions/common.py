@@ -20,18 +20,13 @@ from exactly_lib.util.logic_types import ExpectationType
 class Settings:
     def __init__(self,
                  expectation_type: ExpectationType,
-                 path_to_check: FileRefResolver,
                  file_matcher: FileMatcherResolver):
         self.expectation_type = expectation_type
-        self.path_to_check = path_to_check
         self.file_matcher = file_matcher
 
-    def property_descriptor(self, property_name: str) -> PropertyDescriptor:
-        return property_descriptor(self.path_to_check, self.file_matcher, property_name)
-
-    def property_descriptor2(self,
-                             property_name: str,
-                             path_to_check: FileRefResolver) -> PropertyDescriptor:
+    def property_descriptor(self,
+                            property_name: str,
+                            path_to_check: FileRefResolver) -> PropertyDescriptor:
         return property_descriptor(path_to_check, self.file_matcher, property_name)
 
 

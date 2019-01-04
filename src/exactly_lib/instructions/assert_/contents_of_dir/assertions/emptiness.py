@@ -75,13 +75,15 @@ class _EmptinessChecker:
     def __init__(self,
                  property_descriptor: PropertyDescriptor,
                  environment: InstructionEnvironmentForPostSdsStep,
-                 settings: common.Settings):
+                 settings: common.Settings,
+                 files_source: FilesSource):
         self.property_descriptor = property_descriptor
         self.environment = environment
         self.path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         self.err_msg_env = err_msg_env_from_instr_env(environment)
         self.settings = settings
-        self.error_message_resolver = _ErrorMessageResolver(settings.path_to_check,
+        self.files_source = files_source
+        self.error_message_resolver = _ErrorMessageResolver(files_source.path_of_dir,
                                                             property_descriptor,
                                                             settings.expectation_type,
                                                             EMPTINESS_CHECK_EXPECTED_VALUE)
@@ -95,7 +97,7 @@ class _EmptinessChecker:
             self._fail_if_path_dir_is_empty(files_in_dir)
 
     def _files_in_dir_to_check(self) -> list:
-        dir_path_to_check = self.settings.path_to_check.resolve_value_of_any_dependency(self.path_resolving_env)
+        dir_path_to_check = self.files_source.path_of_dir.resolve_value_of_any_dependency(self.path_resolving_env)
         assert isinstance(dir_path_to_check, pathlib.Path), 'Resolved value should be a path'
         file_matcher = self.settings.file_matcher.resolve(self.path_resolving_env.symbols)
         selected_files = file_matcher_type.matching_files_in_dir(file_matcher, dir_path_to_check)
@@ -128,8 +130,10 @@ class EmptinessAssertion(DirContentsAssertionPart):
               os_services: OsServices,
               custom_environment,
               files_source: FilesSource) -> FilesSource:
-        checker = _EmptinessChecker(self._settings.property_descriptor(config.EMPTINESS_PROPERTY_NAME),
+        checker = _EmptinessChecker(self._settings.property_descriptor(config.EMPTINESS_PROPERTY_NAME,
+                                                                       files_source.path_of_dir),
                                     environment,
-                                    self._settings)
+                                    self._settings,
+                                    files_source)
         checker.main()
-        return self._settings
+        return files_source

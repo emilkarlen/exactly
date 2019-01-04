@@ -12,6 +12,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
     InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as expression_parse
@@ -40,16 +41,20 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
                                                                             token_parser)
             file_selection = parse_file_matcher.parse_optional_selection_resolver(token_parser)
             expectation_type = token_parser.consume_optional_negation_operator()
-            instructions_parser = _CheckInstructionParser(common.Settings(expectation_type,
-                                                                          path_to_check,
-                                                                          file_selection))
+            instructions_parser = _CheckInstructionParser(path_to_check,
+                                                          common.Settings(expectation_type,
+                                                                          file_selection),
+                                                          )
 
             instruction = instructions_parser.parse(token_parser)
             return instruction
 
 
 class _CheckInstructionParser:
-    def __init__(self, settings: common.Settings):
+    def __init__(self,
+                 path_to_check: FileRefResolver,
+                 settings: common.Settings):
+        self.path_to_check = path_to_check
         self.settings = settings
         self.command_parsers = {
             config.NUM_FILES_CHECK_ARGUMENT: self.parse_num_files_check,
@@ -66,7 +71,7 @@ class _CheckInstructionParser:
         assertions = assertion_part.compose(
             IdentityAssertionPartWithValidationAndReferences(
                 ConstantSuccessValidator(),
-                self.settings.path_to_check.references,
+                self.path_to_check.references,
             ),
             common.AssertPathIsExistingDirectory(),
         )
@@ -76,7 +81,7 @@ class _CheckInstructionParser:
         )
         return assertion_part.AssertionInstructionFromAssertionPart(assertions,
                                                                     None,
-                                                                    lambda x: FilesSource(self.settings.path_to_check))
+                                                                    lambda x: FilesSource(self.path_to_check))
 
     def parse_empty_check(self, parser: TokenParser) -> DirContentsAssertionPart:
         self._expect_no_more_args_and_consume_current_line(parser)
