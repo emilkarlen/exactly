@@ -2,7 +2,8 @@ import pathlib
 from typing import Sequence, Optional
 
 from exactly_lib.instructions.assert_.contents_of_dir import config, files_matchers
-from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource, FilesMatcherResolver
+from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource, FilesMatcherResolver, \
+    Environment
 from exactly_lib.instructions.assert_.contents_of_dir.files_matchers import FilesMatcherResolverBase
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
@@ -10,7 +11,6 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_expr
 from exactly_lib.test_case_utils.validators import PreOrPostSdsValidatorFromValidatorViaExceptions, \
@@ -48,7 +48,7 @@ class _NumFilesMatcher(FilesMatcherResolverBase):
         return self._references
 
     def matches(self,
-                environment: InstructionEnvironmentForPostSdsStep,
+                environment: Environment,
                 os_services: OsServices,
                 files_source: FilesSource) -> Optional[ErrorMessageResolver]:
         comparison_handler = comparison_structures.ComparisonHandler(
@@ -60,7 +60,7 @@ class _NumFilesMatcher(FilesMatcherResolverBase):
             self._operator_and_r_operand.operator,
             self._operator_and_r_operand.right_operand)
 
-        env = environment.path_resolving_environment_pre_or_post_sds
+        env = environment.path_resolving_environment
 
         return comparison_handler.execute_and_report_as_err_msg_resolver(env)
 

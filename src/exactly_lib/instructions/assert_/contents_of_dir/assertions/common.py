@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource, \
-    FilesMatcherResolver, HardErrorException
+    FilesMatcherResolver, HardErrorException, Environment
 from exactly_lib.instructions.assert_.contents_of_dir.files_matchers import Settings
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
@@ -68,8 +68,10 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
               os_services: OsServices,
               custom_environment,
               files_source: FilesSource) -> FilesSource:
+        env = Environment(environment.path_resolving_environment_pre_or_post_sds,
+                          environment.phase_logging.space_for_instruction())
         try:
-            mb_error_message = self._files_matcher.matches(environment,
+            mb_error_message = self._files_matcher.matches(env,
                                                            os_services,
                                                            files_source)
             if mb_error_message is not None:

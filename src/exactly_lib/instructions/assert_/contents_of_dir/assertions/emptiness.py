@@ -2,14 +2,14 @@ import pathlib
 from typing import Sequence, List, Optional
 
 from exactly_lib.instructions.assert_.contents_of_dir import config, files_matchers
-from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource, FilesMatcherResolver
+from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource, FilesMatcherResolver, \
+    Environment
 from exactly_lib.instructions.assert_.contents_of_dir.files_matchers import FilesMatcherResolverBase
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
@@ -28,7 +28,7 @@ class _EmptinessMatcher(FilesMatcherResolverBase):
         return self._settings.file_matcher.references
 
     def matches(self,
-                environment: InstructionEnvironmentForPostSdsStep,
+                environment: Environment,
                 os_services: OsServices,
                 files_source: FilesSource) -> Optional[ErrorMessageResolver]:
         err_msg_setup = _ErrMsgSetup(files_source.path_of_dir,
@@ -61,11 +61,11 @@ class _ErrMsgSetup:
 class _EmptinessExecutor:
     def __init__(self,
                  err_msg_setup: _ErrMsgSetup,
-                 environment: InstructionEnvironmentForPostSdsStep,
+                 environment: Environment,
                  settings: files_matchers.Settings,
                  files_source: FilesSource):
         self.err_msg_setup = err_msg_setup
-        self.path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
+        self.path_resolving_env = environment.path_resolving_environment
         self.settings = settings
         self.files_source = files_source
         self.error_message_setup = err_msg_setup

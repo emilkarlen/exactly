@@ -6,7 +6,7 @@ from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.assert_.contents_of_dir import config, files_matchers
 from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource, FilesMatcherResolver, \
-    HardErrorException
+    HardErrorException, Environment
 from exactly_lib.instructions.assert_.contents_of_dir.files_matchers import FilesMatcherResolverBase
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
@@ -14,7 +14,6 @@ from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import path_description
@@ -54,7 +53,7 @@ class _QuantifiedMatcher(FilesMatcherResolverBase):
         return self._settings.file_matcher.references + self._matcher_on_existing_regular_file.references
 
     def matches(self,
-                environment: InstructionEnvironmentForPostSdsStep,
+                environment: Environment,
                 os_services: OsServices,
                 files_source: FilesSource) -> Optional[ErrorMessageResolver]:
         checker = _Checker(self._settings,
@@ -76,19 +75,22 @@ class _Checker:
                  settings: files_matchers.Settings,
                  quantifier: Quantifier,
                  matcher_on_existing_regular_file: StringMatcherResolver,
-                 environment: InstructionEnvironmentForPostSdsStep,
+                 environment: Environment,
                  files_source: FilesSource,
                  os_services: OsServices
                  ):
         self.settings = settings
         self.quantifier = quantifier
+        pre = environment.path_resolving_environment
+        self.path_resolving_environment = pre
+
         self.matcher_on_existing_regular_file = (matcher_on_existing_regular_file
-                                                 .resolve(environment.symbols)
-                                                 .value_of_any_dependency(environment.home_and_sds))
+                                                 .resolve(pre.symbols)
+                                                 .value_of_any_dependency(pre.home_and_sds))
         self.environment = environment
         self.files_source = files_source
         self.os_services = os_services
-        self._dir_to_check = files_source.path_of_dir.resolve(environment.symbols)
+        self._dir_to_check = files_source.path_of_dir.resolve(pre.symbols)
         self.error_reporting = _ErrorReportingHelper(settings,
                                                      files_source.path_of_dir,
                                                      quantifier)
@@ -139,10 +141,10 @@ class _Checker:
         return None
 
     def resolved_actual_file_iter(self) -> Iterator[pathlib.Path]:
-        path_resolving_env = self.environment.path_resolving_environment_pre_or_post_sds
-        path_to_check = self.files_source.path_of_dir.resolve_value_of_any_dependency(path_resolving_env)
+        pre = self.path_resolving_environment
+        path_to_check = self.files_source.path_of_dir.resolve_value_of_any_dependency(pre)
         assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
-        file_matcher = self.settings.file_matcher.resolve(self.environment.symbols)
+        file_matcher = self.settings.file_matcher.resolve(pre.symbols)
         return file_matcher_type.matching_files_in_dir(file_matcher, path_to_check)
 
     def check_file(self, path: pathlib.Path) -> Optional[ErrorMessageResolver]:
@@ -156,13 +158,13 @@ class _Checker:
 
 class _ModelsFactory:
     def __init__(self,
-                 environment: InstructionEnvironmentForPostSdsStep,
+                 environment: Environment,
                  files_source: FilesSource,
                  ):
         self._id_trans = IdentityStringTransformer()
-        self._tmp_file_space = environment.phase_logging.space_for_instruction()
+        self._tmp_file_space = environment.tmp_files_space
         self._dir_to_check_resolver = files_source.path_of_dir
-        self._dir_to_check = files_source.path_of_dir.resolve(environment.symbols)
+        self._dir_to_check = files_source.path_of_dir.resolve(environment.path_resolving_environment.symbols)
         self._destination_file_path_getter = DestinationFilePathGetter()
 
     def file_to_check(self, path: pathlib.Path) -> FileToCheck:

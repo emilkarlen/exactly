@@ -3,10 +3,11 @@ from typing import Optional
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.util.file_utils import TmpDirFileSpace
 
 
 class FilesSource:
@@ -28,6 +29,15 @@ class HardErrorException(Exception):
         return self._error
 
 
+class Environment:
+    def __init__(self,
+                 path_resolving_environment: PathResolvingEnvironmentPreOrPostSds,
+                 tmp_files_space: TmpDirFileSpace,
+                 ):
+        self.path_resolving_environment = path_resolving_environment
+        self.tmp_files_space = tmp_files_space
+
+
 class FilesMatcherResolver(ObjectWithTypedSymbolReferences, ABC):
     @abstractmethod
     def validator(self) -> PreOrPostSdsValidator:
@@ -35,7 +45,7 @@ class FilesMatcherResolver(ObjectWithTypedSymbolReferences, ABC):
 
     @abstractmethod
     def matches(self,
-                environment: InstructionEnvironmentForPostSdsStep,
+                environment: Environment,
                 os_services: OsServices,
                 files_source: FilesSource) -> Optional[ErrorMessageResolver]:
         """
