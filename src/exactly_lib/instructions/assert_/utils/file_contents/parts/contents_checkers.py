@@ -1,20 +1,20 @@
 import pathlib
 from typing import Sequence
 
-from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileResolver, \
     ComparisonActualFileConstructor
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
-from exactly_lib.test_case_utils.err_msg import path_description
+from exactly_lib.test_case_utils.file_system_element_matcher import \
+    FileSystemElementReference, FileSystemElementPropertiesMatcher
 from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, FilePropertyDescriptorConstructor
+from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 
@@ -110,8 +110,9 @@ class IsExistingRegularFileAssertionPart(AssertionPart[ComparisonActualFile, Com
 
     def __init__(self):
         super().__init__()
-        self._file_prop_check = file_properties.ActualFilePropertiesResolver(file_properties.FileType.REGULAR,
-                                                                             follow_symlinks=True)
+        self._file_prop_check = FileSystemElementPropertiesMatcher(
+            file_properties.ActualFilePropertiesResolver(file_properties.FileType.REGULAR,
+                                                         follow_symlinks=True))
 
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
@@ -119,32 +120,13 @@ class IsExistingRegularFileAssertionPart(AssertionPart[ComparisonActualFile, Com
               custom_environment,
               actual_file: ComparisonActualFile,
               ) -> ComparisonActualFile:
-        failure_info_properties = self._file_prop_check.resolve_failure_info(actual_file.actual_file_path)
+        element_ref = FileSystemElementReference(file_ref_resolvers.constant(actual_file.actual_file),
+                                                 actual_file.actual_file_path)
+        err_msg_resolver = self._file_prop_check.matches(element_ref)
 
-        if failure_info_properties:
+        if err_msg_resolver:
             err_msg_env = err_msg_env_from_instr_env(environment)
-            err_msg = self._err_msg(err_msg_env, actual_file, failure_info_properties)
+            err_msg = err_msg_resolver.resolve(err_msg_env)
             raise PfhHardErrorException(err_msg)
 
         return actual_file
-
-    def _err_msg(self,
-                 environment: ErrorMessageResolvingEnvironment,
-                 file_to_transform: ComparisonActualFile,
-                 actual_file_properties: file_properties.Properties) -> str:
-        from exactly_lib.symbol.data import file_ref_resolvers
-        from exactly_lib.util.logic_types import ExpectationType
-
-        def actual_info_single_line_value() -> str:
-            return file_properties.render_property(actual_file_properties)
-
-        property_descriptor = path_description.path_value_description(
-            actual_file_attributes.PLAIN_FILE_OBJECT_NAME,
-            file_ref_resolvers.constant(file_to_transform.actual_file))
-        diff_failure_resolver = diff_msg_utils.DiffFailureInfoResolver(
-            property_descriptor,
-            ExpectationType.POSITIVE,
-            diff_msg_utils.ConstantExpectedValueResolver('existing regular file'),
-        )
-        actual_info = diff_msg.ActualInfo(actual_info_single_line_value())
-        return diff_failure_resolver.resolve(environment, actual_info).error_message()

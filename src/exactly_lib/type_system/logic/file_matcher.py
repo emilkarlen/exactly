@@ -1,4 +1,5 @@
 import pathlib
+from typing import Iterator
 
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 
@@ -13,7 +14,7 @@ class FileMatcher(Matcher[pathlib.Path]):
         raise NotImplementedError('abstract method')
 
 
-def matching_files_in_dir(matcher: FileMatcher, dir_path: pathlib.Path) -> iter:
+def matching_files_in_dir(matcher: FileMatcher, dir_path: pathlib.Path) -> Iterator[pathlib.Path]:
     """
     :return: Iterator of :class:`pathlib.Path`
     """
