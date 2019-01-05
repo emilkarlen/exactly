@@ -3,7 +3,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation, \
     syntax_element_documentation
 from exactly_lib.help.entities.syntax_elements.objects import here_document, regex, glob_pattern, \
-    type_string, type_list, type_path, type_program, symbol_name, symbol_reference, string_matcher, \
+    type_string, type_list, type_path, type_program, type_string_matcher, symbol_name, symbol_reference, \
     files_matcher, integer, integer_comparison, shell_command_line
 from exactly_lib.test_case_utils.expression.grammar import Grammar
 from exactly_lib.test_case_utils.expression.syntax_documentation import Syntax
@@ -35,7 +35,6 @@ ALL_SYNTAX_ELEMENT_DOCS = (
     shell_command_line.DOCUMENTATION,
     symbol_name.DOCUMENTATION,
     symbol_reference.DOCUMENTATION,
-    string_matcher.DOCUMENTATION,
     files_matcher.DOCUMENTATION,
 
     type_string.DOCUMENTATION,
@@ -51,6 +50,7 @@ ALL_SYNTAX_ELEMENT_DOCS = (
     _for_logic_type(syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
                     parse_line_matcher.GRAMMAR),
 
+    type_string_matcher.DOCUMENTATION,
     type_program.DOCUMENTATION,
 
 )
