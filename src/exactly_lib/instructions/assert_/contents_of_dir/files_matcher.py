@@ -19,6 +19,15 @@ class FilesSource:
         return self._path_of_dir
 
 
+class HardErrorException(Exception):
+    def __init__(self, error: ErrorMessageResolver):
+        self._error = error
+
+    @property
+    def error(self) -> ErrorMessageResolver:
+        return self._error
+
+
 class FilesMatcherResolver(ObjectWithTypedSymbolReferences, ABC):
     @abstractmethod
     def validator(self) -> PreOrPostSdsValidator:
@@ -29,4 +38,8 @@ class FilesMatcherResolver(ObjectWithTypedSymbolReferences, ABC):
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
                 files_source: FilesSource) -> Optional[ErrorMessageResolver]:
+        """
+        :raises HardErrorException: In case of HARD ERROR
+        :return: None iff match
+        """
         pass
