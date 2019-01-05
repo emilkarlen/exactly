@@ -515,7 +515,6 @@ More functionality is needed, smaller and larger.
 Including (but not limited to):
 
 * More string transformers
-* New type "string matcher"
 * Possibility to use "program" values in more places, e.g. in ``[act]``
 * Improved string character escaping
 * Separate sets of environment variables for "action to check" and other processes
