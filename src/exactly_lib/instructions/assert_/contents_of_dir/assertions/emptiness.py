@@ -1,14 +1,15 @@
 import pathlib
 from typing import Sequence, List, Optional
 
-from exactly_lib.instructions.assert_.contents_of_dir import config, files_matchers
-from exactly_lib.instructions.assert_.contents_of_dir.files_matchers import FilesMatcherResolverBase
+from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
+from exactly_lib.test_case_utils.files_matcher import files_matchers
+from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
 from exactly_lib.test_case_utils.files_matcher.structure import FilesSource, FilesMatcherResolver, \
     Environment
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \

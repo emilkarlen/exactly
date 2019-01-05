@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.instructions.assert_.contents_of_dir.files_matchers import Settings
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -10,6 +9,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils import file_properties, return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.test_case_utils import file_ref_check
+from exactly_lib.test_case_utils.files_matcher.files_matchers import Settings
 from exactly_lib.test_case_utils.files_matcher.structure import FilesSource, \
     FilesMatcherResolver, HardErrorException, Environment
 from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
