@@ -8,7 +8,6 @@ from exactly_lib.instructions.assert_.contents_of_dir import config, files_match
 from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesSource, FilesMatcherResolver, \
     HardErrorException
 from exactly_lib.instructions.assert_.contents_of_dir.files_matchers import FilesMatcherResolverBase
-from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
@@ -19,6 +18,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import path_description
+from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.file_system_element_matcher import \
     FileSystemElementReference, FileSystemElementPropertiesMatcher
 from exactly_lib.type_system.data import file_refs
@@ -219,8 +219,9 @@ class _ErrorReportingHelper:
 
     def _diff_failure_info_for_dir(self) -> diff_msg_utils.DiffFailureInfoResolver:
         property_descriptor = path_description.path_value_description(
-            actual_files.file_property_name(actual_file_attributes.CONTENTS_ATTRIBUTE,
-                                            actual_file_attributes.PLAIN_DIR_OBJECT_NAME),
+            property_description.file_property_name(
+                actual_file_attributes.CONTENTS_ATTRIBUTE,
+                actual_file_attributes.PLAIN_DIR_OBJECT_NAME),
             self._dir_to_check)
         return diff_msg_utils.DiffFailureInfoResolver(
             property_descriptor,
@@ -248,8 +249,8 @@ class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConst
             _path_value_for_file_in_checked_dir(self._dir_to_check, self._path)
         )
         return path_description.path_value_description(
-            actual_files.file_property_name(contents_attribute,
-                                            actual_file_attributes.PLAIN_FILE_OBJECT_NAME),
+            property_description.file_property_name(contents_attribute,
+                                                    actual_file_attributes.PLAIN_FILE_OBJECT_NAME),
             path_resolver)
 
 

@@ -31,3 +31,7 @@ def property_descriptor_with_just_a_constant_name(name: str) -> PropertyDescript
         name,
         NoErrorMessagePartConstructor(),
     )
+
+
+def file_property_name(contents_attribute: str, object_name: str) -> str:
+    return contents_attribute + ' of ' + object_name
