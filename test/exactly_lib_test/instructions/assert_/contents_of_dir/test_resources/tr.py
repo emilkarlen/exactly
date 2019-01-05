@@ -1,13 +1,13 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
-from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType, \
     PathRelativityVariants, RelOptionType
+from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.parse import parse_relativity
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.logic_types import ExpectationType

@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
-from exactly_lib.instructions.assert_.contents_of_dir.config import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.test_case.result.pfh import PassOrFailOrHardErrorEnum
+from exactly_lib.test_case_utils.files_matcher.config import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source

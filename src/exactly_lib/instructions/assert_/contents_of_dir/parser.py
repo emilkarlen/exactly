@@ -1,6 +1,5 @@
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import FilesMatcherAsDirContentsAssertionPart
-from exactly_lib.instructions.assert_.contents_of_dir.config import PATH_ARGUMENT, ACTUAL_RELATIVITY_CONFIGURATION
 from exactly_lib.instructions.assert_.contents_of_dir.parse_files_matcher import parse_files_matcher
 from exactly_lib.instructions.assert_.utils import assertion_part
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart, \
@@ -12,6 +11,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
+from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.structure import FilesSource
 from exactly_lib.test_case_utils.parse import parse_file_ref
 
@@ -19,7 +19,7 @@ from exactly_lib.test_case_utils.parse import parse_file_ref
 class Parser(InstructionParserWithoutSourceFileLocationInfo):
     def __init__(self):
         self.format_map = {
-            'PATH': PATH_ARGUMENT.name,
+            'PATH': config.PATH_ARGUMENT.name,
         }
 
     def parse_from_source(self, source: ParseSource) -> AssertPhaseInstruction:
@@ -29,7 +29,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
             assert isinstance(token_parser,
                               token_stream_parser.TokenParser), 'Must have a TokenParser'  # Type info for IDE
 
-            path_to_check = parse_file_ref.parse_file_ref_from_token_parser(ACTUAL_RELATIVITY_CONFIGURATION,
+            path_to_check = parse_file_ref.parse_file_ref_from_token_parser(config.ACTUAL_RELATIVITY_CONFIGURATION,
                                                                             token_parser)
 
             actual_path_checker_assertion_part = self._actual_path_checker_assertion_part(path_to_check)

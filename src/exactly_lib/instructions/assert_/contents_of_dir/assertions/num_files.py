@@ -1,7 +1,6 @@
 import pathlib
 from typing import Sequence, Optional
 
-from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -9,7 +8,7 @@ from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_expr
-from exactly_lib.test_case_utils.files_matcher import files_matchers
+from exactly_lib.test_case_utils.files_matcher import files_matchers, config
 from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
 from exactly_lib.test_case_utils.files_matcher.structure import FilesSource, FilesMatcherResolver, \
     Environment
