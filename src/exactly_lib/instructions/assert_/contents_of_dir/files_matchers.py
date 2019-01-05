@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from exactly_lib.instructions.assert_.contents_of_dir.files_matcher import FilesMatcherResolver, FilesSource, \
-    Environment
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.test_case import pre_or_post_validation
@@ -11,6 +9,8 @@ from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg.path_description import PathValuePartConstructor
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.files_matcher.structure import FilesMatcherResolver, FilesSource, \
+    Environment
 from exactly_lib.type_system.error_message import PropertyDescriptor, ErrorMessageResolver
 from exactly_lib.util.logic_types import ExpectationType
 
