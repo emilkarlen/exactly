@@ -1,5 +1,4 @@
 from exactly_lib.instructions.assert_.contents_of_dir import impl_utils
-from exactly_lib.instructions.assert_.contents_of_dir.parse_files_matcher import parse_files_matcher
 from exactly_lib.instructions.assert_.utils import assertion_part
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart, \
     IdentityAssertionPartWithValidationAndReferences
@@ -11,6 +10,7 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_utils.files_matcher import config
+from exactly_lib.test_case_utils.files_matcher.parse_files_matcher import parse_files_matcher
 from exactly_lib.test_case_utils.files_matcher.structure import FilesSource
 from exactly_lib.test_case_utils.parse import parse_file_ref
 
