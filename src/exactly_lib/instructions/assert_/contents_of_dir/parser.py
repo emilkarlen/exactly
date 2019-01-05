@@ -1,5 +1,4 @@
-from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
-from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import FilesMatcherAsDirContentsAssertionPart
+from exactly_lib.instructions.assert_.contents_of_dir import impl_utils
 from exactly_lib.instructions.assert_.contents_of_dir.parse_files_matcher import parse_files_matcher
 from exactly_lib.instructions.assert_.utils import assertion_part
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart, \
@@ -38,7 +37,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 
             assertions = assertion_part.compose(
                 actual_path_checker_assertion_part,
-                FilesMatcherAsDirContentsAssertionPart(files_matcher_resolver),
+                impl_utils.FilesMatcherAsDirContentsAssertionPart(files_matcher_resolver),
             )
 
             return assertion_part.AssertionInstructionFromAssertionPart(assertions,
@@ -53,5 +52,5 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
                 ConstantSuccessValidator(),
                 path_to_check.references,
             ),
-            common.AssertPathIsExistingDirectory(),
+            impl_utils.AssertPathIsExistingDirectory(),
         )
