@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Callable
 
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -30,6 +30,14 @@ class ErrorMessageResolver(ABC):
     @abstractmethod
     def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
         pass
+
+
+class ErrorMessageResolverFromFunction(ErrorMessageResolver):
+    def __init__(self, resolver: Callable[[ErrorMessageResolvingEnvironment], str]):
+        self._resolver = resolver
+
+    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+        return self._resolver(environment)
 
 
 class ConstantErrorMessageResolver(ErrorMessageResolver):

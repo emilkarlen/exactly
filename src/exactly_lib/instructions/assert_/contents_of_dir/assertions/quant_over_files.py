@@ -10,7 +10,6 @@ from exactly_lib.instructions.assert_.contents_of_dir.files_matchers import File
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import ComparisonActualFile
-from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
@@ -23,7 +22,7 @@ from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhFailExcepti
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
-    FilePropertyDescriptorConstructor, ErrorMessageResolver, ConstantErrorMessageResolver
+    FilePropertyDescriptorConstructor, ErrorMessageResolver, ErrorMessageResolverFromFunction
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
@@ -61,11 +60,7 @@ class _QuantifiedMatcher(FilesMatcherResolverBase):
                            environment,
                            files_source,
                            os_services)
-        err_msg = checker.check()
-        if err_msg:
-            return ConstantErrorMessageResolver(err_msg)
-        else:
-            return None
+        return checker.check()
 
 
 class _Checker:
@@ -92,10 +87,9 @@ class _Checker:
         self._dir_to_check = files_source.path_of_dir.resolve(environment.symbols)
         self.error_reporting = _ErrorReportingHelper(settings,
                                                      files_source.path_of_dir,
-                                                     quantifier,
-                                                     err_msg_env_from_instr_env(environment))
+                                                     quantifier)
 
-    def check(self) -> str:
+    def check(self) -> Optional[ErrorMessageResolver]:
         if self.quantifier is Quantifier.ALL:
             if self.settings.expectation_type is ExpectationType.POSITIVE:
                 return self.check__all__positive()
@@ -107,34 +101,33 @@ class _Checker:
             else:
                 return self.check__exists__negative()
 
-    def check__all__positive(self) -> str:
+    def check__all__positive(self) -> Optional[ErrorMessageResolver]:
         for actual_file in self.resolved_actual_file_iter():
             self.check_file(actual_file)
         return None
 
-    def check__all__negative(self) -> str:
+    def check__all__negative(self) -> Optional[ErrorMessageResolver]:
         for actual_file in self.resolved_actual_file_iter():
             try:
                 self.check_file(actual_file)
             except PfhFailException:
                 return None
-        raise PfhFailException(self.error_reporting.err_msg_for_dir__all_satisfies())
+        return self.error_reporting.err_msg_for_dir__all_satisfies()
 
-    def check__exists__positive(self) -> str:
+    def check__exists__positive(self) -> Optional[ErrorMessageResolver]:
         for actual_file in self.resolved_actual_file_iter():
             try:
                 self.check_file(actual_file)
                 return None
             except PfhFailException:
                 pass
-        raise PfhFailException(self.error_reporting.err_msg_for_dir('no file satisfy'))
+        return self.error_reporting.err_msg_for_dir('no file satisfy')
 
-    def check__exists__negative(self) -> str:
+    def check__exists__negative(self) -> Optional[ErrorMessageResolver]:
         for actual_file in self.resolved_actual_file_iter():
             try:
                 self.check_file(actual_file)
-                err_msg = self.error_reporting.err_msg_for_file_in_dir('one file satisfies', actual_file)
-                return err_msg
+                return self.error_reporting.err_msg_for_file_in_dir('one file satisfies', actual_file)
             except PfhFailException:
                 pass
         return None
@@ -164,41 +157,45 @@ class _Checker:
 class _ErrorReportingHelper:
     def __init__(self,
                  settings: files_matchers.Settings,
-                 path_to_check: FileRefResolver,
+                 dir_to_check: FileRefResolver,
                  quantifier: Quantifier,
-                 environment: ErrorMessageResolvingEnvironment,
                  ):
-        self.path_to_check = path_to_check
         self.settings = settings
         self.quantifier = quantifier
-        self.environment = environment
         self._destination_file_path_getter = DestinationFilePathGetter()
-        self._dir_to_check = path_to_check.resolve(environment.symbols)
+        self._dir_to_check = dir_to_check
 
-    def err_msg_for_dir__all_satisfies(self) -> str:
+    def err_msg_for_dir__all_satisfies(self) -> ErrorMessageResolver:
         single_line_value = instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier] + ' file satisfies'
         return self.err_msg_for_dir(single_line_value)
 
-    def err_msg_for_dir(self, single_line_value: str) -> str:
-        return self._diff_failure_info_for_dir().resolve(self.environment,
-                                                         diff_msg.ActualInfo(single_line_value)).error_message()
+    def err_msg_for_dir(self, single_line_value: str) -> ErrorMessageResolver:
+        def resolve(environment: ErrorMessageResolvingEnvironment) -> str:
+            return self._diff_failure_info_for_dir().resolve(environment,
+                                                             diff_msg.ActualInfo(single_line_value)).error_message()
+
+        return ErrorMessageResolverFromFunction(resolve)
 
     def err_msg_for_file_in_dir(self,
                                 single_line_value: str,
-                                actual_file: ComparisonActualFile) -> str:
-        failing_file_description_lines = path_description.lines_for_path_value(
-            _path_value_for_file_in_checked_dir(self._dir_to_check, actual_file.actual_file_path),
-            self.environment.tcds,
-        )
-        actual_info = diff_msg.ActualInfo(single_line_value, failing_file_description_lines)
-        return self._diff_failure_info_for_dir().resolve(self.environment,
-                                                         actual_info).error_message()
+                                actual_file: ComparisonActualFile) -> ErrorMessageResolver:
+        def resolve(environment: ErrorMessageResolvingEnvironment) -> str:
+            failing_file_description_lines = path_description.lines_for_path_value(
+                _path_value_for_file_in_checked_dir(self._dir_to_check.resolve(environment.symbols),
+                                                    actual_file.actual_file_path),
+                environment.tcds,
+            )
+            actual_info = diff_msg.ActualInfo(single_line_value, failing_file_description_lines)
+            return self._diff_failure_info_for_dir().resolve(environment,
+                                                             actual_info).error_message()
+
+        return ErrorMessageResolverFromFunction(resolve)
 
     def _diff_failure_info_for_dir(self) -> diff_msg_utils.DiffFailureInfoResolver:
         property_descriptor = path_description.path_value_description(
             actual_files.file_property_name(actual_file_attributes.CONTENTS_ATTRIBUTE,
                                             actual_file_attributes.PLAIN_DIR_OBJECT_NAME),
-            self.path_to_check)
+            self._dir_to_check)
         return diff_msg_utils.DiffFailureInfoResolver(
             property_descriptor,
             self.settings.expectation_type,
