@@ -7,7 +7,6 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.test_case_utils.files_matcher.structure import FilesSource, FilesMatcherResolver, \
@@ -29,7 +28,6 @@ class _EmptinessMatcher(FilesMatcherResolverBase):
 
     def matches(self,
                 environment: Environment,
-                os_services: OsServices,
                 files_source: FilesSource) -> Optional[ErrorMessageResolver]:
         err_msg_setup = _ErrMsgSetup(files_source.path_of_dir,
                                      self._settings.property_descriptor(config.EMPTINESS_PROPERTY_NAME,

@@ -72,7 +72,6 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
                           environment.phase_logging.space_for_instruction())
         try:
             mb_error_message = self._files_matcher.matches(env,
-                                                           os_services,
                                                            files_source)
             if mb_error_message is not None:
                 raise PfhFailException(mb_error_message.resolve(err_msg_env_from_instr_env(environment)))

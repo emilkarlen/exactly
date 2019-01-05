@@ -8,7 +8,6 @@ from exactly_lib.symbol.object_with_symbol_references import references_from_obj
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_expr
 from exactly_lib.test_case_utils.files_matcher.structure import FilesSource, FilesMatcherResolver, \
@@ -49,7 +48,6 @@ class _NumFilesMatcher(FilesMatcherResolverBase):
 
     def matches(self,
                 environment: Environment,
-                os_services: OsServices,
                 files_source: FilesSource) -> Optional[ErrorMessageResolver]:
         comparison_handler = comparison_structures.ComparisonHandler(
             self._settings.property_descriptor(config.NUM_FILES_PROPERTY_NAME,

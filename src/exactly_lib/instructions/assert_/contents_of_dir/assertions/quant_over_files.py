@@ -11,7 +11,6 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import path_description
@@ -54,14 +53,12 @@ class _QuantifiedMatcher(FilesMatcherResolverBase):
 
     def matches(self,
                 environment: Environment,
-                os_services: OsServices,
                 files_source: FilesSource) -> Optional[ErrorMessageResolver]:
         checker = _Checker(self._settings,
                            self._quantifier,
                            self._matcher_on_existing_regular_file,
                            environment,
-                           files_source,
-                           os_services)
+                           files_source)
         return checker.check()
 
 
@@ -77,7 +74,6 @@ class _Checker:
                  matcher_on_existing_regular_file: StringMatcherResolver,
                  environment: Environment,
                  files_source: FilesSource,
-                 os_services: OsServices
                  ):
         self.settings = settings
         self.quantifier = quantifier
@@ -89,7 +85,6 @@ class _Checker:
                                                  .value_of_any_dependency(pre.home_and_sds))
         self.environment = environment
         self.files_source = files_source
-        self.os_services = os_services
         self._dir_to_check = files_source.path_of_dir.resolve(pre.symbols)
         self.error_reporting = _ErrorReportingHelper(settings,
                                                      files_source.path_of_dir,
