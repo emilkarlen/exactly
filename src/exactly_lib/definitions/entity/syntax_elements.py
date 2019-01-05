@@ -64,6 +64,9 @@ STRING_TRANSFORMER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.STRING_TR
 
 PROGRAM_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.PROGRAM_TYPE_INFO)
 
+FILES_MATCHER_SYNTAX_ELEMENT = name_and_ref_target('FILES-MATCHER',
+                                                   'Matches a set of files (e.g. the contents of a directory).')
+
 SHELL_COMMAND_LINE_SYNTAX_ELEMENT = name_and_ref_target(
     instruction_arguments.COMMAND_ARGUMENT.name,
     'A shell command line, as the remaining part of the current line.'
@@ -123,6 +126,7 @@ ALL_SYNTAX_ELEMENTS = (
     PATH_SYNTAX_ELEMENT,
 
     FILE_MATCHER_SYNTAX_ELEMENT,
+    FILES_MATCHER_SYNTAX_ELEMENT,
     LINE_MATCHER_SYNTAX_ELEMENT,
     STRING_MATCHER_SYNTAX_ELEMENT,
     STRING_TRANSFORMER_SYNTAX_ELEMENT,

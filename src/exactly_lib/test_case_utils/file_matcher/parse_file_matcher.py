@@ -1,11 +1,8 @@
 """Functionality for accessing a subset of the files in a directory."""
 from typing import List
 
-from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant, \
-    cli_argument_syntax_element_description
 from exactly_lib.definitions import doc_format
 from exactly_lib.definitions import expression, instruction_arguments
-from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
@@ -48,16 +45,6 @@ REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
 _TEXT_PARSER = TextParser({
     'MATCHER': syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
 })
-
-
-def selection_syntax_element_description() -> SyntaxElementDescription:
-    return cli_argument_syntax_element_description(
-        SELECTION,
-        _TEXT_PARSER.fnap(_SELECTION_DESCRIPTION),
-        [
-            InvokationVariant(cl_syntax.arg_syntax(SELECTION_OPTION)),
-        ]
-    )
 
 
 class FileSelectionDescriptor(ErrorMessagePartConstructor):
@@ -139,11 +126,6 @@ ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
 }
 
 _ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME = 'Missing {_GLOB_PATTERN_} argument for {_NAME_MATCHER_}'
-
-_SELECTION_DESCRIPTION = """\
-Makes the assertion apply to the sub set of files matched by {MATCHER},
-instead of to all files in the directory.
-"""
 
 _NAME_MATCHER_SED_DESCRIPTION = """\
 Matches files who's ...
