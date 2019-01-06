@@ -1,6 +1,5 @@
 from typing import Sequence, Optional
 
-from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -28,10 +27,7 @@ class _NumFilesMatcher(FilesMatcherResolverBaseForNewModel):
                  operator_and_r_operand: parse_expr.IntegerComparisonOperatorAndRightOperand):
         self._settings = settings
         self._operator_and_r_operand = operator_and_r_operand
-        self._references = references_from_objects_with_symbol_references([
-            self._operator_and_r_operand.right_operand,
-            self._settings.file_matcher
-        ])
+        self._references = self._operator_and_r_operand.right_operand.references
 
         validator = PreOrPostSdsValidatorFromValidatorViaExceptions(
             SvhValidatorViaExceptionsFromPreAndPostSdsValidators(
@@ -42,7 +38,7 @@ class _NumFilesMatcher(FilesMatcherResolverBaseForNewModel):
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self._references
+        return self._operator_and_r_operand.right_operand.references
 
     def matches_new(self,
                     environment: Environment,

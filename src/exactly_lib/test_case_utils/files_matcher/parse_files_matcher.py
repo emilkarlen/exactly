@@ -5,6 +5,7 @@ from exactly_lib.test_case_utils.condition.integer import parse_integer_conditio
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_matcher import files_matchers, config
 from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files
+from exactly_lib.test_case_utils.files_matcher.impl.sub_set_selection import sub_set_selection_matcher
 from exactly_lib.test_case_utils.files_matcher.structure import FilesMatcherResolver
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.util.logic_types import Quantifier
@@ -12,13 +13,19 @@ from exactly_lib.util.messages import grammar_options_syntax
 
 
 def parse_files_matcher(parser: TokenParser) -> FilesMatcherResolver:
-    file_selection = parse_file_matcher.parse_optional_selection_resolver(parser)
+    mb_file_selector = parse_file_matcher.parse_optional_selection_resolver2(parser)
     expectation_type = parser.consume_optional_negation_operator()
 
     files_matcher_parser = _FilesMatcherParserForSettings(
         files_matchers.Settings(expectation_type,
-                                file_selection))
-    return files_matcher_parser.parse(parser)
+                                None))
+    matcher_without_selection = files_matcher_parser.parse(parser)
+
+    if mb_file_selector is None:
+        return matcher_without_selection
+    else:
+        return sub_set_selection_matcher(mb_file_selector,
+                                         matcher_without_selection)
 
 
 class _FilesMatcherParserForSettings:

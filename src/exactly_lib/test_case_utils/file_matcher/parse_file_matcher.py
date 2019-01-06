@@ -1,5 +1,5 @@
 """Functionality for accessing a subset of the files in a directory."""
-from typing import List
+from typing import List, Optional
 
 from exactly_lib.definitions import doc_format
 from exactly_lib.definitions import expression, instruction_arguments
@@ -68,6 +68,16 @@ def parse_optional_selection_resolver(parser: TokenParser) -> FileMatcherResolve
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
     return parser.consume_and_handle_optional_option(
         CONSTANT_TRUE_MATCHER_RESOLVER,
+        parse_resolver,
+        SELECTION_OPTION.name)
+
+
+def parse_optional_selection_resolver2(parser: TokenParser) -> Optional[FileMatcherResolver]:
+    parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
+        parser,
+        ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
+    return parser.consume_and_handle_optional_option(
+        None,
         parse_resolver,
         SELECTION_OPTION.name)
 

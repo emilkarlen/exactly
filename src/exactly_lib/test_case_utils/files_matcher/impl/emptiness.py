@@ -21,7 +21,7 @@ def emptiness_matcher(settings: files_matchers.Settings) -> FilesMatcherResolver
 class _EmptinessMatcher(FilesMatcherResolverBaseForNewModel):
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self._settings.file_matcher.references
+        return ()
 
     def matches_new(self,
                     environment: Environment,

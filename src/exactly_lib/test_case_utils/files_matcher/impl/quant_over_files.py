@@ -44,7 +44,7 @@ class _QuantifiedMatcher(FilesMatcherResolverBaseForNewModel):
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self._settings.file_matcher.references + self._matcher_on_existing_regular_file.references
+        return self._matcher_on_existing_regular_file.references
 
     def matches_new(self,
                     environment: Environment,

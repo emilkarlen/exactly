@@ -60,8 +60,12 @@ class FilesMatcherResolverBaseForNewModel(FilesMatcherResolverBase, ABC):
     def matches(self,
                 environment: Environment,
                 files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+        model = files_source
+        if self._settings.file_matcher is not None:
+            model = files_source.sub_set(self._settings.file_matcher)
+
         return self.matches_new(environment,
-                                files_source.sub_set(self._settings.file_matcher))
+                                model)
 
     @abstractmethod
     def matches_new(self,
