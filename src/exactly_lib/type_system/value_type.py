@@ -19,9 +19,10 @@ class DataValueType(Enum):
 class LogicValueType(Enum):
     LINE_MATCHER = 1
     FILE_MATCHER = 2
-    STRING_MATCHER = 3
-    STRING_TRANSFORMER = 4
-    PROGRAM = 5
+    FILES_MATCHER = 3
+    STRING_MATCHER = 4
+    STRING_TRANSFORMER = 5
+    PROGRAM = 6
 
 
 @enum.unique
@@ -32,9 +33,10 @@ class ValueType(Enum):
 
     LINE_MATCHER = 3
     FILE_MATCHER = 4
-    STRING_MATCHER = 5
-    STRING_TRANSFORMER = 6
-    PROGRAM = 7
+    FILES_MATCHER = 5
+    STRING_MATCHER = 6
+    STRING_TRANSFORMER = 7
+    PROGRAM = 8
 
 
 VALUE_TYPE_2_TYPE_CATEGORY = {
@@ -43,6 +45,7 @@ VALUE_TYPE_2_TYPE_CATEGORY = {
     ValueType.LIST: TypeCategory.DATA,
 
     ValueType.FILE_MATCHER: TypeCategory.LOGIC,
+    ValueType.FILES_MATCHER: TypeCategory.LOGIC,
     ValueType.LINE_MATCHER: TypeCategory.LOGIC,
     ValueType.STRING_MATCHER: TypeCategory.LOGIC,
     ValueType.STRING_TRANSFORMER: TypeCategory.LOGIC,

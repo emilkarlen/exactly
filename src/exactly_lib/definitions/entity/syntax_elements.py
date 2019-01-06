@@ -64,8 +64,7 @@ STRING_TRANSFORMER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.STRING_TR
 
 PROGRAM_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.PROGRAM_TYPE_INFO)
 
-FILES_MATCHER_SYNTAX_ELEMENT = name_and_ref_target('FILES-MATCHER',
-                                                   'Matches a set of files (e.g. the contents of a directory).')
+FILES_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.FILES_MATCHER_TYPE_INFO)
 
 SHELL_COMMAND_LINE_SYNTAX_ELEMENT = name_and_ref_target(
     instruction_arguments.COMMAND_ARGUMENT.name,
