@@ -27,7 +27,7 @@ from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-SELECTION_OF_ALL_FILES = FileMatcherConstantResolver(MATCH_EVERY_FILE)
+CONSTANT_TRUE_MATCHER_RESOLVER = FileMatcherConstantResolver(MATCH_EVERY_FILE)
 
 NAME_MATCHER_NAME = 'name'
 
@@ -67,7 +67,7 @@ def parse_optional_selection_resolver(parser: TokenParser) -> FileMatcherResolve
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
     return parser.consume_and_handle_optional_option(
-        SELECTION_OF_ALL_FILES,
+        CONSTANT_TRUE_MATCHER_RESOLVER,
         parse_resolver,
         SELECTION_OPTION.name)
 

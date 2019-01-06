@@ -282,7 +282,7 @@ def _parse_string_matcher(fs_location_info: FileSystemLocationInfo,
 def _parse_file_matcher(fs_location_info: FileSystemLocationInfo,
                         token_parser: TokenParser) -> FileMatcherResolver:
     if token_parser.is_at_eol:
-        return parse_file_matcher.SELECTION_OF_ALL_FILES
+        return parse_file_matcher.CONSTANT_TRUE_MATCHER_RESOLVER
     else:
         return parse_file_matcher.parse_resolver(token_parser)
 

@@ -2,6 +2,7 @@ import pathlib
 from abc import ABC, abstractmethod
 from typing import Iterator
 
+from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import PropertyDescriptor
 
@@ -37,4 +38,13 @@ class FilesMatcherModel(ABC):
 
     @abstractmethod
     def files(self) -> Iterator[FileModel]:
+        pass
+
+    @abstractmethod
+    def sub_set(self, selector: FileMatcherResolver):
+        """
+        :return a new object that represents a sub set of this object.
+
+        :rtype FilesMatcherModel
+        """
         pass

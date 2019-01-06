@@ -8,6 +8,7 @@ from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherAndResolver
 from exactly_lib.test_case_utils.files_matcher.new_model import ErrorMessageInfo, FilesMatcherModel, FileModel
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
@@ -39,6 +40,13 @@ class FileModelForDir(FileModel):
 
 
 class FilesMatcherModelForDir(FilesMatcherModel):
+    def sub_set(self, selector: FileMatcherResolver) -> FilesMatcherModel:
+        combined_file_selector = FileMatcherAndResolver([self._files_selection,
+                                                         selector])
+        return FilesMatcherModelForDir(self._dir_path_resolver,
+                                       combined_file_selector,
+                                       self._environment)
+
     def __init__(self,
                  dir_path_resolver: FileRefResolver,
                  files_selection: FileMatcherResolver,

@@ -9,7 +9,9 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils import file_properties, return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.test_case_utils import file_ref_check
+from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_matcher.files_matchers import Settings
+from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.test_case_utils.files_matcher.structure import FilesSource, \
     FilesMatcherResolver, HardErrorException, Environment
 from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
@@ -70,9 +72,12 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
               files_source: FilesSource) -> FilesSource:
         env = Environment(environment.path_resolving_environment_pre_or_post_sds,
                           environment.phase_logging.space_for_instruction())
+        model = FilesMatcherModelForDir(files_source.path_of_dir,
+                                        parse_file_matcher.CONSTANT_TRUE_MATCHER_RESOLVER,
+                                        env.path_resolving_environment)
         try:
             mb_error_message = self._files_matcher.matches(env,
-                                                           files_source)
+                                                           model)
             if mb_error_message is not None:
                 raise PfhFailException(mb_error_message.resolve(err_msg_env_from_instr_env(environment)))
 

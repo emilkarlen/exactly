@@ -5,6 +5,7 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.files_matcher.new_model import FilesMatcherModel
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.util.file_utils import TmpDirFileSpace
 
@@ -45,7 +46,7 @@ class FilesMatcherResolver(ObjectWithTypedSymbolReferences, ABC):
     @abstractmethod
     def matches(self,
                 environment: Environment,
-                files_source: FilesSource) -> Optional[ErrorMessageResolver]:
+                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         """
         :raises HardErrorException: In case of HARD ERROR
         :return: None iff match
