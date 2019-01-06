@@ -1,0 +1,64 @@
+from typing import Sequence, Optional
+
+from exactly_lib.symbol import symbol_usage as su
+from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case import pre_or_post_validation
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.files_matcher.new_model import FilesMatcherModel
+from exactly_lib.test_case_utils.files_matcher.structure import FilesMatcherResolver, Environment
+from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
+from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+
+
+class FilesMatcherResolverConstantTestImpl(FilesMatcherResolver):
+    def __init__(self,
+                 resolved_value: bool = True,
+                 references: Sequence[SymbolReference] = (),
+                 validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()):
+        self._resolved_value = resolved_value
+        self._references = list(references)
+        self._validator = validator
+
+    @property
+    def resolved_value(self) -> bool:
+        return self._resolved_value
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._references
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return self._validator
+
+    @property
+    def negation(self):
+        return FilesMatcherResolverConstantTestImpl(
+            not self._resolved_value,
+            self._references,
+            self._validator,
+        )
+
+    def resolve(self, symbols: SymbolTable) -> bool:
+        return self.resolved_value
+
+    def matches(self,
+                environment: Environment,
+                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+        if self.resolved_value:
+            return None
+        else:
+            return ConstantErrorMessageResolver('test impl with constant ' + str(self._resolved_value))
+
+
+IS_FILES_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILES_MATCHER)
+
+
+def is_reference_to_files_matcher(name_of_matcher: str) -> ValueAssertion[su.SymbolUsage]:
+    return asrt_sym_usage.matches_reference(asrt.equals(name_of_matcher),
+                                            IS_FILES_MATCHER_REFERENCE_RESTRICTION)
