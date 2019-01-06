@@ -5,8 +5,8 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
-from exactly_lib.test_case_utils.files_matcher import files_matchers, config
-from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBaseForNewModel
+from exactly_lib.test_case_utils.files_matcher import config
+from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
 from exactly_lib.test_case_utils.files_matcher.new_model import FileModel, FilesMatcherModel
 from exactly_lib.test_case_utils.files_matcher.structure import FilesMatcherResolver, \
     Environment
@@ -14,25 +14,25 @@ from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironme
 from exactly_lib.util.logic_types import ExpectationType
 
 
-def emptiness_matcher(settings: files_matchers.Settings) -> FilesMatcherResolver:
-    return _EmptinessMatcher(settings)
+def emptiness_matcher(expectation_type: ExpectationType) -> FilesMatcherResolver:
+    return _EmptinessMatcher(expectation_type)
 
 
-class _EmptinessMatcher(FilesMatcherResolverBaseForNewModel):
+class _EmptinessMatcher(FilesMatcherResolverBase):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return ()
 
-    def matches_new(self,
-                    environment: Environment,
-                    files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+    def matches(self,
+                environment: Environment,
+                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         err_msg_setup = _ErrMsgSetup(files_source,
-                                     self._settings.expectation_type,
+                                     self._expectation_type,
                                      EMPTINESS_CHECK_EXPECTED_VALUE)
         executor = _EmptinessExecutor(
             err_msg_setup,
             environment,
-            self._settings,
+            self._expectation_type,
             files_source)
 
         return executor.main()
@@ -53,18 +53,18 @@ class _EmptinessExecutor:
     def __init__(self,
                  err_msg_setup: _ErrMsgSetup,
                  environment: Environment,
-                 settings: files_matchers.Settings,
+                 expectation_type: ExpectationType,
                  model: FilesMatcherModel):
         self.err_msg_setup = err_msg_setup
         self.path_resolving_env = environment.path_resolving_environment
-        self.settings = settings
+        self.expectation_type = expectation_type
         self.error_message_setup = err_msg_setup
         self.model = model
 
     def main(self) -> Optional[ErrorMessageResolver]:
         files_in_dir = self.model.files()
 
-        if self.settings.expectation_type is ExpectationType.POSITIVE:
+        if self.expectation_type is ExpectationType.POSITIVE:
             return self._fail_if_path_dir_is_not_empty(files_in_dir)
         else:
             return self._fail_if_path_dir_is_empty(files_in_dir)

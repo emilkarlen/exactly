@@ -9,16 +9,11 @@ from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.util.logic_types import ExpectationType
 
 
-class Settings:
-    def __init__(self, expectation_type: ExpectationType):
-        self.expectation_type = expectation_type
-
-
 class FilesMatcherResolverBase(FilesMatcherResolver, ABC):
     def __init__(self,
-                 settings: Settings,
+                 expectation_type: ExpectationType,
                  validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()):
-        self._settings = settings
+        self._expectation_type = expectation_type
         self._validator = validator
 
     def validator(self) -> PreOrPostSdsValidator:
@@ -28,18 +23,4 @@ class FilesMatcherResolverBase(FilesMatcherResolver, ABC):
     def matches(self,
                 environment: Environment,
                 files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        pass
-
-
-class FilesMatcherResolverBaseForNewModel(FilesMatcherResolverBase, ABC):
-    def matches(self,
-                environment: Environment,
-                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        return self.matches_new(environment,
-                                files_source)
-
-    @abstractmethod
-    def matches_new(self,
-                    environment: Environment,
-                    files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         pass
