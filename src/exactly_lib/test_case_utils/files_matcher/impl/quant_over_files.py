@@ -4,6 +4,8 @@ from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.symbol.data import file_ref_resolvers
+from exactly_lib.symbol.files_matcher import FilesMatcherResolver, \
+    HardErrorException, Environment, FileModel, FilesMatcherModel
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import file_properties
@@ -14,9 +16,6 @@ from exactly_lib.test_case_utils.file_system_element_matcher import \
     FileSystemElementReference, FileSystemElementPropertiesMatcher
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
-from exactly_lib.test_case_utils.files_matcher.new_model import FilesMatcherModel, FileModel
-from exactly_lib.test_case_utils.files_matcher.structure import FilesMatcherResolver, \
-    HardErrorException, Environment
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
     FilePropertyDescriptorConstructor, ErrorMessageResolver, ErrorMessageResolverFromFunction
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck

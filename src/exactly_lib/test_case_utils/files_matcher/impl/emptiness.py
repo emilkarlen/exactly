@@ -1,15 +1,14 @@
 from typing import Sequence, List, Optional, Iterator
 
 from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
+from exactly_lib.symbol.files_matcher import FilesMatcherResolver, \
+    Environment, FileModel, FilesMatcherModel
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
-from exactly_lib.test_case_utils.files_matcher.new_model import FileModel, FilesMatcherModel
-from exactly_lib.test_case_utils.files_matcher.structure import FilesMatcherResolver, \
-    Environment
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, ErrorMessageResolver
 from exactly_lib.util import logic_types
 from exactly_lib.util.logic_types import ExpectationType

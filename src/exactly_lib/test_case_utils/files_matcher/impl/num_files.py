@@ -1,5 +1,7 @@
 from typing import Sequence, Optional
 
+from exactly_lib.symbol.files_matcher import FilesMatcherResolver, \
+    Environment, FilesMatcherModel
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
@@ -7,9 +9,6 @@ from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_expr
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
-from exactly_lib.test_case_utils.files_matcher.new_model import FilesMatcherModel
-from exactly_lib.test_case_utils.files_matcher.structure import FilesMatcherResolver, \
-    Environment
 from exactly_lib.test_case_utils.validators import PreOrPostSdsValidatorFromValidatorViaExceptions, \
     SvhValidatorViaExceptionsFromPreAndPostSdsValidators
 from exactly_lib.type_system.error_message import ErrorMessageResolver

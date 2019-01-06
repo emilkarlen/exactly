@@ -1,12 +1,12 @@
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.symbol.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as expression_parse
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, sub_set_selection, \
     negation
-from exactly_lib.test_case_utils.files_matcher.structure import FilesMatcherResolver
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib.util.messages import grammar_options_syntax

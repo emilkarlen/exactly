@@ -1,11 +1,12 @@
+import pathlib
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Iterator
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.resolver_structure import LogicValueResolver
+from exactly_lib.symbol.resolver_structure import LogicValueResolver, FileMatcherResolver
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.files_matcher.new_model import FilesMatcherModel
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.data.file_ref import FileRef
+from exactly_lib.type_system.error_message import ErrorMessageResolver, PropertyDescriptor
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.file_utils import TmpDirFileSpace
 
@@ -26,6 +27,49 @@ class Environment:
                  ):
         self.path_resolving_environment = path_resolving_environment
         self.tmp_files_space = tmp_files_space
+
+
+class ErrorMessageInfo(ABC):
+    @abstractmethod
+    def property_descriptor(self, property_name: str) -> PropertyDescriptor:
+        pass
+
+
+class FileModel(ABC):
+    @property
+    @abstractmethod
+    def path(self) -> pathlib.Path:
+        pass
+
+    @property
+    @abstractmethod
+    def relative_to_root_dir(self) -> pathlib.Path:
+        pass
+
+    @property
+    @abstractmethod
+    def relative_to_root_dir_as_path_value(self) -> FileRef:
+        pass
+
+
+class FilesMatcherModel(ABC):
+    @property
+    @abstractmethod
+    def error_message_info(self) -> ErrorMessageInfo:
+        pass
+
+    @abstractmethod
+    def files(self) -> Iterator[FileModel]:
+        pass
+
+    @abstractmethod
+    def sub_set(self, selector: FileMatcherResolver):
+        """
+        :return a new object that represents a sub set of this object.
+
+        :rtype FilesMatcherModel
+        """
+        pass
 
 
 class FilesMatcherResolver(LogicValueResolver, ABC):
