@@ -31,6 +31,11 @@ STRING_MATCHER_DOCUMENTATION = TypeDocumentation(TypeCategory.LOGIC,
                                                  syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
                                                  docs.empty_section_contents())
 
+FILES_MATCHER_DOCUMENTATION = TypeDocumentation(TypeCategory.LOGIC,
+                                                types.FILES_MATCHER_TYPE_INFO,
+                                                syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT,
+                                                docs.empty_section_contents())
+
 PROGRAM_DOCUMENTATION = TypeDocumentation(TypeCategory.LOGIC,
                                           types.PROGRAM_TYPE_INFO,
                                           syntax_elements.PROGRAM_SYNTAX_ELEMENT,

@@ -12,6 +12,7 @@ from exactly_lib.processing import exit_values
 from exactly_lib.test_case_utils import negation_of_predicate, file_contents_check_syntax
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTY_ARGUMENT_CONSTANT
 from exactly_lib.test_case_utils.files_matcher import config
+from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -23,7 +24,7 @@ MATCHER_VARIANT_ARG_NAME = a.Named('MATCHER')
 
 class _FilesMatcherDocumentation(SyntaxElementDocumentation):
     def __init__(self):
-        super().__init__(None,
+        super().__init__(TypeCategory.LOGIC,
                          syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT)
         self._tp = TextParser({
             'selection': instruction_arguments.SELECTION.name,
