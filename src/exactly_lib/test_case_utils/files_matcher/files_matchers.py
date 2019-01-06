@@ -8,6 +8,8 @@ from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg.path_description import PathValuePartConstructor
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.files_matcher.new_model import FilesMatcherModel
+from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.test_case_utils.files_matcher.structure import FilesMatcherResolver, FilesSource, \
     Environment
 from exactly_lib.type_system.error_message import PropertyDescriptor, ErrorMessageResolver
@@ -53,4 +55,20 @@ class FilesMatcherResolverBase(FilesMatcherResolver, ABC):
     def matches(self,
                 environment: Environment,
                 files_source: FilesSource) -> Optional[ErrorMessageResolver]:
+        pass
+
+
+class FilesMatcherResolverBaseForNewModel(FilesMatcherResolverBase, ABC):
+    def matches(self,
+                environment: Environment,
+                files_source: FilesSource) -> Optional[ErrorMessageResolver]:
+        model = FilesMatcherModelForDir(files_source.path_of_dir,
+                                        self._settings.file_matcher,
+                                        environment.path_resolving_environment)
+        return self.matches_new(environment, model)
+
+    @abstractmethod
+    def matches_new(self,
+                    environment: Environment,
+                    files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         pass
