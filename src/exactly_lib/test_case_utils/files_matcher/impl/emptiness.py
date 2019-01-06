@@ -121,7 +121,7 @@ class _ErrorMessageResolver(ErrorMessageResolver):
                                     actual_files_in_dir: List[FileModel],
                                     environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
         paths_in_dir = [
-            f.relative_to_root_dir()
+            f.relative_to_root_dir
             for f in actual_files_in_dir
         ]
         if len(paths_in_dir) < 50:

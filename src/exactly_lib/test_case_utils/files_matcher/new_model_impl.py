@@ -2,14 +2,40 @@ import pathlib
 from typing import Iterator
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_matcher.new_model import ErrorMessageInfo, FilesMatcherModel, FileModel
+from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import PropertyDescriptor
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
+
+
+class FileModelForDir(FileModel):
+    def __init__(self,
+                 path: pathlib.Path,
+                 root_dir_path: pathlib.Path,
+                 root_dir_path_value: FileRef):
+        self._path = path
+        self._root_dir_path = root_dir_path
+        self._root_dir_path_value = root_dir_path_value
+
+    @property
+    def path(self) -> pathlib.Path:
+        return self._path
+
+    @property
+    def relative_to_root_dir(self) -> pathlib.Path:
+        return self.path.relative_to(self._root_dir_path)
+
+    @property
+    def relative_to_root_dir_as_path_value(self) -> FileRef:
+        return StackedFileRef(self._root_dir_path_value,
+                              file_refs.constant_path_part(str(self.relative_to_root_dir)))
 
 
 class FilesMatcherModelForDir(FilesMatcherModel):
@@ -31,10 +57,11 @@ class FilesMatcherModelForDir(FilesMatcherModel):
         return self._dir_path_resolver
 
     def files(self) -> Iterator[FileModel]:
-        dir_path_to_check = self._dir_path_resolver.resolve_value_of_any_dependency(self._environment)
+        dir_path_to_check_value = self._dir_path_resolver.resolve(self._environment.symbols)
+        dir_path_to_check = dir_path_to_check_value.value_of_any_dependency(self._environment.home_and_sds)
 
         def mk_model(path: pathlib.Path) -> FileModel:
-            return FileModel(path, dir_path_to_check)
+            return FileModelForDir(path, dir_path_to_check, dir_path_to_check_value)
 
         assert isinstance(dir_path_to_check, pathlib.Path), 'Resolved value should be a path'
         file_matcher = self._files_selection.resolve(self._environment.symbols)

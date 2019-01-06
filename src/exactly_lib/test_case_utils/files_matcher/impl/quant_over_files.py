@@ -1,12 +1,9 @@
-import pathlib
 from typing import Sequence, Optional, Iterator
 
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.symbol.data import file_ref_resolvers
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import file_properties
@@ -16,14 +13,12 @@ from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.file_system_element_matcher import \
     FileSystemElementReference, FileSystemElementPropertiesMatcher
 from exactly_lib.test_case_utils.files_matcher import files_matchers, config
-from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
-from exactly_lib.test_case_utils.files_matcher.structure import FilesSource, FilesMatcherResolver, \
+from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBaseForNewModel
+from exactly_lib.test_case_utils.files_matcher.new_model import FilesMatcherModel, FileModel
+from exactly_lib.test_case_utils.files_matcher.structure import FilesMatcherResolver, \
     HardErrorException, Environment
-from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
     FilePropertyDescriptorConstructor, ErrorMessageResolver, ErrorMessageResolverFromFunction
-from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
@@ -38,7 +33,7 @@ def quantified_matcher(settings: files_matchers.Settings,
                               matcher_on_existing_regular_file)
 
 
-class _QuantifiedMatcher(FilesMatcherResolverBase):
+class _QuantifiedMatcher(FilesMatcherResolverBaseForNewModel):
     def __init__(self,
                  settings: files_matchers.Settings,
                  quantifier: Quantifier,
@@ -51,9 +46,9 @@ class _QuantifiedMatcher(FilesMatcherResolverBase):
     def references(self) -> Sequence[SymbolReference]:
         return self._settings.file_matcher.references + self._matcher_on_existing_regular_file.references
 
-    def matches(self,
-                environment: Environment,
-                files_source: FilesSource) -> Optional[ErrorMessageResolver]:
+    def matches_new(self,
+                    environment: Environment,
+                    files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         checker = _Checker(self._settings,
                            self._quantifier,
                            self._matcher_on_existing_regular_file,
@@ -73,10 +68,12 @@ class _Checker:
                  quantifier: Quantifier,
                  matcher_on_existing_regular_file: StringMatcherResolver,
                  environment: Environment,
-                 files_source: FilesSource,
+                 files_source_model: FilesMatcherModel,
                  ):
         self.settings = settings
         self.quantifier = quantifier
+        self.files_source_model = files_source_model
+
         pre = environment.path_resolving_environment
         self.path_resolving_environment = pre
 
@@ -84,16 +81,14 @@ class _Checker:
                                                  .resolve(pre.symbols)
                                                  .value_of_any_dependency(pre.home_and_sds))
         self.environment = environment
-        self.files_source = files_source
-        self._dir_to_check = files_source.path_of_dir.resolve(pre.symbols)
         self.error_reporting = _ErrorReportingHelper(settings,
-                                                     files_source.path_of_dir,
+                                                     files_source_model,
                                                      quantifier)
         self.is_existing_regular_file_checker = FileSystemElementPropertiesMatcher(
             file_properties.ActualFilePropertiesResolver(file_properties.FileType.REGULAR,
                                                          follow_symlinks=True)
         )
-        self.models_factory = _ModelsFactory(environment, files_source)
+        self.models_factory = _ModelsFactory(environment)
 
     def check(self) -> Optional[ErrorMessageResolver]:
         if self.quantifier is Quantifier.ALL:
@@ -135,58 +130,48 @@ class _Checker:
                 return self.error_reporting.err_msg_for_file_in_dir('one file satisfies', actual_file)
         return None
 
-    def resolved_actual_file_iter(self) -> Iterator[pathlib.Path]:
-        pre = self.path_resolving_environment
-        path_to_check = self.files_source.path_of_dir.resolve_value_of_any_dependency(pre)
-        assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
-        file_matcher = self.settings.file_matcher.resolve(pre.symbols)
-        return file_matcher_type.matching_files_in_dir(file_matcher, path_to_check)
+    def resolved_actual_file_iter(self) -> Iterator[FileModel]:
+        return self.files_source_model.files()
 
-    def check_file(self, path: pathlib.Path) -> Optional[ErrorMessageResolver]:
+    def check_file(self, file_element: FileModel) -> Optional[ErrorMessageResolver]:
         mb_error = self.is_existing_regular_file_checker.matches(
-            self.models_factory.file_system_element_reference(path))
+            self.models_factory.file_system_element_reference(file_element))
         if mb_error is not None:
             raise HardErrorException(mb_error)
 
-        return self.matcher_on_existing_regular_file.matches(self.models_factory.file_to_check(path))
+        return self.matcher_on_existing_regular_file.matches(self.models_factory.file_to_check(file_element))
 
 
 class _ModelsFactory:
-    def __init__(self,
-                 environment: Environment,
-                 files_source: FilesSource,
-                 ):
+    def __init__(self, environment: Environment):
         self._id_trans = IdentityStringTransformer()
         self._tmp_file_space = environment.tmp_files_space
-        self._dir_to_check_resolver = files_source.path_of_dir
-        self._dir_to_check = files_source.path_of_dir.resolve(environment.path_resolving_environment.symbols)
         self._destination_file_path_getter = DestinationFilePathGetter()
 
-    def file_to_check(self, path: pathlib.Path) -> FileToCheck:
-        return FileToCheck(path,
-                           _FilePropertyDescriptorConstructorForFileInDir(self._dir_to_check,
-                                                                          path),
+    def file_to_check(self, file_element: FileModel) -> FileToCheck:
+        return FileToCheck(file_element.path,
+                           _FilePropertyDescriptorConstructorForFileInDir(file_element),
                            self._tmp_file_space,
                            self._id_trans,
                            self._destination_file_path_getter)
 
-    def file_system_element_reference(self, path: pathlib.Path) -> FileSystemElementReference:
+    def file_system_element_reference(self, file_element: FileModel) -> FileSystemElementReference:
         return FileSystemElementReference(
-            file_ref_resolvers.constant(_path_value_for_file_in_checked_dir(self._dir_to_check, path)),
-            path
+            file_ref_resolvers.constant(file_element.relative_to_root_dir_as_path_value),
+            file_element.path
         )
 
 
 class _ErrorReportingHelper:
     def __init__(self,
                  settings: files_matchers.Settings,
-                 dir_to_check: FileRefResolver,
+                 files_source_model: FilesMatcherModel,
                  quantifier: Quantifier,
                  ):
+        self.files_source_model = files_source_model
         self.settings = settings
         self.quantifier = quantifier
         self._destination_file_path_getter = DestinationFilePathGetter()
-        self._dir_to_check = dir_to_check
 
     def err_msg_for_dir__all_satisfies(self) -> ErrorMessageResolver:
         single_line_value = instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier] + ' file satisfies'
@@ -201,11 +186,10 @@ class _ErrorReportingHelper:
 
     def err_msg_for_file_in_dir(self,
                                 single_line_value: str,
-                                actual_file: pathlib.Path) -> ErrorMessageResolver:
+                                file_element: FileModel) -> ErrorMessageResolver:
         def resolve(environment: ErrorMessageResolvingEnvironment) -> str:
             failing_file_description_lines = path_description.lines_for_path_value(
-                _path_value_for_file_in_checked_dir(self._dir_to_check.resolve(environment.symbols),
-                                                    actual_file),
+                file_element.relative_to_root_dir_as_path_value,
                 environment.tcds,
             )
             actual_info = diff_msg.ActualInfo(single_line_value, failing_file_description_lines)
@@ -215,11 +199,10 @@ class _ErrorReportingHelper:
         return ErrorMessageResolverFromFunction(resolve)
 
     def _diff_failure_info_for_dir(self) -> diff_msg_utils.DiffFailureInfoResolver:
-        property_descriptor = path_description.path_value_description(
-            property_description.file_property_name(
-                actual_file_attributes.CONTENTS_ATTRIBUTE,
-                actual_file_attributes.PLAIN_DIR_OBJECT_NAME),
-            self._dir_to_check)
+        file_property_name = property_description.file_property_name(actual_file_attributes.CONTENTS_ATTRIBUTE,
+                                                                     actual_file_attributes.PLAIN_DIR_OBJECT_NAME)
+        property_descriptor = self.files_source_model.error_message_info.property_descriptor(
+            file_property_name)
         return diff_msg_utils.DiffFailureInfoResolver(
             property_descriptor,
             self.settings.expectation_type,
@@ -234,22 +217,13 @@ class _ErrorReportingHelper:
 
 
 class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConstructor):
-    def __init__(self,
-                 dir_to_check: FileRef,
-                 file_in_dir: pathlib.Path):
-        self._dir_to_check = dir_to_check
+    def __init__(self, file_in_dir: FileModel):
         self._path = file_in_dir
 
     def construct_for_contents_attribute(self,
                                          contents_attribute: str) -> PropertyDescriptor:
-        path_resolver = file_ref_resolvers.constant(
-            _path_value_for_file_in_checked_dir(self._dir_to_check, self._path)
-        )
+        path_resolver = file_ref_resolvers.constant(self._path.relative_to_root_dir_as_path_value)
         return path_description.path_value_description(
             property_description.file_property_name(contents_attribute,
                                                     actual_file_attributes.PLAIN_FILE_OBJECT_NAME),
             path_resolver)
-
-
-def _path_value_for_file_in_checked_dir(dir_to_check: FileRef, file_in_dir: pathlib.Path) -> FileRef:
-    return StackedFileRef(dir_to_check, file_refs.constant_path_part(file_in_dir.name))

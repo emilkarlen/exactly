@@ -2,6 +2,7 @@ import pathlib
 from abc import ABC, abstractmethod
 from typing import Iterator
 
+from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import PropertyDescriptor
 
 
@@ -11,15 +12,21 @@ class ErrorMessageInfo(ABC):
         pass
 
 
-class FileModel:
-    def __init__(self,
-                 path: pathlib.Path,
-                 root_dir_path: pathlib.Path):
-        self.path = path
-        self._root_dir_path = root_dir_path
+class FileModel(ABC):
+    @property
+    @abstractmethod
+    def path(self) -> pathlib.Path:
+        pass
 
+    @property
+    @abstractmethod
     def relative_to_root_dir(self) -> pathlib.Path:
-        return self.path.relative_to(self._root_dir_path)
+        pass
+
+    @property
+    @abstractmethod
+    def relative_to_root_dir_as_path_value(self) -> FileRef:
+        pass
 
 
 class FilesMatcherModel(ABC):
