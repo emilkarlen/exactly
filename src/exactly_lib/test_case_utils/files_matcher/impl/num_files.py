@@ -1,7 +1,6 @@
 from typing import Sequence, Optional
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_expr
@@ -46,8 +45,7 @@ class _NumFilesMatcher(FilesMatcherResolverBaseForNewModel):
         comparison_handler = comparison_structures.ComparisonHandler(
             files_source.error_message_info.property_descriptor(config.NUM_FILES_PROPERTY_NAME),
             self._settings.expectation_type,
-            NumFilesResolver(files_source,
-                             self._settings.file_matcher),
+            NumFilesResolver(files_source),
             self._operator_and_r_operand.operator,
             self._operator_and_r_operand.right_operand)
 
@@ -58,11 +56,9 @@ class _NumFilesMatcher(FilesMatcherResolverBaseForNewModel):
 
 class NumFilesResolver(comparison_structures.OperandResolver[int]):
     def __init__(self,
-                 path_to_check: FilesMatcherModel,
-                 file_matcher: FileMatcherResolver):
+                 path_to_check: FilesMatcherModel):
         super().__init__(config.NUM_FILES_PROPERTY_NAME)
         self.path_to_check = path_to_check
-        self.file_matcher = file_matcher
 
     def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
         return len(list(self.path_to_check.files()))

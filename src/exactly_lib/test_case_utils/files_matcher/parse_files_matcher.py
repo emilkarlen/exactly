@@ -17,8 +17,7 @@ def parse_files_matcher(parser: TokenParser) -> FilesMatcherResolver:
     expectation_type = parser.consume_optional_negation_operator()
 
     files_matcher_parser = _FilesMatcherParserForSettings(
-        files_matchers.Settings(expectation_type,
-                                None))
+        files_matchers.Settings(expectation_type))
     matcher_without_selection = files_matcher_parser.parse(parser)
 
     if mb_file_selector is None:
