@@ -90,10 +90,6 @@ class FilesMatcherArgumentsConstructor:
             assertion_variant=str(self._assertion_variant))
 
 
-def replace_not_op(etc: ExpectationTypeConfigForPfh, s: str) -> str:
-    return s.replace('<not_opt>', etc.nothing__if_positive__not_option__if_negative)
-
-
 def matcher_with_selection_options(assertion_variant: AssertionVariantArgumentsConstructor,
                                    name_option_pattern: str = '',
                                    type_matcher: FileType = None,
@@ -106,4 +102,16 @@ def matcher_with_selection_options(assertion_variant: AssertionVariantArgumentsC
     return FilesMatcherArgumentsConstructor(
         SubSetSelectionArgumentConstructor(file_matcher),
         assertion_variant,
+    )
+
+
+def argument_constructor_for_emptiness_check(name_option_pattern: str = '',
+                                             type_matcher: FileType = None,
+                                             named_matcher: str = '',
+                                             ) -> FilesMatcherArgumentsConstructor:
+    return matcher_with_selection_options(
+        EmptyAssertionVariant(),
+        name_option_pattern=name_option_pattern,
+        type_matcher=type_matcher,
+        named_matcher=named_matcher,
     )
