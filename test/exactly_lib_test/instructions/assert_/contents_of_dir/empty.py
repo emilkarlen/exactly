@@ -4,9 +4,9 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
-    CompleteArgumentsConstructor, arguments_with_selection_options
+    CompleteArgumentsConstructor, path_and_matcher
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
-    AssertionVariantArgumentsConstructor, EmptyAssertionVariant
+    AssertionVariantArgumentsConstructor, EmptyAssertionVariant, matcher_with_selection_options
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir, Dir
@@ -196,12 +196,14 @@ def argument_constructor_for_emptiness_check(file_name: str,
                                              type_matcher: FileType = None,
                                              named_matcher: str = '',
                                              ) -> CompleteArgumentsConstructor:
-    return arguments_with_selection_options(
+    return path_and_matcher(
         file_name,
-        EmptyAssertionVariant(),
-        name_option_pattern=name_option_pattern,
-        type_matcher=type_matcher,
-        named_matcher=named_matcher,
+        matcher_with_selection_options(
+            EmptyAssertionVariant(),
+            name_option_pattern=name_option_pattern,
+            type_matcher=type_matcher,
+            named_matcher=named_matcher,
+        )
     )
 
 

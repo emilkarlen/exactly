@@ -1,8 +1,6 @@
-from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionArgumentsVariantConstructor
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import file_matcher_arguments
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     AssertionVariantArgumentsConstructor, EmptyAssertionVariant, FilesMatcherArgumentsConstructor, no_selection, \
     SubSetSelectionArgumentConstructor
@@ -79,20 +77,9 @@ def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfigura
                                rel_opt)
 
 
-def arguments_with_selection_options(file_name: str,
-                                     assertion_variant: AssertionVariantArgumentsConstructor,
-                                     name_option_pattern: str = '',
-                                     type_matcher: FileType = None,
-                                     named_matcher: str = '',
-                                     ) -> CompleteArgumentsConstructor:
-    file_matcher = file_matcher_arguments(name_option_pattern,
-                                          type_matcher,
-                                          named_matcher)
-
+def path_and_matcher(file_name: str,
+                     matcher: FilesMatcherArgumentsConstructor) -> CompleteArgumentsConstructor:
     return CompleteArgumentsConstructor(
         PathArgumentsConstructor(file_name),
-        FilesMatcherArgumentsConstructor(
-            SubSetSelectionArgumentConstructor(file_matcher),
-            assertion_variant,
-        )
+        matcher
     )

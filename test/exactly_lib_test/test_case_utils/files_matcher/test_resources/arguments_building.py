@@ -1,8 +1,10 @@
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_ARGUMENT
+from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import selection_arguments_for_matcher
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import \
+    selection_arguments_for_matcher, file_matcher_arguments
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import ExpectationTypeConfigForPfh
 
@@ -90,3 +92,18 @@ class FilesMatcherArgumentsConstructor:
 
 def replace_not_op(etc: ExpectationTypeConfigForPfh, s: str) -> str:
     return s.replace('<not_opt>', etc.nothing__if_positive__not_option__if_negative)
+
+
+def matcher_with_selection_options(assertion_variant: AssertionVariantArgumentsConstructor,
+                                   name_option_pattern: str = '',
+                                   type_matcher: FileType = None,
+                                   named_matcher: str = '',
+                                   ) -> FilesMatcherArgumentsConstructor:
+    file_matcher = file_matcher_arguments(name_option_pattern,
+                                          type_matcher,
+                                          named_matcher)
+
+    return FilesMatcherArgumentsConstructor(
+        SubSetSelectionArgumentConstructor(file_matcher),
+        assertion_variant,
+    )

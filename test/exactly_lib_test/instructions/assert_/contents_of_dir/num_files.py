@@ -13,7 +13,7 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import instruction_arguments as args
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
-    arguments_with_selection_options, \
+    path_and_matcher, \
     CompleteArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources import expression
 from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
@@ -21,7 +21,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
-    AssertionVariantArgumentsConstructor, NumFilesAssertionVariant
+    AssertionVariantArgumentsConstructor, NumFilesAssertionVariant, matcher_with_selection_options
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, pfh_expectation_type_config
 from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, empty_file
@@ -184,12 +184,14 @@ def argument_constructor_for_num_files_check(file_name: str,
                                              type_matcher: FileType = None,
                                              named_matcher: str = '',
                                              ) -> CompleteArgumentsConstructor:
-    return arguments_with_selection_options(
+    return path_and_matcher(
         file_name,
-        NumFilesAssertionVariant(int_condition),
-        name_option_pattern=name_option_pattern,
-        type_matcher=type_matcher,
-        named_matcher=named_matcher,
+        matcher_with_selection_options(
+            NumFilesAssertionVariant(int_condition),
+            name_option_pattern=name_option_pattern,
+            type_matcher=type_matcher,
+            named_matcher=named_matcher,
+        )
     )
 
 
