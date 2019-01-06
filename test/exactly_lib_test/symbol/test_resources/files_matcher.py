@@ -1,7 +1,7 @@
 from typing import Sequence, Optional
 
 from exactly_lib.symbol import symbol_usage as su
-from exactly_lib.symbol.files_matcher import FilesMatcherResolver, Environment, FilesMatcherModel
+from exactly_lib.symbol.files_matcher import FilesMatcherResolver, Environment, FilesMatcherModel, FilesMatcherValue
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
@@ -12,6 +12,24 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+
+
+class FilesMatcherValueTestImpl(FilesMatcherValue):
+    def __init__(self,
+                 resolved_value: bool = True):
+        self._resolved_value = resolved_value
+
+    @property
+    def negation(self) -> FilesMatcherValue:
+        return FilesMatcherValueTestImpl(not self._resolved_value)
+
+    def matches(self,
+                environment: Environment,
+                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+        if self._resolved_value:
+            return None
+        else:
+            return ConstantErrorMessageResolver('test impl with constant ' + str(self._resolved_value))
 
 
 class FilesMatcherResolverConstantTestImpl(FilesMatcherResolver):
@@ -35,24 +53,8 @@ class FilesMatcherResolverConstantTestImpl(FilesMatcherResolver):
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
 
-    @property
-    def negation(self):
-        return FilesMatcherResolverConstantTestImpl(
-            not self._resolved_value,
-            self._references,
-            self._validator,
-        )
-
-    def resolve(self, symbols: SymbolTable) -> bool:
-        return self.resolved_value
-
-    def matches(self,
-                environment: Environment,
-                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        if self.resolved_value:
-            return None
-        else:
-            return ConstantErrorMessageResolver('test impl with constant ' + str(self._resolved_value))
+    def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
+        return FilesMatcherValueTestImpl(self._resolved_value)
 
 
 IS_FILES_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILES_MATCHER)

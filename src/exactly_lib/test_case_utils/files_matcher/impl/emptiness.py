@@ -2,7 +2,7 @@ from typing import Sequence, List, Optional, Iterator
 
 from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
 from exactly_lib.symbol.files_matcher import FilesMatcherResolver, \
-    Environment, FileModel, FilesMatcherModel
+    Environment, FileModel, FilesMatcherModel, FilesMatcherValue
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.err_msg import diff_msg
@@ -12,6 +12,7 @@ from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatche
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, ErrorMessageResolver
 from exactly_lib.util import logic_types
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 def emptiness_matcher(expectation_type: ExpectationType) -> FilesMatcherResolver:
@@ -27,6 +28,18 @@ class _EmptinessMatcher(FilesMatcherResolverBase):
     def negation(self) -> FilesMatcherResolver:
         return _EmptinessMatcher(logic_types.negation(self._expectation_type),
                                  self._validator)
+
+    def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
+        return _EmptinessMatcherValue(self._expectation_type)
+
+
+class _EmptinessMatcherValue(FilesMatcherValue):
+    def __init__(self, expectation_type: ExpectationType):
+        self._expectation_type = expectation_type
+
+    @property
+    def negation(self) -> FilesMatcherValue:
+        return _EmptinessMatcherValue(logic_types.negation(self._expectation_type))
 
     def matches(self,
                 environment: Environment,

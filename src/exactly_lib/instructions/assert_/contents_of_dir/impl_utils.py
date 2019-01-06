@@ -66,9 +66,10 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
                           environment.phase_logging.space_for_instruction())
         model = FilesMatcherModelForDir(files_source.path_of_dir,
                                         env.path_resolving_environment)
+        value = self._files_matcher.resolve(environment.symbols)
         try:
-            mb_error_message = self._files_matcher.matches(env,
-                                                           model)
+            mb_error_message = value.matches(env,
+                                             model)
             if mb_error_message is not None:
                 raise PfhFailException(mb_error_message.resolve(err_msg_env_from_instr_env(environment)))
 

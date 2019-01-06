@@ -9,6 +9,7 @@ from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import ErrorMessageResolver, PropertyDescriptor
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.file_utils import TmpDirFileSpace
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 class HardErrorException(Exception):
@@ -27,6 +28,7 @@ class Environment:
                  ):
         self.path_resolving_environment = path_resolving_environment
         self.tmp_files_space = tmp_files_space
+        self.symbols = path_resolving_environment.symbols
 
 
 class ErrorMessageInfo(ABC):
@@ -72,8 +74,28 @@ class FilesMatcherModel(ABC):
         pass
 
 
-class FilesMatcherResolver(LogicValueResolver, ABC):
+class FilesMatcherValue(ABC):
+    @property
+    @abstractmethod
+    def negation(self):
+        """
+        :rtype FilesMatcherValue
+        :return: A matcher that matches the negation of this matcher
+        """
+        pass
 
+    @abstractmethod
+    def matches(self,
+                environment: Environment,
+                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+        """
+        :raises HardErrorException: In case of HARD ERROR
+        :return: None iff match
+        """
+        pass
+
+
+class FilesMatcherResolver(LogicValueResolver, ABC):
     @property
     def logic_value_type(self) -> LogicValueType:
         return LogicValueType.FILES_MATCHER
@@ -87,20 +109,5 @@ class FilesMatcherResolver(LogicValueResolver, ABC):
         pass
 
     @abstractmethod
-    def matches(self,
-                environment: Environment,
-                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        """
-        :raises HardErrorException: In case of HARD ERROR
-        :return: None iff match
-        """
-        pass
-
-    @property
-    @abstractmethod
-    def negation(self):
-        """
-        :rtype FilesMatcherResolver
-        :return: A matcher that matches the negation of this matcher
-        """
+    def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
         pass
