@@ -7,21 +7,18 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import instruction_arguments as args
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
-    path_and_matcher, \
-    CompleteArgumentsConstructor
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import path_and_matcher
 from exactly_lib_test.instructions.assert_.test_resources import expression
 from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
-    AssertionVariantArgumentsConstructor, NumFilesAssertionVariant, matcher_with_selection_options
+    AssertionVariantArgumentsConstructor, NumFilesAssertionVariant, argument_constructor_for_num_files_check
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, pfh_expectation_type_config
 from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, empty_file
@@ -120,9 +117,11 @@ class TestDifferentSourceVariants(tr.TestCaseBaseForParser):
     def test_file_is_directory_that_has_expected_number_of_files(self):
         directory_with_one_file = Dir('name-of-dir', [empty_file('a-file-in-checked-dir')])
 
-        instruction_argument_constructor = argument_constructor_for_num_files_check(
+        instruction_argument_constructor = path_and_matcher(
             directory_with_one_file.name,
-            int_condition(comparators.EQ, 1))
+            argument_constructor_for_num_files_check(
+                int_condition(comparators.EQ, 1))
+        )
 
         contents_of_relativity_option_root = DirContents([directory_with_one_file])
 
@@ -138,9 +137,11 @@ class TestDifferentSourceVariants(tr.TestCaseBaseForParser):
         directory_with_one_file = Dir('name-of-non-empty-dir',
                                       [empty_file('file-in-dir')])
 
-        instruction_argument_constructor = argument_constructor_for_num_files_check(
+        instruction_argument_constructor = path_and_matcher(
             directory_with_one_file.name,
-            int_condition(comparators.EQ, 2))
+            argument_constructor_for_num_files_check(
+                int_condition(comparators.EQ, 2))
+        )
 
         contents_of_relativity_option_root = DirContents([directory_with_one_file])
 
@@ -164,10 +165,12 @@ class TestDifferentSourceVariants(tr.TestCaseBaseForParser):
 
         contents_of_relativity_option_root = DirContents([dir_with_two_files])
 
-        instruction_argument_constructor = argument_constructor_for_num_files_check(
+        instruction_argument_constructor = path_and_matcher(
             dir_with_two_files.name,
-            int_condition(comparators.EQ, 1),
-            name_option_pattern=pattern_that_matches_exactly_one_file)
+            argument_constructor_for_num_files_check(
+                int_condition(comparators.EQ, 1),
+                name_option_pattern=pattern_that_matches_exactly_one_file)
+        )
 
         self.checker.check_parsing_with_different_source_variants(
             instruction_argument_constructor,
@@ -176,23 +179,6 @@ class TestDifferentSourceVariants(tr.TestCaseBaseForParser):
             main_result_for_positive_expectation=PassOrFail.PASS,
             contents_of_relativity_option_root=contents_of_relativity_option_root,
         )
-
-
-def argument_constructor_for_num_files_check(file_name: str,
-                                             int_condition: str,
-                                             name_option_pattern: str = '',
-                                             type_matcher: FileType = None,
-                                             named_matcher: str = '',
-                                             ) -> CompleteArgumentsConstructor:
-    return path_and_matcher(
-        file_name,
-        matcher_with_selection_options(
-            NumFilesAssertionVariant(int_condition),
-            name_option_pattern=name_option_pattern,
-            type_matcher=type_matcher,
-            named_matcher=named_matcher,
-        )
-    )
 
 
 if __name__ == '__main__':

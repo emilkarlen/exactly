@@ -115,3 +115,16 @@ def argument_constructor_for_emptiness_check(name_option_pattern: str = '',
         type_matcher=type_matcher,
         named_matcher=named_matcher,
     )
+
+
+def argument_constructor_for_num_files_check(int_condition: str,
+                                             name_option_pattern: str = '',
+                                             type_matcher: FileType = None,
+                                             named_matcher: str = '',
+                                             ) -> FilesMatcherArgumentsConstructor:
+    return matcher_with_selection_options(
+        NumFilesAssertionVariant(int_condition),
+        name_option_pattern=name_option_pattern,
+        type_matcher=type_matcher,
+        named_matcher=named_matcher,
+    )
