@@ -11,6 +11,7 @@ from exactly_lib.test_case_utils.files_matcher.new_model import FileModel, Files
 from exactly_lib.test_case_utils.files_matcher.structure import FilesMatcherResolver, \
     Environment
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, ErrorMessageResolver
+from exactly_lib.util import logic_types
 from exactly_lib.util.logic_types import ExpectationType
 
 
@@ -22,6 +23,11 @@ class _EmptinessMatcher(FilesMatcherResolverBase):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return ()
+
+    @property
+    def negation(self) -> FilesMatcherResolver:
+        return _EmptinessMatcher(logic_types.negation(self._expectation_type),
+                                 self._validator)
 
     def matches(self,
                 environment: Environment,

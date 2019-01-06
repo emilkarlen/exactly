@@ -21,6 +21,7 @@ from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironme
     FilePropertyDescriptorConstructor, ErrorMessageResolver, ErrorMessageResolverFromFunction
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
+from exactly_lib.util import logic_types
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 
 
@@ -45,6 +46,14 @@ class _QuantifiedMatcher(FilesMatcherResolverBase):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._matcher_on_existing_regular_file.references
+
+    @property
+    def negation(self) -> FilesMatcherResolver:
+        return _QuantifiedMatcher(
+            logic_types.negation(self._expectation_type),
+            self._quantifier,
+            self._matcher_on_existing_regular_file
+        )
 
     def matches(self,
                 environment: Environment,

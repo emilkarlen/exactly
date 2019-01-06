@@ -33,6 +33,13 @@ class _SubSetSelectorMatcher(FilesMatcherResolver):
     def validator(self) -> PreOrPostSdsValidator:
         return self._matcher_on_selection.validator()
 
+    @property
+    def negation(self) -> FilesMatcherResolver:
+        return _SubSetSelectorMatcher(
+            self._selector,
+            self._matcher_on_selection.negation
+        )
+
     def matches(self,
                 environment: Environment,
                 files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:

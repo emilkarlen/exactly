@@ -52,3 +52,12 @@ class FilesMatcherResolver(ObjectWithTypedSymbolReferences, ABC):
         :return: None iff match
         """
         pass
+
+    @property
+    @abstractmethod
+    def negation(self):
+        """
+        :rtype FilesMatcherResolver
+        :return: A matcher that matches the negation of this matcher
+        """
+        pass
