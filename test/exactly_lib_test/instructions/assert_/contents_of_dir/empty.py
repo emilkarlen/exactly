@@ -4,8 +4,9 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
-    CompleteArgumentsConstructor, EmptyAssertionVariant, arguments_with_selection_options, \
-    AssertionVariantArgumentsConstructor
+    CompleteArgumentsConstructor, arguments_with_selection_options
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
+    AssertionVariantArgumentsConstructor, EmptyAssertionVariant
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir, Dir

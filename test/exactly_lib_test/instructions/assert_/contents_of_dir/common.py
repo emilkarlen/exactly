@@ -5,10 +5,11 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import instruction_arguments as args
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
-    AssertionVariantArgumentsConstructor
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
+    AssertionVariantArgumentsConstructor
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -36,15 +37,15 @@ class TestParseInvalidSyntax(tr.TestCaseBaseForParser):
         cases = [
             NameAndValue(
                 'valid file argument, but no operator',
-                tr.CompleteArgumentsConstructor(
-                    tr.CommonArgumentsConstructor('file-name'),
+                args.complete_arguments_constructor(
+                    'file-name',
                     InvalidAssertionVariantArgumentsConstructor('')
                 ),
             ),
             NameAndValue(
                 'valid file argument, invalid check',
-                tr.CompleteArgumentsConstructor(
-                    tr.CommonArgumentsConstructor('file-name'),
+                args.complete_arguments_constructor(
+                    'file-name',
                     InvalidAssertionVariantArgumentsConstructor('invalidCheck')
                 ),
             ),

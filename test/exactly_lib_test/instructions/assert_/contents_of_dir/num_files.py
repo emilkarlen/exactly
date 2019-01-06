@@ -10,16 +10,18 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import instruction_arguments as args
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
     arguments_with_selection_options, \
-    CompleteArgumentsConstructor, NumFilesAssertionVariant, AssertionVariantArgumentsConstructor, \
-    CommonArgumentsConstructor
+    CompleteArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources import expression
 from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
+    AssertionVariantArgumentsConstructor, NumFilesAssertionVariant
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, pfh_expectation_type_config
 from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, empty_file
@@ -87,8 +89,8 @@ class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
             operator=comparators.EQ.name,
             symbol_reference=symbol_reference_syntax_for_name(operand_sym_ref.name)
         )
-        arguments_constructor = CompleteArgumentsConstructor(
-            CommonArgumentsConstructor('ignored-dir-path'),
+        arguments_constructor = args.complete_arguments_constructor(
+            'ignored-dir-path',
             NumFilesAssertionVariant(condition_str))
 
         argument = arguments_constructor.apply(pfh_expectation_type_config(ExpectationType.NEGATIVE),

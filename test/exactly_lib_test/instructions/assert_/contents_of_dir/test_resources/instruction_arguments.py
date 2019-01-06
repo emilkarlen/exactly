@@ -1,60 +1,31 @@
-from exactly_lib.definitions import instruction_arguments
-from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.files_matcher import config
-from exactly_lib.util.logic_types import ExpectationType, Quantifier
+from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionArgumentsVariantConstructor
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import file_matcher_arguments, \
-    selection_arguments_for_matcher
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import file_matcher_arguments
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
+    AssertionVariantArgumentsConstructor, EmptyAssertionVariant, FilesMatcherArgumentsConstructor, no_selection, \
+    SubSetSelectionArgumentConstructor
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForPfh, pfh_expectation_type_config
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 
 
-class AssertionVariantArgumentsConstructor:
-    """"
-    Constructs a string for the arguments that are specific for one of the assertion variants:
-    - empty
-    - num-files
-
-    Argument string is constructed by __str__
+class PathArgumentsConstructor:
     """
-
-    def __str__(self):
-        raise NotImplementedError('abstract method')
-
-
-class CommonArgumentsConstructor(InstructionArgumentsVariantConstructor):
-    """
-    Constructs a string for the common arguments used by all assertion variants:
+    Constructs
     - [RELATIVITY]
     - PATH
-    - [SELECTION]
-    - [NEGATION]
     """
 
     def __init__(self,
-                 path: str,
-                 file_matcher: str = ''):
+                 path: str):
         self._path = path
-        self._file_matcher = file_matcher
 
-    def apply(self,
-              etc: ExpectationTypeConfigForPfh,
-              rel_opt_config: RelativityOptionConfiguration) -> str:
-        return '{relativity} {path} {selection} {negation}'.format(
+    def apply(self, rel_opt_config: RelativityOptionConfiguration) -> str:
+        return '{relativity} {path}'.format(
             relativity=rel_opt_config.option_argument,
-            path=self._path,
-            selection=self._empty_if_no_file_matcher_otherwise_selection(),
-            negation=etc.nothing__if_positive__not_option__if_negative)
-
-    def _empty_if_no_file_matcher_otherwise_selection(self) -> str:
-        if self._file_matcher:
-            return selection_arguments_for_matcher(self._file_matcher)
-        else:
-            return ''
+            path=self._path)
 
 
 class CompleteArgumentsConstructor(InstructionArgumentsVariantConstructor):
@@ -64,62 +35,40 @@ class CompleteArgumentsConstructor(InstructionArgumentsVariantConstructor):
     """
 
     def __init__(self,
-                 common_arguments: CommonArgumentsConstructor,
-                 assertion_variant: AssertionVariantArgumentsConstructor,
+                 path: PathArgumentsConstructor,
+                 files_matcher: FilesMatcherArgumentsConstructor,
                  ):
-        self._common_arguments = common_arguments
-        self._assertion_variant = assertion_variant
+        self._path = path
+        self._files_matcher = files_matcher
 
     def apply(self,
               etc: ExpectationTypeConfigForPfh,
               rel_opt_config: RelativityOptionConfiguration) -> str:
-        return '{common} {assertion_variant}'.format(
-            common=self._common_arguments.apply(etc, rel_opt_config),
-            assertion_variant=str(self._assertion_variant))
+        return '{path} {files_matcher}'.format(
+            path=self._path.apply(rel_opt_config),
+            files_matcher=self._files_matcher.apply(etc))
 
 
-class EmptyAssertionVariant(AssertionVariantArgumentsConstructor):
-    def __str__(self):
-        return EMPTINESS_CHECK_ARGUMENT
-
-
-class NumFilesAssertionVariant(AssertionVariantArgumentsConstructor):
-    def __init__(self,
-                 condition: str):
-        self._condition = condition
-
-    def __str__(self):
-        return '{num_files} {condition}'.format(
-            num_files=config.NUM_FILES_CHECK_ARGUMENT,
-            condition=self._condition)
-
-
-class FilesContentsAssertionVariant(AssertionVariantArgumentsConstructor):
-    def __init__(self,
-                 quantifier: Quantifier,
-                 file_contents_assertion: arguments_building.ImplicitActualFileArgumentsConstructor,
-                 contents_argument_expectation_type: ExpectationType = ExpectationType.POSITIVE):
-        self._quantifier = quantifier
-        self._file_contents_assertion = file_contents_assertion
-        self._contents_argument_expectation_type = contents_argument_expectation_type
-
-    def __str__(self):
-        return '{quantifier} {file} {separator} {contents_assertion}'.format(
-            quantifier=instruction_arguments.QUANTIFIER_ARGUMENTS[self._quantifier],
-            file=config.QUANTIFICATION_OVER_FILE_ARGUMENT,
-            separator=instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
-            contents_assertion=self._file_contents_assertion.apply(self._contents_argument_expectation_type))
-
-
-def replace_not_op(etc: ExpectationTypeConfigForPfh, s: str) -> str:
-    return s.replace('<not_opt>', etc.nothing__if_positive__not_option__if_negative)
+def complete_arguments_constructor(path: str,
+                                   assertion_variant: AssertionVariantArgumentsConstructor,
+                                   file_matcher: str = '') -> CompleteArgumentsConstructor:
+    return CompleteArgumentsConstructor(
+        PathArgumentsConstructor(path),
+        FilesMatcherArgumentsConstructor(
+            SubSetSelectionArgumentConstructor(file_matcher),
+            assertion_variant,
+        )
+    )
 
 
 def arguments_constructor_for_variant(path: str,
                                       variant: AssertionVariantArgumentsConstructor) -> CompleteArgumentsConstructor:
     return CompleteArgumentsConstructor(
-        CommonArgumentsConstructor(path),
-        variant)
+        PathArgumentsConstructor(path),
+        FilesMatcherArgumentsConstructor(
+            no_selection(),
+            variant
+        ))
 
 
 def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfiguration,
@@ -141,6 +90,9 @@ def arguments_with_selection_options(file_name: str,
                                           named_matcher)
 
     return CompleteArgumentsConstructor(
-        CommonArgumentsConstructor(file_name,
-                                   file_matcher=file_matcher),
-        assertion_variant)
+        PathArgumentsConstructor(file_name),
+        FilesMatcherArgumentsConstructor(
+            SubSetSelectionArgumentConstructor(file_matcher),
+            assertion_variant,
+        )
+    )

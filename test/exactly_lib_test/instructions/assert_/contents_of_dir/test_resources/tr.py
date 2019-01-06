@@ -11,8 +11,7 @@ from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.parse import parse_relativity
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
-    CompleteArgumentsConstructor, AssertionVariantArgumentsConstructor, CommonArgumentsConstructor
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import instruction_arguments as args
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionChecker
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -21,6 +20,8 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
+    AssertionVariantArgumentsConstructor
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
@@ -49,9 +50,11 @@ class TestWithAssertionVariantBase(TestCaseBaseForParser):
 
 class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
     def test_raise_exception_WHEN_selector_option_argument_is_missing(self):
-        instruction_args_without_valid_file_matcher = CompleteArgumentsConstructor(
-            CommonArgumentsConstructor('file-name', file_matcher=' '),
-            self.assertion_variant_without_symbol_references)
+        instruction_args_without_valid_file_matcher = args.complete_arguments_constructor(
+            'file-name',
+            self.assertion_variant_without_symbol_references,
+            file_matcher=' '
+        )
         parser = sut.parser.Parser()
         for rel_opt_config in [DEFAULT_REL_OPT_CONFIG,
                                ARBITRARY_ACCEPTED_REL_OPT_CONFIG]:
@@ -67,8 +70,10 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
                             parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_raise_exception_WHEN_there_are_superfluous_arguments(self):
-        valid_instruction_arguments_con = CompleteArgumentsConstructor(CommonArgumentsConstructor('file-name'),
-                                                                       self.assertion_variant_without_symbol_references)
+        valid_instruction_arguments_con = args.complete_arguments_constructor(
+            'file-name',
+            self.assertion_variant_without_symbol_references
+        )
         parser = sut.parser.Parser()
         for rel_opt_config in [DEFAULT_REL_OPT_CONFIG,
                                ARBITRARY_ACCEPTED_REL_OPT_CONFIG]:
@@ -85,8 +90,10 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
                             parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_raise_exception_WHEN_there_is_an_initial_illegal_option(self):
-        valid_instruction_arguments_con = CompleteArgumentsConstructor(CommonArgumentsConstructor('file-name'),
-                                                                       self.assertion_variant_without_symbol_references)
+        valid_instruction_arguments_con = args.complete_arguments_constructor(
+            'file-name',
+            self.assertion_variant_without_symbol_references
+        )
         parser = sut.parser.Parser()
         for rel_opt_config in [DEFAULT_REL_OPT_CONFIG,
                                ARBITRARY_ACCEPTED_REL_OPT_CONFIG]:
@@ -104,8 +111,10 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
                             parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_raise_exception_WHEN_relativity_is_unaccepted(self):
-        valid_instruction_argument_syntax_con = CompleteArgumentsConstructor(CommonArgumentsConstructor('file-name'),
-                                                                             self.assertion_variant_without_symbol_references)
+        valid_instruction_argument_syntax_con = args.complete_arguments_constructor(
+            'file-name',
+            self.assertion_variant_without_symbol_references
+        )
         parser = sut.parser.Parser()
         for rel_opt_config in UNACCEPTED_REL_OPT_CONFIGURATIONS:
             for expectation_type in ExpectationType:
@@ -128,9 +137,10 @@ class TestCommonFailureConditionsBase(TestWithAssertionVariantBase):
         )
 
     def test_fail_WHEN_file_does_not_exist(self):
-        instruction_argument_constructor = CompleteArgumentsConstructor(
-            CommonArgumentsConstructor('name-of-non-existing-file'),
-            self.assertion_variant_without_symbol_references)
+        instruction_argument_constructor = args.complete_arguments_constructor(
+            'name-of-non-existing-file',
+            self.assertion_variant_without_symbol_references
+        )
 
         self._checker.check_rel_opt_variants_with_same_result_for_every_expectation_type(
             instruction_argument_constructor,
@@ -139,9 +149,10 @@ class TestCommonFailureConditionsBase(TestWithAssertionVariantBase):
     def test_fail_WHEN_file_does_exist_but_is_not_a_directory(self):
         name_of_regular_file = 'name-of-existing-regular-file'
 
-        instruction_argument_constructor = CompleteArgumentsConstructor(
-            CommonArgumentsConstructor(name_of_regular_file),
-            self.assertion_variant_without_symbol_references)
+        instruction_argument_constructor = args.complete_arguments_constructor(
+            name_of_regular_file,
+            self.assertion_variant_without_symbol_references
+        )
 
         self._checker.check_rel_opt_variants_with_same_result_for_every_expectation_type(
             instruction_argument_constructor,
@@ -151,9 +162,10 @@ class TestCommonFailureConditionsBase(TestWithAssertionVariantBase):
     def test_fail_WHEN_file_is_a_sym_link_to_a_non_existing_file(self):
         broken_sym_link = sym_link('broken-sym-link', 'non-existing-file')
 
-        instruction_argument_constructor = CompleteArgumentsConstructor(
-            CommonArgumentsConstructor(broken_sym_link.name),
-            self.assertion_variant_without_symbol_references)
+        instruction_argument_constructor = args.complete_arguments_constructor(
+            broken_sym_link.name,
+            self.assertion_variant_without_symbol_references
+        )
 
         contents_of_relativity_option_root = DirContents([broken_sym_link])
 
@@ -167,10 +179,11 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
     def test_file_matcher_reference_is_reported(self):
         name_of_file_matcher = 'a_file_matcher_symbol'
 
-        arguments_constructor = CompleteArgumentsConstructor(
-            CommonArgumentsConstructor('ignored-dir-path',
-                                       file_matcher=name_of_file_matcher),
-            self.assertion_variant_without_symbol_references)
+        arguments_constructor = args.complete_arguments_constructor(
+            'ignored-dir-path',
+            self.assertion_variant_without_symbol_references,
+            file_matcher=name_of_file_matcher
+        )
 
         arguments = arguments_constructor.apply(pfh_expectation_type_config(ExpectationType.NEGATIVE),
                                                 DEFAULT_REL_OPT_CONFIG)
@@ -198,9 +211,10 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
             parse_relativity.reference_restrictions_for_path_symbol(
                 config.ACTUAL_RELATIVITY_CONFIGURATION.options.accepted_relativity_variants))
 
-        arguments_constructor = CompleteArgumentsConstructor(
-            CommonArgumentsConstructor('ignored-dir-path'),
-            self.assertion_variant_without_symbol_references)
+        arguments_constructor = args.complete_arguments_constructor(
+            'ignored-dir-path',
+            self.assertion_variant_without_symbol_references
+        )
 
         rel_symbol_conf = rel_opt_conf.symbol_conf_rel_any(RelOptionType.REL_TMP,
                                                            path_sym_ref.name,
