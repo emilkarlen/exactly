@@ -6,6 +6,7 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ActComparisonActualFileForFileRef, \
@@ -22,7 +23,7 @@ from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
-ACTUAL_PATH_ARGUMENT = a.Named('ACTUAL-PATH')
+ACTUAL_PATH_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

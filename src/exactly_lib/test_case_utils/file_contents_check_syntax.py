@@ -62,6 +62,7 @@ class FileContentsCheckerHelp:
     def see_also_targets__file() -> List[SeeAlsoTarget]:
         return [
             syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.cross_reference_target,
+            syntax_elements.PATH_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
     @staticmethod
