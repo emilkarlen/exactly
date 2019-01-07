@@ -33,6 +33,14 @@ class EmptyAssertionVariant(AssertionVariantArgumentsConstructor):
         return EMPTINESS_CHECK_ARGUMENT
 
 
+class SymbolReferenceAssertionVariant(AssertionVariantArgumentsConstructor):
+    def __init__(self, symbol_name: str):
+        self.symbol_name = symbol_name
+
+    def __str__(self):
+        return self.symbol_name
+
+
 class NumFilesAssertionVariant(AssertionVariantArgumentsConstructor):
     def __init__(self,
                  condition: str):
@@ -130,6 +138,19 @@ def argument_constructor_for_num_files_check(int_condition: str,
                                              ) -> FilesMatcherArgumentsConstructor:
     return matcher_with_selection_options(
         NumFilesAssertionVariant(int_condition),
+        name_option_pattern=name_option_pattern,
+        type_matcher=type_matcher,
+        named_matcher=named_matcher,
+    )
+
+
+def argument_constructor_for_symbol_reference(files_matcher_symbol_name: str,
+                                              name_option_pattern: str = '',
+                                              type_matcher: FileType = None,
+                                              named_matcher: str = '',
+                                              ) -> FilesMatcherArgumentsConstructor:
+    return matcher_with_selection_options(
+        SymbolReferenceAssertionVariant(files_matcher_symbol_name),
         name_option_pattern=name_option_pattern,
         type_matcher=type_matcher,
         named_matcher=named_matcher,

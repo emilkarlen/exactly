@@ -13,7 +13,7 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_utils.files_matcher import config
-from exactly_lib.test_case_utils.files_matcher.parse_files_matcher import parse_files_matcher
+from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
 from exactly_lib.test_case_utils.parse import parse_file_ref
 
 
@@ -41,7 +41,8 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 
             actual_path_checker_assertion_part = self._actual_path_checker_assertion_part(path_to_check)
 
-            files_matcher_resolver = parse_files_matcher(token_parser)
+            files_matcher_resolver = parse_files_matcher.parse_files_matcher(token_parser,
+                                                                             must_be_on_current_line=False)
 
             assertions = assertion_part.compose(
                 actual_path_checker_assertion_part,

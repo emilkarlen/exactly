@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import instruction_arguments as args
@@ -46,7 +47,7 @@ class TestParseInvalidSyntax(tr.TestCaseBaseForParser):
                 'valid file argument, invalid check',
                 args.complete_arguments_constructor(
                     'file-name',
-                    InvalidAssertionVariantArgumentsConstructor('invalidCheck')
+                    InvalidAssertionVariantArgumentsConstructor(symbol_reference_syntax_for_name('invalidCheck'))
                 ),
             ),
         ]

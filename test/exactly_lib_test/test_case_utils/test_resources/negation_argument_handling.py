@@ -16,6 +16,10 @@ class PassOrFail(Enum):
     FAIL = 1
 
 
+def pass_or_fail_from_bool(b: bool) -> PassOrFail:
+    return PassOrFail.PASS if b else PassOrFail.FAIL
+
+
 def choice(expectation_type: ExpectationType,
            value_for_positive,
            value_for_negative):

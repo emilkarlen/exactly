@@ -479,10 +479,7 @@ def conf_rel_home(relativity: RelHomeOptionType) -> RelativityOptionConfiguratio
         OptionStringConfigurationForRelativityOptionRelHome(relativity))
 
 
-def every_conf_rel_home() -> list:
-    """
-    :rtype list of RelativityOptionConfigurationRelHome
-    """
+def every_conf_rel_home() -> List[RelativityOptionConfigurationRelHome]:
     return [
         conf_rel_home(relativity)
         for relativity in RelHomeOptionType

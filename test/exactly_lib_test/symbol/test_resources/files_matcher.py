@@ -49,7 +49,6 @@ class FilesMatcherResolverConstantTestImpl(FilesMatcherResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    @property
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
 

@@ -1,5 +1,9 @@
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.entity import syntax_elements, concepts
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as expression_parse
@@ -7,12 +11,16 @@ from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, sub_set_selection, \
     negation
+from exactly_lib.test_case_utils.files_matcher.impl import symbol_reference
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
-from exactly_lib.util.messages import grammar_options_syntax
 
 
-def parse_files_matcher(parser: TokenParser) -> FilesMatcherResolver:
+def parse_files_matcher(parser: TokenParser,
+                        must_be_on_current_line: bool = True) -> FilesMatcherResolver:
+    if must_be_on_current_line:
+        parser.require_is_not_at_eol('Missing ' + syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.singular_name)
+
     mb_file_selector = parse_file_matcher.parse_optional_selection_resolver2(parser)
     expectation_type = parser.consume_optional_negation_operator()
 
@@ -30,18 +38,21 @@ def parse_files_matcher(parser: TokenParser) -> FilesMatcherResolver:
 
 class _SimpleMatcherParser:
     def __init__(self):
-        self.command_parsers = {
+        self.matcher_parsers = {
             config.NUM_FILES_CHECK_ARGUMENT: self.parse_num_files_check,
             config.EMPTINESS_CHECK_ARGUMENT: self.parse_empty_check,
             instruction_arguments.ALL_QUANTIFIER_ARGUMENT: self.parse_file_quantified_assertion__all,
             instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT: self.parse_file_quantified_assertion__exists,
         }
-        self.missing_check_description = 'Missing argument for check :' + grammar_options_syntax.alternatives_list(
-            self.command_parsers)
 
     def parse(self, parser: TokenParser) -> FilesMatcherResolver:
-        return parser.parse_mandatory_command(self.command_parsers,
-                                              self.missing_check_description)
+        matcher_name = parser.consume_mandatory_unquoted_string(
+            syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.singular_name,
+            False)
+        if matcher_name in self.matcher_parsers:
+            return self.matcher_parsers[matcher_name](parser)
+        else:
+            return self.parse_symbol_reference(matcher_name, parser)
 
     def parse_empty_check(self, parser: TokenParser) -> FilesMatcherResolver:
         self._expect_no_more_args_and_consume_current_line(parser)
@@ -61,6 +72,16 @@ class _SimpleMatcherParser:
 
     def parse_file_quantified_assertion__exists(self, parser: TokenParser) -> FilesMatcherResolver:
         return self._file_quantified_assertion(Quantifier.EXISTS, parser)
+
+    def parse_symbol_reference(self, parsed_symbol_name: str, parser: TokenParser) -> FilesMatcherResolver:
+        if symbol_syntax.is_symbol_name(parsed_symbol_name):
+            self._expect_no_more_args_and_consume_current_line(parser)
+            return symbol_reference.symbol_reference_matcher(parsed_symbol_name)
+        else:
+            err_msg_header = 'Neither a {matcher} nor the plain name of a {symbol}: '.format(
+                matcher=syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.singular_name,
+                symbol=concepts.SYMBOL_CONCEPT_INFO.singular_name)
+            raise SingleInstructionInvalidArgumentException(err_msg_header + parsed_symbol_name)
 
     def _file_quantified_assertion(self,
                                    quantifier: Quantifier,
