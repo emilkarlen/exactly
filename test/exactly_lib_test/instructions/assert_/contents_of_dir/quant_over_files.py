@@ -30,7 +30,8 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
-    AssertionVariantArgumentsConstructor, FilesContentsAssertionVariant
+    FilesContentsAssertionVariant, FilesMatcherArgumentsSetup, \
+    files_matcher_setup_without_references
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import \
     EmptyAssertionArgumentsConstructor, NumLinesAssertionArgumentsConstructor, EqualsStringAssertionArgumentsConstructor
@@ -68,10 +69,12 @@ def suite() -> unittest.TestSuite:
 
 class TestWithAssertionVariantForFileContents(tr.TestWithAssertionVariantBase):
     @property
-    def assertion_variant_without_symbol_references(self) -> AssertionVariantArgumentsConstructor:
-        return FilesContentsAssertionVariant(
-            Quantifier.ALL,
-            file_contents_arg(EmptyAssertionArgumentsConstructor()),
+    def assertion_variant(self) -> FilesMatcherArgumentsSetup:
+        return files_matcher_setup_without_references(
+            FilesContentsAssertionVariant(
+                Quantifier.ALL,
+                file_contents_arg(EmptyAssertionArgumentsConstructor()),
+            )
         )
 
 

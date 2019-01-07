@@ -1,12 +1,18 @@
+from typing import Sequence, Dict
+
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.symbol.resolver_structure import SymbolValueResolver
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndExpectSetup
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import \
     selection_arguments_for_matcher, file_matcher_arguments
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import ExpectationTypeConfigForPfh
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class AssertionVariantArgumentsConstructor:
@@ -128,3 +134,18 @@ def argument_constructor_for_num_files_check(int_condition: str,
         type_matcher=type_matcher,
         named_matcher=named_matcher,
     )
+
+
+class FilesMatcherArgumentsSetup(SymbolsArrAndExpectSetup):
+    def __init__(self,
+                 arguments: AssertionVariantArgumentsConstructor,
+                 symbols_in_arrangement: Dict[str, SymbolValueResolver],
+                 expected_references: Sequence[ValueAssertion[SymbolUsage]] = ()):
+        super().__init__(symbols_in_arrangement,
+                         expected_references)
+        self.arguments = arguments
+
+
+def files_matcher_setup_without_references(arguments: AssertionVariantArgumentsConstructor
+                                           ) -> FilesMatcherArgumentsSetup:
+    return FilesMatcherArgumentsSetup(arguments, {})
