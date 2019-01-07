@@ -60,9 +60,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
             self._tp.fnap(the_path_of("the file who's contents is checked."))
         )
 
-        return (self._help_parts.syntax_element_descriptions_at_top() +
-                [actual_file_arg_sed] +
-                self._help_parts.syntax_element_descriptions_at_bottom())
+        return [actual_file_arg_sed]
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return self._help_parts.see_also_targets__file()
@@ -85,7 +83,7 @@ ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfig
     rel_opts_configuration.RelOptionsConfiguration(
         parse_file_ref.ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE,
         RelOptionType.REL_CWD),
-    'PATH',
+    ACTUAL_PATH_ARGUMENT.name,
     True)
 
 _MAIN_DESCRIPTION_REST = """\

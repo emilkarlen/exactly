@@ -66,8 +66,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         name_and_cross_refs = [
-            syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT,
             syntax_elements.PATH_SYNTAX_ELEMENT,
+            syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT,
         ]
         name_and_cross_refs += rel_path_doc.see_also_name_and_cross_refs(ACTUAL_RELATIVITY_CONFIGURATION.options)
         return cross_reference_id_list(name_and_cross_refs)
@@ -98,7 +98,7 @@ Symbolic links are followed.
 """
 
 _MAIN_INVOKATION_SYNTAX_DESCRIPTION = """\
-Applies {FILES_MATCHER} to the files in the directory {checked_file}.
+Asserts that the files in the directory {checked_file} satisfies {FILES_MATCHER}.
 """
 
 _PATH_SYNTAX_ELEMENT_DESCRIPTION_TEXT = "The directory who's contents is checked."

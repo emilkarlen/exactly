@@ -6,6 +6,7 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, syntax_elements, types
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -23,12 +24,8 @@ class FileContentsCheckerHelp:
             'checked_file': checked_file,
             'contents_matcher': formatting.syntax_element_(syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT),
             'action_to_check': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
-            'program_type': formatting.entity_(types.PROGRAM_TYPE_INFO),
+            'program_type': formatting.symbol_type_(types.PROGRAM_TYPE_INFO),
         })
-
-    def _cls(self, additional_argument_usages: List[a.ArgumentUsage]) -> str:
-        return cl_syntax.cl_syntax_for_args(self.initial_args_of_invokation_variants +
-                                            additional_argument_usages)
 
     def invokation_variants__file(self, actual_file: a.Named) -> List[InvokationVariant]:
         actual_file_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -52,26 +49,19 @@ class FileContentsCheckerHelp:
         ]
 
     @staticmethod
-    def syntax_element_descriptions_at_top() -> List[SyntaxElementDescription]:
-        return []
-
-    def syntax_element_descriptions_at_bottom(self) -> List[SyntaxElementDescription]:
-        return []
-
-    @staticmethod
     def see_also_targets__file() -> List[SeeAlsoTarget]:
-        return [
-            syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.cross_reference_target,
-            syntax_elements.PATH_SYNTAX_ELEMENT.cross_reference_target,
-        ]
+        return cross_reference_id_list([
+            syntax_elements.PATH_SYNTAX_ELEMENT,
+            syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
+        ])
 
     @staticmethod
-    def see_also_targets__stdout_err() -> List[SeeAlsoTarget]:
-        return [
-            syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.cross_reference_target,
-            syntax_elements.PROGRAM_SYNTAX_ELEMENT.cross_reference_target,
-            concepts.ACTION_TO_CHECK_CONCEPT_INFO.cross_reference_target,
-        ]
+    def see_also_targets__std_out_err() -> List[SeeAlsoTarget]:
+        return cross_reference_id_list([
+            syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
+            syntax_elements.PROGRAM_SYNTAX_ELEMENT,
+            concepts.ACTION_TO_CHECK_CONCEPT_INFO,
+        ])
 
 
 def file_contents_checker_arguments__non_program() -> List[a.ArgumentUsage]:
