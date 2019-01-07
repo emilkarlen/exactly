@@ -67,7 +67,7 @@ def equivalent_source_variants_with_assertion(put: unittest.TestCase,
 
 _SOURCE_VARIANT_TEST_CASES = [
     ([], every_line_is_consumed),
-    (['following line'], is_at_beginning_of_line(2)),
+    (['following empty'], is_at_beginning_of_line(2)),
     (['  '], is_at_beginning_of_line(2)),
 ]
 
