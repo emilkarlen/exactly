@@ -1,5 +1,5 @@
 import copy
-from typing import Optional
+from typing import Optional, Iterable, Set, Dict
 
 
 class SymbolTableValue:
@@ -33,16 +33,13 @@ class SymbolTable:
     Users of the symbol table should sub class this class for concrete values.
     """
 
-    def __init__(self, initial_values: dict = None):
-        """
-        :param initial_values: dictionary str -> Value
-        """
+    def __init__(self, initial_values: Dict[str, SymbolTableValue] = None):
         self._key_2_value = {} if initial_values is None else initial_values
 
     def add(self, entry: Entry):
         self._key_2_value[entry.key] = entry.value
 
-    def add_all(self, entries: iter):
+    def add_all(self, entries: Iterable[Entry]):
         for entry in entries:
             self.add(entry)
 
@@ -53,7 +50,7 @@ class SymbolTable:
         return key in self._key_2_value
 
     @property
-    def names_set(self) -> set:
+    def names_set(self) -> Set[str]:
         return set(self._key_2_value.keys())
 
     def lookup(self, name: str) -> SymbolTableValue:
@@ -73,7 +70,7 @@ def empty_symbol_table() -> SymbolTable:
     return SymbolTable()
 
 
-def symbol_table_with_entries(entries: iter) -> SymbolTable:
+def symbol_table_with_entries(entries: Iterable[Entry]) -> SymbolTable:
     ret_val = SymbolTable()
     ret_val.add_all(entries)
     return ret_val

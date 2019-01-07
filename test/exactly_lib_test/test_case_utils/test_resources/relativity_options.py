@@ -1,9 +1,10 @@
 import pathlib
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure import relative_path_options
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -42,13 +43,13 @@ class SymbolsConfiguration:
     Configuration of symbols used by a relativity option (for a path cli argument).
     """
 
-    def usage_expectation_assertions(self) -> list:
+    def usage_expectation_assertions(self) -> List[ValueAssertion[SymbolReference]]:
         return []
 
-    def entries_for_arrangement(self) -> list:
+    def entries_for_arrangement(self) -> List[Entry]:
         return []
 
-    def usages_expectation(self) -> ValueAssertion:
+    def usages_expectation(self) -> ValueAssertion[Sequence[SymbolUsage]]:
         return asrt.matches_sequence(self.usage_expectation_assertions())
 
     def in_arrangement(self) -> SymbolTable:
@@ -382,7 +383,7 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
         self.relativity = relativity
         self.symbol_name = symbol_name
 
-    def usage_expectation_assertions(self) -> list:
+    def usage_expectation_assertions(self) -> List[ValueAssertion[SymbolReference]]:
         return [
             equals_symbol_reference_with_restriction_on_direct_target(
                 self.symbol_name,

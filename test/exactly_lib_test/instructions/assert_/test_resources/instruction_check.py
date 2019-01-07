@@ -1,16 +1,19 @@
 import unittest
 
 import os
+from typing import Sequence
 
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import pfh, svh
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -33,10 +36,10 @@ class Expectation:
             svh_assertions.is_success(),
 
             main_result: ValueAssertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
-            symbol_usages: ValueAssertion = asrt.is_empty_sequence,
+            symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
             main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
-            main_side_effects_on_home_and_sds: ValueAssertion = asrt.anything_goes(),
-            source: ValueAssertion = asrt.anything_goes(),
+            main_side_effects_on_home_and_sds: ValueAssertion[HomeAndSds] = asrt.anything_goes(),
+            source: ValueAssertion[ParseSource] = asrt.anything_goes(),
     ):
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
