@@ -1,6 +1,6 @@
 import unittest
 
-from typing import List, Tuple
+from typing import List, Tuple, Iterator
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -44,7 +44,7 @@ def equivalent_source_variants__with_source_check__multi_line(put: unittest.Test
 
 
 def equivalent_source_variants(put: unittest.TestCase,
-                               instruction_argument: str):
+                               instruction_argument: str) -> Iterator[ParseSource]:
     """
     Yields a ParseSource
     """

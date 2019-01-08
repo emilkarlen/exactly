@@ -164,6 +164,14 @@ def argument_constructor_for_symbol_reference(files_matcher_symbol_name: str,
     )
 
 
+def complete_arguments_constructor(assertion_variant: AssertionVariantArgumentsConstructor,
+                                   file_matcher: str = '') -> FilesMatcherArgumentsConstructor:
+    return FilesMatcherArgumentsConstructorFromComponents(
+        SubSetSelectionArgumentConstructor(file_matcher),
+        assertion_variant,
+    )
+
+
 class FilesMatcherArgumentsSetup(SymbolsArrAndExpectSetup):
     def __init__(self,
                  arguments: AssertionVariantArgumentsConstructor,

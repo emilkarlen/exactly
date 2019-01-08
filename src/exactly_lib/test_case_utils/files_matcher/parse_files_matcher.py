@@ -1,8 +1,10 @@
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements, concepts
+from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
@@ -14,6 +16,10 @@ from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files,
 from exactly_lib.test_case_utils.files_matcher.impl import symbol_reference
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
+
+
+def files_matcher_parser() -> Parser[FilesMatcherResolver]:
+    return parser_classes.ParserFromTokenParserFunction(parse_files_matcher)
 
 
 def parse_files_matcher(parser: TokenParser,
