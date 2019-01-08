@@ -9,8 +9,10 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
@@ -34,10 +36,10 @@ class Expectation:
             validation_pre_sds: ValueAssertion[Optional[str]] = asrt.is_none,
 
             main_result: ValueAssertion[Optional[ErrorMessageResolver]] = asrt.is_none,
-            symbol_usages: ValueAssertion = asrt.is_empty_sequence,
+            symbol_usages: ValueAssertion[SymbolReference] = asrt.is_empty_sequence,
             main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
-            main_side_effects_on_home_and_sds: ValueAssertion = asrt.anything_goes(),
-            source: ValueAssertion = asrt.anything_goes(),
+            main_side_effects_on_home_and_sds: ValueAssertion[HomeAndSds] = asrt.anything_goes(),
+            source: ValueAssertion[ParseSource] = asrt.anything_goes(),
     ):
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
