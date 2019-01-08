@@ -30,6 +30,13 @@ def model_with_source_path_as_sub_dir_of_rel_root(subdir: str) -> ModelConstruct
     return ret_val
 
 
+def arbitrary_model_constructor() -> ModelConstructorFromRelOptConf:
+    def ret_val(root_dir_of_dir_contents: RelativityOptionConfiguration) -> Model:
+        return arbitrary_model()
+
+    return ret_val
+
+
 def arbitrary_model() -> Model:
     return Model(
         file_ref_resolvers.of_rel_option(RelOptionType.REL_ACT),

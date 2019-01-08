@@ -13,6 +13,10 @@ def arbitrary_validation_failure() -> ValueAssertion[Optional[str]]:
     return asrt.is_instance(str)
 
 
+def matches_validation_failure(message: ValueAssertion[str]) -> ValueAssertion[Optional[str]]:
+    return asrt.is_instance(str)
+
+
 def arbitrary_matching_failure() -> ValueAssertion[Optional[ErrorMessageResolver]]:
     return asrt.is_instance(ErrorMessageResolver)
 
