@@ -1,34 +1,10 @@
 from exactly_lib.definitions import expression
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_reg_ex
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.parse import token
-
-
-def selection_arguments(name_pattern: str = '',
-                        type_match: FileType = None,
-                        named_matcher: str = '') -> str:
-    """
-    Gives the CLI argument and options for selection of given
-    matchers
-    :param name_pattern: Name selector, or nothing, if empty string.
-    :param type_match: Type selector, or nothing, if None
-    :returns str: Empty string iff no selector is given.
-    """
-    the_matchers_arguments = file_matcher_arguments(name_pattern,
-                                                    type_match,
-                                                    named_matcher)
-    if the_matchers_arguments:
-        return selection_arguments_for_matcher(the_matchers_arguments)
-    else:
-        return ''
-
-
-def selection_arguments_for_matcher(matcher: str) -> str:
-    return option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name) + ' ' + matcher
 
 
 def file_matcher_arguments(name_pattern: str = '',

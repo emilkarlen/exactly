@@ -13,10 +13,10 @@ from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import path_and_matcher
 from exactly_lib_test.instructions.assert_.test_resources import expression
-from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     NumFilesAssertionVariant, argument_constructor_for_num_files_check, \
     FilesMatcherArgumentsSetup, files_matcher_setup_without_references

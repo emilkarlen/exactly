@@ -11,6 +11,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import model
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -18,11 +19,6 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions as asrt_matcher
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-
-
-def int_condition(operator: comparators.ComparisonOperator,
-                  value: int) -> str:
-    return operator.name + ' ' + str(value)
 
 
 class InstructionArgumentsVariantConstructor:

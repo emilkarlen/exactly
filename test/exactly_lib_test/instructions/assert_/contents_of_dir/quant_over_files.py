@@ -17,7 +17,6 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import instruction_arguments as args
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.instructions.assert_.test_resources import expression, instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionChecker
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -29,6 +28,7 @@ from exactly_lib_test.symbol.test_resources.string_transformer import is_referen
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     FilesContentsAssertionVariant, FilesMatcherArgumentsSetup, \
     files_matcher_setup_without_references

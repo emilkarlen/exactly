@@ -7,10 +7,11 @@ from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher import config
+from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndExpectSetup
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import \
-    selection_arguments_for_matcher, file_matcher_arguments
+    file_matcher_arguments
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import ExpectationTypeConfig
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -185,3 +186,28 @@ class FilesMatcherArgumentsSetup(SymbolsArrAndExpectSetup):
 def files_matcher_setup_without_references(arguments: AssertionVariantArgumentsConstructor
                                            ) -> FilesMatcherArgumentsSetup:
     return FilesMatcherArgumentsSetup(arguments, {})
+
+
+def selection_arguments(name_pattern: str = '',
+                        type_match: FileType = None,
+                        named_matcher: str = '') -> str:
+    """
+    Gives the CLI argument and options for selection of given
+    matchers
+    :param name_pattern: Name selector, or nothing, if empty string.
+    :param type_match: Type selector, or nothing, if None
+    :returns str: Empty string iff no selector is given.
+    """
+    the_matchers_arguments = file_matcher_arguments(name_pattern,
+                                                    type_match,
+                                                    named_matcher)
+    if the_matchers_arguments:
+        return selection_arguments_for_matcher(the_matchers_arguments)
+    else:
+        return ''
+
+
+def selection_arguments_for_matcher(matcher: str) -> str:
+    return (option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name) +
+            ' ' +
+            matcher)

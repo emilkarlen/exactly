@@ -21,6 +21,7 @@ from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import expression, integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import model
@@ -30,7 +31,6 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_bui
     files_matcher_setup_without_references
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.check_with_neg_and_rel_opts import \
     MatcherChecker
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.expression import int_condition
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import \
     arguments_building as string_matcher_args
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import \
