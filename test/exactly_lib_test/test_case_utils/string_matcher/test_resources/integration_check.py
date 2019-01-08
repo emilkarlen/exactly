@@ -7,10 +7,8 @@ from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds
+    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
-from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.hard_error import HardErrorException
@@ -97,10 +95,9 @@ class Executor:
             with preserved_cwd():
                 os.chdir(str(home_and_sds.hds.case_dir))
 
-                environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.hds,
-                                                                    self.arrangement.process_execution_settings.environ,
-                                                                    symbols=self.arrangement.symbols)
-                validate_result = self._execute_validate_pre_sds(environment.path_resolving_environment, resolver)
+                environment = PathResolvingEnvironmentPreSds(home_and_sds.hds,
+                                                             self.arrangement.symbols)
+                validate_result = self._execute_validate_pre_sds(environment, resolver)
                 self.expectation.symbol_usages.apply_with_message(self.put,
                                                                   resolver.references,
                                                                   'symbol-usages after ' +
@@ -108,14 +105,10 @@ class Executor:
                 if validate_result is not None:
                     return
 
-            environment = i.InstructionEnvironmentForPostSdsStep(
-                environment.hds,
-                environment.environ,
-                home_and_sds.sds,
-                phase_identifier.ASSERT.identifier,
-                timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
-                symbols=self.arrangement.symbols)
-            validate_result = self._execute_validate_post_setup(environment.path_resolving_environment, resolver)
+            environment = PathResolvingEnvironmentPreOrPostSds(
+                home_and_sds,
+                self.arrangement.symbols)
+            validate_result = self._execute_validate_post_setup(environment, resolver)
             self.expectation.symbol_usages.apply_with_message(self.put,
                                                               resolver.references,
                                                               'symbol-usages after ' +
@@ -147,7 +140,7 @@ class Executor:
 
     def _resolve(self,
                  resolver: StringMatcherResolver,
-                 environment: i.InstructionEnvironmentForPostSdsStep) -> StringMatcher:
+                 environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
 
         resolver_health_check = matches_string_matcher_resolver(references=asrt.anything_goes(),
                                                                 symbols=environment.symbols,

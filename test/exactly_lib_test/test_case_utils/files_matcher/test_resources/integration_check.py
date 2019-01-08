@@ -8,13 +8,11 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.files_matcher import FilesMatcherResolver, FilesMatcherValue, Environment, FilesMatcherModel
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds
-from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.phases import common as i
+    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.util.file_utils import preserved_cwd
+from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import Model
@@ -93,10 +91,9 @@ class _Executor:
             with preserved_cwd():
                 os.chdir(str(home_and_sds.hds.case_dir))
 
-                environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.hds,
-                                                                    self.arrangement.process_execution_settings.environ,
-                                                                    symbols=self.arrangement.symbols)
-                validate_result = self._execute_validate_pre_sds(environment.path_resolving_environment, resolver)
+                environment = PathResolvingEnvironmentPreSds(home_and_sds.hds,
+                                                             self.arrangement.symbols)
+                validate_result = self._execute_validate_pre_sds(environment, resolver)
                 self.expectation.symbol_usages.apply_with_message(self.put,
                                                                   resolver.references,
                                                                   'symbol-usages after ' +
@@ -104,14 +101,10 @@ class _Executor:
                 if validate_result is not None:
                     return
 
-            environment = i.InstructionEnvironmentForPostSdsStep(
-                environment.hds,
-                environment.environ,
-                home_and_sds.sds,
-                phase_identifier.ASSERT.identifier,
-                timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
-                symbols=self.arrangement.symbols)
-            validate_result = self._execute_validate_post_setup(environment.path_resolving_environment, resolver)
+            environment = PathResolvingEnvironmentPreOrPostSds(
+                home_and_sds,
+                self.arrangement.symbols)
+            validate_result = self._execute_validate_post_setup(environment, resolver)
             self.expectation.symbol_usages.apply_with_message(self.put,
                                                               resolver.references,
                                                               'symbol-usages after ' +
@@ -146,7 +139,7 @@ class _Executor:
 
     def _resolve(self,
                  resolver: FilesMatcherResolver,
-                 environment: i.InstructionEnvironmentForPostSdsStep) -> FilesMatcherValue:
+                 environment: PathResolvingEnvironmentPreOrPostSds) -> FilesMatcherValue:
 
         matcher_value = resolver.resolve(environment.symbols)
         assert isinstance(matcher_value, FilesMatcherValue)
@@ -202,16 +195,16 @@ class _Executor:
         else:
             self.put.fail('Unexpected HARD_ERROR')
 
-    def _new_model(self, instruction_environment: i.InstructionEnvironmentForPostSdsStep
+    def _new_model(self, environment: PathResolvingEnvironmentPreOrPostSds
                    ) -> Tuple[Environment, FilesMatcherModel]:
         return (
             Environment(
-                instruction_environment.path_resolving_environment_pre_or_post_sds,
-                instruction_environment.phase_logging.space_for_instruction()
+                environment,
+                TmpDirFileSpaceAsDirCreatedOnDemand(environment.sds.log_dir)
             ),
             FilesMatcherModelForDir(
                 self.model.dir_path_resolver,
-                instruction_environment.path_resolving_environment_pre_or_post_sds,
+                environment,
                 self.model.files_selection,
             ),
         )
