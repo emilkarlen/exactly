@@ -12,15 +12,6 @@ from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class HardErrorException(Exception):
-    def __init__(self, error: ErrorMessageResolver):
-        self._error = error
-
-    @property
-    def error(self) -> ErrorMessageResolver:
-        return self._error
-
-
 class Environment:
     def __init__(self,
                  path_resolving_environment: PathResolvingEnvironmentPreOrPostSds,
