@@ -81,6 +81,9 @@ class SubSetSelectionArgumentConstructor:
         else:
             return ''
 
+    def __str__(self):
+        return self.apply()
+
 
 def no_selection() -> SubSetSelectionArgumentConstructor:
     return SubSetSelectionArgumentConstructor('')
@@ -95,6 +98,21 @@ class FilesMatcherArgumentsConstructor(ABC):
     @abstractmethod
     def apply(self, etc: ExpectationTypeConfig) -> str:
         pass
+
+
+class SelectionAndMaterArgumentsConstructor(FilesMatcherArgumentsConstructor):
+    def __init__(self,
+                 selection,
+                 files_matcher):
+        self.selection = selection
+        self.files_matcher = files_matcher
+
+    def apply(self, etc: ExpectationTypeConfig) -> str:
+        return '{selection} {expectation_type} {files_matcher}'.format(
+            selection=str(SubSetSelectionArgumentConstructor(self.selection)),
+            expectation_type=etc.nothing__if_positive__not_option__if_negative,
+            files_matcher=str(self.files_matcher)
+        )
 
 
 class FilesMatcherArgumentsConstructorFromComponents(FilesMatcherArgumentsConstructor):
@@ -211,3 +229,7 @@ def selection_arguments_for_matcher(matcher: str) -> str:
     return (option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name) +
             ' ' +
             matcher)
+
+
+def symbol_reference(symbol_name: str) -> str:
+    return symbol_name

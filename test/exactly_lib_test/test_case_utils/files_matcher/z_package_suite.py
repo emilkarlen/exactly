@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.files_matcher import common, empty, num_files, quant_over_files, symbol_reference
+from exactly_lib_test.test_case_utils.files_matcher import common, empty, num_files, quant_over_files, \
+    symbol_reference, multiple_selections
 from exactly_lib_test.test_case_utils.files_matcher.test_resources_test import z_package_suite as test_resources_test
 
 
@@ -12,6 +13,7 @@ def suite() -> unittest.TestSuite:
         num_files.suite(),
         quant_over_files.suite(),
         symbol_reference.suite(),
+        multiple_selections.suite(),
     ])
 
 

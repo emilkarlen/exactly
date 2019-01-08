@@ -32,8 +32,23 @@ def matches_reference(assertion_on_name: ValueAssertion[str] = asrt.anything_goe
         asrt_sym_ref.matches_reference(assertion_on_name, assertion_on_restrictions))
 
 
+def matches_reference__ref(assertion_on_name: ValueAssertion[str] = asrt.anything_goes(),
+                           assertion_on_restrictions: ValueAssertion[ReferenceRestrictions] = asrt.anything_goes()
+                           ) -> ValueAssertion[su.SymbolReference]:
+    return asrt.is_sub_class_with(
+        su.SymbolReference,
+        asrt_sym_ref.matches_reference(assertion_on_name, assertion_on_restrictions))
+
+
 def matches_reference_2(expected_name: str,
                         assertion_on_restrictions: ValueAssertion[ReferenceRestrictions] = asrt.anything_goes()
                         ) -> ValueAssertion[su.SymbolUsage]:
     return matches_reference(asrt.equals(expected_name),
                              assertion_on_restrictions)
+
+
+def matches_reference_2__ref(expected_name: str,
+                             assertion_on_restrictions: ValueAssertion[ReferenceRestrictions] = asrt.anything_goes()
+                             ) -> ValueAssertion[su.SymbolReference]:
+    return matches_reference__ref(asrt.equals(expected_name),
+                                  assertion_on_restrictions)
