@@ -1,12 +1,12 @@
 import unittest
 
 from abc import ABC
-from typing import List
+from typing import List, Callable
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.files_matcher import FilesMatcherResolver
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -26,13 +26,29 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
-    SymbolsConfiguration
+    SymbolsConfiguration, conf_rel_sds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+
+SOME_ACCEPTED_REL_OPT_CONFIGURATIONS = [
+    conf_rel_sds(RelSdsOptionType.REL_ACT),
+    conf_rel_sds(RelSdsOptionType.REL_TMP),
+]
+
+
+def model_with_rel_root_as_source_path(root_dir_of_dir_contents: RelativityOptionConfiguration) -> Model:
+    return Model(root_dir_of_dir_contents.file_ref_resolver_for())
+
+
+def model_with_source_path_as_sub_dir_of_rel_root(subdir: str) -> Callable[[RelativityOptionConfiguration], Model]:
+    def ret_val(root_dir_of_dir_contents: RelativityOptionConfiguration) -> Model:
+        return Model(root_dir_of_dir_contents.file_ref_resolver_for(subdir))
+
+    return ret_val
 
 
 class FilesMatcherArgumentsConstructorWithTemplateStringBase(FilesMatcherArgumentsConstructor, ABC):
@@ -59,7 +75,7 @@ class MatcherChecker:
             model: Model,
             etc: ExpectationTypeConfigForNoneIsSuccess,
             main_result_for_positive_expectation: PassOrFail,
-            rel_opt_config: RelativityOptionConfiguration,
+            root_dir_of_dir_contents: RelativityOptionConfiguration,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
             test_case_name: str = '',
             following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
@@ -74,24 +90,21 @@ class MatcherChecker:
                 model,
                 ArrangementPostAct(
                     pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
-                    home_or_sds_contents=rel_opt_config.populator_for_relativity_option_root(
+                    home_or_sds_contents=root_dir_of_dir_contents.populator_for_relativity_option_root(
                         contents_of_relativity_option_root
                     ),
-                    symbols=_symbol_table_of(rel_opt_config.symbols,
+                    symbols=_symbol_table_of(root_dir_of_dir_contents.symbols,
                                              following_symbols_setup),
                 ),
                 Expectation(
                     main_result=etc.main_result(main_result_for_positive_expectation),
-                    symbol_usages=asrt.matches_sequence(
-                        rel_opt_config.symbols.usage_expectation_assertions() +
-                        following_symbols_setup.expected_references_list
-                    ),
+                    symbol_usages=following_symbols_setup.expected_references_assertion,
                 ))
 
     def check_parsing_with_different_source_variants(
             self,
             make_instruction_arguments: FilesMatcherArgumentsConstructor,
-            model: Model,
+            model_constructor: Callable[[RelativityOptionConfiguration], Model],
             default_relativity: RelOptionType,
             non_default_relativity: RelOptionType,
             main_result_for_positive_expectation: PassOrFail,
@@ -111,7 +124,7 @@ class MatcherChecker:
                 for source in equivalent_source_variants__with_source_check(self.put, instruction_arguments):
                     self._check_(
                         source,
-                        model,
+                        model_constructor(rel_opt_config),
                         etc,
                         main_result_for_positive_expectation,
                         rel_opt_config,
@@ -123,7 +136,7 @@ class MatcherChecker:
             make_instruction_arguments: FilesMatcherArgumentsConstructor,
             model: Model,
             main_result_for_positive_expectation: PassOrFail,
-            rel_opt_config: RelativityOptionConfiguration,
+            root_dir_of_dir_contents: RelativityOptionConfiguration,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
             test_case_name: str = '',
             following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
@@ -136,7 +149,7 @@ class MatcherChecker:
                 model,
                 etc,
                 main_result_for_positive_expectation,
-                rel_opt_config,
+                root_dir_of_dir_contents,
                 contents_of_relativity_option_root,
                 test_case_name,
                 following_symbols_setup=following_symbols_setup)
@@ -144,16 +157,16 @@ class MatcherChecker:
     def check_rel_opt_variants_and_expectation_type_variants(
             self,
             make_instruction_arguments: FilesMatcherArgumentsConstructor,
-            model: Model,
+            model_constructor: Callable[[RelativityOptionConfiguration], Model],
             main_result_for_positive_expectation: PassOrFail,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
             test_case_name: str = '',
             following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
 
-        for rel_opt_config in self.accepted_rel_opt_configurations:
+        for rel_opt_config in SOME_ACCEPTED_REL_OPT_CONFIGURATIONS:
             self.check_expectation_type_variants(
                 make_instruction_arguments,
-                model,
+                model_constructor(rel_opt_config),
                 main_result_for_positive_expectation,
                 rel_opt_config,
                 contents_of_relativity_option_root,
@@ -163,12 +176,11 @@ class MatcherChecker:
     def check_rel_opt_variants_with_same_result_for_every_expectation_type(
             self,
             make_instruction_arguments: FilesMatcherArgumentsConstructor,
-            model: Model,
             main_result: ValueAssertion,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
             following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
 
-        for rel_opt_config in self.accepted_rel_opt_configurations:
+        for rel_opt_config in SOME_ACCEPTED_REL_OPT_CONFIGURATIONS:
 
             for expectation_type_of_test_case in ExpectationType:
                 etc = expectation_type_config__non_is_success(expectation_type_of_test_case)
@@ -181,7 +193,7 @@ class MatcherChecker:
                         self.put,
                         self.parser,
                         instruction_source,
-                        model,
+                        Model(rel_opt_config.file_ref_resolver_for()),
                         ArrangementPostAct(
                             pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
                             home_or_sds_contents=rel_opt_config.populator_for_relativity_option_root(
@@ -201,18 +213,18 @@ class MatcherChecker:
     def check_rel_opt_variants(
             self,
             make_instruction_arguments: FilesMatcherArgumentsConstructor,
-            model: Model,
+            model_constructor: Callable[[RelativityOptionConfiguration], Model],
             main_result_for_positive_expectation: PassOrFail,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
             test_case_name: str = '',
             following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
 
-        for rel_opt_config in self.accepted_rel_opt_configurations:
+        for rel_opt_config in SOME_ACCEPTED_REL_OPT_CONFIGURATIONS:
             etc = expectation_type_config__non_is_success(ExpectationType.POSITIVE)
             instruction_arguments = make_instruction_arguments.apply(etc)
             self._check_(
                 remaining_source(instruction_arguments),
-                model,
+                model_constructor(rel_opt_config),
                 etc,
                 main_result_for_positive_expectation,
                 rel_opt_config,
@@ -224,14 +236,14 @@ class MatcherChecker:
             self,
             test_cases_with_name_and_dir_contents: List[NameAndValue[DirContents]],
             make_instruction_arguments: FilesMatcherArgumentsConstructor,
-            model: Model,
+            model_constructor: Callable[[RelativityOptionConfiguration], Model],
             main_result_for_positive_expectation: PassOrFail,
             following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
 
         for case in test_cases_with_name_and_dir_contents:
             self.check_rel_opt_variants_and_expectation_type_variants(
                 make_instruction_arguments,
-                model,
+                model_constructor,
                 main_result_for_positive_expectation,
                 contents_of_relativity_option_root=case.value,
                 test_case_name=case.name,

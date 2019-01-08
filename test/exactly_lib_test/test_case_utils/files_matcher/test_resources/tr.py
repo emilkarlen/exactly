@@ -89,20 +89,6 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         parser.parse(source)
 
-    def test_raise_exception_WHEN_relativity_is_unaccepted(self):
-        valid_instruction_argument_syntax_con = args.complete_arguments_constructor(
-            self.assertion_variant.arguments
-        )
-        parser = sut.files_matcher_parser()
-        for expectation_type in ExpectationType:
-            etc = pfh_expectation_type_config(expectation_type)
-            first_line_arguments = valid_instruction_argument_syntax_con.apply(etc)
-            with self.subTest(arguments=first_line_arguments,
-                              expectation_type=str(expectation_type)):
-                for source in equivalent_source_variants(self, first_line_arguments):
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(source)
-
 
 class TestCommonFailureConditionsBase(TestWithAssertionVariantBase):
     @property

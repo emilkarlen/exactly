@@ -16,6 +16,8 @@ from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIO
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system.data.file_refs import empty_path_part
+from exactly_lib.type_system.data.path_part import PathPart
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
@@ -166,7 +168,7 @@ class RelativityOptionConfiguration:
     def is_rel_cwd(self) -> bool:
         raise NotImplementedError('abstract method')
 
-    def file_ref_resolver_for(self, file_name: str) -> FileRefResolver:
+    def file_ref_resolver_for(self, file_name: str = '') -> FileRefResolver:
         raise NotImplementedError('abstract method')
 
     @property
@@ -231,10 +233,10 @@ class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguratio
     def relativity_option(self) -> RelOptionType:
         return self.relativity
 
-    def file_ref_resolver_for(self, file_name: str) -> FileRefResolver:
+    def file_ref_resolver_for(self, file_name: str = '') -> FileRefResolver:
         return file_ref_resolvers.constant(
             file_refs.of_rel_option(self.relativity_option,
-                                    file_refs.constant_path_part(file_name))
+                                    _empty_or_fixed_path_part(file_name))
         )
 
     @property
@@ -375,9 +377,9 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRel
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:
         return sds_populator.contents_in(self.relativity_sds, contents)
 
-    def file_ref_resolver_for(self, file_name: str) -> FileRefResolver:
+    def file_ref_resolver_for(self, file_name: str = '') -> FileRefResolver:
         return FileRefConstant(file_refs.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
-                                                       PathPartAsFixedPath(file_name)))
+                                                       _empty_or_fixed_path_part(file_name)))
 
 
 class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
@@ -507,3 +509,10 @@ def symbol_conf_rel_home(relativity: RelHomeOptionType,
         SymbolsConfigurationForSinglePathSymbol(path_relativity.rel_any_from_rel_home(relativity),
                                                 accepted_relativities,
                                                 symbol_name))
+
+
+def _empty_or_fixed_path_part(file_name: str) -> PathPart:
+    if file_name and not file_name.isspace():
+        return PathPartAsFixedPath(file_name)
+    else:
+        return empty_path_part()

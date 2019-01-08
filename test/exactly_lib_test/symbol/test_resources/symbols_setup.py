@@ -21,6 +21,10 @@ class SymbolsArrAndExpectSetup:
         return list(self.expected_references)
 
     @property
+    def expected_references_assertion(self) -> ValueAssertion[Sequence[SymbolUsage]]:
+        return asrt.matches_sequence(self.expected_references_list)
+
+    @property
     def symbol_entries_for_arrangement(self) -> List[Entry]:
         return [
             Entry(symbol_name,
