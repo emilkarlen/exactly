@@ -7,15 +7,13 @@ from typing import Sequence, Optional, List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.files_matcher import FilesMatcherResolver, FilesMatcherValue, Environment, FilesMatcherModel
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironment
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, \
-    RelSdsOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.util.symbol_table import SymbolTable
@@ -29,7 +27,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_home_po
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check as sut
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_check import Model
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import Model, arbitrary_model
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, is_pass
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_sds, \
@@ -364,13 +362,6 @@ class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrP
 PARSER_THAT_GIVES_MATCHER_THAT_MATCHES = parser_for_constant(True)
 
 _MATCHER_THAT_MATCHES = FilesMatcherResolverConstantTestImpl(True)
-
-
-def arbitrary_model() -> Model:
-    return Model(
-        file_ref_resolvers.of_rel_option(RelOptionType.REL_ACT),
-        None)
-
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

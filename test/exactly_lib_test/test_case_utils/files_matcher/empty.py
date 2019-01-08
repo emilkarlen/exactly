@@ -6,8 +6,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import tr
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     EmptyAssertionVariant, argument_constructor_for_emptiness_check, \
     FilesMatcherArgumentsSetup, files_matcher_setup_without_references
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.check_with_neg_and_rel_opts import \
-    model_with_rel_root_as_source_path, model_with_source_path_as_sub_dir_of_rel_root
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import model_with_rel_root_as_source_path, \
+    model_with_source_path_as_sub_dir_of_rel_root
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir, Dir

@@ -16,7 +16,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_populator impo
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     FilesMatcherArgumentsConstructor
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_check import Expectation, Model
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_check import Expectation
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import Model
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
@@ -38,17 +39,6 @@ SOME_ACCEPTED_REL_OPT_CONFIGURATIONS = [
     conf_rel_sds(RelSdsOptionType.REL_ACT),
     conf_rel_sds(RelSdsOptionType.REL_TMP),
 ]
-
-
-def model_with_rel_root_as_source_path(root_dir_of_dir_contents: RelativityOptionConfiguration) -> Model:
-    return Model(root_dir_of_dir_contents.file_ref_resolver_for())
-
-
-def model_with_source_path_as_sub_dir_of_rel_root(subdir: str) -> Callable[[RelativityOptionConfiguration], Model]:
-    def ret_val(root_dir_of_dir_contents: RelativityOptionConfiguration) -> Model:
-        return Model(root_dir_of_dir_contents.file_ref_resolver_for(subdir))
-
-    return ret_val
 
 
 class FilesMatcherArgumentsConstructorWithTemplateStringBase(FilesMatcherArgumentsConstructor, ABC):

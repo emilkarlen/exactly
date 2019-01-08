@@ -6,11 +6,9 @@ from typing import Optional, Tuple
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.files_matcher import FilesMatcherResolver, FilesMatcherValue, Environment, FilesMatcherModel
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
-from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
@@ -18,19 +16,11 @@ from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import Model
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-
-
-class Model:
-    def __init__(self,
-                 dir_path_resolver: FileRefResolver,
-                 files_selection: Optional[FileMatcherResolver] = None
-                 ):
-        self.dir_path_resolver = dir_path_resolver
-        self.files_selection = files_selection
 
 
 class TestCaseBase(unittest.TestCase):
