@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.files_matcher import common, empty, num_files
+from exactly_lib_test.test_case_utils.files_matcher import common, empty, num_files, quant_over_files
 from exactly_lib_test.test_case_utils.files_matcher.test_resources_test import z_package_suite as test_resources_test
 
 
@@ -10,6 +10,7 @@ def suite() -> unittest.TestSuite:
         common.suite(),
         empty.suite(),
         num_files.suite(),
+        quant_over_files.suite(),
     ])
 
 

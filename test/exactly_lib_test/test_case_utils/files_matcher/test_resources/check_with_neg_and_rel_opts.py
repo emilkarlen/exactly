@@ -124,7 +124,7 @@ class MatcherChecker:
     def check_expectation_type_variants(
             self,
             make_instruction_arguments: FilesMatcherArgumentsConstructor,
-            model: Model,
+            model_constructor: ModelConstructorFromRelOptConf,
             main_result_for_positive_expectation: PassOrFail,
             root_dir_of_dir_contents: RelativityOptionConfiguration,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
@@ -136,7 +136,7 @@ class MatcherChecker:
             instruction_arguments = make_instruction_arguments.apply(etc)
             self._check_(
                 remaining_source(instruction_arguments),
-                model,
+                model_constructor(root_dir_of_dir_contents),
                 etc,
                 main_result_for_positive_expectation,
                 root_dir_of_dir_contents,
@@ -156,7 +156,7 @@ class MatcherChecker:
         for rel_opt_config in SOME_ACCEPTED_REL_OPT_CONFIGURATIONS:
             self.check_expectation_type_variants(
                 make_instruction_arguments,
-                model_constructor(rel_opt_config),
+                model_constructor,
                 main_result_for_positive_expectation,
                 rel_opt_config,
                 contents_of_relativity_option_root,

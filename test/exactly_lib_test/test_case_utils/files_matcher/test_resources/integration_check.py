@@ -21,7 +21,6 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import 
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class TestCaseBase(unittest.TestCase):
@@ -155,16 +154,16 @@ class Executor:
                                   environment: PathResolvingEnvironmentPreSds,
                                   resolver: FilesMatcherResolver) -> Optional[str]:
         result = resolver.validator().validate_pre_sds_if_applicable(environment)
-        self.expectation.validation_pre_sds.apply(self.put, result,
-                                                  asrt.MessageBuilder('result of validate/pre sds'))
+        self.expectation.validation_pre_sds.apply_with_message(self.put, result,
+                                                               'result of validate/pre sds')
         return result
 
     def _execute_validate_post_setup(self,
                                      environment: PathResolvingEnvironmentPostSds,
                                      resolver: FilesMatcherResolver) -> Optional[str]:
         result = resolver.validator().validate_post_sds_if_applicable(environment)
-        self.expectation.validation_post_sds.apply(self.put, result,
-                                                   asrt.MessageBuilder('result of validate/post setup'))
+        self.expectation.validation_post_sds.apply_with_message(self.put, result,
+                                                                'result of validate/post setup')
         return result
 
     def _execute_main(self,
@@ -177,7 +176,8 @@ class Executor:
             if self.expectation.is_hard_error is not None:
                 self.put.fail('HARD_ERROR not reported (raised)')
 
-            self.expectation.main_result.apply(self.put, main_result)
+            self.expectation.main_result.apply_with_message(self.put, main_result,
+                                                            'result of main')
             return main_result
         except HardErrorException as ex:
             if self.expectation.is_hard_error is not None:
