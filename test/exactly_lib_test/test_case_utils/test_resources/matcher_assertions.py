@@ -17,7 +17,7 @@ def arbitrary_matching_failure() -> ValueAssertion[Optional[ErrorMessageResolver
     return asrt.is_instance(ErrorMessageResolver)
 
 
-def matching_matching_success() -> ValueAssertion[Optional[ErrorMessageResolver]]:
+def is_matching_success() -> ValueAssertion[Optional[ErrorMessageResolver]]:
     return asrt.is_none
 
 

@@ -138,7 +138,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
         cases = [
             NEA('should match',
-                expected=matcher_assertions.matching_matching_success(),
+                expected=matcher_assertions.is_matching_success(),
                 actual=lines_content([
                     '1st line',
                     '2nd line',
