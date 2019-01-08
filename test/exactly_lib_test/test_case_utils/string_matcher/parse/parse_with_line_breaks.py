@@ -11,9 +11,9 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc i
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
     TestCaseBase
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation, \
-    matching_matching_success, arbitrary_matching_failure
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import arbitrary_matching_failure, \
+    matching_matching_success, Expectation
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 

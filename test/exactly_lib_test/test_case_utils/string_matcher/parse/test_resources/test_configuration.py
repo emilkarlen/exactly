@@ -16,8 +16,8 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__multi_line
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success, ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \

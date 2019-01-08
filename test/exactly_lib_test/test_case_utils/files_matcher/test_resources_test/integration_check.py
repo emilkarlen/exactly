@@ -3,37 +3,37 @@ Test of test-infrastructure: instruction_check.
 """
 import unittest
 
-from typing import Sequence, Optional, List, Set
+from typing import Sequence, Optional, List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.symbol.data import file_ref_resolvers
+from exactly_lib.symbol.files_matcher import FilesMatcherResolver, FilesMatcherValue, Environment, FilesMatcherModel
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds, PathResolvingEnvironment, PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.resolver_structure import StringMatcherResolver
+    PathResolvingEnvironmentPostSds, PathResolvingEnvironment
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
-from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
-from exactly_lib.type_system.logic.string_matcher_values import StringMatcherConstantValue
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, \
+    RelSdsOptionType
+from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl
+from exactly_lib_test.symbol.test_resources.files_matcher import FilesMatcherResolverConstantTestImpl, \
+    FilesMatcherResolverConstantValueTestImpl, FilesMatcherValueTestImpl
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check as sut
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder, empty_model
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.string_matchers import StringMatcherTestImplBase
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check as sut
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_check import Model
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, is_pass
-from exactly_lib_test.test_resources.files.file_checks import FileChecker
+from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_sds, \
+    RelativityOptionConfigurationForRelSds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     sds_2_home_and_sds_assertion
@@ -54,9 +54,9 @@ class TestCaseBase(unittest.TestCase):
         self.tc = utils.TestCaseWithTestErrorAsFailureException()
 
     def _check(self,
-               parser: Parser[StringMatcherResolver],
+               parser: Parser[FilesMatcherResolver],
                source: ParseSource,
-               model: ModelBuilder,
+               model: Model,
                arrangement: sut.ArrangementPostAct,
                expectation: matcher_assertions.Expectation):
         sut.check(self.tc, parser, source, model, arrangement, expectation)
@@ -68,7 +68,7 @@ class TestPopulate(TestCaseBase):
         self._check(
             PARSER_THAT_GIVES_MATCHER_THAT_MATCHES,
             utils.single_line_source(),
-            empty_model(),
+            arbitrary_model(),
             sut.ArrangementPostAct(
                 non_home_contents=non_home_populator.rel_option(
                     non_home_populator.RelNonHomeOptionType.REL_TMP,
@@ -83,7 +83,7 @@ class TestPopulate(TestCaseBase):
         self._check(
             PARSER_THAT_GIVES_MATCHER_THAT_MATCHES,
             utils.single_line_source(),
-            empty_model(),
+            arbitrary_model(),
             sut.ArrangementPostAct(
                 sds_contents=sds_populator.contents_in(
                     sds_populator.RelSdsOptionType.REL_TMP,
@@ -100,10 +100,11 @@ class TestSymbolReferences(TestCaseBase):
             unexpected_symbol_usages = [data_symbol_utils.symbol_reference('symbol_name')]
             self._check(
                 parser_for_constant(
+                    True,
                     references=unexpected_symbol_usages
                 ),
                 utils.single_line_source(),
-                empty_model(),
+                arbitrary_model(),
                 sut.ArrangementPostAct(),
                 matcher_assertions.Expectation(),
             )
@@ -114,10 +115,11 @@ class TestSymbolReferences(TestCaseBase):
             symbol_usages_of_expectation = [data_symbol_utils.symbol_reference('symbol_name')]
             self._check(
                 parser_for_constant(
+                    True,
                     references=symbol_usages_of_matcher
                 ),
                 utils.single_line_source(),
-                empty_model(),
+                arbitrary_model(),
                 sut.ArrangementPostAct(),
                 matcher_assertions.Expectation(
                     symbol_usages=sym_asrt.equals_symbol_references(symbol_usages_of_expectation)),
@@ -132,12 +134,12 @@ class TestSymbolReferences(TestCaseBase):
                                                                                         symbol_value)
         expectation = asrt_sym.equals_symbol_table(expected_symbol_table)
 
-        resolver_that_checks_symbols = StringMatcherResolverThatAssertsThatSymbolsAreAsExpected(self, expectation)
+        resolver_that_checks_symbols = _FilesMatcherResolverThatAssertsThatSymbolsAreAsExpected(self, expectation)
 
         self._check(
             ConstantParser(resolver_that_checks_symbols),
             utils.single_line_source(),
-            empty_model(),
+            arbitrary_model(),
             sut.ArrangementPostAct(
                 symbols=symbol_table_of_arrangement),
             matcher_assertions.Expectation(),
@@ -149,21 +151,28 @@ class TestMisc(TestCaseBase):
         self._check(
             PARSER_THAT_GIVES_MATCHER_THAT_MATCHES,
             utils.single_line_source(),
-            empty_model(),
+            arbitrary_model(),
             sut.ArrangementPostAct(),
             is_pass())
 
     def test_model_is_correct(self):
-        contents = 'expected model file\ncontents'
+        relativity = conf_rel_sds(RelSdsOptionType.REL_TMP)
 
-        mode = empty_model().with_original_file_contents(contents)
+        model = Model(relativity.file_ref_resolver_for(''))
+
+        expected_files_from_model = DirContents([
+            empty_file('file-1'),
+            empty_file('file-2'),
+        ])
 
         self._check(
-            ConstantParser(string_matcher_that_asserts_models_is_expected(self,
-                                                                          contents)),
+            ConstantParser(_files_matcher_that_asserts_models_is_expected(self,
+                                                                          relativity)),
             utils.single_line_source(),
-            mode,
-            sut.ArrangementPostAct(),
+            model,
+            sut.ArrangementPostAct(
+                sds_contents=relativity.populator_for_relativity_option_root__sds(expected_files_from_model)
+            ),
             is_pass())
 
 
@@ -172,7 +181,7 @@ class TestFailingExpectations(TestCaseBase):
         with self.assertRaises(utils.TestError):
             self._check(ConstantParser(_MATCHER_THAT_MATCHES),
                         utils.single_line_source(),
-                        empty_model(),
+                        arbitrary_model(),
                         sut.ArrangementPostAct(),
                         Expectation(
                             validation_pre_sds=matcher_assertions.arbitrary_validation_failure()),
@@ -182,7 +191,7 @@ class TestFailingExpectations(TestCaseBase):
         with self.assertRaises(utils.TestError):
             self._check(ConstantParser(_MATCHER_THAT_MATCHES),
                         utils.single_line_source(),
-                        empty_model(),
+                        arbitrary_model(),
                         sut.ArrangementPostAct(),
                         Expectation(
                             validation_post_sds=matcher_assertions.arbitrary_validation_failure()),
@@ -193,7 +202,7 @@ class TestFailingExpectations(TestCaseBase):
             self._check(
                 ConstantParser(_MATCHER_THAT_MATCHES),
                 utils.single_line_source(),
-                empty_model(),
+                arbitrary_model(),
                 sut.ArrangementPostAct(),
                 Expectation(
                     main_result=matcher_assertions.arbitrary_matching_failure()),
@@ -204,7 +213,7 @@ class TestFailingExpectations(TestCaseBase):
             self._check(
                 ConstantParser(_MATCHER_THAT_MATCHES),
                 utils.single_line_source(),
-                empty_model(),
+                arbitrary_model(),
                 sut.ArrangementPostAct(),
                 Expectation(
                     main_side_effects_on_sds=act_dir_contains_exactly(
@@ -213,9 +222,9 @@ class TestFailingExpectations(TestCaseBase):
 
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
         self._check(
-            ConstantParser(string_matcher_that_raises_test_error_if_cwd_is_is_not_test_root()),
+            ConstantParser(_files_matcher_that_raises_test_error_if_cwd_is_is_not_test_root()),
             utils.single_line_source(),
-            empty_model(),
+            arbitrary_model(),
             sut.ArrangementPostAct(),
             is_pass())
 
@@ -224,7 +233,7 @@ class TestFailingExpectations(TestCaseBase):
             self._check(
                 ConstantParser(_MATCHER_THAT_MATCHES),
                 utils.single_line_source(),
-                empty_model(),
+                arbitrary_model(),
                 sut.ArrangementPostAct(),
                 Expectation(
                     main_side_effects_on_home_and_sds=sds_2_home_and_sds_assertion(
@@ -233,45 +242,76 @@ class TestFailingExpectations(TestCaseBase):
             )
 
 
-def string_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> StringMatcherResolver:
-    def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
-        return StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(environment.home_and_sds)
-
-    return StringMatcherResolverFromParts(
-        (),
-        ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(),
-        no_resolving_dependencies,
-        get_matcher,
+def _files_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> FilesMatcherResolver:
+    return FilesMatcherResolverConstantTestImpl(
+        True,
+        validator=_ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation()
     )
 
 
-def string_matcher_that_asserts_models_is_expected(put: unittest.TestCase,
-                                                   expected_model_string_contents: str
-                                                   ) -> StringMatcherResolver:
-    def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
-        return StringMatcherThatAssertsModelsIsExpected(put, expected_model_string_contents)
-
-    return StringMatcherResolverFromParts(
-        (),
-        pre_or_post_validation.ConstantSuccessValidator(),
-        no_resolving_dependencies,
-        get_matcher,
+def _files_matcher_that_asserts_models_is_expected(put: unittest.TestCase,
+                                                   relativity: RelativityOptionConfigurationForRelSds,
+                                                   ) -> FilesMatcherResolver:
+    return FilesMatcherResolverConstantValueTestImpl(
+        _FilesMatcherValueThatAssertsModelsIsExpected(put,
+                                                      relativity),
     )
 
 
-def parser_for_constant(resolved_value: StringMatcher = StringMatcherConstant(None),
+class _FilesMatcherValueThatAssertsModelsIsExpected(FilesMatcherValue):
+    def __init__(self,
+                 put: unittest.TestCase,
+                 relativity: RelativityOptionConfigurationForRelSds,
+                 ):
+        self.put = put
+        self.relativity = relativity
+
+    @property
+    def negation(self):
+        raise NotImplementedError('should not be used')
+
+    def matches(self,
+                environment: Environment,
+                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+        self.put.assertIsInstance(environment, Environment, 'environment')
+        self.put.assertIsInstance(files_source, FilesMatcherModelForDir, 'files_source')
+        assert isinstance(files_source, FilesMatcherModelForDir)
+        actual = list(map(lambda fm: fm.path, files_source.files()))
+        actual.sort()
+
+        expected_model_dir = self.relativity.population_dir(environment.path_resolving_environment.home_and_sds)
+
+        expected = list(expected_model_dir.iterdir())
+        expected.sort()
+
+        self.put.assertEqual(actual,
+                             expected)
+
+        return None
+
+
+class _ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrPostSdsValidator):
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
+        return None
+
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
+        utils.raise_test_error_if_cwd_is_not_test_root(environment.sds)
+        return None
+
+
+def parser_for_constant(resolved_value: bool,
                         references: Sequence[SymbolReference] = (),
                         validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()
-                        ) -> Parser[StringMatcherResolver]:
+                        ) -> Parser[FilesMatcherResolver]:
     return ConstantParser(
-        StringMatcherResolverConstantTestImpl(
+        FilesMatcherResolverConstantTestImpl(
             resolved_value=resolved_value,
             references=references,
             validator=validator,
         ))
 
 
-class StringMatcherResolverThatAssertsThatSymbolsAreAsExpected(StringMatcherResolver):
+class _FilesMatcherResolverThatAssertsThatSymbolsAreAsExpected(FilesMatcherResolver):
     def __init__(self,
                  put: unittest.TestCase,
                  expectation: ValueAssertion[SymbolTable]):
@@ -282,12 +322,11 @@ class StringMatcherResolverThatAssertsThatSymbolsAreAsExpected(StringMatcherReso
     def references(self) -> List[SymbolReference]:
         return []
 
-    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
         self._expectation.apply_with_message(self._put, symbols, 'symbols given to resolve')
 
-        return StringMatcherConstantValue(StringMatcherConstant(None))
+        return FilesMatcherValueTestImpl(True)
 
-    @property
     def validator(self) -> PreOrPostSdsValidator:
         return ValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(self._put,
                                                                          self._expectation)
@@ -322,43 +361,15 @@ class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrP
         return None
 
 
-class StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(StringMatcherTestImplBase):
-    def __init__(self, tcds: HomeAndSds):
-        self.tcds = tcds
+PARSER_THAT_GIVES_MATCHER_THAT_MATCHES = parser_for_constant(True)
 
-    def _matches_side_effects(self, model: FileToCheck):
-        utils.raise_test_error_if_cwd_is_not_test_root(self.tcds.sds)
+_MATCHER_THAT_MATCHES = FilesMatcherResolverConstantTestImpl(True)
 
 
-class StringMatcherThatAssertsModelsIsExpected(StringMatcherTestImplBase):
-    def __init__(self,
-                 put: unittest.TestCase,
-                 expected_model_string_contents: str):
-        self.put = put
-        self.expected_model_string_contents = expected_model_string_contents
-
-    def _matches_side_effects(self, model: FileToCheck):
-        self._assert_original_file_is_existing_regular_file_with_expected_contents(model)
-        self._assert_transformer_is_identity_transformer(model)
-
-    def _assert_original_file_is_existing_regular_file_with_expected_contents(self, model: FileToCheck):
-        checker = FileChecker(self.put, 'original file')
-        checker.assert_is_plain_file_with_contents(model.original_file_path,
-                                                   self.expected_model_string_contents)
-
-    def _assert_transformer_is_identity_transformer(self, model: FileToCheck):
-        checker = FileChecker(self.put, 'transformed file')
-        checker.assert_is_plain_file_with_contents(model.transformed_file_path(),
-                                                   self.expected_model_string_contents)
-
-
-PARSER_THAT_GIVES_MATCHER_THAT_MATCHES = parser_for_constant()
-
-_MATCHER_THAT_MATCHES = StringMatcherConstant(None)
-
-
-def no_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
-    return set()
+def arbitrary_model() -> Model:
+    return Model(
+        file_ref_resolvers.of_rel_option(RelOptionType.REL_ACT),
+        None)
 
 
 if __name__ == '__main__':

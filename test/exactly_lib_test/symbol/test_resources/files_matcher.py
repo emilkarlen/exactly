@@ -56,6 +56,26 @@ class FilesMatcherResolverConstantTestImpl(FilesMatcherResolver):
         return FilesMatcherValueTestImpl(self._resolved_value)
 
 
+class FilesMatcherResolverConstantValueTestImpl(FilesMatcherResolver):
+    def __init__(self,
+                 resolved_value: FilesMatcherValue,
+                 references: Sequence[SymbolReference] = (),
+                 validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()):
+        self._resolved_value = resolved_value
+        self._references = list(references)
+        self._validator = validator
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._references
+
+    def validator(self) -> PreOrPostSdsValidator:
+        return self._validator
+
+    def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
+        return self._resolved_value
+
+
 IS_FILES_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILES_MATCHER)
 
 

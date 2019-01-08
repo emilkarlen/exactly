@@ -3,6 +3,7 @@ from typing import List, Sequence
 
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver_impls.constant import FileRefConstant
 from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case_file_structure import path_relativity
@@ -10,10 +11,11 @@ from exactly_lib.test_case_file_structure import relative_path_options
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
-    RelSdsOptionType, RelNonHomeOptionType, RelHomeOptionType, DirectoryStructurePartition
+    RelSdsOptionType, RelNonHomeOptionType, RelHomeOptionType, DirectoryStructurePartition, rel_any_from_rel_sds
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP, REL_NON_HOME_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
@@ -372,6 +374,10 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRel
 
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:
         return sds_populator.contents_in(self.relativity_sds, contents)
+
+    def file_ref_resolver_for(self, file_name: str) -> FileRefResolver:
+        return FileRefConstant(file_refs.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
+                                                       PathPartAsFixedPath(file_name)))
 
 
 class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):

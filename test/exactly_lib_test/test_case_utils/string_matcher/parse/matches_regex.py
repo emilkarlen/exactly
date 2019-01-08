@@ -12,8 +12,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.argume
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES, TRANSFORMER_OPTION_ALTERNATIVES_ELEMENTS
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation, \
-    arbitrary_validation_failure
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import arbitrary_validation_failure, Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 

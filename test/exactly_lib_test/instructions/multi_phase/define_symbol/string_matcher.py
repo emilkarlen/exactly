@@ -29,8 +29,9 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWi
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building as arg_syntax
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import \
     ImplicitActualFileArgumentsConstructor
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, model_construction
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.assertions import matches_string_matcher_resolver
+from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -137,14 +138,14 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
         cases = [
             NEA('should match',
-                expected=integration_check.matching_matching_success(),
+                expected=matcher_assertions.matching_matching_success(),
                 actual=lines_content([
                     '1st line',
                     '2nd line',
                 ])
                 ),
             NEA('should not match',
-                expected=integration_check.arbitrary_matching_failure(),
+                expected=matcher_assertions.arbitrary_matching_failure(),
                 actual='a single line'
                 ),
         ]

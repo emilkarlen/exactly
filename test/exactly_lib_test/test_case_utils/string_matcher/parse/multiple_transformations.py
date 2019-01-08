@@ -16,8 +16,8 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration as tc
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as str_trans_syntax
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
