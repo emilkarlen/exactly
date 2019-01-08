@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import Sequence, Dict
 
 from exactly_lib.definitions import instruction_arguments
@@ -11,7 +12,7 @@ from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndEx
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import \
     selection_arguments_for_matcher, file_matcher_arguments
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
-from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import ExpectationTypeConfigForPfh
+from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import ExpectationTypeConfig
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -84,12 +85,18 @@ def no_selection() -> SubSetSelectionArgumentConstructor:
     return SubSetSelectionArgumentConstructor('')
 
 
-class FilesMatcherArgumentsConstructor:
+class FilesMatcherArgumentsConstructor(ABC):
     """
     Constructs a string for "complete" instruction arguments - common arguments
     followed by arguments for an assertion variant.
     """
 
+    @abstractmethod
+    def apply(self, etc: ExpectationTypeConfig) -> str:
+        pass
+
+
+class FilesMatcherArgumentsConstructorFromComponents(FilesMatcherArgumentsConstructor):
     def __init__(self,
                  selection_arguments: SubSetSelectionArgumentConstructor,
                  assertion_variant: AssertionVariantArgumentsConstructor,
@@ -97,7 +104,7 @@ class FilesMatcherArgumentsConstructor:
         self._selection_arguments = selection_arguments
         self._assertion_variant = assertion_variant
 
-    def apply(self, etc: ExpectationTypeConfigForPfh) -> str:
+    def apply(self, etc: ExpectationTypeConfig) -> str:
         return '{selection} {negation} {assertion_variant}'.format(
             selection=self._selection_arguments.apply(),
             negation=etc.nothing__if_positive__not_option__if_negative,
@@ -113,7 +120,7 @@ def matcher_with_selection_options(assertion_variant: AssertionVariantArgumentsC
                                           type_matcher,
                                           named_matcher)
 
-    return FilesMatcherArgumentsConstructor(
+    return FilesMatcherArgumentsConstructorFromComponents(
         SubSetSelectionArgumentConstructor(file_matcher),
         assertion_variant,
     )
