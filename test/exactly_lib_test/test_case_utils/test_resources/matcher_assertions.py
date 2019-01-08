@@ -21,6 +21,10 @@ def is_matching_success() -> ValueAssertion[Optional[ErrorMessageResolver]]:
     return asrt.is_none
 
 
+def is_hard_error() -> Optional[ValueAssertion[ErrorMessageResolver]]:
+    return asrt.is_instance(ErrorMessageResolver)
+
+
 class Expectation:
     def __init__(
             self,
@@ -29,6 +33,7 @@ class Expectation:
             validation_pre_sds: ValueAssertion[Optional[str]] = asrt.is_none,
 
             main_result: ValueAssertion[Optional[ErrorMessageResolver]] = asrt.is_none,
+            is_hard_error: Optional[ValueAssertion[ErrorMessageResolver]] = None,
             symbol_usages: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
             main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
             main_side_effects_on_home_and_sds: ValueAssertion[HomeAndSds] = asrt.anything_goes(),
@@ -37,6 +42,7 @@ class Expectation:
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
         self.main_result = main_result
+        self.is_hard_error = is_hard_error
         self.main_side_effects_on_sds = main_side_effects_on_sds
         self.main_side_effects_on_home_and_sds = main_side_effects_on_home_and_sds
         self.source = source

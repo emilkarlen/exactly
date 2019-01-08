@@ -7,7 +7,8 @@ from typing import Sequence, Optional, List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.files_matcher import FilesMatcherResolver, FilesMatcherValue, Environment, FilesMatcherModel
+from exactly_lib.symbol.files_matcher import FilesMatcherResolver, FilesMatcherValue, Environment, FilesMatcherModel, \
+    HardErrorException
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironment
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -15,7 +16,7 @@ from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
@@ -29,7 +30,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check as sut
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import Model, arbitrary_model
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, is_pass
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, is_pass, is_hard_error
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_sds, \
     RelativityOptionConfigurationForRelSds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
@@ -43,6 +44,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestFailingExpectations))
     ret_val.addTest(unittest.makeSuite(TestPopulate))
     ret_val.addTest(unittest.makeSuite(TestSymbolReferences))
+    ret_val.addTest(unittest.makeSuite(TestHardError))
     ret_val.addTest(unittest.makeSuite(TestMisc))
     return ret_val
 
@@ -142,6 +144,34 @@ class TestSymbolReferences(TestCaseBase):
                 symbols=symbol_table_of_arrangement),
             matcher_assertions.Expectation(),
         )
+
+
+class TestHardError(TestCaseBase):
+    def test_expected_hard_error_is_detected(self):
+        parser_that_gives_value_that_causes_hard_error = parser_for_constant_resolver(
+            FilesMatcherResolverConstantValueTestImpl(
+                _FilesMatcherValueThatReportsHardError()
+            )
+        )
+        self._check(
+            parser_that_gives_value_that_causes_hard_error,
+            utils.single_line_source(),
+            arbitrary_model(),
+            sut.ArrangementPostAct(),
+            sut.Expectation(
+                is_hard_error=is_hard_error(),
+            ))
+
+    def test_missing_hard_error_is_detected(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                PARSER_THAT_GIVES_MATCHER_THAT_MATCHES,
+                utils.single_line_source(),
+                arbitrary_model(),
+                sut.ArrangementPostAct(),
+                sut.Expectation(
+                    is_hard_error=is_hard_error(),
+                ))
 
 
 class TestMisc(TestCaseBase):
@@ -288,6 +318,17 @@ class _FilesMatcherValueThatAssertsModelsIsExpected(FilesMatcherValue):
         return None
 
 
+class _FilesMatcherValueThatReportsHardError(FilesMatcherValue):
+    @property
+    def negation(self):
+        raise NotImplementedError('should not be used')
+
+    def matches(self,
+                environment: Environment,
+                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+        raise HardErrorException(ConstantErrorMessageResolver('unconditional hard error'))
+
+
 class _ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrPostSdsValidator):
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
         return None
@@ -307,6 +348,10 @@ def parser_for_constant(resolved_value: bool,
             references=references,
             validator=validator,
         ))
+
+
+def parser_for_constant_resolver(result: FilesMatcherResolver) -> Parser[FilesMatcherResolver]:
+    return ConstantParser(result)
 
 
 class _FilesMatcherResolverThatAssertsThatSymbolsAreAsExpected(FilesMatcherResolver):
