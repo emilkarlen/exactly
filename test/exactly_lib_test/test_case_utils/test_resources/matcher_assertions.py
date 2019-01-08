@@ -4,7 +4,6 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -17,16 +16,16 @@ def matches_validation_failure(message: ValueAssertion[str]) -> ValueAssertion[O
     return asrt.is_instance(str)
 
 
-def arbitrary_matching_failure() -> ValueAssertion[Optional[ErrorMessageResolver]]:
-    return asrt.is_instance(ErrorMessageResolver)
+def arbitrary_matching_failure() -> ValueAssertion[Optional[str]]:
+    return asrt.is_instance(str)
 
 
-def is_matching_success() -> ValueAssertion[Optional[ErrorMessageResolver]]:
-    return asrt.is_none
+def is_matching_success() -> Optional[ValueAssertion[Optional[str]]]:
+    return None
 
 
-def is_hard_error() -> Optional[ValueAssertion[ErrorMessageResolver]]:
-    return asrt.is_instance(ErrorMessageResolver)
+def is_hard_error() -> Optional[ValueAssertion[str]]:
+    return asrt.is_instance(str)
 
 
 class Expectation:
@@ -36,8 +35,8 @@ class Expectation:
 
             validation_pre_sds: ValueAssertion[Optional[str]] = asrt.is_none,
 
-            main_result: ValueAssertion[Optional[ErrorMessageResolver]] = asrt.is_none,
-            is_hard_error: Optional[ValueAssertion[ErrorMessageResolver]] = None,
+            main_result: Optional[ValueAssertion[Optional[str]]] = None,
+            is_hard_error: Optional[ValueAssertion[str]] = None,
             symbol_usages: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
             main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
             main_side_effects_on_home_and_sds: ValueAssertion[HomeAndSds] = asrt.anything_goes(),

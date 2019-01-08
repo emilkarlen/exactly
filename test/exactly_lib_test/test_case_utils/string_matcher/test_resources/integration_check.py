@@ -12,7 +12,7 @@ from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
 from exactly_lib.util.file_utils import preserved_cwd
@@ -62,6 +62,7 @@ class Executor:
         self.parser = parser
         self.arrangement = arrangement
         self.expectation = expectation
+        self._err_msg_env = None
 
     def execute(self, source: ParseSource):
         try:
@@ -90,6 +91,8 @@ class Executor:
                 symbols=self.arrangement.symbols) as path_resolving_environment:
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
             home_and_sds = path_resolving_environment.home_and_sds
+            self._err_msg_env = ErrorMessageResolvingEnvironment(home_and_sds,
+                                                                 self.arrangement.symbols)
 
             with preserved_cwd():
                 os.chdir(str(home_and_sds.hds.case_dir))
@@ -178,22 +181,36 @@ class Executor:
 
     def _execute_main(self,
                       model: FileToCheck,
-                      matcher: StringMatcher) -> Optional[ErrorMessageResolver]:
+                      matcher: StringMatcher):
         try:
             main_result = matcher.matches(model)
-
-            if self.expectation.is_hard_error is not None:
-                self.put.fail('HARD_ERROR not reported (raised)')
-
-            self.expectation.main_result.apply(self.put, main_result)
-            return main_result
+            self._check_main_result(main_result)
         except HardErrorException as ex:
             if self.expectation.is_hard_error is not None:
-                self.expectation.is_hard_error.apply_with_message(self.put, ex.error,
-                                                                  'error message for hard error')
-                raise _CheckIsDoneException()
-            else:
-                self.put.fail('Unexpected HARD_ERROR')
+                self._check_hard_error(ex)
+
+    def _check_main_result(self, result: Optional[ErrorMessageResolver]):
+        if self.expectation.is_hard_error is not None:
+            self.put.fail('HARD_ERROR not reported (raised)')
+
+        if self.expectation.main_result is None:
+            self.put.assertIsNone(result,
+                                  'result from main')
+        else:
+            self.put.assertIsNotNone(result,
+                                     'result from main')
+            err_msg = result.resolve(self._err_msg_env)
+            self.expectation.main_result.apply_with_message(self.put, err_msg,
+                                                            'error result of main')
+
+    def _check_hard_error(self, result: HardErrorException):
+        if self.expectation.is_hard_error is not None:
+            err_msg = result.error.resolve(self._err_msg_env)
+            self.expectation.is_hard_error.apply_with_message(self.put, err_msg,
+                                                              'error message for hard error')
+            raise _CheckIsDoneException()
+        else:
+            self.put.fail('Unexpected HARD_ERROR')
 
     def _new_model(self, sds: SandboxDirectoryStructure) -> FileToCheck:
         return ModelConstructor(self.model_builder, sds).construct()

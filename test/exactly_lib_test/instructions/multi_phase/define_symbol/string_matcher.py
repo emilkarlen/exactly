@@ -9,7 +9,7 @@ from exactly_lib.symbol import lookups
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.string import lines_content
@@ -221,7 +221,7 @@ class AssertApplicationOfMatcherInSymbolTable(ValueAssertionBase[InstructionEnvi
     def __init__(self,
                  matcher_symbol_name: str,
                  actual_model_contents: str,
-                 expected_matcher_result: ValueAssertion[Optional[ErrorMessageResolver]]):
+                 expected_matcher_result: Optional[ValueAssertion[str]]):
         self.matcher_symbol_name = matcher_symbol_name
         self.actual_model_contents = actual_model_contents
         self.expected_matcher_result = expected_matcher_result
@@ -235,7 +235,17 @@ class AssertApplicationOfMatcherInSymbolTable(ValueAssertionBase[InstructionEnvi
 
         result = matcher_to_apply.matches(model)
 
-        self.expected_matcher_result.apply_with_message(put, result, 'result of matcher')
+        if self.expected_matcher_result is None:
+            put.assertIsNone(result,
+                             'result from main')
+        else:
+            put.assertIsNotNone(result,
+                                'result from main')
+            err_msg_env = ErrorMessageResolvingEnvironment(value.home_and_sds,
+                                                           value.symbols)
+            err_msg = result.resolve(err_msg_env)
+            self.expected_matcher_result.apply_with_message(put, err_msg,
+                                                            'error result of main')
 
     def _get_matcher(self, environment: InstructionEnvironmentForPostSdsStep) -> StringMatcher:
         matcher_resolver = lookups.lookup_string_matcher(environment.symbols, self.matcher_symbol_name)
