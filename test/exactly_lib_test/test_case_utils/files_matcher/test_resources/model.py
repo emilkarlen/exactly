@@ -16,11 +16,14 @@ class Model:
         self.files_selection = files_selection
 
 
+ModelConstructorFromRelOptConf = Callable[[RelativityOptionConfiguration], Model]
+
+
 def model_with_rel_root_as_source_path(root_dir_of_dir_contents: RelativityOptionConfiguration) -> Model:
     return Model(root_dir_of_dir_contents.file_ref_resolver_for())
 
 
-def model_with_source_path_as_sub_dir_of_rel_root(subdir: str) -> Callable[[RelativityOptionConfiguration], Model]:
+def model_with_source_path_as_sub_dir_of_rel_root(subdir: str) -> ModelConstructorFromRelOptConf:
     def ret_val(root_dir_of_dir_contents: RelativityOptionConfiguration) -> Model:
         return Model(root_dir_of_dir_contents.file_ref_resolver_for(subdir))
 

@@ -1,7 +1,7 @@
 import unittest
 
 from abc import ABC
-from typing import List, Callable
+from typing import List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
@@ -17,7 +17,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import integr
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     FilesMatcherArgumentsConstructor
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_check import Expectation
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import Model
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import Model, ModelConstructorFromRelOptConf
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
@@ -94,7 +94,7 @@ class MatcherChecker:
     def check_parsing_with_different_source_variants(
             self,
             make_instruction_arguments: FilesMatcherArgumentsConstructor,
-            model_constructor: Callable[[RelativityOptionConfiguration], Model],
+            model_constructor: ModelConstructorFromRelOptConf,
             default_relativity: RelOptionType,
             non_default_relativity: RelOptionType,
             main_result_for_positive_expectation: PassOrFail,
@@ -147,7 +147,7 @@ class MatcherChecker:
     def check_rel_opt_variants_and_expectation_type_variants(
             self,
             make_instruction_arguments: FilesMatcherArgumentsConstructor,
-            model_constructor: Callable[[RelativityOptionConfiguration], Model],
+            model_constructor: ModelConstructorFromRelOptConf,
             main_result_for_positive_expectation: PassOrFail,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
             test_case_name: str = '',
@@ -203,7 +203,7 @@ class MatcherChecker:
     def check_rel_opt_variants(
             self,
             make_instruction_arguments: FilesMatcherArgumentsConstructor,
-            model_constructor: Callable[[RelativityOptionConfiguration], Model],
+            model_constructor: ModelConstructorFromRelOptConf,
             main_result_for_positive_expectation: PassOrFail,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
             test_case_name: str = '',
@@ -226,7 +226,7 @@ class MatcherChecker:
             self,
             test_cases_with_name_and_dir_contents: List[NameAndValue[DirContents]],
             make_instruction_arguments: FilesMatcherArgumentsConstructor,
-            model_constructor: Callable[[RelativityOptionConfiguration], Model],
+            model_constructor: ModelConstructorFromRelOptConf,
             main_result_for_positive_expectation: PassOrFail,
             following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
 
