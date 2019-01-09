@@ -4,7 +4,6 @@ from typing import Sequence, Dict
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.cli_syntax import option_syntax
@@ -32,7 +31,7 @@ class AssertionVariantArgumentsConstructor:
 
 class EmptyAssertionVariant(AssertionVariantArgumentsConstructor):
     def __str__(self):
-        return EMPTINESS_CHECK_ARGUMENT
+        return config.EMPTINESS_CHECK_ARGUMENT
 
 
 class SymbolReferenceAssertionVariant(AssertionVariantArgumentsConstructor):
@@ -233,3 +232,7 @@ def selection_arguments_for_matcher(matcher: str) -> str:
 
 def symbol_reference(symbol_name: str) -> str:
     return symbol_name
+
+
+def arbitrary_single_line_value_that_must_not_be_quoted() -> str:
+    return config.EMPTINESS_CHECK_ARGUMENT

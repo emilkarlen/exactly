@@ -168,6 +168,9 @@ class RelativityOptionConfiguration:
     def is_rel_cwd(self) -> bool:
         raise NotImplementedError('abstract method')
 
+    def file_ref_resolver_for_root_dir(self) -> FileRefResolver:
+        raise NotImplementedError('abstract method')
+
     def file_ref_resolver_for(self, file_name: str = '') -> FileRefResolver:
         raise NotImplementedError('abstract method')
 
@@ -232,6 +235,12 @@ class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguratio
     @property
     def relativity_option(self) -> RelOptionType:
         return self.relativity
+
+    def file_ref_resolver_for_root_dir(self) -> FileRefResolver:
+        return file_ref_resolvers.constant(
+            file_refs.of_rel_option(self.relativity_option,
+                                    empty_path_part())
+        )
 
     def file_ref_resolver_for(self, file_name: str = '') -> FileRefResolver:
         return file_ref_resolvers.constant(
@@ -376,6 +385,10 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRel
 
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:
         return sds_populator.contents_in(self.relativity_sds, contents)
+
+    def file_ref_resolver_for_root_dir(self) -> FileRefResolver:
+        return FileRefConstant(file_refs.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
+                                                       empty_path_part()))
 
     def file_ref_resolver_for(self, file_name: str = '') -> FileRefResolver:
         return FileRefConstant(file_refs.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
