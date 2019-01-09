@@ -1,3 +1,4 @@
+import re
 from typing import Pattern, Callable, Sequence
 
 from exactly_lib.symbol import resolver_structure
@@ -30,7 +31,7 @@ def matches_regex_resolver(
         return resolver.resolve(symbols)
 
     def on_resolve_primitive_value(tcds_: HomeAndSds) -> ValueAssertion[Pattern]:
-        return asrt.is_instance_with(Pattern,
+        return asrt.is_instance_with(RE_PATTERN_TYPE,
                                      primitive_value(tcds_))
 
     resolved_value_assertion = matches_multi_dir_dependent_value(
@@ -72,3 +73,6 @@ def matches_regex_resolver(
             )
         ])
     )
+
+
+RE_PATTERN_TYPE = type(re.compile(''))
