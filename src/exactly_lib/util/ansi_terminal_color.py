@@ -21,5 +21,5 @@ def is_file_object_with_color(file_object) -> bool:
     try:
         os.ttyname(file_object.fileno())
         return True
-    except OSError or AttributeError:
+    except (AttributeError, OSError):
         return False
