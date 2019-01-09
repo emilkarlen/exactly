@@ -10,7 +10,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc i
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
     TestConfigurationForMatcher
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, model_construction
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

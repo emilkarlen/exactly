@@ -6,6 +6,7 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ActComparisonActualFileForFileRef, \
@@ -22,7 +23,7 @@ from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
-ACTUAL_PATH_ARGUMENT = a.Named('ACTUAL-PATH')
+ACTUAL_PATH_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -59,9 +60,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
             self._tp.fnap(the_path_of("the file who's contents is checked."))
         )
 
-        return (self._help_parts.syntax_element_descriptions_at_top() +
-                [actual_file_arg_sed] +
-                self._help_parts.syntax_element_descriptions_at_bottom())
+        return [actual_file_arg_sed]
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return self._help_parts.see_also_targets__file()
@@ -84,7 +83,7 @@ ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfig
     rel_opts_configuration.RelOptionsConfiguration(
         parse_file_ref.ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE,
         RelOptionType.REL_CWD),
-    'PATH',
+    ACTUAL_PATH_ARGUMENT.name,
     True)
 
 _MAIN_DESCRIPTION_REST = """\

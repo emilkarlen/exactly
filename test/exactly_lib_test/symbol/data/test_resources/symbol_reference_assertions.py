@@ -1,4 +1,5 @@
 import unittest
+
 from typing import Sequence
 
 from exactly_lib.symbol import symbol_usage as su
@@ -18,7 +19,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 def equals_symbol_reference_with_restriction_on_direct_target(expected_name: str,
                                                               assertion_on_direct_restriction: ValueAssertion
-                                                              ) -> ValueAssertion:
+                                                              ) -> ValueAssertion[su.SymbolReference]:
     return asrt_sym_ref.matches_reference_2(expected_name,
                                             matches_restrictions_on_direct_and_indirect(
                                                 assertion_on_direct=assertion_on_direct_restriction,

@@ -3,8 +3,9 @@ from typing import Sequence, Optional, List
 from exactly_lib.common.help import syntax_contents_structure
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts, syntax_elements, types
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor, \
@@ -63,12 +64,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
     def invokation_variants(self) -> List[InvokationVariant]:
         return self._help_parts.invokation_variants__stdout_err(OUTPUT_FROM_PROGRAM_OPTION_NAME)
 
-    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
-        return (self._help_parts.syntax_element_descriptions_at_top() +
-                self._help_parts.syntax_element_descriptions_at_bottom())
-
-    def see_also_targets(self) -> list:
-        return self._help_parts.see_also_targets__stdout_err()
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
+        return self._help_parts.see_also_targets__std_out_err()
 
     def _specific_invocation_invokation_variants(self) -> List[syntax_contents_structure.InvokationVariant]:
         return [

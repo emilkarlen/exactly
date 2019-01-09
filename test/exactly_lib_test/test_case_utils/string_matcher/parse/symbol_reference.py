@@ -21,7 +21,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc i
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidatorThat, \

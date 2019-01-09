@@ -17,6 +17,8 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
+from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
+from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
 from exactly_lib.type_system.logic.string_matcher_values import StringMatcherConstantValue
 from exactly_lib.util.symbol_table import SymbolTable
@@ -29,10 +31,10 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_home_po
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check as sut
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import is_pass, \
-    Expectation
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder, empty_model
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.string_matchers import StringMatcherTestImplBase
+from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, is_pass, is_hard_error
 from exactly_lib_test.test_resources.files.file_checks import FileChecker
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -45,6 +47,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestFailingExpectations))
     ret_val.addTest(unittest.makeSuite(TestPopulate))
     ret_val.addTest(unittest.makeSuite(TestSymbolReferences))
+    ret_val.addTest(unittest.makeSuite(TestHardError))
     ret_val.addTest(unittest.makeSuite(TestMisc))
     return ret_val
 
@@ -58,7 +61,7 @@ class TestCaseBase(unittest.TestCase):
                source: ParseSource,
                model: ModelBuilder,
                arrangement: sut.ArrangementPostAct,
-               expectation: sut.Expectation):
+               expectation: matcher_assertions.Expectation):
         sut.check(self.tc, parser, source, model, arrangement, expectation)
 
 
@@ -73,7 +76,7 @@ class TestPopulate(TestCaseBase):
                 non_home_contents=non_home_populator.rel_option(
                     non_home_populator.RelNonHomeOptionType.REL_TMP,
                     populated_dir_contents)),
-            sut.Expectation(
+            matcher_assertions.Expectation(
                 main_side_effects_on_sds=tmp_user_dir_contains_exactly(
                     populated_dir_contents)),
         )
@@ -88,7 +91,7 @@ class TestPopulate(TestCaseBase):
                 sds_contents=sds_populator.contents_in(
                     sds_populator.RelSdsOptionType.REL_TMP,
                     populated_dir_contents)),
-            sut.Expectation(
+            matcher_assertions.Expectation(
                 main_side_effects_on_sds=tmp_user_dir_contains_exactly(
                     populated_dir_contents)),
         )
@@ -105,7 +108,7 @@ class TestSymbolReferences(TestCaseBase):
                 utils.single_line_source(),
                 empty_model(),
                 sut.ArrangementPostAct(),
-                sut.Expectation(),
+                matcher_assertions.Expectation(),
             )
 
     def test_that_fails_due_to_missing_symbol_reference(self):
@@ -119,7 +122,7 @@ class TestSymbolReferences(TestCaseBase):
                 utils.single_line_source(),
                 empty_model(),
                 sut.ArrangementPostAct(),
-                sut.Expectation(
+                matcher_assertions.Expectation(
                     symbol_usages=sym_asrt.equals_symbol_references(symbol_usages_of_expectation)),
             )
 
@@ -140,8 +143,34 @@ class TestSymbolReferences(TestCaseBase):
             empty_model(),
             sut.ArrangementPostAct(
                 symbols=symbol_table_of_arrangement),
-            sut.Expectation(),
+            matcher_assertions.Expectation(),
         )
+
+
+class TestHardError(TestCaseBase):
+    def test_expected_hard_error_is_detected(self):
+        parser_that_gives_value_that_causes_hard_error = parser_for_constant(
+            _StringMatcherThatReportsHardError()
+        )
+        self._check(
+            parser_that_gives_value_that_causes_hard_error,
+            utils.single_line_source(),
+            empty_model(),
+            sut.ArrangementPostAct(),
+            sut.Expectation(
+                is_hard_error=is_hard_error(),
+            ))
+
+    def test_missing_hard_error_is_detected(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                PARSER_THAT_GIVES_MATCHER_THAT_MATCHES,
+                utils.single_line_source(),
+                empty_model(),
+                sut.ArrangementPostAct(),
+                sut.Expectation(
+                    is_hard_error=is_hard_error(),
+                ))
 
 
 class TestMisc(TestCaseBase):
@@ -175,7 +204,7 @@ class TestFailingExpectations(TestCaseBase):
                         empty_model(),
                         sut.ArrangementPostAct(),
                         Expectation(
-                            validation_pre_sds=sut.arbitrary_validation_failure()),
+                            validation_pre_sds=matcher_assertions.arbitrary_validation_failure()),
                         )
 
     def test_fail_due_to_unexpected_result_from_post_validation(self):
@@ -185,7 +214,7 @@ class TestFailingExpectations(TestCaseBase):
                         empty_model(),
                         sut.ArrangementPostAct(),
                         Expectation(
-                            validation_post_sds=sut.arbitrary_validation_failure()),
+                            validation_post_sds=matcher_assertions.arbitrary_validation_failure()),
                         )
 
     def test_fail_due_to_unexpected_result_from_main(self):
@@ -196,7 +225,7 @@ class TestFailingExpectations(TestCaseBase):
                 empty_model(),
                 sut.ArrangementPostAct(),
                 Expectation(
-                    main_result=sut.arbitrary_matching_failure()),
+                    main_result=matcher_assertions.arbitrary_matching_failure()),
             )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):
@@ -257,6 +286,15 @@ def string_matcher_that_asserts_models_is_expected(put: unittest.TestCase,
         no_resolving_dependencies,
         get_matcher,
     )
+
+
+class _StringMatcherThatReportsHardError(StringMatcher):
+    @property
+    def option_description(self) -> str:
+        return 'unconditional HARD ERROR'
+
+    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+        raise HardErrorException(ConstantErrorMessageResolver('unconditional hard error'))
 
 
 def parser_for_constant(resolved_value: StringMatcher = StringMatcherConstant(None),

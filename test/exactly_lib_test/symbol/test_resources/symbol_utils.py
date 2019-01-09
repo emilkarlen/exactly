@@ -12,7 +12,6 @@ from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueReso
     SymbolValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 
 

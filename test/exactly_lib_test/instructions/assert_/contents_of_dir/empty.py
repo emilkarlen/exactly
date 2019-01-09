@@ -5,7 +5,8 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import path_and_matcher
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
-    AssertionVariantArgumentsConstructor, EmptyAssertionVariant, argument_constructor_for_emptiness_check
+    EmptyAssertionVariant, argument_constructor_for_emptiness_check, \
+    FilesMatcherArgumentsSetup, files_matcher_setup_without_references
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir, Dir
@@ -27,8 +28,8 @@ def suite() -> unittest.TestSuite:
 
 class TestWithAssertionVariantForEmpty(tr.TestWithAssertionVariantBase):
     @property
-    def assertion_variant_without_symbol_references(self) -> AssertionVariantArgumentsConstructor:
-        return EmptyAssertionVariant()
+    def assertion_variant(self) -> FilesMatcherArgumentsSetup:
+        return files_matcher_setup_without_references(EmptyAssertionVariant())
 
 
 class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,

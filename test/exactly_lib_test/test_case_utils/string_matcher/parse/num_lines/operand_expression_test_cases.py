@@ -12,8 +12,9 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resour
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     TestCaseBase
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, model_construction
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
+from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -133,5 +134,5 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
                     arrangement=
                     self.configuration.arrangement_for_contents(),
                     expectation=
-                    Expectation(validation_pre_sds=integration_check.arbitrary_validation_failure())
+                    Expectation(validation_pre_sds=matcher_assertions.arbitrary_validation_failure())
                 )

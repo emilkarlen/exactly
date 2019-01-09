@@ -16,12 +16,12 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
     InstructionChecker
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
-    AssertionVariantArgumentsConstructor
+    FilesMatcherArgumentsSetup
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
@@ -44,7 +44,7 @@ class TestCaseBaseForParser(unittest.TestCase):
 
 class TestWithAssertionVariantBase(TestCaseBaseForParser):
     @property
-    def assertion_variant_without_symbol_references(self) -> AssertionVariantArgumentsConstructor:
+    def assertion_variant(self) -> FilesMatcherArgumentsSetup:
         raise NotImplementedError('abstract method')
 
 
@@ -52,7 +52,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
     def test_raise_exception_WHEN_selector_option_argument_is_missing(self):
         instruction_args_without_valid_file_matcher = args.complete_arguments_constructor(
             'file-name',
-            self.assertion_variant_without_symbol_references,
+            self.assertion_variant.arguments,
             file_matcher=' '
         )
         parser = sut.parser.Parser()
@@ -72,7 +72,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
     def test_raise_exception_WHEN_there_are_superfluous_arguments(self):
         valid_instruction_arguments_con = args.complete_arguments_constructor(
             'file-name',
-            self.assertion_variant_without_symbol_references
+            self.assertion_variant.arguments
         )
         parser = sut.parser.Parser()
         for rel_opt_config in [DEFAULT_REL_OPT_CONFIG,
@@ -92,7 +92,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
     def test_raise_exception_WHEN_there_is_an_initial_illegal_option(self):
         valid_instruction_arguments_con = args.complete_arguments_constructor(
             'file-name',
-            self.assertion_variant_without_symbol_references
+            self.assertion_variant.arguments
         )
         parser = sut.parser.Parser()
         for rel_opt_config in [DEFAULT_REL_OPT_CONFIG,
@@ -113,7 +113,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
     def test_raise_exception_WHEN_relativity_is_unaccepted(self):
         valid_instruction_argument_syntax_con = args.complete_arguments_constructor(
             'file-name',
-            self.assertion_variant_without_symbol_references
+            self.assertion_variant.arguments
         )
         parser = sut.parser.Parser()
         for rel_opt_config in UNACCEPTED_REL_OPT_CONFIGURATIONS:
@@ -139,32 +139,34 @@ class TestCommonFailureConditionsBase(TestWithAssertionVariantBase):
     def test_fail_WHEN_file_does_not_exist(self):
         instruction_argument_constructor = args.complete_arguments_constructor(
             'name-of-non-existing-file',
-            self.assertion_variant_without_symbol_references
+            self.assertion_variant.arguments
         )
 
         self._checker.check_rel_opt_variants_with_same_result_for_every_expectation_type(
             instruction_argument_constructor,
-            asrt_pfh.is_fail())
+            asrt_pfh.is_fail(),
+            following_symbols_setup=self.assertion_variant)
 
     def test_fail_WHEN_file_does_exist_but_is_not_a_directory(self):
         name_of_regular_file = 'name-of-existing-regular-file'
 
         instruction_argument_constructor = args.complete_arguments_constructor(
             name_of_regular_file,
-            self.assertion_variant_without_symbol_references
+            self.assertion_variant.arguments
         )
 
         self._checker.check_rel_opt_variants_with_same_result_for_every_expectation_type(
             instruction_argument_constructor,
             asrt_pfh.is_fail(),
-            contents_of_relativity_option_root=DirContents([empty_file(name_of_regular_file)]))
+            contents_of_relativity_option_root=DirContents([empty_file(name_of_regular_file)]),
+            following_symbols_setup=self.assertion_variant)
 
     def test_fail_WHEN_file_is_a_sym_link_to_a_non_existing_file(self):
         broken_sym_link = sym_link('broken-sym-link', 'non-existing-file')
 
         instruction_argument_constructor = args.complete_arguments_constructor(
             broken_sym_link.name,
-            self.assertion_variant_without_symbol_references
+            self.assertion_variant.arguments
         )
 
         contents_of_relativity_option_root = DirContents([broken_sym_link])
@@ -172,7 +174,8 @@ class TestCommonFailureConditionsBase(TestWithAssertionVariantBase):
         self._checker.check_rel_opt_variants_with_same_result_for_every_expectation_type(
             instruction_argument_constructor,
             asrt_pfh.is_fail(),
-            contents_of_relativity_option_root=contents_of_relativity_option_root)
+            contents_of_relativity_option_root=contents_of_relativity_option_root,
+            following_symbols_setup=self.assertion_variant)
 
 
 class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
@@ -181,7 +184,7 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
 
         arguments_constructor = args.complete_arguments_constructor(
             'ignored-dir-path',
-            self.assertion_variant_without_symbol_references,
+            self.assertion_variant.arguments,
             file_matcher=name_of_file_matcher
         )
 
@@ -198,9 +201,10 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
 
         # ASSERT #
 
-        expected_references = asrt.matches_sequence([
-            is_file_matcher_reference_to(name_of_file_matcher)
-        ])
+        expected_references = asrt.matches_sequence(
+            [is_file_matcher_reference_to(name_of_file_matcher)] +
+            list(self.assertion_variant.expected_references)
+        )
         expected_references.apply_without_message(self, actual)
 
     def test_symbols_from_path_SHOULD_be_reported(self):
@@ -213,7 +217,7 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
 
         arguments_constructor = args.complete_arguments_constructor(
             'ignored-dir-path',
-            self.assertion_variant_without_symbol_references
+            self.assertion_variant.arguments
         )
 
         rel_symbol_conf = rel_opt_conf.symbol_conf_rel_any(RelOptionType.REL_TMP,
@@ -235,12 +239,11 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
 
         # ASSERT #
 
-        expected_symbol_references = [
-            path_sym_ref,
-        ]
-        assertion = equals_symbol_references(expected_symbol_references)
-
-        assertion.apply_without_message(self, actual_symbol_references)
+        expected_symbol_references = asrt.matches_sequence(
+            [equals_symbol_reference(path_sym_ref)] +
+            list(self.assertion_variant.expected_references)
+        )
+        expected_symbol_references.apply_without_message(self, actual_symbol_references)
 
 
 EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(

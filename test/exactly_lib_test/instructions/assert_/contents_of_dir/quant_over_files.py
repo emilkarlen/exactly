@@ -17,7 +17,6 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import instruction_arguments as args
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.instructions.assert_.test_resources import expression, instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionChecker
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -29,8 +28,10 @@ from exactly_lib_test.symbol.test_resources.string_transformer import is_referen
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
-    AssertionVariantArgumentsConstructor, FilesContentsAssertionVariant
+    FilesContentsAssertionVariant, FilesMatcherArgumentsSetup, \
+    files_matcher_setup_without_references
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import \
     EmptyAssertionArgumentsConstructor, NumLinesAssertionArgumentsConstructor, EqualsStringAssertionArgumentsConstructor
@@ -68,10 +69,12 @@ def suite() -> unittest.TestSuite:
 
 class TestWithAssertionVariantForFileContents(tr.TestWithAssertionVariantBase):
     @property
-    def assertion_variant_without_symbol_references(self) -> AssertionVariantArgumentsConstructor:
-        return FilesContentsAssertionVariant(
-            Quantifier.ALL,
-            file_contents_arg(EmptyAssertionArgumentsConstructor()),
+    def assertion_variant(self) -> FilesMatcherArgumentsSetup:
+        return files_matcher_setup_without_references(
+            FilesContentsAssertionVariant(
+                Quantifier.ALL,
+                file_contents_arg(EmptyAssertionArgumentsConstructor()),
+            )
         )
 
 
@@ -566,15 +569,17 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
             ArrangementPostAct(
                 home_or_sds_contents=relativity_root_conf.populator_for_relativity_option_root(
                     DirContents([
-                        File('1.txt', original_file_contents),
-                        File('2.txt', original_file_contents),
+                        Dir(self.name_of_checked_dir, [
+                            File('1.txt', original_file_contents),
+                            File('2.txt', original_file_contents),
+                        ])
                     ])
                 ),
                 symbols=symbol_table_with_lines_transformer
             ),
             expectation=
             Expectation(
-                main_result=etc.fail__if_positive__pass_if_negative,
+                main_result=etc.pass__if_positive__fail__if_negative,
                 symbol_usages=expected_symbol_references
             )
         )

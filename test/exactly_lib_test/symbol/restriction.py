@@ -19,6 +19,7 @@ from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources.list_values import ListResolverTestImplForConstantListValue
 from exactly_lib_test.symbol.test_resources.command_resolvers import CommandDriverResolverForConstantTestImpl
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
+from exactly_lib_test.symbol.test_resources.files_matcher import FilesMatcherResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl
@@ -100,6 +101,9 @@ class TestValueTypeRestriction(unittest.TestCase):
         ValueType.FILE_MATCHER:
             FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
 
+        ValueType.FILES_MATCHER:
+            FilesMatcherResolverConstantTestImpl(),
+
         ValueType.STRING_MATCHER:
             StringMatcherResolverConstantTestImpl(StringMatcherConstant(None)),
 
@@ -140,6 +144,8 @@ class TestValueTypeRestriction(unittest.TestCase):
             ValueType.LIST: ValueType.PATH,
             ValueType.PATH: ValueType.FILE_MATCHER,
             ValueType.FILE_MATCHER: ValueType.STRING_TRANSFORMER,
+            ValueType.FILES_MATCHER: ValueType.FILE_MATCHER,
+            ValueType.STRING_MATCHER: ValueType.STRING_TRANSFORMER,
             ValueType.STRING_TRANSFORMER: ValueType.STRING,
             ValueType.PROGRAM: ValueType.STRING_TRANSFORMER,
         }

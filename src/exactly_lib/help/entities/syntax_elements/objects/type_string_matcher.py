@@ -50,8 +50,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
             'INTEGER_COMPARISON': syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name,
             'REGEX': syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
             'full_regex_match': option_syntax.option_syntax(matcher_options.FULL_MATCH_ARGUMENT_OPTION),
-            'PRIMITIVE_MATCHER': self.matcher_element_name,
-            'this_type': types.STRING_MATCHER_TYPE_INFO.singular_name,
+            'this_type': formatting.symbol_type(types.STRING_MATCHER_TYPE_INFO.singular_name),
         })
 
     def main_description_rest_paragraphs(self) -> List[ParagraphItem]:

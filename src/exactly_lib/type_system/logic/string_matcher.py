@@ -115,6 +115,10 @@ class FileToCheck:
 class StringMatcher(Matcher[FileToCheck], ABC):
     @abstractmethod
     def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+        """
+        :raises HardErrorException: In case of HARD ERROR
+        :return: None iff match
+        """
         raise NotImplementedError('abstract method')
 
 

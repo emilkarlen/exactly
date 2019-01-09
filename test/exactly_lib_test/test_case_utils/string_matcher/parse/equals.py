@@ -29,8 +29,8 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_c
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File

@@ -13,12 +13,13 @@ from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import path_and_matcher
 from exactly_lib_test.instructions.assert_.test_resources import expression
-from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
-    AssertionVariantArgumentsConstructor, NumFilesAssertionVariant, argument_constructor_for_num_files_check
+    NumFilesAssertionVariant, argument_constructor_for_num_files_check, \
+    FilesMatcherArgumentsSetup, files_matcher_setup_without_references
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, pfh_expectation_type_config
 from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, empty_file
@@ -39,8 +40,10 @@ def suite() -> unittest.TestSuite:
 
 class TestWithAssertionVariantForNumFiles(tr.TestWithAssertionVariantBase):
     @property
-    def assertion_variant_without_symbol_references(self) -> AssertionVariantArgumentsConstructor:
-        return NumFilesAssertionVariant(int_condition(comparators.EQ, 0))
+    def assertion_variant(self) -> FilesMatcherArgumentsSetup:
+        return files_matcher_setup_without_references(
+            NumFilesAssertionVariant(int_condition(comparators.EQ, 0))
+        )
 
 
 class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck(

@@ -2,16 +2,17 @@ from typing import List
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args, \
     SyntaxElementDescription, cli_argument_syntax_element_description
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.definitions.entity import syntax_elements, types
+from exactly_lib.definitions.entity import syntax_elements, types, concepts
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case_utils import negation_of_predicate, file_contents_check_syntax
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTY_ARGUMENT_CONSTANT
 from exactly_lib.test_case_utils.files_matcher import config
+from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -23,16 +24,17 @@ MATCHER_VARIANT_ARG_NAME = a.Named('MATCHER')
 
 class _FilesMatcherDocumentation(SyntaxElementDocumentation):
     def __init__(self):
-        super().__init__(None,
+        super().__init__(TypeCategory.LOGIC,
                          syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT)
         self._tp = TextParser({
+            'symbol_concept': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
             'selection': instruction_arguments.SELECTION.name,
-            'dir_contents_matcher': MATCHER_ARG_NAME.name,
             'file_matcher': types.FILE_MATCHER_TYPE_INFO.name.singular,
             'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
             'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
             'FILE_MATCHER': instruction_arguments.SELECTION_OPTION.argument,
+            'this_type': formatting.symbol_type(types.FILES_MATCHER_TYPE_INFO.singular_name),
         })
 
     def main_description_rest_paragraphs(self) -> List[ParagraphItem]:
@@ -49,7 +51,7 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
         selection = self._selection_syntax_element_description()
 
         return [
-            self._files_assertion_sed(),
+            self._matcher_sed(),
             selection,
             negation,
         ]
@@ -63,7 +65,7 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
             ]
         )
 
-    def _files_assertion_sed(self) -> SyntaxElementDescription:
+    def _matcher_sed(self) -> SyntaxElementDescription:
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
                                        EMPTY_ARGUMENT_CONSTANT)
 
@@ -94,6 +96,8 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
                                separator_arg] +
                               file_contents_check_syntax.file_contents_checker_arguments__non_program()
                               )
+        symbol_argument = a.Single(a.Multiplicity.MANDATORY,
+                                   syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument)
 
         invokation_variants = [
             invokation_variant_from_args(arguments_for_empty_check,
@@ -102,7 +106,11 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
             invokation_variant_from_args(arguments_for_num_files_check,
                                          self._tp.fnap(_CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES)),
             invokation_variant_from_args(file_contents_args,
-                                         self._tp.fnap(_DESCRIPTION_OF_FILE_QUANTIFICATION))
+                                         self._tp.fnap(_DESCRIPTION_OF_FILE_QUANTIFICATION)),
+
+            invokation_variant_from_args([symbol_argument],
+                                         self._tp.fnap(_SYMBOL_REF_DESCRIPTION)),
+
         ]
         return SyntaxElementDescription(
             MATCHER_VARIANT_ARG_NAME.name,
@@ -114,7 +122,6 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
         name_and_cross_refs = [syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
                                syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
                                syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT,
-                               syntax_elements.PATH_SYNTAX_ELEMENT,
                                ]
         return cross_reference_id_list(name_and_cross_refs)
 
@@ -157,4 +164,9 @@ on the contents of an individual file.
 
 
 The result is {HARD_ERROR} if a tested file is not a regular file.
+"""
+
+_SYMBOL_REF_DESCRIPTION = """\
+Reference to a {symbol_concept},
+that must have been defined as a {this_type}.
 """

@@ -16,6 +16,10 @@ class PassOrFail(Enum):
     FAIL = 1
 
 
+def pass_or_fail_from_bool(b: bool) -> PassOrFail:
+    return PassOrFail.PASS if b else PassOrFail.FAIL
+
+
 def choice(expectation_type: ExpectationType,
            value_for_positive,
            value_for_negative):
@@ -114,7 +118,7 @@ class ExpectationTypeConfigForPfh(ExpectationTypeConfig[pfh.PassOrFailOrHardErro
 
 class ExpectationTypeConfigForNoneIsSuccess(ExpectationTypeConfig[Optional[ErrorMessageResolver]]):
     def main_result(self, expected_result_of_positive_test: PassOrFail
-                    ) -> ValueAssertion[Optional[ErrorMessageResolver]]:
+                    ) -> Optional[ValueAssertion[ErrorMessageResolver]]:
         return _MAIN_RESULT_ASSERTION_ERR_MSG_FOR_FAIL[self._expectation_type_of_test_case][
             expected_result_of_positive_test]
 
@@ -128,8 +132,8 @@ def pfh_expectation_type_config(expectation_type_of_test_case: ExpectationType) 
     return ExpectationTypeConfigForPfh(expectation_type_of_test_case)
 
 
-def expectation_type_config__non_is_success(
-        expectation_type_of_test_case: ExpectationType) -> ExpectationTypeConfigForNoneIsSuccess:
+def expectation_type_config__non_is_success(expectation_type_of_test_case: ExpectationType
+                                            ) -> ExpectationTypeConfigForNoneIsSuccess:
     return ExpectationTypeConfigForNoneIsSuccess(expectation_type_of_test_case)
 
 
@@ -144,15 +148,15 @@ _MAIN_RESULT_ASSERTION_FOR_PFH = {
     },
 }
 
-_ASSERT_IS_FAILURE_FOR_ERR_MSG = asrt.is_not_none_and_instance_with(ErrorMessageResolver, asrt.anything_goes())
+_ASSERT_IS_FAILURE_FOR_ERR_MSG = asrt.is_instance(str)
 
 _MAIN_RESULT_ASSERTION_ERR_MSG_FOR_FAIL = {
     ExpectationType.POSITIVE: {
-        PassOrFail.PASS: asrt.is_none,
+        PassOrFail.PASS: None,
         PassOrFail.FAIL: _ASSERT_IS_FAILURE_FOR_ERR_MSG,
     },
     ExpectationType.NEGATIVE: {
         PassOrFail.PASS: _ASSERT_IS_FAILURE_FOR_ERR_MSG,
-        PassOrFail.FAIL: asrt.is_none,
+        PassOrFail.FAIL: None,
     },
 }

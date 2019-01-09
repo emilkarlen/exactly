@@ -32,6 +32,7 @@ _STD_FORMAT_MAP = {
     'line_match_type': types.LINE_MATCHER_TYPE_INFO.identifier,
     'string_matcher_type': types.STRING_MATCHER_TYPE_INFO.identifier,
     'file_matcher_type': types.FILE_MATCHER_TYPE_INFO.identifier,
+    'files_matcher_type': types.FILES_MATCHER_TYPE_INFO.identifier,
     'lines_trans_type': types.STRING_TRANSFORMER_TYPE_INFO.identifier,
     'program_type': types.PROGRAM_TYPE_INFO.identifier,
     'soft_quote': SOFT_QUOTE_CHAR,

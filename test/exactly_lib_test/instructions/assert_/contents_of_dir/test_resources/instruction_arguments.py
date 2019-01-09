@@ -3,7 +3,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     AssertionVariantArgumentsConstructor, EmptyAssertionVariant, FilesMatcherArgumentsConstructor, no_selection, \
-    SubSetSelectionArgumentConstructor
+    SubSetSelectionArgumentConstructor, FilesMatcherArgumentsConstructorFromComponents
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForPfh, pfh_expectation_type_config
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
@@ -52,7 +52,7 @@ def complete_arguments_constructor(path: str,
                                    file_matcher: str = '') -> CompleteArgumentsConstructor:
     return CompleteArgumentsConstructor(
         PathArgumentsConstructor(path),
-        FilesMatcherArgumentsConstructor(
+        FilesMatcherArgumentsConstructorFromComponents(
             SubSetSelectionArgumentConstructor(file_matcher),
             assertion_variant,
         )
@@ -63,7 +63,7 @@ def arguments_constructor_for_variant(path: str,
                                       variant: AssertionVariantArgumentsConstructor) -> CompleteArgumentsConstructor:
     return CompleteArgumentsConstructor(
         PathArgumentsConstructor(path),
-        FilesMatcherArgumentsConstructor(
+        FilesMatcherArgumentsConstructorFromComponents(
             no_selection(),
             variant
         ))

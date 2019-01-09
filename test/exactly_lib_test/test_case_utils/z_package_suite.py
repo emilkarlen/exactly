@@ -5,6 +5,7 @@ from exactly_lib_test.test_case_utils import return_svh_via_exceptions
 from exactly_lib_test.test_case_utils.condition import z_package_suite as condition
 from exactly_lib_test.test_case_utils.expression import z_package_suite as expression
 from exactly_lib_test.test_case_utils.file_matcher import z_package_suite as file_matcher
+from exactly_lib_test.test_case_utils.files_matcher import z_package_suite as files_matcher
 from exactly_lib_test.test_case_utils.line_matcher import z_package_suite as line_matcher
 from exactly_lib_test.test_case_utils.parse import z_package_suite as parse
 from exactly_lib_test.test_case_utils.program import z_package_suite as program
@@ -23,6 +24,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(line_matcher.suite())
     ret_val.addTest(string_matcher.suite())
     ret_val.addTest(file_matcher.suite())
+    ret_val.addTest(files_matcher.suite())
     ret_val.addTest(string_transformers.suite())
     ret_val.addTest(parse.suite())
     ret_val.addTest(program.suite())

@@ -1,8 +1,9 @@
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args, \
+    SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
@@ -54,6 +55,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                 negation_of_predicate.optional_negation_argument_usage(),
                 syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory,
             ]),
+        ]
+
+    def syntax_element_descriptions(self) -> Sequence[SyntaxElementDescription]:
+        return [
+            negation_of_predicate.assertion_syntax_element_description(),
         ]
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:

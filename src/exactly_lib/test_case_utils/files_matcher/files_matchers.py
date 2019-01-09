@@ -1,11 +1,8 @@
-from abc import ABC, abstractmethod
-from typing import Optional
+from abc import ABC
 
+from exactly_lib.symbol.files_matcher import FilesMatcherResolver
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.files_matcher.new_model import FilesMatcherModel
-from exactly_lib.test_case_utils.files_matcher.structure import FilesMatcherResolver, Environment
-from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.util.logic_types import ExpectationType
 
 
@@ -18,9 +15,3 @@ class FilesMatcherResolverBase(FilesMatcherResolver, ABC):
 
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
-
-    @abstractmethod
-    def matches(self,
-                environment: Environment,
-                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        pass
