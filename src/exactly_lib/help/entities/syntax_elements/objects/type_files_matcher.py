@@ -119,10 +119,12 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
         )
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
-        name_and_cross_refs = [syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
-                               syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
-                               syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT,
-                               ]
+        name_and_cross_refs = [
+            syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT,
+            syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
+            syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
+            syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
+        ]
         return cross_reference_id_list(name_and_cross_refs)
 
     def _main_invokation_variant(self) -> InvokationVariant:
