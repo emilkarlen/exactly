@@ -40,4 +40,5 @@ def execute(test_case: TestCase,
     finally:
         if not is_keep_sandbox:
             if ret_val is not None and ret_val.has_sds:
-                shutil.rmtree(str(ret_val.sds.root_dir))
+                shutil.rmtree(str(ret_val.sds.root_dir),
+                              ignore_errors=True)
