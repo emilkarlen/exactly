@@ -1,0 +1,15 @@
+[conf]
+
+
+status = FAIL
+
+
+[setup]
+
+
+def files-matcher NUM_FILES_EQ_1 = num-files == 1
+
+
+[assert]
+
+dir-contents . NUM_FILES_EQ_1

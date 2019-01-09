@@ -8,6 +8,8 @@ string-transformer
 
 string-matcher
 
+files-matcher
+
 file-contents
 
 dir-contents
