@@ -119,7 +119,8 @@ ANY_TYPE_INFO_DICT = {
 
     ValueType.FILES_MATCHER:
         TypeInfo(types.FILES_MATCHER_TYPE_INFO,
-                 _standard_type_value_args(types.FILES_MATCHER_TYPE_INFO)),
+                 _standard_type_value_args(types.FILES_MATCHER_TYPE_INFO,
+                                           a.Multiplicity.MANDATORY)),
 
     ValueType.STRING_MATCHER:
         TypeInfo(types.STRING_MATCHER_TYPE_INFO,
