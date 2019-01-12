@@ -3,6 +3,7 @@ from exactly_lib.util.cli_syntax import short_and_long_option_syntax
 
 HELP_COMMAND = 'help'
 SUITE_COMMAND = 'suite'
+SYMBOL_COMMAND = 'symbol'
 
 COMMAND_DESCRIPTIONS = {
     HELP_COMMAND: 'Help system (use "help help" for help on help.)',

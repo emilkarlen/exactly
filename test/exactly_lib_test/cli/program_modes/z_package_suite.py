@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib_test.cli.program_modes.help import z_package_suite as help
+from exactly_lib_test.cli.program_modes.symbol import z_package_suite as symbol
 from exactly_lib_test.cli.program_modes.test_case import z_package_suite as test_case
 from exactly_lib_test.cli.program_modes.test_suite import z_package_suite as test_suite
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
@@ -10,6 +11,7 @@ def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     return unittest.TestSuite([
         test_case.suite_that_does_not_require_main_program_runner(),
         test_suite.suite_that_does_not_require_main_program_runner(),
+        symbol.suite(),
         help.suite(),
     ])
 

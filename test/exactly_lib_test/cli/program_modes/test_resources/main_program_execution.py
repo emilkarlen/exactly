@@ -1,5 +1,6 @@
-import io
 import unittest
+
+import io
 from pathlib import Path
 from typing import List
 
@@ -55,13 +56,7 @@ def run_main_program_and_collect_process_result(command_line_arguments: List[str
     std_output_files = StdOutputFiles(stdout_file=stdout_file,
                                       stderr_file=stderr_file)
 
-    main_pgm = main_program.MainProgram(
-        config.default_test_case_handling_setup,
-        config.sandbox_root_dir_name_resolver,
-        config.act_phase_os_process_executor,
-        config.test_case_definition,
-        config.test_suite_definition,
-    )
+    main_pgm = main_program_from_config(config)
 
     # ACT #
 
@@ -73,6 +68,16 @@ def run_main_program_and_collect_process_result(command_line_arguments: List[str
     stdout_file.close()
     stderr_file.close()
     return ret_val
+
+
+def main_program_from_config(config: MainProgramConfig) -> main_program.MainProgram:
+    return main_program.MainProgram(
+        config.default_test_case_handling_setup,
+        config.sandbox_root_dir_name_resolver,
+        config.act_phase_os_process_executor,
+        config.test_case_definition,
+        config.test_suite_definition,
+    )
 
 
 def fail_if_test_case_does_not_pass(put: unittest.TestCase,
