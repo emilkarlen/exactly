@@ -3,6 +3,7 @@ import unittest
 from typing import List
 
 from exactly_lib.processing.instruction_setup import InstructionsSetup
+from exactly_lib_test.cli.program_modes.test_resources import main_program_execution
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import MainProgramConfig, \
     capture_output_from_main_program, main_program_from_config
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
@@ -14,7 +15,9 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 class Arrangement:
     def __init__(self,
-                 main_program_config: MainProgramConfig = test_case_definition_for(InstructionsSetup()),
+                 main_program_config: MainProgramConfig =
+                 main_program_execution.main_program_config(test_case_definition_for(InstructionsSetup())),
+
                  cwd_contents: DirContents = DirContents([])):
         self.main_program_config = main_program_config
         self.cwd_contents = cwd_contents

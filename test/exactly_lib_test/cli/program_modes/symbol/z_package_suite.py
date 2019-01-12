@@ -1,15 +1,15 @@
 import unittest
 
 from exactly_lib_test.cli.program_modes.symbol import \
-    invalid_command_line_arguments, invalid_file_contents_syntax, \
-    successful_scenarios
+    invalid_command_line_arguments, \
+    standalone_case, part_of_suite
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         invalid_command_line_arguments.suite(),
-        invalid_file_contents_syntax.suite(),
-        successful_scenarios.suite(),
+        standalone_case.suite(),
+        part_of_suite.suite(),
     ])
 
 

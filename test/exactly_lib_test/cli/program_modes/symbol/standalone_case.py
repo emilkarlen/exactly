@@ -1,11 +1,12 @@
 import unittest
 
 from exactly_lib.cli.definitions import exit_codes
-from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.formatting import SectionName
+from exactly_lib.processing import exit_values
 from exactly_lib.test_case.phase_identifier import SETUP
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
+from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import main_program_config
@@ -17,10 +18,35 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(Test)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestInvalidCaseFileSyntax),
+        unittest.makeSuite(TestStandaloneCase),
+    ])
 
 
-class Test(unittest.TestCase):
+class TestInvalidCaseFileSyntax(unittest.TestCase):
+    def test_missing_test_case_file_argument(self):
+        file_with_invalid_syntax = File(
+            'invalid-syntax.case',
+            lines_content([
+                SectionName('nonExistingSection').syntax,
+            ]))
+
+        test_with_files_in_tmp_dir.check(
+            self,
+            symbol_args.arguments([file_with_invalid_syntax.name]),
+            Arrangement(
+                cwd_contents=DirContents([
+                    file_with_invalid_syntax,
+                ])
+            ),
+            asrt_proc_result.is_result_for_empty_stdout(
+                exit_values.NO_EXECUTION__SYNTAX_ERROR.exit_code
+            )
+        )
+
+
+class TestStandaloneCase(unittest.TestCase):
     def test_empty_file(self):
         emtpy_test_case_file = empty_file('empty.case')
 
@@ -65,7 +91,9 @@ class Test(unittest.TestCase):
             expectation=
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
-                stdout=asrt.equals(types.STRING_TYPE_INFO.identifier + ' ' + symbol_name),
+                stdout=asrt.equals(lines_content([
+                    output.def_of_string(symbol_name),
+                ])),
             )
         )
 
