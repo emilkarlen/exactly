@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib_test.cli.program_modes.symbol import \
     invalid_command_line_arguments, \
-    standalone_case, part_of_suite
+    standalone_case, part_of_suite, preprocessed_case
 
 
 def suite() -> unittest.TestSuite:
@@ -10,6 +10,7 @@ def suite() -> unittest.TestSuite:
         invalid_command_line_arguments.suite(),
         standalone_case.suite(),
         part_of_suite.suite(),
+        preprocessed_case.suite(),
     ])
 
 

@@ -1,8 +1,8 @@
 import os
 from typing import List, Dict, Callable, Sequence
 
+from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions import exit_codes
-from exactly_lib.cli.definitions.common_cli_options import HELP_COMMAND, SUITE_COMMAND, COMMAND_DESCRIPTIONS
 from exactly_lib.cli.program_modes.test_case import argument_parsing as case_argument_parsing
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
@@ -122,16 +122,18 @@ class MainProgram:
         self._test_case_def_for_m_p = test_case_definition
         self._default_case_sandbox_root_dir_name_resolver = default_case_sandbox_root_dir_name_resolver
 
+        self._commands = {
+            common_cli_options.HELP_COMMAND: self._parse_and_execute_help,
+            common_cli_options.SUITE_COMMAND: self._parse_and_execute_test_suite,
+            common_cli_options.SYMBOL_COMMAND: self._parse_and_execute_symbol_inspection
+        }
+
     def execute(self,
                 command_line_arguments: List[str],
                 output: StdOutputFiles) -> int:
         if len(command_line_arguments) > 0:
-            if command_line_arguments[0] == HELP_COMMAND:
-                return _parse_and_exit_on_error(self._parse_and_execute_help,
-                                                command_line_arguments[1:],
-                                                output)
-            if command_line_arguments[0] == SUITE_COMMAND:
-                return _parse_and_exit_on_error(self._parse_and_execute_test_suite,
+            if command_line_arguments[0] in self._commands:
+                return _parse_and_exit_on_error(self._commands[command_line_arguments[0]],
                                                 command_line_arguments[1:],
                                                 output)
         return _parse_and_exit_on_error(self._parse_and_execute_test_case,
@@ -180,7 +182,7 @@ class MainProgram:
         settings = case_argument_parsing.parse(self._default_test_case_handling_setup,
                                                self._default_case_sandbox_root_dir_name_resolver,
                                                command_line_arguments,
-                                               COMMAND_DESCRIPTIONS)
+                                               common_cli_options.COMMAND_DESCRIPTIONS)
         return self.execute_test_case(settings, output)
 
     def _parse_and_execute_test_suite(self,
@@ -191,6 +193,12 @@ class MainProgram:
         settings = argument_parsing.parse(self._default_test_case_handling_setup,
                                           command_line_arguments)
         return self.execute_test_suite(settings, output)
+
+    def _parse_and_execute_symbol_inspection(self,
+                                             command_line_arguments: List[str],
+                                             output: StdOutputFiles,
+                                             ) -> int:
+        raise NotImplementedError('todo')
 
     def _parse_and_execute_help(self,
                                 help_command_arguments: List[str],

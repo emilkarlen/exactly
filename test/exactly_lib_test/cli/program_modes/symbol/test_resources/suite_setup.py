@@ -22,7 +22,7 @@ def suite_cases(name_of_explicit_suite_file: str) -> List[NameAndValue[SuiteFile
         NameAndValue('explicit suite file',
                      SuiteFileCase(
                          name_of_explicit_suite_file,
-                         cl_arguments.explicit_suite_part(name_of_explicit_suite_file)
+                         cl_arguments.explicit_suite__part(name_of_explicit_suite_file)
                      )),
 
         NameAndValue('default suite file',
