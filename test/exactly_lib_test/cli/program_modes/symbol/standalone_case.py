@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.definitions.formatting import SectionName
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.processing import exit_values
-from exactly_lib.test_case.phase_identifier import SETUP
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
 from exactly_lib_test.cli.program_modes.symbol.test_resources import output
@@ -71,7 +71,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
         symbol_name = 'STRING_SYMBOL'
         case_with_single_def = File('test.case',
                                     lines_content([
-                                        SectionName(SETUP.section_name).syntax,
+                                        phase_names.SETUP.syntax,
                                         sym_def.define_string(symbol_name, 'value'),
                                     ]))
 
