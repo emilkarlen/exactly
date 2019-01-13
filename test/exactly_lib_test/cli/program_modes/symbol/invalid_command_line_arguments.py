@@ -1,11 +1,12 @@
 import unittest
 
 from exactly_lib.cli.definitions import exit_codes
+from exactly_lib.processing import exit_values
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
 from exactly_lib_test.test_resources.files.file_structure import empty_dir, DirContents
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 
 
@@ -28,14 +29,22 @@ class TestInvalidFileArguments(unittest.TestCase):
         case_file_arg = 'test.case'
 
         cases = [
-            NameAndValue('file does not exist',
-                         DirContents([])
-                         ),
-            NameAndValue('file is a directory',
-                         DirContents([
-                             empty_dir(case_file_arg)
-                         ])
-                         ),
+            NEA('file does not exist',
+                expected=
+                asrt_proc_result.is_result_for_empty_stdout(exit_codes.EXIT_INVALID_USAGE),
+                actual=
+                DirContents([])
+                ),
+            NEA('file is a directory',
+                expected=
+                asrt_proc_result.is_result_for_failure_exit_value_on_stderr(
+                    exit_values.NO_EXECUTION__FILE_ACCESS_ERROR
+                ),
+                actual=
+                DirContents([
+                    empty_dir(case_file_arg)
+                ])
+                ),
         ]
         for case in cases:
             with self.subTest(case.name):
@@ -45,13 +54,10 @@ class TestInvalidFileArguments(unittest.TestCase):
                     symbol_args.arguments([case_file_arg]),
                     arrangement=
                     Arrangement(
-                        cwd_contents=case.value
+                        cwd_contents=case.actual
                     ),
                     expectation=
-                    asrt_proc_result.is_result_for_empty_stdout(
-                        exit_codes.EXIT_INVALID_USAGE
-                    )
-                )
+                    case.expected)
 
 
 if __name__ == '__main__':

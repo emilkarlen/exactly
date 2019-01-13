@@ -19,13 +19,13 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestInvalidCaseFileSyntax),
-        unittest.makeSuite(TestStandaloneCase),
+        unittest.makeSuite(TestFailureScenarios),
+        unittest.makeSuite(TestSuccessfulScenarios),
     ])
 
 
-class TestInvalidCaseFileSyntax(unittest.TestCase):
-    def test_missing_test_case_file_argument(self):
+class TestFailureScenarios(unittest.TestCase):
+    def test_invalid_syntax(self):
         file_with_invalid_syntax = File(
             'invalid-syntax.case',
             lines_content([
@@ -46,7 +46,7 @@ class TestInvalidCaseFileSyntax(unittest.TestCase):
         )
 
 
-class TestStandaloneCase(unittest.TestCase):
+class TestSuccessfulScenarios(unittest.TestCase):
     def test_empty_file(self):
         emtpy_test_case_file = empty_file('empty.case')
 

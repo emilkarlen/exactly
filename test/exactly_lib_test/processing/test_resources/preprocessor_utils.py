@@ -54,12 +54,10 @@ def preprocessor_cli_arg_for_executing_py_file(python_file_name: str,
 def cli_args_for_executing_py_file(python_file_name: str,
                                    additional_arguments: Sequence[str] = ()) -> List[str]:
     return [
-               command_line_options.OPTION_FOR_PREPROCESSOR,
-               preprocessor_cli_arg_for_executing_py_file(python_file_name),
-           ] + [
-               shlex.quote(additional_argument)
-               for additional_argument in additional_arguments
-           ]
+        command_line_options.OPTION_FOR_PREPROCESSOR,
+        preprocessor_cli_arg_for_executing_py_file(python_file_name,
+                                                   additional_arguments),
+    ]
 
 
 def preprocessor_cli_arg_for_interpret_file(interpreter_file_name: str,
@@ -96,11 +94,11 @@ SEARCH_REPLACE_PREPROCESSOR__PY_SRC = """\
 import sys
 
 if len(sys.argv) != 4:
-    err_msg = '\n'.join([
+    err_msg = '\\n'.join([
         'Illegal number of arguments: ' + str(len(sys.argv)),
         'Usage: TO-REPLACE REPLACEMENT FILE',
     ])
-    sys.stderr.write(err_msg + '\n')
+    sys.stderr.write(err_msg + '\\n')
     sys.exit(1)
 
 to_replace = sys.argv[1]

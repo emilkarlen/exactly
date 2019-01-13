@@ -1,3 +1,4 @@
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import types
 from exactly_lib.instructions.setup import define_symbol
 from exactly_lib.processing.instruction_setup import InstructionsSetup
@@ -16,5 +17,6 @@ def define_string(symbol_name: str, value: str) -> str:
         DEF_INSTRUCTION_NAME,
         types.STRING_TYPE_INFO.identifier,
         symbol_name,
+        instruction_arguments.ASSIGNMENT_OPERATOR,
         value,
     ])

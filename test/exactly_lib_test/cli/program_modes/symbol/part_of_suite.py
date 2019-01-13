@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.definitions.formatting import SectionName
+from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case.phase_identifier import SETUP
 from exactly_lib.util.string import lines_content
@@ -123,7 +124,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
         symbol_in_case_name = 'CASE_SYMBOL'
 
         suite_with_single_def = lines_content([
-            SectionName(SETUP.section_name).syntax,
+            section_names.CASE__SETUP.syntax,
             sym_def.define_string(symbol_in_suite_name, 'value'),
         ])
 
@@ -133,12 +134,12 @@ class TestSuccessfulScenarios(unittest.TestCase):
                                         sym_def.define_string(symbol_in_case_name, 'value'),
                                     ]))
 
-        for suite_case in suite_cases('empty.suite'):
+        for suite_case in suite_cases('single-definition.suite'):
             with self.subTest(suite_case.name):
                 test_with_files_in_tmp_dir.check(
                     self,
                     command_line_arguments=
-                    symbol_args.arguments([case_with_single_def.name]),
+                    symbol_args.arguments(suite_case.value.suite_arguments + [case_with_single_def.name]),
                     arrangement=
                     Arrangement(
                         cwd_contents=DirContents([

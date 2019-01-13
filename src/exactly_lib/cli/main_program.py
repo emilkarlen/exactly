@@ -3,6 +3,7 @@ from typing import List, Dict, Callable, Sequence
 
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions import exit_codes
+from exactly_lib.cli.program_modes.symbol import symbol_inspection
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -205,13 +206,11 @@ class MainProgram:
                                           self._default_case_sandbox_root_dir_name_resolver,
                                           command_line_arguments,
                                           common_cli_options.COMMAND_DESCRIPTIONS)
-        from exactly_lib.processing.standalone import processor
-        processor = processor.Processor(self._test_case_definition,
-                                        self._act_phase_os_process_executor,
-                                        self._test_suite_definition.configuration_section_parser)
-        return processor.process(output, settings)
-
-        return symbol_inspection.execute(settings, processor, output)
+        executor = symbol_inspection.Executor(settings,
+                                              self._test_case_definition,
+                                              self._test_suite_definition.configuration_section_parser,
+                                              output)
+        return executor.execute()
 
     def _parse_and_execute_help(self,
                                 help_command_arguments: List[str],

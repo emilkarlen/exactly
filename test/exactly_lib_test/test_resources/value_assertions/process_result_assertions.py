@@ -10,6 +10,10 @@ def is_result_for_exit_value(expected: ExitValue) -> ValueAssertion[SubProcessRe
     return SubProcessExitValueAssertion(expected)
 
 
+def is_result_for_failure_exit_value_on_stderr(expected: ExitValue) -> ValueAssertion[SubProcessResult]:
+    return SubProcessExitValueOnStdErrAssertion(expected)
+
+
 def is_result_for_exit_code(exit_code: int) -> ValueAssertion[SubProcessResult]:
     return _SubProcessResultAssertion(exitcode=asrt.equals(exit_code))
 
@@ -27,18 +31,9 @@ def sub_process_result(exitcode: ValueAssertion = asrt.anything_goes(),
                        stdout: ValueAssertion = asrt.anything_goes(),
                        stderr: ValueAssertion = asrt.anything_goes(),
                        ) -> ValueAssertion[SubProcessResult]:
-    return asrt.is_instance_with(SubProcessResult,
-                                 asrt.and_([
-                                     asrt.sub_component('exitcode',
-                                                        SubProcessResult.exitcode.fget,
-                                                        exitcode),
-                                     asrt.sub_component('stdout',
-                                                        SubProcessResult.stdout.fget,
-                                                        stdout),
-                                     asrt.sub_component('stderr',
-                                                        SubProcessResult.stderr.fget,
-                                                        stderr),
-                                 ]))
+    return _SubProcessResultAssertion(exitcode,
+                                      stdout,
+                                      stderr)
 
 
 class _SubProcessResultAssertion(ValueAssertionBase[SubProcessResult]):
@@ -59,8 +54,7 @@ class _SubProcessResultAssertion(ValueAssertionBase[SubProcessResult]):
                              SubProcessResult,
                              message_builder.for_sub_component('class of result object').apply(
                                  'Expects ' + str(SubProcessResult)))
-        msg_info = '\nInfo from actual value:\nstdout = "{stdout}"\nstderr = "{stderr}"'.format(stdout=value.stdout,
-                                                                                                stderr=value.stderr)
+        msg_info = _err_msg_info(value)
         self._exitcode.apply(put, value.exitcode,
                              message_builder.for_sub_component('exitcode' + msg_info))
 
@@ -86,11 +80,51 @@ class SubProcessExitValueAssertion(ValueAssertionBase[SubProcessResult]):
                              SubProcessResult,
                              message_builder.for_sub_component('class of result object').apply(
                                  'Expects ' + str(SubProcessResult)))
-        msg_info = 'Info from actual value:\nstdout = "{stdout}"\nstderr="{stderr}"'.format(stdout=value.stdout,
-                                                                                            stderr=value.stderr)
+        msg_info = _err_msg_info(value)
         put.assertEqual(self.expected.exit_code,
                         value.exitcode,
                         message_builder.for_sub_component('exitcode').apply(msg_info))
         put.assertEqual(self.expected.exit_identifier + '\n',
                         value.stdout,
                         message_builder.for_sub_component('exit identifier').apply(msg_info))
+
+
+class SubProcessExitValueOnStdErrAssertion(ValueAssertionBase[SubProcessResult]):
+    def __init__(self,
+                 expected: ExitValue,
+                 message: str = None):
+        self.expected = expected
+        self.message = message
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: SubProcessResult,
+               message_builder: asrt.MessageBuilder):
+        put.assertIsInstance(value,
+                             SubProcessResult,
+                             message_builder.for_sub_component('class of result object').apply(
+                                 'Expects ' + str(SubProcessResult)))
+        msg_info = _err_msg_info(value)
+        put.assertEqual(self.expected.exit_code,
+                        value.exitcode,
+                        message_builder.for_sub_component('exitcode').apply(msg_info))
+
+        stderr_lines = value.stderr.split('\n')
+        first_line_of_stderr = '' if not stderr_lines else stderr_lines[0]
+        put.assertEqual(self.expected.exit_identifier,
+                        first_line_of_stderr,
+                        message_builder.for_sub_component('exit identifier on stderr').apply(msg_info))
+
+        put.assertEqual('',
+                        value.stdout,
+                        message_builder.for_sub_component('stdout').apply(msg_info))
+
+
+def _err_msg_info(actual: SubProcessResult) -> str:
+    return """Info from actual value:
+    exit_code = {exit_code}
+    stdout    = "{stdout}"
+    stderr    = "{stderr}\"""".format(
+        exit_code=actual.exitcode,
+        stdout=actual.stdout,
+        stderr=actual.stderr)
