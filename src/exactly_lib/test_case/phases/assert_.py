@@ -1,5 +1,7 @@
 from enum import Enum
+from typing import Sequence
 
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -44,3 +46,7 @@ class WithAssertPhasePurpose:
     @property
     def assert_phase_purpose(self) -> AssertPhasePurpose:
         return AssertPhasePurpose.ASSERTION
+
+
+def get_symbol_usages(instruction: AssertPhaseInstruction) -> Sequence[SymbolUsage]:
+    return instruction.symbol_usages()

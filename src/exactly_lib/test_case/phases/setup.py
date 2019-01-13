@@ -1,6 +1,7 @@
 import pathlib
-from typing import Optional
+from typing import Optional, Sequence
 
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
@@ -98,3 +99,7 @@ class SetupPhaseInstruction(TestCaseInstructionWithSymbols):
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
+
+
+def get_symbol_usages(instruction: SetupPhaseInstruction) -> Sequence[SymbolUsage]:
+    return instruction.symbol_usages()
