@@ -1,11 +1,15 @@
+import sys
+from time import strftime, localtime
+
 import pathlib
 import tempfile
 from contextlib import contextmanager
-from time import strftime, localtime
-from typing import Callable
+from typing import Callable, List
 
 from exactly_lib import program_info
+from exactly_lib.cli.definitions.program_modes.test_case import command_line_options
 from exactly_lib.util.file_utils import resolved_path
+from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 
 
@@ -37,3 +41,32 @@ def dir_contents_and_preprocessor_source(
             dir_contents_dir_path = resolved_path(dir_contents_root)
             dir_contents.write_to(dir_contents_dir_path)
             yield (dir_contents_dir_path, preprocessor_file_path)
+
+
+def preprocessor_cli_arg_for_executing_py_file(python_file_name: str) -> str:
+    return preprocessor_cli_arg_for_interpret_file(sys.executable,
+                                                   python_file_name)
+
+
+def cli_args_for_executing_py_file(python_file_name: str) -> List[str]:
+    return [
+        command_line_options.OPTION_FOR_PREPROCESSOR,
+        preprocessor_cli_arg_for_executing_py_file(python_file_name),
+    ]
+
+
+def preprocessor_cli_arg_for_interpret_file(interpreter_file_name: str,
+                                            source_file_name: str) -> str:
+    return (string_formatting.file_name(interpreter_file_name) +
+            ' ' +
+            string_formatting.file_name(source_file_name)
+            )
+
+
+def cli_args_for_interpret_file(interpreter_file_name: str,
+                                source_file_name: str) -> List[str]:
+    return [
+        command_line_options.OPTION_FOR_PREPROCESSOR,
+        preprocessor_cli_arg_for_interpret_file(interpreter_file_name,
+                                                source_file_name),
+    ]

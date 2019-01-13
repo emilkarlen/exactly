@@ -1,9 +1,9 @@
-import pathlib
 import unittest
+
+import pathlib
 from typing import List
 
-from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
-from exactly_lib_test.test_resources import string_formatting
+from exactly_lib_test.processing.test_resources import preprocessor_utils
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents, FileSystemElement
 from exactly_lib_test.test_resources.main_program import main_program_check_base
 from exactly_lib_test.test_resources.process import SubProcessResult, SubProcessResultInfo
@@ -76,10 +76,8 @@ class SetupWithPreprocessorAndTestActor(SetupForTestCaseBase, main_program_check
                         root_path: pathlib.Path,
                         python_executable_file_name: str,
                         preprocessor_source_file_name: str) -> List[str]:
-        return [OPTION_FOR_PREPROCESSOR,
-                '%s %s' % (string_formatting.file_name(python_executable_file_name),
-                           string_formatting.file_name(preprocessor_source_file_name))
-                ]
+        return preprocessor_utils.cli_args_for_interpret_file(python_executable_file_name,
+                                                              preprocessor_source_file_name)
 
     def file_structure(self,
                        root_path: pathlib.Path,
