@@ -38,13 +38,15 @@ class MainProgramConfig:
         self.sandbox_root_dir_name_resolver = sandbox_root_dir_name_resolver
 
 
-def main_program_config(tc_definition: TestCaseDefinitionForMainProgram) -> MainProgramConfig:
+def main_program_config(tc_definition: TestCaseDefinitionForMainProgram,
+                        test_suite_definition: TestSuiteDefinition = test_suite_definition_without_instructions()
+                        ) -> MainProgramConfig:
     return MainProgramConfig(TestCaseHandlingSetup(
         ActPhaseSetup(ActSourceAndExecutorConstructorThatRunsConstantActions()),
         IDENTITY_PREPROCESSOR),
         os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
         tc_definition,
-        test_suite_definition_without_instructions(),
+        test_suite_definition,
     )
 
 

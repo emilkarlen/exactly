@@ -13,21 +13,12 @@ class Formatter:
     def source_location_path(self,
                              referrer_location: Path,
                              source_location: SourceLocationPath) -> Blocks:
-        location = source_location.location
-
-        files_and_inclusions_block = self._files_and_source_path_leading_to_final_source(
-            referrer_location,
-            source_location.file_inclusion_chain,
-            location.source.first_line_number,
-            location.file_path_rel_referrer,
-        )
-
-        source_block = self.source_lines(location.source.lines)
-
-        return [
-            files_and_inclusions_block,
-            source_block,
-        ]
+        if source_location.location.source is None:
+            return self._source_location_path__without_source(referrer_location,
+                                                              source_location)
+        else:
+            return self._source_location_path__with_source(referrer_location,
+                                                           source_location)
 
     def file_inclusion_chain(self,
                              referrer_location: Path,
@@ -75,21 +66,53 @@ class Formatter:
             for source_line in lines
         ]
 
+    def _source_location_path__with_source(self,
+                                           referrer_location: Path,
+                                           source_location: SourceLocationPath) -> Blocks:
+        location = source_location.location
+
+        files_and_inclusions_block = self._files_and_source_path_leading_to_final_source(
+            referrer_location,
+            source_location.file_inclusion_chain,
+            location.source.first_line_number,
+            location.file_path_rel_referrer,
+        )
+
+        source_block = self.source_lines(location.source.lines)
+
+        return [
+            files_and_inclusions_block,
+            source_block,
+        ]
+
+    def _source_location_path__without_source(self,
+                                              referrer_location: Path,
+                                              source_location: SourceLocationPath) -> Blocks:
+        return [
+            self._files_and_source_path_leading_to_final_source(
+                referrer_location,
+                source_location.file_inclusion_chain,
+                None,
+                source_location.location.file_path_rel_referrer,
+            )
+        ]
+
     def _files_and_source_path_leading_to_final_source(self,
                                                        referrer_location: Path,
                                                        file_inclusion_chain: Sequence[SourceLocation],
-                                                       final_source_line_number: int,
+                                                       final_source_line_number: Optional[int],
                                                        final_file_path_rel_referrer: Optional[Path],
                                                        ) -> Block:
         files_and_inclusions_block, referrer_location = \
             self.file_inclusion_chain(referrer_location,
                                       file_inclusion_chain)
 
-        files_and_inclusions_block += [
-            line_in_optional_file(referrer_location,
-                                  final_file_path_rel_referrer,
-                                  final_source_line_number)
-        ]
+        if final_source_line_number is not None:
+            files_and_inclusions_block += [
+                line_in_optional_file(referrer_location,
+                                      final_file_path_rel_referrer,
+                                      final_source_line_number)
+            ]
 
         return files_and_inclusions_block
 
