@@ -29,7 +29,7 @@ def check(put: unittest.TestCase,
           expectation: ValueAssertion[SubProcessResult]):
     # ARRANGE #
     main_program = main_program_from_config(arrangement.main_program_config)
-    with tmp_dir_as_cwd(arrangement.cwd_contents) as cwd:
+    with tmp_dir_as_cwd(arrangement.cwd_contents):
         # ACT #
         result = capture_output_from_main_program(command_line_arguments,
                                                   main_program)
