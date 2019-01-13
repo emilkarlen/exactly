@@ -1,6 +1,7 @@
 import pathlib
 import subprocess
 import tempfile
+from typing import List
 
 from exactly_lib import program_info
 from exactly_lib.processing.test_case_processing import Preprocessor, ProcessError, ErrorInfo
@@ -30,7 +31,7 @@ class PreprocessorViaExternalProgram(Preprocessor):
     """
 
     def __init__(self,
-                 external_program: list):
+                 external_program: List[str]):
         self.external_program = external_program
 
     def apply(self,
