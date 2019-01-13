@@ -12,9 +12,9 @@ from exactly_lib.processing import test_case_processing as processing
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse import test_case_parser
-from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup, TestCaseTransformer
 from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError, TestCaseFileReference, AccessorError, \
-    AccessErrorType
+    AccessErrorType, Preprocessor
 from exactly_lib.section_document import exceptions
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import source_location_path_of_non_empty_location_path
@@ -59,25 +59,41 @@ class Configuration:
         self.exe_atc_and_skip_assertions = exe_atc_and_skip_assertions
         self.sandbox_root_dir_resolver = sandbox_root_dir_resolver
 
+    def execution_configuration(self) -> ExecutionConfiguration:
+        return ExecutionConfiguration(self.test_case_definition.predefined_properties.environ,
+                                      self.act_phase_os_process_executor,
+                                      self.sandbox_root_dir_resolver,
+                                      self.test_case_definition.predefined_properties.predefined_symbols,
+                                      self.exe_atc_and_skip_assertions)
+
 
 def new_processor_that_should_not_pollute_current_process(configuration: Configuration) -> processing.Processor:
     return processing_utils.ProcessorFromAccessorAndExecutor(
-        new_accessor(configuration),
+        new_accessor_from_conf(configuration),
         new_executor_that_should_not_pollute_current_processes(configuration))
 
 
 def new_processor_that_is_allowed_to_pollute_current_process(configuration: Configuration) -> processing.Processor:
     return processing_utils.ProcessorFromAccessorAndExecutor(
-        new_accessor(configuration),
+        new_accessor_from_conf(configuration),
         new_executor_that_may_pollute_current_processes(configuration))
 
 
-def new_accessor(configuration: Configuration) -> processing.Accessor:
+def new_accessor_from_conf(configuration: Configuration) -> processing.Accessor:
+    return new_accessor(
+        configuration.default_handling_setup.preprocessor,
+        configuration.test_case_definition.parsing_setup,
+        configuration.default_handling_setup.transformer)
+
+
+def new_accessor(preprocessor: Preprocessor,
+                 test_case_parsing_setup: TestCaseParsingSetup,
+                 test_case_transformer: TestCaseTransformer) -> processing.Accessor:
     return processing_utils.AccessorFromParts(
         _SourceReader(),
-        configuration.default_handling_setup.preprocessor,
-        _Parser(configuration.test_case_definition.parsing_setup),
-        configuration.default_handling_setup.transformer)
+        preprocessor,
+        _Parser(test_case_parsing_setup),
+        test_case_transformer)
 
 
 def new_executor_that_should_not_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
@@ -86,13 +102,19 @@ def new_executor_that_should_not_pollute_current_processes(configuration: Config
 
 
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
-    return _Executor(ExecutionConfiguration(configuration.test_case_definition.predefined_properties.environ,
-                                            configuration.act_phase_os_process_executor,
-                                            configuration.sandbox_root_dir_resolver,
-                                            configuration.test_case_definition.predefined_properties.predefined_symbols,
-                                            configuration.exe_atc_and_skip_assertions),
-                     configuration.default_handling_setup.act_phase_setup,
-                     configuration.is_keep_sandbox)
+    return new_executor_that_may_pollute_current_processes2(
+        configuration.execution_configuration(),
+        configuration.default_handling_setup.act_phase_setup,
+        configuration.is_keep_sandbox)
+
+
+def new_executor_that_may_pollute_current_processes2(exe_configuration: ExecutionConfiguration,
+                                                     act_phase_setup: ActPhaseSetup,
+                                                     is_keep_sandbox: bool,
+                                                     ) -> processing_utils.Executor:
+    return _Executor(exe_configuration,
+                     act_phase_setup,
+                     is_keep_sandbox)
 
 
 class _SourceReader(processing_utils.SourceReader):

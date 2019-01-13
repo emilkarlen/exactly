@@ -3,7 +3,6 @@ from typing import List, Dict, Callable, Sequence
 
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions import exit_codes
-from exactly_lib.cli.program_modes.test_case import argument_parsing as case_argument_parsing
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -179,10 +178,12 @@ class MainProgram:
                                      command_line_arguments: List[str],
                                      output: StdOutputFiles,
                                      ) -> int:
-        settings = case_argument_parsing.parse(self._default_test_case_handling_setup,
-                                               self._default_case_sandbox_root_dir_name_resolver,
-                                               command_line_arguments,
-                                               common_cli_options.COMMAND_DESCRIPTIONS)
+        from exactly_lib.cli.program_modes.test_case import argument_parsing
+
+        settings = argument_parsing.parse(self._default_test_case_handling_setup,
+                                          self._default_case_sandbox_root_dir_name_resolver,
+                                          command_line_arguments,
+                                          common_cli_options.COMMAND_DESCRIPTIONS)
         return self.execute_test_case(settings, output)
 
     def _parse_and_execute_test_suite(self,
@@ -198,7 +199,19 @@ class MainProgram:
                                              command_line_arguments: List[str],
                                              output: StdOutputFiles,
                                              ) -> int:
-        raise NotImplementedError('todo')
+        from exactly_lib.cli.program_modes.test_case import argument_parsing
+
+        settings = argument_parsing.parse(self._default_test_case_handling_setup,
+                                          self._default_case_sandbox_root_dir_name_resolver,
+                                          command_line_arguments,
+                                          common_cli_options.COMMAND_DESCRIPTIONS)
+        from exactly_lib.processing.standalone import processor
+        processor = processor.Processor(self._test_case_definition,
+                                        self._act_phase_os_process_executor,
+                                        self._test_suite_definition.configuration_section_parser)
+        return processor.process(output, settings)
+
+        return symbol_inspection.execute(settings, processor, output)
 
     def _parse_and_execute_help(self,
                                 help_command_arguments: List[str],
