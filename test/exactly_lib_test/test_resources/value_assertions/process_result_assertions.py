@@ -59,8 +59,8 @@ class _SubProcessResultAssertion(ValueAssertionBase[SubProcessResult]):
                              SubProcessResult,
                              message_builder.for_sub_component('class of result object').apply(
                                  'Expects ' + str(SubProcessResult)))
-        msg_info = '\nInfo from actual value:\nstdout = "{stdout}"\nstderr="{stderr}"'.format(stdout=value.stdout,
-                                                                                              stderr=value.stderr)
+        msg_info = '\nInfo from actual value:\nstdout = "{stdout}"\nstderr = "{stderr}"'.format(stdout=value.stdout,
+                                                                                                stderr=value.stderr)
         self._exitcode.apply(put, value.exitcode,
                              message_builder.for_sub_component('exitcode' + msg_info))
 
