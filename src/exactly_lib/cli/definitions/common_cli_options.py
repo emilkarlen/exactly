@@ -6,8 +6,10 @@ SUITE_COMMAND = 'suite'
 SYMBOL_COMMAND = 'symbol'
 
 COMMAND_DESCRIPTIONS = {
-    HELP_COMMAND: 'Help system (use "help help" for help on help.)',
-    SUITE_COMMAND: 'Runs a test suite (use "help suite" for help.)'
+    HELP_COMMAND: 'Help system (use "{} {}" for help on help.)'.format(HELP_COMMAND, HELP_COMMAND),
+    SUITE_COMMAND: 'Runs a test suite (use "{} {}" for help.)'.format(HELP_COMMAND, SUITE_COMMAND),
+    SYMBOL_COMMAND: 'Displays information about symbols in a test case (use "{} {}" for help.)'.format(HELP_COMMAND,
+                                                                                                       SYMBOL_COMMAND),
 }
 
 SHELL_COMMAND = instruction_arguments.COMMAND_ARGUMENT.name
