@@ -89,7 +89,11 @@ def synopsis() -> cli_syntax.Synopsis:
 
 _DESCRIPTION_PARAGRAPH = """\
 Reports definitions and references
-of {symbol:s} in the test case {TEST_CASE_FILE}.
+of all {symbol:s} in the test case {TEST_CASE_FILE}.
+
+
+Each symbol is printed on a separate line,
+together with its type and the number of references to it.
 """
 
 _OUTCOME = """\
