@@ -16,8 +16,8 @@ class ParserForSingleLineUsingStandardSyntax(ExecutableObjectParser):
     :returns The single non-empty line
     """
 
-    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> str:
-        return _parse_single_line(act_phase_instructions)
+    def apply(self, instructions: Sequence[ActPhaseInstruction]) -> str:
+        return _parse_single_line(instructions)
 
 
 class ParserForSingleLineUsingStandardSyntaxSplitAccordingToShellSyntax(ExecutableObjectParser):
@@ -28,13 +28,13 @@ class ParserForSingleLineUsingStandardSyntaxSplitAccordingToShellSyntax(Executab
     :returns The single non-empty line, split according to shell syntax.
     """
 
-    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> list:
-        single_line = _parse_single_line(act_phase_instructions)
+    def apply(self, instructions: Sequence[ActPhaseInstruction]) -> list:
+        single_line = _parse_single_line(instructions)
         return shlex.split(single_line)
 
 
-def _parse_single_line(act_phase_instructions: Sequence[ActPhaseInstruction]) -> str:
-    non_empty_lines = all_source_code_lines(act_phase_instructions)
+def _parse_single_line(instructions: Sequence[ActPhaseInstruction]) -> str:
+    non_empty_lines = all_source_code_lines(instructions)
     if not non_empty_lines:
         raise ParseException(svh.new_svh_validation_error('No lines with source code found'))
     if len(non_empty_lines) > 1:

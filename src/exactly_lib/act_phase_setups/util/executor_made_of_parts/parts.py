@@ -81,7 +81,7 @@ ExecutorConstructorType = Callable[[ActPhaseOsProcessExecutor,
 
 
 class ExecutableObjectParser:
-    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> ExecutableObject:
+    def apply(self, instructions: Sequence[ActPhaseInstruction]) -> ExecutableObject:
         """
         :raises ParseException
 
@@ -100,9 +100,8 @@ class AtcExecutorParser(ActionToCheckExecutorParser):
         self.validator_constructor = validator_constructor
         self.executor_constructor = executor_constructor
 
-    def parse(self,
-              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
-        object_to_execute = self.parser.apply(act_phase_instructions)
+    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
+        object_to_execute = self.parser.apply(instructions)
         return ActionToCheckExecutorFromParts(
             object_to_execute,
             self.validator_constructor,

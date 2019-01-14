@@ -33,7 +33,7 @@ class Parser(parts.AtcExecutorParser):
 
 
 class _Parser(ExecutableObjectParser):
-    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> _ObjectToExecute:
+    def apply(self, instructions: Sequence[ActPhaseInstruction]) -> _ObjectToExecute:
         return _ObjectToExecute()
 
 

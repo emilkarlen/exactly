@@ -41,19 +41,18 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
         hds = fake_hds()
         return InstructionEnvironmentForPreSdsStep(hds, {})
 
-    def _do_parse(self,
-                  act_phase_instructions: Sequence[ActPhaseInstruction]):
-        self.constructor.parse(act_phase_instructions)
+    def _do_parse(self, instructions: Sequence[ActPhaseInstruction]):
+        self.constructor.parse(instructions)
 
     def _do_parse_and_validate_pre_sds(self,
-                                       act_phase_instructions: Sequence[ActPhaseInstruction],
+                                       instructions: Sequence[ActPhaseInstruction],
                                        home_dir_contents: DirContents = empty_dir_contents()
                                        ):
         with home_directory_structure(
                 contents=case_home_dir_contents(home_dir_contents)) as hds:
             pre_sds_env = InstructionEnvironmentForPreSdsStep(hds,
                                                               {})
-            executor = self.constructor.parse(act_phase_instructions)
+            executor = self.constructor.parse(instructions)
             return executor.validate_pre_sds(pre_sds_env)
 
 

@@ -67,12 +67,12 @@ class ActionToCheckExecutorWrapperParserThatRecordsSteps(ActionToCheckExecutorPa
         self.__parse_action = parse_action
 
     def parse(self,
-              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
+              instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
         self.__recorder.recording_of(phase_step.ACT__PARSE).record()
-        self.__parse_action(act_phase_instructions)
+        self.__parse_action(instructions)
 
         return ActionToCheckExecutorWrapperThatRecordsSteps(self.__recorder,
-                                                            self.__wrapped.parse(act_phase_instructions))
+                                                            self.__wrapped.parse(instructions))
 
 
 def parser_of_constant(recorder: ListRecorder,

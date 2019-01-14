@@ -91,9 +91,8 @@ class ActionToCheckExecutorParserThatRecordsInstructionData(ActionToCheckExecuto
     def __init__(self, recording_media: List[Recording]):
         self.recording_media = recording_media
 
-    def parse(self,
-              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
-        for instruction in act_phase_instructions:
+    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
+        for instruction in instructions:
             assert isinstance(instruction, ActPhaseInstructionThatRecords)
             self.recording_media.append(instruction.recording)
         return ActionToCheckExecutorThatJustReturnsSuccess()

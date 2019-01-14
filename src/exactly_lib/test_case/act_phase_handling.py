@@ -89,8 +89,7 @@ class ActionToCheckExecutorParser:
     in terms of exceptions.
     """
 
-    def parse(self,
-              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
+    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
         raise NotImplementedError()
 
 

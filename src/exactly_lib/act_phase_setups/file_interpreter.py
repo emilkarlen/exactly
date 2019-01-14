@@ -98,9 +98,9 @@ class _Parser(ExecutableObjectParser):
     def __init__(self, is_shell: bool):
         self.is_shell = is_shell
 
-    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> _SourceInfo:
+    def apply(self, instructions: Sequence[ActPhaseInstruction]) -> _SourceInfo:
         single_line_parser = ParserForSingleLineUsingStandardSyntax()
-        single_line = single_line_parser.apply(act_phase_instructions)
+        single_line = single_line_parser.apply(instructions)
         single_line = single_line.strip()
         source = ParseSource(single_line)
         try:

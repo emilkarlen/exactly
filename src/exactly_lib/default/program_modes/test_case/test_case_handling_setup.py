@@ -15,10 +15,9 @@ def setup() -> TestCaseHandlingSetup:
 
 
 class AtcExecutorParser(ActionToCheckExecutorParser):
-    def parse(self,
-              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
-        source_code_lines = all_source_code_lines(act_phase_instructions)
+    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
+        source_code_lines = all_source_code_lines(instructions)
         if not source_code_lines:
-            return null.Parser().parse(act_phase_instructions)
+            return null.Parser().parse(instructions)
         else:
-            return command_line.Parser().parse(act_phase_instructions)
+            return command_line.Parser().parse(instructions)

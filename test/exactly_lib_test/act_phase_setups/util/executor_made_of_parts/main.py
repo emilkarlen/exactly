@@ -103,7 +103,7 @@ class ParserThatRaisesException(sut.ExecutableObjectParser):
     def __init__(self, cause: svh.SuccessOrValidationErrorOrHardError):
         self.cause = cause
 
-    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]):
+    def apply(self, instructions: Sequence[ActPhaseInstruction]):
         raise ParseException(self.cause)
 
 
@@ -111,8 +111,8 @@ class ParserThatExpectsSingleInstructionAndRecordsAndReturnsTheTextOfThatInstruc
     def __init__(self, recorder: Dict[phase_step.PhaseStep, str]):
         self.recorder = recorder
 
-    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]):
-        instruction = act_phase_instructions[0]
+    def apply(self, instructions: Sequence[ActPhaseInstruction]):
+        instruction = instructions[0]
         assert isinstance(instruction, ActPhaseInstruction)
         source_text = instruction.source_code().text
         self.recorder[phase_step.ACT__PARSE] = source_text
@@ -143,7 +143,7 @@ class ParserWithConstantResult(sut.ExecutableObjectParser):
     def __init__(self, constant_result: SymbolUser):
         self._constant_result = constant_result
 
-    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> SymbolUser:
+    def apply(self, instructions: Sequence[ActPhaseInstruction]) -> SymbolUser:
         return self._constant_result
 
 

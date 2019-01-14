@@ -62,9 +62,9 @@ class CommandConfiguration(SymbolUser):
 
 
 class _Parser(ExecutableObjectParser):
-    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> CommandConfiguration:
+    def apply(self, instructions: Sequence[ActPhaseInstruction]) -> CommandConfiguration:
         single_line_parser = ParserForSingleLineUsingStandardSyntax()
-        single_line = single_line_parser.apply(act_phase_instructions)
+        single_line = single_line_parser.apply(instructions)
         single_line = single_line.strip()
         if single_line.startswith(SHELL_COMMAND_MARKER):
             return self._parse_shell_command(single_line[len(SHELL_COMMAND_MARKER):])

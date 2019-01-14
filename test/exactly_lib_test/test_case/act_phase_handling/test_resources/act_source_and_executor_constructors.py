@@ -33,10 +33,9 @@ class ActionToCheckExecutorParserThatRunsConstantActions(ActionToCheckExecutorPa
         self.execute_initial_action = execute_initial_action
         self.execute_action = execute_action
 
-    def parse(self,
-              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
-        self.apply_action_before_executor_is_constructed(act_phase_instructions)
-        self.parse_action(act_phase_instructions)
+    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
+        self.apply_action_before_executor_is_constructed(instructions)
+        self.parse_action(instructions)
         return ActionToCheckExecutorThatRunsConstantActions(
             validate_pre_sds_initial_action=self.validate_pre_sds_initial_action,
             validate_pre_sds_action=self.validate_pre_sds_action,
@@ -56,13 +55,11 @@ class ActionToCheckExecutorConstructorForConstantExecutor(ActionToCheckExecutorP
         self.executor = executor
         self.parse_action = parse_action
 
-    def parse(self,
-              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
-        self.parse_action(act_phase_instructions)
+    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
+        self.parse_action(instructions)
         return self.executor
 
 
 class ActionToCheckExecutorParserThatRaisesException(ActionToCheckExecutorParser):
-    def parse(self,
-              act_phase_instructions: Sequence[ActPhaseInstruction]):
+    def parse(self, instructions: Sequence[ActPhaseInstruction]):
         raise ValueError('the method should never be called')
