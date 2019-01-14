@@ -1,7 +1,7 @@
 import itertools
 
 import functools
-from typing import TypeVar, Sequence, Callable, Iterable, List
+from typing import TypeVar, Sequence, Callable, List, Iterator
 
 from exactly_lib.cli.program_modes.symbol.completion_reporter import CompletionReporter
 from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYPE_INFO_DICT
@@ -54,7 +54,7 @@ class ReportGenerator:
         self._output.out.write(lines_content(output_lines))
         return self._completion_reporter.report_success()
 
-    def _get_definitions(self) -> Iterable[_SymbolDefinitionInfo]:
+    def _get_definitions(self) -> Iterator[_SymbolDefinitionInfo]:
         return itertools.chain.from_iterable([
             _definitions_from(self._test_case_instructions.setup_phase, setup.get_symbol_usages),
             _definitions_from(self._test_case_instructions.before_assert_phase, before_assert.get_symbol_usages),
@@ -62,7 +62,7 @@ class ReportGenerator:
             _definitions_from(self._test_case_instructions.cleanup_phase, cleanup.get_symbol_usages),
         ])
 
-    def _get_list_lines(self, symbols: Iterable[_SymbolDefinitionInfo]) -> List[str]:
+    def _get_list_lines(self, symbols: Iterator[_SymbolDefinitionInfo]) -> List[str]:
         symbol_list = list(symbols)
         symbol_line_formatter = self._symbol_line_formatter(symbol_list)
         return [
@@ -91,7 +91,7 @@ _A = TypeVar('_A')
 
 
 def _definitions_from(elements: Sequence[_A],
-                      symbol_usages_getter: Callable[[_A], Sequence[SymbolUsage]]) -> Iterable[_SymbolDefinitionInfo]:
+                      symbol_usages_getter: Callable[[_A], Sequence[SymbolUsage]]) -> Iterator[_SymbolDefinitionInfo]:
     symbol_usages_sequence_list = [
         symbol_usages_getter(element)
         for element in elements
