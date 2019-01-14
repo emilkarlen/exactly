@@ -89,8 +89,8 @@ class _PartialExecutor:
         self._stdin_conf_from_setup = None
         self._source_setup = None
         self._os_services = None
-        self._act_program_executor = None
-        self._act_source_and_executor = None
+        self._act_phase_executor = None
+        self._atc_executor = None
         self._act_source_and_executor_constructor = \
             conf.conf_phase_values.act_phase_handling.source_and_executor_constructor
         self._instruction_environment_pre_sds = InstructionEnvironmentForPreSdsStep(
@@ -105,7 +105,7 @@ class _PartialExecutor:
     def execute(self) -> PartialExeResult:
         self._set_pre_sds_environment_variables()
         res = self._sequence([
-            self._act__create_executor_and_parse,
+            self._act__parse_atc_executor,
             self._setup__validate_symbols,
             self._act__validate_symbols,
             self._before_assert__validate_symbols,
@@ -126,7 +126,7 @@ class _PartialExecutor:
             self._cleanup_main(PreviousPhase.SETUP)
             return self._final_failure_result_from(res)
 
-        self._act_program_executor = self._construct_act_program_executor()
+        self._act_phase_executor = self._construct_act_phase_executor()
         res = self._sequence_with_cleanup(
             PreviousPhase.SETUP,
             [
@@ -144,7 +144,7 @@ class _PartialExecutor:
             [
                 self._act__execute,
             ])
-        self._action_to_check_outcome = self._act_program_executor.action_to_check_outcome
+        self._action_to_check_outcome = self._act_phase_executor.action_to_check_outcome
 
         if res is not None:
             return self._final_failure_result_from(res)
@@ -227,7 +227,7 @@ class _PartialExecutor:
                                                 self._instruction_environment_pre_sds),
                                             self._test_case.setup_phase)
 
-    def _act__create_executor_and_parse(self) -> Optional[PhaseStepFailure]:
+    def _act__parse_atc_executor(self) -> Optional[PhaseStepFailure]:
         failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__PARSE)
 
         section_contents = self._test_case.act_phase
@@ -243,11 +243,11 @@ class _PartialExecutor:
                 msg = 'Act phase contains an element that is not an instruction: ' + str(element.element_type)
                 return failure_con.implementation_error_msg(msg)
 
-        source_and_executor_parser = self.conf_values.act_phase_handling.source_and_executor_constructor
+        atc_executor_parser = self.conf_values.act_phase_handling.source_and_executor_constructor
 
         def parse_action() -> Optional[PhaseStepFailure]:
             try:
-                self._act_source_and_executor = source_and_executor_parser.parse(instructions)
+                self._atc_executor = atc_executor_parser.parse(instructions)
             except ParseException as ex:
                 return failure_con.apply(PartialExeResultStatus.VALIDATION_ERROR,
                                          new_failure_details_from_message(ex.cause.failure_message))
@@ -260,7 +260,7 @@ class _PartialExecutor:
 
         def action() -> Optional[PhaseStepFailure]:
             executor = phase_step_executors.ValidateSymbolsExecutor(self._instruction_environment_pre_sds)
-            res = executor.apply(self._act_source_and_executor)
+            res = executor.apply(self._atc_executor)
             if res is None:
                 return None
             else:
@@ -273,7 +273,7 @@ class _PartialExecutor:
         failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__VALIDATE_PRE_SDS)
 
         def action() -> Optional[PhaseStepFailure]:
-            res = self._act_source_and_executor.validate_pre_sds(self._instruction_environment_pre_sds)
+            res = self._atc_executor.validate_pre_sds(self._instruction_environment_pre_sds)
             if res.is_success:
                 return None
             else:
@@ -286,13 +286,13 @@ class _PartialExecutor:
         failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__VALIDATE_POST_SETUP)
 
         return _execute_action_and_catch_implementation_exception(
-            self._act_program_executor.validate_post_setup(failure_con.apply), failure_con)
+            self._act_phase_executor.validate_post_setup(failure_con.apply), failure_con)
 
     def _act__prepare(self) -> Optional[PhaseStepFailure]:
         failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__PREPARE)
 
         return _execute_action_and_catch_implementation_exception(
-            self._act_program_executor.prepare(failure_con.apply),
+            self._act_phase_executor.prepare(failure_con.apply),
             failure_con
         )
 
@@ -300,7 +300,7 @@ class _PartialExecutor:
         failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__EXECUTE)
 
         return _execute_action_and_catch_implementation_exception(
-            self._act_program_executor.execute(failure_con.apply), failure_con)
+            self._act_phase_executor.execute(failure_con.apply), failure_con)
 
     def _before_assert__validate_pre_sds(self) -> Optional[PhaseStepFailure]:
         return _run_instructions_phase_step(
@@ -337,8 +337,8 @@ class _PartialExecutor:
                                                 self._post_setup_validation_environment(phase_identifier.SETUP)),
                                             self._test_case.setup_phase)
 
-    def _construct_act_program_executor(self) -> ActPhaseExecutor:
-        return ActPhaseExecutor(self._act_source_and_executor,
+    def _construct_act_phase_executor(self) -> ActPhaseExecutor:
+        return ActPhaseExecutor(self._atc_executor,
                                 self._post_setup_validation_environment(phase_identifier.ACT),
                                 self._post_sds_environment(phase_identifier.ACT),
                                 self.exe_conf.act_phase_os_process_executor,

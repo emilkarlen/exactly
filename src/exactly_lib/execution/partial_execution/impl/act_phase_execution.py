@@ -33,13 +33,13 @@ class ActPhaseExecutor:
     """
 
     def __init__(self,
-                 act_source_and_executor: ActSourceAndExecutor,
+                 atc_executor: ActSourceAndExecutor,
                  environment_for_validate_post_setup: InstructionEnvironmentForPostSdsStep,
                  environment_for_other_steps: InstructionEnvironmentForPostSdsStep,
                  os_process_executor: ActPhaseOsProcessExecutor,
                  stdin_configuration: StdinConfiguration,
                  exe_atc_and_skip_assertions: Optional[StdOutputFiles]):
-        self.act_source_and_executor = act_source_and_executor
+        self.atc_executor = atc_executor
         self.environment_for_validate_post_setup = environment_for_validate_post_setup
         self.environment_for_other_steps = environment_for_other_steps
         self.os_process_executor = os_process_executor
@@ -59,7 +59,7 @@ class ActPhaseExecutor:
 
     def validate_post_setup(self, failure_con: PhaseStepFailureConstructorType) -> ActionWithFailureAsResult:
         def action() -> Optional[PhaseStepFailure]:
-            res = self.act_source_and_executor.validate_post_setup(self.environment_for_validate_post_setup)
+            res = self.atc_executor.validate_post_setup(self.environment_for_validate_post_setup)
             if res.is_success:
                 return None
             else:
@@ -70,9 +70,9 @@ class ActPhaseExecutor:
 
     def prepare(self, failure_con: PhaseStepFailureConstructorType) -> ActionWithFailureAsResult:
         def action() -> Optional[PhaseStepFailure]:
-            res = self.act_source_and_executor.prepare(self.environment_for_other_steps,
-                                                       self.os_process_executor,
-                                                       self.script_output_dir_path)
+            res = self.atc_executor.prepare(self.environment_for_other_steps,
+                                            self.os_process_executor,
+                                            self.script_output_dir_path)
             if res.is_success:
                 return None
             else:
@@ -115,7 +115,7 @@ class ActPhaseExecutor:
 
     def _run_act_program_with_std_files(self,
                                         std_files: StdFiles) -> ExitCodeOrHardError:
-        exit_code_or_hard_error = self.act_source_and_executor.execute(
+        exit_code_or_hard_error = self.atc_executor.execute(
             self.environment_for_other_steps,
             self.os_process_executor,
             self.script_output_dir_path,
