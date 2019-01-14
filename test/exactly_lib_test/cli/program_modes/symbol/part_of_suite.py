@@ -10,7 +10,7 @@ from exactly_lib.util.string import lines_content
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
 from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
-from exactly_lib_test.cli.program_modes.symbol.test_resources.suite_setup import suite_cases
+from exactly_lib_test.cli.program_modes.symbol.test_resources.suite_file_setup import suite_cases
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import main_program_config
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
@@ -155,8 +155,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
                     asrt_proc_result.sub_process_result(
                         exitcode=asrt.equals(exit_codes.EXIT_OK),
                         stdout=asrt.equals(output.list_of([
-                            output.SymbolReport(symbol_in_suite_name, ValueType.STRING),
-                            output.SymbolReport(symbol_in_case_name, ValueType.STRING),
+                            output.SymbolReport(symbol_in_suite_name, ValueType.STRING, num_refs=0),
+                            output.SymbolReport(symbol_in_case_name, ValueType.STRING, num_refs=0),
                         ])),
                     )
                 )

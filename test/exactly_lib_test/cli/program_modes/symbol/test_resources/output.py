@@ -10,22 +10,37 @@ from exactly_lib.util.string import lines_content
 class SymbolReport:
     def __init__(self,
                  name: str,
-                 value_type: ValueType):
+                 value_type: ValueType,
+                 num_refs: int):
         self._name = name
         self._value_type = value_type
+        self._num_refs = num_refs
         self._type_identifier = ANY_TYPE_INFO_DICT[value_type].identifier
 
     def name(self) -> str:
         return self._name
 
-    def name_length(self) -> int:
-        return len(self._name)
-
     def type_identifier(self) -> str:
         return self._type_identifier
 
+    def num_refs(self) -> int:
+        return self._num_refs
+
+    def name_length(self) -> int:
+        return len(self._name)
+
     def type_identifier_length(self) -> int:
         return len(self._type_identifier)
+
+    def num_refs_string(self) -> str:
+        # return ''
+        return (_NO_REFS_INFO
+                if self._num_refs == 0
+                else '(' + str(self._num_refs) + ')'
+                )
+
+
+_NO_REFS_INFO = '(unused)'
 
 
 def def_of_string(symbol_name: str) -> str:
@@ -41,13 +56,14 @@ def list_of(symbols: List[SymbolReport]) -> str:
                                     map(SymbolReport.name_length,
                                         symbols),
                                     0)
-    formatting_str = '{type: <{type_width}} {name: <{name_width}}'
+    formatting_str = '{type: <{type_width}} {name: <{name_width}} {num_refs_info}'
 
     def format_symbol(symbol: SymbolReport) -> str:
         s = formatting_str.format(type=symbol.type_identifier(),
                                   type_width=max_type_ident_len,
                                   name=symbol.name(),
-                                  name_width=max_name_len)
+                                  name_width=max_name_len,
+                                  num_refs_info=symbol.num_refs_string())
         return s.strip()
 
     return lines_content([
