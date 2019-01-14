@@ -6,7 +6,7 @@ import pathlib
 from exactly_lib.execution import phase_step
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor, \
-    ActSourceAndExecutor, ActPhaseOsProcessExecutor
+    ActionToCheckExecutor, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
@@ -179,20 +179,20 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
                  environment: InstructionEnvironmentForPostSdsStep,
                  act_phase_process_executor: ActPhaseOsProcessExecutor,
                  script_output_path: pathlib.Path,
-                 program_executor: ActSourceAndExecutor):
+                 atc_executor: ActionToCheckExecutor):
         self.environment = environment
         self.act_phase_process_executor = act_phase_process_executor
         self.script_output_path = script_output_path
-        self.program_executor = program_executor
+        self.atc_executor = atc_executor
 
     def execute(self, files: StdFiles) -> int:
         """
          :raises HardErrorResultError: Return value from executor is not an exit code.
         """
-        exit_code_or_hard_error = self.program_executor.execute(self.environment,
-                                                                self.act_phase_process_executor,
-                                                                self.script_output_path,
-                                                                files)
+        exit_code_or_hard_error = self.atc_executor.execute(self.environment,
+                                                            self.act_phase_process_executor,
+                                                            self.script_output_path,
+                                                            files)
         if exit_code_or_hard_error.is_exit_code:
             return exit_code_or_hard_error.exit_code
         raise HardErrorResultError(exit_code_or_hard_error,

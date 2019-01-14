@@ -14,7 +14,7 @@ from exactly_lib_test.execution.test_resources.execution_recording import \
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
-    ActSourceAndExecutorThatRunsConstantActions
+    ActionToCheckExecutorThatRunsConstantActions
 from exactly_lib_test.test_case.act_phase_handling.test_resources.test_actions import validate_action_that_returns, \
     execute_action_that_returns_exit_code, prepare_action_that_returns
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_assertions import is_sds_root_dir
@@ -140,7 +140,7 @@ class TestCaseBase(unittest.TestCase):
 
     def _with_recording_act_program_executor(self,
                                              arrangement: Arrangement) -> ActPhaseHandling:
-        constant_actions_runner = ActSourceAndExecutorThatRunsConstantActions(
+        constant_actions_runner = ActionToCheckExecutorThatRunsConstantActions(
             validate_post_setup_action=arrangement.validate_test_action,
             prepare_action=arrangement.prepare_test_action,
             execute_action=arrangement.execute_test_action,

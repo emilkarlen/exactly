@@ -1,12 +1,12 @@
 from typing import Sequence
 
-from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutor, \
     ActSourceAndExecutorConstructor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.test_case.act_phase_handling.test_resources import test_actions
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
-    ActSourceAndExecutorThatRunsConstantActions
+    ActionToCheckExecutorThatRunsConstantActions
 from exactly_lib_test.test_resources import actions
 
 
@@ -34,10 +34,10 @@ class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecuto
         self.execute_action = execute_action
 
     def parse(self,
-              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
+              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
         self.apply_action_before_executor_is_constructed(act_phase_instructions)
         self.parse_action(act_phase_instructions)
-        return ActSourceAndExecutorThatRunsConstantActions(
+        return ActionToCheckExecutorThatRunsConstantActions(
             validate_pre_sds_initial_action=self.validate_pre_sds_initial_action,
             validate_pre_sds_action=self.validate_pre_sds_action,
             validate_post_setup_initial_action=self.validate_post_setup_initial_action,
@@ -50,14 +50,14 @@ class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecuto
 
 class ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorConstructor):
     def __init__(self,
-                 executor: ActSourceAndExecutor,
+                 executor: ActionToCheckExecutor,
                  parse_action=actions.do_nothing,
                  ):
         self.executor = executor
         self.parse_action = parse_action
 
     def parse(self,
-              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
+              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
         self.parse_action(act_phase_instructions)
         return self.executor
 

@@ -30,9 +30,9 @@ class ParseException(Exception):
             raise ValueError('A {} cannot represent SUCCESS'.format(str(type(self))))
 
 
-class ActSourceAndExecutor(SymbolUser):
+class ActionToCheckExecutor(SymbolUser):
     """
-    Valid act phase source together with functionality for executing it.
+    Executes the ATC.
     """
 
     def validate_pre_sds(self,
@@ -90,7 +90,7 @@ class ActSourceAndExecutorConstructor:
     """
 
     def parse(self,
-              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
+              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
         raise NotImplementedError()
 
 

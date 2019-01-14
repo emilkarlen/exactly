@@ -14,7 +14,7 @@ from exactly_lib_test.execution.test_resources.execution_recording import \
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
-    ActSourceAndExecutorThatRunsConstantActions
+    ActionToCheckExecutorThatRunsConstantActions
 from exactly_lib_test.test_case.act_phase_handling.test_resources.test_actions import \
     execute_action_that_returns_exit_code, \
     prepare_action_that_returns
@@ -135,7 +135,7 @@ def execute_test_case_with_recording(put: unittest.TestCase,
                                      arrangement: Arrangement,
                                      expectation: Expectation,
                                      dbg_do_not_delete_dir_structure=False):
-    constant_actions_runner = ActSourceAndExecutorThatRunsConstantActions(
+    constant_actions_runner = ActionToCheckExecutorThatRunsConstantActions(
         symbol_usages_action=arrangement.act_executor_symbol_usages,
         validate_pre_sds_action=arrangement.act_executor_validate_pre_sds,
         validate_post_setup_action=arrangement.act_executor_validate_post_setup,

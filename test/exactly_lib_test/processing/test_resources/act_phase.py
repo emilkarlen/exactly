@@ -6,19 +6,19 @@ from exactly_lib.util.std import StdFiles
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
     ActSourceAndExecutorConstructorForConstantExecutor
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
-    ActSourceAndExecutorThatRunsConstantActions
+    ActionToCheckExecutorThatRunsConstantActions
 
 
 def act_setup_that_prints_single_string_on_stdout(string_to_print: str) -> ActPhaseSetup:
     return ActPhaseSetup(ActSourceAndExecutorConstructorForConstantExecutor(
-        ActSourceAndExecutorThatRunsConstantActions(
+        ActionToCheckExecutorThatRunsConstantActions(
             execute_initial_action=PrintStringOnStdout(string_to_print)))
     )
 
 
 def act_setup_that_does_nothing() -> ActPhaseSetup:
     return ActPhaseSetup(ActSourceAndExecutorConstructorForConstantExecutor(
-        ActSourceAndExecutorThatRunsConstantActions())
+        ActionToCheckExecutorThatRunsConstantActions())
     )
 
 

@@ -10,11 +10,11 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedInstruction
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.section_document.source_location import FileSystemLocationInfo, FileLocationInfo
-from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor, ActSourceAndExecutor
+from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor, ActionToCheckExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.util.line_source import line_sequence_from_line, LineSequence
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
-    ActSourceAndExecutorThatJustReturnsSuccess
+    ActionToCheckExecutorThatJustReturnsSuccess
 from exactly_lib_test.test_suite.case_instructions.test_resources import integration_test
 from exactly_lib_test.test_suite.case_instructions.test_resources.integration_test import \
     PhaseConfig, \
@@ -92,11 +92,11 @@ class ActSourceAndExecutorConstructorThatRecordsInstructionData(ActSourceAndExec
         self.recording_media = recording_media
 
     def parse(self,
-              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
+              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
         for instruction in act_phase_instructions:
             assert isinstance(instruction, ActPhaseInstructionThatRecords)
             self.recording_media.append(instruction.recording)
-        return ActSourceAndExecutorThatJustReturnsSuccess()
+        return ActionToCheckExecutorThatJustReturnsSuccess()
 
 
 

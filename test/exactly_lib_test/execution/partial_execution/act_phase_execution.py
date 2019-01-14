@@ -13,7 +13,7 @@ from exactly_lib.execution.partial_execution.configuration import ConfPhaseValue
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.section_document.model import new_empty_section_contents
-from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutor, \
     ActPhaseHandling, ActSourceAndExecutorConstructor, ParseException, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
@@ -32,12 +32,12 @@ from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_exp
     Arrangement, Expectation
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
-    ActSourceAndExecutorWrapperThatRecordsSteps
+    ActionToCheckExecutorWrapperThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
     ActSourceAndExecutorConstructorForConstantExecutor
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
-    ActSourceAndExecutorThatJustReturnsSuccess, ActSourceAndExecutorThatRunsConstantActions
+    ActionToCheckExecutorThatJustReturnsSuccess, ActionToCheckExecutorThatRunsConstantActions
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.actions import do_raise
 from exactly_lib_test.test_resources.files import file_structure as fs
@@ -72,10 +72,10 @@ class TestExecutionSequence(unittest.TestCase):
     def test_WHEN_parse_raises_parse_exception_THEN_execution_SHOULD_stop_with_result_of_validation_error(self):
         # ARRANGE #
         expected_cause = svh.new_svh_validation_error('failure message')
-        executor_that_does_nothing = ActSourceAndExecutorThatRunsConstantActions()
+        executor_that_does_nothing = ActionToCheckExecutorThatRunsConstantActions()
         step_recorder = ListRecorder()
-        recording_executor = ActSourceAndExecutorWrapperThatRecordsSteps(step_recorder,
-                                                                         executor_that_does_nothing)
+        recording_executor = ActionToCheckExecutorWrapperThatRecordsSteps(step_recorder,
+                                                                          executor_that_does_nothing)
         constructor = ActSourceAndExecutorConstructorForConstantExecutor(
             recording_executor,
             parse_action=do_raise(ParseException(expected_cause))
@@ -93,10 +93,10 @@ class TestExecutionSequence(unittest.TestCase):
     def test_WHEN_parse_raises_unknown_exception_THEN_execution_SHOULD_stop_with_result_of_implementation_error(self):
         # ARRANGE #
         expected_cause = svh.new_svh_validation_error('failure message')
-        executor_that_does_nothing = ActSourceAndExecutorThatRunsConstantActions()
+        executor_that_does_nothing = ActionToCheckExecutorThatRunsConstantActions()
         step_recorder = ListRecorder()
-        recording_executor = ActSourceAndExecutorWrapperThatRecordsSteps(step_recorder,
-                                                                         executor_that_does_nothing)
+        recording_executor = ActionToCheckExecutorWrapperThatRecordsSteps(step_recorder,
+                                                                          executor_that_does_nothing)
         constructor = ActSourceAndExecutorConstructorForConstantExecutor(
             recording_executor,
             parse_action=do_raise(ValueError(expected_cause))
@@ -183,7 +183,7 @@ class TestExecute(unittest.TestCase):
         # ARRANGE #
         setup_settings = setup.default_settings()
         setup_settings.stdin.file_name = 'this-is-not-the-name-of-an-existing-file.txt'
-        constructor = ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorThatJustReturnsSuccess())
+        constructor = ActSourceAndExecutorConstructorForConstantExecutor(ActionToCheckExecutorThatJustReturnsSuccess())
         test_case = _empty_test_case()
         # ACT #
         result = _execute(constructor, test_case, setup_settings)
@@ -261,7 +261,7 @@ def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
             return result
 
 
-class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
+class _ExecutorThatRecordsCurrentDir(ActionToCheckExecutor):
     def __init__(self, cwd_registerer: CwdRegisterer):
         self._actual_sds = None
         self.cwd_registerer = cwd_registerer
@@ -299,7 +299,7 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
         return self._actual_sds
 
 
-class _ExecutorThatExecutesPythonProgramFile(ActSourceAndExecutorThatJustReturnsSuccess):
+class _ExecutorThatExecutesPythonProgramFile(ActionToCheckExecutorThatJustReturnsSuccess):
     def __init__(self, python_program_file: pathlib.Path):
         self.python_program_file = python_program_file
 
@@ -316,7 +316,7 @@ class _ExecutorThatExecutesPythonProgramFile(ActSourceAndExecutorThatJustReturns
         return new_eh_exit_code(exit_code)
 
 
-class _ExecutorThatReturnsConstantExitCode(ActSourceAndExecutorThatJustReturnsSuccess):
+class _ExecutorThatReturnsConstantExitCode(ActionToCheckExecutorThatJustReturnsSuccess):
     def __init__(self, exit_code: int):
         self.exit_code = exit_code
 

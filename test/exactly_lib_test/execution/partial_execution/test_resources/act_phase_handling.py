@@ -10,10 +10,10 @@ from exactly_lib.util.std import StdFiles
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
     ActSourceAndExecutorConstructorForConstantExecutor
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
-    ActSourceAndExecutorThatJustReturnsSuccess
+    ActionToCheckExecutorThatJustReturnsSuccess
 
 
-class ExecutorThatExecutesPythonProgramSource(ActSourceAndExecutorThatJustReturnsSuccess):
+class ExecutorThatExecutesPythonProgramSource(ActionToCheckExecutorThatJustReturnsSuccess):
     PYTHON_FILE_NAME = 'program.py'
 
     def __init__(self, python_program_source: str):
