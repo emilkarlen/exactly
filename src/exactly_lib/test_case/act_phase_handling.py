@@ -11,6 +11,18 @@ from exactly_lib.util.process_execution.execution_elements import ProcessExecuti
 from exactly_lib.util.std import StdFiles
 
 
+class ActPhaseOsProcessExecutor:
+    """
+    Executes a command in a sub process
+    """
+
+    def execute(self,
+                command: Command,
+                std_files: StdFiles,
+                process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
+        raise NotImplementedError()
+
+
 class ParseException(Exception):
     def __init__(self, cause: svh.SuccessOrValidationErrorOrHardError):
         self.cause = cause
@@ -44,6 +56,7 @@ class ActSourceAndExecutor(SymbolUser):
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_process_executor: ActPhaseOsProcessExecutor,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         """
         Executed after validate.
@@ -56,6 +69,7 @@ class ActSourceAndExecutor(SymbolUser):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_process_executor: ActPhaseOsProcessExecutor,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         """
@@ -63,18 +77,6 @@ class ActSourceAndExecutor(SymbolUser):
 
         :returns exit code of executed program, or error
         """
-        raise NotImplementedError()
-
-
-class ActPhaseOsProcessExecutor:
-    """
-    Executes a command in a sub process
-    """
-
-    def execute(self,
-                command: Command,
-                std_files: StdFiles,
-                process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
         raise NotImplementedError()
 
 
@@ -88,7 +90,6 @@ class ActSourceAndExecutorConstructor:
     """
 
     def parse(self,
-              os_process_executor: ActPhaseOsProcessExecutor,
               act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
         raise NotImplementedError()
 

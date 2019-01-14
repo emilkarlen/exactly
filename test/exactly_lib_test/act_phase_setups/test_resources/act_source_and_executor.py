@@ -119,8 +119,7 @@ class TestExecuteBase(unittest.TestCase):
 
         environment = InstructionEnvironmentForPreSdsStep(hds,
                                                           environ)
-        sut = self.source_and_executor_constructor.parse(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                                         act_phase_instructions)
+        sut = self.source_and_executor_constructor.parse(act_phase_instructions)
         step_result = sut.validate_pre_sds(environment)
         if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
             self.fail('Expecting success. Found {}: {}'.format(
@@ -138,12 +137,14 @@ class TestExecuteBase(unittest.TestCase):
                              step_result.status,
                              'Result of validation/post-setup')
             script_output_path = path_resolving_env.sds.test_case_dir
-            step_result = sut.prepare(environment, script_output_path)
+            step_result = sut.prepare(environment, DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, script_output_path)
             self.assertTrue(step_result.is_success,
                             'Expecting success from prepare (found hard error)')
-            process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(environment,
-                                                                                                script_output_path,
-                                                                                                sut)
+            process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
+                environment,
+                DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                script_output_path,
+                sut)
             return capture_process_executor_result(process_executor,
                                                    path_resolving_env.sds.result.root_dir,
                                                    stdin_contents=stdin_contents)
@@ -224,7 +225,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
             with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout(hds) as source:
                 executor_constructor = self.test_setup.sut
                 environment = InstructionEnvironmentForPreSdsStep(hds, {})
-                sut = executor_constructor.parse(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, source)
+                sut = executor_constructor.parse(source)
                 step_result = sut.validate_pre_sds(environment)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                  step_result.status,
@@ -245,11 +246,14 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                                      step_result.status,
                                      'Result of validation/post-setup')
                     script_output_dir_path = path_resolving_env.sds.test_case_dir
-                    step_result = sut.prepare(environment, script_output_dir_path)
+                    step_result = sut.prepare(environment,
+                                              DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                              script_output_dir_path)
                     self.assertTrue(step_result.is_success,
                                     'Expecting success from prepare (found hard error)')
                     process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
                         environment,
+                        DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                         script_output_dir_path,
                         sut)
                     process_result = capture_process_executor_result(process_executor,

@@ -1,7 +1,8 @@
+import unittest
+
 import os
 import pathlib
 import shutil
-import unittest
 
 from exactly_lib.act_phase_setups.source_interpreter import python3
 from exactly_lib.execution.configuration import ExecutionConfiguration
@@ -52,7 +53,8 @@ class PartialExecutionTestCaseBase:
         # CLEANUP #
         if not self.__dbg_do_not_delete_dir_structure and self.sds:
             if self.sds.root_dir.exists():
-                shutil.rmtree(str(self.sds.root_dir))
+                shutil.rmtree(str(self.sds.root_dir),
+                              ignore_errors=True)
         else:
             if self.sds:
                 print(str(self.sds.root_dir))

@@ -8,7 +8,6 @@ from exactly_lib.execution import phase_step
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ParseException
-from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, SymbolUser
 from exactly_lib.test_case.result import sh, svh, eh
@@ -37,7 +36,7 @@ class TestConstructor(unittest.TestCase):
         act_phase_instructions = []
         # ACT #
         with self.assertRaises(ParseException) as ex:
-            executor = constructor.parse(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, act_phase_instructions)
+            executor = constructor.parse(act_phase_instructions)
             # ASSERT #
             self.assertIs(parser_error, ex)
 

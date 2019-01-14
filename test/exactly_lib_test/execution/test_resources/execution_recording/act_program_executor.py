@@ -42,16 +42,18 @@ class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_process_executor: ActPhaseOsProcessExecutor,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         self.__recorder.recording_of(phase_step.ACT__PREPARE).record()
-        return self.__wrapped.prepare(environment, script_output_dir_path)
+        return self.__wrapped.prepare(environment, os_process_executor, script_output_dir_path)
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_process_executor: ActPhaseOsProcessExecutor,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self.__recorder.recording_of(phase_step.ACT__EXECUTE).record()
-        return self.__wrapped.execute(environment, script_output_dir_path, std_files)
+        return self.__wrapped.execute(environment, os_process_executor, script_output_dir_path, std_files)
 
 
 class ActSourceAndExecutorWrapperConstructorThatRecordsSteps(ActSourceAndExecutorConstructor):
@@ -65,14 +67,12 @@ class ActSourceAndExecutorWrapperConstructorThatRecordsSteps(ActSourceAndExecuto
         self.__parse_action = parse_action
 
     def parse(self,
-              os_process_executor: ActPhaseOsProcessExecutor,
               act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
         self.__recorder.recording_of(phase_step.ACT__PARSE).record()
         self.__parse_action(act_phase_instructions)
 
         return ActSourceAndExecutorWrapperThatRecordsSteps(self.__recorder,
-                                                           self.__wrapped.parse(os_process_executor,
-                                                                                act_phase_instructions))
+                                                           self.__wrapped.parse(act_phase_instructions))
 
 
 def constructor_of_constant(recorder: ListRecorder,

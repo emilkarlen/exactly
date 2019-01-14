@@ -1,9 +1,10 @@
 import unittest
 
 import pathlib
+from typing import Sequence
 
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor, ParseException
-from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
@@ -41,22 +42,18 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
         return InstructionEnvironmentForPreSdsStep(hds, {})
 
     def _do_parse(self,
-                  act_phase_instructions: list,
-                  home_act_dir_contents: DirContents = empty_dir_contents()
-                  ):
-        self.constructor.parse(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
-                               act_phase_instructions)
+                  act_phase_instructions: Sequence[ActPhaseInstruction]):
+        self.constructor.parse(act_phase_instructions)
 
     def _do_parse_and_validate_pre_sds(self,
-                                       act_phase_instructions: list,
+                                       act_phase_instructions: Sequence[ActPhaseInstruction],
                                        home_dir_contents: DirContents = empty_dir_contents()
                                        ):
         with home_directory_structure(
                 contents=case_home_dir_contents(home_dir_contents)) as hds:
             pre_sds_env = InstructionEnvironmentForPreSdsStep(hds,
                                                               {})
-            executor = self.constructor.parse(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                              act_phase_instructions)
+            executor = self.constructor.parse(act_phase_instructions)
             return executor.validate_pre_sds(pre_sds_env)
 
 

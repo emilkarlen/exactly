@@ -14,7 +14,7 @@ from exactly_lib.execution.partial_execution.result import PartialExeResultStatu
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
-    ActPhaseHandling, ActSourceAndExecutorConstructor, ParseException
+    ActPhaseHandling, ActSourceAndExecutorConstructor, ParseException, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -281,12 +281,14 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_process_executor: ActPhaseOsProcessExecutor,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         self.cwd_registerer.register_cwd_for(phase_step.ACT__PREPARE)
         return sh.new_sh_success()
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_process_executor: ActPhaseOsProcessExecutor,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self.cwd_registerer.register_cwd_for(phase_step.ACT__EXECUTE)
@@ -303,6 +305,7 @@ class _ExecutorThatExecutesPythonProgramFile(ActSourceAndExecutorThatJustReturns
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_process_executor: ActPhaseOsProcessExecutor,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         exit_code = subprocess.call([sys.executable, str(self.python_program_file)],
@@ -319,6 +322,7 @@ class _ExecutorThatReturnsConstantExitCode(ActSourceAndExecutorThatJustReturnsSu
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_process_executor: ActPhaseOsProcessExecutor,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return new_eh_exit_code(self.exit_code)

@@ -1,8 +1,9 @@
-import pathlib
-import subprocess
 import sys
 
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+import pathlib
+import subprocess
+
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.util.std import StdFiles
@@ -20,6 +21,7 @@ class ExecutorThatExecutesPythonProgramSource(ActSourceAndExecutorThatJustReturn
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_process_executor: ActPhaseOsProcessExecutor,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         python_file = pathlib.Path() / self.PYTHON_FILE_NAME

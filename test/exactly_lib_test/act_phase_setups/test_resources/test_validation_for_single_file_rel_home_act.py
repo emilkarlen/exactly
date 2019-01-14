@@ -3,7 +3,6 @@ import unittest
 import pathlib
 
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
-from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
@@ -106,8 +105,7 @@ class test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_relative_name_
                 contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
                     fs.executable_file('system-under-test')]))) as hds:
             environment = InstructionEnvironmentForPreSdsStep(hds, {})
-            executor = self.constructor.parse(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                              act_phase_instructions)
+            executor = self.constructor.parse(act_phase_instructions)
             actual = executor.validate_pre_sds(environment)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       actual.status,

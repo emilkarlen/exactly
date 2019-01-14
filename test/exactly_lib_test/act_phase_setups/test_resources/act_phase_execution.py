@@ -82,8 +82,7 @@ def check_execution(put: unittest.TestCase,
                                                                       arrangement.environ,
                                                                       arrangement.timeout_in_seconds,
                                                                       symbols=arrangement.symbol_table)
-        sut = executor_constructor.parse(arrangement.act_phase_process_executor,
-                                         act_phase_instructions)
+        sut = executor_constructor.parse(act_phase_instructions)
         expectation.symbol_usages.apply_with_message(put,
                                                      sut.symbol_usages(),
                                                      'symbol-usages after ' +
@@ -117,7 +116,9 @@ def check_execution(put: unittest.TestCase,
                                                          'symbol-usages after ' +
                                                          phase_step.STEP__VALIDATE_POST_SETUP)
             script_output_dir_path = path_resolving_env.sds.test_case_dir
-            step_result = sut.prepare(instruction_environment, script_output_dir_path)
+            step_result = sut.prepare(instruction_environment,
+                                      arrangement.act_phase_process_executor,
+                                      script_output_dir_path)
             expectation.side_effects_on_files_after_prepare.apply(put, path_resolving_env.sds)
             expectation.result_of_prepare.apply(put,
                                                 step_result,
@@ -131,6 +132,7 @@ def check_execution(put: unittest.TestCase,
 
             process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
                 instruction_environment,
+                arrangement.act_phase_process_executor,
                 script_output_dir_path,
                 sut)
             error_msg_extra_info = ''
@@ -175,18 +177,20 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
 
     def __init__(self,
                  environment: InstructionEnvironmentForPostSdsStep,
+                 act_phase_process_executor: ActPhaseOsProcessExecutor,
                  script_output_path: pathlib.Path,
                  program_executor: ActSourceAndExecutor):
-        self.program_executor = program_executor
         self.environment = environment
+        self.act_phase_process_executor = act_phase_process_executor
         self.script_output_path = script_output_path
+        self.program_executor = program_executor
 
-    def execute(self,
-                files: StdFiles) -> int:
+    def execute(self, files: StdFiles) -> int:
         """
          :raises HardErrorResultError: Return value from executor is not an exit code.
         """
         exit_code_or_hard_error = self.program_executor.execute(self.environment,
+                                                                self.act_phase_process_executor,
                                                                 self.script_output_path,
                                                                 files)
         if exit_code_or_hard_error.is_exit_code:

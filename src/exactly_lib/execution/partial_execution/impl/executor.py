@@ -247,10 +247,7 @@ class _PartialExecutor:
 
         def parse_action() -> Optional[PhaseStepFailure]:
             try:
-                self._act_source_and_executor = source_and_executor_parser.parse(
-                    self.exe_conf.act_phase_os_process_executor,
-                    instructions
-                )
+                self._act_source_and_executor = source_and_executor_parser.parse(instructions)
             except ParseException as ex:
                 return failure_con.apply(PartialExeResultStatus.VALIDATION_ERROR,
                                          new_failure_details_from_message(ex.cause.failure_message))
@@ -295,7 +292,9 @@ class _PartialExecutor:
         failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__PREPARE)
 
         return _execute_action_and_catch_implementation_exception(
-            self._act_program_executor.prepare(failure_con.apply), failure_con)
+            self._act_program_executor.prepare(failure_con.apply),
+            failure_con
+        )
 
     def _act__execute(self) -> Optional[PhaseStepFailure]:
         failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__EXECUTE)
@@ -342,6 +341,7 @@ class _PartialExecutor:
         return ActPhaseExecutor(self._act_source_and_executor,
                                 self._post_setup_validation_environment(phase_identifier.ACT),
                                 self._post_sds_environment(phase_identifier.ACT),
+                                self.exe_conf.act_phase_os_process_executor,
                                 self._stdin_conf_from_setup,
                                 self.exe_conf.exe_atc_and_skip_assertions)
 

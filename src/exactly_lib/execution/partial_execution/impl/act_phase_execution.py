@@ -6,7 +6,7 @@ from typing import Optional, Callable
 from exactly_lib.execution.impl.result import PhaseStepFailure, ActionWithFailureAsResult
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.execution.result import ActionToCheckOutcome
-from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor
+from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import StdinConfiguration
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_hard_error
@@ -36,11 +36,13 @@ class ActPhaseExecutor:
                  act_source_and_executor: ActSourceAndExecutor,
                  environment_for_validate_post_setup: InstructionEnvironmentForPostSdsStep,
                  environment_for_other_steps: InstructionEnvironmentForPostSdsStep,
+                 os_process_executor: ActPhaseOsProcessExecutor,
                  stdin_configuration: StdinConfiguration,
                  exe_atc_and_skip_assertions: Optional[StdOutputFiles]):
         self.act_source_and_executor = act_source_and_executor
         self.environment_for_validate_post_setup = environment_for_validate_post_setup
         self.environment_for_other_steps = environment_for_other_steps
+        self.os_process_executor = os_process_executor
         self.home_and_sds = environment_for_other_steps.home_and_sds
         self.stdin_configuration = stdin_configuration
         self.script_output_dir_path = environment_for_other_steps.home_and_sds.sds.test_case_dir
@@ -69,6 +71,7 @@ class ActPhaseExecutor:
     def prepare(self, failure_con: PhaseStepFailureConstructorType) -> ActionWithFailureAsResult:
         def action() -> Optional[PhaseStepFailure]:
             res = self.act_source_and_executor.prepare(self.environment_for_other_steps,
+                                                       self.os_process_executor,
                                                        self.script_output_dir_path)
             if res.is_success:
                 return None
@@ -114,6 +117,7 @@ class ActPhaseExecutor:
                                         std_files: StdFiles) -> ExitCodeOrHardError:
         exit_code_or_hard_error = self.act_source_and_executor.execute(
             self.environment_for_other_steps,
+            self.os_process_executor,
             self.script_output_dir_path,
             std_files)
         self._register_outcome(exit_code_or_hard_error)
