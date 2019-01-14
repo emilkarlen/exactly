@@ -10,11 +10,7 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_argument
 from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import suite_instructions
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
-from exactly_lib_test.cli.program_modes.symbol.test_resources.suite_instructions import \
-    SUITE_DEFINITION_WITH_SEARCH_REPLACE_PREPROC
-from exactly_lib_test.cli.program_modes.test_resources import main_program_execution
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
-from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
 from exactly_lib_test.processing.test_resources import preprocessor_utils
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File
@@ -59,10 +55,6 @@ class TestInvalidPreprocessor(unittest.TestCase):
 
 class TestStandaloneCase(unittest.TestCase):
     def test_single_definition(self):
-        main_program_config = main_program_execution.main_program_config(
-            test_case_definition_for(sym_def.INSTRUCTION_SETUP)
-        )
-
         symbol_name__before_preproc = 'STRING_SYMBOL__BEFORE_PRE_PROC'
         symbol_name__after_preproc = 'STRING_SYMBOL'
 
@@ -90,7 +82,7 @@ class TestStandaloneCase(unittest.TestCase):
                     py_pgm_that_replaces_symbol_name,
                     case_with_single_def,
                 ]),
-                main_program_config=main_program_config,
+                main_program_config=sym_def.main_program_config(),
             ),
             expectation=
             asrt_proc_result.sub_process_result(
@@ -105,11 +97,6 @@ class TestStandaloneCase(unittest.TestCase):
 class TestPreprocessorSpecifiedInSuite(unittest.TestCase):
     def test_definition_in_suite_and_case(self):
         # ARRANGE #
-
-        main_program_config = main_program_execution.main_program_config(
-            test_case_definition_for(sym_def.INSTRUCTION_SETUP),
-            SUITE_DEFINITION_WITH_SEARCH_REPLACE_PREPROC,
-        )
 
         symbol_in_suite = 'SUITE_STRING_SYMBOL'
         symbol_in_case__before_preproc = 'CASE_STRING_SYMBOL__BEFORE_PRE_PROC'
@@ -149,7 +136,7 @@ class TestPreprocessorSpecifiedInSuite(unittest.TestCase):
                     suite_with_preprocessor,
                     case_with_single_def,
                 ]),
-                main_program_config=main_program_config,
+                main_program_config=sym_def.main_program_config(),
             ),
             expectation=
             asrt_proc_result.sub_process_result(

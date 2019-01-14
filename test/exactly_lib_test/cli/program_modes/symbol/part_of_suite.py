@@ -12,8 +12,6 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
 from exactly_lib_test.cli.program_modes.symbol.test_resources.suite_file_setup import suite_cases
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
-from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import main_program_config
-from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File, empty_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -120,7 +118,6 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 )
 
     def test_definition_in_suite_and_case(self):
-        tcd = test_case_definition_for(sym_def.INSTRUCTION_SETUP)
         symbol_in_suite_name = 'SUITE_SYMBOL'
         symbol_in_case_name = 'CASE_SYMBOL'
 
@@ -147,9 +144,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                             suite_case.value.suite_file(suite_with_single_def),
                             case_with_single_def,
                         ]),
-                        main_program_config=main_program_config(
-                            tcd
-                        ),
+                        main_program_config=sym_def.main_program_config(),
                     ),
                     expectation=
                     asrt_proc_result.sub_process_result(

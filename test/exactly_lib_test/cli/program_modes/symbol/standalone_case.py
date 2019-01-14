@@ -11,8 +11,6 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_argument
 from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
-from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import main_program_config
-from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
@@ -69,7 +67,6 @@ class TestSuccessfulScenarios(unittest.TestCase):
         )
 
     def test_single_definition(self):
-        tcd = test_case_definition_for(sym_def.INSTRUCTION_SETUP)
         symbol_name = 'STRING_SYMBOL'
         case_with_single_def = File('test.case',
                                     lines_content([
@@ -86,9 +83,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 cwd_contents=DirContents([
                     case_with_single_def,
                 ]),
-                main_program_config=main_program_config(
-                    tcd
-                ),
+                main_program_config=sym_def.main_program_config(),
             ),
             expectation=
             asrt_proc_result.sub_process_result(
@@ -100,7 +95,6 @@ class TestSuccessfulScenarios(unittest.TestCase):
         )
 
     def test_single_definition_with_single_reference(self):
-        tcd = test_case_definition_for(sym_def.INSTRUCTION_SETUP)
         symbol_name = 'STRING_SYMBOL'
         case_with_single_def = File('test.case',
                                     lines_content([
@@ -118,9 +112,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 cwd_contents=DirContents([
                     case_with_single_def,
                 ]),
-                main_program_config=main_program_config(
-                    tcd
-                ),
+                main_program_config=sym_def.main_program_config(),
             ),
             expectation=
             asrt_proc_result.sub_process_result(
@@ -132,7 +124,6 @@ class TestSuccessfulScenarios(unittest.TestCase):
         )
 
     def test_definition_and_reference_in_definition(self):
-        tcd = test_case_definition_for(sym_def.INSTRUCTION_SETUP)
         leaf_name = 'LEAF_SYMBOL_SYMBOL'
         referrer_name = 'REFERRER_SYMBOL'
         case_with_single_def = File(
@@ -153,9 +144,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 cwd_contents=DirContents([
                     case_with_single_def,
                 ]),
-                main_program_config=main_program_config(
-                    tcd
-                ),
+                main_program_config=sym_def.main_program_config(),
             ),
             expectation=
             asrt_proc_result.sub_process_result(
@@ -168,7 +157,6 @@ class TestSuccessfulScenarios(unittest.TestCase):
         )
 
     def test_multiple_definition(self):
-        tcd = test_case_definition_for(sym_def.INSTRUCTION_SETUP)
         setup_symbol_name = 'SETUP_SYMBOL'
         before_assert_symbol_name = 'BEFORE_ASSERT_SYMBOL'
         assert_symbol_name = 'ASSERT_SYMBOL'
@@ -200,9 +188,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 cwd_contents=DirContents([
                     case_with_one_def_per_phase,
                 ]),
-                main_program_config=main_program_config(
-                    tcd
-                ),
+                main_program_config=sym_def.main_program_config(),
             ),
             expectation=
             asrt_proc_result.sub_process_result(
