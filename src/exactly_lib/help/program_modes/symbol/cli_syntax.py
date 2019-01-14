@@ -88,12 +88,12 @@ def synopsis() -> cli_syntax.Synopsis:
 
 
 _DESCRIPTION_PARAGRAPH = """\
-Display information about definitions and references
+Reports information about definitions and references
 of {symbol:s} in the test case {TEST_CASE_FILE}.
 """
 
 _OUTCOME = """\
-The usage report is printed on stdout.
+The report is printed on stdout.
 
 
 Errors are reported with {exit_code:s} and {exit_identifier:s}
@@ -101,7 +101,7 @@ corresponding to the outcome of running the corresponding test case.
 
 
 But the test case is not executed,
-so no execution errors are not reported. 
+so no execution errors are reported. 
 """
 
 _CORRESPONDS_TO_TEST_CASE_ARGUMENT = """\
