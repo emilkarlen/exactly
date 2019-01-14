@@ -36,6 +36,7 @@ class _SymbolDefinitionInfo:
                  references: List[SymUsageInPhase[SymbolDefinition]]):
         self.definition = definition
         self.references = references
+        self._num_refs_str = format_num_refs_info(self)
 
     def name(self) -> str:
         return self.definition.name
@@ -49,12 +50,15 @@ class _SymbolDefinitionInfo:
     def type_identifier(self) -> str:
         return ANY_TYPE_INFO_DICT[self.value_type()].identifier
 
+    def num_refs_str(self) -> str:
+        return self._num_refs_str
+
+    def num_refs_str_length(self) -> int:
+        return len(self._num_refs_str)
+
 
 def format_num_refs_info(symbol: _SymbolDefinitionInfo) -> str:
-    if symbol.references:
-        return '(' + str(len(symbol.references)) + ')'
-    else:
-        return '(unused)'
+    return '(' + str(len(symbol.references)) + ')'
 
 
 class _TypeReportingInfo:
@@ -101,18 +105,18 @@ class ReportGenerator:
         max_type_identifier_len = functools.reduce(_max_int,
                                                    map(get_identifier_length, symbols),
                                                    0)
-        max_name_len = functools.reduce(_max_int,
-                                        map(_SymbolDefinitionInfo.name_length, symbols),
-                                        0)
+        max_num_refs_len = functools.reduce(_max_int,
+                                            map(_SymbolDefinitionInfo.num_refs_str_length, symbols),
+                                            0)
 
         type_formatting_string = '%-{}s %-{}s'.format(max_type_identifier_len,
-                                                      max_name_len)
+                                                      max_num_refs_len)
 
         def ret_val(symbol: _SymbolDefinitionInfo) -> str:
             return (type_formatting_string % (symbol.type_identifier(),
-                                              symbol.name()) +
+                                              symbol.num_refs_str()) +
                     ' ' +
-                    format_num_refs_info(symbol)
+                    symbol.name()
                     )
 
         return ret_val

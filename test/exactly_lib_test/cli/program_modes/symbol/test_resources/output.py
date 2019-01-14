@@ -6,6 +6,8 @@ from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYP
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.string import lines_content
 
+_NO_REFS_INFO = '(unused)'
+
 
 class SymbolReport:
     def __init__(self,
@@ -16,6 +18,7 @@ class SymbolReport:
         self._value_type = value_type
         self._num_refs = num_refs
         self._type_identifier = ANY_TYPE_INFO_DICT[value_type].identifier
+        self._num_refs_string = '(' + str(self._num_refs) + ')'
 
     def name(self) -> str:
         return self._name
@@ -33,14 +36,10 @@ class SymbolReport:
         return len(self._type_identifier)
 
     def num_refs_string(self) -> str:
-        # return ''
-        return (_NO_REFS_INFO
-                if self._num_refs == 0
-                else '(' + str(self._num_refs) + ')'
-                )
+        return self._num_refs_string
 
-
-_NO_REFS_INFO = '(unused)'
+    def num_refs_string_length(self) -> int:
+        return len(self._num_refs_string)
 
 
 def def_of_string(symbol_name: str) -> str:
@@ -52,17 +51,17 @@ def list_of(symbols: List[SymbolReport]) -> str:
                                           map(SymbolReport.type_identifier_length,
                                               symbols),
                                           0)
-    max_name_len = functools.reduce(int_max,
-                                    map(SymbolReport.name_length,
-                                        symbols),
-                                    0)
-    formatting_str = '{type: <{type_width}} {name: <{name_width}} {num_refs_info}'
+    max_num_refs_len = functools.reduce(int_max,
+                                        map(SymbolReport.num_refs_string_length,
+                                            symbols),
+                                        0)
+    formatting_str = '{type: <{type_width}} {num_refs_info: <{num_refs_width}} {name}'
 
     def format_symbol(symbol: SymbolReport) -> str:
         s = formatting_str.format(type=symbol.type_identifier(),
                                   type_width=max_type_ident_len,
                                   name=symbol.name(),
-                                  name_width=max_name_len,
+                                  num_refs_width=max_num_refs_len,
                                   num_refs_info=symbol.num_refs_string())
         return s.strip()
 
