@@ -27,6 +27,6 @@ TEST_CASE_SPEC_TITLE = 'Specification of test case functionality'
 
 TEST_SUITE_SPEC_TITLE = 'Specification of test suite functionality'
 
-SYMBOL_COMMAND_SINGLE_LINE_DESCRIPTION = 'Displays information about symbols in a test case'
+SYMBOL_COMMAND_SINGLE_LINE_DESCRIPTION = 'Reports information about symbol usages in a test case'
 
 SUITE_COMMAND_SINGLE_LINE_DESCRIPTION = 'Runs a test suite'

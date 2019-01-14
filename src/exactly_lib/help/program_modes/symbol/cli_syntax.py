@@ -5,6 +5,7 @@ from exactly_lib.cli.definitions import common_cli_options as common_opts
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
+from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
 from exactly_lib.help.program_modes.common.cli_syntax import SUITE_OPTION, PREPROCESSOR_OPTION, \
@@ -87,12 +88,20 @@ def synopsis() -> cli_syntax.Synopsis:
 
 
 _DESCRIPTION_PARAGRAPH = """\
-Display information about the symbols used in the test case {TEST_CASE_FILE}.
+Display information about definitions and references
+of {symbol:s} in the test case {TEST_CASE_FILE}.
 """
 
 _OUTCOME = """\
+The usage report is printed on stdout.
+
+
 Errors are reported with {exit_code:s} and {exit_identifier:s}
-corresponding to the outcome of executing the corresponding test case.
+corresponding to the outcome of running the corresponding test case.
+
+
+But the test case is not executed,
+so no execution errors are not reported. 
 """
 
 _CORRESPONDS_TO_TEST_CASE_ARGUMENT = """\
@@ -100,6 +109,7 @@ Corresponds to the same argument for running a test case.
 """
 
 _TP = TextParser({
+    'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
     'exit_code': misc_texts.EXIT_CODE,
     'exit_identifier': misc_texts.EXIT_IDENTIFIER,
     'TEST_CASE_FILE': TEST_CASE_FILE_ARGUMENT.name,
