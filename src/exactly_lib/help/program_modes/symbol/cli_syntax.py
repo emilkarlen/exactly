@@ -84,8 +84,12 @@ def synopsis() -> cli_syntax.Synopsis:
     ],
         prefix=program_info.PROGRAM_NAME)
     return cli_syntax.Synopsis(command_line,
-                               _TP.text(_DESCRIPTION_PARAGRAPH))
+                               _TP.text(_SINGLE_LINE_DESCRIPTION_FOR_CLI_SYNTAX))
 
+
+_SINGLE_LINE_DESCRIPTION_FOR_CLI_SYNTAX = """\
+Reports usage of {symbol:s} in the test case {TEST_CASE_FILE}.
+"""
 
 _DESCRIPTION_PARAGRAPH = """\
 Reports definitions and references

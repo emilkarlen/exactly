@@ -62,7 +62,8 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             _synopsis(_ns(arguments_for.suite_section_for_name('SECTION')), 'Describes a test suite section.'),
             _synopsis(_ns(arguments_for.suite_instruction_in_section('SECTION', 'INSTRUCTION')),
                       'Describes an instruction in a test suite section.'),
-            _synopsis(_ns(arguments_for.symbol_cli_syntax()), 'Describes the symbol usages info command line syntax.'),
+            _synopsis(_ns(arguments_for.symbol_cli_syntax()),
+                      'Describes the symbol usages report command line syntax.'),
         ]
 
         return non_entities_help + self._entities_help()
