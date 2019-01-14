@@ -4,6 +4,7 @@ from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.processing import exit_values
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
 from exactly_lib_test.cli.program_modes.symbol.test_resources import output
@@ -94,8 +95,8 @@ class TestStandaloneCase(unittest.TestCase):
             expectation=
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
-                stdout=asrt.equals(lines_content([
-                    output.def_of_string(symbol_name__after_preproc),
+                stdout=asrt.equals(output.list_of([
+                    output.SymbolReport(symbol_name__after_preproc, ValueType.STRING),
                 ])),
             )
         )
@@ -153,9 +154,9 @@ class TestPreprocessorSpecifiedInSuite(unittest.TestCase):
             expectation=
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
-                stdout=asrt.equals(lines_content([
-                    output.def_of_string(symbol_in_suite),
-                    output.def_of_string(symbol_in_case__after_preproc),
+                stdout=asrt.equals(output.list_of([
+                    output.SymbolReport(symbol_in_suite, ValueType.STRING),
+                    output.SymbolReport(symbol_in_case__after_preproc, ValueType.STRING),
                 ])),
             )
         )
