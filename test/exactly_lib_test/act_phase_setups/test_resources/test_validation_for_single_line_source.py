@@ -5,11 +5,10 @@ import pathlib
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor, ParseException
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
-from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents, contents_in
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
@@ -45,10 +44,8 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
                   act_phase_instructions: list,
                   home_act_dir_contents: DirContents = empty_dir_contents()
                   ):
-        with home_directory_structure(
-                contents=contents_in(RelHomeOptionType.REL_HOME_ACT, home_act_dir_contents)):
-            self.constructor.parse(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                   act_phase_instructions)
+        self.constructor.parse(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                               act_phase_instructions)
 
     def _do_parse_and_validate_pre_sds(self,
                                        act_phase_instructions: list,

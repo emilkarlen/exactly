@@ -1,6 +1,7 @@
-import pathlib
 import sys
 import unittest
+
+import pathlib
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
@@ -81,8 +82,7 @@ class TestFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted(TestCaseForConfigur
         act_phase_instructions = [instr(["""valid-file-ref 'quoting missing ending single-quote"""]),
                                   instr([''])]
         with self.assertRaises(ParseException):
-            self._do_parse(act_phase_instructions,
-                           home_act_dir_contents=DirContents([empty_file('valid-file-ref')]))
+            self._do_parse(act_phase_instructions)
 
 
 class TestFileReferenceCanBeQuoted(unittest.TestCase):
