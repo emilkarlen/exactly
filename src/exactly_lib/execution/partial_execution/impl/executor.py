@@ -230,18 +230,33 @@ class _PartialExecutor:
     def _act__create_executor_and_parse(self) -> Optional[PhaseStepFailure]:
         failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__PARSE)
 
-        def action() -> Optional[PhaseStepFailure]:
-            res = self._act__create_and_set_executor(failure_con)
-            if res is not None:
-                return res
+        section_contents = self._test_case.act_phase
+        instructions = []
+        for element in section_contents.elements:
+            if element.element_type is ElementType.INSTRUCTION:
+                instruction = element.instruction_info.instruction
+                if not isinstance(instruction, ActPhaseInstruction):
+                    msg = 'Instruction is not an instance of ' + str(ActPhaseInstruction)
+                    return failure_con.implementation_error_msg(msg)
+                instructions.append(instruction)
+            else:
+                msg = 'Act phase contains an element that is not an instruction: ' + str(element.element_type)
+                return failure_con.implementation_error_msg(msg)
+
+        source_and_executor_parser = self.conf_values.act_phase_handling.source_and_executor_constructor
+
+        def parse_action() -> Optional[PhaseStepFailure]:
             try:
-                self._act_source_and_executor.parse(self._instruction_environment_pre_sds)
+                self._act_source_and_executor = source_and_executor_parser.parse(
+                    self.exe_conf.act_phase_os_process_executor,
+                    instructions
+                )
             except ParseException as ex:
                 return failure_con.apply(PartialExeResultStatus.VALIDATION_ERROR,
                                          new_failure_details_from_message(ex.cause.failure_message))
             return None
 
-        return _execute_action_and_catch_implementation_exception(action, failure_con)
+        return _execute_action_and_catch_implementation_exception(parse_action, failure_con)
 
     def _act__validate_symbols(self) -> Optional[PhaseStepFailure]:
         failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__VALIDATE_SYMBOLS)
@@ -412,26 +427,6 @@ class _PartialExecutor:
     def _set_assert_environment_variables(self):
         self.exe_conf.environ.update(environment_variables.set_at_assert(self._sds))
 
-    def _act__create_and_set_executor(self, failure_con: _PhaseStepFailureResultConstructor
-                                      ) -> Optional[PhaseStepFailure]:
-        section_contents = self._test_case.act_phase
-        instructions = []
-        for element in section_contents.elements:
-            if element.element_type is ElementType.INSTRUCTION:
-                instruction = element.instruction_info.instruction
-                if not isinstance(instruction, ActPhaseInstruction):
-                    msg = 'Instruction is not an instance of ' + str(ActPhaseInstruction)
-                    return failure_con.implementation_error_msg(msg)
-                instructions.append(instruction)
-            else:
-                msg = 'Act phase contains an element that is not an instruction: ' + str(element.element_type)
-                return failure_con.implementation_error_msg(msg)
-        self._act_source_and_executor = self.conf_values.act_phase_handling.source_and_executor_constructor.apply(
-            self.exe_conf.act_phase_os_process_executor,
-            self._instruction_environment_pre_sds,
-            instructions)
-        return None
-
     def _final_failure_result_from(self, failure: PhaseStepFailure) -> PartialExeResult:
         return PartialExeResult(failure.status,
                                 self.__sandbox_directory_structure,
@@ -458,6 +453,7 @@ def _run_instructions_phase_step(step: PhaseStep,
 def _execute_action_and_catch_implementation_exception(action: ActionWithFailureAsResult,
                                                        failure_con: _PhaseStepFailureResultConstructor
                                                        ) -> Optional[PhaseStepFailure]:
+    # return action()  # DEBUG IMPLEMENTATION EXCEPTION
     try:
         return action()
     except Exception as ex:

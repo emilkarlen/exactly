@@ -35,17 +35,6 @@ class PropertyRecorderBuilder:
         return ret_val
 
 
-def act_phase_handling_that_records_property_of_env_for_each_step(
-        property_recorder: PropertyRecorderBuilder) -> ActPhaseHandling:
-    return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions(
-        parse_action=property_recorder.of_first_arg(step.ACT__PARSE),
-        validate_pre_sds_initial_action=property_recorder.of_first_arg(step.ACT__VALIDATE_PRE_SDS),
-        validate_post_setup_initial_action=property_recorder.of_first_arg(step.ACT__VALIDATE_POST_SETUP),
-        prepare_initial_action=property_recorder.of_first_arg(step.ACT__PREPARE),
-        execute_initial_action=property_recorder.of_first_arg(step.ACT__EXECUTE),
-    ))
-
-
 def builder_of_test_case_that_records_property_of_env_for_each_step_of_partial_execution(
         property_recorder: PropertyRecorderBuilder) -> TestCaseWithOnlyInstructionElementsBuilder:
     builder = TestCaseWithOnlyInstructionElementsBuilder()
@@ -80,11 +69,22 @@ def test_case_that_records_property_of_env_for_each_step_of_partial_execution(
     )
 
 
-def act_phase_handling_that_records_property_of_constructor_argument(
-        key: str,
+def act_phase_handling_that_records_property_of_env_for_each_step_w_env_arg(
         property_recorder: PropertyRecorderBuilder) -> ActPhaseHandling:
     return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions(
-        apply_action_before_executor_is_constructed=property_recorder.of_first_arg(key)
+        validate_pre_sds_initial_action=property_recorder.of_first_arg(step.ACT__VALIDATE_PRE_SDS),
+        validate_post_setup_initial_action=property_recorder.of_first_arg(step.ACT__VALIDATE_POST_SETUP),
+        prepare_initial_action=property_recorder.of_first_arg(step.ACT__PREPARE),
+        execute_initial_action=property_recorder.of_first_arg(step.ACT__EXECUTE),
+    ))
+
+
+def act_phase_handling_that_records_property_of_env_for_each_step_post_sds(
+        property_recorder: PropertyRecorderBuilder) -> ActPhaseHandling:
+    return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions(
+        validate_post_setup_initial_action=property_recorder.of_first_arg(step.ACT__VALIDATE_POST_SETUP),
+        prepare_initial_action=property_recorder.of_first_arg(step.ACT__PREPARE),
+        execute_initial_action=property_recorder.of_first_arg(step.ACT__EXECUTE),
     ))
 
 

@@ -3,7 +3,6 @@ from typing import Sequence
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
     ActSourceAndExecutorConstructor, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.test_case.act_phase_handling.test_resources import test_actions
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
@@ -34,13 +33,12 @@ class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecuto
         self.execute_initial_action = execute_initial_action
         self.execute_action = execute_action
 
-    def apply(self,
+    def parse(self,
               os_process_executor: ActPhaseOsProcessExecutor,
-              environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
-        self.apply_action_before_executor_is_constructed(environment, act_phase_instructions)
+        self.apply_action_before_executor_is_constructed(act_phase_instructions)
+        self.parse_action(act_phase_instructions)
         return ActSourceAndExecutorThatRunsConstantActions(
-            parse_action=self.parse_action,
             validate_pre_sds_initial_action=self.validate_pre_sds_initial_action,
             validate_pre_sds_action=self.validate_pre_sds_action,
             validate_post_setup_initial_action=self.validate_post_setup_initial_action,
@@ -52,19 +50,22 @@ class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecuto
 
 
 class ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorConstructor):
-    def __init__(self, executor: ActSourceAndExecutor):
+    def __init__(self,
+                 executor: ActSourceAndExecutor,
+                 parse_action=actions.do_nothing,
+                 ):
         self.executor = executor
+        self.parse_action = parse_action
 
-    def apply(self,
+    def parse(self,
               os_process_executor: ActPhaseOsProcessExecutor,
-              environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
+        self.parse_action(act_phase_instructions)
         return self.executor
 
 
 class ActSourceAndExecutorConstructorThatRaisesException(ActSourceAndExecutorConstructor):
-    def apply(self,
+    def parse(self,
               os_process_executor: ActPhaseOsProcessExecutor,
-              environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: Sequence[ActPhaseInstruction]):
         raise ValueError('the method should never be called')

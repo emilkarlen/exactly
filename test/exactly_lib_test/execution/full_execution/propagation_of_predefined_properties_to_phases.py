@@ -1,5 +1,6 @@
-import pathlib
 import unittest
+
+import pathlib
 
 from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.execution.phase_step_simple import \
@@ -13,8 +14,9 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.full_execution.test_resources import execution_check, \
     result_assertions as asrt_full_result
 from exactly_lib_test.execution.test_resources.execution_recording.recording2 import PropertyRecorderBuilder, \
-    act_phase_handling_that_records_property_of_env_for_each_step, \
+    act_phase_handling_that_records_property_of_env_for_each_step_w_env_arg, \
     test_case_that_records_property_of_env_for_each_step_of_partial_execution
+from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_keys_equals
 
@@ -35,8 +37,8 @@ class TestPredefinedSymbols(unittest.TestCase):
             self):
         # ARRANGE #
         predefined_symbols_table = SymbolTable({
-            'predefined symbol': string_resolvers.str_constant(
-                'predefined string value (not used by this test)')
+            'predefined symbol': symbol_utils.container(string_resolvers.str_constant(
+                'predefined string value (not used by this test)'))
         })
         predefined_properties = PredefinedProperties(environ={},
                                                      predefined_symbols=predefined_symbols_table)
@@ -52,7 +54,7 @@ class TestPredefinedSymbols(unittest.TestCase):
                         InstructionEnvironmentForPreSdsStep.symbols.fget),
             actual_recorded_steps)
         test_case = test_case_that_records_property_of_env_for_each_step_of_partial_execution(recorder_builder)
-        act_phase_handling = act_phase_handling_that_records_property_of_env_for_each_step(recorder_builder)
+        act_phase_handling = act_phase_handling_that_records_property_of_env_for_each_step_w_env_arg(recorder_builder)
         default_home_dir = pathlib.Path.cwd()
         configuration_builder = ConfigurationBuilder(default_home_dir,
                                                      default_home_dir,

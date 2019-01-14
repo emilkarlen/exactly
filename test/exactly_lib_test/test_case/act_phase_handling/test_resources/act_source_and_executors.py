@@ -15,9 +15,6 @@ from exactly_lib_test.test_resources.actions import do_nothing
 
 
 class ActSourceAndExecutorThatJustReturnsSuccess(ActSourceAndExecutor):
-    def parse(self, environment: InstructionEnvironmentForPreSdsStep):
-        pass
-
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
@@ -48,10 +45,6 @@ class ActSourceAndExecutorWrapperWithActions(ActSourceAndExecutor):
         self.before_wrapped_prepare = before_wrapped_prepare
         self.before_wrapped_execute = before_wrapped_execute
 
-    def parse(self, environment: InstructionEnvironmentForPreSdsStep):
-        self.before_wrapped_parse(environment)
-        self.__wrapped.parse(environment)
-
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep
                          ) -> svh.SuccessOrValidationErrorOrHardError:
@@ -80,7 +73,6 @@ class ActSourceAndExecutorWrapperWithActions(ActSourceAndExecutor):
 
 class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
     def __init__(self,
-                 parse_action=actions.do_nothing,
                  validate_pre_sds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
                  validate_pre_sds_initial_action=actions.do_nothing,
                  validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
@@ -91,7 +83,6 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
                  execute_initial_action=actions.do_nothing,
                  symbol_usages_action=actions.do_return([])
                  ):
-        self.__parse_action = parse_action
         self.__validate_pre_sds_initial_action = validate_pre_sds_initial_action
         self.__validate_pre_sds_action = validate_pre_sds_action
         self.__validate_post_setup_initial_action = validate_post_setup_initial_action
@@ -101,9 +92,6 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
         self.__execute_initial_action = execute_initial_action
         self.__execute_action = execute_action
         self.__symbol_usages_action = symbol_usages_action
-
-    def parse(self, environment: InstructionEnvironmentForPreSdsStep):
-        self.__parse_action(environment)
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self.__symbol_usages_action()

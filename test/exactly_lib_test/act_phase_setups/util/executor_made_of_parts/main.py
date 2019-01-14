@@ -1,5 +1,6 @@
-import pathlib
 import unittest
+
+import pathlib
 from typing import Sequence, Dict
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts as sut
@@ -33,12 +34,10 @@ class TestConstructor(unittest.TestCase):
         constructor = sut.Constructor(ParserThatRaisesException(parser_error),
                                       validator_constructor_that_raises,
                                       executor_constructor_that_raises)
-        environment = _environment()
         act_phase_instructions = []
         # ACT #
-        executor = constructor.apply(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, environment, act_phase_instructions)
         with self.assertRaises(ParseException) as ex:
-            executor.parse(environment)
+            executor = constructor.parse(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, act_phase_instructions)
             # ASSERT #
             self.assertIs(parser_error, ex)
 

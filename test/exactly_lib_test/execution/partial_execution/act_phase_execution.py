@@ -1,15 +1,17 @@
 import sys
+import unittest
 
 import os
 import pathlib
 import subprocess
-import unittest
+from typing import Dict
 
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
+from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
     ActPhaseHandling, ActSourceAndExecutorConstructor, ParseException
@@ -54,44 +56,58 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+class CwdRegisterer:
+    def __init__(self):
+        self._phase_step_2_cwd = {}
+
+    @property
+    def phase_step_2_cwd(self) -> Dict[SimplePhaseStep, pathlib.Path]:
+        return self._phase_step_2_cwd
+
+    def register_cwd_for(self, step):
+        self._phase_step_2_cwd[step] = pathlib.Path.cwd()
+
+
 class TestExecutionSequence(unittest.TestCase):
     def test_WHEN_parse_raises_parse_exception_THEN_execution_SHOULD_stop_with_result_of_validation_error(self):
         # ARRANGE #
         expected_cause = svh.new_svh_validation_error('failure message')
-        executor_with_parse_raises_parse_ex = ActSourceAndExecutorThatRunsConstantActions(
-            parse_action=do_raise(ParseException(expected_cause))
-        )
+        executor_that_does_nothing = ActSourceAndExecutorThatRunsConstantActions()
         step_recorder = ListRecorder()
         recording_executor = ActSourceAndExecutorWrapperThatRecordsSteps(step_recorder,
-                                                                         executor_with_parse_raises_parse_ex)
-        constructor = ActSourceAndExecutorConstructorForConstantExecutor(recording_executor)
+                                                                         executor_that_does_nothing)
+        constructor = ActSourceAndExecutorConstructorForConstantExecutor(
+            recording_executor,
+            parse_action=do_raise(ParseException(expected_cause))
+        )
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   act_phase_handling=ActPhaseHandling(constructor))
         # ASSERT #
         expectation = Expectation(phase_result=asrt_result.status_is(PartialExeResultStatus.VALIDATION_ERROR))
         # APPLY #
         execute_and_check(self, arrangement, expectation)
-        self.assertEqual([phase_step.ACT__PARSE],
+        self.assertEqual([],
                          step_recorder.recorded_elements,
                          'executed steps')
 
     def test_WHEN_parse_raises_unknown_exception_THEN_execution_SHOULD_stop_with_result_of_implementation_error(self):
         # ARRANGE #
         expected_cause = svh.new_svh_validation_error('failure message')
-        executor_with_parse_raises_parse_ex = ActSourceAndExecutorThatRunsConstantActions(
-            parse_action=do_raise(ValueError(expected_cause))
-        )
+        executor_that_does_nothing = ActSourceAndExecutorThatRunsConstantActions()
         step_recorder = ListRecorder()
         recording_executor = ActSourceAndExecutorWrapperThatRecordsSteps(step_recorder,
-                                                                         executor_with_parse_raises_parse_ex)
-        constructor = ActSourceAndExecutorConstructorForConstantExecutor(recording_executor)
+                                                                         executor_that_does_nothing)
+        constructor = ActSourceAndExecutorConstructorForConstantExecutor(
+            recording_executor,
+            parse_action=do_raise(ValueError(expected_cause))
+        )
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   act_phase_handling=ActPhaseHandling(constructor))
         # ASSERT #
         expectation = Expectation(phase_result=asrt_result.status_is(PartialExeResultStatus.IMPLEMENTATION_ERROR))
         # APPLY #
         execute_and_check(self, arrangement, expectation)
-        self.assertEqual([phase_step.ACT__PARSE],
+        self.assertEqual([],
                          step_recorder.recorded_elements,
                          'executed steps')
 
@@ -99,21 +115,19 @@ class TestExecutionSequence(unittest.TestCase):
 class TestCurrentDirectory(unittest.TestCase):
     def runTest(self):
         # ARRANGE
+        cwd_registerer = CwdRegisterer()
         with tmp_dir_as_cwd() as expected_current_directory_pre_validate_post_setup:
-            executor_that_records_current_dir = _ExecutorThatRecordsCurrentDir()
+            executor_that_records_current_dir = _ExecutorThatRecordsCurrentDir(cwd_registerer)
             constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor_that_records_current_dir)
             # ACT #
             _execute(constructor, _empty_test_case(),
                      current_directory=expected_current_directory_pre_validate_post_setup)
             # ASSERT #
-            phase_step_2_cwd = executor_that_records_current_dir.phase_step_2_cwd
+            phase_step_2_cwd = cwd_registerer.phase_step_2_cwd
             sds = executor_that_records_current_dir.actual_sds
             self.assertEqual(len(phase_step_2_cwd),
-                             5,
-                             'Expects recordings for 5 steps')
-            self.assertEqual(phase_step_2_cwd[phase_step.ACT__PARSE],
-                             expected_current_directory_pre_validate_post_setup,
-                             'Current dir for ' + str(phase_step.ACT__PARSE))
+                             4,
+                             'Expects recordings for 4 steps')
             self.assertEqual(phase_step_2_cwd[phase_step.ACT__VALIDATE_PRE_SDS],
                              expected_current_directory_pre_validate_post_setup,
                              'Current dir for ' + str(phase_step.ACT__VALIDATE_PRE_SDS))
@@ -248,41 +262,35 @@ def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
 
 
 class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
-    def __init__(self):
+    def __init__(self, cwd_registerer: CwdRegisterer):
         self._actual_sds = None
-        self.phase_step_2_cwd = {}
-
-    def parse(self, environment: InstructionEnvironmentForPreSdsStep):
-        self._register_cwd_for(phase_step.ACT__PARSE)
+        self.cwd_registerer = cwd_registerer
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep
                          ) -> svh.SuccessOrValidationErrorOrHardError:
-        self._register_cwd_for(phase_step.ACT__VALIDATE_PRE_SDS)
+        self.cwd_registerer.register_cwd_for(phase_step.ACT__VALIDATE_PRE_SDS)
         return svh.new_svh_success()
 
     def validate_post_setup(self,
                             environment: InstructionEnvironmentForPostSdsStep
                             ) -> svh.SuccessOrValidationErrorOrHardError:
         self._actual_sds = environment.sds
-        self._register_cwd_for(phase_step.ACT__VALIDATE_POST_SETUP)
+        self.cwd_registerer.register_cwd_for(phase_step.ACT__VALIDATE_POST_SETUP)
         return svh.new_svh_success()
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
-        self._register_cwd_for(phase_step.ACT__PREPARE)
+        self.cwd_registerer.register_cwd_for(phase_step.ACT__PREPARE)
         return sh.new_sh_success()
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
-        self._register_cwd_for(phase_step.ACT__EXECUTE)
+        self.cwd_registerer.register_cwd_for(phase_step.ACT__EXECUTE)
         return new_eh_exit_code(0)
-
-    def _register_cwd_for(self, step):
-        self.phase_step_2_cwd[step] = pathlib.Path.cwd()
 
     @property
     def actual_sds(self) -> SandboxDirectoryStructure:

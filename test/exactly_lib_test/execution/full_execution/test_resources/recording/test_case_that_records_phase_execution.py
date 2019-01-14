@@ -1,5 +1,6 @@
-import types
 import unittest
+
+import types
 
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.test_case import test_case_doc
@@ -140,14 +141,14 @@ class TestCaseBase(unittest.TestCase):
     def _with_recording_act_program_executor(self,
                                              arrangement: Arrangement) -> ActPhaseHandling:
         constant_actions_runner = ActSourceAndExecutorThatRunsConstantActions(
-            parse_action=arrangement.validate_test_action,
             validate_post_setup_action=arrangement.validate_test_action,
             prepare_action=arrangement.prepare_test_action,
             execute_action=arrangement.execute_test_action,
             validate_pre_sds_action=arrangement.act_executor_validate_pre_sds)
         constructor = step_recording_executors.constructor_of_constant(
             arrangement.test_case_generator.recorder,
-            constant_actions_runner)
+            constant_actions_runner,
+            parse_action=arrangement.parse)
         return ActPhaseHandling(constructor)
 
 

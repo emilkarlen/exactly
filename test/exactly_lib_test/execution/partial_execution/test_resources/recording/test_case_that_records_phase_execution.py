@@ -1,5 +1,6 @@
-import types
 import unittest
+
+import types
 
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.test_case import test_case_doc
@@ -136,7 +137,6 @@ def execute_test_case_with_recording(put: unittest.TestCase,
                                      dbg_do_not_delete_dir_structure=False):
     constant_actions_runner = ActSourceAndExecutorThatRunsConstantActions(
         symbol_usages_action=arrangement.act_executor_symbol_usages,
-        parse_action=arrangement.act_executor_parse,
         validate_pre_sds_action=arrangement.act_executor_validate_pre_sds,
         validate_post_setup_action=arrangement.act_executor_validate_post_setup,
         prepare_action=arrangement.act_executor_prepare,
@@ -144,7 +144,9 @@ def execute_test_case_with_recording(put: unittest.TestCase,
     )
     constructor = step_recording_executors.constructor_of_constant(
         arrangement.test_case_generator.recorder,
-        constant_actions_runner)
+        constant_actions_runner,
+        parse_action=arrangement.act_executor_parse,
+    )
     act_phase_handling = ActPhaseHandling(constructor)
     test_case = _TestCaseThatRecordsExecution(put,
                                               arrangement.test_case_generator,

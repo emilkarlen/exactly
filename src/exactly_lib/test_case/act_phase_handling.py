@@ -23,16 +23,6 @@ class ActSourceAndExecutor(SymbolUser):
     Valid act phase source together with functionality for executing it.
     """
 
-    def parse(self, environment: InstructionEnvironmentForPreSdsStep):
-        """
-        Parses the source that the object represents.
-
-        Must be called before any other method of the object.
-
-        :raises :class:`ParseException` iff source is invalid
-        """
-        raise NotImplementedError()
-
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         """
@@ -97,9 +87,8 @@ class ActSourceAndExecutorConstructor:
     in terms of exceptions.
     """
 
-    def apply(self,
+    def parse(self,
               os_process_executor: ActPhaseOsProcessExecutor,
-              environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
         raise NotImplementedError()
 

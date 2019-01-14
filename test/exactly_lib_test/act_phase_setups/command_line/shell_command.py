@@ -1,5 +1,6 @@
-import os
 import unittest
+
+import os
 from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups import command_line as sut
@@ -74,14 +75,12 @@ class TestParsingAndValidation(unittest.TestCase):
                       'Validation result')
 
     def _do_parse(self, act_phase_instructions: list):
-        executor = self.constructor.apply(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, self.pre_sds_env,
-                                          act_phase_instructions)
-        executor.parse(self.pre_sds_env)
+        self.constructor.parse(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                               act_phase_instructions)
 
     def _do_parse_and_validate(self, act_phase_instructions: list) -> svh.SuccessOrValidationErrorOrHardError:
-        executor = self.constructor.apply(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, self.pre_sds_env,
+        executor = self.constructor.parse(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                           act_phase_instructions)
-        executor.parse(self.pre_sds_env)
         return executor.validate_pre_sds(self.pre_sds_env)
 
 

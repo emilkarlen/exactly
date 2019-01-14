@@ -14,6 +14,7 @@ from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
     ActSourceAndExecutorConstructorForConstantExecutor
+from exactly_lib_test.test_resources import actions
 
 
 class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
@@ -22,10 +23,6 @@ class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
                  wrapped: ActSourceAndExecutor):
         self.__recorder = recorder
         self.__wrapped = wrapped
-
-    def parse(self, environment: InstructionEnvironmentForPreSdsStep):
-        self.__recorder.recording_of(phase_step.ACT__PARSE).record()
-        self.__wrapped.parse(environment)
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
         self.__recorder.recording_of(phase_step.ACT__VALIDATE_SYMBOLS).record()
@@ -60,22 +57,30 @@ class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
 class ActSourceAndExecutorWrapperConstructorThatRecordsSteps(ActSourceAndExecutorConstructor):
     def __init__(self,
                  recorder: ListRecorder,
-                 wrapped: ActSourceAndExecutorConstructor):
+                 wrapped: ActSourceAndExecutorConstructor,
+                 parse_action=actions.do_nothing,
+                 ):
         self.__recorder = recorder
         self.__wrapped = wrapped
+        self.__parse_action = parse_action
 
-    def apply(self,
+    def parse(self,
               os_process_executor: ActPhaseOsProcessExecutor,
-              environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
+        self.__recorder.recording_of(phase_step.ACT__PARSE).record()
+        self.__parse_action(act_phase_instructions)
+
         return ActSourceAndExecutorWrapperThatRecordsSteps(self.__recorder,
-                                                           self.__wrapped.apply(os_process_executor,
-                                                                                environment,
+                                                           self.__wrapped.parse(os_process_executor,
                                                                                 act_phase_instructions))
 
 
 def constructor_of_constant(recorder: ListRecorder,
-                            wrapped: ActSourceAndExecutor) -> ActSourceAndExecutorConstructor:
+                            wrapped: ActSourceAndExecutor,
+                            parse_action=actions.do_nothing,
+                            ) -> ActSourceAndExecutorConstructor:
     return ActSourceAndExecutorWrapperConstructorThatRecordsSteps(
         recorder,
-        ActSourceAndExecutorConstructorForConstantExecutor(wrapped))
+        ActSourceAndExecutorConstructorForConstantExecutor(wrapped),
+        parse_action=parse_action,
+    )

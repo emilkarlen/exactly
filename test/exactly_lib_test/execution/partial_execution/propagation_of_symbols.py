@@ -13,6 +13,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.functions import Sequence
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -60,7 +61,8 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         test__va(
             self,
             test_case,
-            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for)),
+            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for,
+                                                                             recorder_for_parse_step=psr.no_recording)),
             asrt.anything_goes())
         _check_result(self,
                       expected_phase_2_step_2_names_set,
@@ -80,7 +82,6 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
                 step.SETUP__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
             PhaseEnum.ACT: {
-                step.ACT__PARSE.step: set(),
                 step.ACT__VALIDATE_PRE_SDS.step: all_defined_symbols,
                 step.ACT__VALIDATE_POST_SETUP.step: all_defined_symbols,
                 step.ACT__EXECUTE.step: all_defined_symbols,
@@ -124,7 +125,8 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         test__va(
             self,
             test_case,
-            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for)),
+            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for,
+                                                                             recorder_for_parse_step=psr.no_recording)),
             asrt.anything_goes())
         _check_result(self,
                       expected_phase_2_step_2_names_set,
@@ -144,7 +146,6 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
                 step.SETUP__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
             PhaseEnum.ACT: {
-                step.ACT__PARSE.step: set(),
                 step.ACT__VALIDATE_PRE_SDS.step: all_defined_symbols,
                 step.ACT__VALIDATE_POST_SETUP.step: all_defined_symbols,
                 step.ACT__EXECUTE.step: set(),
@@ -195,7 +196,8 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         test__va(
             self,
             test_case,
-            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for)),
+            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for,
+                                                                             recorder_for_parse_step=psr.no_recording)),
             asrt.anything_goes())
         _check_result(self,
                       expected_phase_2_step_2_names_set,
@@ -215,7 +217,6 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
                 step.SETUP__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
             PhaseEnum.ACT: {
-                step.ACT__PARSE.step: set(),
                 step.ACT__VALIDATE_PRE_SDS.step: all_defined_symbols,
                 step.ACT__VALIDATE_POST_SETUP.step: all_defined_symbols,
                 step.ACT__EXECUTE.step: set(),
@@ -266,7 +267,8 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         test__va(
             self,
             test_case,
-            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for)),
+            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for,
+                                                                             recorder_for_parse_step=psr.no_recording)),
             asrt.anything_goes())
         _check_result(self,
                       expected_phase_2_step_2_names_set,
@@ -286,7 +288,6 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
                 step.SETUP__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
             PhaseEnum.ACT: {
-                step.ACT__PARSE.step: set(),
                 step.ACT__VALIDATE_PRE_SDS.step: all_defined_symbols,
                 step.ACT__VALIDATE_POST_SETUP.step: all_defined_symbols,
                 step.ACT__EXECUTE.step: set(),
@@ -339,7 +340,8 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         test__va(
             self,
             test_case,
-            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for)),
+            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for,
+                                                                             recorder_for_parse_step=psr.no_recording)),
             asrt.anything_goes())
         _check_result(self,
                       expected_phase_2_step_2_names_set,
@@ -352,7 +354,7 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
                                          'predefined string constant symbol value')
 
         expected_predefined_symbols = SymbolTable({
-            predefined_symbol.name: string_resolvers.str_constant(predefined_symbol.value)
+            predefined_symbol.name: symbol_utils.container(string_resolvers.str_constant(predefined_symbol.value))
         })
         all_predefined_symbols = frozenset((predefined_symbol.name,))
 
@@ -389,7 +391,8 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
         test__va(
             self,
             test_case,
-            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for),
+            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for,
+                                                                             recorder_for_parse_step=psr.no_recording),
                         predefined_symbols=expected_predefined_symbols),
             asrt.anything_goes())
         _check_result(self,
@@ -402,7 +405,7 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
         defined_symbol = NameAndValue('defined symbol',
                                       'value of symbol defined in the setup phase (not used in this test)')
         predefined_symbols_table = SymbolTable({
-            predefined_symbol.name: string_resolvers.str_constant(predefined_symbol.value)
+            predefined_symbol.name: symbol_utils.container(string_resolvers.str_constant(predefined_symbol.value))
         })
         predefined_symbols = frozenset((predefined_symbol.name,))
         predefined_and_defined_symbols = frozenset((predefined_symbol.name, defined_symbol.name))
@@ -418,7 +421,6 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
                 step.SETUP__VALIDATE_POST_SETUP.step: predefined_and_defined_symbols,
             },
             PhaseEnum.ACT: {
-                step.ACT__PARSE.step: predefined_symbols,
                 step.ACT__VALIDATE_PRE_SDS.step: predefined_and_defined_symbols,
                 step.ACT__VALIDATE_POST_SETUP.step: predefined_and_defined_symbols,
                 step.ACT__PREPARE.step: predefined_and_defined_symbols,
@@ -474,7 +476,8 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
             self,
             test_case,
             Arrangement(
-                act_phase_handling=psr.act_phase_handling_that_records_a_value_per_step(recorder_for),
+                act_phase_handling=psr.act_phase_handling_that_records_a_value_per_step(recorder_for,
+                                                                                        recorder_for_parse_step=psr.no_recording),
                 predefined_symbols=predefined_symbols_table),
             asrt.anything_goes())
         _check_result(self,

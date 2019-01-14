@@ -1,6 +1,7 @@
+import unittest
+
 import os
 import pathlib
-import unittest
 
 from exactly_lib.execution import phase_step
 from exactly_lib.test_case import phase_identifier
@@ -81,10 +82,8 @@ def check_execution(put: unittest.TestCase,
                                                                       arrangement.environ,
                                                                       arrangement.timeout_in_seconds,
                                                                       symbols=arrangement.symbol_table)
-        sut = executor_constructor.apply(arrangement.act_phase_process_executor,
-                                         instruction_environment,
+        sut = executor_constructor.parse(arrangement.act_phase_process_executor,
                                          act_phase_instructions)
-        sut.parse(instruction_environment)
         expectation.symbol_usages.apply_with_message(put,
                                                      sut.symbol_usages(),
                                                      'symbol-usages after ' +

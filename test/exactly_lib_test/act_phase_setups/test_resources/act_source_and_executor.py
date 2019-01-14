@@ -1,6 +1,7 @@
+import unittest
+
 import os
 import random
-import unittest
 from contextlib import contextmanager
 
 from exactly_lib.test_case import phase_identifier
@@ -118,10 +119,8 @@ class TestExecuteBase(unittest.TestCase):
 
         environment = InstructionEnvironmentForPreSdsStep(hds,
                                                           environ)
-        sut = self.source_and_executor_constructor.apply(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                                         environment,
+        sut = self.source_and_executor_constructor.parse(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                                          act_phase_instructions)
-        sut.parse(environment)
         step_result = sut.validate_pre_sds(environment)
         if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
             self.fail('Expecting success. Found {}: {}'.format(
@@ -225,8 +224,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
             with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout(hds) as source:
                 executor_constructor = self.test_setup.sut
                 environment = InstructionEnvironmentForPreSdsStep(hds, {})
-                sut = executor_constructor.apply(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, environment, source)
-                sut.parse(environment)
+                sut = executor_constructor.parse(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, source)
                 step_result = sut.validate_pre_sds(environment)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                  step_result.status,

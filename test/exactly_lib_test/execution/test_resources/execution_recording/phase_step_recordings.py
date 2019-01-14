@@ -1,5 +1,6 @@
-import types
 import unittest
+
+import types
 from operator import attrgetter
 from typing import Callable
 
@@ -17,6 +18,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     cleanup_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
+from exactly_lib_test.test_resources import actions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
 
@@ -106,14 +108,20 @@ class StepRecordingAction:
         self.phase_2_step_2_recorded_value[self.phase_step.phase][self.phase_step.step] = value_to_record
 
 
+def no_recording(phase_step: SimplePhaseStep):
+    return actions.do_nothing
+
+
 def act_phase_handling_that_records_a_value_per_step(
-        recorder_for_step: types.FunctionType) -> ActPhaseHandling:
+        recorder_for_step_with_env: types.FunctionType,
+        recorder_for_parse_step: types.FunctionType,
+) -> ActPhaseHandling:
     return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions(
-        parse_action=recorder_for_step(step.ACT__PARSE),
-        validate_pre_sds_initial_action=recorder_for_step(step.ACT__VALIDATE_PRE_SDS),
-        validate_post_setup_initial_action=recorder_for_step(step.ACT__VALIDATE_POST_SETUP),
-        prepare_initial_action=recorder_for_step(step.ACT__PREPARE),
-        execute_initial_action=recorder_for_step(step.ACT__EXECUTE),
+        parse_action=recorder_for_parse_step(step.ACT__PARSE),
+        validate_pre_sds_initial_action=recorder_for_step_with_env(step.ACT__VALIDATE_PRE_SDS),
+        validate_post_setup_initial_action=recorder_for_step_with_env(step.ACT__VALIDATE_POST_SETUP),
+        prepare_initial_action=recorder_for_step_with_env(step.ACT__PREPARE),
+        execute_initial_action=recorder_for_step_with_env(step.ACT__EXECUTE),
     ))
 
 

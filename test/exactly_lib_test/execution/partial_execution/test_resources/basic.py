@@ -1,7 +1,8 @@
+import unittest
+
 import pathlib
 import shutil
 import types
-import unittest
 from typing import Callable, Optional
 
 from exactly_lib.execution.configuration import ExecutionConfiguration
@@ -189,7 +190,8 @@ def test__va(put: unittest.TestCase,
                                    asrt.MessageBuilder('Result'))
     # CLEANUP #
     if result.sds.root_dir.exists():
-        shutil.rmtree(str(result.sds.root_dir))
+        shutil.rmtree(str(result.sds.root_dir),
+                      ignore_errors=True)
 
 
 def _execute(test_case: TestCase,
