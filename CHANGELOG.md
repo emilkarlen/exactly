@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
  - New type "string-matcher"
+ - New type "files-matcher"
  - New command `symbol` - displays information about symbol usages in a test case
  
 ## [0.8.9.5] - 2018-10-06
