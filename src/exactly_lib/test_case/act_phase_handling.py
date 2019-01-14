@@ -90,6 +90,9 @@ class ActionToCheckExecutorParser:
     """
 
     def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
+        """
+        :raises ParseException
+        """
         raise NotImplementedError()
 
 

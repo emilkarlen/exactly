@@ -2,7 +2,7 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib_test.test_case.act_phase_handling.test_resources import test_actions
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActionToCheckExecutorParserThatRunsConstantActions, ActionToCheckExecutorParserThatRaisesException
+    ActionToCheckExecutorParserThatRunsConstantActions, ActionToCheckExecutorParserThatRaisesImplementationException
 
 
 def act_phase_handling_that_runs_constant_actions(
@@ -24,4 +24,4 @@ def dummy_act_phase_handling() -> ActPhaseHandling:
 
 
 def act_phase_handling_that_must_not_be_used() -> ActPhaseHandling:
-    return ActPhaseHandling(ActionToCheckExecutorParserThatRaisesException())
+    return ActPhaseHandling(ActionToCheckExecutorParserThatRaisesImplementationException())

@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutor, \
-    ActionToCheckExecutorParser
+    ActionToCheckExecutorParser, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.test_case.act_phase_handling.test_resources import test_actions
@@ -60,6 +60,11 @@ class ActionToCheckExecutorConstructorForConstantExecutor(ActionToCheckExecutorP
         return self.executor
 
 
-class ActionToCheckExecutorParserThatRaisesException(ActionToCheckExecutorParser):
+class ActionToCheckExecutorParserThatRaisesImplementationException(ActionToCheckExecutorParser):
     def parse(self, instructions: Sequence[ActPhaseInstruction]):
         raise ValueError('the method should never be called')
+
+
+class ActionToCheckExecutorParserThatRaisesParseException(ActionToCheckExecutorParser):
+    def parse(self, instructions: Sequence[ActPhaseInstruction]):
+        raise ParseException(svh.new_svh_validation_error('unconditional parse failure'))
