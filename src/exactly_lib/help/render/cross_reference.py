@@ -63,6 +63,7 @@ _TITLE_RENDERER = _TitleRenderer()
 _PREDEFINED_PART_TITLE = {
     HelpPredefinedContentsPart.TEST_CASE_CLI: 'Test case CLI',
     HelpPredefinedContentsPart.TEST_SUITE_CLI: 'Test suite CLI',
+    HelpPredefinedContentsPart.SYMBOL_CLI: 'Symbol usages information CLI',
     HelpPredefinedContentsPart.TEST_CASE_SPEC: misc_texts.TEST_CASE_SPEC_TITLE,
     HelpPredefinedContentsPart.TEST_SUITE_SPEC: misc_texts.TEST_SUITE_SPEC_TITLE,
 }

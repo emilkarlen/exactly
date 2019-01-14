@@ -17,6 +17,7 @@ class Name:
 class NameWithGender(Name):
     SINGULAR = 'singular'
     PLURAL = 'plural'
+    PLURAL_SHORT = 's'
     DETERMINED = 'determined'
     DETERMINATOR_WORD = 'determinator_word'
     DEFAULT = ''
@@ -27,6 +28,7 @@ class NameWithGender(Name):
         self._formats = {
             self.SINGULAR: singular,
             self.PLURAL: plural,
+            self.PLURAL_SHORT: plural,
             self.DETERMINED: determinator_word + ' ' + singular,
             self.DETERMINATOR_WORD: determinator_word,
             self.DEFAULT: singular,

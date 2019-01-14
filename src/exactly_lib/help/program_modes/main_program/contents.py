@@ -6,6 +6,7 @@ from exactly_lib.cli.definitions.program_modes.help import arguments_for as help
 from exactly_lib.cli.definitions.program_modes.help import command_line_options as clo
 from exactly_lib.definitions import formatting
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
+from exactly_lib.help.program_modes.symbol import cli_syntax as symbol_cli_syntax
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax as test_case_cli_syntax
 from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as test_suite_cli_syntax
 from exactly_lib.util.cli_syntax.elements import argument as arg
@@ -26,6 +27,7 @@ class MainCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         return [
             test_case_cli_syntax.synopsis(),
             test_suite_cli_syntax.synopsis(),
+            symbol_cli_syntax.synopsis(),
             _help_toc_synopsis(),
             _html_help_synopsis(),
             _simple_argument_synopsis(),

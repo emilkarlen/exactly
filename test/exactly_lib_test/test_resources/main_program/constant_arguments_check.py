@@ -5,7 +5,9 @@ Especially, no temporary files need to be generated.
 import unittest
 
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
+from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class Arrangement:
@@ -30,7 +32,7 @@ class ProcessTestCase:
     def __init__(self,
                  name: str,
                  arrangement: Arrangement,
-                 assertion: value_assertion.ValueAssertion):
+                 assertion: ValueAssertion[SubProcessResult]):
         self._name = name
         self._arrangement = arrangement
         self._assertion = assertion
@@ -44,10 +46,7 @@ class ProcessTestCase:
         return self._arrangement
 
     @property
-    def assertion(self) -> value_assertion.ValueAssertion:
-        """
-        :rtype: An assertion on a SubProcessResult.
-        """
+    def assertion(self) -> ValueAssertion[SubProcessResult]:
         return self._assertion
 
 

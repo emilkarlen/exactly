@@ -2,7 +2,7 @@ from typing import List, Sequence
 
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.definitions.cross_ref.target_info_factory import root_factory
-from exactly_lib.definitions.entity import all_entity_types
+from exactly_lib.definitions.entity import all_entity_types, concepts
 from exactly_lib.help import std_tags
 from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.html_doc import page_setup
@@ -10,6 +10,7 @@ from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRender
 from exactly_lib.help.html_doc.parts import help
 from exactly_lib.help.html_doc.parts import test_case
 from exactly_lib.help.html_doc.parts import test_suite
+from exactly_lib.help.program_modes.symbol import cli_syntax as symbol_cli_syntax
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax as case_cli_syntax
 from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as suite_cli_syntax
 from exactly_lib.help.render.cross_reference import CrossReferenceTextConstructor
@@ -31,6 +32,8 @@ from exactly_lib.util.textformat.utils import section_item_contents_as_section_c
 _TEST_SUITES_HEADER = 'Test Suites'
 
 _TEST_CASES_HEADER = 'Test Cases'
+
+_SYMBOL_HEADER = concepts.SYMBOL_CONCEPT_INFO.plural_name.capitalize() + ' Usages'
 
 
 def generate_and_output(output_file,
@@ -123,6 +126,9 @@ def _cli_syntax_sections(local_target_name: str) -> List[SectionHierarchyGenerat
                                     ),
                             h.child('test-suite',
                                     suite_cli_syntax.root(_TEST_SUITES_HEADER)
+                                    ),
+                            h.child('symbol',
+                                    symbol_cli_syntax.root(_SYMBOL_HEADER)
                                     ),
                             h.child('help',
                                     help.root('Getting Help')

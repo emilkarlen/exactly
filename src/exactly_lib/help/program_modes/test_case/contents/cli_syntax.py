@@ -11,6 +11,8 @@ from exactly_lib.definitions.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_
     PREPROCESSOR_CONCEPT_INFO, ACTOR_CONCEPT_INFO
 from exactly_lib.definitions.test_suite import file_names, instruction_names, section_infos
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
+from exactly_lib.help.program_modes.common.cli_syntax import PREPROCESSOR_OPTION, SUITE_OPTION, \
+    FILES_DESCRIPTION_WITH_DEFAULT_SUITE, TEST_CASE_FILE_ARGUMENT
 from exactly_lib.help.program_modes.test_case.contents.specification import outcome as case_outcome_help
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
@@ -59,7 +61,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         ]
 
     def files(self) -> Optional[docs.SectionContents]:
-        return _TP.section_contents(_FILES_DESCRIPTION)
+        return _TP.section_contents(FILES_DESCRIPTION_WITH_DEFAULT_SUITE)
 
     def outcome(self, environment: ConstructionEnvironment) -> Optional[docs.SectionContents]:
         paragraphs = case_outcome_help.TEXT_PARSER.fnap(case_outcome_help.REPORTING)
@@ -95,7 +97,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
     def _preprocessor_argument(self) -> cli_syntax.DescribedArgument:
         return cli_syntax.DescribedArgument(
-            _PREPROCESSOR_OPTION,
+            PREPROCESSOR_OPTION,
             argument_parsing.TEXT_PARSER.fnap(argument_parsing.PREPROCESSOR_OPTION_DESCRIPTION),
             see_also_items=see_also_items_from_cross_refs([
                 PREPROCESSOR_CONCEPT_INFO.cross_reference_target,
@@ -107,7 +109,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
     def _suite_argument(self) -> cli_syntax.DescribedArgument:
         return cli_syntax.DescribedArgument(
-            _SUITE_OPTION,
+            SUITE_OPTION,
             argument_parsing.TEXT_PARSER.fnap(argument_parsing.SUITE_OPTION_DESCRIPTION),
         )
 
@@ -117,7 +119,7 @@ def synopsis() -> cli_syntax.Synopsis:
         arg.Single(arg.Multiplicity.ZERO_OR_MORE,
                    _OPTION_PLACEHOLDER_ARGUMENT),
         arg.Single(arg.Multiplicity.MANDATORY,
-                   _FILE_ARGUMENT)],
+                   TEST_CASE_FILE_ARGUMENT)],
         prefix=program_info.PROGRAM_NAME)
     return cli_syntax.Synopsis(command_line,
                                _TP.text(_DESCRIPTION_PARAGRAPH))
@@ -129,16 +131,9 @@ _DESCRIPTION_PARAGRAPH = """\
 Runs the test case in file {TEST_CASE_FILE}.
 """
 
-_FILES_DESCRIPTION = """\
-If there exists a file "{default_suite_file}" in the same directory as {TEST_CASE_FILE},
-then this file must be a test suite, and the test case is run as part of this suite. 
-"""
-
 _OUTCOME_INITIAL_PARAGRAPHS_EXTRA = """\
 See test case specification for details.
 """
-
-_FILE_ARGUMENT = arg.Named(opt.TEST_CASE_FILE_ARGUMENT)
 
 _OPTION_PLACEHOLDER_ARGUMENT = arg.Named('OPTION')
 
@@ -150,13 +145,7 @@ _KEEP_SANDBOX_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_KEEPING_SA
 
 _EXECUTING_ACT_PHASE_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_EXECUTING_ACT_PHASE__LONG)
 
-_PREPROCESSOR_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_PREPROCESSOR__LONG,
-                                             argument=opt.PREPROCESSOR_OPTION_ARGUMENT)
-
-_SUITE_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_SUITE__LONG,
-                                      argument=opt.SUITE_OPTION_METAVAR)
-
 _TP = TextParser({
-    'TEST_CASE_FILE': _FILE_ARGUMENT.name,
+    'TEST_CASE_FILE': TEST_CASE_FILE_ARGUMENT.name,
     'default_suite_file': file_names.DEFAULT_SUITE_FILE,
 })

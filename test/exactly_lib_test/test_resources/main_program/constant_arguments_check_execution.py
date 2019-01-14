@@ -1,5 +1,7 @@
 import unittest
 
+from typing import List
+
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 
@@ -21,11 +23,9 @@ class TestCaseForProcessTestCase(unittest.TestCase):
         return self.test_case.name + '/' + self.main_program_runner.description_for_test_name()
 
 
-def test_suite_for_test_cases(test_cases: list, main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    """
-    :type test_cases: [ProcessTestCase]
-    """
+def test_suite_for_test_cases(test_cases: List[ProcessTestCase],
+                              main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     return unittest.TestSuite([
-                                  TestCaseForProcessTestCase(tc, main_program_runner)
-                                  for tc in test_cases
-                                  ])
+        TestCaseForProcessTestCase(tc, main_program_runner)
+        for tc in test_cases
+    ])

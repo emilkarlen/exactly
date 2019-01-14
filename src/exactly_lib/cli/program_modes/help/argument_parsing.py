@@ -1,12 +1,12 @@
 from typing import List
 
-from exactly_lib.cli.definitions.program_modes.help.command_line_options import HELP, INSTRUCTIONS, TEST_CASE, \
-    TEST_SUITE, SPECIFICATION, HTML_DOCUMENTATION
+from exactly_lib.cli.definitions.program_modes.help import command_line_options as cl_opts
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
 from exactly_lib.cli.program_modes.help.error import HelpError
 from exactly_lib.cli.program_modes.help.html_doc.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes import help_request
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
+from exactly_lib.cli.program_modes.help.program_modes.symbol.help_request import SymbolHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from exactly_lib.cli.program_modes.help.util import argument_value_lookup
@@ -35,28 +35,30 @@ class Parser:
         if not help_command_arguments:
             return MainProgramHelpRequest(MainProgramHelpItem.PROGRAM)
         command_argument = help_command_arguments[0].lower()
-        if command_argument == HELP:
+        if command_argument == cl_opts.HELP:
             return MainProgramHelpRequest(MainProgramHelpItem.HELP)
         if command_argument in self.application_help.entity_type_id_2_entity_type_conf:
             return self._parse_entity_help(command_argument, help_command_arguments[1:])
-        if command_argument == HTML_DOCUMENTATION:
+        if command_argument == cl_opts.HTML_DOCUMENTATION:
             return self._parse_html_doc_help(help_command_arguments[1:])
-        if command_argument == TEST_CASE:
+        if command_argument == cl_opts.TEST_CASE:
             if len(help_command_arguments) == 1:
                 return TestCaseHelpRequest(TestCaseHelpItem.CLI_SYNTAX, None, None)
-            elif help_command_arguments[1:] == [SPECIFICATION]:
+            elif help_command_arguments[1:] == [cl_opts.SPECIFICATION]:
                 return TestCaseHelpRequest(TestCaseHelpItem.SPECIFICATION, None, None)
             else:
                 raise HelpError('Invalid number of arguments for help command. Use help help, for help.')
-        if command_argument == TEST_SUITE:
+        if command_argument == cl_opts.TEST_SUITE:
             return self._parse_suite_help(help_command_arguments[1:])
+        if command_argument == cl_opts.SYMBOL:
+            return self._parse_symbol_help(help_command_arguments[1:])
         if len(help_command_arguments) == 2:
             return self._parse_instruction_in_phase(command_argument,
                                                     help_command_arguments[1])
         if len(help_command_arguments) != 1:
             raise HelpError('Invalid number of arguments for help command. Use help help, for help.')
         argument = command_argument
-        if argument == INSTRUCTIONS:
+        if argument == cl_opts.INSTRUCTIONS:
             return TestCaseHelpRequest(TestCaseHelpItem.INSTRUCTION_SET, None, None)
         case_help = self.application_help.test_case_help
         if argument in case_help.phase_name_2_phase_help:
@@ -70,7 +72,7 @@ class Parser:
         if not arguments:
             return TestSuiteHelpRequest(TestSuiteHelpItem.CLI_SYNTAX,
                                         None, None)
-        if arguments[0] == SPECIFICATION and len(arguments) == 1:
+        if arguments[0] == cl_opts.SPECIFICATION and len(arguments) == 1:
             return TestSuiteHelpRequest(TestSuiteHelpItem.SPECIFICATION, None, None)
         section_name = arguments.pop(0)
         test_suite_section_help = self._lookup_suite_section(section_name)
@@ -90,6 +92,12 @@ class Parser:
                                     match.key,
                                     match.value)
 
+    def _parse_symbol_help(self,
+                           arguments: List[str]) -> SymbolHelpRequest:
+        if not arguments:
+            return SymbolHelpRequest()
+        raise HelpError('Invalid help request: too many arguments.')
+
     def _lookup_suite_section(self, section_name: str) -> SectionDocumentation:
         for test_suite_section_help in self.application_help.test_suite_help.section_helps:
             if test_suite_section_help.name.plain == section_name:
@@ -106,7 +114,7 @@ class Parser:
         if not test_case_phase_help.has_instructions:
             msg = 'The phase %s does not use instructions.' % instruction_name
             raise HelpError(msg)
-        if instruction_name == INSTRUCTIONS:
+        if instruction_name == cl_opts.INSTRUCTIONS:
             return TestCaseHelpRequest(TestCaseHelpItem.PHASE_INSTRUCTION_LIST,
                                        phase_name,
                                        test_case_phase_help)
@@ -147,7 +155,7 @@ class Parser:
     @staticmethod
     def _parse_html_doc_help(arguments: List[str]) -> HtmlDocHelpRequest:
         if arguments:
-            raise HelpError('The %s command expects no arguments.' % HTML_DOCUMENTATION)
+            raise HelpError('The %s command expects no arguments.' % cl_opts.HTML_DOCUMENTATION)
         return HtmlDocHelpRequest()
 
 

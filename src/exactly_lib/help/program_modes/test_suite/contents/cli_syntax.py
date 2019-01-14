@@ -5,7 +5,7 @@ from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions import common_cli_options as common_opts
 from exactly_lib.cli.definitions.program_modes.test_suite import command_line_options as opts
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
@@ -48,7 +48,7 @@ class TestSuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         self.synopsis = synopsis()
 
     def description(self) -> DescriptionWithSubSections:
-        return DescriptionWithSubSections(_TP.text(_SINGLE_LINE_DESCRIPTION),
+        return DescriptionWithSubSections(_TP.text(misc_texts.SUITE_COMMAND_SINGLE_LINE_DESCRIPTION),
                                           docs.SectionContents(self.synopsis.paragraphs +
                                                                _TP.fnap(_DESCRIPTION_PARAGRAPH),
                                                                []))
@@ -110,8 +110,6 @@ def synopsis() -> cli_syntax.Synopsis:
     return cli_syntax.Synopsis(command_line,
                                _TP.text(_DESCRIPTION_PARAGRAPH))
 
-
-_SINGLE_LINE_DESCRIPTION = 'Runs a test suite'
 
 _DESCRIPTION_PARAGRAPH = """\
 Runs the test suite in file {TEST_SUITE_FILE}.

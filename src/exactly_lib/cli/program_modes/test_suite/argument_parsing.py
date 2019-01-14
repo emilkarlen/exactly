@@ -10,6 +10,7 @@ from exactly_lib.cli.definitions.program_modes.test_suite import command_line_op
 from exactly_lib.cli.program_modes.common.argument_parsing_of_act_phase_setup import \
     resolve_act_phase_setup_from_argparse_argument
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.entity import actors
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import suite_reporters as reporters
@@ -84,7 +85,7 @@ class _Parser:
         return self.reporter_name_2_reporter[reporter_name]()
 
     def _new_argument_parser(self) -> argparse.ArgumentParser:
-        ret_val = argparse.ArgumentParser(description='Runs a test suite',
+        ret_val = argparse.ArgumentParser(description=misc_texts.SUITE_COMMAND_SINGLE_LINE_DESCRIPTION,
                                           prog=program_info.PROGRAM_NAME + ' ' + common_opts.SUITE_COMMAND)
         ret_val.add_argument('file',
                              metavar=opts.TEST_SUITE_FILE_ARGUMENT,

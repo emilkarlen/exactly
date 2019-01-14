@@ -5,6 +5,8 @@ from exactly_lib.cli.program_modes.help.program_modes.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import MainProgramHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.main_program.request_rendering import \
     MainProgramHelpRendererResolver
+from exactly_lib.cli.program_modes.help.program_modes.symbol.help_request import SymbolHelpRequest
+from exactly_lib.cli.program_modes.help.program_modes.symbol.request_rendering import SymbolHelpConstructorResolver
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import TestCaseHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.test_case.request_rendering import TestCaseHelpConstructorResolver
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import TestSuiteHelpRequest
@@ -46,6 +48,9 @@ def _renderer(application_help: ApplicationHelp,
         return resolver.resolve(request)
     if isinstance(request, TestSuiteHelpRequest):
         resolver = TestSuiteHelpConstructorResolver(application_help.test_suite_help)
+        return resolver.resolve(request)
+    if isinstance(request, SymbolHelpRequest):
+        resolver = SymbolHelpConstructorResolver()
         return resolver.resolve(request)
     if isinstance(request, EntityHelpRequest):
         resolver = _entity_help_request_renderer_resolver_for(application_help, request)
