@@ -68,18 +68,20 @@ class ReportGenerator:
     def __init__(self,
                  output: StdOutputFiles,
                  completion_reporter: CompletionReporter,
-                 test_case: test_case_doc.TestCase):
+                 test_case: test_case_doc.TestCaseOfInstructions,
+                 act_phase: Sequence[SymbolUsage]):
         self._output = output
         self._completion_reporter = completion_reporter
-        self._test_case = test_case
-        self._test_case_instructions = test_case.as_test_case_of_instructions()
+        self._act_phase = act_phase
+        self._test_case_instructions = test_case
         self._type_info_dict = {
             value_type: _TypeReportingInfo(value_type)
             for value_type in ValueType
         }
 
     def list(self) -> int:
-        definitions_resolver = DefinitionsInfoResolver(self._test_case_instructions)
+        definitions_resolver = DefinitionsInfoResolver(self._test_case_instructions,
+                                                       self._act_phase)
         output_lines = self._get_list_lines(definitions_resolver.definitions())
         self._output.out.write(lines_content(output_lines))
         return self._completion_reporter.report_success()
@@ -117,8 +119,11 @@ class ReportGenerator:
 
 
 class DefinitionsInfoResolver:
-    def __init__(self, test_case: TestCaseOfInstructions):
+    def __init__(self,
+                 test_case: TestCaseOfInstructions,
+                 act_phase: Sequence[SymbolUsage]):
         self.test_case = test_case
+        self.act_phase = act_phase
 
     def definitions(self) -> Iterator[_SymbolDefinitionInfo]:
         usages = list(self.symbol_usages())
@@ -140,9 +145,14 @@ class DefinitionsInfoResolver:
                    )
 
     def symbol_usages(self) -> Iterator[SymUsageInPhase[SymbolUsage]]:
+        def mk_act_phase_sym_usage(usage: SymbolUsage) -> SymUsageInPhase[SymbolUsage]:
+            return SymUsageInPhase(phase_identifier.ACT,
+                                   usage)
+
         return itertools.chain.from_iterable([
             _symbol_usages_from(phase_identifier.SETUP,
                                 self.test_case.setup_phase, setup.get_symbol_usages),
+            map(mk_act_phase_sym_usage, self.act_phase),
             _symbol_usages_from(phase_identifier.BEFORE_ASSERT,
                                 self.test_case.before_assert_phase,
                                 before_assert.get_symbol_usages),

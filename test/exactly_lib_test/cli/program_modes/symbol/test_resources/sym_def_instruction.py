@@ -1,4 +1,6 @@
-from typing import Callable, List
+import itertools
+
+from typing import Callable, List, Sequence, Optional
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import instruction_arguments
@@ -16,6 +18,9 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.instruction_parsers import InstructionParserThatConsumesCurrentLine
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser, ActionToCheckExecutor, ParseException
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.result import svh
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.cli.program_modes.test_resources import main_program_execution
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import MainProgramConfig
@@ -24,6 +29,8 @@ from exactly_lib_test.common.test_resources import instruction_setup
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instrs
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
     ActionToCheckExecutorParserThatRunsConstantActions
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
+    ActionToCheckExecutorThatRunsConstantActions
 from exactly_lib_test.test_resources.actions import do_return
 
 DEF_INSTRUCTION_NAME = 'define'
@@ -60,19 +67,23 @@ class _ReferenceParser(InstructionParserThatConsumesCurrentLine):
         self.mk_instruction = mk_instruction
 
     def _parse(self, rest_of_line: str) -> model.Instruction:
-        parts = rest_of_line.split()
-        if len(parts) != 2:
-            raise SingleInstructionInvalidArgumentException('Usage TYPE NAME. Found: ' + rest_of_line)
-        type_ident = parts[0]
-        name = parts[1]
+        usages = _parse_reference_arguments(rest_of_line)
+        return self.mk_instruction(usages)
 
-        try:
-            reference = SymbolReference(name,
-                                        ValueTypeRestriction(TYPE_IDENT_2_VALUE_TYPE[type_ident]))
-            usages = [reference]
-            return self.mk_instruction(usages)
-        except KeyError:
-            raise SingleInstructionInvalidArgumentException('Not a symbol type: ' + type_ident)
+
+def _parse_reference_arguments(rest_of_line: str) -> List[SymbolReference]:
+    parts = rest_of_line.split()
+    if len(parts) != 2:
+        raise SingleInstructionInvalidArgumentException('Usage TYPE NAME. Found: ' + rest_of_line)
+    type_ident = parts[0]
+    name = parts[1]
+
+    try:
+        reference = SymbolReference(name,
+                                    ValueTypeRestriction(TYPE_IDENT_2_VALUE_TYPE[type_ident]))
+        return [reference]
+    except KeyError:
+        raise SingleInstructionInvalidArgumentException('Not a symbol type: ' + type_ident)
 
 
 def _ref_instruction_setup(instruction_name: str,
@@ -110,10 +121,54 @@ INSTRUCTION_SETUP = InstructionsSetup(
 )
 
 
-def main_program_config() -> MainProgramConfig:
-    return main_program_execution.main_program_config(test_case_definition_for(INSTRUCTION_SETUP),
-                                                      act_phase_setup=act_phase_setup_for_reference_instruction())
+def main_program_config(act_executor_parser: Optional[ActionToCheckExecutorParser] = None) -> MainProgramConfig:
+    if act_executor_parser is None:
+        act_executor_parser = _ActionToCheckExecutorParserThatParsesReferences(REF_INSTRUCTION_NAME)
+    return main_program_execution.main_program_config(
+        test_case_definition_for(INSTRUCTION_SETUP),
+        act_phase_setup=ActPhaseSetup(
+            act_executor_parser
+        )
+    )
 
 
 def act_phase_setup_for_reference_instruction() -> ActPhaseSetup:
     return ActPhaseSetup(ActionToCheckExecutorParserThatRunsConstantActions())
+
+
+class _ActionToCheckExecutorParserThatParsesReferences(ActionToCheckExecutorParser):
+    def __init__(self, reference_instruction_name: str):
+        self._reference_instruction_name = reference_instruction_name
+
+    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
+        try:
+            source_lines = list(itertools.chain.from_iterable(map(self._get_source_code_lines, instructions)))
+            reference_instructions_arguments = self._get_reference_instruction_arguments(source_lines)
+            references = list(
+                itertools.chain.from_iterable(map(_parse_reference_arguments, reference_instructions_arguments)))
+
+            return ActionToCheckExecutorThatRunsConstantActions(
+                symbol_usages_action=do_return(references)
+            )
+        except SingleInstructionInvalidArgumentException as ex:
+            raise ParseException(svh.new_svh_validation_error(ex.error_message))
+
+    def _get_reference_instruction_arguments(self, lines: Sequence[str]) -> List[str]:
+        ret_val = []
+        for line in lines:
+            if not line or line.isspace():
+                continue
+            parts = line.split(maxsplit=1)
+            if len(parts) == 2 and parts[0] == self._reference_instruction_name:
+                ret_val.append(parts[1])
+            else:
+                err_msg = 'Invalid act phase instruction: {}\nExpecting: {}'.format(
+                    line,
+                    self._reference_instruction_name)
+                raise ParseException(svh.new_svh_validation_error(err_msg))
+
+        return ret_val
+
+    @staticmethod
+    def _get_source_code_lines(instruction: ActPhaseInstruction) -> Sequence[str]:
+        return instruction.source_code().lines

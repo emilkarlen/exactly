@@ -12,6 +12,8 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+    ActionToCheckExecutorParserThatRaisesParseException
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -42,6 +44,33 @@ class TestFailureScenarios(unittest.TestCase):
             ),
             asrt_proc_result.is_result_for_empty_stdout(
                 exit_values.NO_EXECUTION__SYNTAX_ERROR.exit_code
+            )
+        )
+
+    def test_invalid_syntax_of_act_phase(self):
+        file_with_invalid_syntax = File(
+            'invalid-syntax.case',
+            lines_content([
+                phase_names.ACT.syntax,
+                'invalid contents',
+            ]))
+
+        test_with_files_in_tmp_dir.check(
+            self,
+            command_line_arguments=
+            symbol_args.arguments([file_with_invalid_syntax.name]),
+            arrangement=
+            Arrangement(
+                main_program_config=sym_def.main_program_config(
+                    ActionToCheckExecutorParserThatRaisesParseException()
+                ),
+                cwd_contents=DirContents([
+                    file_with_invalid_syntax,
+                ])
+            ),
+            expectation=
+            asrt_proc_result.is_result_for_empty_stdout(
+                exit_values.EXECUTION__VALIDATION_ERROR.exit_code
             )
         )
 
@@ -100,6 +129,37 @@ class TestSuccessfulScenarios(unittest.TestCase):
                                     lines_content([
                                         phase_names.SETUP.syntax,
                                         sym_def.define_string(symbol_name, 'value'),
+                                        sym_def.reference_to(symbol_name, ValueType.STRING),
+                                    ]))
+
+        test_with_files_in_tmp_dir.check(
+            self,
+            command_line_arguments=
+            symbol_args.arguments([case_with_single_def.name]),
+            arrangement=
+            Arrangement(
+                cwd_contents=DirContents([
+                    case_with_single_def,
+                ]),
+                main_program_config=sym_def.main_program_config(),
+            ),
+            expectation=
+            asrt_proc_result.sub_process_result(
+                exitcode=asrt.equals(exit_codes.EXIT_OK),
+                stdout=asrt.equals(output.list_of([
+                    output.SymbolReport(symbol_name, ValueType.STRING, num_refs=1),
+                ])),
+            )
+        )
+
+    def test_single_definition_with_single_reference_in_act_phase(self):
+        symbol_name = 'STRING_SYMBOL'
+        case_with_single_def = File('test.case',
+                                    lines_content([
+                                        phase_names.SETUP.syntax,
+                                        sym_def.define_string(symbol_name, 'value'),
+
+                                        phase_names.ACT.syntax,
                                         sym_def.reference_to(symbol_name, ValueType.STRING),
                                     ]))
 
