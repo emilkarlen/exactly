@@ -5,20 +5,20 @@ from exactly_lib.act_phase_setups.util.source_code_lines_utils import all_source
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IdentityPreprocessor
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor, ActionToCheckExecutor
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser, ActionToCheckExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 
 
 def setup() -> TestCaseHandlingSetup:
-    return TestCaseHandlingSetup(ActPhaseSetup(Constructor()),
+    return TestCaseHandlingSetup(ActPhaseSetup(AtcExecutorParser()),
                                  IdentityPreprocessor())
 
 
-class Constructor(ActSourceAndExecutorConstructor):
+class AtcExecutorParser(ActionToCheckExecutorParser):
     def parse(self,
               act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
         source_code_lines = all_source_code_lines(act_phase_instructions)
         if not source_code_lines:
-            return null.Constructor().parse(act_phase_instructions)
+            return null.Parser().parse(act_phase_instructions)
         else:
-            return command_line.Constructor().parse(act_phase_instructions)
+            return command_line.Parser().parse(act_phase_instructions)

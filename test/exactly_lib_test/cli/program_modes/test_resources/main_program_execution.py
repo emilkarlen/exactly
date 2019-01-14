@@ -16,7 +16,7 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
+    ActionToCheckExecutorParserThatRunsConstantActions
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -41,7 +41,7 @@ class MainProgramConfig:
 def main_program_config(
         tc_definition: TestCaseDefinitionForMainProgram,
         test_suite_definition: TestSuiteDefinition = test_suite_definition_without_instructions(),
-        act_phase_setup: ActPhaseSetup = ActPhaseSetup(ActSourceAndExecutorConstructorThatRunsConstantActions()),
+        act_phase_setup: ActPhaseSetup = ActPhaseSetup(ActionToCheckExecutorParserThatRunsConstantActions()),
 ) -> MainProgramConfig:
     return MainProgramConfig(TestCaseHandlingSetup(
         act_phase_setup,

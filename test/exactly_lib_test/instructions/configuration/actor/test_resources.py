@@ -1,5 +1,6 @@
-import pathlib
 import unittest
+
+import pathlib
 
 from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.actor import actor_utils
@@ -11,7 +12,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionTy
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRaisesException
+    ActionToCheckExecutorParserThatRaisesException
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_resources.files import file_structure as fs
@@ -52,7 +53,7 @@ def check(put: unittest.TestCase,
     assert isinstance(instruction, ConfigurationPhaseInstruction)
     instruction.main(configuration_builder)
     act_phase_instructions = [instr(arrangement.act_phase_source_lines)]
-    executor_constructor = configuration_builder.act_phase_handling.source_and_executor_constructor
+    executor_constructor = configuration_builder.act_phase_handling.atc_exe_parser
     act_phase_execution.check_execution(put,
                                         executor_constructor,
                                         act_phase_instructions,
@@ -69,7 +70,7 @@ def _configuration_builder_with_exception_throwing_act_phase_setup() -> Configur
     initial_home_dir = pathlib.Path()
     return ConfigurationBuilder(initial_home_dir,
                                 initial_home_dir,
-                                ActPhaseHandling(ActSourceAndExecutorConstructorThatRaisesException()))
+                                ActPhaseHandling(ActionToCheckExecutorParserThatRaisesException()))
 
 
 def file_in_home_act_dir(file_name: str) -> home_populators.HomePopulator:

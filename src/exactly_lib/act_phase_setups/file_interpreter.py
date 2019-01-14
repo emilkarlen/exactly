@@ -7,7 +7,7 @@ from exactly_lib.act_phase_setups.common import relativity_configuration_of_acti
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
-from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser
+from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import ExecutableObjectParser
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import \
     SubProcessExecutor
 from exactly_lib.definitions.test_case.actors import file_interpreter as texts
@@ -42,25 +42,25 @@ RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.FIL
 
 
 def act_phase_setup(interpreter: Command) -> ActPhaseSetup:
-    return ActPhaseSetup(constructor(interpreter))
+    return ActPhaseSetup(parser(interpreter))
 
 
 def act_phase_handling(interpreter: Command) -> ActPhaseHandling:
-    return ActPhaseHandling(constructor(interpreter))
+    return ActPhaseHandling(parser(interpreter))
 
 
-def constructor(interpreter: Command) -> parts.Constructor:
+def parser(interpreter: Command) -> parts.AtcExecutorParser:
     return _CommandTranslator(interpreter.arguments).visit(interpreter.driver)
 
 
-class ConstructorForInterpreterThatIsAnExecutableFile(parts.Constructor):
+class ParserForInterpreterThatIsAnExecutableFile(parts.AtcExecutorParser):
     def __init__(self, pgm_and_args: ProgramAndArguments):
         super().__init__(_Parser(is_shell=False),
                          _Validator,
                          functools.partial(_ProgramExecutor, pgm_and_args))
 
 
-class ConstructorForInterpreterThatIsAShellCommand(parts.Constructor):
+class ParserForInterpreterThatIsAShellCommand(parts.AtcExecutorParser):
     def __init__(self, shell_command_line: str):
         super().__init__(_Parser(is_shell=True),
                          _Validator,
@@ -94,7 +94,7 @@ class _SourceInfoForInterpreterThatIsAShellCommand(_SourceInfo):
         return tuple(self.file_reference.references) + tuple(self.arguments.references)
 
 
-class _Parser(Parser):
+class _Parser(ExecutableObjectParser):
     def __init__(self, is_shell: bool):
         self.is_shell = is_shell
 
@@ -206,11 +206,11 @@ class _CommandTranslator(commands.CommandDriverVisitor):
     def __init__(self, arguments: List[str]):
         self.arguments = arguments
 
-    def visit_shell(self, driver: commands.CommandDriverForShell) -> parts.Constructor:
-        return ConstructorForInterpreterThatIsAShellCommand(driver.shell_command_line_with_args(self.arguments))
+    def visit_shell(self, driver: commands.CommandDriverForShell) -> parts.AtcExecutorParser:
+        return ParserForInterpreterThatIsAShellCommand(driver.shell_command_line_with_args(self.arguments))
 
-    def visit_executable_file(self, driver: commands.CommandDriverForExecutableFile) -> parts.Constructor:
-        return ConstructorForInterpreterThatIsAnExecutableFile(driver.as_program_and_args(self.arguments))
+    def visit_executable_file(self, driver: commands.CommandDriverForExecutableFile) -> parts.AtcExecutorParser:
+        return ParserForInterpreterThatIsAnExecutableFile(driver.as_program_and_args(self.arguments))
 
-    def visit_system_program(self, driver: commands.CommandDriverForSystemProgram) -> parts.Constructor:
+    def visit_system_program(self, driver: commands.CommandDriverForSystemProgram) -> parts.AtcExecutorParser:
         raise ValueError('Unsupported interpreter: System Program Command')

@@ -14,7 +14,7 @@ from exactly_lib.execution.partial_execution.result import PartialExeResultStatu
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutor, \
-    ActPhaseHandling, ActSourceAndExecutorConstructor, ParseException, ActPhaseOsProcessExecutor
+    ActPhaseHandling, ActionToCheckExecutorParser, ParseException, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -35,7 +35,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.act_program_e
     ActionToCheckExecutorWrapperThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorForConstantExecutor
+    ActionToCheckExecutorConstructorForConstantExecutor
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
     ActionToCheckExecutorThatJustReturnsSuccess, ActionToCheckExecutorThatRunsConstantActions
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
@@ -76,12 +76,12 @@ class TestExecutionSequence(unittest.TestCase):
         step_recorder = ListRecorder()
         recording_executor = ActionToCheckExecutorWrapperThatRecordsSteps(step_recorder,
                                                                           executor_that_does_nothing)
-        constructor = ActSourceAndExecutorConstructorForConstantExecutor(
+        parser = ActionToCheckExecutorConstructorForConstantExecutor(
             recording_executor,
             parse_action=do_raise(ParseException(expected_cause))
         )
         arrangement = Arrangement(test_case=_empty_test_case(),
-                                  act_phase_handling=ActPhaseHandling(constructor))
+                                  act_phase_handling=ActPhaseHandling(parser))
         # ASSERT #
         expectation = Expectation(phase_result=asrt_result.status_is(PartialExeResultStatus.VALIDATION_ERROR))
         # APPLY #
@@ -97,12 +97,12 @@ class TestExecutionSequence(unittest.TestCase):
         step_recorder = ListRecorder()
         recording_executor = ActionToCheckExecutorWrapperThatRecordsSteps(step_recorder,
                                                                           executor_that_does_nothing)
-        constructor = ActSourceAndExecutorConstructorForConstantExecutor(
+        parser = ActionToCheckExecutorConstructorForConstantExecutor(
             recording_executor,
             parse_action=do_raise(ValueError(expected_cause))
         )
         arrangement = Arrangement(test_case=_empty_test_case(),
-                                  act_phase_handling=ActPhaseHandling(constructor))
+                                  act_phase_handling=ActPhaseHandling(parser))
         # ASSERT #
         expectation = Expectation(phase_result=asrt_result.status_is(PartialExeResultStatus.IMPLEMENTATION_ERROR))
         # APPLY #
@@ -118,9 +118,9 @@ class TestCurrentDirectory(unittest.TestCase):
         cwd_registerer = CwdRegisterer()
         with tmp_dir_as_cwd() as expected_current_directory_pre_validate_post_setup:
             executor_that_records_current_dir = _ExecutorThatRecordsCurrentDir(cwd_registerer)
-            constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor_that_records_current_dir)
+            parser = ActionToCheckExecutorConstructorForConstantExecutor(executor_that_records_current_dir)
             # ACT #
-            _execute(constructor, _empty_test_case(),
+            _execute(parser, _empty_test_case(),
                      current_directory=expected_current_directory_pre_validate_post_setup)
             # ASSERT #
             phase_step_2_cwd = cwd_registerer.phase_step_2_cwd
@@ -147,9 +147,9 @@ class TestExecute(unittest.TestCase):
         # ARRANGE #
         exit_code_from_execution = 72
         executor = _ExecutorThatReturnsConstantExitCode(exit_code_from_execution)
-        constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor)
+        parser = ActionToCheckExecutorConstructorForConstantExecutor(executor)
         arrangement = Arrangement(test_case=_empty_test_case(),
-                                  act_phase_handling=ActPhaseHandling(constructor))
+                                  act_phase_handling=ActPhaseHandling(parser))
         # ASSERT #
         expectation = Expectation(assertion_on_sds=_exit_code_result_file_contains(str(exit_code_from_execution)))
         # APPLY #
@@ -183,10 +183,10 @@ class TestExecute(unittest.TestCase):
         # ARRANGE #
         setup_settings = setup.default_settings()
         setup_settings.stdin.file_name = 'this-is-not-the-name-of-an-existing-file.txt'
-        constructor = ActSourceAndExecutorConstructorForConstantExecutor(ActionToCheckExecutorThatJustReturnsSuccess())
+        parser = ActionToCheckExecutorConstructorForConstantExecutor(ActionToCheckExecutorThatJustReturnsSuccess())
         test_case = _empty_test_case()
         # ACT #
-        result = _execute(constructor, test_case, setup_settings)
+        result = _execute(parser, test_case, setup_settings)
         # ASSERT #
         self.assertTrue(result.is_failure)
 
@@ -249,11 +249,11 @@ def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
             python_program_file.write_to(tmp_dir_path)
             executor_that_records_contents_of_stdin = _ExecutorThatExecutesPythonProgramFile(
                 tmp_dir_path / 'program.py')
-            constructor = ActSourceAndExecutorConstructorForConstantExecutor(
+            parser = ActionToCheckExecutorConstructorForConstantExecutor(
                 executor_that_records_contents_of_stdin)
             test_case = _empty_test_case()
             # ACT #
-            result = _execute(constructor, test_case, setup_settings)
+            result = _execute(parser, test_case, setup_settings)
             # ASSERT #
             file_checker = FileChecker(put)
             file_checker.assert_file_contents(output_file_path,
@@ -336,7 +336,7 @@ def _empty_test_case() -> TestCase:
                     new_empty_section_contents())
 
 
-def _execute(constructor: ActSourceAndExecutorConstructor,
+def _execute(parser: ActionToCheckExecutorParser,
              test_case: TestCase,
              setup_settings: SetupSettingsBuilder = setup.default_settings(),
              is_keep_sandbox: bool = False,
@@ -352,7 +352,7 @@ def _execute(constructor: ActSourceAndExecutorConstructor,
                 ExecutionConfiguration(dict(os.environ),
                                        DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                        sandbox_root_name_resolver.for_test()),
-                ConfPhaseValues(ActPhaseHandling(constructor),
+                ConfPhaseValues(ActPhaseHandling(parser),
                                 hds),
                 setup_settings,
                 is_keep_sandbox)

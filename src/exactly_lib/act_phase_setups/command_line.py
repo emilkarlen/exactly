@@ -4,7 +4,7 @@ from exactly_lib.act_phase_setups.common import relativity_configuration_of_acti
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
-from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser, \
+from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import ExecutableObjectParser, \
     PartsValidatorFromPreOrPostSdsValidator
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import \
     CommandResolverExecutor
@@ -27,17 +27,17 @@ from exactly_lib.test_case_utils.program.command import command_resolvers
 
 
 def act_phase_setup() -> ActPhaseSetup:
-    return ActPhaseSetup(Constructor())
+    return ActPhaseSetup(Parser())
 
 
 def act_phase_handling() -> ActPhaseHandling:
-    return ActPhaseHandling(Constructor())
+    return ActPhaseHandling(Parser())
 
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.EXECUTABLE)
 
 
-class Constructor(parts.Constructor):
+class Parser(parts.AtcExecutorParser):
     def __init__(self):
         super().__init__(_Parser(),
                          _validator,
@@ -61,7 +61,7 @@ class CommandConfiguration(SymbolUser):
                                        self._command_resolver)
 
 
-class _Parser(Parser):
+class _Parser(ExecutableObjectParser):
     def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> CommandConfiguration:
         single_line_parser = ParserForSingleLineUsingStandardSyntax()
         single_line = single_line_parser.apply(act_phase_instructions)

@@ -2,7 +2,7 @@ import pathlib
 from typing import Sequence, Callable
 
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutor, ActSourceAndExecutorConstructor, \
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutor, ActionToCheckExecutorParser, \
     ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
@@ -80,7 +80,7 @@ ExecutorConstructorType = Callable[[ActPhaseOsProcessExecutor,
                                    Executor]
 
 
-class Parser:
+class ExecutableObjectParser:
     def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> ExecutableObject:
         """
         :raises ParseException
@@ -91,9 +91,9 @@ class Parser:
         raise NotImplementedError(str(type(self)))
 
 
-class Constructor(ActSourceAndExecutorConstructor):
+class AtcExecutorParser(ActionToCheckExecutorParser):
     def __init__(self,
-                 parser: Parser,
+                 parser: ExecutableObjectParser,
                  validator_constructor: ValidatorConstructorType,
                  executor_constructor: ExecutorConstructorType):
         self.parser = parser

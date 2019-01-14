@@ -142,7 +142,7 @@ def execute_test_case_with_recording(put: unittest.TestCase,
         prepare_action=arrangement.act_executor_prepare,
         execute_action=arrangement.act_executor_execute,
     )
-    constructor = step_recording_executors.constructor_of_constant(
+    constructor = step_recording_executors.parser_of_constant(
         arrangement.test_case_generator.recorder,
         constant_actions_runner,
         parse_action=arrangement.act_executor_parse,

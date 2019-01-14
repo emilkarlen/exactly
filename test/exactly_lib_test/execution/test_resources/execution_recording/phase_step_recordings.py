@@ -17,7 +17,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     before_assert_phase_instruction_that, assert_phase_instruction_that, \
     cleanup_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
+    ActionToCheckExecutorParserThatRunsConstantActions
 from exactly_lib_test.test_resources import actions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
@@ -116,7 +116,7 @@ def act_phase_handling_that_records_a_value_per_step(
         recorder_for_step_with_env: types.FunctionType,
         recorder_for_parse_step: types.FunctionType,
 ) -> ActPhaseHandling:
-    return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions(
+    return ActPhaseHandling(ActionToCheckExecutorParserThatRunsConstantActions(
         parse_action=recorder_for_parse_step(step.ACT__PARSE),
         validate_pre_sds_initial_action=recorder_for_step_with_env(step.ACT__VALIDATE_PRE_SDS),
         validate_post_setup_initial_action=recorder_for_step_with_env(step.ACT__VALIDATE_POST_SETUP),

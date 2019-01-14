@@ -1,6 +1,7 @@
+import unittest
+
 import pathlib
 import tempfile
-import unittest
 from typing import Any, Callable, Dict
 
 from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import \
@@ -18,7 +19,7 @@ from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_case.phase_identifier import Phase, PhaseEnum
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result import pfh, sh, svh
@@ -32,7 +33,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     assert_phase_instruction_that, before_assert_phase_instruction_that, cleanup_phase_instruction_that
 from exactly_lib_test.processing.test_resources.instruction_set import instruction_set
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
+    ActionToCheckExecutorParserThatRunsConstantActions
 from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -106,7 +107,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
     def test_failing_parse(self):
         # ARRANGE #
         test_case_definition = test_case_definition_for(instruction_set())
-        act_phase_constructor = ActSourceAndExecutorConstructorThatRunsConstantActions()
+        atc_e_parser = ActionToCheckExecutorParserThatRunsConstantActions()
         test_case_source = lines_content([
             section_header(phase_identifier.SETUP.identifier),
             'not_the_name_of_an_instruction',
@@ -116,7 +117,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
         # ACT & ASSERT #
         _check(self,
                test_case_definition,
-               act_phase_constructor,
+               atc_e_parser,
                test_case_source,
                self.sandbox_dir_resolver_that_should_not_be_called,
                expectation)
@@ -142,21 +143,21 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
             STEP__ACT__PARSE:
                 {
                     EXECUTION__IMPLEMENTATION_ERROR:
-                        ActSourceAndExecutorConstructorThatRunsConstantActions(parse_action=DO_RAISES_EXCEPTION),
+                        ActionToCheckExecutorParserThatRunsConstantActions(parse_action=DO_RAISES_EXCEPTION),
 
                 },
             STEP__VALIDATE_PRE_SDS:
                 {
                     EXECUTION__VALIDATION_ERROR:
-                        ActSourceAndExecutorConstructorThatRunsConstantActions(
+                        ActionToCheckExecutorParserThatRunsConstantActions(
                             validate_pre_sds_action=SVH_VALIDATION_ERROR),
 
                     EXECUTION__HARD_ERROR:
-                        ActSourceAndExecutorConstructorThatRunsConstantActions(
+                        ActionToCheckExecutorParserThatRunsConstantActions(
                             validate_pre_sds_action=SVH_HARD_ERROR),
 
                     EXECUTION__IMPLEMENTATION_ERROR:
-                        ActSourceAndExecutorConstructorThatRunsConstantActions(
+                        ActionToCheckExecutorParserThatRunsConstantActions(
                             validate_pre_sds_initial_action=DO_RAISES_EXCEPTION),
                 },
         }
@@ -251,7 +252,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
         # ACT & ASSERT #
         _check(self,
                test_case_definition,
-               ActSourceAndExecutorConstructorThatRunsConstantActions(),
+               ActionToCheckExecutorParserThatRunsConstantActions(),
                test_case_source,
                self.sandbox_dir_resolver_of_given_dir,
                expectation)
@@ -288,32 +289,32 @@ class TestPhasesInPartialExecution(unittest.TestCase):
             STEP__VALIDATE_POST_SETUP:
                 {
                     EXECUTION__VALIDATION_ERROR:
-                        ActSourceAndExecutorConstructorThatRunsConstantActions(
+                        ActionToCheckExecutorParserThatRunsConstantActions(
                             validate_post_setup_action=SVH_VALIDATION_ERROR),
 
                     EXECUTION__HARD_ERROR:
-                        ActSourceAndExecutorConstructorThatRunsConstantActions(
+                        ActionToCheckExecutorParserThatRunsConstantActions(
                             validate_post_setup_action=SVH_HARD_ERROR),
 
                     EXECUTION__IMPLEMENTATION_ERROR:
-                        ActSourceAndExecutorConstructorThatRunsConstantActions(
+                        ActionToCheckExecutorParserThatRunsConstantActions(
                             validate_post_setup_initial_action=DO_RAISES_EXCEPTION),
 
                 },
             STEP__ACT__PREPARE:
                 {
                     EXECUTION__HARD_ERROR:
-                        ActSourceAndExecutorConstructorThatRunsConstantActions(
+                        ActionToCheckExecutorParserThatRunsConstantActions(
                             prepare_action=SH_HARD_ERROR),
 
                     EXECUTION__IMPLEMENTATION_ERROR:
-                        ActSourceAndExecutorConstructorThatRunsConstantActions(
+                        ActionToCheckExecutorParserThatRunsConstantActions(
                             prepare_initial_action=DO_RAISES_EXCEPTION),
                 },
             STEP__ACT__EXECUTE:
                 {
                     EXECUTION__IMPLEMENTATION_ERROR:
-                        ActSourceAndExecutorConstructorThatRunsConstantActions(
+                        ActionToCheckExecutorParserThatRunsConstantActions(
                             execute_initial_action=DO_RAISES_EXCEPTION),
                 },
         }
@@ -448,7 +449,7 @@ def _check_instruction(put: unittest.TestCase,
 
     _check(put,
            test_case_definition,
-           ActSourceAndExecutorConstructorThatRunsConstantActions(),
+           ActionToCheckExecutorParserThatRunsConstantActions(),
            test_case_source,
            mk_sds_resolver,
            case.expectation)
@@ -456,7 +457,7 @@ def _check_instruction(put: unittest.TestCase,
 
 def _check(put: unittest.TestCase,
            test_case_definition: TestCaseDefinitionForMainProgram,
-           act_source_and_executor_constructor: ActSourceAndExecutorConstructor,
+           act_source_and_executor_constructor: ActionToCheckExecutorParser,
            test_case_source: str,
            mk_sds_resolver: Callable[[str], SandboxRootDirNameResolver],
            expectation: Expectation,

@@ -4,7 +4,7 @@ from typing import Sequence
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutor, \
-    ActSourceAndExecutorConstructor, ActPhaseOsProcessExecutor
+    ActionToCheckExecutorParser, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -13,7 +13,7 @@ from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorForConstantExecutor
+    ActionToCheckExecutorConstructorForConstantExecutor
 from exactly_lib_test.test_resources import actions
 
 
@@ -56,10 +56,10 @@ class ActionToCheckExecutorWrapperThatRecordsSteps(ActionToCheckExecutor):
         return self.__wrapped.execute(environment, os_process_executor, script_output_dir_path, std_files)
 
 
-class ActSourceAndExecutorWrapperConstructorThatRecordsSteps(ActSourceAndExecutorConstructor):
+class ActionToCheckExecutorWrapperParserThatRecordsSteps(ActionToCheckExecutorParser):
     def __init__(self,
                  recorder: ListRecorder,
-                 wrapped: ActSourceAndExecutorConstructor,
+                 wrapped: ActionToCheckExecutorParser,
                  parse_action=actions.do_nothing,
                  ):
         self.__recorder = recorder
@@ -75,12 +75,12 @@ class ActSourceAndExecutorWrapperConstructorThatRecordsSteps(ActSourceAndExecuto
                                                             self.__wrapped.parse(act_phase_instructions))
 
 
-def constructor_of_constant(recorder: ListRecorder,
-                            wrapped: ActionToCheckExecutor,
-                            parse_action=actions.do_nothing,
-                            ) -> ActSourceAndExecutorConstructor:
-    return ActSourceAndExecutorWrapperConstructorThatRecordsSteps(
+def parser_of_constant(recorder: ListRecorder,
+                       wrapped: ActionToCheckExecutor,
+                       parse_action=actions.do_nothing,
+                       ) -> ActionToCheckExecutorParser:
+    return ActionToCheckExecutorWrapperParserThatRecordsSteps(
         recorder,
-        ActSourceAndExecutorConstructorForConstantExecutor(wrapped),
+        ActionToCheckExecutorConstructorForConstantExecutor(wrapped),
         parse_action=parse_action,
     )

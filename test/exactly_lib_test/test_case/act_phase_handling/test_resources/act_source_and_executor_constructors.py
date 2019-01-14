@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutor, \
-    ActSourceAndExecutorConstructor
+    ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.test_case.act_phase_handling.test_resources import test_actions
@@ -10,7 +10,7 @@ from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and
 from exactly_lib_test.test_resources import actions
 
 
-class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecutorConstructor):
+class ActionToCheckExecutorParserThatRunsConstantActions(ActionToCheckExecutorParser):
     def __init__(self,
                  parse_action=actions.do_nothing,
                  validate_pre_sds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
@@ -48,7 +48,7 @@ class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecuto
             execute_action=self.execute_action)
 
 
-class ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorConstructor):
+class ActionToCheckExecutorConstructorForConstantExecutor(ActionToCheckExecutorParser):
     def __init__(self,
                  executor: ActionToCheckExecutor,
                  parse_action=actions.do_nothing,
@@ -62,7 +62,7 @@ class ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorCon
         return self.executor
 
 
-class ActSourceAndExecutorConstructorThatRaisesException(ActSourceAndExecutorConstructor):
+class ActionToCheckExecutorParserThatRaisesException(ActionToCheckExecutorParser):
     def parse(self,
               act_phase_instructions: Sequence[ActPhaseInstruction]):
         raise ValueError('the method should never be called')

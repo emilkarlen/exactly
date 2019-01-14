@@ -1,5 +1,6 @@
-import pathlib
 import unittest
+
+import pathlib
 from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups.source_interpreter import executable_file as sut, python3
@@ -27,7 +28,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestThatScriptSourceIsWrittenToTestCaseDir),
         unittest.makeSuite(TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError),
 
-        common_tests.suite_for(sut.Constructor(python3.source_interpreter_setup()),
+        common_tests.suite_for(sut.Parser(python3.source_interpreter_setup()),
                                is_shell=False),
     ])
 
@@ -35,7 +36,7 @@ def suite() -> unittest.TestSuite:
 class TheConfiguration(Configuration):
     def __init__(self):
         self.setup = sut.new_for_source_interpreter_setup(python3.source_interpreter_setup())
-        super().__init__(self.setup.source_and_executor_constructor)
+        super().__init__(self.setup.atc_executor_parser)
 
     @contextmanager
     def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:
@@ -85,7 +86,7 @@ class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.Tes
         act_phase_setup = sut.new_for_source_interpreter_setup(language_setup)
         empty_source = []
         check_execution(self,
-                        act_phase_setup.source_and_executor_constructor,
+                        act_phase_setup.atc_executor_parser,
                         empty_source,
                         Arrangement(),
                         Expectation(
@@ -101,7 +102,7 @@ class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
             sut.ActSourceFileNameGeneratorForSourceInterpreterSetup.FILE_NAME_STEM)
         exit_code_or_hard_error = check_execution(
             self,
-            act_phase_setup.source_and_executor_constructor,
+            act_phase_setup.atc_executor_parser,
             source,
             Arrangement(),
             Expectation(

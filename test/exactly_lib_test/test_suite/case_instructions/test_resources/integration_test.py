@@ -1,4 +1,5 @@
 import unittest
+
 from enum import Enum
 from pathlib import Path
 from typing import List, Dict, Callable, Sequence
@@ -17,7 +18,7 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case import os_services
-from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_suite import processing as sut, enumeration
 from exactly_lib.test_suite.file_reading import suite_hierarchy_reading
 from exactly_lib.test_suite.file_reading.exception import SuiteReadError
@@ -29,7 +30,7 @@ from exactly_lib_test.section_document.test_resources.element_parsers import \
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
 from exactly_lib_test.section_document.test_resources.source_location_assertions import matches_file_location_info
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
+    ActionToCheckExecutorParserThatRunsConstantActions
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.files.str_std_out_files import null_output_files
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
@@ -93,8 +94,8 @@ class PhaseConfig:
     def act_phase_parser(self) -> SectionElementParser:
         raise NotImplementedError('abstract method')
 
-    def act_source_and_executor_constructor(self, recording_media: List[Recording]) -> ActSourceAndExecutorConstructor:
-        return ActSourceAndExecutorConstructorThatRunsConstantActions()
+    def atc_executor_parser(self, recording_media: List[Recording]) -> ActionToCheckExecutorParser:
+        return ActionToCheckExecutorParserThatRunsConstantActions()
 
     def phase_contents_line_that_registers(self,
                                            marker_to_register: str) -> str:
@@ -374,7 +375,7 @@ class TestBase(unittest.TestCase):
         default_case_configuration = processors.Configuration(
             test_case_definition,
             TestCaseHandlingSetup(
-                ActPhaseSetup(self._phase_config().act_source_and_executor_constructor(recording_media)),
+                ActPhaseSetup(self._phase_config().atc_executor_parser(recording_media)),
                 IDENTITY_PREPROCESSOR),
             os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
             False,

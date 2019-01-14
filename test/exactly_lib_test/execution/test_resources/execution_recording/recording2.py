@@ -13,7 +13,7 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     assert_phase_instruction_that, before_assert_phase_instruction_that, cleanup_phase_instruction_that
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
+    ActionToCheckExecutorParserThatRunsConstantActions
 from exactly_lib_test.test_case.test_resources.test_case_doc import TestCaseWithOnlyInstructionElementsBuilder, \
     InstructionElementGenerator
 
@@ -71,7 +71,7 @@ def test_case_that_records_property_of_env_for_each_step_of_partial_execution(
 
 def act_phase_handling_that_records_property_of_env_for_each_step_w_env_arg(
         property_recorder: PropertyRecorderBuilder) -> ActPhaseHandling:
-    return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions(
+    return ActPhaseHandling(ActionToCheckExecutorParserThatRunsConstantActions(
         validate_pre_sds_initial_action=property_recorder.of_first_arg(step.ACT__VALIDATE_PRE_SDS),
         validate_post_setup_initial_action=property_recorder.of_first_arg(step.ACT__VALIDATE_POST_SETUP),
         prepare_initial_action=property_recorder.of_first_arg(step.ACT__PREPARE),
@@ -81,7 +81,7 @@ def act_phase_handling_that_records_property_of_env_for_each_step_w_env_arg(
 
 def act_phase_handling_that_records_property_of_env_for_each_step_post_sds(
         property_recorder: PropertyRecorderBuilder) -> ActPhaseHandling:
-    return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions(
+    return ActPhaseHandling(ActionToCheckExecutorParserThatRunsConstantActions(
         validate_post_setup_initial_action=property_recorder.of_first_arg(step.ACT__VALIDATE_POST_SETUP),
         prepare_initial_action=property_recorder.of_first_arg(step.ACT__PREPARE),
         execute_initial_action=property_recorder.of_first_arg(step.ACT__EXECUTE),

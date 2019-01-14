@@ -80,7 +80,7 @@ class ActionToCheckExecutor(SymbolUser):
         raise NotImplementedError()
 
 
-class ActSourceAndExecutorConstructor:
+class ActionToCheckExecutorParser:
     """
     Parses the contents of the act phase which is the source that is to be executed as the act phase.
     (after it has been extracted from the test case file).
@@ -95,5 +95,5 @@ class ActSourceAndExecutorConstructor:
 
 
 class ActPhaseHandling:
-    def __init__(self, source_and_executor_constructor: ActSourceAndExecutorConstructor):
-        self.source_and_executor_constructor = source_and_executor_constructor
+    def __init__(self, atc_exe_parser: ActionToCheckExecutorParser):
+        self.atc_exe_parser = atc_exe_parser

@@ -41,7 +41,7 @@ COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = executable_file_command(sys.executable, 
 
 class TheConfiguration(TheConfigurationBase):
     def __init__(self):
-        super().__init__(sut.constructor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE))
+        super().__init__(sut.parser(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE))
 
 
 def suite() -> unittest.TestSuite:
@@ -178,7 +178,7 @@ class TestSymbolUsages(unittest.TestCase):
             )
         )
         act_phase_execution.check_execution(self,
-                                            sut.constructor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE),
+                                            sut.parser(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE),
                                             [instr([command_line])],
                                             arrangement,
                                             expectation)

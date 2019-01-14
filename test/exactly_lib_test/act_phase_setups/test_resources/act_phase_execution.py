@@ -5,7 +5,7 @@ import pathlib
 
 from exactly_lib.execution import phase_step
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor, \
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser, \
     ActionToCheckExecutor, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -72,7 +72,7 @@ def simple_success() -> Expectation:
 
 
 def check_execution(put: unittest.TestCase,
-                    executor_constructor: ActSourceAndExecutorConstructor,
+                    atc_executor_parser: ActionToCheckExecutorParser,
                     act_phase_instructions: list,
                     arrangement: Arrangement,
                     expectation: Expectation) -> ExitCodeOrHardError:
@@ -82,7 +82,7 @@ def check_execution(put: unittest.TestCase,
                                                                       arrangement.environ,
                                                                       arrangement.timeout_in_seconds,
                                                                       symbols=arrangement.symbol_table)
-        sut = executor_constructor.parse(act_phase_instructions)
+        sut = atc_executor_parser.parse(act_phase_instructions)
         expectation.symbol_usages.apply_with_message(put,
                                                      sut.symbol_usages(),
                                                      'symbol-usages after ' +

@@ -5,7 +5,7 @@ import random
 from contextlib import contextmanager
 
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -33,7 +33,7 @@ class TestCaseSourceSetup:
 
 
 class Configuration:
-    def __init__(self, sut: ActSourceAndExecutorConstructor):
+    def __init__(self, sut: ActionToCheckExecutorParser):
         self.sut = sut
 
     @contextmanager
@@ -105,9 +105,9 @@ def suite_for_execution(setup: Configuration) -> unittest.TestSuite:
 
 
 class TestExecuteBase(unittest.TestCase):
-    def __init__(self, source_and_executor_constructor: ActSourceAndExecutorConstructor):
+    def __init__(self, atc_exe_parser: ActionToCheckExecutorParser):
         super().__init__()
-        self.source_and_executor_constructor = source_and_executor_constructor
+        self.atc_exe_parser = atc_exe_parser
 
     def _execute(self,
                  hds: HomeDirectoryStructure,
@@ -119,7 +119,7 @@ class TestExecuteBase(unittest.TestCase):
 
         environment = InstructionEnvironmentForPreSdsStep(hds,
                                                           environ)
-        sut = self.source_and_executor_constructor.parse(act_phase_instructions)
+        sut = self.atc_exe_parser.parse(act_phase_instructions)
         step_result = sut.validate_pre_sds(environment)
         if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
             self.fail('Expecting success. Found {}: {}'.format(

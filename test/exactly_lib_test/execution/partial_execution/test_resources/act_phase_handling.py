@@ -8,7 +8,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorForConstantExecutor
+    ActionToCheckExecutorConstructorForConstantExecutor
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
     ActionToCheckExecutorThatJustReturnsSuccess
 
@@ -38,5 +38,5 @@ class ExecutorThatExecutesPythonProgramSource(ActionToCheckExecutorThatJustRetur
 
 def act_phase_handling_for_execution_of_python_source(python_source: str) -> ActPhaseHandling:
     executor = ExecutorThatExecutesPythonProgramSource(python_source)
-    constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor)
-    return ActPhaseHandling(constructor)
+    parser = ActionToCheckExecutorConstructorForConstantExecutor(executor)
+    return ActPhaseHandling(parser)

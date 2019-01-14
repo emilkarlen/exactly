@@ -1,6 +1,7 @@
-import shlex
 import sys
 import unittest
+
+import shlex
 from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups.source_interpreter import shell_command as sut
@@ -16,7 +17,7 @@ from exactly_lib_test.util.test_resources import py_program
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         suite_for_execution(TheConfiguration()),
-        common_tests.suite_for(sut.Constructor(shlex.quote(sys.executable)),
+        common_tests.suite_for(sut.Parser(shlex.quote(sys.executable)),
                                is_shell=True)
     ])
 
@@ -24,7 +25,7 @@ def suite() -> unittest.TestSuite:
 class TheConfiguration(Configuration):
     def __init__(self):
         self.setup = sut.handling_for_interpreter_command(file_name_of_interpreter())
-        super().__init__(self.setup.source_and_executor_constructor)
+        super().__init__(self.setup.atc_exe_parser)
 
     @contextmanager
     def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:

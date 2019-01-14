@@ -17,11 +17,11 @@ from exactly_lib_test.processing.test_resources.test_case_setup import \
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatJustReturnsConstant
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
+    ActionToCheckExecutorParserThatRunsConstantActions
 
 
 def test_case_handling_setup_with_identity_preprocessor() -> TestCaseHandlingSetup:
-    return TestCaseHandlingSetup(ActPhaseSetup(ActSourceAndExecutorConstructorThatRunsConstantActions()),
+    return TestCaseHandlingSetup(ActPhaseSetup(ActionToCheckExecutorParserThatRunsConstantActions()),
                                  IDENTITY_PREPROCESSOR)
 
 

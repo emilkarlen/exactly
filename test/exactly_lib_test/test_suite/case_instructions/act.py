@@ -10,7 +10,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedInstruction
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.section_document.source_location import FileSystemLocationInfo, FileLocationInfo
-from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor, ActionToCheckExecutor
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser, ActionToCheckExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.util.line_source import line_sequence_from_line, LineSequence
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
@@ -36,8 +36,8 @@ class ActPhaseConfig(PhaseConfig):
     def act_phase_parser(self) -> SectionElementParser:
         return ActPhaseParserThatConsumesCurrentLineAndGivesRecordingInstruction()
 
-    def act_source_and_executor_constructor(self, recording_media: List[Recording]) -> ActSourceAndExecutorConstructor:
-        return ActSourceAndExecutorConstructorThatRecordsInstructionData(recording_media)
+    def atc_executor_parser(self, recording_media: List[Recording]) -> ActionToCheckExecutorParser:
+        return ActionToCheckExecutorParserThatRecordsInstructionData(recording_media)
 
     def instructions_setup(self,
                            register_instruction_name: str,
@@ -87,7 +87,7 @@ class ActPhaseInstructionThatRecords(ActPhaseInstruction):
         raise NotImplementedError('should not be used')
 
 
-class ActSourceAndExecutorConstructorThatRecordsInstructionData(ActSourceAndExecutorConstructor):
+class ActionToCheckExecutorParserThatRecordsInstructionData(ActionToCheckExecutorParser):
     def __init__(self, recording_media: List[Recording]):
         self.recording_media = recording_media
 
@@ -97,7 +97,6 @@ class ActSourceAndExecutorConstructorThatRecordsInstructionData(ActSourceAndExec
             assert isinstance(instruction, ActPhaseInstructionThatRecords)
             self.recording_media.append(instruction.recording)
         return ActionToCheckExecutorThatJustReturnsSuccess()
-
 
 
 if __name__ == '__main__':

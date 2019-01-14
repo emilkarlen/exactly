@@ -17,19 +17,19 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as str_asrt
 
 
-def suite_for(constructor_that_executes_python_program: parts.Constructor,
+def suite_for(parser_that_executes_python_program: parts.AtcExecutorParser,
               is_shell: bool) -> unittest.TestSuite:
     return unittest.TestSuite([
-        TestThatSymbolReferencesAreReportedAndUsed(constructor_that_executes_python_program, is_shell),
-        TestThatSourceCanReferenceSymbolsThatAreResolvedPostSds(constructor_that_executes_python_program, is_shell),
+        TestThatSymbolReferencesAreReportedAndUsed(parser_that_executes_python_program, is_shell),
+        TestThatSourceCanReferenceSymbolsThatAreResolvedPostSds(parser_that_executes_python_program, is_shell),
     ])
 
 
 class TestCaseBase(unittest.TestCase):
-    def __init__(self, constructor_that_executes_python_program: parts.Constructor,
+    def __init__(self, parser_that_executes_python_program: parts.AtcExecutorParser,
                  is_shell: bool):
         super().__init__()
-        self.constructor_that_executes_python_program = constructor_that_executes_python_program
+        self.parser_that_executes_python_program = parser_that_executes_python_program
         self.is_shell = is_shell
 
     def shortDescription(self):
@@ -43,7 +43,7 @@ class TestCaseBase(unittest.TestCase):
                arrangement: Arrangement,
                expectation: Expectation):
         check_execution(self,
-                        self.constructor_that_executes_python_program,
+                        self.parser_that_executes_python_program,
                         [instr([source_line])],
                         arrangement,
                         expectation)

@@ -21,7 +21,7 @@ class SourceInfo(SymbolUser):
         return self.source.references
 
 
-class Parser(parts.Parser):
+class Parser(parts.ExecutableObjectParser):
     def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> SourceInfo:
         from exactly_lib.util.string import lines_content_with_os_linesep
         raw_source = lines_content_with_os_linesep(self._all_source_code_lines(act_phase_instructions))

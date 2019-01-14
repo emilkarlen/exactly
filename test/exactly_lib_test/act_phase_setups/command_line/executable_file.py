@@ -1,5 +1,6 @@
-import pathlib
 import unittest
+
+import pathlib
 from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups import command_line as sut
@@ -53,7 +54,7 @@ def suite() -> unittest.TestSuite:
 
 class TheConfiguration(Configuration):
     def __init__(self):
-        super().__init__(sut.Constructor())
+        super().__init__(sut.Parser())
 
     @contextmanager
     def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:
@@ -107,7 +108,7 @@ class TestValidationErrorPreSds(unittest.TestCase):
             result_of_validate_pre_sds=svh_assertions.is_validation_error()
         )
         check_execution(self,
-                        sut.Constructor(),
+                        sut.Parser(),
                         act_phase_instructions,
                         arrangement,
                         expectation)
@@ -125,7 +126,7 @@ class TestValidationErrorPreSds(unittest.TestCase):
             result_of_validate_pre_sds=svh_assertions.is_validation_error()
         )
         check_execution(self,
-                        sut.Constructor(),
+                        sut.Parser(),
                         act_phase_instructions,
                         arrangement,
                         expectation)
@@ -133,7 +134,7 @@ class TestValidationErrorPreSds(unittest.TestCase):
 
 class TestSuccessfulExecutionOfProgramRelHomeActWithCommandLineArguments(unittest.TestCase):
     def runTest(self):
-        executor_constructor = sut.Constructor()
+        executor_constructor = sut.Parser()
         act_phase_instructions = [
             instr(['system-under-test first-argument "quoted argument"'])
         ]
@@ -193,7 +194,7 @@ class TestSymbolUsages(unittest.TestCase):
             )
         )
         check_execution(self,
-                        sut.Constructor(),
+                        sut.Parser(),
                         [instr([command_line])],
                         arrangement,
                         expectation)
@@ -231,7 +232,7 @@ class TestSymbolUsages(unittest.TestCase):
             )
         )
         check_execution(self,
-                        sut.Constructor(),
+                        sut.Parser(),
                         [instr([command_line])],
                         arrangement,
                         expectation)
@@ -271,7 +272,7 @@ class TestSymbolUsages(unittest.TestCase):
             )
         )
         check_execution(self,
-                        sut.Constructor(),
+                        sut.Parser(),
                         [instr([command_line])],
                         arrangement,
                         expectation)
@@ -313,7 +314,7 @@ class TestSymbolUsages(unittest.TestCase):
             ]),
         )
         check_execution(self,
-                        sut.Constructor(),
+                        sut.Parser(),
                         [instr([command_line])],
                         arrangement,
                         expectation)
@@ -366,7 +367,7 @@ class TestSymbolUsages(unittest.TestCase):
             ]),
         )
         check_execution(self,
-                        sut.Constructor(),
+                        sut.Parser(),
                         [instr([command_line])],
                         arrangement,
                         expectation)
@@ -405,7 +406,7 @@ class TestSymbolUsages(unittest.TestCase):
             )
         )
         check_execution(self,
-                        sut.Constructor(),
+                        sut.Parser(),
                         [instr([command_line])],
                         arrangement,
                         expectation)

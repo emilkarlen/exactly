@@ -10,10 +10,10 @@ from exactly_lib.test_case_utils.program.command import command_resolvers
 
 
 def new_for_source_interpreter_setup(setup: SourceInterpreterSetup) -> ActPhaseSetup:
-    return ActPhaseSetup(Constructor(setup))
+    return ActPhaseSetup(Parser(setup))
 
 
-class Constructor(parts.Constructor):
+class Parser(parts.AtcExecutorParser):
     def __init__(self, setup: SourceInterpreterSetup):
         super().__init__(pa.Parser(),
                          parts.UnconditionallySuccessfulValidator,

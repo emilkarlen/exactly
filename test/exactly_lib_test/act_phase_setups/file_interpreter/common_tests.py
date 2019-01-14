@@ -56,7 +56,7 @@ class TestCaseBase(unittest.TestCase):
                arrangement: Arrangement,
                expectation: Expectation):
         check_execution(self,
-                        sut.constructor(self.command_that_runs_python_file),
+                        sut.parser(self.command_that_runs_python_file),
                         [instr([command_line])],
                         arrangement,
                         expectation)

@@ -1,6 +1,7 @@
+import unittest
+
 import pathlib
 import types
-import unittest
 
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
@@ -20,7 +21,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
+    ActionToCheckExecutorParserThatRunsConstantActions
 
 
 class Test(FullExecutionTestCaseBase):
@@ -32,7 +33,7 @@ class Test(FullExecutionTestCaseBase):
         self.recorder = instr_setup.Recorder()
 
     def _act_phase_handling(self) -> ActPhaseHandling:
-        executor_constructor = ActSourceAndExecutorConstructorThatRunsConstantActions(
+        executor_parser = ActionToCheckExecutorParserThatRunsConstantActions(
             validate_pre_sds_initial_action=_RecordEnvVars(
                 self.recorder,
                 phase_step.ACT__VALIDATE_PRE_SDS),
@@ -45,7 +46,7 @@ class Test(FullExecutionTestCaseBase):
             execute_initial_action=_RecordEnvVars(
                 self.recorder,
                 phase_step.ACT__EXECUTE))
-        return ActPhaseHandling(executor_constructor)
+        return ActPhaseHandling(executor_parser)
 
     def _test_case(self) -> test_case_doc.TestCase:
         return full_test_case_with_instructions(

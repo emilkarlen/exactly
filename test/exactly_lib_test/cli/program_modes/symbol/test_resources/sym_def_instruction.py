@@ -23,7 +23,7 @@ from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import te
 from exactly_lib_test.common.test_resources import instruction_setup
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instrs
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
+    ActionToCheckExecutorParserThatRunsConstantActions
 from exactly_lib_test.test_resources.actions import do_return
 
 DEF_INSTRUCTION_NAME = 'define'
@@ -116,4 +116,4 @@ def main_program_config() -> MainProgramConfig:
 
 
 def act_phase_setup_for_reference_instruction() -> ActPhaseSetup:
-    return ActPhaseSetup(ActSourceAndExecutorConstructorThatRunsConstantActions())
+    return ActPhaseSetup(ActionToCheckExecutorParserThatRunsConstantActions())

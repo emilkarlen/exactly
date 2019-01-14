@@ -1,8 +1,8 @@
 import time
+import unittest
 
 import os
 import re
-import unittest
 
 from exactly_lib.execution import phase_step_simple as step
 from exactly_lib.execution.phase_step import SimplePhaseStep
@@ -16,7 +16,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_act_phase_handling
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
+    ActionToCheckExecutorParserThatRunsConstantActions
 from exactly_lib_test.test_resources.functions import Sequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
@@ -171,7 +171,7 @@ class AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty
 
 def _act_phase_handling_that_records_existence_of_var_in_global_env(
         recorder: _RecorderOfExistenceOfGlobalEnvVar) -> ActPhaseHandling:
-    return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions(
+    return ActPhaseHandling(ActionToCheckExecutorParserThatRunsConstantActions(
         parse_action=recorder.for_step(step.ACT__PARSE),
         validate_pre_sds_initial_action=recorder.for_step(step.ACT__VALIDATE_PRE_SDS),
         validate_post_setup_initial_action=recorder.for_step(step.ACT__VALIDATE_POST_SETUP),

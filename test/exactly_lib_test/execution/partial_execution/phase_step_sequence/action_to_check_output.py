@@ -1,5 +1,6 @@
-import os
 import unittest
+
+import os
 from typing import Optional
 
 from exactly_lib.act_phase_setups.source_interpreter import python3
@@ -8,7 +9,7 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActSourceAndExecutorConstructor
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActionToCheckExecutorParser
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
@@ -24,7 +25,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test, sandbox_root_name_resolver
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
-    ActSourceAndExecutorWrapperConstructorThatRecordsSteps
+    ActionToCheckExecutorWrapperParserThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import \
     PRE_SDS_VALIDATION_STEPS__ONCE, SYMBOL_VALIDATION_STEPS__ONCE
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
@@ -33,7 +34,7 @@ from exactly_lib_test.execution.test_resources.failure_info_check import Expecte
     ExpectedFailureForNoFailure
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForPhaseFailure
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
+    ActionToCheckExecutorParserThatRunsConstantActions
 from exactly_lib_test.test_case.act_phase_handling.test_resources.test_actions import execute_action_that_raises
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.actions import do_return
@@ -53,17 +54,17 @@ def suite() -> unittest.TestSuite:
 class Arrangement:
     def __init__(self,
                  test_case: TestCaseGeneratorForExecutionRecording,
-                 act_source_and_exe_constructor: ActSourceAndExecutorConstructor,
+                 atc_exe_parser: ActionToCheckExecutorParser,
                  timeout_in_seconds: Optional[int] = None):
         self.test_case_generator = test_case
-        self.act_source_and_exe_constructor = act_source_and_exe_constructor
+        self.atc_exe_parser = atc_exe_parser
         self.timeout_in_seconds = timeout_in_seconds
 
 
 def arr_for_py3_source(test_case: TestCaseGeneratorForExecutionRecording,
                        timeout_in_seconds: Optional[int] = None) -> Arrangement:
     return Arrangement(test_case,
-                       python3.new_act_source_and_executor_constructor(),
+                       python3.new_atc_executor_parser(),
                        timeout_in_seconds)
 
 
@@ -83,10 +84,10 @@ class Expectation:
 def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation):
-    constructor = ActSourceAndExecutorWrapperConstructorThatRecordsSteps(
+    parser = ActionToCheckExecutorWrapperParserThatRecordsSteps(
         arrangement.test_case_generator.recorder,
-        arrangement.act_source_and_exe_constructor)
-    act_phase_handling = ActPhaseHandling(constructor)
+        arrangement.atc_exe_parser)
+    act_phase_handling = ActPhaseHandling(parser)
 
     def action(std_files: StdOutputFiles) -> PartialExeResult:
         exe_conf = ExecutionConfiguration(dict(os.environ),
@@ -212,7 +213,7 @@ class TestFailure(TestCaseBase):
         test_case = _single_successful_instruction_in_each_phase(single_line_sequence(72, 'ignored'))
         self._check(
             Arrangement(test_case,
-                        ActSourceAndExecutorConstructorThatRunsConstantActions(
+                        ActionToCheckExecutorParserThatRunsConstantActions(
                             execute_action=execute_action_that_raises(
                                 test.ImplementationErrorTestException()))),
             Expectation(

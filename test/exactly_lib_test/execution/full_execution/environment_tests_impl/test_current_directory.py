@@ -1,5 +1,6 @@
-import os
 import unittest
+
+import os
 
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
@@ -16,7 +17,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     cleanup_phase_instruction_that, configuration_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
+    ActionToCheckExecutorParserThatRunsConstantActions
 
 
 def current_directory() -> str:
@@ -68,12 +69,12 @@ class Test(FullExecutionTestCaseBase):
                          dbg_do_not_delete_dir_structure)
 
     def _act_phase_handling(self) -> ActPhaseHandling:
-        constructor = ActSourceAndExecutorConstructorThatRunsConstantActions(
+        parser = ActionToCheckExecutorParserThatRunsConstantActions(
             validate_post_setup_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__VALIDATE_POST_SETUP,
                                                                svh.new_svh_success()),
             execute_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__EXECUTE,
                                                    new_eh_exit_code(0)))
-        return ActPhaseHandling(constructor)
+        return ActPhaseHandling(parser)
 
     def _test_case(self) -> test_case_doc.TestCase:
         return full_test_case_with_instructions(

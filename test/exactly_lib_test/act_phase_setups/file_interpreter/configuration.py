@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 
-from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, TestCaseSourceSetup
@@ -10,8 +10,8 @@ from exactly_lib_test.util.test_resources import py_program
 
 
 class TheConfigurationBase(Configuration):
-    def __init__(self, constructor: ActSourceAndExecutorConstructor):
-        super().__init__(constructor)
+    def __init__(self, parser: ActionToCheckExecutorParser):
+        super().__init__(parser)
 
     @contextmanager
     def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:

@@ -2,7 +2,7 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib_test.test_case.act_phase_handling.test_resources import test_actions
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions, ActSourceAndExecutorConstructorThatRaisesException
+    ActionToCheckExecutorParserThatRunsConstantActions, ActionToCheckExecutorParserThatRaisesException
 
 
 def act_phase_handling_that_runs_constant_actions(
@@ -11,7 +11,7 @@ def act_phase_handling_that_runs_constant_actions(
         prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
         execute_action=test_actions.execute_action_that_returns_exit_code()) -> ActPhaseHandling:
     return ActPhaseHandling(
-        ActSourceAndExecutorConstructorThatRunsConstantActions(
+        ActionToCheckExecutorParserThatRunsConstantActions(
             validate_pre_sds_action=validate_pre_sds_action,
             validate_post_setup_action=validate_post_setup_action,
             prepare_action=prepare_action,
@@ -20,8 +20,8 @@ def act_phase_handling_that_runs_constant_actions(
 
 
 def dummy_act_phase_handling() -> ActPhaseHandling:
-    return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions())
+    return ActPhaseHandling(ActionToCheckExecutorParserThatRunsConstantActions())
 
 
 def act_phase_handling_that_must_not_be_used() -> ActPhaseHandling:
-    return ActPhaseHandling(ActSourceAndExecutorConstructorThatRaisesException())
+    return ActPhaseHandling(ActionToCheckExecutorParserThatRaisesException())

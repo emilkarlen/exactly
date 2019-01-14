@@ -30,13 +30,13 @@ class TestConstructor(unittest.TestCase):
     def test_WHEN_parser_raises_exception_THEN_parse_SHOULD_raise_this_exception(self):
         # ARRANGE #
         parser_error = svh.new_svh_validation_error('msg')
-        constructor = sut.Constructor(ParserThatRaisesException(parser_error),
-                                      validator_constructor_that_raises,
-                                      executor_constructor_that_raises)
+        parser = sut.AtcExecutorParser(ParserThatRaisesException(parser_error),
+                                       validator_constructor_that_raises,
+                                       executor_constructor_that_raises)
         act_phase_instructions = []
         # ACT #
         with self.assertRaises(ParseException) as ex:
-            executor = constructor.parse(act_phase_instructions)
+            executor = parser.parse(act_phase_instructions)
             # ASSERT #
             self.assertIs(parser_error, ex)
 
@@ -51,15 +51,15 @@ class TestConstructor(unittest.TestCase):
         def executor_constructor(os_process_executor, environment, x):
             return ExecutorThatRecordsSteps(step_recorder, x)
 
-        constructor = sut.Constructor(parser,
-                                      validator_constructor,
-                                      executor_constructor)
+        parser = sut.AtcExecutorParser(parser,
+                                       validator_constructor,
+                                       executor_constructor)
         act_phase_instructions = [instr(['act phase source'])]
         arrangement = Arrangement()
         expectation = simple_success()
         # ACT (and assert that all methods indicate success) #
         check_execution(self,
-                        constructor,
+                        parser,
                         act_phase_instructions,
                         arrangement,
                         expectation)
@@ -80,13 +80,13 @@ class TestConstructor(unittest.TestCase):
             SymbolReference('symbol_name',
                             is_any_data_type())
         ]
-        constructor = sut.Constructor(ParserWithConstantResult(
+        parser = sut.AtcExecutorParser(ParserWithConstantResult(
             SymbolUserWithConstantSymbolReferences(expected_symbol_references)),
             lambda *x: sut.UnconditionallySuccessfulValidator(),
             lambda *x: UnconditionallySuccessfulExecutor())
         # ACT & ASSERT #
         check_execution(self,
-                        constructor,
+                        parser,
                         [],
                         Arrangement(),
                         Expectation(
@@ -99,7 +99,7 @@ def _environment() -> InstructionEnvironmentForPreSdsStep:
     return InstructionEnvironmentForPreSdsStep(hds, {})
 
 
-class ParserThatRaisesException(sut.Parser):
+class ParserThatRaisesException(sut.ExecutableObjectParser):
     def __init__(self, cause: svh.SuccessOrValidationErrorOrHardError):
         self.cause = cause
 
@@ -107,7 +107,7 @@ class ParserThatRaisesException(sut.Parser):
         raise ParseException(self.cause)
 
 
-class ParserThatExpectsSingleInstructionAndRecordsAndReturnsTheTextOfThatInstruction(sut.Parser):
+class ParserThatExpectsSingleInstructionAndRecordsAndReturnsTheTextOfThatInstruction(sut.ExecutableObjectParser):
     def __init__(self, recorder: Dict[phase_step.PhaseStep, str]):
         self.recorder = recorder
 
@@ -139,7 +139,7 @@ class SymbolUserWithConstantSymbolReferences(SymbolUser):
         return self._symbol_usages
 
 
-class ParserWithConstantResult(sut.Parser):
+class ParserWithConstantResult(sut.ExecutableObjectParser):
     def __init__(self, constant_result: SymbolUser):
         self._constant_result = constant_result
 
