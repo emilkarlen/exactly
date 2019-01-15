@@ -1,16 +1,15 @@
 import unittest
 
 from exactly_lib_test.cli.program_modes.symbol import \
-    invalid_command_line_arguments, \
-    standalone_case, part_of_suite, preprocessed_case
+    invalid_command_line_arguments, individual
+from exactly_lib_test.cli.program_modes.symbol.all import z_package_suite as all
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         invalid_command_line_arguments.suite(),
-        standalone_case.suite(),
-        part_of_suite.suite(),
-        preprocessed_case.suite(),
+        all.suite(),
+        individual.suite(),
     ])
 
 
