@@ -14,9 +14,15 @@ from exactly_lib.test_suite.file_reading.exception import SuiteSyntaxError
 from exactly_lib.util.std import StdOutputFiles
 
 
+class SymbolInspectionRequest:
+    def __init__(self,
+                 case_execution_settings: TestCaseExecutionSettings):
+        self.case_execution_settings = case_execution_settings
+
+
 class Executor:
     def __init__(self,
-                 settings: TestCaseExecutionSettings,
+                 request: SymbolInspectionRequest,
                  test_case_definition: TestCaseDefinition,
                  suite_configuration_section_parser: SectionElementParser,
                  output: StdOutputFiles,
@@ -24,7 +30,7 @@ class Executor:
         self.output = output
         self.suite_configuration_section_parser = suite_configuration_section_parser
         self.test_case_definition = test_case_definition
-        self.settings = settings
+        self.request = request
         self.completion_reporter = CompletionReporter(output)
 
     def execute(self) -> int:
@@ -54,11 +60,14 @@ class Executor:
         return report_generator.list()
 
     def _accessor(self) -> Tuple[test_case_processing.Accessor, ActPhaseSetup]:
+        case_execution_settings = self.request.case_execution_settings
+
         accessor_resolver = AccessorResolver(self.test_case_definition.parsing_setup,
                                              self.suite_configuration_section_parser,
-                                             self.settings.handling_setup)
-        return accessor_resolver.resolve(self.settings.test_case_file_path,
-                                         self.settings.run_as_part_of_explicit_suite)
+                                             case_execution_settings.handling_setup)
+        return accessor_resolver.resolve(case_execution_settings.test_case_file_path,
+                                         case_execution_settings.run_as_part_of_explicit_suite)
 
     def _test_case_file_ref(self) -> test_case_processing.TestCaseFileReference:
-        return test_case_processing.test_case_reference_of_source_file(self.settings.test_case_file_path)
+        return test_case_processing.test_case_reference_of_source_file(
+            self.request.case_execution_settings.test_case_file_path)

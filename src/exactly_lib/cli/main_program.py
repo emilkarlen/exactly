@@ -200,13 +200,13 @@ class MainProgram:
                                              command_line_arguments: List[str],
                                              output: StdOutputFiles,
                                              ) -> int:
-        from exactly_lib.cli.program_modes.test_case import argument_parsing
+        from exactly_lib.cli.program_modes.symbol import argument_parsing
 
-        settings = argument_parsing.parse(self._default_test_case_handling_setup,
-                                          self._default_case_sandbox_root_dir_name_resolver,
-                                          command_line_arguments,
-                                          common_cli_options.COMMAND_DESCRIPTIONS)
-        executor = symbol_inspection.Executor(settings,
+        request = argument_parsing.parse(self._default_test_case_handling_setup,
+                                         self._default_case_sandbox_root_dir_name_resolver,
+                                         command_line_arguments,
+                                         common_cli_options.COMMAND_DESCRIPTIONS)
+        executor = symbol_inspection.Executor(request,
                                               self._test_case_definition,
                                               self._test_suite_definition.configuration_section_parser,
                                               output)
