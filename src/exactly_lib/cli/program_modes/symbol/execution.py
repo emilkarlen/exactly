@@ -1,23 +1,27 @@
 from typing import Tuple
 
-from exactly_lib.cli.program_modes.symbol.completion_reporter import CompletionReporter
-from exactly_lib.cli.program_modes.symbol.report_generator import ReportGenerator
+from exactly_lib.cli.program_modes.symbol.impl import symbol_usage_resolving
+from exactly_lib.cli.program_modes.symbol.impl.completion_reporter import CompletionReporter
+from exactly_lib.cli.program_modes.symbol.reports import report_environment
+from exactly_lib.cli.program_modes.symbol.reports.list_all import ReportGenerator
+from exactly_lib.cli.program_modes.symbol.reports.report_environment import Environment
+from exactly_lib.cli.program_modes.symbol.request import SymbolInspectionRequest, RequestVariantVisitor, \
+    RequestVariantList, RequestVariantIndividual
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.standalone.accessor_resolver import AccessorResolver
-from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.processing.test_case_processing import AccessorError
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
-from exactly_lib.test_case.act_phase_handling import ParseException
+from exactly_lib.test_case.act_phase_handling import ParseException, ActionToCheckExecutor
+from exactly_lib.test_case.test_case_doc import TestCaseOfInstructions
 from exactly_lib.test_suite.file_reading.exception import SuiteSyntaxError
 from exactly_lib.util.std import StdOutputFiles
 
 
-class SymbolInspectionRequest:
-    def __init__(self,
-                 case_execution_settings: TestCaseExecutionSettings):
-        self.case_execution_settings = case_execution_settings
+class _InvalidTestCaseError(Exception):
+    def __init__(self, exit_code: int):
+        self.exit_code = exit_code
 
 
 class Executor:
@@ -35,29 +39,44 @@ class Executor:
 
     def execute(self) -> int:
         try:
+            test_case, atc_executor = self._parse()
+        except _InvalidTestCaseError as ex:
+            return ex.exit_code
+
+        definitions_resolver = symbol_usage_resolving.DefinitionsInfoResolverFromTestCase(
+            test_case,
+            atc_executor.symbol_usages()
+        )
+        environment = report_environment.Environment(
+            self.output,
+            self.completion_reporter,
+            definitions_resolver
+        )
+
+        request_handler = _RequestHandler(environment)
+
+        return request_handler.visit(self.request.variant)
+
+    def _parse(self) -> Tuple[TestCaseOfInstructions, ActionToCheckExecutor]:
+        try:
             accessor, act_phase_setup = self._accessor()
         except SuiteSyntaxError as ex:
-            return self.completion_reporter.report_suite_error(ex)
+            raise _InvalidTestCaseError(self.completion_reporter.report_suite_error(ex))
 
         try:
             test_case_with_section_elements = accessor.apply(self._test_case_file_ref())
         except AccessorError as ex:
-            return self.completion_reporter.report_access_error(ex)
+            raise _InvalidTestCaseError(self.completion_reporter.report_access_error(ex))
 
         test_case = test_case_with_section_elements.as_test_case_of_instructions()
 
         try:
             atc_executor = act_phase_setup.atc_executor_parser.parse(test_case.act_phase)
         except ParseException as ex:
-            return self.completion_reporter.report_act_phase_parse_error(ex)
+            raise _InvalidTestCaseError(self.completion_reporter.report_act_phase_parse_error(ex))
 
-        report_generator = ReportGenerator(
-            self.output,
-            self.completion_reporter,
-            test_case,
-            atc_executor.symbol_usages())
-
-        return report_generator.list()
+        return (test_case,
+                atc_executor)
 
     def _accessor(self) -> Tuple[test_case_processing.Accessor, ActPhaseSetup]:
         case_execution_settings = self.request.case_execution_settings
@@ -71,3 +90,15 @@ class Executor:
     def _test_case_file_ref(self) -> test_case_processing.TestCaseFileReference:
         return test_case_processing.test_case_reference_of_source_file(
             self.request.case_execution_settings.test_case_file_path)
+
+
+class _RequestHandler(RequestVariantVisitor[int]):
+    def __init__(self, environment: Environment):
+        self._environment = environment
+
+    def visit_list(self, list_variant: RequestVariantList) -> int:
+        report_generator = ReportGenerator(self._environment)
+        return report_generator.list()
+
+    def visit_individual(self, individual_variant: RequestVariantIndividual) -> int:
+        raise NotImplementedError('working on it')

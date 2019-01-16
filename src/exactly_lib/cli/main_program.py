@@ -3,7 +3,6 @@ from typing import List, Dict, Callable, Sequence
 
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions import exit_codes
-from exactly_lib.cli.program_modes.symbol import symbol_inspection
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -200,16 +199,16 @@ class MainProgram:
                                              command_line_arguments: List[str],
                                              output: StdOutputFiles,
                                              ) -> int:
-        from exactly_lib.cli.program_modes.symbol import argument_parsing
+        from exactly_lib.cli.program_modes.symbol import argument_parsing, execution
 
         request = argument_parsing.parse(self._default_test_case_handling_setup,
                                          self._default_case_sandbox_root_dir_name_resolver,
                                          command_line_arguments,
                                          common_cli_options.COMMAND_DESCRIPTIONS)
-        executor = symbol_inspection.Executor(request,
-                                              self._test_case_definition,
-                                              self._test_suite_definition.configuration_section_parser,
-                                              output)
+        executor = execution.Executor(request,
+                                      self._test_case_definition,
+                                      self._test_suite_definition.configuration_section_parser,
+                                      output)
         return executor.execute()
 
     def _parse_and_execute_help(self,
