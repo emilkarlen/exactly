@@ -3,13 +3,14 @@ from typing import List, Optional
 from exactly_lib import program_info
 from exactly_lib.cli.definitions import common_cli_options as common_opts
 from exactly_lib.definitions import misc_texts
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
-from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.entity import concepts, syntax_elements
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
-from exactly_lib.help.program_modes.common.cli_syntax import SUITE_OPTION, PREPROCESSOR_OPTION, \
-    FILES_DESCRIPTION_WITH_DEFAULT_SUITE, TEST_CASE_FILE_ARGUMENT
+from exactly_lib.help.program_modes.common.cli_syntax import FILES_DESCRIPTION_WITH_DEFAULT_SUITE, \
+    TEST_CASE_FILE_ARGUMENT
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.util.cli_syntax.elements import argument as arg
@@ -49,8 +50,8 @@ class SymbolCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
     def argument_descriptions(self) -> List[cli_syntax.DescribedArgument]:
         return [
-            self._preprocessor_argument(),
-            self._suite_argument(),
+            self._symbol_name_argument(),
+            self._test_case_option_argument(),
         ]
 
     def files(self) -> Optional[docs.SectionContents]:
@@ -59,28 +60,35 @@ class SymbolCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def outcome(self, environment: ConstructionEnvironment) -> Optional[docs.SectionContents]:
         return _TP.section_contents(_OUTCOME)
 
-    def _preprocessor_argument(self) -> cli_syntax.DescribedArgument:
+    def _symbol_name_argument(self) -> cli_syntax.DescribedArgument:
         return cli_syntax.DescribedArgument(
-            PREPROCESSOR_OPTION,
+            syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument,
+            _TP.fnap(_SYMBOL_NAME_ARGUMENT))
+
+    def _test_case_option_argument(self) -> cli_syntax.DescribedArgument:
+        return cli_syntax.DescribedArgument(
+            CASE_OPTION_ARGUMENT,
             _TP.fnap(_CORRESPONDS_TO_TEST_CASE_ARGUMENT))
 
-    def _suite_argument(self) -> cli_syntax.DescribedArgument:
-        return cli_syntax.DescribedArgument(
-            SUITE_OPTION,
-            _TP.fnap(_CORRESPONDS_TO_TEST_CASE_ARGUMENT),
-        )
+    def see_also(self) -> List[SeeAlsoTarget]:
+        return [
+            PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_CASE_CLI),
+        ]
+
+
+CASE_OPTION_ARGUMENT = arg.Named('TEST-CASE-OPTION')
 
 
 def synopsis() -> cli_syntax.Synopsis:
     command_line = arg.CommandLine([
         arg.Single(arg.Multiplicity.MANDATORY,
                    arg.Constant(common_opts.SYMBOL_COMMAND)),
-        arg.Single(arg.Multiplicity.OPTIONAL,
-                   SUITE_OPTION),
-        arg.Single(arg.Multiplicity.OPTIONAL,
-                   PREPROCESSOR_OPTION),
+        arg.Single(arg.Multiplicity.ZERO_OR_MORE,
+                   CASE_OPTION_ARGUMENT),
         arg.Single(arg.Multiplicity.MANDATORY,
                    TEST_CASE_FILE_ARGUMENT),
+        arg.Single(arg.Multiplicity.OPTIONAL,
+                   syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument),
     ],
         prefix=program_info.PROGRAM_NAME)
     return cli_syntax.Synopsis(command_line,
@@ -95,6 +103,9 @@ _DESCRIPTION_PARAGRAPH = """\
 Reports definitions and references
 of all {symbol:s} in the test case {TEST_CASE_FILE}.
 
+
+If {SYMBOL_NAME} is not given, a report of all defined
+{symbol:s} is printed.
 
 Each symbol is printed on a separate line,
 together with its type and the number of references to it.
@@ -111,12 +122,18 @@ But the test case is not executed,
 so no execution errors occur.
 """
 
+_SYMBOL_NAME_ARGUMENT = """\
+Report information about the {symbol}
+with the given name.
+"""
+
 _CORRESPONDS_TO_TEST_CASE_ARGUMENT = """\
-Corresponds to the same argument for running a test case.
+Corresponds to the options for running a test case.
 """
 
 _TP = TextParser({
     'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
+    'SYMBOL_NAME': syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.singular_name,
     'exit_code': misc_texts.EXIT_CODE,
     'exit_identifier': misc_texts.EXIT_IDENTIFIER,
     'TEST_CASE_FILE': TEST_CASE_FILE_ARGUMENT.name,
