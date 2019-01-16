@@ -21,6 +21,7 @@ from exactly_lib.processing.standalone.settings import ReportingOption, TestCase
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import Preprocessor
 from exactly_lib.util import argument_parsing_utils
+from exactly_lib.util.argument_parsing_utils import parse_args__raise_exception_instead_of_exiting_on_error
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
 from exactly_lib.util.messages import grammar_options_syntax
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -35,8 +36,8 @@ def parse(default: TestCaseHandlingSetup,
     """
     output = ReportingOption.STATUS_CODE
     argument_parser = _new_argument_parser(commands)
-    namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
-                                                                                   argv)
+    namespace = parse_args__raise_exception_instead_of_exiting_on_error(argument_parser,
+                                                                        argv)
     if namespace.act:
         output = ReportingOption.ACT_PHASE_OUTPUT
     elif namespace.keep:

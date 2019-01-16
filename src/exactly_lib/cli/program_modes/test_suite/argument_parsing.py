@@ -16,8 +16,8 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import suite_reporters as reporters
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.util import argument_parsing_utils
-from exactly_lib.util.argument_parsing_utils import ArgumentParsingError
+from exactly_lib.util.argument_parsing_utils import ArgumentParsingError, \
+    parse_args__raise_exception_instead_of_exiting_on_error
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
 from .settings import TestSuiteExecutionSettings
 
@@ -44,8 +44,8 @@ class _Parser:
 
     def parse(self, argv: List[str]) -> TestSuiteExecutionSettings:
         argument_parser = self._new_argument_parser()
-        namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
-                                                                                       argv)
+        namespace = parse_args__raise_exception_instead_of_exiting_on_error(argument_parser,
+                                                                            argv)
         act_phase_setup = resolve_act_phase_setup_from_argparse_argument(self.default.act_phase_setup,
                                                                          namespace.actor)
         suite_file_path = self._resolve_file_path(namespace.file)
