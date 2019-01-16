@@ -1,5 +1,5 @@
 from exactly_lib.cli.program_modes.symbol.impl.completion_reporter import CompletionReporter
-from exactly_lib.cli.program_modes.symbol.reports.symbol_info import DefinitionsResolver
+from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import DefinitionsResolver
 from exactly_lib.util.std import StdOutputFiles
 
 

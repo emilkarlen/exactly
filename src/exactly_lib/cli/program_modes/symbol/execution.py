@@ -2,9 +2,9 @@ from typing import Tuple
 
 from exactly_lib.cli.program_modes.symbol.impl import symbol_usage_resolving
 from exactly_lib.cli.program_modes.symbol.impl.completion_reporter import CompletionReporter
-from exactly_lib.cli.program_modes.symbol.reports import report_environment
-from exactly_lib.cli.program_modes.symbol.reports.list_all import ReportGenerator
-from exactly_lib.cli.program_modes.symbol.reports.report_environment import Environment
+from exactly_lib.cli.program_modes.symbol.impl.reports import report_environment
+from exactly_lib.cli.program_modes.symbol.impl.reports.list_all import ReportGenerator
+from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
 from exactly_lib.cli.program_modes.symbol.request import SymbolInspectionRequest, RequestVariantVisitor, \
     RequestVariantList, RequestVariantIndividual
 from exactly_lib.processing import test_case_processing

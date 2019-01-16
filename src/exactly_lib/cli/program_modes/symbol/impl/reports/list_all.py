@@ -1,8 +1,8 @@
 import functools
 from typing import Callable, List, Iterator
 
-from exactly_lib.cli.program_modes.symbol.reports.report_environment import Environment
-from exactly_lib.cli.program_modes.symbol.reports.symbol_info import SymbolDefinitionInfo
+from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
+from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo
 from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYPE_INFO_DICT
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.string import lines_content

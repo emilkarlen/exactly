@@ -2,7 +2,7 @@ import itertools
 
 from typing import List, Sequence, Iterator, Dict, Callable, Optional
 
-from exactly_lib.cli.program_modes.symbol.reports.symbol_info import SYMBOL_INFO, SymUsageInPhase, \
+from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SYMBOL_INFO, SymUsageInPhase, \
     SymbolDefinitionInfo, DefinitionsResolver
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolUsage, SymbolReference, SymbolUsageVisitor
 from exactly_lib.test_case import phase_identifier
