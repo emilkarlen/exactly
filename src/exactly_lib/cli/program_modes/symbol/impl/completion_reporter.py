@@ -11,8 +11,8 @@ class CompletionReporter:
     def __init__(self,
                  output: StdOutputFiles):
         self.output = output
-        self._out_printer = file_printer_with_color_if_terminal(output.out)
-        self._err_printer = file_printer_with_color_if_terminal(output.err)
+        self.out_printer = file_printer_with_color_if_terminal(output.out)
+        self.err_printer = file_printer_with_color_if_terminal(output.err)
 
     def report_suite_error(self, ex: SuiteSyntaxError) -> int:
         err_only_output = StdOutputFiles(self.output.err,
@@ -22,15 +22,18 @@ class CompletionReporter:
 
     def report_access_error(self, error: AccessorError) -> int:
         exit_value = exit_values.from_access_error(error.error)
-        self._err_printer.write_colored_line(exit_value.exit_identifier,
-                                             exit_value.color)
+        self.err_printer.write_colored_line(exit_value.exit_identifier,
+                                            exit_value.color)
         return exit_value.exit_code
 
     def report_act_phase_parse_error(self, error: ParseException) -> int:
         exit_value = exit_values.EXECUTION__VALIDATION_ERROR
-        self._err_printer.write_colored_line(exit_value.exit_identifier,
-                                             exit_value.color)
+        self.err_printer.write_colored_line(exit_value.exit_identifier,
+                                            exit_value.color)
         return exit_value.exit_code
+
+    def symbol_not_found(self) -> int:
+        return exit_values.EXECUTION__HARD_ERROR.exit_code
 
     def report_success(self) -> int:
         return exit_codes.EXIT_OK

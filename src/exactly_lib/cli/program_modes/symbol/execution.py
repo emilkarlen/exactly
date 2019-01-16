@@ -102,4 +102,7 @@ class _RequestHandler(RequestVariantVisitor[int]):
         return report_generator.generate()
 
     def visit_individual(self, individual_variant: RequestVariantIndividual) -> int:
-        raise NotImplementedError('working on it')
+        from exactly_lib.cli.program_modes.symbol.impl.reports.individual import ReportGenerator
+
+        report_generator = ReportGenerator(self._environment, individual_variant.name)
+        return report_generator.generate()
