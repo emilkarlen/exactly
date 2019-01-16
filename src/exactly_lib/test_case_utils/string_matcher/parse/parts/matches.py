@@ -31,7 +31,8 @@ def parse(expectation_type: ExpectationType,
                                                                     lambda parser: True,
                                                                     matcher_options.FULL_MATCH_ARGUMENT_OPTION)
     token_parser.require_has_valid_head_token(syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
-    source_type, regex_resolver = parse_regex.parse_regex2(token_parser)
+    source_type, regex_resolver = parse_regex.parse_regex2(token_parser,
+                                                           must_be_on_same_line=False)
     if source_type is not SourceType.HERE_DOC:
         token_parser.report_superfluous_arguments_if_not_at_eol()
         token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()

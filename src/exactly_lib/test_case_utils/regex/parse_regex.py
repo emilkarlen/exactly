@@ -27,12 +27,17 @@ def parse_regex(parser: TokenParser) -> RegexResolver:
     return parse_regex2(parser)[1]
 
 
-def parse_regex2(parser: TokenParser) -> Tuple[SourceType, RegexResolver]:
-    parser.require_is_not_at_eol(parse_reg_ex.MISSING_REGEX_ARGUMENT_ERR_MSG)
+def parse_regex2(parser: TokenParser,
+                 must_be_on_same_line: bool = True) -> Tuple[SourceType, RegexResolver]:
+    if must_be_on_same_line:
+        parser.require_is_not_at_eol(parse_reg_ex.MISSING_REGEX_ARGUMENT_ERR_MSG)
+
     is_ignore_case = parser.consume_and_handle_optional_option(False,
                                                                lambda x: True,
                                                                parse_reg_ex.IGNORE_CASE_OPTION_NAME)
-    parser.require_is_not_at_eol(parse_reg_ex.MISSING_STRING_ARGUMENT_FOR_REGEX_ERR_MSG)
+    if must_be_on_same_line:
+        parser.require_is_not_at_eol(parse_reg_ex.MISSING_REGEX_ARGUMENT_ERR_MSG)
+
     source_type, regex_pattern = parse_string_or_here_doc_from_token_parser(parser)
     return source_type, _RegexResolver(is_ignore_case, regex_pattern)
 
