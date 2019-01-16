@@ -51,8 +51,9 @@ def print_error_info(printer: FilePrinter, error_info: ErrorInfo):
 
 def output_location(printer: FilePrinter,
                     source_location: Optional[SourceLocationPath],
-                    section_name: str,
-                    description: str):
+                    section_name: Optional[str],
+                    description: Optional[str],
+                    append_blank_line_if_any_output: bool = True):
     referrer_location = pathlib.Path('.')
     formatter = default_formatter()
 
@@ -70,7 +71,8 @@ def output_location(printer: FilePrinter,
 
     if blocks:
         printer.write_line(rendering.blocks_as_str(blocks))
-        printer.write_empty_line()
+        if append_blank_line_if_any_output:
+            printer.write_empty_line()
 
 
 class _ErrorDescriptionDisplayer(error_description.ErrorDescriptionVisitor):
@@ -116,7 +118,7 @@ def _section_name_block(section_name: str) -> Block:
     return ['In ' + SectionName(section_name).syntax]
 
 
-def _description_blocks(description: str) -> Blocks:
+def _description_blocks(description: Optional[str]) -> Blocks:
     if description:
         return [
             ['Described as "{}"'.format(description)],
