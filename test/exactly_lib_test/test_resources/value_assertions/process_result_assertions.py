@@ -23,6 +23,11 @@ def is_result_for_empty_stdout(exit_code: int) -> ValueAssertion[SubProcessResul
                                       stdout=asrt.equals(''))
 
 
+def is_result_for_empty_stderr(exit_code: int) -> ValueAssertion[SubProcessResult]:
+    return _SubProcessResultAssertion(exitcode=asrt.equals(exit_code),
+                                      stderr=asrt.equals(''))
+
+
 def stdout(assertion_on_str: ValueAssertion[str]) -> ValueAssertion[SubProcessResult]:
     return _SubProcessResultAssertion(stdout=assertion_on_str)
 
@@ -121,10 +126,11 @@ class SubProcessExitValueOnStdErrAssertion(ValueAssertionBase[SubProcessResult])
 
 
 def _err_msg_info(actual: SubProcessResult) -> str:
-    return """Info from actual value:
-    exit_code = {exit_code}
-    stdout    = "{stdout}"
-    stderr    = "{stderr}\"""".format(
+    return """
+Info from actual value:
+exit_code = {exit_code}
+stdout    = "{stdout}"
+stderr    = "{stderr}\"""".format(
         exit_code=actual.exitcode,
         stdout=actual.stdout,
         stderr=actual.stderr)

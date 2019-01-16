@@ -5,7 +5,7 @@ from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo
 from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYPE_INFO_DICT
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.string import lines_content, inside_parens
 
 
 class _SingleDefinitionReportInfo:
@@ -48,7 +48,7 @@ def mk_single_def_report_info(definition: SymbolDefinitionInfo) -> _SingleDefini
 
 
 def format_num_refs_info(num_refs: int) -> str:
-    return '(' + str(num_refs) + ')'
+    return inside_parens(num_refs)
 
 
 class ReportGenerator:

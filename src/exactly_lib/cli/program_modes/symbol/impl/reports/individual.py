@@ -2,6 +2,7 @@ from typing import Optional
 
 from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo
+from exactly_lib.util.string import inside_parens
 
 
 class ReportGenerator:
@@ -33,7 +34,7 @@ class ReportGenerator:
     def _present(self, definition: SymbolDefinitionInfo):
         output = ' '.join([
             definition.type_identifier(),
-            str(len(definition.references)),
+            inside_parens(len(definition.references)),
             definition.name(),
         ])
         self._completion_reporter.out_printer.write_line(output)

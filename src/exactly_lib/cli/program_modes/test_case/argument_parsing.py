@@ -1,7 +1,7 @@
 import argparse
 import pathlib
 import shlex
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 from exactly_lib import program_info
 from exactly_lib.cli.definitions import common_cli_options as common_opts
@@ -21,10 +21,28 @@ from exactly_lib.processing.standalone.settings import ReportingOption, TestCase
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import Preprocessor
 from exactly_lib.util import argument_parsing_utils
-from exactly_lib.util.argument_parsing_utils import parse_args__raise_exception_instead_of_exiting_on_error
+from exactly_lib.util.argument_parsing_utils import parse_args__raise_exception_instead_of_exiting_on_error, \
+    parse_known_args__raise_exception_instead_of_exiting_on_error
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
 from exactly_lib.util.messages import grammar_options_syntax
 from exactly_lib.util.textformat.textformat_parser import TextParser
+
+
+def parse_known_args(
+        default: TestCaseHandlingSetup,
+        default_sandbox_root_dir_name_resolver: SandboxRootDirNameResolver,
+        argv: List[str],
+        commands: Dict[str, str]) -> Tuple[TestCaseExecutionSettings, List[str]]:
+    """
+    :raises ArgumentParsingError Invalid usage
+    """
+    argument_parser = _new_argument_parser(commands)
+    namespace, remaining_args = parse_known_args__raise_exception_instead_of_exiting_on_error(argument_parser,
+                                                                                              argv)
+    settings = _settings_from_namespace(default,
+                                        default_sandbox_root_dir_name_resolver,
+                                        namespace)
+    return settings, remaining_args
 
 
 def parse(default: TestCaseHandlingSetup,
@@ -34,10 +52,19 @@ def parse(default: TestCaseHandlingSetup,
     """
     :raises ArgumentParsingError Invalid usage
     """
-    output = ReportingOption.STATUS_CODE
     argument_parser = _new_argument_parser(commands)
     namespace = parse_args__raise_exception_instead_of_exiting_on_error(argument_parser,
                                                                         argv)
+    return _settings_from_namespace(default,
+                                    default_sandbox_root_dir_name_resolver,
+                                    namespace)
+
+
+def _settings_from_namespace(default: TestCaseHandlingSetup,
+                             default_sandbox_root_dir_name_resolver: SandboxRootDirNameResolver,
+                             namespace: argparse.Namespace) -> TestCaseExecutionSettings:
+    output = ReportingOption.STATUS_CODE
+
     if namespace.act:
         output = ReportingOption.ACT_PHASE_OUTPUT
     elif namespace.keep:
