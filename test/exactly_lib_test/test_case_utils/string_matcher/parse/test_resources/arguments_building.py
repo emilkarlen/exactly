@@ -117,7 +117,6 @@ FULL_MATCH_ARGUMENT = option_syntax(matcher_options.FULL_MATCH_ARGUMENT_OPTION)
 _FORMAT_MAP = {
     'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
     'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
-    'line_matches': matcher_options.LINE_ARGUMENT + ' ' + matcher_options.MATCHES_ARGUMENT,
     'empty': matcher_options.EMPTY_ARGUMENT,
     'equals': matcher_options.EQUALS_ARGUMENT,
     'matches': matcher_options.MATCHES_ARGUMENT,
