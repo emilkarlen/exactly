@@ -2,7 +2,7 @@ from typing import Optional
 
 from exactly_lib.cli.program_modes.symbol.impl.completion_reporter import CompletionReporter
 from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
-from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo
+from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo, SymUsageInPhase
 from exactly_lib.common import result_reporting
 from exactly_lib.util.string import inside_parens
 
@@ -27,10 +27,10 @@ class ReportGenerator:
             presenter.present()
         return self._completion_reporter.report_success()
 
-    def _lookup(self) -> Optional[SymbolDefinitionInfo]:
+    def _lookup(self) -> Optional[SymUsageInPhase[SymbolDefinitionInfo]]:
         name = self._symbol_name
-        for definition in self._definitions_resolver.definitions():
-            if name == definition.name():
+        for definition in self._definitions_resolver.definitions_with_phase():
+            if name == definition.value().name():
                 return definition
 
         return None
@@ -43,9 +43,10 @@ class ReportGenerator:
 class _Presenter:
     def __init__(self,
                  completion_reporter: CompletionReporter,
-                 definition: SymbolDefinitionInfo):
+                 definition: SymUsageInPhase[SymbolDefinitionInfo]):
         self.printer = completion_reporter.out_printer
-        self.definition = definition
+        self.phase = definition.phase()
+        self.definition = definition.value()
 
     def present(self):
         self._single_line_info()
@@ -67,6 +68,6 @@ class _Presenter:
             return
         result_reporting.output_location(self.printer,
                                          mb_source_location.source_location_path,
-                                         None,
+                                         self.phase.section_name,
                                          None,
                                          append_blank_line_if_any_output=False)
