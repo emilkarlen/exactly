@@ -29,29 +29,15 @@ class SymbolDefinitionInfo:
                  references: List[SymUsageInPhase[SymbolDefinition]]):
         self.definition = definition
         self.references = references
-        self._num_refs_str = format_num_refs_info(self)
 
     def name(self) -> str:
         return self.definition.name
-
-    def name_length(self) -> int:
-        return len(self.definition.name)
 
     def value_type(self) -> ValueType:
         return self.definition.resolver_container.resolver.value_type
 
     def type_identifier(self) -> str:
         return ANY_TYPE_INFO_DICT[self.value_type()].identifier
-
-    def num_refs_str(self) -> str:
-        return self._num_refs_str
-
-    def num_refs_str_length(self) -> int:
-        return len(self._num_refs_str)
-
-
-def format_num_refs_info(symbol: SymbolDefinitionInfo) -> str:
-    return '(' + str(len(symbol.references)) + ')'
 
 
 class DefinitionsResolver(ABC):

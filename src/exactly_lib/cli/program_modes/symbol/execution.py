@@ -3,7 +3,6 @@ from typing import Tuple
 from exactly_lib.cli.program_modes.symbol.impl import symbol_usage_resolving
 from exactly_lib.cli.program_modes.symbol.impl.completion_reporter import CompletionReporter
 from exactly_lib.cli.program_modes.symbol.impl.reports import report_environment
-from exactly_lib.cli.program_modes.symbol.impl.reports.list_all import ReportGenerator
 from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
 from exactly_lib.cli.program_modes.symbol.request import SymbolInspectionRequest, RequestVariantVisitor, \
     RequestVariantList, RequestVariantIndividual
@@ -97,8 +96,10 @@ class _RequestHandler(RequestVariantVisitor[int]):
         self._environment = environment
 
     def visit_list(self, list_variant: RequestVariantList) -> int:
+        from exactly_lib.cli.program_modes.symbol.impl.reports.list_all import ReportGenerator
+
         report_generator = ReportGenerator(self._environment)
-        return report_generator.list()
+        return report_generator.generate()
 
     def visit_individual(self, individual_variant: RequestVariantIndividual) -> int:
         raise NotImplementedError('working on it')
