@@ -18,3 +18,7 @@ def line_separated(lines: list) -> str:
     return '' \
         if not lines \
         else '\n'.join(lines)
+
+
+def inside_parens(x) -> str:
+    return '(' + str(x) + ')'
