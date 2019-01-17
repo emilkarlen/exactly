@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
  - New type "string-matcher"
  - New type "files-matcher"
+ - New STRING-MATCHER: matches REGEX
  - New command `symbol` - displays information about symbol usages in a test case
 
 ### Changed
