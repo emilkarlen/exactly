@@ -104,5 +104,7 @@ class _RequestHandler(RequestVariantVisitor[int]):
     def visit_individual(self, individual_variant: RequestVariantIndividual) -> int:
         from exactly_lib.cli.program_modes.symbol.impl.reports.individual import ReportGenerator
 
-        report_generator = ReportGenerator(self._environment, individual_variant.name)
+        report_generator = ReportGenerator(self._environment,
+                                           individual_variant.name,
+                                           individual_variant.list_references)
         return report_generator.generate()

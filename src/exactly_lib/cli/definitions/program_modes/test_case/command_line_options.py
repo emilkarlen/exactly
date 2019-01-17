@@ -12,6 +12,10 @@ OPTION_FOR_EXECUTING_ACT_PHASE = short_and_long_option_syntax.long_syntax(OPTION
 OPTION_FOR_PREPROCESSOR__LONG = 'preprocessor'
 OPTION_FOR_PREPROCESSOR = short_and_long_option_syntax.long_syntax(OPTION_FOR_PREPROCESSOR__LONG)
 
+OPTION_FOR_SYMBOL_REFERENCES__LONG = 'ref'
+OPTION_FOR_OPTION_FOR_SYMBOL_REFERENCES = short_and_long_option_syntax.long_syntax(
+    OPTION_FOR_SYMBOL_REFERENCES__LONG)
+
 PREPROCESSOR_OPTION_ARGUMENT = common_cli_options.SHELL_COMMAND
 
 OPTION_FOR_SUITE__LONG = 'suite'

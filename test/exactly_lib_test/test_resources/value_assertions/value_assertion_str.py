@@ -1,5 +1,6 @@
-import re
 import unittest
+
+import re
 
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
@@ -73,3 +74,14 @@ class _IsNotOnlySpace(ValueAssertionBase):
 
 
 _IS_NOT_ONLY_SPACE = _IsNotOnlySpace()
+
+
+def first_line(assertion: ValueAssertion[str]) -> ValueAssertion[str]:
+    return asrt.on_transformed(
+        get_first_line,
+        assertion
+    )
+
+
+def get_first_line(s: str) -> str:
+    return s.splitlines()[0]

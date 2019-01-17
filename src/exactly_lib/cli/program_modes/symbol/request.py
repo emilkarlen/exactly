@@ -21,8 +21,11 @@ class RequestVariantList(RequestVariant):
 
 
 class RequestVariantIndividual(RequestVariant):
-    def __init__(self, name: str):
+    def __init__(self,
+                 name: str,
+                 list_references: bool):
         self.name = name
+        self.list_references = list_references
 
 
 RET = TypeVar('RET')

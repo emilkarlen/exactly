@@ -7,25 +7,59 @@ from exactly_lib.common import result_reporting
 from exactly_lib.util.string import inside_parens
 
 
+class _Presenter:
+    def __init__(self,
+                 completion_reporter: CompletionReporter,
+                 definition: SymUsageInPhase[SymbolDefinitionInfo]):
+        self.printer = completion_reporter.out_printer
+        self.phase = definition.phase()
+        self.definition = definition.value()
+
+    def present(self):
+        self._single_line_info()
+        self._rest()
+
+    def _single_line_info(self):
+        definition = self.definition
+
+        output = ' '.join([
+            definition.type_identifier(),
+            inside_parens(len(definition.references)),
+            definition.name(),
+        ])
+        self.printer.write_line(output)
+
+    def _rest(self):
+        pass
+
+
 class ReportGenerator:
     def __init__(self,
                  environment: Environment,
                  symbol_name: str,
+                 list_references: bool
                  ):
         self._symbol_name = symbol_name
+        self._list_references = list_references
         self._output = environment.output
         self._completion_reporter = environment.completion_reporter
         self._definitions_resolver = environment.definitions_resolver
 
     def generate(self) -> int:
         mb_definition = self._lookup()
+
         if mb_definition is None:
             return self._not_found()
         else:
-            presenter = _Presenter(self._completion_reporter,
-                                   mb_definition)
-            presenter.present()
+            self._presenter(mb_definition).present()
+
         return self._completion_reporter.report_success()
+
+    def _presenter(self, definition: SymUsageInPhase[SymbolDefinitionInfo]) -> _Presenter:
+        if self._list_references:
+            return _ReferencesPresenter(self._completion_reporter, definition)
+        else:
+            return _DefinitionPresenter(self._completion_reporter, definition)
 
     def _lookup(self) -> Optional[SymUsageInPhase[SymbolDefinitionInfo]]:
         name = self._symbol_name
@@ -40,29 +74,8 @@ class ReportGenerator:
         return self._completion_reporter.symbol_not_found()
 
 
-class _Presenter:
-    def __init__(self,
-                 completion_reporter: CompletionReporter,
-                 definition: SymUsageInPhase[SymbolDefinitionInfo]):
-        self.printer = completion_reporter.out_printer
-        self.phase = definition.phase()
-        self.definition = definition.value()
-
-    def present(self):
-        self._single_line_info()
-        self.source_location()
-
-    def _single_line_info(self):
-        definition = self.definition
-
-        output = ' '.join([
-            definition.type_identifier(),
-            inside_parens(len(definition.references)),
-            definition.name(),
-        ])
-        self.printer.write_line(output)
-
-    def source_location(self):
+class _DefinitionPresenter(_Presenter):
+    def _rest(self):
         mb_source_location = self.definition.definition.resolver_container.source_location
         if mb_source_location is None:
             return
@@ -71,3 +84,10 @@ class _Presenter:
                                          self.phase.section_name,
                                          None,
                                          append_blank_line_if_any_output=False)
+
+
+class _ReferencesPresenter(_Presenter):
+    def _rest(self):
+        num_refs = len(self.definition.references)
+        if num_refs != 0:
+            self.printer.write_line(str(num_refs))

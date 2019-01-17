@@ -44,3 +44,22 @@ def py_search_replace_preprocessing_and_case(py_preprocessor_source_file_name: s
         +
         [case_file_name]
     )
+
+
+def individual__definition(case_file: str,
+                           symbol_name: str
+                           ) -> List[str]:
+    return arguments([
+        case_file,
+        symbol_name
+    ])
+
+
+def individual__references(case_file: str,
+                           symbol_name: str
+                           ) -> List[str]:
+    return arguments([
+        case_file,
+        symbol_name,
+        command_line_options.OPTION_FOR_OPTION_FOR_SYMBOL_REFERENCES,
+    ])

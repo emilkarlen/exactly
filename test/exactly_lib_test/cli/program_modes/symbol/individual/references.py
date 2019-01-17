@@ -15,7 +15,7 @@ from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYM
 from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, File
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
 
 
 def suite() -> unittest.TestSuite:
@@ -27,17 +27,16 @@ def suite() -> unittest.TestSuite:
 
 
 class TestInvalidSymbolNameArguments(unittest.TestCase):
-    def test_superfluous_symbol_name(self):
+    def test_superfluous_arguments(self):
         case_file = empty_file('test.case')
 
         test_with_files_in_tmp_dir.check(
             self,
             command_line_arguments=
-            symbol_args.arguments([
+            symbol_args.individual__references(
                 case_file.name,
                 'symbol_name',
-                'superfluous',
-            ]),
+            ) + ['superfluous'],
             arrangement=
             Arrangement(
                 cwd_contents=DirContents([case_file])
@@ -54,10 +53,10 @@ class TestInvalidSymbolNameArguments(unittest.TestCase):
         test_with_files_in_tmp_dir.check(
             self,
             command_line_arguments=
-            symbol_args.arguments([
+            symbol_args.individual__references(
                 case_file.name,
                 NOT_A_VALID_SYMBOL_NAME,
-            ]),
+            ),
             arrangement=
             Arrangement(
                 cwd_contents=DirContents([case_file])
@@ -104,10 +103,10 @@ class TestCaseContainsNoSymbolWithTheGivenName(unittest.TestCase):
         test_with_files_in_tmp_dir.check(
             self,
             command_line_arguments=
-            symbol_args.arguments([
+            symbol_args.individual__references(
                 case_with_single_def.name,
                 not_the_name_of_an_existing_symbol,
-            ]),
+            ),
             arrangement=
             Arrangement(
                 cwd_contents=DirContents([
@@ -123,7 +122,7 @@ class TestCaseContainsNoSymbolWithTheGivenName(unittest.TestCase):
 
 
 class TestSuccessfulScenarios(unittest.TestCase):
-    def test(self):
+    def test_no_references(self):
         name_of_existing_symbol = 'STRING_SYMBOL'
 
         case_with_single_def = File('test.case',
@@ -138,10 +137,10 @@ class TestSuccessfulScenarios(unittest.TestCase):
         test_with_files_in_tmp_dir.check(
             self,
             command_line_arguments=
-            symbol_args.arguments([
+            symbol_args.individual__references(
                 case_with_single_def.name,
                 name_of_existing_symbol,
-            ]),
+            ),
             arrangement=
             Arrangement(
                 cwd_contents=DirContents([
@@ -152,19 +151,43 @@ class TestSuccessfulScenarios(unittest.TestCase):
             expectation=
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
-                stdout=assert_first_line(asrt.equals(expected_first_line)))
+                stdout=asrt_str.first_line(asrt.equals(expected_first_line)))
         )
 
+    def test_single_reference(self):
+        name_of_existing_symbol = 'STRING_SYMBOL'
 
-def assert_first_line(first_line: ValueAssertion[str]) -> ValueAssertion[str]:
-    return asrt.on_transformed(
-        get_first_line,
-        first_line
-    )
+        case_with_single_def = File('test.case',
+                                    lines_content([
+                                        phase_names.SETUP.syntax,
+                                        sym_def.define_string(name_of_existing_symbol, 'value'),
 
+                                        phase_names.ASSERT.syntax,
+                                        sym_def.reference_to(name_of_existing_symbol, ValueType.STRING),
+                                    ]))
 
-def get_first_line(s: str) -> str:
-    return s.splitlines()[0]
+        expected_first_line = output.list_of([output.SymbolReport(name_of_existing_symbol,
+                                                                  ValueType.STRING,
+                                                                  num_refs=1)]).rstrip()
+        test_with_files_in_tmp_dir.check(
+            self,
+            command_line_arguments=
+            symbol_args.individual__references(
+                case_with_single_def.name,
+                name_of_existing_symbol,
+            ),
+            arrangement=
+            Arrangement(
+                cwd_contents=DirContents([
+                    case_with_single_def,
+                ]),
+                main_program_config=sym_def.main_program_config(),
+            ),
+            expectation=
+            asrt_proc_result.sub_process_result(
+                exitcode=asrt.equals(exit_codes.EXIT_OK),
+                stdout=asrt_str.first_line(asrt.equals(expected_first_line)))
+        )
 
 
 if __name__ == '__main__':
