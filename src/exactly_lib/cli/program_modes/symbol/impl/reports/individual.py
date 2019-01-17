@@ -4,6 +4,7 @@ from exactly_lib.cli.program_modes.symbol.impl.completion_reporter import Comple
 from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo
 from exactly_lib.common import result_reporting
+from exactly_lib.section_document.source_location import SourceLocationInfo, SourceLocationPath
 from exactly_lib.util.string import inside_parens
 
 
@@ -76,18 +77,24 @@ class ReportGenerator:
 
 class _DefinitionPresenter(_Presenter):
     def _rest(self):
-        mb_source_location = self.definition.definition.resolver_container.source_location
-        if mb_source_location is None:
-            return
-        result_reporting.output_location(self.printer,
-                                         mb_source_location.source_location_path,
-                                         self.phase.section_name,
-                                         None,
-                                         append_blank_line_if_any_output=False)
+        result_reporting.output_location(
+            self.printer,
+            _get_source_location_path(self.definition.definition.resolver_container.source_location),
+            self.phase.section_name,
+            None,
+            append_blank_line_if_any_output=False)
 
 
 class _ReferencesPresenter(_Presenter):
     def _rest(self):
-        num_refs = len(self.definition.references)
-        if num_refs != 0:
-            self.printer.write_line(str(num_refs))
+        for reference in self.definition.references:
+            self.printer.write_line('')
+            result_reporting.output_location(self.printer,
+                                             _get_source_location_path(reference.source_location_info()),
+                                             self.phase.section_name,
+                                             None,
+                                             append_blank_line_if_any_output=False)
+
+
+def _get_source_location_path(sli: Optional[SourceLocationInfo]) -> Optional[SourceLocationPath]:
+    return None if sli is None else sli.source_location_path

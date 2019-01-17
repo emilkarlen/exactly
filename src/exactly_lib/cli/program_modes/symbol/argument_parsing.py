@@ -44,5 +44,5 @@ def _resolve_request_variant(remaining_args: List[str]) -> request.RequestVarian
     if len(remaining_args) == 0:
         return request.RequestVariantIndividual(symbol_name_arg, list_references=True)
     else:
-        superfluous_args_str = ' '.join(remaining_args[1:])
-        raise ArgumentParsingError('Superfluous arguments: ' + superfluous_args_str)
+        superfluous_args_str = ' '.join(remaining_args)
+        raise ArgumentParsingError('Invalid arguments: ' + superfluous_args_str)

@@ -47,7 +47,7 @@ class SymbolDefinitionInfo:
     def __init__(self,
                  phase: Phase,
                  definition: SymbolDefinition,
-                 references: List[SymUsageInPhase[SymbolReference]]):
+                 references: List[ContextAnd[SymbolReference]]):
         self.phase = phase
         self.definition = definition
         self.references = references
