@@ -29,29 +29,9 @@ class DefinitionsInfoResolverFromTestCase(DefinitionsResolver):
             if name in references:
                 references_to_symbol = references[name]
 
-            return SymbolDefinitionInfo(definition.value(),
+            return SymbolDefinitionInfo(definition.phase(),
+                                        definition.value(),
                                         references_to_symbol)
-
-        return map(mk_definition,
-                   filter(is_not_none,
-                          map(_extract_symbol_definition, usages))
-                   )
-
-    def definitions_with_phase(self) -> Iterator[SymUsageInPhase[SymbolDefinitionInfo]]:
-        usages = list(self.symbol_usages())
-        references = self.references(usages)
-
-        def mk_definition(definition: SymUsageInPhase[SymbolDefinition]) -> SymUsageInPhase[SymbolDefinitionInfo]:
-            name = definition.value().name
-
-            references_to_symbol = []
-            if name in references:
-                references_to_symbol = references[name]
-
-            return SymUsageInPhase(
-                definition.phase(),
-                SymbolDefinitionInfo(definition.value(),
-                                     references_to_symbol))
 
         return map(mk_definition,
                    filter(is_not_none,

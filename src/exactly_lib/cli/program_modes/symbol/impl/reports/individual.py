@@ -2,7 +2,7 @@ from typing import Optional
 
 from exactly_lib.cli.program_modes.symbol.impl.completion_reporter import CompletionReporter
 from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
-from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo, SymUsageInPhase
+from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo
 from exactly_lib.common import result_reporting
 from exactly_lib.util.string import inside_parens
 
@@ -10,10 +10,10 @@ from exactly_lib.util.string import inside_parens
 class _Presenter:
     def __init__(self,
                  completion_reporter: CompletionReporter,
-                 definition: SymUsageInPhase[SymbolDefinitionInfo]):
+                 definition: SymbolDefinitionInfo):
         self.printer = completion_reporter.out_printer
-        self.phase = definition.phase()
-        self.definition = definition.value()
+        self.phase = definition.phase
+        self.definition = definition
 
     def present(self):
         self._single_line_info()
@@ -55,16 +55,16 @@ class ReportGenerator:
 
         return self._completion_reporter.report_success()
 
-    def _presenter(self, definition: SymUsageInPhase[SymbolDefinitionInfo]) -> _Presenter:
+    def _presenter(self, definition: SymbolDefinitionInfo) -> _Presenter:
         if self._list_references:
             return _ReferencesPresenter(self._completion_reporter, definition)
         else:
             return _DefinitionPresenter(self._completion_reporter, definition)
 
-    def _lookup(self) -> Optional[SymUsageInPhase[SymbolDefinitionInfo]]:
+    def _lookup(self) -> Optional[SymbolDefinitionInfo]:
         name = self._symbol_name
-        for definition in self._definitions_resolver.definitions_with_phase():
-            if name == definition.value().name():
+        for definition in self._definitions_resolver.definitions():
+            if name == definition.name():
                 return definition
 
         return None
