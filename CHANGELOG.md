@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
  - Windows - Fixes type error
  - Windows - Avoid crash when resolving terminal ANSI color support
+ - Windows - Avoid crash when removing SDS after test case
  
 ## [0.8.9.5] - 2018-10-06
 
