@@ -2,19 +2,15 @@
 
 https://packaging.python.org/
 
-* Run tests
-
-* Run tests towards installed program
-
-* Set version number in src/exactly_lib/program_info.py (if not already done)
-
+* Test
+** run-test-suite.py
+** Run tests towards installed program
+* Set version number
+in src/exactly_lib/program_info.py (if not already done)
 * Update CHANGELOG.md
-
   - set version and release date
   - make sure changes are included (see https://keepachangelog.com/en/1.0.0/)
-
 **  Template
-
 ## [VERSION] - YYYY-MM-DD
 ## [Unreleased]
 
@@ -24,38 +20,33 @@ https://packaging.python.org/
 ### Removed
 ### Fixed
 ### Security
-
-
 * Make sure release year is included in COPYRIGHT
-
-* 0. Remove existing distributables
-
+* README/Future development
+Make sure are in lign with the release
+* Make release artifacts
+** Remove existing distributables
 > rm -rf dist
 > rm -rf build
-
-* Make distributables
+** Make distributables
 Distribute source and wheel
 
 > python3 setup.py sdist
 > python3 setup.py bdist_wheel
 
 * Upload
-
 > twine upload dist/*
-
-* wiki: Generate new Reference.html
-
+* wiki
+** Update examples
+Run tests in examples/wiki,
+and if changes are needed to make these work,
+make the same changes to wiki.
+** Generate new Reference.html
 * Tag repo with version
-
 > git tag vVERSION
-
 > git push --tags
-
 * Make release on github
-
-* http://peterdowns.com/posts/first-time-with-pypi.html
-
-
+* Learning PyPi
+http://peterdowns.com/posts/first-time-with-pypi.html
 ** Upload your package to PyPI Test
 
 Run:
