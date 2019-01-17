@@ -1,5 +1,6 @@
 from typing import List
 
+import exactly_lib.cli.definitions.program_modes.symbol.command_line_options
 from exactly_lib.cli.definitions.common_cli_options import SYMBOL_COMMAND
 from exactly_lib.cli.definitions.program_modes.test_case import command_line_options
 from exactly_lib_test.cli.test_resources import cli_arguments
@@ -61,5 +62,5 @@ def individual__references(case_file: str,
     return arguments([
         case_file,
         symbol_name,
-        command_line_options.OPTION_FOR_OPTION_FOR_SYMBOL_REFERENCES,
+        exactly_lib.cli.definitions.program_modes.symbol.command_line_options.OPTION_FOR_SYMBOL_REFERENCES,
     ])

@@ -1,7 +1,9 @@
 from typing import List, Optional
 
+import exactly_lib.cli.definitions.program_modes.symbol.command_line_options
 from exactly_lib import program_info
 from exactly_lib.cli.definitions import common_cli_options as common_opts
+from exactly_lib.cli.definitions.program_modes.symbol.command_line_options import OPTION_FOR_SYMBOL_REFERENCES__LONG
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
@@ -22,6 +24,8 @@ from exactly_lib.util.textformat.section_target_hierarchy.generator import Secti
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
+_INDIVIDUAL_REFERENCES_OPTION = arg.short_long_option(long_name=OPTION_FOR_SYMBOL_REFERENCES__LONG)
+
 
 def root(header: str) -> SectionHierarchyGenerator:
     return h.with_fixed_root_target(
@@ -35,22 +39,19 @@ def root(header: str) -> SectionHierarchyGenerator:
 class SymbolCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def __init__(self):
         super().__init__(program_info.PROGRAM_NAME)
-        self.synopsis = synopsis()
 
     def description(self) -> DescriptionWithSubSections:
         return DescriptionWithSubSections(_TP.text(misc_texts.SYMBOL_COMMAND_SINGLE_LINE_DESCRIPTION),
-                                          docs.SectionContents(self.synopsis.paragraphs +
-                                                               _TP.fnap(_DESCRIPTION_PARAGRAPH),
-                                                               []))
+                                          docs.section_contents([]))
 
     def synopsises(self) -> List[cli_syntax.Synopsis]:
         return [
-            cli_syntax.Synopsis(self.synopsis.command_line)
+            synopsis_all(),
+            synopsis_individual()
         ]
 
     def argument_descriptions(self) -> List[cli_syntax.DescribedArgument]:
         return [
-            self._symbol_name_argument(),
             self._test_case_option_argument(),
         ]
 
@@ -59,11 +60,6 @@ class SymbolCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
     def outcome(self, environment: ConstructionEnvironment) -> Optional[docs.SectionContents]:
         return _TP.section_contents(_OUTCOME)
-
-    def _symbol_name_argument(self) -> cli_syntax.DescribedArgument:
-        return cli_syntax.DescribedArgument(
-            syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument,
-            _TP.fnap(_SYMBOL_NAME_ARGUMENT))
 
     def _test_case_option_argument(self) -> cli_syntax.DescribedArgument:
         return cli_syntax.DescribedArgument(
@@ -77,38 +73,73 @@ class SymbolCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
 
 CASE_OPTION_ARGUMENT = arg.Named('TEST-CASE-OPTION')
+SYMBOL_OPTION_ARGUMENT = arg.Named('SYMBOL-OPTION')
 
 
-def synopsis() -> cli_syntax.Synopsis:
-    command_line = arg.CommandLine([
+def synopsis_general() -> cli_syntax.Synopsis:
+    command_line = _command_line([
+        arg.Single(arg.Multiplicity.ZERO_OR_MORE,
+                   SYMBOL_OPTION_ARGUMENT)
+    ])
+    return cli_syntax.Synopsis(command_line,
+                               _TP.text(_SINGLE_LINE_DESCRIPTION_FOR_CLI_SYNTAX))
+
+
+def synopsis_all() -> cli_syntax.Synopsis:
+    command_line = _command_line([])
+    return cli_syntax.Synopsis(command_line,
+                               paragraphs=_TP.fnap(_DESCRIPTION_PARAGRAPHS_ALL))
+
+
+def synopsis_individual() -> cli_syntax.Synopsis:
+    command_line = _command_line([
+        arg.Single(arg.Multiplicity.MANDATORY,
+                   syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument),
+        arg.Single(arg.Multiplicity.OPTIONAL,
+                   _INDIVIDUAL_REFERENCES_OPTION),
+    ])
+    return cli_syntax.Synopsis(command_line,
+                               paragraphs=_TP.fnap(_DESCRIPTION_PARAGRAPHS_INDIVIDUAL))
+
+
+def _command_line(additional_arguments: List[arg.ArgumentUsage]) -> arg.CommandLine:
+    return arg.CommandLine(
+        _common_initial_args() + additional_arguments,
+        prefix=program_info.PROGRAM_NAME
+    )
+
+
+def _common_initial_args() -> List[arg.ArgumentUsage]:
+    return [
         arg.Single(arg.Multiplicity.MANDATORY,
                    arg.Constant(common_opts.SYMBOL_COMMAND)),
         arg.Single(arg.Multiplicity.ZERO_OR_MORE,
                    CASE_OPTION_ARGUMENT),
         arg.Single(arg.Multiplicity.MANDATORY,
                    TEST_CASE_FILE_ARGUMENT),
-        arg.Single(arg.Multiplicity.OPTIONAL,
-                   syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument),
-    ],
-        prefix=program_info.PROGRAM_NAME)
-    return cli_syntax.Synopsis(command_line,
-                               _TP.text(_SINGLE_LINE_DESCRIPTION_FOR_CLI_SYNTAX))
+    ]
 
 
 _SINGLE_LINE_DESCRIPTION_FOR_CLI_SYNTAX = """\
 Reports usage of {symbol:s} in the test case {TEST_CASE_FILE}.
 """
 
-_DESCRIPTION_PARAGRAPH = """\
-Reports definitions and references
-of all {symbol:s} in the test case {TEST_CASE_FILE}.
+_DESCRIPTION_PARAGRAPHS_ALL = """\
+Lists all {symbol:s} defined in the case.
 
 
-If {SYMBOL_NAME} is not given, a report of all defined
-{symbol:s} is printed.
-
-Each symbol is printed on a separate line,
+Each symbol is reported on a separate line,
 together with its type and the number of references to it.
+"""
+
+_DESCRIPTION_PARAGRAPHS_INDIVIDUAL = """\
+Reports information about a {symbol} that has been defined in the case.
+
+
+If only {SYMBOL_NAME} is given, the definition of the {symbol} is reported.
+
+
+If {ref_option} is given, all references to the {symbol} are reported. 
 """
 
 _OUTCOME = """\
@@ -122,11 +153,6 @@ But the test case is not executed,
 so no execution errors occur.
 """
 
-_SYMBOL_NAME_ARGUMENT = """\
-Report information about the {symbol}
-with the given name.
-"""
-
 _CORRESPONDS_TO_TEST_CASE_ARGUMENT = """\
 Corresponds to the options for running a test case.
 """
@@ -138,4 +164,5 @@ _TP = TextParser({
     'exit_identifier': misc_texts.EXIT_IDENTIFIER,
     'TEST_CASE_FILE': TEST_CASE_FILE_ARGUMENT.name,
     'default_suite_file': file_names.DEFAULT_SUITE_FILE,
+    'ref_option': exactly_lib.cli.definitions.program_modes.symbol.command_line_options.OPTION_FOR_SYMBOL_REFERENCES,
 })

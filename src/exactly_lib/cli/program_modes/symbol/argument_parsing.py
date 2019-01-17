@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from exactly_lib.cli.definitions.program_modes.test_case import command_line_options
+import exactly_lib.cli.definitions.program_modes.symbol.command_line_options
 from exactly_lib.cli.program_modes.symbol import request
 from exactly_lib.cli.program_modes.symbol.request import SymbolInspectionRequest
 from exactly_lib.cli.program_modes.test_case import argument_parsing as case_arg_parsing
@@ -38,7 +38,8 @@ def _resolve_request_variant(remaining_args: List[str]) -> request.RequestVarian
     if len(remaining_args) == 0:
         return request.RequestVariantIndividual(symbol_name_arg, list_references=False)
 
-    if remaining_args[0] == command_line_options.OPTION_FOR_OPTION_FOR_SYMBOL_REFERENCES:
+    if remaining_args[
+        0] == exactly_lib.cli.definitions.program_modes.symbol.command_line_options.OPTION_FOR_SYMBOL_REFERENCES:
         del remaining_args[0]
 
     if len(remaining_args) == 0:

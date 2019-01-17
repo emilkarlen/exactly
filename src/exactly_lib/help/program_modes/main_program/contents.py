@@ -27,7 +27,7 @@ class MainCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         return [
             test_case_cli_syntax.synopsis(),
             test_suite_cli_syntax.synopsis(),
-            symbol_cli_syntax.synopsis(),
+            symbol_cli_syntax.synopsis_general(),
             _help_toc_synopsis(),
             _html_help_synopsis(),
             _simple_argument_synopsis(),
