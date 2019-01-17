@@ -1,19 +1,19 @@
 import itertools
 
-from typing import List, Sequence, Iterator, Dict, Callable, Optional
+from typing import List, Sequence, Iterator, Dict, Callable, Optional, Any
 
-from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SYMBOL_INFO, SymUsageInPhase, \
-    SymbolDefinitionInfo, DefinitionsResolver
+from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SYMBOL_INFO, SymbolDefinitionInfo, \
+    DefinitionsResolver, ContextAnd
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolUsage, SymbolReference, SymbolUsageVisitor
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases import setup, before_assert, assert_, cleanup
-from exactly_lib.test_case.test_case_doc import TestCaseOfInstructions
+from exactly_lib.test_case.test_case_doc import TestCaseOfInstructions2, ElementWithSourceLocation
 
 
 class DefinitionsInfoResolverFromTestCase(DefinitionsResolver):
     def __init__(self,
-                 test_case: TestCaseOfInstructions,
+                 test_case: TestCaseOfInstructions2,
                  act_phase: Sequence[SymbolUsage]):
         self.test_case = test_case
         self.act_phase = act_phase
@@ -22,7 +22,7 @@ class DefinitionsInfoResolverFromTestCase(DefinitionsResolver):
         usages = list(self.symbol_usages())
         references = self.references(usages)
 
-        def mk_definition(definition: SymUsageInPhase[SymbolDefinition]) -> SymbolDefinitionInfo:
+        def mk_definition(definition: ContextAnd[SymbolDefinition]) -> SymbolDefinitionInfo:
             name = definition.value().name
 
             references_to_symbol = []
@@ -38,10 +38,11 @@ class DefinitionsInfoResolverFromTestCase(DefinitionsResolver):
                           map(_extract_symbol_definition, usages))
                    )
 
-    def symbol_usages(self) -> Iterator[SymUsageInPhase[SymbolUsage]]:
-        def mk_act_phase_sym_usage(usage: SymbolUsage) -> SymUsageInPhase[SymbolUsage]:
-            return SymUsageInPhase(phase_identifier.ACT,
-                                   usage)
+    def symbol_usages(self) -> Iterator[ContextAnd[SymbolUsage]]:
+        def mk_act_phase_sym_usage(usage: SymbolUsage) -> ContextAnd[SymbolUsage]:
+            return ContextAnd(phase_identifier.ACT,
+                              None,
+                              usage)
 
         return itertools.chain.from_iterable([
             _symbol_usages_from(phase_identifier.SETUP,
@@ -56,8 +57,9 @@ class DefinitionsInfoResolverFromTestCase(DefinitionsResolver):
                                 self.test_case.cleanup_phase, cleanup.get_symbol_usages),
         ])
 
-    def references(self, usages: List[SymUsageInPhase[SymbolUsage]]
-                   ) -> Dict[str, List[SymUsageInPhase[SymbolReference]]]:
+    @staticmethod
+    def references(usages: List[ContextAnd[SymbolUsage]]
+                   ) -> Dict[str, List[ContextAnd[SymbolReference]]]:
         references = itertools.chain.from_iterable(
             map(_extract_symbol_references, usages)
         )
@@ -73,33 +75,43 @@ class DefinitionsInfoResolverFromTestCase(DefinitionsResolver):
 
 
 def _symbol_usages_from(phase: Phase,
-                        elements: Sequence[SYMBOL_INFO],
+                        elements: Sequence[ElementWithSourceLocation[SYMBOL_INFO]],
                         symbol_usages_getter: Callable[[SYMBOL_INFO], Sequence[SymbolUsage]]
-                        ) -> Iterator[SymUsageInPhase[SymbolUsage]]:
+                        ) -> Iterator[ContextAnd[SymbolUsage]]:
     symbol_usages_sequence_list = [
-        symbol_usages_getter(element)
+        [
+            ElementWithSourceLocation(
+                element.source_location_info,
+                symbol_usage
+            )
+            for symbol_usage in symbol_usages_getter(element.value)
+
+        ]
         for element in elements
     ]
 
-    def mk_item(usage: SymbolUsage) -> SymUsageInPhase[SymbolUsage]:
-        return SymUsageInPhase(phase, usage)
+    def mk_item(element: ElementWithSourceLocation[SymbolUsage]) -> ContextAnd[SymbolUsage]:
+        return ContextAnd(phase,
+                          element.source_location_info,
+                          element.value)
 
     return map(mk_item,
                itertools.chain.from_iterable(symbol_usages_sequence_list)
                )
 
 
-def _extract_symbol_definition(usage: SymUsageInPhase[SymbolUsage]) -> Optional[SymUsageInPhase[SymbolDefinition]]:
+def _extract_symbol_definition(usage: ContextAnd[SymbolUsage]) -> Optional[ContextAnd[SymbolDefinition]]:
     value = usage.value()
     if isinstance(value, SymbolDefinition):
-        return SymUsageInPhase(usage.phase(),
-                               value)
+        return ContextAnd(usage.phase(),
+                          usage.source_location_info(),
+                          value)
     else:
         return None
 
 
-def _extract_symbol_references(usage: SymUsageInPhase[SymbolUsage]) -> List[SymUsageInPhase[SymbolReference]]:
-    return _ReferencesExtractor(usage.phase()).visit(usage.value())
+def _extract_symbol_references(usage: ContextAnd[SymbolUsage]) -> List[ContextAnd[SymbolReference]]:
+    return _ReferencesExtractor(usage).visit(usage.value())
 
 
 def is_not_none(x) -> bool:
@@ -107,20 +119,21 @@ def is_not_none(x) -> bool:
 
 
 class _ReferencesExtractor(SymbolUsageVisitor):
-    def __init__(self, phase: Phase):
-        self._phase = phase
+    def __init__(self, context: ContextAnd[Any]):
+        self._context = context
 
-    def _visit_definition(self, definition: SymbolDefinition):
+    def _visit_definition(self, definition: SymbolDefinition) -> List[ContextAnd[SymbolReference]]:
         return [
             self._of(reference)
             for reference in definition.references
         ]
 
-    def _visit_reference(self, reference: SymbolReference) -> List[SymUsageInPhase[SymbolReference]]:
+    def _visit_reference(self, reference: SymbolReference) -> List[ContextAnd[SymbolReference]]:
         return [
             self._of(reference)
         ]
 
-    def _of(self, reference: SymbolReference) -> SymUsageInPhase[SymbolReference]:
-        return SymUsageInPhase(self._phase,
-                               reference)
+    def _of(self, reference: SymbolReference) -> ContextAnd[SymbolReference]:
+        return ContextAnd(self._context.phase(),
+                          self._context.source_location_info(),
+                          reference)

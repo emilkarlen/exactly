@@ -12,8 +12,8 @@ from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.standalone.accessor_resolver import AccessorResolver
 from exactly_lib.processing.test_case_processing import AccessorError
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
+from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ParseException, ActionToCheckExecutor
-from exactly_lib.test_case.test_case_doc import TestCaseOfInstructions
 from exactly_lib.test_suite.file_reading.exception import SuiteSyntaxError
 from exactly_lib.util.std import StdOutputFiles
 
@@ -56,25 +56,28 @@ class Executor:
 
         return request_handler.visit(self.request.variant)
 
-    def _parse(self) -> Tuple[TestCaseOfInstructions, ActionToCheckExecutor]:
+    def _parse(self) -> Tuple[test_case_doc.TestCaseOfInstructions2, ActionToCheckExecutor]:
         try:
             accessor, act_phase_setup = self._accessor()
         except SuiteSyntaxError as ex:
             raise _InvalidTestCaseError(self.completion_reporter.report_suite_error(ex))
 
         try:
-            test_case_with_section_elements = accessor.apply(self._test_case_file_ref())
+            test_case = accessor.apply(self._test_case_file_ref())
         except AccessorError as ex:
             raise _InvalidTestCaseError(self.completion_reporter.report_access_error(ex))
 
-        test_case = test_case_with_section_elements.as_test_case_of_instructions()
-
+        test_case_with_instructions = test_case.as_test_case_of_instructions2()
+        act_phase_instructions = [
+            element.value
+            for element in test_case_with_instructions.act_phase
+        ]
         try:
-            atc_executor = act_phase_setup.atc_executor_parser.parse(test_case.act_phase)
+            atc_executor = act_phase_setup.atc_executor_parser.parse(act_phase_instructions)
         except ParseException as ex:
             raise _InvalidTestCaseError(self.completion_reporter.report_act_phase_parse_error(ex))
 
-        return (test_case,
+        return (test_case_with_instructions,
                 atc_executor)
 
     def _accessor(self) -> Tuple[test_case_processing.Accessor, ActPhaseSetup]:
