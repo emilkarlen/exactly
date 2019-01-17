@@ -100,8 +100,6 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
         quantifier_separator_arg = a.Single(a.Multiplicity.MANDATORY,
                                             a.Constant(instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT))
 
-        matches_arg = a.Single(a.Multiplicity.MANDATORY,
-                               a.Constant(matcher_options.MATCHES_ARGUMENT))
         line_matcher_arg = a.Single(a.Multiplicity.MANDATORY,
                                     instruction_arguments.LINE_MATCHER)
         num_lines_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -133,7 +131,6 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
                 invokation_variant_from_args([quantifier_arg,
                                               line_arg,
                                               quantifier_separator_arg,
-                                              matches_arg,
                                               line_matcher_arg,
                                               ],
                                              self._parser.fnap(_DESCRIPTION_OF_LINE_MATCHES)),

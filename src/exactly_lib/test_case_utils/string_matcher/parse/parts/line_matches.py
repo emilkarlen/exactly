@@ -128,7 +128,6 @@ class _StringMatcherBase(StringMatcher):
         components = [self._any_or_every_keyword,
                       matcher_options.LINE_ARGUMENT,
                       instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
-                      matcher_options.MATCHES_ARGUMENT,
                       self._line_matcher.option_description]
         return ' '.join(components)
 
@@ -177,7 +176,6 @@ class _StringMatcherBase(StringMatcher):
                 self._any_or_every_keyword,
                 matcher_options.LINE_ARGUMENT,
                 instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
-                matcher_options.MATCHES_ARGUMENT,
                 LINE_MATCHER.name])
             ))
 
