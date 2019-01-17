@@ -125,7 +125,7 @@ Reports usage of {symbol:s} in the test case {TEST_CASE_FILE}.
 """
 
 _DESCRIPTION_PARAGRAPHS_ALL = """\
-Lists all {symbol:s} defined in the case.
+Reports all {symbol:s} defined in the case.
 
 
 Each symbol is reported on a separate line,
