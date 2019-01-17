@@ -7,7 +7,6 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
-from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
@@ -131,9 +130,6 @@ class TestSuccessfulScenarios(unittest.TestCase):
                                         sym_def.define_string(name_of_existing_symbol, 'value'),
                                     ]))
 
-        expected_first_line = output.list_of([output.SymbolReport(name_of_existing_symbol,
-                                                                  ValueType.STRING,
-                                                                  num_refs=0)]).rstrip()
         test_with_files_in_tmp_dir.check(
             self,
             command_line_arguments=
@@ -149,9 +145,9 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 main_program_config=sym_def.main_program_config(),
             ),
             expectation=
-            asrt_proc_result.sub_process_result(
-                exitcode=asrt.equals(exit_codes.EXIT_OK),
-                stdout=asrt_str.first_line(asrt.equals(expected_first_line)))
+            asrt_proc_result.is_result_for_empty_stdout(
+                exit_codes.EXIT_OK
+            )
         )
 
     def test_single_reference(self):
@@ -166,9 +162,6 @@ class TestSuccessfulScenarios(unittest.TestCase):
                                         sym_def.reference_to(name_of_existing_symbol, ValueType.STRING),
                                     ]))
 
-        expected_first_line = output.list_of([output.SymbolReport(name_of_existing_symbol,
-                                                                  ValueType.STRING,
-                                                                  num_refs=1)]).rstrip()
         test_with_files_in_tmp_dir.check(
             self,
             command_line_arguments=
@@ -186,7 +179,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
             expectation=
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
-                stdout=asrt_str.first_line(asrt.equals(expected_first_line)))
+                stdout=asrt_str.contains(name_of_existing_symbol))
         )
 
 

@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import Optional
 
 from exactly_lib.cli.program_modes.symbol.impl.completion_reporter import CompletionReporter
@@ -8,7 +9,7 @@ from exactly_lib.section_document.source_location import SourceLocationInfo, Sou
 from exactly_lib.util.string import inside_parens
 
 
-class _Presenter:
+class _Presenter(ABC):
     def __init__(self,
                  completion_reporter: CompletionReporter,
                  definition: SymbolDefinitionInfo):
@@ -16,9 +17,9 @@ class _Presenter:
         self.phase = definition.phase
         self.definition = definition
 
+    @abstractmethod
     def present(self):
-        self._single_line_info()
-        self._rest()
+        pass
 
     def _single_line_info(self):
         definition = self.definition
@@ -76,6 +77,10 @@ class ReportGenerator:
 
 
 class _DefinitionPresenter(_Presenter):
+    def present(self):
+        self._single_line_info()
+        self._rest()
+
     def _rest(self):
         result_reporting.output_location(
             self.printer,
@@ -86,9 +91,13 @@ class _DefinitionPresenter(_Presenter):
 
 
 class _ReferencesPresenter(_Presenter):
-    def _rest(self):
+    def present(self):
+        first = True
         for reference in self.definition.references:
-            self.printer.write_line('')
+            if first:
+                first = False
+            else:
+                self.printer.write_line('')
             result_reporting.output_location(self.printer,
                                              _get_source_location_path(reference.source_location_info()),
                                              self.phase.section_name,
