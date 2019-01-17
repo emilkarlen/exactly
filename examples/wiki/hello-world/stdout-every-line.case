@@ -4,4 +4,4 @@ hello-world
 
 [assert]
 
-stdout every line : matches regex 'Hello'
+stdout every line : regex 'Hello'

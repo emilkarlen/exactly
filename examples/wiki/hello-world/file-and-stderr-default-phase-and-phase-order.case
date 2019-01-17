@@ -10,6 +10,6 @@ def line-matcher       MY_LINE_MATCHER = regex ^WORLD!$
 
 contents output.txt
          -transformed-by MY_TRANSFORMER
-         every line : matches MY_LINE_MATCHER
+         every line : MY_LINE_MATCHER
 
 stderr empty

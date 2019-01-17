@@ -9,4 +9,4 @@ def string-transformer MY_TRANSFORMER  = TO_UPPER_CASE | replace '^HELLO, ' ''
 def line-matcher       MY_LINE_MATCHER = regex ^WORLD!$
 
 stdout -transformed-by MY_TRANSFORMER
-       every line : matches MY_LINE_MATCHER
+       every line : MY_LINE_MATCHER
