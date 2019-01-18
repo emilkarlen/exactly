@@ -20,6 +20,19 @@ class Formatter:
             return self._source_location_path__with_source(referrer_location,
                                                            source_location)
 
+    def location_path_and_source_blocks(self,
+                                        referrer_location: Path,
+                                        source_location: SourceLocationPath) -> Tuple[Blocks, Blocks]:
+        if source_location.location.source is None:
+            return (
+                self._source_location_path__without_source(referrer_location,
+                                                           source_location),
+                []
+            )
+        else:
+            blocks = self._source_location_path__with_source(referrer_location, source_location)
+            return [blocks[0]], [blocks[1]]
+
     def file_inclusion_chain(self,
                              referrer_location: Path,
                              chain: Sequence[SourceLocation]) -> Tuple[Block, Path]:

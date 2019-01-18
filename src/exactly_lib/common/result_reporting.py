@@ -1,6 +1,6 @@
 import io
 import pathlib
-from typing import Optional
+from typing import Optional, List, Tuple
 
 from exactly_lib.common.err_msg import rendering
 from exactly_lib.common.err_msg.definitions import Blocks, Block
@@ -54,20 +54,51 @@ def output_location(printer: FilePrinter,
                     section_name: Optional[str],
                     description: Optional[str],
                     append_blank_line_if_any_output: bool = True):
-    referrer_location = pathlib.Path('.')
-    formatter = default_formatter()
+    location, source = location_path_and_source_blocks(source_location)
+    output_location_with_source_block(
+        printer,
+        location,
+        source,
+        section_name,
+        description,
+        append_blank_line_if_any_output
+    )
 
-    section_name_block = []
+
+def location_path_and_source_blocks(source_location: Optional[SourceLocationPath]) -> Tuple[Blocks, Blocks]:
+    if source_location is None:
+        return [], []
+    else:
+        referrer_location = pathlib.Path('.')
+        formatter = default_formatter()
+        return formatter.location_path_and_source_blocks(referrer_location,
+                                                         source_location)
+
+
+def source_lines_blocks(source: Optional[List[str]]) -> Blocks:
+    if source is None:
+        return []
+    else:
+        formatter = default_formatter()
+        return [
+            formatter.source_lines(source)
+        ]
+
+
+def output_location_with_source_block(printer: FilePrinter,
+                                      location: Blocks,
+                                      source: Blocks,
+                                      section_name: Optional[str],
+                                      description: Optional[str],
+                                      append_blank_line_if_any_output: bool = True):
+    blocks = location
+
     if section_name:
-        section_name_block = _section_name_block(section_name)
+        blocks = prefix_first_block(_section_name_block(section_name), blocks)
 
-    blocks = []
-    if source_location is not None:
-        blocks = formatter.source_location_path(referrer_location,
-                                                source_location)
+    blocks += source
+
     blocks += _description_blocks(description)
-
-    blocks = prefix_first_block(section_name_block, blocks)
 
     if blocks:
         printer.write_line(rendering.blocks_as_str(blocks))
