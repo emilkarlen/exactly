@@ -3,9 +3,11 @@ import unittest
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.processing import exit_values
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
 from exactly_lib.util.string import lines_content
+from exactly_lib_test.cli.program_modes.symbol.individual.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
@@ -14,7 +16,6 @@ from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYM
 from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, File
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
 
 
 def suite() -> unittest.TestSuite:
@@ -150,17 +151,26 @@ class TestSuccessfulScenarios(unittest.TestCase):
             )
         )
 
-    def test_single_reference(self):
+    def test_single_reference_not_in_act(self):
         name_of_existing_symbol = 'STRING_SYMBOL'
 
+        reference_source = sym_def.reference_to(name_of_existing_symbol, ValueType.STRING)
         case_with_single_def = File('test.case',
                                     lines_content([
                                         phase_names.SETUP.syntax,
                                         sym_def.define_string(name_of_existing_symbol, 'value'),
 
                                         phase_names.ASSERT.syntax,
-                                        sym_def.reference_to(name_of_existing_symbol, ValueType.STRING),
+                                        reference_source,
                                     ]))
+
+        expected_reference_output = output.Reference(
+            phase_identifier.ASSERT,
+            output.LineInFilePosition(case_with_single_def.name, 4),
+            [
+                reference_source,
+            ]
+        )
 
         test_with_files_in_tmp_dir.check(
             self,
@@ -179,7 +189,48 @@ class TestSuccessfulScenarios(unittest.TestCase):
             expectation=
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
-                stdout=asrt_str.contains(name_of_existing_symbol))
+                stdout=asrt.equals(lines_content(expected_reference_output.output_lines())))
+        )
+
+    def test_single_reference_in_act_phase(self):
+        name_of_existing_symbol = 'STRING_SYMBOL'
+
+        reference_source = sym_def.reference_to(name_of_existing_symbol, ValueType.STRING)
+        case_with_single_def = File('test.case',
+                                    lines_content([
+                                        phase_names.SETUP.syntax,
+                                        sym_def.define_string(name_of_existing_symbol, 'value'),
+
+                                        phase_names.ACT.syntax,
+                                        reference_source,
+                                    ]))
+
+        expected_reference_output = output.Reference(
+            phase_identifier.ACT,
+            None,
+            [
+                reference_source,
+            ]
+        )
+        test_with_files_in_tmp_dir.check(
+            self,
+            command_line_arguments=
+            symbol_args.individual__references(
+                case_with_single_def.name,
+                name_of_existing_symbol,
+            ),
+            arrangement=
+            Arrangement(
+                cwd_contents=DirContents([
+                    case_with_single_def,
+                ]),
+                main_program_config=sym_def.main_program_config(),
+            ),
+            expectation=
+            asrt_proc_result.sub_process_result(
+                exitcode=asrt.equals(exit_codes.EXIT_OK),
+                stdout=asrt.equals(lines_content(expected_reference_output.output_lines()))
+            )
         )
 
 

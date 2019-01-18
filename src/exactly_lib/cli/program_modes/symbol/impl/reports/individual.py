@@ -1,11 +1,14 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Tuple
 
 from exactly_lib.cli.program_modes.symbol.impl.completion_reporter import CompletionReporter
 from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
-from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo
+from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo, ContextAnd
 from exactly_lib.common import result_reporting
+from exactly_lib.common.err_msg.definitions import Blocks
+from exactly_lib.definitions.entity import concepts
 from exactly_lib.section_document.source_location import SourceLocationInfo, SourceLocationPath
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.util.string import inside_parens
 
 
@@ -72,7 +75,8 @@ class ReportGenerator:
         return None
 
     def _not_found(self) -> int:
-        self._completion_reporter.err_printer.write_line('Symbol not found: ' + self._symbol_name)
+        header = concepts.SYMBOL_CONCEPT_INFO.singular_name.capitalize() + ' not in test case: '
+        self._completion_reporter.err_printer.write_line(header + self._symbol_name)
         return self._completion_reporter.symbol_not_found()
 
 
@@ -84,10 +88,14 @@ class _DefinitionPresenter(_Presenter):
     def _rest(self):
         result_reporting.output_location(
             self.printer,
-            _get_source_location_path(self.definition.definition.resolver_container.source_location),
+            self._get_source_location_path(self.definition.definition.resolver_container.source_location),
             self.phase.section_name,
             None,
             append_blank_line_if_any_output=False)
+
+    @staticmethod
+    def _get_source_location_path(sli: Optional[SourceLocationInfo]) -> Optional[SourceLocationPath]:
+        return None if sli is None else sli.source_location_path
 
 
 class _ReferencesPresenter(_Presenter):
@@ -98,12 +106,23 @@ class _ReferencesPresenter(_Presenter):
                 first = False
             else:
                 self.printer.write_line('')
-            result_reporting.output_location(self.printer,
-                                             _get_source_location_path(reference.source_location_info()),
-                                             self.phase.section_name,
-                                             None,
-                                             append_blank_line_if_any_output=False)
+            location, source = self._location_and_source_blocks(reference)
+            result_reporting.output_location_with_source_block(
+                self.printer,
+                location,
+                source,
+                reference.phase().section_name,
+                None,
+                append_blank_line_if_any_output=False
+            )
 
-
-def _get_source_location_path(sli: Optional[SourceLocationInfo]) -> Optional[SourceLocationPath]:
-    return None if sli is None else sli.source_location_path
+    @staticmethod
+    def _location_and_source_blocks(reference: ContextAnd[SymbolReference]) -> Tuple[Blocks, Blocks]:
+        source_info = reference.source_info()
+        if source_info.source_location_info is not None:
+            return result_reporting.location_path_and_source_blocks(
+                source_info.source_location_info.source_location_path)
+        elif source_info.source_lines is not None:
+            return [], result_reporting.source_lines_blocks(source_info.source_lines)
+        else:
+            return [], []
