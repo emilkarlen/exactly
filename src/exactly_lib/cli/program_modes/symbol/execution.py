@@ -56,7 +56,7 @@ class Executor:
 
         return request_handler.visit(self.request.variant)
 
-    def _parse(self) -> Tuple[test_case_doc.TestCaseOfInstructions2, ActionToCheckExecutor]:
+    def _parse(self) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheckExecutor]:
         try:
             accessor, act_phase_setup = self._accessor()
         except SuiteSyntaxError as ex:
@@ -67,7 +67,7 @@ class Executor:
         except AccessorError as ex:
             raise _InvalidTestCaseError(self.completion_reporter.report_access_error(ex))
 
-        test_case_with_instructions = test_case.as_test_case_of_instructions2()
+        test_case_with_instructions = test_case.as_test_case_of_instructions()
         act_phase_instructions = [
             element.value
             for element in test_case_with_instructions.act_phase

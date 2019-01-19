@@ -9,12 +9,12 @@ from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases import setup, before_assert, assert_, cleanup
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.test_case_doc import TestCaseOfInstructions2, ElementWithSourceLocation
+from exactly_lib.test_case.test_case_doc import TestCaseOfInstructions, ElementWithSourceLocation
 
 
 class DefinitionsInfoResolverFromTestCase(DefinitionsResolver):
     def __init__(self,
-                 test_case: TestCaseOfInstructions2,
+                 test_case: TestCaseOfInstructions,
                  act_phase: Sequence[SymbolUsage]):
         self.test_case = test_case
         self.act_phase = act_phase

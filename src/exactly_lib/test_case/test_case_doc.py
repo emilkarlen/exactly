@@ -31,46 +31,6 @@ class ElementWithSourceLocation(Generic[T]):
 
 class TestCaseOfInstructions(tuple):
     def __new__(cls,
-                configuration_phase: Sequence[ConfigurationPhaseInstruction],
-                setup_phase: Sequence[SetupPhaseInstruction],
-                act_phase: Sequence[ActPhaseInstruction],
-                before_assert_phase: Sequence[BeforeAssertPhaseInstruction],
-                assert_phase: Sequence[AssertPhaseInstruction],
-                cleanup_phase: Sequence[CleanupPhaseInstruction]):
-        return tuple.__new__(cls, (configuration_phase,
-                                   setup_phase,
-                                   act_phase,
-                                   before_assert_phase,
-                                   assert_phase,
-                                   cleanup_phase))
-
-    @property
-    def configuration_phase(self) -> Sequence[ConfigurationPhaseInstruction]:
-        return self[0]
-
-    @property
-    def setup_phase(self) -> Sequence[SetupPhaseInstruction]:
-        return self[1]
-
-    @property
-    def act_phase(self) -> Sequence[ActPhaseInstruction]:
-        return self[2]
-
-    @property
-    def before_assert_phase(self) -> Sequence[BeforeAssertPhaseInstruction]:
-        return self[3]
-
-    @property
-    def assert_phase(self) -> Sequence[AssertPhaseInstruction]:
-        return self[4]
-
-    @property
-    def cleanup_phase(self) -> Sequence[CleanupPhaseInstruction]:
-        return self[5]
-
-
-class TestCaseOfInstructions2(tuple):
-    def __new__(cls,
                 configuration_phase: Sequence[ElementWithSourceLocation[ConfigurationPhaseInstruction]],
                 setup_phase: Sequence[ElementWithSourceLocation[SetupPhaseInstruction]],
                 act_phase: Sequence[ElementWithSourceLocation[ActPhaseInstruction]],
@@ -162,16 +122,6 @@ class TestCase(tuple):
 
     def as_test_case_of_instructions(self) -> TestCaseOfInstructions:
         return TestCaseOfInstructions(
-            filter_instructions(self.configuration_phase),
-            filter_instructions(self.setup_phase),
-            filter_instructions(self.act_phase),
-            filter_instructions(self.before_assert_phase),
-            filter_instructions(self.assert_phase),
-            filter_instructions(self.cleanup_phase),
-        )
-
-    def as_test_case_of_instructions2(self) -> TestCaseOfInstructions2:
-        return TestCaseOfInstructions2(
             filter_instructions_with_source_location(_get_configuration_phase_instruction, self.configuration_phase),
             filter_instructions_with_source_location(_get_setup_phase_instruction, self.setup_phase),
             filter_instructions_with_source_location(_get_act_phase_instruction, self.act_phase),
@@ -186,11 +136,6 @@ class TestCase(tuple):
         for element in phase_contents.elements:
             if element.element_type is ElementType.INSTRUCTION:
                 assert isinstance(element.instruction_info.instruction, instruction_class)
-
-
-def filter_instructions(section: SectionContents) -> Sequence:
-    instruction_elements = filter(_is_instruction_element, section.elements)
-    return list(map(_get_instruction, instruction_elements))
 
 
 def filter_instructions_with_source_location(get_instruction: Callable[[InstructionInfo], T],
