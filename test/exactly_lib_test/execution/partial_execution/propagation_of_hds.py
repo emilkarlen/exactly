@@ -52,8 +52,8 @@ class TestPropagationOfHomeDirectoryStructureBetweenSteps(unittest.TestCase):
         test__va(
             self,
             test_case,
-            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for,
-                                                                             recorder_for_parse_step=psr.no_recording),
+            Arrangement(psr.actor_that_records_a_value_per_step(recorder_for,
+                                                                recorder_for_parse_step=psr.no_recording),
                         hds=hds_with_different_sub_dirs),
             asrt.anything_goes())
         self._check_result(expected_phase_2_step_2_names_set,

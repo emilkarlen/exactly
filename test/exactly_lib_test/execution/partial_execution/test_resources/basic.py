@@ -25,7 +25,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import TestCaseGeneratorBase, \
     instruction_line_constructor
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_act_phase_handling
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_actor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -141,7 +141,7 @@ class TestCaseWithCommonDefaultInstructions(TestCaseGeneratorForPartialExecution
 
 class Arrangement:
     def __init__(self,
-                 act_phase_handling: ActionToCheckExecutorParser = dummy_act_phase_handling(),
+                 actor: ActionToCheckExecutorParser = dummy_actor(),
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor = DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                  hds: HomeDirectoryStructure = HomeDirectoryStructure(pathlib.Path().resolve(),
                                                                       pathlib.Path().resolve()),
@@ -149,7 +149,7 @@ class Arrangement:
                  timeout_in_seconds: int = None,
                  predefined_symbols: SymbolTable = None,
                  exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None):
-        self.act_phase_handling = act_phase_handling
+        self.actor = actor
         self.act_phase_os_process_executor = act_phase_os_process_executor
         self.hds = hds
         self.environ = environ
@@ -160,12 +160,12 @@ class Arrangement:
 
 def test(put: unittest.TestCase,
          test_case: TestCase,
-         act_phase_handling: ActionToCheckExecutorParser,
+         actor: ActionToCheckExecutorParser,
          assertions: Callable[[unittest.TestCase, Result], None],
          is_keep_sandbox: bool = True):
     with preserved_cwd():
         result = _execute(test_case,
-                          Arrangement(act_phase_handling=act_phase_handling),
+                          Arrangement(actor=actor),
                           is_keep_sandbox=is_keep_sandbox)
 
         assertions(put,
@@ -207,7 +207,7 @@ def _execute(test_case: TestCase,
                                sandbox_root_name_resolver.for_test(),
                                arrangement.predefined_symbols_or_none,
                                exe_atc_and_skip_assertions=arrangement.exe_atc_and_skip_assertions),
-        ConfPhaseValues(arrangement.act_phase_handling,
+        ConfPhaseValues(arrangement.actor,
                         arrangement.hds,
                         timeout_in_seconds=arrangement.timeout_in_seconds),
         setup.default_settings(),

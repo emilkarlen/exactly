@@ -22,12 +22,12 @@ from .basic import Result
 class Arrangement:
     def __init__(self,
                  test_case: TestCase,
-                 act_phase_handling: ActionToCheckExecutorParser,
+                 actor: ActionToCheckExecutorParser,
                  initial_setup_settings: setup.SetupSettingsBuilder = setup.default_settings(),
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor =
                  os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR):
         self.test_case = test_case
-        self.act_phase_handling = act_phase_handling
+        self.actor = actor
         self.initial_setup_settings = initial_setup_settings
         self.act_phase_os_process_executor = act_phase_os_process_executor
 
@@ -50,7 +50,7 @@ def execute_and_check(put: unittest.TestCase,
                 ExecutionConfiguration(dict(os.environ),
                                        arrangement.act_phase_os_process_executor,
                                        sandbox_root_name_resolver.for_test()),
-                ConfPhaseValues(arrangement.act_phase_handling,
+                ConfPhaseValues(arrangement.actor,
                                 hds),
                 arrangement.initial_setup_settings,
                 is_keep_sandbox=True)

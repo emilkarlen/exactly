@@ -89,11 +89,11 @@ class _TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
                  test_case_generator: TestCaseGeneratorForExecutionRecording,
                  expectation: Expectation,
                  dbg_do_not_delete_dir_structure=False,
-                 act_phase_handling: ActionToCheckExecutorParser = None,
+                 actor: ActionToCheckExecutorParser = None,
                  recorder: ListRecorder = None):
         super().__init__(unittest_case,
                          dbg_do_not_delete_dir_structure,
-                         act_phase_handling)
+                         actor)
         self._test_case_generator = test_case_generator
         self.__expectation = expectation
         self.__recorder = recorder
@@ -130,12 +130,12 @@ class TestCaseBase(unittest.TestCase):
                                       arrangement: Arrangement,
                                       expectation: Expectation,
                                       dbg_do_not_delete_dir_structure=False) -> _TestCaseThatRecordsExecution:
-        act_phase_handling = self._with_recording_act_program_executor(arrangement)
+        actor = self._with_recording_act_program_executor(arrangement)
         return _TestCaseThatRecordsExecution(self,
                                              arrangement.test_case_generator,
                                              expectation,
                                              dbg_do_not_delete_dir_structure,
-                                             act_phase_handling,
+                                             actor,
                                              arrangement.test_case_generator.recorder)
 
     def _with_recording_act_program_executor(self,

@@ -34,7 +34,7 @@ def execute(conf: ExecutionConfiguration,
         return new_skipped()
     _prepare_environment_variables(conf.environ)
     conf_phase_values = ConfPhaseValues(
-        configuration_builder.act_phase_handling,
+        configuration_builder.actor,
         configuration_builder.hds,
         configuration_builder.timeout_in_seconds,
     )

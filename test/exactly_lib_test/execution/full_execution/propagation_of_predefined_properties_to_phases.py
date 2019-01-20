@@ -14,7 +14,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.full_execution.test_resources import execution_check, \
     result_assertions as asrt_full_result
 from exactly_lib_test.execution.test_resources.execution_recording.recording2 import PropertyRecorderBuilder, \
-    act_phase_handling_that_records_property_of_env_for_each_step_w_env_arg, \
+    actor_that_records_property_of_env_for_each_step_w_env_arg, \
     test_case_that_records_property_of_env_for_each_step_of_partial_execution
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -54,11 +54,11 @@ class TestPredefinedSymbols(unittest.TestCase):
                         InstructionEnvironmentForPreSdsStep.symbols.fget),
             actual_recorded_steps)
         test_case = test_case_that_records_property_of_env_for_each_step_of_partial_execution(recorder_builder)
-        act_phase_handling = act_phase_handling_that_records_property_of_env_for_each_step_w_env_arg(recorder_builder)
+        actor = actor_that_records_property_of_env_for_each_step_w_env_arg(recorder_builder)
         default_home_dir = pathlib.Path.cwd()
         configuration_builder = ConfigurationBuilder(default_home_dir,
                                                      default_home_dir,
-                                                     act_phase_handling)
+                                                     actor)
         arrangement = execution_check.Arrangement(test_case,
                                                   configuration_builder,
                                                   predefined_properties=predefined_properties)

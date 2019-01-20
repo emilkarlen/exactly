@@ -37,6 +37,6 @@ class ExecutorThatExecutesPythonProgramSource(ActionToCheckExecutorThatJustRetur
         return new_eh_exit_code(exit_code)
 
 
-def act_phase_handling_for_execution_of_python_source(python_source: str) -> ActionToCheckExecutorParser:
+def actor_for_execution_of_python_source(python_source: str) -> ActionToCheckExecutorParser:
     executor = ExecutorThatExecutesPythonProgramSource(python_source)
     return ActionToCheckExecutorConstructorForConstantExecutor(executor)

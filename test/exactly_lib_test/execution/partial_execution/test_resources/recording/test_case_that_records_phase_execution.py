@@ -95,11 +95,11 @@ class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
                  test_case_generator: TestCaseGeneratorForExecutionRecording,
                  expectation: Expectation,
                  dbg_do_not_delete_dir_structure=False,
-                 act_phase_handling: ActionToCheckExecutorParser = None,
+                 actor: ActionToCheckExecutorParser = None,
                  recorder: ListRecorder = None):
         super().__init__(put,
                          dbg_do_not_delete_dir_structure,
-                         act_phase_handling)
+                         actor)
         self._test_case_generator = test_case_generator
         self.__expectation = expectation
         self.__recorder = recorder
@@ -142,7 +142,7 @@ def execute_test_case_with_recording(put: unittest.TestCase,
         prepare_action=arrangement.act_executor_prepare,
         execute_action=arrangement.act_executor_execute,
     )
-    act_phase_handling = step_recording_executors.parser_of_constant(
+    actor = step_recording_executors.parser_of_constant(
         arrangement.test_case_generator.recorder,
         constant_actions_runner,
         parse_action=arrangement.act_executor_parse,
@@ -151,6 +151,6 @@ def execute_test_case_with_recording(put: unittest.TestCase,
                                               arrangement.test_case_generator,
                                               expectation,
                                               dbg_do_not_delete_dir_structure,
-                                              act_phase_handling,
+                                              actor,
                                               arrangement.test_case_generator.recorder)
     test_case.execute()

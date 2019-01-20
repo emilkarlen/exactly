@@ -24,7 +24,7 @@ def suite() -> unittest.TestSuite:
 
 class TheConfiguration(Configuration):
     def __init__(self):
-        self.setup = sut.handling_for_interpreter_command(file_name_of_interpreter())
+        self.setup = sut.actor_for_interpreter_command(file_name_of_interpreter())
         super().__init__(self.setup)
 
     @contextmanager

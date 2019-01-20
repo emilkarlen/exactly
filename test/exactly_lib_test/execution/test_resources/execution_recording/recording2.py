@@ -69,7 +69,7 @@ def test_case_that_records_property_of_env_for_each_step_of_partial_execution(
     )
 
 
-def act_phase_handling_that_records_property_of_env_for_each_step_w_env_arg(
+def actor_that_records_property_of_env_for_each_step_w_env_arg(
         property_recorder: PropertyRecorderBuilder) -> ActionToCheckExecutorParser:
     return ActionToCheckExecutorParserThatRunsConstantActions(
         validate_pre_sds_initial_action=property_recorder.of_first_arg(step.ACT__VALIDATE_PRE_SDS),
@@ -79,7 +79,7 @@ def act_phase_handling_that_records_property_of_env_for_each_step_w_env_arg(
     )
 
 
-def act_phase_handling_that_records_property_of_env_for_each_step_post_sds(
+def actor_that_records_property_of_env_for_each_step_post_sds(
         property_recorder: PropertyRecorderBuilder) -> ActionToCheckExecutorParser:
     return ActionToCheckExecutorParserThatRunsConstantActions(
         validate_post_setup_initial_action=property_recorder.of_first_arg(step.ACT__VALIDATE_POST_SETUP),

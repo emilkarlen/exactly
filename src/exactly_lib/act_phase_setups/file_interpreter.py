@@ -46,7 +46,7 @@ def act_phase_setup(interpreter: Command) -> ActPhaseSetup:
     return ActPhaseSetup(parser(interpreter))
 
 
-def act_phase_handling(interpreter: Command) -> ActionToCheckExecutorParser:
+def actor(interpreter: Command) -> ActionToCheckExecutorParser:
     return parser(interpreter)
 
 

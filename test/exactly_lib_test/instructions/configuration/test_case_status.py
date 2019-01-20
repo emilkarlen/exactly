@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.configuration.test_resources.instruction_chec
 from exactly_lib_test.instructions.configuration.test_resources.source_with_assignment import syntax_for_assignment_of
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import \
-    act_phase_handling_that_runs_constant_actions
+    actor_that_runs_constant_actions
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, \
     equivalent_source_variants__with_source_check
@@ -50,7 +50,7 @@ class TestCaseBaseForParser(TestCaseBase):
             self._check(sut.Parser(),
                         source,
                         Arrangement(test_case_status=initial,
-                                    act_phase_handling=act_phase_handling_that_runs_constant_actions()),
+                                    actor=actor_that_runs_constant_actions()),
                         Expectation(configuration=asrt_conf.has(test_case_status=asrt.is_(expected))))
 
 

@@ -112,7 +112,7 @@ def no_recording(phase_step: SimplePhaseStep):
     return actions.do_nothing
 
 
-def act_phase_handling_that_records_a_value_per_step(
+def actor_that_records_a_value_per_step(
         recorder_for_step_with_env: types.FunctionType,
         recorder_for_parse_step: types.FunctionType,
 ) -> ActionToCheckExecutorParser:

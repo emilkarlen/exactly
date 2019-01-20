@@ -5,7 +5,7 @@ from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.basic import test, Result
 from exactly_lib_test.execution.test_resources.instruction_test_resources import act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_act_phase_handling
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_actor
 
 
 def suite() -> unittest.TestSuite:
@@ -17,7 +17,7 @@ class Test(unittest.TestCase):
         test(
             self,
             test_case_that_does_nothing(),
-            dummy_act_phase_handling(),
+            dummy_actor(),
             sandbox_directory_structure_exists,
             is_keep_sandbox=True)
 
@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
         test(
             self,
             test_case_that_does_nothing(),
-            dummy_act_phase_handling(),
+            dummy_actor(),
             sandbox_directory_structure_does_not_exist,
             is_keep_sandbox=False)
 

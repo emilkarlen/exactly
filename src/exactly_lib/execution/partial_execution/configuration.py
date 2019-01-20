@@ -9,19 +9,19 @@ class ConfPhaseValues(tuple):
     """Values resolved from the conf phase"""
 
     def __new__(cls,
-                act_phase_handling: ActionToCheckExecutorParser,
+                actor: ActionToCheckExecutorParser,
                 hds: HomeDirectoryStructure,
                 timeout_in_seconds: Optional[int] = None):
         """
         :param timeout_in_seconds: None if no timeout
         """
-        return tuple.__new__(cls, (act_phase_handling,
+        return tuple.__new__(cls, (actor,
                                    hds,
                                    timeout_in_seconds,
                                    ))
 
     @property
-    def act_phase_handling(self) -> ActionToCheckExecutorParser:
+    def actor(self) -> ActionToCheckExecutorParser:
         return self[0]
 
     @property

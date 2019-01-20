@@ -12,7 +12,7 @@ from exactly_lib_test.execution.full_execution.test_resources import execution_c
     result_assertions as asrt_full_result
 from exactly_lib_test.execution.test_resources.execution_recording.recording2 import PropertyRecorderBuilder, \
     builder_of_test_case_that_records_property_of_env_for_each_step_of_partial_execution, \
-    act_phase_handling_that_records_property_of_env_for_each_step_post_sds
+    actor_that_records_property_of_env_for_each_step_post_sds
 
 
 def suite() -> unittest.TestSuite:
@@ -34,12 +34,12 @@ class Test(unittest.TestCase):
             actual_recordings)
         test_case = builder_of_test_case_that_records_property_of_env_for_each_step_of_partial_execution(
             recorder_builder).build()
-        act_phase_handling = act_phase_handling_that_records_property_of_env_for_each_step_post_sds(
+        actor = actor_that_records_property_of_env_for_each_step_post_sds(
             recorder_builder)
         default_home_dir = _current_dir()
         configuration_builder_with_default_timeout = ConfigurationBuilder(default_home_dir,
                                                                           default_home_dir,
-                                                                          act_phase_handling,
+                                                                          actor,
                                                                           default_timeout)
         arrangement = execution_check.Arrangement(test_case,
                                                   configuration_builder_with_default_timeout)
@@ -67,12 +67,12 @@ class Test(unittest.TestCase):
             recorder_builder)
         test_case_builder.configuration_phase = [_ConfigurationPhaseInstructionThatSetsTimeoutTo(expected_timeout)]
         test_case = test_case_builder.build()
-        act_phase_handling = act_phase_handling_that_records_property_of_env_for_each_step_post_sds(
+        actor = actor_that_records_property_of_env_for_each_step_post_sds(
             recorder_builder)
         default_home_dir = _current_dir()
         configuration_builder_with_default_timeout = ConfigurationBuilder(default_home_dir,
                                                                           default_home_dir,
-                                                                          act_phase_handling,
+                                                                          actor,
                                                                           expected_timeout)
         arrangement = execution_check.Arrangement(test_case,
                                                   configuration_builder_with_default_timeout)

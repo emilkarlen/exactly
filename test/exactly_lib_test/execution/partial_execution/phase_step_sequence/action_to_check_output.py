@@ -84,7 +84,7 @@ class Expectation:
 def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation):
-    act_phase_handling = ActionToCheckExecutorWrapperParserThatRecordsSteps(
+    actor = ActionToCheckExecutorWrapperParserThatRecordsSteps(
         arrangement.test_case_generator.recorder,
         arrangement.atc_exe_parser)
 
@@ -94,7 +94,7 @@ def check(put: unittest.TestCase,
                                           sandbox_root_name_resolver.for_test(),
                                           exe_atc_and_skip_assertions=std_files)
         with home_directory_structure() as hds:
-            conf_phase_values = ConfPhaseValues(act_phase_handling,
+            conf_phase_values = ConfPhaseValues(actor,
                                                 hds,
                                                 timeout_in_seconds=arrangement.timeout_in_seconds)
             return sut.execute(arrangement.test_case_generator.test_case,

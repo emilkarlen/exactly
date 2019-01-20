@@ -32,7 +32,7 @@ class Test(FullExecutionTestCaseBase):
                          dbg_do_not_delete_dir_structure)
         self.recorder = instr_setup.Recorder()
 
-    def _act_phase_handling(self) -> ActionToCheckExecutorParser:
+    def _actor(self) -> ActionToCheckExecutorParser:
         return ActionToCheckExecutorParserThatRunsConstantActions(
             validate_pre_sds_initial_action=_RecordEnvVars(
                 self.recorder,

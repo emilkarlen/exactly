@@ -14,10 +14,10 @@ from exactly_lib.util.std import StdFiles
 
 
 def act_phase_setup() -> ActPhaseSetup:
-    return ActPhaseSetup(Parser())
+    return ActPhaseSetup(actor())
 
 
-def act_phase_handling() -> ActionToCheckExecutorParser:
+def actor() -> ActionToCheckExecutorParser:
     return Parser()
 
 

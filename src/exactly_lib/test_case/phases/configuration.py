@@ -14,10 +14,10 @@ class ConfigurationBuilder:
     def __init__(self,
                  home_case_dir_path: pathlib.Path,
                  home_act_dir_path: pathlib.Path,
-                 act_phase_handling: ActionToCheckExecutorParser,
+                 actor: ActionToCheckExecutorParser,
                  timeout_in_seconds: Optional[int] = None,
                  test_case_status: TestCaseStatus = TestCaseStatus.PASS):
-        self.__act_phase_handling = act_phase_handling
+        self.__actor = actor
         self.__test_case_status = test_case_status
         self.__timeout_in_seconds = timeout_in_seconds
         self.__hds_dirs = {
@@ -44,11 +44,11 @@ class ConfigurationBuilder:
                                       act_dir=self.__hds_dirs[RelHomeOptionType.REL_HOME_ACT])
 
     @property
-    def act_phase_handling(self) -> ActionToCheckExecutorParser:
-        return self.__act_phase_handling
+    def actor(self) -> ActionToCheckExecutorParser:
+        return self.__actor
 
-    def set_act_phase_handling(self, x: ActionToCheckExecutorParser):
-        self.__act_phase_handling = x
+    def set_actor(self, x: ActionToCheckExecutorParser):
+        self.__actor = x
 
     @property
     def timeout_in_seconds(self) -> int:

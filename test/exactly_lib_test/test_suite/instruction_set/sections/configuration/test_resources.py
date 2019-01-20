@@ -36,8 +36,8 @@ not in sub suites.
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> ConfigurationSectionInstruction:
-        act_phase_handling = actor_utils.parse(rest_of_line)
-        return Instruction(ActPhaseSetup(act_phase_handling))
+        actor = actor_utils.parse(rest_of_line)
+        return Instruction(ActPhaseSetup(actor))
 
 
 class Instruction(ConfigurationSectionInstruction):

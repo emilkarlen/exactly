@@ -21,7 +21,7 @@ class FullExecutionTestCaseBase:
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False,
-                 act_phase_handling: ActionToCheckExecutorParser = None,
+                 actor: ActionToCheckExecutorParser = None,
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor =
                  os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR):
         self.__unittest_case = unittest_case
@@ -29,7 +29,7 @@ class FullExecutionTestCaseBase:
         self.__full_result = None
         self.__sandbox_directory_structure = None
         self.__initial_home_dir_path = None
-        self.__act_phase_handling = act_phase_handling
+        self.__actor = actor
         self.__act_phase_os_process_executor = act_phase_os_process_executor
 
     def execute(self):
@@ -43,7 +43,7 @@ class FullExecutionTestCaseBase:
                                           SymbolTable())
         configuration_builder = ConfigurationBuilder(initial_home_dir_path,
                                                      initial_home_dir_path,
-                                                     self._act_phase_handling())
+                                                     self._actor())
         full_result = execution.execute(
             exe_conf,
             configuration_builder,
@@ -61,10 +61,10 @@ class FullExecutionTestCaseBase:
             if self.sds:
                 print(str(self.sds.root_dir))
 
-    def _act_phase_handling(self) -> ActionToCheckExecutorParser:
-        if self.__act_phase_handling is None:
-            return python3.new_act_phase_handling()
-        return self.__act_phase_handling
+    def _actor(self) -> ActionToCheckExecutorParser:
+        if self.__actor is None:
+            return python3.new_actor()
+        return self.__actor
 
     def _test_case(self) -> test_case_doc.TestCase:
         raise NotImplementedError()

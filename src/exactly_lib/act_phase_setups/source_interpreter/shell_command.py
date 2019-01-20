@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.program.command import command_resolvers
 ACT_PHASE_SOURCE_FILE_BASE_NAME = 'act-phase.src'
 
 
-def handling_for_interpreter_command(interpreter_shell_command: str) -> ActionToCheckExecutorParser:
+def actor_for_interpreter_command(interpreter_shell_command: str) -> ActionToCheckExecutorParser:
     return Parser(interpreter_shell_command)
 
 

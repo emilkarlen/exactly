@@ -22,5 +22,5 @@ def new_atc_executor_parser() -> ActionToCheckExecutorParser:
     return Parser(source_interpreter_setup())
 
 
-def new_act_phase_handling() -> ActionToCheckExecutorParser:
+def new_actor() -> ActionToCheckExecutorParser:
     return new_atc_executor_parser()

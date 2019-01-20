@@ -24,15 +24,14 @@ to specify the actor.
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> ConfigurationPhaseInstruction:
-        act_phase_handling = actor_utils.parse(rest_of_line)
-        return Instruction(act_phase_handling)
+        actor = actor_utils.parse(rest_of_line)
+        return Instruction(actor)
 
 
 class Instruction(ConfigurationPhaseInstruction):
-    def __init__(self,
-                 act_phase_handling: ActionToCheckExecutorParser):
-        self.act_phase_handling = act_phase_handling
+    def __init__(self, actor: ActionToCheckExecutorParser):
+        self.actor = actor
 
     def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-        configuration_builder.set_act_phase_handling(self.act_phase_handling)
+        configuration_builder.set_actor(self.actor)
         return sh.new_sh_success()

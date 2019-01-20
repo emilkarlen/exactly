@@ -54,7 +54,7 @@ def check(put: unittest.TestCase,
     instruction.main(configuration_builder)
     act_phase_instructions = [instr(arrangement.act_phase_source_lines)]
     act_phase_execution.check_execution(put,
-                                        configuration_builder.act_phase_handling,
+                                        configuration_builder.actor,
                                         act_phase_instructions,
                                         act_phase_execution.Arrangement(
                                             hds_contents=arrangement.hds_contents,

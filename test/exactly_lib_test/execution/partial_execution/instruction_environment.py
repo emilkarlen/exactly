@@ -1,5 +1,6 @@
-import functools
 import unittest
+
+import functools
 
 from exactly_lib.execution.partial_execution.configuration import TestCase
 from exactly_lib.test_case import phase_identifier
@@ -13,7 +14,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     before_assert_phase_instruction_that, assert_phase_instruction_that, \
     cleanup_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_act_phase_handling
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_actor
 
 
 def suite() -> unittest.makeSuite:
@@ -34,7 +35,7 @@ class Test(unittest.TestCase):
         test(
             self,
             test_case,
-            dummy_act_phase_handling(),
+            dummy_actor(),
             functools.partial(log_dir_is_correct_for_each_phase, recorder),
             is_keep_sandbox=False)
 

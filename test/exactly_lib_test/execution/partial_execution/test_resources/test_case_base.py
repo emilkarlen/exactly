@@ -23,14 +23,14 @@ class PartialExecutionTestCaseBase:
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False,
-                 act_phase_handling: ActionToCheckExecutorParser = None):
+                 actor: ActionToCheckExecutorParser = None):
         self.__put = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__partial_result = None
         self.__sandbox_directory_structure = None
-        self.__act_phase_handling = act_phase_handling
-        if self.__act_phase_handling is None:
-            self.__act_phase_handling = python3.new_act_phase_handling()
+        self.__actor = actor
+        if self.__actor is None:
+            self.__actor = python3.new_actor()
 
     def execute(self):
         # SETUP #
@@ -42,7 +42,7 @@ class PartialExecutionTestCaseBase:
                     ExecutionConfiguration(dict(os.environ),
                                            DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                            sandbox_root_name_resolver.for_test()),
-                    ConfPhaseValues(self.__act_phase_handling,
+                    ConfPhaseValues(self.__actor,
                                     hds),
                     setup.default_settings(),
                     self.__dbg_do_not_delete_dir_structure)

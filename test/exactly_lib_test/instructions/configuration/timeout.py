@@ -9,7 +9,7 @@ from exactly_lib_test.instructions.configuration.test_resources.instruction_chec
     Arrangement, Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import \
-    act_phase_handling_that_runs_constant_actions
+    actor_that_runs_constant_actions
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, \
     equivalent_source_variants__with_source_check
@@ -48,7 +48,7 @@ class TestCaseBaseForParser(TestCaseBase):
             self._check(sut.Parser(),
                         source,
                         Arrangement(
-                            act_phase_handling=act_phase_handling_that_runs_constant_actions(),
+                            actor=actor_that_runs_constant_actions(),
                             timeout_in_seconds=None),
                         Expectation(
                             configuration=asrt_conf.has(asrt.equals(expected))))

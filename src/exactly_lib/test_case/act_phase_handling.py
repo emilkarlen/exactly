@@ -94,8 +94,3 @@ class ActionToCheckExecutorParser:
         :raises ParseException
         """
         raise NotImplementedError()
-
-
-class ActPhaseHandling:
-    def __init__(self, atc_exe_parser: ActionToCheckExecutorParser):
-        self.atc_exe_parser = atc_exe_parser

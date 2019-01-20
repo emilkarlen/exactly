@@ -14,7 +14,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     before_assert_phase_instruction_that, assert_phase_instruction_that, \
     cleanup_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_act_phase_handling
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_actor
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
     ActionToCheckExecutorParserThatRunsConstantActions
 from exactly_lib_test.test_resources.functions import Sequence
@@ -51,7 +51,7 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
             self,
             test_case,
             Arrangement(
-                act_phase_handling=_act_phase_handling_that_records_existence_of_var_in_global_env(recorder)),
+                actor=_actor_that_records_existence_of_var_in_global_env(recorder)),
             AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(recorder.recorded_steps))
 
     def test_set_environment_variable_in_phase_before_assert(self):
@@ -72,7 +72,7 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
         test__va(
             self,
             test_case,
-            Arrangement(act_phase_handling=dummy_act_phase_handling()),
+            Arrangement(actor=dummy_actor()),
             AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(recorder.recorded_steps))
 
     def test_set_environment_variable_in_phase_assert(self):
@@ -91,7 +91,7 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
         test__va(
             self,
             test_case,
-            Arrangement(act_phase_handling=dummy_act_phase_handling()),
+            Arrangement(actor=dummy_actor()),
             AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(recorder.recorded_steps))
 
     def test_set_environment_variable_in_phase_cleanup(self):
@@ -109,7 +109,7 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
         test__va(
             self,
             test_case,
-            Arrangement(act_phase_handling=dummy_act_phase_handling()),
+            Arrangement(actor=dummy_actor()),
             AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(recorder.recorded_steps))
 
 
@@ -169,7 +169,7 @@ class AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty
                         msg)
 
 
-def _act_phase_handling_that_records_existence_of_var_in_global_env(
+def _actor_that_records_existence_of_var_in_global_env(
         recorder: _RecorderOfExistenceOfGlobalEnvVar) -> ActionToCheckExecutorParser:
     return ActionToCheckExecutorParserThatRunsConstantActions(
         parse_action=recorder.for_step(step.ACT__PARSE),

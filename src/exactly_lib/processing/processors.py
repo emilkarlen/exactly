@@ -153,7 +153,7 @@ class _Parser(processing_utils.Parser):
                                 error_info)
 
 
-def act_phase_handling_for_setup(setup: ActPhaseSetup) -> ActionToCheckExecutorParser:
+def actor_for_setup(setup: ActPhaseSetup) -> ActionToCheckExecutorParser:
     return setup.atc_executor_parser
 
 
@@ -173,7 +173,7 @@ class _Executor(processing_utils.Executor):
         return execution.execute(self._exe_conf_that_may_be_updated(),
                                  ConfigurationBuilder(dir_containing_test_case_file,
                                                       dir_containing_test_case_file,
-                                                      act_phase_handling_for_setup(self.default_act_phase_setup)),
+                                                      actor_for_setup(self.default_act_phase_setup)),
                                  self._is_keep_sandbox,
                                  test_case)
 

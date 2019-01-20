@@ -156,7 +156,7 @@ def parse(instruction_argument: str) -> ActionToCheckExecutorParser:
     if matches(COMMAND_LINE_ACTOR_OPTION_NAME, args[0]):
         if len(args) > 1:
             raise SingleInstructionInvalidArgumentException('Superfluous arguments to ' + args[0])
-        return command_line.act_phase_handling()
+        return command_line.actor()
     if len(args) == 1:
         raise SingleInstructionInvalidArgumentException('Missing file argument for ' + args[0])
     if matches(SOURCE_INTERPRETER_OPTION_NAME, args[0]):
@@ -167,11 +167,11 @@ def parse(instruction_argument: str) -> ActionToCheckExecutorParser:
 
 
 def _parse_source_interpreter(arg: str) -> ActionToCheckExecutorParser:
-    return source_interpreter.act_phase_handling(_parse_interpreter_command(arg))
+    return source_interpreter.actor(_parse_interpreter_command(arg))
 
 
 def _parse_file_interpreter(arg: str) -> ActionToCheckExecutorParser:
-    return file_interpreter.act_phase_handling(_parse_interpreter_command(arg))
+    return file_interpreter.actor(_parse_interpreter_command(arg))
 
 
 def _parse_interpreter_command(arg: str) -> Command:

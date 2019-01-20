@@ -7,7 +7,7 @@ from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import recorder as instr_setup
 from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_act_phase_handling
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_actor
 
 
 class Test(FullExecutionTestCaseBase):
@@ -19,8 +19,8 @@ class Test(FullExecutionTestCaseBase):
         self.recorder = instr_setup.Recorder()
         self.original_set_of_env_vars = dict(os.environ)
 
-    def _act_phase_handling(self) -> ActionToCheckExecutorParser:
-        return dummy_act_phase_handling()
+    def _actor(self) -> ActionToCheckExecutorParser:
+        return dummy_actor()
 
     def _test_case(self) -> test_case_doc.TestCase:
         return full_test_case_with_instructions()

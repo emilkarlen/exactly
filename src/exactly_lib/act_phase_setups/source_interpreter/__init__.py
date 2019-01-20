@@ -10,7 +10,7 @@ from exactly_lib.util.process_execution import commands
 from exactly_lib.util.process_execution.command import Command
 
 
-def act_phase_handling(command: Command) -> ActionToCheckExecutorParser:
+def actor(command: Command) -> ActionToCheckExecutorParser:
     return action_to_check_executor_parser(command)
 
 

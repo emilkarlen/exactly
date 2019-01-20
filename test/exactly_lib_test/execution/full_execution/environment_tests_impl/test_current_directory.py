@@ -68,7 +68,7 @@ class Test(FullExecutionTestCaseBase):
         super().__init__(unittest_case,
                          dbg_do_not_delete_dir_structure)
 
-    def _act_phase_handling(self) -> ActionToCheckExecutorParser:
+    def _actor(self) -> ActionToCheckExecutorParser:
         parser = ActionToCheckExecutorParserThatRunsConstantActions(
             validate_post_setup_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__VALIDATE_POST_SETUP,
                                                                svh.new_svh_success()),

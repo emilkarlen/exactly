@@ -31,7 +31,7 @@ def act_phase_setup() -> ActPhaseSetup:
     return ActPhaseSetup(Parser())
 
 
-def act_phase_handling() -> ActionToCheckExecutorParser:
+def actor() -> ActionToCheckExecutorParser:
     return Parser()
 
 

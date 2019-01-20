@@ -10,7 +10,7 @@ from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result.sh import SuccessOrHardError
 from exactly_lib.test_case.test_case_status import TestCaseStatus
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_act_phase_handling
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_actor
 from exactly_lib_test.test_case.result.test_resources import sh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementBase
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
@@ -25,12 +25,12 @@ class Arrangement(ArrangementBase):
     def __init__(self,
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  root_dir_contents: DirContents = empty_dir_contents(),
-                 act_phase_handling: ActionToCheckExecutorParser = dummy_act_phase_handling(),
+                 actor: ActionToCheckExecutorParser = dummy_actor(),
                  test_case_status: TestCaseStatus = TestCaseStatus.PASS,
                  timeout_in_seconds: int = None):
         super().__init__(hds_contents=hds_contents)
         self.root_dir_contents = root_dir_contents
-        self.act_phase_handling = act_phase_handling
+        self.actor = actor
         self.test_case_status = test_case_status
         self.timeout_in_seconds = timeout_in_seconds
 
@@ -88,7 +88,7 @@ class Executor:
             with home_directory_structure(contents=self.arrangement.hds_contents) as hds:
                 configuration_builder = ConfigurationBuilder(hds.case_dir,
                                                              hds.act_dir,
-                                                             self.arrangement.act_phase_handling,
+                                                             self.arrangement.actor,
                                                              timeout_in_seconds=self.arrangement.timeout_in_seconds,
                                                              test_case_status=self.arrangement.test_case_status)
 
