@@ -6,8 +6,8 @@ from typing import List, Dict, Tuple
 from exactly_lib import program_info
 from exactly_lib.cli.definitions import common_cli_options as common_opts
 from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
-from exactly_lib.cli.program_modes.common.argument_parsing_of_act_phase_setup import \
-    resolve_act_phase_setup_from_argparse_argument
+from exactly_lib.cli.program_modes.common.argument_parsing_of_actor import \
+    resolve_actor_from_argparse_argument
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
@@ -16,6 +16,7 @@ from exactly_lib.definitions.misc_texts import IS_A_SHELL_CMD
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
+from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.processing.standalone.settings import ReportingOption, TestCaseExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
@@ -69,11 +70,11 @@ def _settings_from_namespace(default: TestCaseHandlingSetup,
         output = ReportingOption.ACT_PHASE_OUTPUT
     elif namespace.keep:
         output = ReportingOption.SANDBOX_DIRECTORY_STRUCTURE_ROOT
-    act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.act_phase_setup,
-                                                                     namespace.actor)
+    actor = resolve_actor_from_argparse_argument(default.actor,
+                                                 namespace.actor)
     preprocessor = _parse_preprocessor(default.preprocessor,
                                        namespace.preprocessor)
-    actual_handling_setup = TestCaseHandlingSetup(act_phase_setup, preprocessor)
+    actual_handling_setup = TestCaseHandlingSetup(ActPhaseSetup(actor), preprocessor)
     test_case_file_path = pathlib.Path(namespace.file)
 
     suite_file = None

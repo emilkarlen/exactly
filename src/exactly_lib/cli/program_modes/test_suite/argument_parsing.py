@@ -7,14 +7,15 @@ from exactly_lib import program_info
 from exactly_lib.cli.definitions import common_cli_options as common_opts
 from exactly_lib.cli.definitions.program_modes.help import arguments_for as help_args
 from exactly_lib.cli.definitions.program_modes.test_suite import command_line_options as opts
-from exactly_lib.cli.program_modes.common.argument_parsing_of_act_phase_setup import \
-    resolve_act_phase_setup_from_argparse_argument
+from exactly_lib.cli.program_modes.common.argument_parsing_of_actor import \
+    resolve_actor_from_argparse_argument
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.entity import actors
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import suite_reporters as reporters
 from exactly_lib.definitions.test_suite import file_names
+from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.util.argument_parsing_utils import ArgumentParsingError, \
     parse_args__raise_exception_instead_of_exiting_on_error
@@ -46,11 +47,11 @@ class _Parser:
         argument_parser = self._new_argument_parser()
         namespace = parse_args__raise_exception_instead_of_exiting_on_error(argument_parser,
                                                                             argv)
-        act_phase_setup = resolve_act_phase_setup_from_argparse_argument(self.default.act_phase_setup,
-                                                                         namespace.actor)
+        actor = resolve_actor_from_argparse_argument(self.default.actor,
+                                                     namespace.actor)
         suite_file_path = self._resolve_file_path(namespace.file)
         return TestSuiteExecutionSettings(self._resolve_reporter(vars(namespace)),
-                                          TestCaseHandlingSetup(act_phase_setup,
+                                          TestCaseHandlingSetup(ActPhaseSetup(actor),
                                                                 self.default.preprocessor),
                                           suite_file_path,
                                           )
