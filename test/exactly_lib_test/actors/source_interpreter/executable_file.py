@@ -35,8 +35,8 @@ def suite() -> unittest.TestSuite:
 
 class TheConfiguration(Configuration):
     def __init__(self):
-        self.setup = sut.new_for_source_interpreter_setup(python3.source_interpreter_setup())
-        super().__init__(self.setup.actor)
+        actor = sut.actor(python3.source_interpreter_setup())
+        super().__init__(actor)
 
     @contextmanager
     def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:
@@ -83,10 +83,10 @@ def _instructions_for(statements: list) -> list:
 class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.TestCase):
     def runTest(self):
         language_setup = SourceInterpreterSetup(_SourceFileManagerWithNonExistingInterpreter())
-        act_phase_setup = sut.new_for_source_interpreter_setup(language_setup)
+        actor = sut.actor(language_setup)
         empty_source = []
         check_execution(self,
-                        act_phase_setup.actor,
+                        actor,
                         empty_source,
                         Arrangement(),
                         Expectation(
@@ -96,13 +96,13 @@ class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.Tes
 class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
     def runTest(self):
         language_setup = SourceInterpreterSetup(_SourceFileManagerWithNonExistingInterpreter())
-        act_phase_setup = sut.new_for_source_interpreter_setup(language_setup)
+        actor = sut.actor(language_setup)
         source = [instr(['print(1)'])]
         expected_file_name = language_setup.base_name_from_stem(
             sut.ActSourceFileNameGeneratorForSourceInterpreterSetup.FILE_NAME_STEM)
         exit_code_or_hard_error = check_execution(
             self,
-            act_phase_setup.actor,
+            actor,
             source,
             Arrangement(),
             Expectation(

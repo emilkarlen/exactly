@@ -4,7 +4,6 @@ from exactly_lib.actors.source_interpreter import executable_file
 from exactly_lib.actors.source_interpreter import shell_command as shell_cmd
 from exactly_lib.actors.source_interpreter.source_file_management import SourceInterpreterSetup, \
     StandardSourceFileManager
-from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.util.process_execution import commands
 from exactly_lib.util.process_execution.command import Command
@@ -12,10 +11,6 @@ from exactly_lib.util.process_execution.command import Command
 
 def actor(command: Command) -> Actor:
     return _CommandTranslator(command.arguments).visit(command.driver)
-
-
-def act_phase_setup(command: Command) -> ActPhaseSetup:
-    return ActPhaseSetup(actor(command))
 
 
 class _CommandTranslator(commands.CommandDriverVisitor):

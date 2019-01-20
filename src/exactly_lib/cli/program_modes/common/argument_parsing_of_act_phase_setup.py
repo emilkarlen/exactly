@@ -2,7 +2,7 @@ import pathlib
 import shlex
 from typing import List
 
-from exactly_lib.actors.source_interpreter import act_phase_setup
+from exactly_lib.actors import source_interpreter
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.util.process_execution.commands import executable_file_command
 
@@ -26,4 +26,4 @@ def _new_for_generic_script_language_setup(interpreter: str) -> ActPhaseSetup:
     cmd_and_args = shlex.split(interpreter)
     command = executable_file_command(pathlib.Path(cmd_and_args[0]),
                                       cmd_and_args[1:])
-    return act_phase_setup(command)
+    return ActPhaseSetup(source_interpreter.actor(command))
