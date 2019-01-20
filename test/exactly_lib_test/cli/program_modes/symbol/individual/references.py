@@ -1,3 +1,4 @@
+import itertools
 import unittest
 
 from exactly_lib.cli.definitions import exit_codes
@@ -6,6 +7,7 @@ from exactly_lib.processing import exit_values
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
+from exactly_lib.util.collection import intersperse_list
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.cli.program_modes.symbol.individual.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
@@ -231,6 +233,86 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
                 stdout=asrt.equals(lines_content(expected_reference_output.output_lines()))
             )
+        )
+
+    def test_references_SHOULD_be_listed_phase_order(self):
+        name_of_existing_symbol = 'STRING_SYMBOL'
+
+        reference_source = sym_def.reference_to(name_of_existing_symbol, ValueType.STRING)
+        case_with_references = File('test.case',
+                                    lines_content([
+                                        phase_names.SETUP.syntax,
+                                        sym_def.define_string(name_of_existing_symbol, 'value'),
+
+                                        phase_names.CLEANUP.syntax,
+                                        reference_source,
+
+                                        phase_names.ASSERT.syntax,
+                                        reference_source,
+
+                                        phase_names.BEFORE_ASSERT.syntax,
+                                        reference_source,
+
+                                        phase_names.ACT.syntax,
+                                        reference_source,
+
+                                        phase_names.SETUP.syntax,
+                                        reference_source,
+
+                                    ]))
+
+        expected_reference_outputs = [
+            output.Reference(
+                phase_identifier.SETUP,
+                output.LineInFilePosition(case_with_references.name, 12),
+                [reference_source]
+            ),
+            output.Reference(
+                phase_identifier.ACT,
+                None,
+                [reference_source]
+            ),
+            output.Reference(
+                phase_identifier.BEFORE_ASSERT,
+                output.LineInFilePosition(case_with_references.name, 8),
+                [reference_source]
+            ),
+            output.Reference(
+                phase_identifier.ASSERT,
+                output.LineInFilePosition(case_with_references.name, 6),
+                [reference_source]
+            ),
+            output.Reference(
+                phase_identifier.CLEANUP,
+                output.LineInFilePosition(case_with_references.name, 4),
+                [reference_source]
+            ),
+        ]
+
+        expected_output_lines = list(itertools.chain.from_iterable(
+            intersperse_list([''],
+                             list(map(output.Reference.output_lines,
+                                      expected_reference_outputs)))
+        )
+        )
+        test_with_files_in_tmp_dir.check(
+            self,
+            command_line_arguments=
+            symbol_args.individual__references(
+                case_with_references.name,
+                name_of_existing_symbol,
+            ),
+            arrangement=
+            Arrangement(
+                cwd_contents=DirContents([
+                    case_with_references,
+                ]),
+                main_program_config=sym_def.main_program_config(),
+            ),
+            expectation=
+            asrt_proc_result.sub_process_result(
+                exitcode=asrt.equals(exit_codes.EXIT_OK),
+                stdout=asrt.equals(lines_content(expected_output_lines)))
         )
 
 
