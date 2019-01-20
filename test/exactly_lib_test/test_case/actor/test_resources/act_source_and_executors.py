@@ -2,7 +2,7 @@ import pathlib
 from typing import Sequence
 
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.actor import ActionToCheckExecutor, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActionToCheck, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh, sh
@@ -14,7 +14,7 @@ from exactly_lib_test.test_resources import actions
 from exactly_lib_test.test_resources.actions import do_nothing
 
 
-class ActionToCheckExecutorThatJustReturnsSuccess(ActionToCheckExecutor):
+class ActionToCheckThatJustReturnsSuccess(ActionToCheck):
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
@@ -35,9 +35,9 @@ class ActionToCheckExecutorThatJustReturnsSuccess(ActionToCheckExecutor):
         return new_eh_exit_code(0)
 
 
-class ActionToCheckExecutorWrapperWithActions(ActionToCheckExecutor):
+class ActionToCheckWrapperWithActions(ActionToCheck):
     def __init__(self,
-                 wrapped: ActionToCheckExecutor,
+                 wrapped: ActionToCheck,
                  before_wrapped_parse=do_nothing,
                  before_wrapped_validate=do_nothing,
                  before_wrapped_prepare=do_nothing,
@@ -79,7 +79,7 @@ class ActionToCheckExecutorWrapperWithActions(ActionToCheckExecutor):
         return self.__wrapped.execute(environment, os_process_executor, script_output_dir_path, std_files)
 
 
-class ActionToCheckExecutorThatRunsConstantActions(ActionToCheckExecutor):
+class ActionToCheckThatRunsConstantActions(ActionToCheck):
     def __init__(self,
                  validate_pre_sds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
                  validate_pre_sds_initial_action=actions.do_nothing,

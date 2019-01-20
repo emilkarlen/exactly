@@ -5,7 +5,7 @@ import pathlib
 
 from exactly_lib.execution import phase_step
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.actor import Actor, ActionToCheckExecutor, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import Actor, ActionToCheck, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
@@ -178,7 +178,7 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
                  environment: InstructionEnvironmentForPostSdsStep,
                  act_phase_process_executor: ActPhaseOsProcessExecutor,
                  script_output_path: pathlib.Path,
-                 atc_executor: ActionToCheckExecutor):
+                 atc_executor: ActionToCheck):
         self.environment = environment
         self.act_phase_process_executor = act_phase_process_executor
         self.script_output_path = script_output_path

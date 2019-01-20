@@ -3,7 +3,7 @@ from typing import Sequence
 
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.actor import ActionToCheckExecutor, Actor, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActionToCheck, Actor, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -16,10 +16,10 @@ from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
 from exactly_lib_test.test_resources import actions
 
 
-class ActionToCheckExecutorWrapperThatRecordsSteps(ActionToCheckExecutor):
+class ActionToCheckWrapperThatRecordsSteps(ActionToCheck):
     def __init__(self,
                  recorder: ListRecorder,
-                 wrapped: ActionToCheckExecutor):
+                 wrapped: ActionToCheck):
         self.__recorder = recorder
         self.__wrapped = wrapped
 
@@ -66,16 +66,16 @@ class ActorThatRecordsSteps(Actor):
         self.__parse_action = parse_action
 
     def parse(self,
-              instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
+              instructions: Sequence[ActPhaseInstruction]) -> ActionToCheck:
         self.__recorder.recording_of(phase_step.ACT__PARSE).record()
         self.__parse_action(instructions)
 
-        return ActionToCheckExecutorWrapperThatRecordsSteps(self.__recorder,
-                                                            self.__wrapped.parse(instructions))
+        return ActionToCheckWrapperThatRecordsSteps(self.__recorder,
+                                                    self.__wrapped.parse(instructions))
 
 
 def parser_of_constant(recorder: ListRecorder,
-                       wrapped: ActionToCheckExecutor,
+                       wrapped: ActionToCheck,
                        parse_action=actions.do_nothing,
                        ) -> Actor:
     return ActorThatRecordsSteps(

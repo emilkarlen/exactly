@@ -1,11 +1,11 @@
 from typing import Sequence
 
-from exactly_lib.test_case.actor import ActionToCheckExecutor, Actor, ParseException
+from exactly_lib.test_case.actor import ActionToCheck, Actor, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.test_case.actor.test_resources import test_actions
 from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
-    ActionToCheckExecutorThatRunsConstantActions
+    ActionToCheckThatRunsConstantActions
 from exactly_lib_test.test_resources import actions
 
 
@@ -32,10 +32,10 @@ class ActorThatRunsConstantActions(Actor):
         self.execute_initial_action = execute_initial_action
         self.execute_action = execute_action
 
-    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
+    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheck:
         self.apply_action_before_executor_is_constructed(instructions)
         self.parse_action(instructions)
-        return ActionToCheckExecutorThatRunsConstantActions(
+        return ActionToCheckThatRunsConstantActions(
             validate_pre_sds_initial_action=self.validate_pre_sds_initial_action,
             validate_pre_sds_action=self.validate_pre_sds_action,
             validate_post_setup_initial_action=self.validate_post_setup_initial_action,
@@ -48,13 +48,13 @@ class ActorThatRunsConstantActions(Actor):
 
 class ActorForConstantExecutor(Actor):
     def __init__(self,
-                 executor: ActionToCheckExecutor,
+                 executor: ActionToCheck,
                  parse_action=actions.do_nothing,
                  ):
         self.executor = executor
         self.parse_action = parse_action
 
-    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
+    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheck:
         self.parse_action(instructions)
         return self.executor
 

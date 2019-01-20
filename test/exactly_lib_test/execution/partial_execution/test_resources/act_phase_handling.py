@@ -8,12 +8,12 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
-    ActionToCheckExecutorThatJustReturnsSuccess
+    ActionToCheckThatJustReturnsSuccess
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
     ActorForConstantExecutor
 
 
-class ExecutorThatExecutesPythonProgramSource(ActionToCheckExecutorThatJustReturnsSuccess):
+class ExecutorThatExecutesPythonProgramSource(ActionToCheckThatJustReturnsSuccess):
     PYTHON_FILE_NAME = 'program.py'
 
     def __init__(self, python_program_source: str):

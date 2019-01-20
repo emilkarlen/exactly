@@ -30,7 +30,7 @@ class ParseException(Exception):
             raise ValueError('A {} cannot represent SUCCESS'.format(str(type(self))))
 
 
-class ActionToCheckExecutor(SymbolUser):
+class ActionToCheck(SymbolUser):
     """
     Executes the ATC.
     """
@@ -89,7 +89,7 @@ class Actor:
     in terms of exceptions.
     """
 
-    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
+    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheck:
         """
         :raises ParseException
         """

@@ -2,7 +2,7 @@ import pathlib
 from typing import Sequence, Callable
 
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.actor import ActionToCheckExecutor, Actor, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActionToCheck, Actor, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
@@ -99,16 +99,16 @@ class ActorFromParts(Actor):
         self.validator_constructor = validator_constructor
         self.executor_constructor = executor_constructor
 
-    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
+    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheck:
         object_to_execute = self.parser.apply(instructions)
-        return ActionToCheckExecutorFromParts(
+        return ActionToCheckFromParts(
             object_to_execute,
             self.validator_constructor,
             self.executor_constructor,
         )
 
 
-class ActionToCheckExecutorFromParts(ActionToCheckExecutor):
+class ActionToCheckFromParts(ActionToCheck):
     """
     An ActSourceAndExecutor that can be used once to process the given act phase instructions.
     """
