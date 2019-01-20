@@ -5,8 +5,8 @@ import pathlib
 from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.actor import actor_utils
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
-from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.actor import AtcOsProcessExecutor
+from exactly_lib.test_case.os_services import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.actors.test_resources import act_phase_execution
@@ -28,12 +28,12 @@ class Arrangement:
                  source: ParseSource,
                  act_phase_source_lines: list,
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
-                 act_phase_process_executor: ActPhaseOsProcessExecutor = DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
+                 atc_os_process_executor: AtcOsProcessExecutor = DEFAULT_ATC_OS_PROCESS_EXECUTOR
                  ):
         self.hds_contents = hds_contents
         self.source = source
         self.act_phase_source_lines = act_phase_source_lines
-        self.act_phase_process_executor = act_phase_process_executor
+        self.atc_os_process_executor = atc_os_process_executor
 
 
 class Expectation:
@@ -57,7 +57,7 @@ def check(put: unittest.TestCase,
                                         act_phase_instructions,
                                         act_phase_execution.Arrangement(
                                             hds_contents=arrangement.hds_contents,
-                                            act_phase_process_executor=arrangement.act_phase_process_executor),
+                                            atc_process_executor=arrangement.atc_os_process_executor),
                                         act_phase_execution.Expectation(
                                             sub_process_result_from_execute=expectation.sub_process_result_from_execute)
                                         )

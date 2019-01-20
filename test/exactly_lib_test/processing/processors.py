@@ -1,5 +1,6 @@
-import pathlib
 import unittest
+
+import pathlib
 from typing import List, Sequence
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
@@ -322,7 +323,7 @@ def configuration_for_instruction_set(instruction_set: InstructionsSetup) -> sut
     return sut.Configuration(
         tc_definition,
         tc_handling_setup,
-        os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+        os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
         is_keep_sandbox=False,
     )
 

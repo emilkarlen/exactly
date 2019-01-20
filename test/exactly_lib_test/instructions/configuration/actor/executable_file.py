@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.configuration.actor.test_resources import Arr
     file_in_home_act_dir
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
-    ActPhaseOsProcessExecutorThatRecordsArguments
+    AtcOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_with_assertion
@@ -43,10 +43,10 @@ class _NonShellExecutionCheckHelper:
             self.format_map_for_template_string)
         for source, source_assertion in equivalent_source_variants_with_assertion(put, instruction_argument_source):
             # ARRANGE #
-            os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
+            os_process_executor = AtcOsProcessExecutorThatRecordsArguments()
             arrangement = Arrangement(source,
                                       act_phase_source_lines,
-                                      act_phase_process_executor=os_process_executor,
+                                      atc_os_process_executor=os_process_executor,
                                       hds_contents=hds_contents)
             expectation = Expectation(source_after_parse=source_assertion)
             # ACT #
@@ -167,10 +167,10 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForExecutable
     def runTest(self):
         # ARRANGE #
         executable_file = sys.executable
-        os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
+        os_process_executor = AtcOsProcessExecutorThatRecordsArguments()
         arrangement = Arrangement(source=remaining_source('= ' + actor_utils.COMMAND_LINE_ACTOR_OPTION),
                                   act_phase_source_lines=[executable_file],
-                                  act_phase_process_executor=os_process_executor)
+                                  atc_os_process_executor=os_process_executor)
         expectation = Expectation()
         # ACT #
         check(self, arrangement, expectation)

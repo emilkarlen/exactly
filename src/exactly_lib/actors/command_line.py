@@ -15,7 +15,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, ParseException, Actor
+from exactly_lib.test_case.actor import AtcOsProcessExecutor, ParseException, Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     SymbolUser
@@ -55,7 +55,7 @@ class CommandConfiguration(SymbolUser):
         return PartsValidatorFromPreOrPostSdsValidator(self._command_resolver.validator)
 
     def executor(self,
-                 os_process_executor: ActPhaseOsProcessExecutor,
+                 os_process_executor: AtcOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep) -> parts.Executor:
         return CommandResolverExecutor(os_process_executor,
                                        self._command_resolver)
@@ -101,7 +101,7 @@ def _validator(environment: InstructionEnvironmentForPreSdsStep,
     return command_configuration.validator()
 
 
-def _executor(os_process_executor: ActPhaseOsProcessExecutor,
+def _executor(os_process_executor: AtcOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
               command_configuration: CommandConfiguration) -> parts.Executor:
     return command_configuration.executor(os_process_executor, environment)

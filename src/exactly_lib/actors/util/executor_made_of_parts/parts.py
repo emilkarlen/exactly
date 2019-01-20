@@ -2,7 +2,7 @@ import pathlib
 from typing import Sequence, Callable
 
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.actor import ActionToCheck, Actor, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActionToCheck, Actor, AtcOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
@@ -73,7 +73,7 @@ ValidatorConstructorType = Callable[[InstructionEnvironmentForPreSdsStep,
                                      ExecutableObject],
                                     Validator]
 
-ExecutorConstructorType = Callable[[ActPhaseOsProcessExecutor,
+ExecutorConstructorType = Callable[[AtcOsProcessExecutor,
                                     InstructionEnvironmentForPreSdsStep,
                                     ExecutableObject],
                                    Executor]
@@ -141,14 +141,14 @@ class ActionToCheckFromParts(ActionToCheck):
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                os_process_executor: ActPhaseOsProcessExecutor,
+                os_process_executor: AtcOsProcessExecutor,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         self._construct_executor(environment, os_process_executor)
         return self._executor.prepare(environment, script_output_dir_path)
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                os_process_executor: ActPhaseOsProcessExecutor,
+                os_process_executor: AtcOsProcessExecutor,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return self._executor.execute(environment, script_output_dir_path, std_files)
@@ -162,7 +162,7 @@ class ActionToCheckFromParts(ActionToCheck):
 
     def _construct_executor(self,
                             environment: InstructionEnvironmentForPostSdsStep,
-                            os_process_executor: ActPhaseOsProcessExecutor,
+                            os_process_executor: AtcOsProcessExecutor,
                             ):
         self.__executor = self.executor_constructor(os_process_executor,
                                                     environment,

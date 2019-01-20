@@ -5,7 +5,7 @@ import subprocess
 
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.test_case import exception_detection
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
 from exactly_lib.util import failure_details
@@ -108,7 +108,7 @@ class _Default(OsServices):
         return self._executable_factory
 
 
-class ActPhaseSubProcessExecutor(ActPhaseOsProcessExecutor):
+class AtcSubProcessExecutor(AtcOsProcessExecutor):
     def __init__(self, executable_factory: ExecutableFactory):
         self._executable_factory = executable_factory
 
@@ -139,7 +139,7 @@ class ActPhaseSubProcessExecutor(ActPhaseOsProcessExecutor):
         return new_eh_hard_error(new_failure_details_from_exception(ex, message=msg))
 
 
-class _ActPhaseSubProcessExecutorForUnsupportedOperatingSystem(ActPhaseOsProcessExecutor):
+class _AtcSubProcessExecutorForUnsupportedOperatingSystem(AtcOsProcessExecutor):
     def execute(self,
                 command: Command,
                 std_files: StdFiles,
@@ -147,15 +147,15 @@ class _ActPhaseSubProcessExecutorForUnsupportedOperatingSystem(ActPhaseOsProcess
         raise ValueError('System not supported: ' + os.name)
 
 
-def _act_phase_os_process_executor_for_current_system() -> ActPhaseOsProcessExecutor:
+def _atc_os_process_executor_for_current_system() -> AtcOsProcessExecutor:
     try:
         executable_factory = executable_factories.get_factory_for_operating_system(os.name)
-        return ActPhaseSubProcessExecutor(executable_factory)
+        return AtcSubProcessExecutor(executable_factory)
     except KeyError:
-        return _ActPhaseSubProcessExecutorForUnsupportedOperatingSystem()
+        return _AtcSubProcessExecutorForUnsupportedOperatingSystem()
 
 
-DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR = _act_phase_os_process_executor_for_current_system()
+DEFAULT_ATC_OS_PROCESS_EXECUTOR = _atc_os_process_executor_for_current_system()
 
 
 def _raise_fail_to_make_dir_exception(path: pathlib.Path, ex: Exception):

@@ -50,7 +50,7 @@ def execute_main_program(arguments: List[str],
                          ) -> SubProcessResult:
     program = main_program.MainProgram(the_test_case_handling_setup,
                                        sandbox_root_name_resolver.for_test(),
-                                       os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                       os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                                        TestCaseDefinitionForMainProgram(
                                            TestCaseParsingSetup(name_and_argument_splitter,
                                                                 instructions_setup,

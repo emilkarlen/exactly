@@ -5,8 +5,8 @@ import pathlib
 
 from exactly_lib.execution import phase_step
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.actor import Actor, ActionToCheck, ActPhaseOsProcessExecutor
-from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.actor import Actor, ActionToCheck, AtcOsProcessExecutor
+from exactly_lib.test_case.os_services import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -38,13 +38,13 @@ class Arrangement:
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  environ: dict = None,
                  timeout_in_seconds: int = None,
-                 act_phase_process_executor: ActPhaseOsProcessExecutor = DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                 atc_process_executor: AtcOsProcessExecutor = DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                  symbol_table: SymbolTable = None,
                  ):
         self.hds_contents = hds_contents
         self.environ = {} if environ is None else environ
         self.timeout_in_seconds = timeout_in_seconds
-        self.act_phase_process_executor = act_phase_process_executor
+        self.atc_process_executor = atc_process_executor
         self.symbol_table = symbol_table_from_none_or_value(symbol_table)
 
 
@@ -116,7 +116,7 @@ def check_execution(put: unittest.TestCase,
                                                          phase_step.STEP__VALIDATE_POST_SETUP)
             script_output_dir_path = path_resolving_env.sds.test_case_dir
             step_result = sut.prepare(instruction_environment,
-                                      arrangement.act_phase_process_executor,
+                                      arrangement.atc_process_executor,
                                       script_output_dir_path)
             expectation.side_effects_on_files_after_prepare.apply(put, path_resolving_env.sds)
             expectation.result_of_prepare.apply(put,
@@ -131,7 +131,7 @@ def check_execution(put: unittest.TestCase,
 
             process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
                 instruction_environment,
-                arrangement.act_phase_process_executor,
+                arrangement.atc_process_executor,
                 script_output_dir_path,
                 sut)
             error_msg_extra_info = ''
@@ -176,11 +176,11 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
 
     def __init__(self,
                  environment: InstructionEnvironmentForPostSdsStep,
-                 act_phase_process_executor: ActPhaseOsProcessExecutor,
+                 atc_process_executor: AtcOsProcessExecutor,
                  script_output_path: pathlib.Path,
                  atc: ActionToCheck):
         self.environment = environment
-        self.act_phase_process_executor = act_phase_process_executor
+        self.atc_process_executor = atc_process_executor
         self.script_output_path = script_output_path
         self.atc = atc
 
@@ -189,7 +189,7 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
          :raises HardErrorResultError: Return value from executor is not an exit code.
         """
         exit_code_or_hard_error = self.atc.execute(self.environment,
-                                                   self.act_phase_process_executor,
+                                                   self.atc_process_executor,
                                                    self.script_output_path,
                                                    files)
         if exit_code_or_hard_error.is_exit_code:

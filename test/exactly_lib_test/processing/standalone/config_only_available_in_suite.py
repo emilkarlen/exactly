@@ -27,7 +27,7 @@ from exactly_lib_test.processing.test_resources.act_phase import act_setup_that_
 from exactly_lib_test.processing.test_resources.test_case_setup import \
     test_case_definition_with_only_assert_phase_instructions, setup_with_null_act_phase_and_null_preprocessing
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
-    ActPhaseOsProcessExecutorThatJustReturnsConstant
+    AtcOsProcessExecutorThatJustReturnsConstant
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
@@ -86,7 +86,7 @@ class TestConfigFromSuiteShouldBeForwardedToTestCase(unittest.TestCase):
             ),
         ])
         processor = sut.Processor(test_case_definition,
-                                  ActPhaseOsProcessExecutorThatJustReturnsConstant(),
+                                  AtcOsProcessExecutorThatJustReturnsConstant(),
                                   suite_conf_parser)
 
         suite_file = File(

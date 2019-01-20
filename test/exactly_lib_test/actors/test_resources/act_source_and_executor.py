@@ -6,7 +6,7 @@ from contextlib import contextmanager
 
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.actor import Actor
-from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh
@@ -137,12 +137,12 @@ class TestExecuteBase(unittest.TestCase):
                              step_result.status,
                              'Result of validation/post-setup')
             script_output_path = path_resolving_env.sds.test_case_dir
-            step_result = sut.prepare(environment, DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, script_output_path)
+            step_result = sut.prepare(environment, DEFAULT_ATC_OS_PROCESS_EXECUTOR, script_output_path)
             self.assertTrue(step_result.is_success,
                             'Expecting success from prepare (found hard error)')
             process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
                 environment,
-                DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                 script_output_path,
                 sut)
             return capture_process_executor_result(process_executor,
@@ -247,13 +247,13 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                                      'Result of validation/post-setup')
                     script_output_dir_path = path_resolving_env.sds.test_case_dir
                     step_result = sut.prepare(environment,
-                                              DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                              DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                                               script_output_dir_path)
                     self.assertTrue(step_result.is_success,
                                     'Expecting success from prepare (found hard error)')
                     process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
                         environment,
-                        DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                        DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                         script_output_dir_path,
                         sut)
                     process_result = capture_process_executor_result(process_executor,

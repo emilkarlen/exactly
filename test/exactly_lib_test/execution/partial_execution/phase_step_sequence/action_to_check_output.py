@@ -10,7 +10,7 @@ from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
 from exactly_lib.test_case.actor import Actor
-from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.result import sh
@@ -88,7 +88,7 @@ def check(put: unittest.TestCase,
 
     def action(std_files: StdOutputFiles) -> PartialExeResult:
         exe_conf = ExecutionConfiguration(dict(os.environ),
-                                          DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                          DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                                           sandbox_root_name_resolver.for_test(),
                                           exe_atc_and_skip_assertions=std_files)
         with home_directory_structure() as hds:

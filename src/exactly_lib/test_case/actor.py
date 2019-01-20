@@ -11,7 +11,7 @@ from exactly_lib.util.process_execution.execution_elements import ProcessExecuti
 from exactly_lib.util.std import StdFiles
 
 
-class ActPhaseOsProcessExecutor:
+class AtcOsProcessExecutor:
     """
     Executes a command in a sub process
     """
@@ -56,7 +56,7 @@ class ActionToCheck(SymbolUser):
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                os_process_executor: ActPhaseOsProcessExecutor,
+                os_process_executor: AtcOsProcessExecutor,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         """
         Executed after validate.
@@ -69,7 +69,7 @@ class ActionToCheck(SymbolUser):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                os_process_executor: ActPhaseOsProcessExecutor,
+                os_process_executor: AtcOsProcessExecutor,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         """

@@ -1,11 +1,11 @@
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.util.process_execution.command import Command
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.std import StdFiles
 
 
-class ActPhaseOsProcessExecutorThatRecordsArguments(ActPhaseOsProcessExecutor):
+class AtcOsProcessExecutorThatRecordsArguments(AtcOsProcessExecutor):
     def __init__(self):
         self.command = None
         self.process_execution_settings = None
@@ -19,7 +19,7 @@ class ActPhaseOsProcessExecutorThatRecordsArguments(ActPhaseOsProcessExecutor):
         return new_eh_exit_code(0)
 
 
-class ActPhaseOsProcessExecutorThatJustReturnsConstant(ActPhaseOsProcessExecutor):
+class AtcOsProcessExecutorThatJustReturnsConstant(AtcOsProcessExecutor):
     def __init__(self, constant_return_value: ExitCodeOrHardError = new_eh_exit_code(0)):
         self.constant_return_value = constant_return_value
 

@@ -25,7 +25,7 @@ from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, ParseException, Actor
+from exactly_lib.test_case.actor import AtcOsProcessExecutor, ParseException, Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
@@ -159,7 +159,7 @@ class _Validator(parts.Validator):
 class _ProgramExecutor(SubProcessExecutor):
     def __init__(self,
                  interpreter: ProgramAndArguments,
-                 os_process_executor: ActPhaseOsProcessExecutor,
+                 os_process_executor: AtcOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep,
                  source: _SourceInfoForInterpreterThatIsAnExecutableFile):
         super().__init__(os_process_executor)
@@ -180,7 +180,7 @@ class _ProgramExecutor(SubProcessExecutor):
 class _ShellSubProcessExecutor(SubProcessExecutor):
     def __init__(self,
                  shell_command_of_interpreter: str,
-                 os_process_executor: ActPhaseOsProcessExecutor,
+                 os_process_executor: AtcOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep,
                  source: _SourceInfoForInterpreterThatIsAShellCommand):
         super().__init__(os_process_executor)

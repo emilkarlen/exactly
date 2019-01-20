@@ -340,7 +340,7 @@ class _PartialExecutor:
         return ActionToCheckExecutor(self._atc_executor,
                                      self._post_setup_validation_environment(phase_identifier.ACT),
                                      self._post_sds_environment(phase_identifier.ACT),
-                                     self.exe_conf.act_phase_os_process_executor,
+                                     self.exe_conf.atc_os_process_executor,
                                      self._stdin_conf_from_setup,
                                      self.exe_conf.exe_atc_and_skip_assertions)
 

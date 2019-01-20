@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.symbol.program.command_resolver import CommandResolver
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.util.std import StdFiles
@@ -9,7 +9,7 @@ from . import parts
 
 
 class SubProcessExecutor(parts.Executor):
-    def __init__(self, os_process_executor: ActPhaseOsProcessExecutor):
+    def __init__(self, os_process_executor: AtcOsProcessExecutor):
         self.os_process_executor = os_process_executor
 
     def execute(self,
@@ -31,7 +31,7 @@ class SubProcessExecutor(parts.Executor):
 
 class CommandResolverExecutor(SubProcessExecutor):
     def __init__(self,
-                 os_process_executor: ActPhaseOsProcessExecutor,
+                 os_process_executor: AtcOsProcessExecutor,
                  command_resolver: CommandResolver):
         super().__init__(os_process_executor)
         self.command_resolver = command_resolver

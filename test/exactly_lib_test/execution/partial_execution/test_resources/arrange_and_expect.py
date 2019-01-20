@@ -8,7 +8,7 @@ from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.test_case import os_services
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, Actor
+from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
@@ -24,12 +24,12 @@ class Arrangement:
                  test_case: TestCase,
                  actor: Actor,
                  initial_setup_settings: setup.SetupSettingsBuilder = setup.default_settings(),
-                 act_phase_os_process_executor: ActPhaseOsProcessExecutor =
-                 os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR):
+                 atc_os_process_executor: AtcOsProcessExecutor =
+                 os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR):
         self.test_case = test_case
         self.actor = actor
         self.initial_setup_settings = initial_setup_settings
-        self.act_phase_os_process_executor = act_phase_os_process_executor
+        self.atc_os_process_executor = atc_os_process_executor
 
 
 class Expectation:
@@ -48,7 +48,7 @@ def execute_and_check(put: unittest.TestCase,
             partial_result = sut.execute(
                 arrangement.test_case,
                 ExecutionConfiguration(dict(os.environ),
-                                       arrangement.act_phase_os_process_executor,
+                                       arrangement.atc_os_process_executor,
                                        sandbox_root_name_resolver.for_test()),
                 ConfPhaseValues(arrangement.actor,
                                 hds),

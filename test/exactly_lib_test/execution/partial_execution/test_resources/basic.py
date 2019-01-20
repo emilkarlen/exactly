@@ -9,8 +9,8 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, Actor
-from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
+from exactly_lib.test_case.os_services import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
@@ -142,7 +142,7 @@ class TestCaseWithCommonDefaultInstructions(TestCaseGeneratorForPartialExecution
 class Arrangement:
     def __init__(self,
                  actor: Actor = dummy_actor(),
-                 act_phase_os_process_executor: ActPhaseOsProcessExecutor = DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                 atc_os_process_executor: AtcOsProcessExecutor = DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                  hds: HomeDirectoryStructure = HomeDirectoryStructure(pathlib.Path().resolve(),
                                                                       pathlib.Path().resolve()),
                  environ: dict = None,
@@ -150,7 +150,7 @@ class Arrangement:
                  predefined_symbols: SymbolTable = None,
                  exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None):
         self.actor = actor
-        self.act_phase_os_process_executor = act_phase_os_process_executor
+        self.act_phase_os_process_executor = atc_os_process_executor
         self.hds = hds
         self.environ = environ
         self.timeout_in_seconds = timeout_in_seconds

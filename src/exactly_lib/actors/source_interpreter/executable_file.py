@@ -5,7 +5,7 @@ from exactly_lib.actors.source_interpreter.source_file_management import SourceI
 from exactly_lib.actors.util.executor_made_of_parts import parts
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.symbol.program.command_resolver import CommandResolver
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case_utils.program.command import command_resolvers
 
 
@@ -36,7 +36,7 @@ class ActSourceFileNameGeneratorForSourceInterpreterSetup(pa.ActSourceFileNameGe
 
 class ExecutorForSourceInterpreterSetup(pa.ExecutorBase):
     def __init__(self,
-                 os_process_executor: ActPhaseOsProcessExecutor,
+                 os_process_executor: AtcOsProcessExecutor,
                  script_language_setup: SourceInterpreterSetup,
                  source_info: pa.SourceInfo):
         super().__init__(os_process_executor,

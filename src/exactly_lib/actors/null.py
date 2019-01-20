@@ -5,7 +5,7 @@ from exactly_lib.actors.util.executor_made_of_parts import parts
 from exactly_lib.actors.util.executor_made_of_parts.parts import ExecutableObjectParser, \
     UnconditionallySuccessfulValidator
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, Actor
+from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
@@ -45,7 +45,7 @@ class _Executor(parts.Executor):
         return eh.new_eh_exit_code(0)
 
 
-def _executor_parser(os_process_executor: ActPhaseOsProcessExecutor,
+def _executor_parser(os_process_executor: AtcOsProcessExecutor,
                      environment: InstructionEnvironmentForPreSdsStep,
                      object_to_execute: _ObjectToExecute) -> parts.Executor:
     return _Executor()

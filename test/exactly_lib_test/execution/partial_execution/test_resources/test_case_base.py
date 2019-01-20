@@ -11,7 +11,7 @@ from exactly_lib.execution.partial_execution.configuration import ConfPhaseValue
 from exactly_lib.execution.partial_execution.configuration import TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.test_case.actor import Actor
-from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
@@ -40,7 +40,7 @@ class PartialExecutionTestCaseBase:
                 partial_result = sut.execute(
                     self._test_case(),
                     ExecutionConfiguration(dict(os.environ),
-                                           DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                           DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                                            sandbox_root_name_resolver.for_test()),
                     ConfPhaseValues(self.__actor,
                                     hds),

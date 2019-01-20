@@ -20,7 +20,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import source_location_path_of_non_empty_location_path
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, Actor
+from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util.std import StdOutputFiles
 
@@ -47,13 +47,13 @@ class Configuration:
     def __init__(self,
                  test_case_definition: TestCaseDefinition,
                  default_handling_setup: TestCaseHandlingSetup,
-                 act_phase_os_process_executor: ActPhaseOsProcessExecutor,
+                 atc_os_process_executor: AtcOsProcessExecutor,
                  is_keep_sandbox: bool,
                  sandbox_root_dir_resolver: SandboxRootDirNameResolver =
                  sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-'),
                  exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None):
         self.default_handling_setup = default_handling_setup
-        self.act_phase_os_process_executor = act_phase_os_process_executor
+        self.atc_os_process_executor = atc_os_process_executor
         self.test_case_definition = test_case_definition
         self.is_keep_sandbox = is_keep_sandbox
         self.exe_atc_and_skip_assertions = exe_atc_and_skip_assertions
@@ -61,7 +61,7 @@ class Configuration:
 
     def execution_configuration(self) -> ExecutionConfiguration:
         return ExecutionConfiguration(self.test_case_definition.predefined_properties.environ,
-                                      self.act_phase_os_process_executor,
+                                      self.atc_os_process_executor,
                                       self.sandbox_root_dir_resolver,
                                       self.test_case_definition.predefined_properties.predefined_symbols,
                                       self.exe_atc_and_skip_assertions)
@@ -179,7 +179,7 @@ class _Executor(processing_utils.Executor):
     def _exe_conf_that_may_be_updated(self) -> ExecutionConfiguration:
         ec = self._exe_conf
         return ExecutionConfiguration(ec.environ.copy(),
-                                      ec.act_phase_os_process_executor,
+                                      ec.atc_os_process_executor,
                                       ec.sds_root_dir_resolver,
                                       ec.predefined_symbols.copy(),
                                       ec.exe_atc_and_skip_assertions)

@@ -376,7 +376,7 @@ class TestBase(unittest.TestCase):
             TestCaseHandlingSetup(
                 ActPhaseSetup(self._phase_config().actor(recording_media)),
                 IDENTITY_PREPROCESSOR),
-            os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+            os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
             False,
             sandbox_dir_resolving.mk_tmp_dir_with_prefix('test-suite-')
         )

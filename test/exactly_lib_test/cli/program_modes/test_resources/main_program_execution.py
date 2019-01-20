@@ -12,7 +12,7 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.test_case import os_services
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
@@ -25,13 +25,13 @@ from exactly_lib_test.test_suite.test_resources.test_suite_definition import tes
 class MainProgramConfig:
     def __init__(self,
                  default_test_case_handling_setup: TestCaseHandlingSetup,
-                 act_phase_os_process_executor: ActPhaseOsProcessExecutor,
+                 atc_os_process_executor: AtcOsProcessExecutor,
                  test_case_definition: TestCaseDefinitionForMainProgram,
                  test_suite_definition: TestSuiteDefinition,
                  sandbox_root_dir_name_resolver: SandboxRootDirNameResolver = sandbox_root_name_resolver.for_test()
                  ):
         self.default_test_case_handling_setup = default_test_case_handling_setup
-        self.act_phase_os_process_executor = act_phase_os_process_executor
+        self.atc_os_process_executor = atc_os_process_executor
         self.test_case_definition = test_case_definition
         self.test_suite_definition = test_suite_definition
         self.sandbox_root_dir_name_resolver = sandbox_root_dir_name_resolver
@@ -45,7 +45,7 @@ def main_program_config(
     return MainProgramConfig(TestCaseHandlingSetup(
         act_phase_setup,
         IDENTITY_PREPROCESSOR),
-        os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+        os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
         tc_definition,
         test_suite_definition,
     )
@@ -77,7 +77,7 @@ def main_program_from_config(config: MainProgramConfig) -> main_program.MainProg
     return main_program.MainProgram(
         config.default_test_case_handling_setup,
         config.sandbox_root_dir_name_resolver,
-        config.act_phase_os_process_executor,
+        config.atc_os_process_executor,
         config.test_case_definition,
         config.test_suite_definition,
     )
@@ -112,7 +112,7 @@ def main_program_of(test_case_definition: TestCaseDefinitionForMainProgram,
     return main_program.MainProgram(
         default_test_case_handling_setup,
         sandbox_root_dir_name_resolver,
-        os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+        os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
         test_case_definition,
         test_suite_definition,
     )

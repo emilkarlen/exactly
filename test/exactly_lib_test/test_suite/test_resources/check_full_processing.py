@@ -1,6 +1,7 @@
+import unittest
+
 import pathlib
 import tempfile
-import unittest
 
 from exactly_lib import program_info
 from exactly_lib.common import instruction_setup
@@ -89,7 +90,7 @@ def check(setup: Setup,
 def _default_case_configuration(test_case_handling_setup: TestCaseHandlingSetup) -> case_processing.Configuration:
     return case_processing.Configuration(_DEFAULT_TEST_CASE_DEFINITION,
                                          test_case_handling_setup,
-                                         os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                         os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                                          False)
 
 

@@ -9,7 +9,7 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.test_case import test_case_doc, os_services
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, Actor
+from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable
@@ -21,15 +21,15 @@ class FullExecutionTestCaseBase:
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False,
                  actor: Actor = None,
-                 act_phase_os_process_executor: ActPhaseOsProcessExecutor =
-                 os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR):
+                 atc_os_process_executor: AtcOsProcessExecutor =
+                 os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR):
         self.__unittest_case = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__full_result = None
         self.__sandbox_directory_structure = None
         self.__initial_home_dir_path = None
         self.__actor = actor
-        self.__act_phase_os_process_executor = act_phase_os_process_executor
+        self.__atc_os_process_executor = atc_os_process_executor
 
     def execute(self):
         # SETUP #
@@ -37,7 +37,7 @@ class FullExecutionTestCaseBase:
         # ACT #
         initial_home_dir_path = self.initial_home_dir_path.resolve()
         exe_conf = ExecutionConfiguration(dict(os.environ),
-                                          self.__act_phase_os_process_executor,
+                                          self.__atc_os_process_executor,
                                           sandbox_root_name_resolver.for_test(),
                                           SymbolTable())
         configuration_builder = ConfigurationBuilder(initial_home_dir_path,

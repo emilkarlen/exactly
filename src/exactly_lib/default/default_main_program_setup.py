@@ -17,7 +17,7 @@ from exactly_lib.util.std import StdOutputFiles
 def default_main_program() -> main_program.MainProgram:
     return main_program.MainProgram(test_case_handling_setup.setup(),
                                     sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-'),
-                                    os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                    os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                                     TestCaseDefinitionForMainProgram(
                                         TestCaseParsingSetup(instruction_name_and_argument_splitter.splitter,
                                                              default_instructions_setup.INSTRUCTIONS_SETUP,

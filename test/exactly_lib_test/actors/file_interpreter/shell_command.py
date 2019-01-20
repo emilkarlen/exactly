@@ -11,7 +11,7 @@ from exactly_lib_test.actors.test_resources import \
 from exactly_lib_test.actors.test_resources.act_source_and_executor import Configuration
 from exactly_lib_test.actors.test_resources.act_source_and_executor import suite_for_execution
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
-    ActPhaseOsProcessExecutorThatRecordsArguments
+    AtcOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
@@ -78,11 +78,11 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
     def runTest(self):
         act_phase_instructions = [instr(["""'quoted file name.src'"""]),
                                   instr([''])]
-        executor_that_records_arguments = ActPhaseOsProcessExecutorThatRecordsArguments()
+        executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
             hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, DirContents([
                 empty_file('quoted file name.src')])),
-            act_phase_process_executor=executor_that_records_arguments)
+            atc_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
         act_phase_execution.check_execution(self,
                                             self.configuration.sut,
@@ -107,11 +107,11 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
     def runTest(self):
         act_phase_instructions = [instr(["""existing-file.src un-quoted 'single quoted' "double-quoted" """])]
         should_be_last_part_of_command_line = """un-quoted 'single quoted' "double-quoted\""""
-        executor_that_records_arguments = ActPhaseOsProcessExecutorThatRecordsArguments()
+        executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
             hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, DirContents([
                 empty_file('existing-file.src')])),
-            act_phase_process_executor=executor_that_records_arguments)
+            atc_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
         act_phase_execution.check_execution(self,
                                             self.configuration.sut,

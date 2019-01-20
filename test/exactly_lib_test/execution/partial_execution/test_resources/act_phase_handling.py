@@ -3,7 +3,7 @@ import sys
 import pathlib
 import subprocess
 
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, Actor
+from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.util.std import StdFiles
@@ -21,7 +21,7 @@ class AtcThatExecutesPythonProgramSource(ActionToCheckThatJustReturnsSuccess):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                os_process_executor: ActPhaseOsProcessExecutor,
+                os_process_executor: AtcOsProcessExecutor,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         python_file = pathlib.Path() / self.PYTHON_FILE_NAME

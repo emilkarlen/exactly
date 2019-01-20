@@ -15,7 +15,7 @@ from exactly_lib_test.execution.full_execution.test_resources.result_values impo
 from exactly_lib_test.processing.test_resources.test_case_setup import \
     test_case_definition_with_no_instructions_and_no_preprocessor
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
-    ActPhaseOsProcessExecutorThatJustReturnsConstant
+    AtcOsProcessExecutorThatJustReturnsConstant
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
 
 
@@ -54,7 +54,7 @@ DUMMY_TEST_CASE_DEFINITION = test_case_definition_with_no_instructions_and_no_pr
 DUMMY_CASE_PROCESSING = case_processing.Configuration(
     DUMMY_TEST_CASE_DEFINITION,
     test_case_handling_setup_with_identity_preprocessor(),
-    ActPhaseOsProcessExecutorThatJustReturnsConstant(),
+    AtcOsProcessExecutorThatJustReturnsConstant(),
     False,
 )
 

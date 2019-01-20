@@ -16,7 +16,7 @@ from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver, container_of_builtin, SymbolContainer
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable
@@ -97,7 +97,7 @@ class MainProgram:
     def __init__(self,
                  default_test_case_handling_setup: TestCaseHandlingSetup,
                  default_case_sandbox_root_dir_name_resolver: SandboxRootDirNameResolver,
-                 act_phase_os_process_executor: ActPhaseOsProcessExecutor,
+                 atc_os_process_executor: AtcOsProcessExecutor,
                  test_case_definition: TestCaseDefinitionForMainProgram,
                  test_suite_definition: TestSuiteDefinition,
                  ):
@@ -116,7 +116,7 @@ class MainProgram:
                 predefined_symbols,
             )
         )
-        self._act_phase_os_process_executor = act_phase_os_process_executor
+        self._atc_os_process_executor = atc_os_process_executor
         self._default_test_case_handling_setup = default_test_case_handling_setup
         self._test_case_def_for_m_p = test_case_definition
         self._default_case_sandbox_root_dir_name_resolver = default_case_sandbox_root_dir_name_resolver
@@ -145,7 +145,7 @@ class MainProgram:
                           ) -> int:
         from exactly_lib.processing.standalone import processor
         processor = processor.Processor(self._test_case_definition,
-                                        self._act_phase_os_process_executor,
+                                        self._atc_os_process_executor,
                                         self._test_suite_definition.configuration_section_parser)
         return processor.process(output, settings)
 
@@ -159,7 +159,7 @@ class MainProgram:
         from exactly_lib.test_suite import processing
         default_configuration = processors.Configuration(self._test_case_definition,
                                                          settings.handling_setup,
-                                                         self._act_phase_os_process_executor,
+                                                         self._atc_os_process_executor,
                                                          False,
                                                          self._test_suite_definition.sandbox_root_dir_resolver)
         processor = processing.Processor(default_configuration,

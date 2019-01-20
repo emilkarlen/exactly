@@ -5,7 +5,7 @@ from exactly_lib.actors.source_interpreter import parser_and_executor as pa
 from exactly_lib.actors.util.executor_made_of_parts import parts
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.program.command_resolver import CommandResolver
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, Actor
+from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case_utils.program.command import command_resolvers
 
 ACT_PHASE_SOURCE_FILE_BASE_NAME = 'act-phase.src'
@@ -24,7 +24,7 @@ class Parser(parts.ActorFromParts):
 
 class Executor(pa.ExecutorBase):
     def __init__(self,
-                 os_process_executor: ActPhaseOsProcessExecutor,
+                 os_process_executor: AtcOsProcessExecutor,
                  interpreter_shell_command: str,
                  source_info: pa.SourceInfo):
         super().__init__(os_process_executor,

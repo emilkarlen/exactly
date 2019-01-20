@@ -2,7 +2,7 @@ import pathlib
 from typing import Sequence
 
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.actor import ActionToCheck, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActionToCheck, AtcOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh, sh
@@ -23,13 +23,13 @@ class ActionToCheckThatJustReturnsSuccess(ActionToCheck):
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                os_process_executor: ActPhaseOsProcessExecutor,
+                os_process_executor: AtcOsProcessExecutor,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                os_process_executor: ActPhaseOsProcessExecutor,
+                os_process_executor: AtcOsProcessExecutor,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return new_eh_exit_code(0)
@@ -65,14 +65,14 @@ class ActionToCheckWrapperWithActions(ActionToCheck):
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                os_process_executor: ActPhaseOsProcessExecutor,
+                os_process_executor: AtcOsProcessExecutor,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         self.before_wrapped_prepare(environment, script_output_dir_path)
         return self.__wrapped.prepare(environment, os_process_executor, script_output_dir_path)
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                os_process_executor: ActPhaseOsProcessExecutor,
+                os_process_executor: AtcOsProcessExecutor,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self.before_wrapped_execute(environment, script_output_dir_path, std_files)
@@ -117,14 +117,14 @@ class ActionToCheckThatRunsConstantActions(ActionToCheck):
         return self.__validate_post_setup_action(environment)
 
     def prepare(self, environment: InstructionEnvironmentForPostSdsStep,
-                os_process_executor: ActPhaseOsProcessExecutor,
+                os_process_executor: AtcOsProcessExecutor,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         self.__prepare_initial_action(environment, script_output_dir_path)
         return self.__prepare_action(environment, script_output_dir_path)
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                os_process_executor: ActPhaseOsProcessExecutor,
+                os_process_executor: AtcOsProcessExecutor,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self.__execute_initial_action(environment, script_output_dir_path, std_files)
