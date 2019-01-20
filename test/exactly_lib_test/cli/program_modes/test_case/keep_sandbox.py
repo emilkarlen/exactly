@@ -457,7 +457,7 @@ def _check_instruction(put: unittest.TestCase,
 
 def _check(put: unittest.TestCase,
            test_case_definition: TestCaseDefinitionForMainProgram,
-           act_source_and_executor_constructor: Actor,
+           actor: Actor,
            test_case_source: str,
            mk_sds_resolver: Callable[[str], SandboxRootDirNameResolver],
            expectation: Expectation,
@@ -467,7 +467,7 @@ def _check(put: unittest.TestCase,
     case_file = File('the-test.case', test_case_source)
     source_files_dir_contents = DirContents([case_file])
 
-    tc_handling_setup = TestCaseHandlingSetup(ActPhaseSetup(act_source_and_executor_constructor),
+    tc_handling_setup = TestCaseHandlingSetup(ActPhaseSetup(actor),
                                               IDENTITY_PREPROCESSOR)
 
     test_suite_definition = test_suite_definition_without_instructions()

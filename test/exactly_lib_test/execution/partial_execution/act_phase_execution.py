@@ -36,7 +36,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.recorder impo
 from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
     ActionToCheckExecutorThatJustReturnsSuccess, ActionToCheckExecutorThatRunsConstantActions
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
-    ActionToCheckExecutorConstructorForConstantExecutor
+    ActorForConstantExecutor
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.actions import do_raise
 from exactly_lib_test.test_resources.files import file_structure as fs
@@ -75,7 +75,7 @@ class TestExecutionSequence(unittest.TestCase):
         step_recorder = ListRecorder()
         recording_executor = ActionToCheckExecutorWrapperThatRecordsSteps(step_recorder,
                                                                           executor_that_does_nothing)
-        actor = ActionToCheckExecutorConstructorForConstantExecutor(
+        actor = ActorForConstantExecutor(
             recording_executor,
             parse_action=do_raise(ParseException(expected_cause))
         )
@@ -96,7 +96,7 @@ class TestExecutionSequence(unittest.TestCase):
         step_recorder = ListRecorder()
         recording_executor = ActionToCheckExecutorWrapperThatRecordsSteps(step_recorder,
                                                                           executor_that_does_nothing)
-        actor = ActionToCheckExecutorConstructorForConstantExecutor(
+        actor = ActorForConstantExecutor(
             recording_executor,
             parse_action=do_raise(ValueError(expected_cause))
         )
@@ -117,7 +117,7 @@ class TestCurrentDirectory(unittest.TestCase):
         cwd_registerer = CwdRegisterer()
         with tmp_dir_as_cwd() as expected_current_directory_pre_validate_post_setup:
             executor_that_records_current_dir = _ExecutorThatRecordsCurrentDir(cwd_registerer)
-            parser = ActionToCheckExecutorConstructorForConstantExecutor(executor_that_records_current_dir)
+            parser = ActorForConstantExecutor(executor_that_records_current_dir)
             # ACT #
             _execute(parser, _empty_test_case(),
                      current_directory=expected_current_directory_pre_validate_post_setup)
@@ -146,7 +146,7 @@ class TestExecute(unittest.TestCase):
         # ARRANGE #
         exit_code_from_execution = 72
         executor = _ExecutorThatReturnsConstantExitCode(exit_code_from_execution)
-        actor = ActionToCheckExecutorConstructorForConstantExecutor(executor)
+        actor = ActorForConstantExecutor(executor)
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   actor=actor)
         # ASSERT #
@@ -182,7 +182,7 @@ class TestExecute(unittest.TestCase):
         # ARRANGE #
         setup_settings = setup.default_settings()
         setup_settings.stdin.file_name = 'this-is-not-the-name-of-an-existing-file.txt'
-        parser = ActionToCheckExecutorConstructorForConstantExecutor(ActionToCheckExecutorThatJustReturnsSuccess())
+        parser = ActorForConstantExecutor(ActionToCheckExecutorThatJustReturnsSuccess())
         test_case = _empty_test_case()
         # ACT #
         result = _execute(parser, test_case, setup_settings)
@@ -248,7 +248,7 @@ def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
             python_program_file.write_to(tmp_dir_path)
             executor_that_records_contents_of_stdin = _ExecutorThatExecutesPythonProgramFile(
                 tmp_dir_path / 'program.py')
-            parser = ActionToCheckExecutorConstructorForConstantExecutor(
+            parser = ActorForConstantExecutor(
                 executor_that_records_contents_of_stdin)
             test_case = _empty_test_case()
             # ACT #
@@ -335,7 +335,7 @@ def _empty_test_case() -> TestCase:
                     new_empty_section_contents())
 
 
-def _execute(parser: Actor,
+def _execute(actor: Actor,
              test_case: TestCase,
              setup_settings: SetupSettingsBuilder = setup.default_settings(),
              is_keep_sandbox: bool = False,
@@ -351,7 +351,7 @@ def _execute(parser: Actor,
                 ExecutionConfiguration(dict(os.environ),
                                        DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                        sandbox_root_name_resolver.for_test()),
-                ConfPhaseValues(parser,
+                ConfPhaseValues(actor,
                                 hds),
                 setup_settings,
                 is_keep_sandbox)

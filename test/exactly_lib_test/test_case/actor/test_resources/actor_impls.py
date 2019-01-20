@@ -46,7 +46,7 @@ class ActorThatRunsConstantActions(Actor):
             execute_action=self.execute_action)
 
 
-class ActionToCheckExecutorConstructorForConstantExecutor(Actor):
+class ActorForConstantExecutor(Actor):
     def __init__(self,
                  executor: ActionToCheckExecutor,
                  parse_action=actions.do_nothing,

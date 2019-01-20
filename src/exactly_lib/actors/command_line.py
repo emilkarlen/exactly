@@ -37,7 +37,7 @@ def actor() -> Actor:
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.EXECUTABLE)
 
 
-class Parser(parts.AtcExecutorParser):
+class Parser(parts.ActorFromParts):
     def __init__(self):
         super().__init__(_Parser(),
                          _validator,

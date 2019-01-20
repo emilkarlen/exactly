@@ -120,13 +120,13 @@ INSTRUCTION_SETUP = InstructionsSetup(
 )
 
 
-def main_program_config(act_executor_parser: Optional[Actor] = None) -> MainProgramConfig:
-    if act_executor_parser is None:
-        act_executor_parser = _ActorThatParsesReferences(REF_INSTRUCTION_NAME)
+def main_program_config(actor: Optional[Actor] = None) -> MainProgramConfig:
+    if actor is None:
+        actor = _ActorThatParsesReferences(REF_INSTRUCTION_NAME)
     return main_program_execution.main_program_config(
         test_case_definition_for(INSTRUCTION_SETUP),
         act_phase_setup=ActPhaseSetup(
-            act_executor_parser
+            actor
         )
     )
 

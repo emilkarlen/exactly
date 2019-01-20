@@ -15,7 +15,7 @@ def actor_for_interpreter_command(interpreter_shell_command: str) -> Actor:
     return Parser(interpreter_shell_command)
 
 
-class Parser(parts.AtcExecutorParser):
+class Parser(parts.ActorFromParts):
     def __init__(self, interpreter_shell_command: str):
         super().__init__(pa.Parser(),
                          parts.UnconditionallySuccessfulValidator,

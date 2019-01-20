@@ -13,7 +13,7 @@ def new_for_source_interpreter_setup(setup: SourceInterpreterSetup) -> ActPhaseS
     return ActPhaseSetup(Parser(setup))
 
 
-class Parser(parts.AtcExecutorParser):
+class Parser(parts.ActorFromParts):
     def __init__(self, setup: SourceInterpreterSetup):
         super().__init__(pa.Parser(),
                          parts.UnconditionallySuccessfulValidator,

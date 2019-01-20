@@ -17,7 +17,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as str_asrt
 
 
-def suite_for(parser_that_executes_python_program: parts.AtcExecutorParser,
+def suite_for(parser_that_executes_python_program: parts.ActorFromParts,
               is_shell: bool) -> unittest.TestSuite:
     return unittest.TestSuite([
         TestThatSymbolReferencesAreReportedAndUsed(parser_that_executes_python_program, is_shell),
@@ -26,7 +26,7 @@ def suite_for(parser_that_executes_python_program: parts.AtcExecutorParser,
 
 
 class TestCaseBase(unittest.TestCase):
-    def __init__(self, parser_that_executes_python_program: parts.AtcExecutorParser,
+    def __init__(self, parser_that_executes_python_program: parts.ActorFromParts,
                  is_shell: bool):
         super().__init__()
         self.parser_that_executes_python_program = parser_that_executes_python_program

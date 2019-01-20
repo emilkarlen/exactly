@@ -25,7 +25,7 @@ class _ObjectToExecute(SymbolUser):
     pass
 
 
-class Parser(parts.AtcExecutorParser):
+class Parser(parts.ActorFromParts):
     def __init__(self):
         super().__init__(_Parser(),
                          UnconditionallySuccessfulValidator,

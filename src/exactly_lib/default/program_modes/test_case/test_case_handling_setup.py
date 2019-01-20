@@ -10,11 +10,11 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 
 
 def setup() -> TestCaseHandlingSetup:
-    return TestCaseHandlingSetup(ActPhaseSetup(AtcExecutorParser()),
+    return TestCaseHandlingSetup(ActPhaseSetup(TheActor()),
                                  IdentityPreprocessor())
 
 
-class AtcExecutorParser(Actor):
+class TheActor(Actor):
     def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheckExecutor:
         source_code_lines = all_source_code_lines(instructions)
         if not source_code_lines:

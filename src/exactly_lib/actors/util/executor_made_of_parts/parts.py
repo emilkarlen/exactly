@@ -90,7 +90,7 @@ class ExecutableObjectParser:
         raise NotImplementedError(str(type(self)))
 
 
-class AtcExecutorParser(Actor):
+class ActorFromParts(Actor):
     def __init__(self,
                  parser: ExecutableObjectParser,
                  validator_constructor: ValidatorConstructorType,

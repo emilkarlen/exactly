@@ -29,8 +29,8 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
     def __init__(self, configuration: Configuration):
         super().__init__()
         self.conf = configuration
-        self.constructor = configuration.sut
-        assert isinstance(self.constructor, Actor)
+        self.actor = configuration.sut
+        assert isinstance(self.actor, Actor)
         self.home_dir_as_current_dir = pathlib.Path()
 
     def runTest(self):
@@ -42,7 +42,7 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
         return InstructionEnvironmentForPreSdsStep(hds, {})
 
     def _do_parse(self, instructions: Sequence[ActPhaseInstruction]):
-        self.constructor.parse(instructions)
+        self.actor.parse(instructions)
 
     def _do_parse_and_validate_pre_sds(self,
                                        instructions: Sequence[ActPhaseInstruction],
@@ -52,7 +52,7 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
                 contents=case_home_dir_contents(home_dir_contents)) as hds:
             pre_sds_env = InstructionEnvironmentForPreSdsStep(hds,
                                                               {})
-            executor = self.constructor.parse(instructions)
+            executor = self.actor.parse(instructions)
             return executor.validate_pre_sds(pre_sds_env)
 
 

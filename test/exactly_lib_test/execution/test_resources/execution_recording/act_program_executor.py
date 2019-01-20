@@ -12,7 +12,7 @@ from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
-    ActionToCheckExecutorConstructorForConstantExecutor
+    ActorForConstantExecutor
 from exactly_lib_test.test_resources import actions
 
 
@@ -80,6 +80,6 @@ def parser_of_constant(recorder: ListRecorder,
                        ) -> Actor:
     return ActorThatRecordsSteps(
         recorder,
-        ActionToCheckExecutorConstructorForConstantExecutor(wrapped),
+        ActorForConstantExecutor(wrapped),
         parse_action=parse_action,
     )

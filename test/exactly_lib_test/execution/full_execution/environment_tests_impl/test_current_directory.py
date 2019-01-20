@@ -68,12 +68,11 @@ class Test(FullExecutionTestCaseBase):
                          dbg_do_not_delete_dir_structure)
 
     def _actor(self) -> Actor:
-        parser = ActorThatRunsConstantActions(
+        return ActorThatRunsConstantActions(
             validate_post_setup_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__VALIDATE_POST_SETUP,
                                                                svh.new_svh_success()),
             execute_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__EXECUTE,
                                                    new_eh_exit_code(0)))
-        return parser
 
     def _test_case(self) -> test_case_doc.TestCase:
         return full_test_case_with_instructions(

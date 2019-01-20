@@ -11,15 +11,11 @@ from exactly_lib.util.process_execution.command import Command
 
 
 def actor(command: Command) -> Actor:
-    return action_to_check_executor_parser(command)
+    return _CommandTranslator(command.arguments).visit(command.driver)
 
 
 def act_phase_setup(command: Command) -> ActPhaseSetup:
-    return ActPhaseSetup(action_to_check_executor_parser(command))
-
-
-def action_to_check_executor_parser(command: Command) -> Actor:
-    return _CommandTranslator(command.arguments).visit(command.driver)
+    return ActPhaseSetup(actor(command))
 
 
 class _CommandTranslator(commands.CommandDriverVisitor):

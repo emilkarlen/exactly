@@ -30,9 +30,9 @@ class TestConstructor(unittest.TestCase):
     def test_WHEN_parser_raises_exception_THEN_parse_SHOULD_raise_this_exception(self):
         # ARRANGE #
         parser_error = svh.new_svh_validation_error('msg')
-        parser = sut.AtcExecutorParser(ParserThatRaisesException(parser_error),
-                                       validator_constructor_that_raises,
-                                       executor_constructor_that_raises)
+        parser = sut.ActorFromParts(ParserThatRaisesException(parser_error),
+                                    validator_constructor_that_raises,
+                                    executor_constructor_that_raises)
         act_phase_instructions = []
         # ACT #
         with self.assertRaises(ParseException) as ex:
@@ -51,9 +51,9 @@ class TestConstructor(unittest.TestCase):
         def executor_constructor(os_process_executor, environment, x):
             return ExecutorThatRecordsSteps(step_recorder, x)
 
-        parser = sut.AtcExecutorParser(parser,
-                                       validator_constructor,
-                                       executor_constructor)
+        parser = sut.ActorFromParts(parser,
+                                    validator_constructor,
+                                    executor_constructor)
         act_phase_instructions = [instr(['act phase source'])]
         arrangement = Arrangement()
         expectation = simple_success()
@@ -80,7 +80,7 @@ class TestConstructor(unittest.TestCase):
             SymbolReference('symbol_name',
                             is_any_data_type())
         ]
-        parser = sut.AtcExecutorParser(ParserWithConstantResult(
+        parser = sut.ActorFromParts(ParserWithConstantResult(
             SymbolUserWithConstantSymbolReferences(expected_symbol_references)),
             lambda *x: sut.UnconditionallySuccessfulValidator(),
             lambda *x: UnconditionallySuccessfulExecutor())

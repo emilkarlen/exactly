@@ -10,8 +10,8 @@ from exactly_lib_test.util.test_resources import py_program
 
 
 class TheConfigurationBase(Configuration):
-    def __init__(self, parser: Actor):
-        super().__init__(parser)
+    def __init__(self, actor: Actor):
+        super().__init__(actor)
 
     @contextmanager
     def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:
