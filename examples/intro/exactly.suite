@@ -19,6 +19,12 @@ sandbox-directories/exactly.suite
 home-directories/exactly.suite
 
 ######################################################################
+# Examples with different "actors"
+#
+
+actors/exactly.suite
+
+######################################################################
 # Examples with "symbols"
 #
 

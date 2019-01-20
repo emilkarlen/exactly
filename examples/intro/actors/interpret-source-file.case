@@ -1,0 +1,14 @@
+[conf]
+
+actor = -file python
+
+[act]
+
+my-source-file.py
+
+[assert]
+
+stdout equals
+<<-
+I am a source file
+-

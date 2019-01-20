@@ -1,0 +1,18 @@
+[conf]
+
+actor = -source python
+
+[act]
+
+print('This is')
+print('Python')
+print('source code')
+
+[assert]
+
+stdout equals
+<<-
+This is
+Python
+source code
+-
