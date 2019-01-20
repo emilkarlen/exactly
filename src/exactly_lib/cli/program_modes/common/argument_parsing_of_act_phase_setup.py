@@ -2,7 +2,7 @@ import pathlib
 import shlex
 from typing import List
 
-from exactly_lib.act_phase_setups.source_interpreter import act_phase_setup
+from exactly_lib.actors.source_interpreter import act_phase_setup
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.util.process_execution.commands import executable_file_command
 

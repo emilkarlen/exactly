@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.act_phase_setups import z_package_suite as act_phase_setups
+from exactly_lib_test.actors import z_package_suite as actors
 from exactly_lib_test.common import z_package_suite as common
 from exactly_lib_test.default import z_package_suite as default
 from exactly_lib_test.definitions import z_package_suite as definitions
@@ -36,7 +36,7 @@ def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     ret_val.addTest(test_suite.suite())
     ret_val.addTest(test_case_utils.suite())
     ret_val.addTest(instructions.suite())
-    ret_val.addTest(act_phase_setups.suite())
+    ret_val.addTest(actors.suite())
     ret_val.addTest(definitions.suite())
     ret_val.addTest(help.suite())
     ret_val.addTest(default.suite_that_does_not_require_main_program_runner())

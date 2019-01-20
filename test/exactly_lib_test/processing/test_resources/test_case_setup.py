@@ -1,6 +1,6 @@
 from typing import Sequence, Tuple
 
-from exactly_lib.act_phase_setups import command_line
+from exactly_lib.actors import command_line
 from exactly_lib.common import instruction_name_and_argument_splitter
 from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup

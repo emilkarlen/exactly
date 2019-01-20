@@ -2,9 +2,9 @@ import pathlib
 import shlex
 from typing import List
 
-from exactly_lib.act_phase_setups import command_line
-from exactly_lib.act_phase_setups import file_interpreter
-from exactly_lib.act_phase_setups import source_interpreter as source_interpreter
+from exactly_lib.actors import command_line
+from exactly_lib.actors import file_interpreter
+from exactly_lib.actors import source_interpreter as source_interpreter
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \

@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.act_phase_setups import file_interpreter as actor
+from exactly_lib.actors import file_interpreter as actor
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget

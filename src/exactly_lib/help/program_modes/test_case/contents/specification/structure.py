@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.act_phase_setups.common import SHELL_COMMAND_MARKER
+from exactly_lib.actors.common import SHELL_COMMAND_MARKER
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart

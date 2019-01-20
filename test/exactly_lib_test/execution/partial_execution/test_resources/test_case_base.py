@@ -4,7 +4,7 @@ import os
 import pathlib
 import shutil
 
-from exactly_lib.act_phase_setups.source_interpreter import python3
+from exactly_lib.actors.source_interpreter import python3
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues

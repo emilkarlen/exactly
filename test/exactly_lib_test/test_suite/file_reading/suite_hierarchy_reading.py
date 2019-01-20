@@ -1,8 +1,9 @@
-import pathlib
 import unittest
+
+import pathlib
 from pathlib import Path
 
-from exactly_lib.act_phase_setups import command_line
+from exactly_lib.actors import command_line
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import test_case_reference_of_source_file

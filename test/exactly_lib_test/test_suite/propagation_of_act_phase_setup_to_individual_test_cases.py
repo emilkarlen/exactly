@@ -1,7 +1,8 @@
-import pathlib
 import unittest
 
-from exactly_lib.act_phase_setups import command_line
+import pathlib
+
+from exactly_lib.actors import command_line
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.instructions.configuration.utils.actor_utils import SOURCE_INTERPRETER_OPTION
 from exactly_lib.processing import test_case_processing
