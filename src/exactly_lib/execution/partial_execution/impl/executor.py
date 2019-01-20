@@ -8,7 +8,7 @@ from exactly_lib.execution.impl import phase_step_executors, phase_step_executio
 from exactly_lib.execution.impl.result import PhaseStepFailure, ActionWithFailureAsResult
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
-from exactly_lib.execution.partial_execution.impl.act_phase_execution import ActPhaseExecutor
+from exactly_lib.execution.partial_execution.impl.atc_execution import ActionToCheckExecutor
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.section_document.model import SectionContents, ElementType
@@ -336,13 +336,13 @@ class _PartialExecutor:
                                                 self._post_setup_validation_environment(phase_identifier.SETUP)),
                                             self._test_case.setup_phase)
 
-    def _construct_act_phase_executor(self) -> ActPhaseExecutor:
-        return ActPhaseExecutor(self._atc_executor,
-                                self._post_setup_validation_environment(phase_identifier.ACT),
-                                self._post_sds_environment(phase_identifier.ACT),
-                                self.exe_conf.act_phase_os_process_executor,
-                                self._stdin_conf_from_setup,
-                                self.exe_conf.exe_atc_and_skip_assertions)
+    def _construct_act_phase_executor(self) -> ActionToCheckExecutor:
+        return ActionToCheckExecutor(self._atc_executor,
+                                     self._post_setup_validation_environment(phase_identifier.ACT),
+                                     self._post_sds_environment(phase_identifier.ACT),
+                                     self.exe_conf.act_phase_os_process_executor,
+                                     self._stdin_conf_from_setup,
+                                     self.exe_conf.exe_atc_and_skip_assertions)
 
     def _before_assert__validate_post_setup(self) -> Optional[PhaseStepFailure]:
         return _run_instructions_phase_step(

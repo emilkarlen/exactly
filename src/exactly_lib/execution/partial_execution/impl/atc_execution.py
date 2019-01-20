@@ -19,7 +19,7 @@ from exactly_lib.util.std import StdFiles, StdOutputFiles
 PhaseStepFailureConstructorType = Callable[[PartialExeResultStatus, FailureDetails], PhaseStepFailure]
 
 
-class ActPhaseExecutor:
+class ActionToCheckExecutor:
     """
     Methods that corresponds to each step of the execution of the ATC.
 
