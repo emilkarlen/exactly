@@ -1,4 +1,4 @@
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 
 
 class ActPhaseSetup(tuple):

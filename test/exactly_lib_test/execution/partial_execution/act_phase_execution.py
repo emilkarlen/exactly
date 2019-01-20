@@ -13,7 +13,7 @@ from exactly_lib.execution.partial_execution.configuration import ConfPhaseValue
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.section_document.model import new_empty_section_contents
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutor, \
+from exactly_lib.test_case.actor import ActionToCheckExecutor, \
     ActionToCheckExecutorParser, ParseException, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
@@ -34,10 +34,10 @@ from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActionToCheckExecutorWrapperThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActionToCheckExecutorConstructorForConstantExecutor
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
+from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
     ActionToCheckExecutorThatJustReturnsSuccess, ActionToCheckExecutorThatRunsConstantActions
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
+    ActionToCheckExecutorConstructorForConstantExecutor
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.actions import do_raise
 from exactly_lib_test.test_resources.files import file_structure as fs

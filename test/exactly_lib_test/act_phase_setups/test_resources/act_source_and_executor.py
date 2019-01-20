@@ -5,7 +5,7 @@ import random
 from contextlib import contextmanager
 
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep

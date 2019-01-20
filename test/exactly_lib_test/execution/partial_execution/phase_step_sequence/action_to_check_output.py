@@ -9,7 +9,7 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
@@ -33,9 +33,9 @@ from exactly_lib_test.execution.test_resources.execution_recording.phase_steps i
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForInstructionFailure, \
     ExpectedFailureForNoFailure
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForPhaseFailure
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
     ActionToCheckExecutorParserThatRunsConstantActions
-from exactly_lib_test.test_case.act_phase_handling.test_resources.test_actions import execute_action_that_raises
+from exactly_lib_test.test_case.actor.test_resources.test_actions import execute_action_that_raises
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.files.capture_out_files import capture_stdout_err

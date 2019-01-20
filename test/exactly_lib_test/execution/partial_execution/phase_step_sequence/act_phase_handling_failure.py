@@ -14,7 +14,7 @@ from exactly_lib_test.execution.test_resources import instruction_test_resources
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import \
     PRE_SDS_VALIDATION_STEPS__ONCE, SYMBOL_VALIDATION_STEPS__ONCE
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForPhaseFailure
-from exactly_lib_test.test_case.act_phase_handling.test_resources.test_actions import execute_action_that_raises, \
+from exactly_lib_test.test_case.actor.test_resources.test_actions import execute_action_that_raises, \
     execute_action_that_returns_hard_error_with_message, \
     prepare_action_that_returns_hard_error_with_message, validate_action_that_returns, validate_action_that_raises
 

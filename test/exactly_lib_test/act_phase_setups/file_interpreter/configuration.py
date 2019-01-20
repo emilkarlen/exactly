@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, TestCaseSourceSetup

@@ -17,7 +17,7 @@ from exactly_lib_test.execution.test_resources.failure_info_check import Expecte
     ExpectedFailureForPhaseFailure
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
-from exactly_lib_test.test_case.act_phase_handling.test_resources.test_actions import \
+from exactly_lib_test.test_case.actor.test_resources.test_actions import \
     execute_action_that_returns_exit_code
 from exactly_lib_test.test_resources.actions import do_return, do_raise
 

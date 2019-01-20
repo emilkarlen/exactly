@@ -5,7 +5,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import ExecutableObjectParser, \
     UnconditionallySuccessfulValidator
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser

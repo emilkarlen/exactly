@@ -3,11 +3,11 @@ import unittest
 import os
 
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import recorder as instr_setup
 from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_actor
+from exactly_lib_test.test_case.actor.test_resources.actors import dummy_actor
 
 
 class Test(FullExecutionTestCaseBase):

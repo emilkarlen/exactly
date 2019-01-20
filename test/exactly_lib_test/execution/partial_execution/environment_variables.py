@@ -6,7 +6,7 @@ import re
 
 from exactly_lib.execution import phase_step_simple as step
 from exactly_lib.execution.phase_step import SimplePhaseStep
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.basic import Result, test__va, Arrangement
@@ -14,9 +14,9 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     before_assert_phase_instruction_that, assert_phase_instruction_that, \
     cleanup_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_actor
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
     ActionToCheckExecutorParserThatRunsConstantActions
+from exactly_lib_test.test_case.actor.test_resources.actors import dummy_actor
 from exactly_lib_test.test_resources.functions import Sequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase

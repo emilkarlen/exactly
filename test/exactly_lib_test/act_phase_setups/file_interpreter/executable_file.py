@@ -7,7 +7,7 @@ from exactly_lib.act_phase_setups import file_interpreter as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.act_phase_handling import ParseException
+from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib.util.process_execution.commands import executable_file_command
 from exactly_lib.util.string import lines_content
@@ -24,7 +24,7 @@ from exactly_lib_test.act_phase_setups.test_resources.test_validation_for_single
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_os_process_executor import \
+from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in

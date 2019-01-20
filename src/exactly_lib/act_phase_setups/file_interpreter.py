@@ -25,7 +25,7 @@ from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ParseException, \
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, ParseException, \
     ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \

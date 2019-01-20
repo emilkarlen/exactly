@@ -5,14 +5,14 @@ import types
 
 from exactly_lib.execution import phase_step_simple as step
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     assert_phase_instruction_that, before_assert_phase_instruction_that, cleanup_phase_instruction_that
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
     ActionToCheckExecutorParserThatRunsConstantActions
 from exactly_lib_test.test_case.test_resources.test_case_doc import TestCaseWithOnlyInstructionElementsBuilder, \
     InstructionElementGenerator

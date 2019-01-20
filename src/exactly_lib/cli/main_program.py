@@ -16,7 +16,7 @@ from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver, container_of_builtin, SymbolContainer
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable

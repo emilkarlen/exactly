@@ -3,7 +3,7 @@ import unittest
 import pathlib
 from typing import Sequence
 
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser, ParseException
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration

@@ -10,7 +10,7 @@ from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib_test.processing.standalone.test_resources import instructions_inclusion_test_base as base
 from exactly_lib_test.processing.standalone.test_resources.run_processor import capture_output_from_processor
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_os_process_executor import \
+from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatJustReturnsConstant
 from exactly_lib_test.test_resources.process import SubProcessResult
 

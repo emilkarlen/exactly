@@ -10,10 +10,10 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedInstruction
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.section_document.source_location import FileSystemLocationInfo, FileLocationInfo
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser, ActionToCheckExecutor
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser, ActionToCheckExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.util.line_source import line_sequence_from_line, LineSequence
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
+from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
     ActionToCheckExecutorThatJustReturnsSuccess
 from exactly_lib_test.test_suite.case_instructions.test_resources import integration_test
 from exactly_lib_test.test_suite.case_instructions.test_resources.integration_test import \

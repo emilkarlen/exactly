@@ -11,7 +11,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
     SYMBOL_VALIDATION_STEPS__TWICE
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForNoFailure
-from exactly_lib_test.test_case.act_phase_handling.test_resources.test_actions import \
+from exactly_lib_test.test_case.actor.test_resources.test_actions import \
     execute_action_that_returns_exit_code
 
 

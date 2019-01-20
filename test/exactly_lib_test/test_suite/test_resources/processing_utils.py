@@ -14,9 +14,9 @@ from exactly_lib_test.execution.full_execution.test_resources.result_values impo
     full_result_with_failure_info
 from exactly_lib_test.processing.test_resources.test_case_setup import \
     test_case_definition_with_no_instructions_and_no_preprocessor
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_os_process_executor import \
+from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatJustReturnsConstant
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
     ActionToCheckExecutorParserThatRunsConstantActions
 
 

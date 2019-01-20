@@ -3,7 +3,7 @@ import sys
 from exactly_lib.act_phase_setups.source_interpreter import source_file_management
 from exactly_lib.act_phase_setups.source_interpreter.executable_file import Parser
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import StandardSourceFileManager
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 
 
 def source_interpreter_setup() -> source_file_management.SourceInterpreterSetup:

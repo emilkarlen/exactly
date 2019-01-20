@@ -3,15 +3,15 @@ import sys
 import pathlib
 import subprocess
 
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, \
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, \
     ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.util.std import StdFiles
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActionToCheckExecutorConstructorForConstantExecutor
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
+from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
     ActionToCheckExecutorThatJustReturnsSuccess
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
+    ActionToCheckExecutorConstructorForConstantExecutor
 
 
 class ExecutorThatExecutesPythonProgramSource(ActionToCheckExecutorThatJustReturnsSuccess):

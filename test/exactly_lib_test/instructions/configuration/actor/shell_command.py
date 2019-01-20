@@ -4,7 +4,7 @@ from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, check, \
     file_in_home_act_dir, shell_command_syntax_for
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_os_process_executor import \
+from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \

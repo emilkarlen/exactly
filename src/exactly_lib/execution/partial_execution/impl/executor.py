@@ -13,7 +13,7 @@ from exactly_lib.execution.partial_execution.result import PartialExeResultStatu
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.act_phase_handling import ParseException
+from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act import ActPhaseInstruction

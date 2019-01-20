@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import \
+from exactly_lib_test.test_case.actor.test_resources.actors import \
     actor_that_must_not_be_used
 
 

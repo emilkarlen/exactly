@@ -6,7 +6,7 @@ from exactly_lib.execution import phase_step
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case.result.eh import new_eh_exit_code
 from exactly_lib.util.line_source import LineSequence
@@ -16,7 +16,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     before_assert_phase_instruction_that, assert_phase_instruction_that, \
     cleanup_phase_instruction_that, configuration_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
     ActionToCheckExecutorParserThatRunsConstantActions
 
 

@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.symbol.program.command_resolver import CommandResolver
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.util.std import StdFiles

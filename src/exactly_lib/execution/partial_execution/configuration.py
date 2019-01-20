@@ -1,7 +1,7 @@
 from typing import Optional
 
 from exactly_lib.section_document.model import SectionContents
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 
 

@@ -5,7 +5,7 @@ import subprocess
 
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.test_case import exception_detection
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
 from exactly_lib.util import failure_details

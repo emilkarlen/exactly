@@ -7,7 +7,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts as su
 from exactly_lib.execution import phase_step
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
-from exactly_lib.test_case.act_phase_handling import ParseException
+from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, SymbolUser
 from exactly_lib.test_case.result import sh, svh, eh

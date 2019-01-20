@@ -6,7 +6,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_execut
     SubProcessExecutor
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.result import sh

@@ -1,12 +1,13 @@
-import os
 import unittest
+
+import os
 
 from exactly_lib.execution.configuration import PredefinedProperties, ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver

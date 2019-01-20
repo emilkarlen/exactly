@@ -5,13 +5,13 @@ import pathlib
 from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.actor import actor_utils
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
     ActionToCheckExecutorParserThatRaisesImplementationException
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators

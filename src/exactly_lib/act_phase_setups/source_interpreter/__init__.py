@@ -5,7 +5,7 @@ from exactly_lib.act_phase_setups.source_interpreter import shell_command as she
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup, \
     StandardSourceFileManager
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 from exactly_lib.util.process_execution import commands
 from exactly_lib.util.process_execution.command import Command
 

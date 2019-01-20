@@ -5,7 +5,7 @@ from exactly_lib.act_phase_setups.util.source_code_lines_utils import all_source
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IdentityPreprocessor
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser, ActionToCheckExecutor
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser, ActionToCheckExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 
 

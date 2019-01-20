@@ -18,7 +18,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.instruction_parsers import InstructionParserThatConsumesCurrentLine
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser, ActionToCheckExecutor, ParseException
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser, ActionToCheckExecutor, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.result import svh
 from exactly_lib.type_system.value_type import ValueType
@@ -27,10 +27,10 @@ from exactly_lib_test.cli.program_modes.test_resources.main_program_execution im
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
 from exactly_lib_test.common.test_resources import instruction_setup
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instrs
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActionToCheckExecutorParserThatRunsConstantActions
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
+from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
     ActionToCheckExecutorThatRunsConstantActions
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
+    ActionToCheckExecutorParserThatRunsConstantActions
 from exactly_lib_test.test_resources.actions import do_return
 
 DEF_INSTRUCTION_NAME = 'define'

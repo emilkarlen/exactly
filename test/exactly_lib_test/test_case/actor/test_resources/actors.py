@@ -1,7 +1,7 @@
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 from exactly_lib.test_case.result import svh, sh
-from exactly_lib_test.test_case.act_phase_handling.test_resources import test_actions
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+from exactly_lib_test.test_case.actor.test_resources import test_actions
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
     ActionToCheckExecutorParserThatRunsConstantActions, ActionToCheckExecutorParserThatRaisesImplementationException
 
 

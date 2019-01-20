@@ -12,10 +12,10 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.test_case import os_services
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
     ActionToCheckExecutorParserThatRunsConstantActions
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd

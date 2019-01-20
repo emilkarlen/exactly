@@ -9,7 +9,7 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, ActionToCheckExecutorParser
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases import setup
@@ -25,7 +25,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import TestCaseGeneratorBase, \
     instruction_line_constructor
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_actor
+from exactly_lib_test.test_case.actor.test_resources.actors import dummy_actor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 

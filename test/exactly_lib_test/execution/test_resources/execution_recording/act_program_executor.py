@@ -3,7 +3,7 @@ from typing import Sequence
 
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutor, \
+from exactly_lib.test_case.actor import ActionToCheckExecutor, \
     ActionToCheckExecutorParser, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
@@ -12,7 +12,7 @@ from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
     ActionToCheckExecutorConstructorForConstantExecutor
 from exactly_lib_test.test_resources import actions
 

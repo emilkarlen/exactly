@@ -12,7 +12,7 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
     ActionToCheckExecutorParserThatRaisesParseException
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result

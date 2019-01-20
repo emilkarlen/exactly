@@ -6,11 +6,11 @@ from typing import Callable
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileLocationInfo, FileSystemLocationInfo
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result.sh import SuccessOrHardError
 from exactly_lib.test_case.test_case_status import TestCaseStatus
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_actor
+from exactly_lib_test.test_case.actor.test_resources.actors import dummy_actor
 from exactly_lib_test.test_case.result.test_resources import sh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementBase
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators

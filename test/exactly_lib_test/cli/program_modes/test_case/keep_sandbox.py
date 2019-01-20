@@ -19,7 +19,7 @@ from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 from exactly_lib.test_case.phase_identifier import Phase, PhaseEnum
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result import pfh, sh, svh
@@ -32,7 +32,7 @@ from exactly_lib_test.common.test_resources.instruction_setup import single_inst
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     assert_phase_instruction_that, before_assert_phase_instruction_that, cleanup_phase_instruction_that
 from exactly_lib_test.processing.test_resources.instruction_set import instruction_set
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
     ActionToCheckExecutorParserThatRunsConstantActions
 from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File

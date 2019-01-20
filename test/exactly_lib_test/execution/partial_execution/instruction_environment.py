@@ -14,7 +14,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     before_assert_phase_instruction_that, assert_phase_instruction_that, \
     cleanup_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_actor
+from exactly_lib_test.test_case.actor.test_resources.actors import dummy_actor
 
 
 def suite() -> unittest.makeSuite:

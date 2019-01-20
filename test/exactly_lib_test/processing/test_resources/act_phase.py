@@ -3,10 +3,10 @@ import pathlib
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.std import StdFiles
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActionToCheckExecutorConstructorForConstantExecutor
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
+from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
     ActionToCheckExecutorThatRunsConstantActions
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
+    ActionToCheckExecutorConstructorForConstantExecutor
 
 
 def act_setup_that_prints_single_string_on_stdout(string_to_print: str) -> ActPhaseSetup:

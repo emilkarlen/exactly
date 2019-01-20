@@ -19,7 +19,7 @@ from exactly_lib.help.entities.actors.objects import command_line as command_lin
 from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 from exactly_lib.test_case_utils.parse.shell_syntax import SHELL_KEYWORD
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches

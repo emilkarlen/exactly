@@ -8,7 +8,7 @@ from exactly_lib.processing.standalone import result_reporting
 from exactly_lib.processing.standalone.accessor_resolver import AccessorResolver
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings, ReportingOption
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor
 from exactly_lib.test_suite.file_reading.exception import SuiteSyntaxError
 from exactly_lib.util.std import StdOutputFiles
 

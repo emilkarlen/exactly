@@ -2,7 +2,7 @@ import pathlib
 from typing import Optional
 
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result.sh import SuccessOrHardError
 from exactly_lib.test_case.test_case_status import TestCaseStatus
