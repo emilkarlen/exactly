@@ -9,7 +9,7 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActionToCheckExecutorParser
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
@@ -84,10 +84,9 @@ class Expectation:
 def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation):
-    parser = ActionToCheckExecutorWrapperParserThatRecordsSteps(
+    act_phase_handling = ActionToCheckExecutorWrapperParserThatRecordsSteps(
         arrangement.test_case_generator.recorder,
         arrangement.atc_exe_parser)
-    act_phase_handling = ActPhaseHandling(parser)
 
     def action(std_files: StdOutputFiles) -> PartialExeResult:
         exe_conf = ExecutionConfiguration(dict(os.environ),

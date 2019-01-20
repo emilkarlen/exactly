@@ -1,14 +1,15 @@
 from typing import Optional
 
 from exactly_lib.section_document.model import SectionContents
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 
 
 class ConfPhaseValues(tuple):
     """Values resolved from the conf phase"""
+
     def __new__(cls,
-                act_phase_handling: ActPhaseHandling,
+                act_phase_handling: ActionToCheckExecutorParser,
                 hds: HomeDirectoryStructure,
                 timeout_in_seconds: Optional[int] = None):
         """
@@ -20,7 +21,7 @@ class ConfPhaseValues(tuple):
                                    ))
 
     @property
-    def act_phase_handling(self) -> ActPhaseHandling:
+    def act_phase_handling(self) -> ActionToCheckExecutorParser:
         return self[0]
 
     @property

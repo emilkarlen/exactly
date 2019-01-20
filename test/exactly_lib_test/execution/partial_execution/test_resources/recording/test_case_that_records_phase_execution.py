@@ -4,7 +4,7 @@ import types
 
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording
@@ -95,7 +95,7 @@ class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
                  test_case_generator: TestCaseGeneratorForExecutionRecording,
                  expectation: Expectation,
                  dbg_do_not_delete_dir_structure=False,
-                 act_phase_handling: ActPhaseHandling = None,
+                 act_phase_handling: ActionToCheckExecutorParser = None,
                  recorder: ListRecorder = None):
         super().__init__(put,
                          dbg_do_not_delete_dir_structure,
@@ -142,12 +142,11 @@ def execute_test_case_with_recording(put: unittest.TestCase,
         prepare_action=arrangement.act_executor_prepare,
         execute_action=arrangement.act_executor_execute,
     )
-    constructor = step_recording_executors.parser_of_constant(
+    act_phase_handling = step_recording_executors.parser_of_constant(
         arrangement.test_case_generator.recorder,
         constant_actions_runner,
         parse_action=arrangement.act_executor_parse,
     )
-    act_phase_handling = ActPhaseHandling(constructor)
     test_case = _TestCaseThatRecordsExecution(put,
                                               arrangement.test_case_generator,
                                               expectation,

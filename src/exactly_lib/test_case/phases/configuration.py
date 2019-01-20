@@ -2,7 +2,7 @@ import pathlib
 from typing import Optional
 
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result.sh import SuccessOrHardError
 from exactly_lib.test_case.test_case_status import TestCaseStatus
@@ -14,7 +14,7 @@ class ConfigurationBuilder:
     def __init__(self,
                  home_case_dir_path: pathlib.Path,
                  home_act_dir_path: pathlib.Path,
-                 act_phase_handling: ActPhaseHandling,
+                 act_phase_handling: ActionToCheckExecutorParser,
                  timeout_in_seconds: Optional[int] = None,
                  test_case_status: TestCaseStatus = TestCaseStatus.PASS):
         self.__act_phase_handling = act_phase_handling
@@ -44,10 +44,10 @@ class ConfigurationBuilder:
                                       act_dir=self.__hds_dirs[RelHomeOptionType.REL_HOME_ACT])
 
     @property
-    def act_phase_handling(self) -> ActPhaseHandling:
+    def act_phase_handling(self) -> ActionToCheckExecutorParser:
         return self.__act_phase_handling
 
-    def set_act_phase_handling(self, x: ActPhaseHandling):
+    def set_act_phase_handling(self, x: ActionToCheckExecutorParser):
         self.__act_phase_handling = x
 
     @property

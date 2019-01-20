@@ -7,7 +7,7 @@ from exactly_lib.execution import phase_step
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure import environment_variables
@@ -32,8 +32,8 @@ class Test(FullExecutionTestCaseBase):
                          dbg_do_not_delete_dir_structure)
         self.recorder = instr_setup.Recorder()
 
-    def _act_phase_handling(self) -> ActPhaseHandling:
-        executor_parser = ActionToCheckExecutorParserThatRunsConstantActions(
+    def _act_phase_handling(self) -> ActionToCheckExecutorParser:
+        return ActionToCheckExecutorParserThatRunsConstantActions(
             validate_pre_sds_initial_action=_RecordEnvVars(
                 self.recorder,
                 phase_step.ACT__VALIDATE_PRE_SDS),
@@ -46,7 +46,6 @@ class Test(FullExecutionTestCaseBase):
             execute_initial_action=_RecordEnvVars(
                 self.recorder,
                 phase_step.ACT__EXECUTE))
-        return ActPhaseHandling(executor_parser)
 
     def _test_case(self) -> test_case_doc.TestCase:
         return full_test_case_with_instructions(

@@ -20,7 +20,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import source_location_path_of_non_empty_location_path
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, \
+    ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util.std import StdOutputFiles
 
@@ -152,8 +153,8 @@ class _Parser(processing_utils.Parser):
                                 error_info)
 
 
-def act_phase_handling_for_setup(setup: ActPhaseSetup) -> ActPhaseHandling:
-    return ActPhaseHandling(setup.atc_executor_parser)
+def act_phase_handling_for_setup(setup: ActPhaseSetup) -> ActionToCheckExecutorParser:
+    return setup.atc_executor_parser
 
 
 class _Executor(processing_utils.Executor):

@@ -91,8 +91,7 @@ class _PartialExecutor:
         self._os_services = None
         self._act_phase_executor = None
         self._atc_executor = None
-        self._act_source_and_executor_constructor = \
-            conf.conf_phase_values.act_phase_handling.atc_exe_parser
+        self._act_source_and_executor_constructor = conf.conf_phase_values.act_phase_handling
         self._instruction_environment_pre_sds = InstructionEnvironmentForPreSdsStep(
             self.conf_values.hds,
             self.exe_conf.environ,
@@ -243,7 +242,7 @@ class _PartialExecutor:
                 msg = 'Act phase contains an element that is not an instruction: ' + str(element.element_type)
                 return failure_con.implementation_error_msg(msg)
 
-        atc_executor_parser = self.conf_values.act_phase_handling.atc_exe_parser
+        atc_executor_parser = self.conf_values.act_phase_handling
 
         def parse_action() -> Optional[PhaseStepFailure]:
             try:

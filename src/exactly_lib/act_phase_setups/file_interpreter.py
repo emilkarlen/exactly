@@ -25,7 +25,8 @@ from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ParseException, \
+    ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
@@ -45,8 +46,8 @@ def act_phase_setup(interpreter: Command) -> ActPhaseSetup:
     return ActPhaseSetup(parser(interpreter))
 
 
-def act_phase_handling(interpreter: Command) -> ActPhaseHandling:
-    return ActPhaseHandling(parser(interpreter))
+def act_phase_handling(interpreter: Command) -> ActionToCheckExecutorParser:
+    return parser(interpreter)
 
 
 def parser(interpreter: Command) -> parts.AtcExecutorParser:

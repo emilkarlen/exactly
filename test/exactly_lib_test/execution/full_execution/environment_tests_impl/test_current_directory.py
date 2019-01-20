@@ -6,7 +6,7 @@ from exactly_lib.execution import phase_step
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case.result.eh import new_eh_exit_code
 from exactly_lib.util.line_source import LineSequence
@@ -68,13 +68,13 @@ class Test(FullExecutionTestCaseBase):
         super().__init__(unittest_case,
                          dbg_do_not_delete_dir_structure)
 
-    def _act_phase_handling(self) -> ActPhaseHandling:
+    def _act_phase_handling(self) -> ActionToCheckExecutorParser:
         parser = ActionToCheckExecutorParserThatRunsConstantActions(
             validate_post_setup_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__VALIDATE_POST_SETUP,
                                                                svh.new_svh_success()),
             execute_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__EXECUTE,
                                                    new_eh_exit_code(0)))
-        return ActPhaseHandling(parser)
+        return parser
 
     def _test_case(self) -> test_case_doc.TestCase:
         return full_test_case_with_instructions(

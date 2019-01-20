@@ -3,7 +3,7 @@ import sys
 from exactly_lib.act_phase_setups.source_interpreter import source_file_management
 from exactly_lib.act_phase_setups.source_interpreter.executable_file import Parser
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import StandardSourceFileManager
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActionToCheckExecutorParser
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 
 
 def source_interpreter_setup() -> source_file_management.SourceInterpreterSetup:
@@ -22,5 +22,5 @@ def new_atc_executor_parser() -> ActionToCheckExecutorParser:
     return Parser(source_interpreter_setup())
 
 
-def new_act_phase_handling() -> ActPhaseHandling:
-    return ActPhaseHandling(new_atc_executor_parser())
+def new_act_phase_handling() -> ActionToCheckExecutorParser:
+    return new_atc_executor_parser()

@@ -25,7 +25,7 @@ def suite() -> unittest.TestSuite:
 class TheConfiguration(Configuration):
     def __init__(self):
         self.setup = sut.handling_for_interpreter_command(file_name_of_interpreter())
-        super().__init__(self.setup.atc_exe_parser)
+        super().__init__(self.setup)
 
     @contextmanager
     def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:

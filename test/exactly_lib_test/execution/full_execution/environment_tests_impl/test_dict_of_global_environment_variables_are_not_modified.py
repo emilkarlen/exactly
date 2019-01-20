@@ -1,8 +1,9 @@
-import os
 import unittest
 
+import os
+
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import recorder as instr_setup
 from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
@@ -18,7 +19,7 @@ class Test(FullExecutionTestCaseBase):
         self.recorder = instr_setup.Recorder()
         self.original_set_of_env_vars = dict(os.environ)
 
-    def _act_phase_handling(self) -> ActPhaseHandling:
+    def _act_phase_handling(self) -> ActionToCheckExecutorParser:
         return dummy_act_phase_handling()
 
     def _test_case(self) -> test_case_doc.TestCase:

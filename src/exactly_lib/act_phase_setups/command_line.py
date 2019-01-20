@@ -15,7 +15,8 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ParseException, \
+    ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     SymbolUser
@@ -30,8 +31,8 @@ def act_phase_setup() -> ActPhaseSetup:
     return ActPhaseSetup(Parser())
 
 
-def act_phase_handling() -> ActPhaseHandling:
-    return ActPhaseHandling(Parser())
+def act_phase_handling() -> ActionToCheckExecutorParser:
+    return Parser()
 
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.EXECUTABLE)

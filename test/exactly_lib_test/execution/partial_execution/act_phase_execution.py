@@ -14,7 +14,7 @@ from exactly_lib.execution.partial_execution.result import PartialExeResultStatu
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutor, \
-    ActPhaseHandling, ActionToCheckExecutorParser, ParseException, ActPhaseOsProcessExecutor
+    ActionToCheckExecutorParser, ParseException, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -81,7 +81,7 @@ class TestExecutionSequence(unittest.TestCase):
             parse_action=do_raise(ParseException(expected_cause))
         )
         arrangement = Arrangement(test_case=_empty_test_case(),
-                                  act_phase_handling=ActPhaseHandling(parser))
+                                  act_phase_handling=parser)
         # ASSERT #
         expectation = Expectation(phase_result=asrt_result.status_is(PartialExeResultStatus.VALIDATION_ERROR))
         # APPLY #
@@ -102,7 +102,7 @@ class TestExecutionSequence(unittest.TestCase):
             parse_action=do_raise(ValueError(expected_cause))
         )
         arrangement = Arrangement(test_case=_empty_test_case(),
-                                  act_phase_handling=ActPhaseHandling(parser))
+                                  act_phase_handling=parser)
         # ASSERT #
         expectation = Expectation(phase_result=asrt_result.status_is(PartialExeResultStatus.IMPLEMENTATION_ERROR))
         # APPLY #
@@ -149,7 +149,7 @@ class TestExecute(unittest.TestCase):
         executor = _ExecutorThatReturnsConstantExitCode(exit_code_from_execution)
         parser = ActionToCheckExecutorConstructorForConstantExecutor(executor)
         arrangement = Arrangement(test_case=_empty_test_case(),
-                                  act_phase_handling=ActPhaseHandling(parser))
+                                  act_phase_handling=parser)
         # ASSERT #
         expectation = Expectation(assertion_on_sds=_exit_code_result_file_contains(str(exit_code_from_execution)))
         # APPLY #
@@ -352,7 +352,7 @@ def _execute(parser: ActionToCheckExecutorParser,
                 ExecutionConfiguration(dict(os.environ),
                                        DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                        sandbox_root_name_resolver.for_test()),
-                ConfPhaseValues(ActPhaseHandling(parser),
+                ConfPhaseValues(parser,
                                 hds),
                 setup_settings,
                 is_keep_sandbox)

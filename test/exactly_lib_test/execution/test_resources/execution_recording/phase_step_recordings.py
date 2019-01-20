@@ -6,7 +6,7 @@ from typing import Callable
 
 from exactly_lib.execution import phase_step_simple as step
 from exactly_lib.execution.phase_step import SimplePhaseStep
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_case.phase_identifier import PHASES_FOR_PARTIAL_EXECUTION
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
@@ -115,14 +115,14 @@ def no_recording(phase_step: SimplePhaseStep):
 def act_phase_handling_that_records_a_value_per_step(
         recorder_for_step_with_env: types.FunctionType,
         recorder_for_parse_step: types.FunctionType,
-) -> ActPhaseHandling:
-    return ActPhaseHandling(ActionToCheckExecutorParserThatRunsConstantActions(
+) -> ActionToCheckExecutorParser:
+    return ActionToCheckExecutorParserThatRunsConstantActions(
         parse_action=recorder_for_parse_step(step.ACT__PARSE),
         validate_pre_sds_initial_action=recorder_for_step_with_env(step.ACT__VALIDATE_PRE_SDS),
         validate_post_setup_initial_action=recorder_for_step_with_env(step.ACT__VALIDATE_POST_SETUP),
         prepare_initial_action=recorder_for_step_with_env(step.ACT__PREPARE),
         execute_initial_action=recorder_for_step_with_env(step.ACT__EXECUTE),
-    ))
+    )
 
 
 def new_phase_enum_2_empty_dict() -> dict:

@@ -1,14 +1,16 @@
+import unittest
+
 import os
 import pathlib
 import shutil
-import unittest
 
 from exactly_lib.act_phase_setups.source_interpreter import python3
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.test_case import test_case_doc, os_services
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, \
+    ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable
@@ -19,7 +21,7 @@ class FullExecutionTestCaseBase:
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False,
-                 act_phase_handling: ActPhaseHandling = None,
+                 act_phase_handling: ActionToCheckExecutorParser = None,
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor =
                  os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR):
         self.__unittest_case = unittest_case
@@ -59,7 +61,7 @@ class FullExecutionTestCaseBase:
             if self.sds:
                 print(str(self.sds.root_dir))
 
-    def _act_phase_handling(self) -> ActPhaseHandling:
+    def _act_phase_handling(self) -> ActionToCheckExecutorParser:
         if self.__act_phase_handling is None:
             return python3.new_act_phase_handling()
         return self.__act_phase_handling

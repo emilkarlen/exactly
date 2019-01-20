@@ -5,7 +5,7 @@ import pathlib
 from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.actor import actor_utils
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
@@ -53,9 +53,8 @@ def check(put: unittest.TestCase,
     assert isinstance(instruction, ConfigurationPhaseInstruction)
     instruction.main(configuration_builder)
     act_phase_instructions = [instr(arrangement.act_phase_source_lines)]
-    executor_constructor = configuration_builder.act_phase_handling.atc_exe_parser
     act_phase_execution.check_execution(put,
-                                        executor_constructor,
+                                        configuration_builder.act_phase_handling,
                                         act_phase_instructions,
                                         act_phase_execution.Arrangement(
                                             hds_contents=arrangement.hds_contents,
@@ -70,7 +69,7 @@ def _configuration_builder_with_exception_throwing_act_phase_setup() -> Configur
     initial_home_dir = pathlib.Path()
     return ConfigurationBuilder(initial_home_dir,
                                 initial_home_dir,
-                                ActPhaseHandling(ActionToCheckExecutorParserThatRaisesImplementationException()))
+                                ActionToCheckExecutorParserThatRaisesImplementationException())
 
 
 def file_in_home_act_dir(file_name: str) -> home_populators.HomePopulator:

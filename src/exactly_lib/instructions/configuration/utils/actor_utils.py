@@ -19,7 +19,7 @@ from exactly_lib.help.entities.actors.objects import command_line as command_lin
 from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_case_utils.parse.shell_syntax import SHELL_KEYWORD
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches
@@ -135,7 +135,7 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
         return self._tp.fnap(_DESCRIPTION_OF_SHELL)
 
 
-def parse(instruction_argument: str) -> ActPhaseHandling:
+def parse(instruction_argument: str) -> ActionToCheckExecutorParser:
     """
     :raises SingleInstructionInvalidArgumentException In case of invalid syntax
     """
@@ -166,11 +166,11 @@ def parse(instruction_argument: str) -> ActPhaseHandling:
     raise SingleInstructionInvalidArgumentException('Invalid option: "{}"'.format(args[0]))
 
 
-def _parse_source_interpreter(arg: str) -> ActPhaseHandling:
+def _parse_source_interpreter(arg: str) -> ActionToCheckExecutorParser:
     return source_interpreter.act_phase_handling(_parse_interpreter_command(arg))
 
 
-def _parse_file_interpreter(arg: str) -> ActPhaseHandling:
+def _parse_file_interpreter(arg: str) -> ActionToCheckExecutorParser:
     return file_interpreter.act_phase_handling(_parse_interpreter_command(arg))
 
 

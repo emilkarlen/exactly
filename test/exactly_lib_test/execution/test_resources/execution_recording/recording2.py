@@ -5,7 +5,7 @@ import types
 
 from exactly_lib.execution import phase_step_simple as step
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
@@ -70,22 +70,22 @@ def test_case_that_records_property_of_env_for_each_step_of_partial_execution(
 
 
 def act_phase_handling_that_records_property_of_env_for_each_step_w_env_arg(
-        property_recorder: PropertyRecorderBuilder) -> ActPhaseHandling:
-    return ActPhaseHandling(ActionToCheckExecutorParserThatRunsConstantActions(
+        property_recorder: PropertyRecorderBuilder) -> ActionToCheckExecutorParser:
+    return ActionToCheckExecutorParserThatRunsConstantActions(
         validate_pre_sds_initial_action=property_recorder.of_first_arg(step.ACT__VALIDATE_PRE_SDS),
         validate_post_setup_initial_action=property_recorder.of_first_arg(step.ACT__VALIDATE_POST_SETUP),
         prepare_initial_action=property_recorder.of_first_arg(step.ACT__PREPARE),
         execute_initial_action=property_recorder.of_first_arg(step.ACT__EXECUTE),
-    ))
+    )
 
 
 def act_phase_handling_that_records_property_of_env_for_each_step_post_sds(
-        property_recorder: PropertyRecorderBuilder) -> ActPhaseHandling:
-    return ActPhaseHandling(ActionToCheckExecutorParserThatRunsConstantActions(
+        property_recorder: PropertyRecorderBuilder) -> ActionToCheckExecutorParser:
+    return ActionToCheckExecutorParserThatRunsConstantActions(
         validate_post_setup_initial_action=property_recorder.of_first_arg(step.ACT__VALIDATE_POST_SETUP),
         prepare_initial_action=property_recorder.of_first_arg(step.ACT__PREPARE),
         execute_initial_action=property_recorder.of_first_arg(step.ACT__EXECUTE),
-    ))
+    )
 
 
 def setup_phase_instruction_that_records_property_of_env_for_each_step(

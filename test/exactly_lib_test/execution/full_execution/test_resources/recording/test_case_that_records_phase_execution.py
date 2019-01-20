@@ -4,7 +4,7 @@ import types
 
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActionToCheckExecutorParser
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase
@@ -89,7 +89,7 @@ class _TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
                  test_case_generator: TestCaseGeneratorForExecutionRecording,
                  expectation: Expectation,
                  dbg_do_not_delete_dir_structure=False,
-                 act_phase_handling: ActPhaseHandling = None,
+                 act_phase_handling: ActionToCheckExecutorParser = None,
                  recorder: ListRecorder = None):
         super().__init__(unittest_case,
                          dbg_do_not_delete_dir_structure,
@@ -139,17 +139,16 @@ class TestCaseBase(unittest.TestCase):
                                              arrangement.test_case_generator.recorder)
 
     def _with_recording_act_program_executor(self,
-                                             arrangement: Arrangement) -> ActPhaseHandling:
+                                             arrangement: Arrangement) -> ActionToCheckExecutorParser:
         constant_actions_runner = ActionToCheckExecutorThatRunsConstantActions(
             validate_post_setup_action=arrangement.validate_test_action,
             prepare_action=arrangement.prepare_test_action,
             execute_action=arrangement.execute_test_action,
             validate_pre_sds_action=arrangement.act_executor_validate_pre_sds)
-        constructor = step_recording_executors.parser_of_constant(
+        return step_recording_executors.parser_of_constant(
             arrangement.test_case_generator.recorder,
             constant_actions_runner,
             parse_action=arrangement.parse)
-        return ActPhaseHandling(constructor)
 
 
 def one_successful_instruction_in_each_phase() -> TestCaseGeneratorForExecutionRecording:

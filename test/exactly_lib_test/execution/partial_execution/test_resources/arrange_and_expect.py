@@ -1,13 +1,14 @@
+import unittest
+
 import os
 import shutil
-import unittest
 
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.test_case import os_services
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActionToCheckExecutorParser
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
@@ -21,7 +22,7 @@ from .basic import Result
 class Arrangement:
     def __init__(self,
                  test_case: TestCase,
-                 act_phase_handling: ActPhaseHandling,
+                 act_phase_handling: ActionToCheckExecutorParser,
                  initial_setup_settings: setup.SetupSettingsBuilder = setup.default_settings(),
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor =
                  os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR):
