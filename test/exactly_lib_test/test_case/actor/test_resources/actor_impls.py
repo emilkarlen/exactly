@@ -46,17 +46,17 @@ class ActorThatRunsConstantActions(Actor):
             execute_action=self.execute_action)
 
 
-class ActorForConstantExecutor(Actor):
+class ActorForConstantAtc(Actor):
     def __init__(self,
-                 executor: ActionToCheck,
+                 atc: ActionToCheck,
                  parse_action=actions.do_nothing,
                  ):
-        self.executor = executor
+        self.atc = atc
         self.parse_action = parse_action
 
     def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheck:
         self.parse_action(instructions)
-        return self.executor
+        return self.atc
 
 
 class ActorThatRaisesImplementationException(Actor):

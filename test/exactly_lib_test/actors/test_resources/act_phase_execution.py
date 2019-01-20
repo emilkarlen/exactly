@@ -178,20 +178,20 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
                  environment: InstructionEnvironmentForPostSdsStep,
                  act_phase_process_executor: ActPhaseOsProcessExecutor,
                  script_output_path: pathlib.Path,
-                 atc_executor: ActionToCheck):
+                 atc: ActionToCheck):
         self.environment = environment
         self.act_phase_process_executor = act_phase_process_executor
         self.script_output_path = script_output_path
-        self.atc_executor = atc_executor
+        self.atc = atc
 
     def execute(self, files: StdFiles) -> int:
         """
          :raises HardErrorResultError: Return value from executor is not an exit code.
         """
-        exit_code_or_hard_error = self.atc_executor.execute(self.environment,
-                                                            self.act_phase_process_executor,
-                                                            self.script_output_path,
-                                                            files)
+        exit_code_or_hard_error = self.atc.execute(self.environment,
+                                                   self.act_phase_process_executor,
+                                                   self.script_output_path,
+                                                   files)
         if exit_code_or_hard_error.is_exit_code:
             return exit_code_or_hard_error.exit_code
         raise HardErrorResultError(exit_code_or_hard_error,

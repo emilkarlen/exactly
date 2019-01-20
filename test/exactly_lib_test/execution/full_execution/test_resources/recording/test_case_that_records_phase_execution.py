@@ -140,14 +140,14 @@ class TestCaseBase(unittest.TestCase):
 
     def _with_recording_act_program_executor(self,
                                              arrangement: Arrangement) -> Actor:
-        constant_actions_runner = ActionToCheckThatRunsConstantActions(
+        constant_actions_atc = ActionToCheckThatRunsConstantActions(
             validate_post_setup_action=arrangement.validate_test_action,
             prepare_action=arrangement.prepare_test_action,
             execute_action=arrangement.execute_test_action,
             validate_pre_sds_action=arrangement.act_executor_validate_pre_sds)
         return step_recording_executors.parser_of_constant(
             arrangement.test_case_generator.recorder,
-            constant_actions_runner,
+            constant_actions_atc,
             parse_action=arrangement.parse)
 
 

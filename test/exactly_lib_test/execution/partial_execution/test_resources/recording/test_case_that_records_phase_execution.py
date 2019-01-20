@@ -135,7 +135,7 @@ def execute_test_case_with_recording(put: unittest.TestCase,
                                      arrangement: Arrangement,
                                      expectation: Expectation,
                                      dbg_do_not_delete_dir_structure=False):
-    constant_actions_runner = ActionToCheckThatRunsConstantActions(
+    constant_actions_act = ActionToCheckThatRunsConstantActions(
         symbol_usages_action=arrangement.act_executor_symbol_usages,
         validate_pre_sds_action=arrangement.act_executor_validate_pre_sds,
         validate_post_setup_action=arrangement.act_executor_validate_post_setup,
@@ -144,7 +144,7 @@ def execute_test_case_with_recording(put: unittest.TestCase,
     )
     actor = step_recording_executors.parser_of_constant(
         arrangement.test_case_generator.recorder,
-        constant_actions_runner,
+        constant_actions_act,
         parse_action=arrangement.act_executor_parse,
     )
     test_case = _TestCaseThatRecordsExecution(put,

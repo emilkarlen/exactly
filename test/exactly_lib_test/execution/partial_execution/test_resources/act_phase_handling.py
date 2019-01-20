@@ -10,10 +10,10 @@ from exactly_lib.util.std import StdFiles
 from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
     ActionToCheckThatJustReturnsSuccess
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
-    ActorForConstantExecutor
+    ActorForConstantAtc
 
 
-class ExecutorThatExecutesPythonProgramSource(ActionToCheckThatJustReturnsSuccess):
+class AtcThatExecutesPythonProgramSource(ActionToCheckThatJustReturnsSuccess):
     PYTHON_FILE_NAME = 'program.py'
 
     def __init__(self, python_program_source: str):
@@ -37,5 +37,5 @@ class ExecutorThatExecutesPythonProgramSource(ActionToCheckThatJustReturnsSucces
 
 
 def actor_for_execution_of_python_source(python_source: str) -> Actor:
-    executor = ExecutorThatExecutesPythonProgramSource(python_source)
-    return ActorForConstantExecutor(executor)
+    atc = AtcThatExecutesPythonProgramSource(python_source)
+    return ActorForConstantAtc(atc)

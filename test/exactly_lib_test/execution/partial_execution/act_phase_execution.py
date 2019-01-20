@@ -36,7 +36,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.recorder impo
 from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
     ActionToCheckThatJustReturnsSuccess, ActionToCheckThatRunsConstantActions
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
-    ActorForConstantExecutor
+    ActorForConstantAtc
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.actions import do_raise
 from exactly_lib_test.test_resources.files import file_structure as fs
@@ -71,12 +71,12 @@ class TestExecutionSequence(unittest.TestCase):
     def test_WHEN_parse_raises_parse_exception_THEN_execution_SHOULD_stop_with_result_of_validation_error(self):
         # ARRANGE #
         expected_cause = svh.new_svh_validation_error('failure message')
-        executor_that_does_nothing = ActionToCheckThatRunsConstantActions()
+        atc_that_does_nothing = ActionToCheckThatRunsConstantActions()
         step_recorder = ListRecorder()
-        recording_executor = ActionToCheckWrapperThatRecordsSteps(step_recorder,
-                                                                  executor_that_does_nothing)
-        actor = ActorForConstantExecutor(
-            recording_executor,
+        recording_atc = ActionToCheckWrapperThatRecordsSteps(step_recorder,
+                                                             atc_that_does_nothing)
+        actor = ActorForConstantAtc(
+            recording_atc,
             parse_action=do_raise(ParseException(expected_cause))
         )
         arrangement = Arrangement(test_case=_empty_test_case(),
@@ -92,12 +92,12 @@ class TestExecutionSequence(unittest.TestCase):
     def test_WHEN_parse_raises_unknown_exception_THEN_execution_SHOULD_stop_with_result_of_implementation_error(self):
         # ARRANGE #
         expected_cause = svh.new_svh_validation_error('failure message')
-        executor_that_does_nothing = ActionToCheckThatRunsConstantActions()
+        atc_that_does_nothing = ActionToCheckThatRunsConstantActions()
         step_recorder = ListRecorder()
-        recording_executor = ActionToCheckWrapperThatRecordsSteps(step_recorder,
-                                                                  executor_that_does_nothing)
-        actor = ActorForConstantExecutor(
-            recording_executor,
+        recording_atc = ActionToCheckWrapperThatRecordsSteps(step_recorder,
+                                                             atc_that_does_nothing)
+        actor = ActorForConstantAtc(
+            recording_atc,
             parse_action=do_raise(ValueError(expected_cause))
         )
         arrangement = Arrangement(test_case=_empty_test_case(),
@@ -116,14 +116,14 @@ class TestCurrentDirectory(unittest.TestCase):
         # ARRANGE
         cwd_registerer = CwdRegisterer()
         with tmp_dir_as_cwd() as expected_current_directory_pre_validate_post_setup:
-            executor_that_records_current_dir = _ActionToCheckThatRecordsCurrentDir(cwd_registerer)
-            parser = ActorForConstantExecutor(executor_that_records_current_dir)
+            atc_that_records_current_dir = _ActionToCheckThatRecordsCurrentDir(cwd_registerer)
+            actor = ActorForConstantAtc(atc_that_records_current_dir)
             # ACT #
-            _execute(parser, _empty_test_case(),
+            _execute(actor, _empty_test_case(),
                      current_directory=expected_current_directory_pre_validate_post_setup)
             # ASSERT #
             phase_step_2_cwd = cwd_registerer.phase_step_2_cwd
-            sds = executor_that_records_current_dir.actual_sds
+            sds = atc_that_records_current_dir.actual_sds
             self.assertEqual(len(phase_step_2_cwd),
                              4,
                              'Expects recordings for 4 steps')
@@ -145,8 +145,8 @@ class TestExecute(unittest.TestCase):
     def test_exitcode_should_be_saved_in_file(self):
         # ARRANGE #
         exit_code_from_execution = 72
-        executor = _ExecutorThatReturnsConstantExitCode(exit_code_from_execution)
-        actor = ActorForConstantExecutor(executor)
+        executor = _AtcThatReturnsConstantExitCode(exit_code_from_execution)
+        actor = ActorForConstantAtc(executor)
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   actor=actor)
         # ASSERT #
@@ -182,10 +182,10 @@ class TestExecute(unittest.TestCase):
         # ARRANGE #
         setup_settings = setup.default_settings()
         setup_settings.stdin.file_name = 'this-is-not-the-name-of-an-existing-file.txt'
-        parser = ActorForConstantExecutor(ActionToCheckThatJustReturnsSuccess())
+        actor = ActorForConstantAtc(ActionToCheckThatJustReturnsSuccess())
         test_case = _empty_test_case()
         # ACT #
-        result = _execute(parser, test_case, setup_settings)
+        result = _execute(actor, test_case, setup_settings)
         # ASSERT #
         self.assertTrue(result.is_failure)
 
@@ -246,9 +246,9 @@ def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
             output_file_path = tmp_dir_path / 'output.txt'
             python_program_file = fs.File('program.py', _python_program_that_prints_stdin_to(output_file_path))
             python_program_file.write_to(tmp_dir_path)
-            executor_that_records_contents_of_stdin = _ExecutorThatExecutesPythonProgramFile(
+            executor_that_records_contents_of_stdin = _AtcThatExecutesPythonProgramFile(
                 tmp_dir_path / 'program.py')
-            parser = ActorForConstantExecutor(
+            parser = ActorForConstantAtc(
                 executor_that_records_contents_of_stdin)
             test_case = _empty_test_case()
             # ACT #
@@ -298,7 +298,7 @@ class _ActionToCheckThatRecordsCurrentDir(ActionToCheck):
         return self._actual_sds
 
 
-class _ExecutorThatExecutesPythonProgramFile(ActionToCheckThatJustReturnsSuccess):
+class _AtcThatExecutesPythonProgramFile(ActionToCheckThatJustReturnsSuccess):
     def __init__(self, python_program_file: pathlib.Path):
         self.python_program_file = python_program_file
 
@@ -315,7 +315,7 @@ class _ExecutorThatExecutesPythonProgramFile(ActionToCheckThatJustReturnsSuccess
         return new_eh_exit_code(exit_code)
 
 
-class _ExecutorThatReturnsConstantExitCode(ActionToCheckThatJustReturnsSuccess):
+class _AtcThatReturnsConstantExitCode(ActionToCheckThatJustReturnsSuccess):
     def __init__(self, exit_code: int):
         self.exit_code = exit_code
 
