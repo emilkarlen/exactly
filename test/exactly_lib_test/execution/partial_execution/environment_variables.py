@@ -171,7 +171,7 @@ class AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty
 def _actor_that_records_existence_of_var_in_global_env(
         recorder: _RecorderOfExistenceOfGlobalEnvVar) -> Actor:
     return ActorThatRunsConstantActions(
-        parse_action=recorder.for_step(step.ACT__PARSE),
+        parse_atc=recorder.for_step(step.ACT__PARSE),
         validate_pre_sds_initial_action=recorder.for_step(step.ACT__VALIDATE_PRE_SDS),
         validate_post_setup_initial_action=recorder.for_step(step.ACT__VALIDATE_POST_SETUP),
         prepare_initial_action=recorder.for_step(step.ACT__PREPARE),

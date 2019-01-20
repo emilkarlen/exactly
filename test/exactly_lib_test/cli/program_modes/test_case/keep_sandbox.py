@@ -143,7 +143,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
                 {
                     EXECUTION__IMPLEMENTATION_ERROR:
                         ActorThatRunsConstantActions(
-                            parse_action=DO_RAISES_EXCEPTION),
+                            parse_atc=DO_RAISES_EXCEPTION),
 
                 },
             STEP__VALIDATE_PRE_SDS:

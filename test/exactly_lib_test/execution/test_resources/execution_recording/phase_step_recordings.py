@@ -116,7 +116,7 @@ def actor_that_records_a_value_per_step(
         recorder_for_parse_step: types.FunctionType,
 ) -> Actor:
     return ActorThatRunsConstantActions(
-        parse_action=recorder_for_parse_step(step.ACT__PARSE),
+        parse_atc=recorder_for_parse_step(step.ACT__PARSE),
         validate_pre_sds_initial_action=recorder_for_step_with_env(step.ACT__VALIDATE_PRE_SDS),
         validate_post_setup_initial_action=recorder_for_step_with_env(step.ACT__VALIDATE_POST_SETUP),
         prepare_initial_action=recorder_for_step_with_env(step.ACT__PREPARE),

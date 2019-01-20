@@ -145,7 +145,7 @@ class TestCaseBase(unittest.TestCase):
             prepare_action=arrangement.prepare_test_action,
             execute_action=arrangement.execute_test_action,
             validate_pre_sds_action=arrangement.act_executor_validate_pre_sds)
-        return step_recording_executors.parser_of_constant(
+        return step_recording_executors.actor_of_constant(
             arrangement.test_case_generator.recorder,
             constant_actions_atc,
             parse_action=arrangement.parse)

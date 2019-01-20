@@ -77,7 +77,7 @@ class TestExecutionSequence(unittest.TestCase):
                                                              atc_that_does_nothing)
         actor = ActorForConstantAtc(
             recording_atc,
-            parse_action=do_raise(ParseException(expected_cause))
+            parse_atc=do_raise(ParseException(expected_cause))
         )
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   actor=actor)
@@ -98,7 +98,7 @@ class TestExecutionSequence(unittest.TestCase):
                                                              atc_that_does_nothing)
         actor = ActorForConstantAtc(
             recording_atc,
-            parse_action=do_raise(ValueError(expected_cause))
+            parse_atc=do_raise(ValueError(expected_cause))
         )
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   actor=actor)

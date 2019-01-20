@@ -65,8 +65,7 @@ class ActorThatRecordsSteps(Actor):
         self.__wrapped = wrapped
         self.__parse_action = parse_action
 
-    def parse(self,
-              instructions: Sequence[ActPhaseInstruction]) -> ActionToCheck:
+    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheck:
         self.__recorder.recording_of(phase_step.ACT__PARSE).record()
         self.__parse_action(instructions)
 
@@ -74,10 +73,10 @@ class ActorThatRecordsSteps(Actor):
                                                     self.__wrapped.parse(instructions))
 
 
-def parser_of_constant(recorder: ListRecorder,
-                       wrapped: ActionToCheck,
-                       parse_action=actions.do_nothing,
-                       ) -> Actor:
+def actor_of_constant(recorder: ListRecorder,
+                      wrapped: ActionToCheck,
+                      parse_action=actions.do_nothing,
+                      ) -> Actor:
     return ActorThatRecordsSteps(
         recorder,
         ActorForConstantAtc(wrapped),

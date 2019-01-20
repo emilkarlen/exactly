@@ -11,7 +11,7 @@ from exactly_lib_test.test_resources import actions
 
 class ActorThatRunsConstantActions(Actor):
     def __init__(self,
-                 parse_action=actions.do_nothing,
+                 parse_atc=actions.do_nothing,
                  validate_pre_sds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
                  validate_pre_sds_initial_action=actions.do_nothing,
                  validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
@@ -20,9 +20,9 @@ class ActorThatRunsConstantActions(Actor):
                  prepare_initial_action=actions.do_nothing,
                  execute_action=test_actions.execute_action_that_returns_exit_code(0),
                  execute_initial_action=actions.do_nothing,
-                 apply_action_before_executor_is_constructed=actions.do_nothing):
-        self.apply_action_before_executor_is_constructed = apply_action_before_executor_is_constructed
-        self.parse_action = parse_action
+                 apply_action_before_atc_is_constructed=actions.do_nothing):
+        self.apply_action_before_atc_is_constructed = apply_action_before_atc_is_constructed
+        self.parse_atc = parse_atc
         self.validate_pre_sds_initial_action = validate_pre_sds_initial_action
         self.validate_pre_sds_action = validate_pre_sds_action
         self.validate_post_setup_initial_action = validate_post_setup_initial_action
@@ -33,8 +33,8 @@ class ActorThatRunsConstantActions(Actor):
         self.execute_action = execute_action
 
     def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheck:
-        self.apply_action_before_executor_is_constructed(instructions)
-        self.parse_action(instructions)
+        self.apply_action_before_atc_is_constructed(instructions)
+        self.parse_atc(instructions)
         return ActionToCheckThatRunsConstantActions(
             validate_pre_sds_initial_action=self.validate_pre_sds_initial_action,
             validate_pre_sds_action=self.validate_pre_sds_action,
@@ -49,13 +49,13 @@ class ActorThatRunsConstantActions(Actor):
 class ActorForConstantAtc(Actor):
     def __init__(self,
                  atc: ActionToCheck,
-                 parse_action=actions.do_nothing,
+                 parse_atc=actions.do_nothing,
                  ):
         self.atc = atc
-        self.parse_action = parse_action
+        self.parse_atc = parse_atc
 
     def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheck:
-        self.parse_action(instructions)
+        self.parse_atc(instructions)
         return self.atc
 
 
