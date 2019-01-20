@@ -54,17 +54,17 @@ def suite() -> unittest.TestSuite:
 class Arrangement:
     def __init__(self,
                  test_case: TestCaseGeneratorForExecutionRecording,
-                 atc_exe_parser: ActionToCheckExecutorParser,
+                 actor: ActionToCheckExecutorParser,
                  timeout_in_seconds: Optional[int] = None):
         self.test_case_generator = test_case
-        self.atc_exe_parser = atc_exe_parser
+        self.actor = actor
         self.timeout_in_seconds = timeout_in_seconds
 
 
 def arr_for_py3_source(test_case: TestCaseGeneratorForExecutionRecording,
                        timeout_in_seconds: Optional[int] = None) -> Arrangement:
     return Arrangement(test_case,
-                       python3.new_atc_executor_parser(),
+                       python3.new_actor(),
                        timeout_in_seconds)
 
 
@@ -86,7 +86,7 @@ def check(put: unittest.TestCase,
           expectation: Expectation):
     actor = ActionToCheckExecutorWrapperParserThatRecordsSteps(
         arrangement.test_case_generator.recorder,
-        arrangement.atc_exe_parser)
+        arrangement.actor)
 
     def action(std_files: StdOutputFiles) -> PartialExeResult:
         exe_conf = ExecutionConfiguration(dict(os.environ),

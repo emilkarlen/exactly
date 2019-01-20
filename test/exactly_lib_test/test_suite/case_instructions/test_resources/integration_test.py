@@ -94,7 +94,7 @@ class PhaseConfig:
     def act_phase_parser(self) -> SectionElementParser:
         raise NotImplementedError('abstract method')
 
-    def atc_executor_parser(self, recording_media: List[Recording]) -> ActionToCheckExecutorParser:
+    def actor(self, recording_media: List[Recording]) -> ActionToCheckExecutorParser:
         return ActionToCheckExecutorParserThatRunsConstantActions()
 
     def phase_contents_line_that_registers(self,
@@ -375,7 +375,7 @@ class TestBase(unittest.TestCase):
         default_case_configuration = processors.Configuration(
             test_case_definition,
             TestCaseHandlingSetup(
-                ActPhaseSetup(self._phase_config().atc_executor_parser(recording_media)),
+                ActPhaseSetup(self._phase_config().actor(recording_media)),
                 IDENTITY_PREPROCESSOR),
             os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
             False,

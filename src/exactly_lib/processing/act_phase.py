@@ -7,9 +7,9 @@ class ActPhaseSetup(tuple):
     (since the other members probably will be refactored away)
     """
 
-    def __new__(cls, atc_executor_parser: ActionToCheckExecutorParser):
-        return tuple.__new__(cls, (atc_executor_parser,))
+    def __new__(cls, actor: ActionToCheckExecutorParser):
+        return tuple.__new__(cls, (actor,))
 
     @property
-    def atc_executor_parser(self) -> ActionToCheckExecutorParser:
+    def actor(self) -> ActionToCheckExecutorParser:
         return self[0]

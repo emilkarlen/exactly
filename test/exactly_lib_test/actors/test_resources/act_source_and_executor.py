@@ -105,9 +105,9 @@ def suite_for_execution(setup: Configuration) -> unittest.TestSuite:
 
 
 class TestExecuteBase(unittest.TestCase):
-    def __init__(self, atc_exe_parser: ActionToCheckExecutorParser):
+    def __init__(self, actor: ActionToCheckExecutorParser):
         super().__init__()
-        self.atc_exe_parser = atc_exe_parser
+        self.actor = actor
 
     def _execute(self,
                  hds: HomeDirectoryStructure,
@@ -119,7 +119,7 @@ class TestExecuteBase(unittest.TestCase):
 
         environment = InstructionEnvironmentForPreSdsStep(hds,
                                                           environ)
-        sut = self.atc_exe_parser.parse(act_phase_instructions)
+        sut = self.actor.parse(act_phase_instructions)
         step_result = sut.validate_pre_sds(environment)
         if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
             self.fail('Expecting success. Found {}: {}'.format(

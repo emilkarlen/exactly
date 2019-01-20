@@ -107,7 +107,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
     def test_failing_parse(self):
         # ARRANGE #
         test_case_definition = test_case_definition_for(instruction_set())
-        atc_e_parser = ActionToCheckExecutorParserThatRunsConstantActions()
+        actor = ActionToCheckExecutorParserThatRunsConstantActions()
         test_case_source = lines_content([
             section_header(phase_identifier.SETUP.identifier),
             'not_the_name_of_an_instruction',
@@ -117,7 +117,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
         # ACT & ASSERT #
         _check(self,
                test_case_definition,
-               atc_e_parser,
+               actor,
                test_case_source,
                self.sandbox_dir_resolver_that_should_not_be_called,
                expectation)

@@ -154,7 +154,7 @@ class _Parser(processing_utils.Parser):
 
 
 def actor_for_setup(setup: ActPhaseSetup) -> ActionToCheckExecutorParser:
-    return setup.atc_executor_parser
+    return setup.actor
 
 
 class _Executor(processing_utils.Executor):

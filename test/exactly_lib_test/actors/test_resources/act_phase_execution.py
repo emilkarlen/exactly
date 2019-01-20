@@ -72,7 +72,7 @@ def simple_success() -> Expectation:
 
 
 def check_execution(put: unittest.TestCase,
-                    atc_executor_parser: ActionToCheckExecutorParser,
+                    actor: ActionToCheckExecutorParser,
                     act_phase_instructions: list,
                     arrangement: Arrangement,
                     expectation: Expectation) -> ExitCodeOrHardError:
@@ -82,7 +82,7 @@ def check_execution(put: unittest.TestCase,
                                                                       arrangement.environ,
                                                                       arrangement.timeout_in_seconds,
                                                                       symbols=arrangement.symbol_table)
-        sut = atc_executor_parser.parse(act_phase_instructions)
+        sut = actor.parse(act_phase_instructions)
         expectation.symbol_usages.apply_with_message(put,
                                                      sut.symbol_usages(),
                                                      'symbol-usages after ' +

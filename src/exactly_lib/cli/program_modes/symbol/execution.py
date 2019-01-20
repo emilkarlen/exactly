@@ -73,7 +73,7 @@ class Executor:
             for element in test_case_with_instructions.act_phase
         ]
         try:
-            atc_executor = act_phase_setup.atc_executor_parser.parse(act_phase_instructions)
+            atc_executor = act_phase_setup.actor.parse(act_phase_instructions)
         except ParseException as ex:
             raise _InvalidTestCaseError(self.completion_reporter.report_act_phase_parse_error(ex))
 

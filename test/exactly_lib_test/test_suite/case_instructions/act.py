@@ -36,7 +36,7 @@ class ActPhaseConfig(PhaseConfig):
     def act_phase_parser(self) -> SectionElementParser:
         return ActPhaseParserThatConsumesCurrentLineAndGivesRecordingInstruction()
 
-    def atc_executor_parser(self, recording_media: List[Recording]) -> ActionToCheckExecutorParser:
+    def actor(self, recording_media: List[Recording]) -> ActionToCheckExecutorParser:
         return ActionToCheckExecutorParserThatRecordsInstructionData(recording_media)
 
     def instructions_setup(self,

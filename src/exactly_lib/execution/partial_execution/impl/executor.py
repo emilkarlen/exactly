@@ -242,11 +242,11 @@ class _PartialExecutor:
                 msg = 'Act phase contains an element that is not an instruction: ' + str(element.element_type)
                 return failure_con.implementation_error_msg(msg)
 
-        atc_executor_parser = self.conf_values.actor
+        actor = self.conf_values.actor
 
         def parse_action() -> Optional[PhaseStepFailure]:
             try:
-                self._atc_executor = atc_executor_parser.parse(instructions)
+                self._atc_executor = actor.parse(instructions)
             except ParseException as ex:
                 return failure_con.apply(PartialExeResultStatus.VALIDATION_ERROR,
                                          new_failure_details_from_message(ex.cause.failure_message))
