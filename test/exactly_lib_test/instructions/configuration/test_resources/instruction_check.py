@@ -6,7 +6,7 @@ from typing import Callable
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileLocationInfo, FileSystemLocationInfo
-from exactly_lib.test_case.actor import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result.sh import SuccessOrHardError
 from exactly_lib.test_case.test_case_status import TestCaseStatus
@@ -25,7 +25,7 @@ class Arrangement(ArrangementBase):
     def __init__(self,
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  root_dir_contents: DirContents = empty_dir_contents(),
-                 actor: ActionToCheckExecutorParser = dummy_actor(),
+                 actor: Actor = dummy_actor(),
                  test_case_status: TestCaseStatus = TestCaseStatus.PASS,
                  timeout_in_seconds: int = None):
         super().__init__(hds_contents=hds_contents)

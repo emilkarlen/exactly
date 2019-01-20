@@ -18,7 +18,7 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case import os_services
-from exactly_lib.test_case.actor import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_suite import processing as sut, enumeration
 from exactly_lib.test_suite.file_reading import suite_hierarchy_reading
 from exactly_lib.test_suite.file_reading.exception import SuiteReadError
@@ -29,8 +29,7 @@ from exactly_lib_test.section_document.test_resources.element_parsers import \
     SectionElementParserThatRaisesUnrecognizedSectionElementSourceError
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
 from exactly_lib_test.section_document.test_resources.source_location_assertions import matches_file_location_info
-from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
-    ActionToCheckExecutorParserThatRunsConstantActions
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.files.str_std_out_files import null_output_files
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
@@ -94,8 +93,8 @@ class PhaseConfig:
     def act_phase_parser(self) -> SectionElementParser:
         raise NotImplementedError('abstract method')
 
-    def actor(self, recording_media: List[Recording]) -> ActionToCheckExecutorParser:
-        return ActionToCheckExecutorParserThatRunsConstantActions()
+    def actor(self, recording_media: List[Recording]) -> Actor:
+        return ActorThatRunsConstantActions()
 
     def phase_contents_line_that_registers(self,
                                            marker_to_register: str) -> str:

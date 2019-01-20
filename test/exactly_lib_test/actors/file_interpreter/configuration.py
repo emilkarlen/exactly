@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 
-from exactly_lib.test_case.actor import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.actors.test_resources.act_source_and_executor import Configuration, TestCaseSourceSetup
@@ -10,7 +10,7 @@ from exactly_lib_test.util.test_resources import py_program
 
 
 class TheConfigurationBase(Configuration):
-    def __init__(self, parser: ActionToCheckExecutorParser):
+    def __init__(self, parser: Actor):
         super().__init__(parser)
 
     @contextmanager

@@ -4,7 +4,7 @@ import types
 
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.actor import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording
@@ -95,7 +95,7 @@ class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
                  test_case_generator: TestCaseGeneratorForExecutionRecording,
                  expectation: Expectation,
                  dbg_do_not_delete_dir_structure=False,
-                 actor: ActionToCheckExecutorParser = None,
+                 actor: Actor = None,
                  recorder: ListRecorder = None):
         super().__init__(put,
                          dbg_do_not_delete_dir_structure,

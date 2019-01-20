@@ -2,7 +2,7 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
-from exactly_lib.test_case.actor import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
 
@@ -29,7 +29,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
 
 
 class Instruction(ConfigurationPhaseInstruction):
-    def __init__(self, actor: ActionToCheckExecutorParser):
+    def __init__(self, actor: Actor):
         self.actor = actor
 
     def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:

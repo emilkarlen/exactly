@@ -1,7 +1,7 @@
 from typing import Optional
 
 from exactly_lib.section_document.model import SectionContents
-from exactly_lib.test_case.actor import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 
 
@@ -9,7 +9,7 @@ class ConfPhaseValues(tuple):
     """Values resolved from the conf phase"""
 
     def __new__(cls,
-                actor: ActionToCheckExecutorParser,
+                actor: Actor,
                 hds: HomeDirectoryStructure,
                 timeout_in_seconds: Optional[int] = None):
         """
@@ -21,7 +21,7 @@ class ConfPhaseValues(tuple):
                                    ))
 
     @property
-    def actor(self) -> ActionToCheckExecutorParser:
+    def actor(self) -> Actor:
         return self[0]
 
     @property

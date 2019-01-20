@@ -3,8 +3,7 @@ from typing import Sequence
 
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.actor import ActionToCheckExecutor, \
-    ActionToCheckExecutorParser, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActionToCheckExecutor, Actor, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -56,10 +55,10 @@ class ActionToCheckExecutorWrapperThatRecordsSteps(ActionToCheckExecutor):
         return self.__wrapped.execute(environment, os_process_executor, script_output_dir_path, std_files)
 
 
-class ActionToCheckExecutorWrapperParserThatRecordsSteps(ActionToCheckExecutorParser):
+class ActorThatRecordsSteps(Actor):
     def __init__(self,
                  recorder: ListRecorder,
-                 wrapped: ActionToCheckExecutorParser,
+                 wrapped: Actor,
                  parse_action=actions.do_nothing,
                  ):
         self.__recorder = recorder
@@ -78,8 +77,8 @@ class ActionToCheckExecutorWrapperParserThatRecordsSteps(ActionToCheckExecutorPa
 def parser_of_constant(recorder: ListRecorder,
                        wrapped: ActionToCheckExecutor,
                        parse_action=actions.do_nothing,
-                       ) -> ActionToCheckExecutorParser:
-    return ActionToCheckExecutorWrapperParserThatRecordsSteps(
+                       ) -> Actor:
+    return ActorThatRecordsSteps(
         recorder,
         ActionToCheckExecutorConstructorForConstantExecutor(wrapped),
         parse_action=parse_action,

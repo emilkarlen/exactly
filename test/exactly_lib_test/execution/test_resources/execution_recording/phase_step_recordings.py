@@ -6,7 +6,7 @@ from typing import Callable
 
 from exactly_lib.execution import phase_step_simple as step
 from exactly_lib.execution.phase_step import SimplePhaseStep
-from exactly_lib.test_case.actor import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phase_identifier import PHASES_FOR_PARTIAL_EXECUTION
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
@@ -16,8 +16,7 @@ from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, \
     cleanup_phase_instruction_that, act_phase_instruction_with_source
-from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
-    ActionToCheckExecutorParserThatRunsConstantActions
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
 from exactly_lib_test.test_resources import actions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
@@ -115,8 +114,8 @@ def no_recording(phase_step: SimplePhaseStep):
 def actor_that_records_a_value_per_step(
         recorder_for_step_with_env: types.FunctionType,
         recorder_for_parse_step: types.FunctionType,
-) -> ActionToCheckExecutorParser:
-    return ActionToCheckExecutorParserThatRunsConstantActions(
+) -> Actor:
+    return ActorThatRunsConstantActions(
         parse_action=recorder_for_parse_step(step.ACT__PARSE),
         validate_pre_sds_initial_action=recorder_for_step_with_env(step.ACT__VALIDATE_PRE_SDS),
         validate_post_setup_initial_action=recorder_for_step_with_env(step.ACT__VALIDATE_POST_SETUP),

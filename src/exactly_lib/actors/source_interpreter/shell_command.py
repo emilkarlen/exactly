@@ -5,14 +5,13 @@ from exactly_lib.actors.source_interpreter import parser_and_executor as pa
 from exactly_lib.actors.util.executor_made_of_parts import parts
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.program.command_resolver import CommandResolver
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, \
-    ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, Actor
 from exactly_lib.test_case_utils.program.command import command_resolvers
 
 ACT_PHASE_SOURCE_FILE_BASE_NAME = 'act-phase.src'
 
 
-def actor_for_interpreter_command(interpreter_shell_command: str) -> ActionToCheckExecutorParser:
+def actor_for_interpreter_command(interpreter_shell_command: str) -> Actor:
     return Parser(interpreter_shell_command)
 
 

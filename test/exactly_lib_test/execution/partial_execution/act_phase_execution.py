@@ -13,8 +13,7 @@ from exactly_lib.execution.partial_execution.configuration import ConfPhaseValue
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.section_document.model import new_empty_section_contents
-from exactly_lib.test_case.actor import ActionToCheckExecutor, \
-    ActionToCheckExecutorParser, ParseException, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.actor import ActionToCheckExecutor, Actor, ParseException, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -336,7 +335,7 @@ def _empty_test_case() -> TestCase:
                     new_empty_section_contents())
 
 
-def _execute(parser: ActionToCheckExecutorParser,
+def _execute(parser: Actor,
              test_case: TestCase,
              setup_settings: SetupSettingsBuilder = setup.default_settings(),
              is_keep_sandbox: bool = False,

@@ -1,7 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.test_case.actor import ActionToCheckExecutor, \
-    ActionToCheckExecutorParser, ParseException
+from exactly_lib.test_case.actor import ActionToCheckExecutor, Actor, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.test_case.actor.test_resources import test_actions
@@ -10,7 +9,7 @@ from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors im
 from exactly_lib_test.test_resources import actions
 
 
-class ActionToCheckExecutorParserThatRunsConstantActions(ActionToCheckExecutorParser):
+class ActorThatRunsConstantActions(Actor):
     def __init__(self,
                  parse_action=actions.do_nothing,
                  validate_pre_sds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
@@ -47,7 +46,7 @@ class ActionToCheckExecutorParserThatRunsConstantActions(ActionToCheckExecutorPa
             execute_action=self.execute_action)
 
 
-class ActionToCheckExecutorConstructorForConstantExecutor(ActionToCheckExecutorParser):
+class ActionToCheckExecutorConstructorForConstantExecutor(Actor):
     def __init__(self,
                  executor: ActionToCheckExecutor,
                  parse_action=actions.do_nothing,
@@ -60,11 +59,11 @@ class ActionToCheckExecutorConstructorForConstantExecutor(ActionToCheckExecutorP
         return self.executor
 
 
-class ActionToCheckExecutorParserThatRaisesImplementationException(ActionToCheckExecutorParser):
+class ActorThatRaisesImplementationException(Actor):
     def parse(self, instructions: Sequence[ActPhaseInstruction]):
         raise ValueError('the method should never be called')
 
 
-class ActionToCheckExecutorParserThatRaisesParseException(ActionToCheckExecutorParser):
+class ActorThatRaisesParseException(Actor):
     def parse(self, instructions: Sequence[ActPhaseInstruction]):
         raise ParseException(svh.new_svh_validation_error('unconditional parse failure'))

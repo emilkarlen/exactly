@@ -18,7 +18,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.instruction_parsers import InstructionParserThatConsumesCurrentLine
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
-from exactly_lib.test_case.actor import ActionToCheckExecutorParser, ActionToCheckExecutor, ParseException
+from exactly_lib.test_case.actor import Actor, ActionToCheckExecutor, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.result import svh
 from exactly_lib.type_system.value_type import ValueType
@@ -29,8 +29,7 @@ from exactly_lib_test.common.test_resources import instruction_setup
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instrs
 from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
     ActionToCheckExecutorThatRunsConstantActions
-from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
-    ActionToCheckExecutorParserThatRunsConstantActions
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
 from exactly_lib_test.test_resources.actions import do_return
 
 DEF_INSTRUCTION_NAME = 'define'
@@ -121,9 +120,9 @@ INSTRUCTION_SETUP = InstructionsSetup(
 )
 
 
-def main_program_config(act_executor_parser: Optional[ActionToCheckExecutorParser] = None) -> MainProgramConfig:
+def main_program_config(act_executor_parser: Optional[Actor] = None) -> MainProgramConfig:
     if act_executor_parser is None:
-        act_executor_parser = _ActionToCheckExecutorParserThatParsesReferences(REF_INSTRUCTION_NAME)
+        act_executor_parser = _ActorThatParsesReferences(REF_INSTRUCTION_NAME)
     return main_program_execution.main_program_config(
         test_case_definition_for(INSTRUCTION_SETUP),
         act_phase_setup=ActPhaseSetup(
@@ -133,10 +132,10 @@ def main_program_config(act_executor_parser: Optional[ActionToCheckExecutorParse
 
 
 def act_phase_setup_for_reference_instruction() -> ActPhaseSetup:
-    return ActPhaseSetup(ActionToCheckExecutorParserThatRunsConstantActions())
+    return ActPhaseSetup(ActorThatRunsConstantActions())
 
 
-class _ActionToCheckExecutorParserThatParsesReferences(ActionToCheckExecutorParser):
+class _ActorThatParsesReferences(Actor):
     def __init__(self, reference_instruction_name: str):
         self._reference_instruction_name = reference_instruction_name
 

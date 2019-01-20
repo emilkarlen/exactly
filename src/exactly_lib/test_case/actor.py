@@ -80,7 +80,7 @@ class ActionToCheckExecutor(SymbolUser):
         raise NotImplementedError()
 
 
-class ActionToCheckExecutorParser:
+class Actor:
     """
     Parses the contents of the act phase which is the source that is to be executed as the act phase.
     (after it has been extracted from the test case file).

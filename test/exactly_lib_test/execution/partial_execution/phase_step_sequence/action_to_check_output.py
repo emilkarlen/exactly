@@ -9,7 +9,7 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
-from exactly_lib.test_case.actor import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
@@ -24,8 +24,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test, sandbox_root_name_resolver
-from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
-    ActionToCheckExecutorWrapperParserThatRecordsSteps
+from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import ActorThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import \
     PRE_SDS_VALIDATION_STEPS__ONCE, SYMBOL_VALIDATION_STEPS__ONCE
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
@@ -33,8 +32,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.phase_steps i
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForInstructionFailure, \
     ExpectedFailureForNoFailure
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForPhaseFailure
-from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
-    ActionToCheckExecutorParserThatRunsConstantActions
+from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
 from exactly_lib_test.test_case.actor.test_resources.test_actions import execute_action_that_raises
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.actions import do_return
@@ -54,7 +52,7 @@ def suite() -> unittest.TestSuite:
 class Arrangement:
     def __init__(self,
                  test_case: TestCaseGeneratorForExecutionRecording,
-                 actor: ActionToCheckExecutorParser,
+                 actor: Actor,
                  timeout_in_seconds: Optional[int] = None):
         self.test_case_generator = test_case
         self.actor = actor
@@ -84,7 +82,7 @@ class Expectation:
 def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation):
-    actor = ActionToCheckExecutorWrapperParserThatRecordsSteps(
+    actor = ActorThatRecordsSteps(
         arrangement.test_case_generator.recorder,
         arrangement.actor)
 
@@ -212,7 +210,7 @@ class TestFailure(TestCaseBase):
         test_case = _single_successful_instruction_in_each_phase(single_line_sequence(72, 'ignored'))
         self._check(
             Arrangement(test_case,
-                        ActionToCheckExecutorParserThatRunsConstantActions(
+                        ActorThatRunsConstantActions(
                             execute_action=execute_action_that_raises(
                                 test.ImplementationErrorTestException()))),
             Expectation(

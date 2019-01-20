@@ -15,8 +15,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, ParseException, \
-    ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, ParseException, Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     SymbolUser
@@ -28,10 +27,10 @@ from exactly_lib.test_case_utils.program.command import command_resolvers
 
 
 def act_phase_setup() -> ActPhaseSetup:
-    return ActPhaseSetup(Parser())
+    return ActPhaseSetup(actor())
 
 
-def actor() -> ActionToCheckExecutorParser:
+def actor() -> Actor:
     return Parser()
 
 

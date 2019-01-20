@@ -3,8 +3,7 @@ import sys
 import pathlib
 import subprocess
 
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, \
-    ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, Actor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.util.std import StdFiles
@@ -37,6 +36,6 @@ class ExecutorThatExecutesPythonProgramSource(ActionToCheckExecutorThatJustRetur
         return new_eh_exit_code(exit_code)
 
 
-def actor_for_execution_of_python_source(python_source: str) -> ActionToCheckExecutorParser:
+def actor_for_execution_of_python_source(python_source: str) -> Actor:
     executor = ExecutorThatExecutesPythonProgramSource(python_source)
     return ActionToCheckExecutorConstructorForConstantExecutor(executor)

@@ -4,7 +4,7 @@ import types
 
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.actor import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase
@@ -89,7 +89,7 @@ class _TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
                  test_case_generator: TestCaseGeneratorForExecutionRecording,
                  expectation: Expectation,
                  dbg_do_not_delete_dir_structure=False,
-                 actor: ActionToCheckExecutorParser = None,
+                 actor: Actor = None,
                  recorder: ListRecorder = None):
         super().__init__(unittest_case,
                          dbg_do_not_delete_dir_structure,
@@ -139,7 +139,7 @@ class TestCaseBase(unittest.TestCase):
                                              arrangement.test_case_generator.recorder)
 
     def _with_recording_act_program_executor(self,
-                                             arrangement: Arrangement) -> ActionToCheckExecutorParser:
+                                             arrangement: Arrangement) -> Actor:
         constant_actions_runner = ActionToCheckExecutorThatRunsConstantActions(
             validate_post_setup_action=arrangement.validate_test_action,
             prepare_action=arrangement.prepare_test_action,

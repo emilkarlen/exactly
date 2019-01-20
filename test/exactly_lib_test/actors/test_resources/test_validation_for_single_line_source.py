@@ -3,7 +3,7 @@ import unittest
 import pathlib
 from typing import Sequence
 
-from exactly_lib.test_case.actor import ActionToCheckExecutorParser, ParseException
+from exactly_lib.test_case.actor import Actor, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib_test.actors.test_resources.act_source_and_executor import Configuration
@@ -30,7 +30,7 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
         super().__init__()
         self.conf = configuration
         self.constructor = configuration.sut
-        assert isinstance(self.constructor, ActionToCheckExecutorParser)
+        assert isinstance(self.constructor, Actor)
         self.home_dir_as_current_dir = pathlib.Path()
 
     def runTest(self):

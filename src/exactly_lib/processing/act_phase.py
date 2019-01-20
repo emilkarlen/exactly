@@ -1,4 +1,4 @@
-from exactly_lib.test_case.actor import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import Actor
 
 
 class ActPhaseSetup(tuple):
@@ -7,9 +7,9 @@ class ActPhaseSetup(tuple):
     (since the other members probably will be refactored away)
     """
 
-    def __new__(cls, actor: ActionToCheckExecutorParser):
+    def __new__(cls, actor: Actor):
         return tuple.__new__(cls, (actor,))
 
     @property
-    def actor(self) -> ActionToCheckExecutorParser:
+    def actor(self) -> Actor:
         return self[0]

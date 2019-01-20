@@ -5,7 +5,7 @@ import random
 from contextlib import contextmanager
 
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.actor import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -33,7 +33,7 @@ class TestCaseSourceSetup:
 
 
 class Configuration:
-    def __init__(self, sut: ActionToCheckExecutorParser):
+    def __init__(self, sut: Actor):
         self.sut = sut
 
     @contextmanager
@@ -105,7 +105,7 @@ def suite_for_execution(setup: Configuration) -> unittest.TestSuite:
 
 
 class TestExecuteBase(unittest.TestCase):
-    def __init__(self, actor: ActionToCheckExecutorParser):
+    def __init__(self, actor: Actor):
         super().__init__()
         self.actor = actor
 

@@ -3,7 +3,7 @@ import sys
 from exactly_lib.actors.source_interpreter import source_file_management
 from exactly_lib.actors.source_interpreter.executable_file import Parser
 from exactly_lib.actors.source_interpreter.source_file_management import StandardSourceFileManager
-from exactly_lib.test_case.actor import ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import Actor
 
 
 def source_interpreter_setup() -> source_file_management.SourceInterpreterSetup:
@@ -18,5 +18,5 @@ def _file_manager() -> source_file_management.SourceFileManager:
                                      [])
 
 
-def new_actor() -> ActionToCheckExecutorParser:
+def new_actor() -> Actor:
     return Parser(source_interpreter_setup())

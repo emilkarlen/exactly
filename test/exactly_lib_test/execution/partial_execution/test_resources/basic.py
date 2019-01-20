@@ -9,7 +9,7 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
-from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, ActionToCheckExecutorParser
+from exactly_lib.test_case.actor import ActPhaseOsProcessExecutor, Actor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases import setup
@@ -141,7 +141,7 @@ class TestCaseWithCommonDefaultInstructions(TestCaseGeneratorForPartialExecution
 
 class Arrangement:
     def __init__(self,
-                 actor: ActionToCheckExecutorParser = dummy_actor(),
+                 actor: Actor = dummy_actor(),
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor = DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                  hds: HomeDirectoryStructure = HomeDirectoryStructure(pathlib.Path().resolve(),
                                                                       pathlib.Path().resolve()),
@@ -160,7 +160,7 @@ class Arrangement:
 
 def test(put: unittest.TestCase,
          test_case: TestCase,
-         actor: ActionToCheckExecutorParser,
+         actor: Actor,
          assertions: Callable[[unittest.TestCase, Result], None],
          is_keep_sandbox: bool = True):
     with preserved_cwd():
