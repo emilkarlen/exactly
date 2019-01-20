@@ -4,17 +4,12 @@ from typing import Sequence
 from exactly_lib.actors.util.executor_made_of_parts import parts
 from exactly_lib.actors.util.executor_made_of_parts.parts import ExecutableObjectParser, \
     UnconditionallySuccessfulValidator
-from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.result import eh
 from exactly_lib.util.std import StdFiles
-
-
-def act_phase_setup() -> ActPhaseSetup:
-    return ActPhaseSetup(actor())
 
 
 def actor() -> Actor:

@@ -11,7 +11,6 @@ from exactly_lib.actors.util.executor_made_of_parts.parts import ExecutableObjec
 from exactly_lib.actors.util.executor_made_of_parts.sub_process_executor import \
     SubProcessExecutor
 from exactly_lib.definitions.test_case.actors import file_interpreter as texts
-from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import \
@@ -39,10 +38,6 @@ from exactly_lib.util.process_execution import commands
 from exactly_lib.util.process_execution.command import Command, ProgramAndArguments
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.FILE)
-
-
-def act_phase_setup(interpreter: Command) -> ActPhaseSetup:
-    return ActPhaseSetup(parser(interpreter))
 
 
 def actor(interpreter: Command) -> Actor:

@@ -15,7 +15,7 @@ def configuration_section_environment() -> ConfigurationSectionEnvironment:
         pass
 
     return ConfigurationSectionEnvironment(PreprocessorThat(f),
-                                           command_line.act_phase_setup())
+                                           ActPhaseSetup(command_line.actor()))
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

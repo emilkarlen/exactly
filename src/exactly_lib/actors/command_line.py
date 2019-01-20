@@ -9,7 +9,6 @@ from exactly_lib.actors.util.executor_made_of_parts.parts import ExecutableObjec
 from exactly_lib.actors.util.executor_made_of_parts.sub_process_executor import \
     CommandResolverExecutor
 from exactly_lib.definitions.test_case.actors import command_line as texts
-from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
@@ -24,10 +23,6 @@ from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from_parse_source
 from exactly_lib.test_case_utils.parse.parse_list import parse_list
 from exactly_lib.test_case_utils.program.command import command_resolvers
-
-
-def act_phase_setup() -> ActPhaseSetup:
-    return ActPhaseSetup(actor())
 
 
 def actor() -> Actor:
