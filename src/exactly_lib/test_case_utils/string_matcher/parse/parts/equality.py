@@ -6,7 +6,7 @@ from typing import List, Set, Optional
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.program.string_or_file import StringOrFileRefResolver, SourceType
+from exactly_lib.symbol.program.string_or_file import StringOrFileRefResolver
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, SingleStepValidator, ValidationStep, \
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
@@ -41,8 +41,6 @@ def parse(expectation_type: ExpectationType,
         token_parser,
         EXPECTED_FILE_REL_OPT_ARG_CONFIG,
         consume_last_here_doc_line=False)
-    if expected_contents.source_type is not SourceType.HERE_DOC:
-        token_parser.report_superfluous_arguments_if_not_at_eol()
 
     return value_resolver(
         expectation_type,

@@ -15,7 +15,6 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         _ParseShouldFailWhenOperandIsMissing(),
         _ParseShouldFailWhenOperatorIsInvalid(),
-        _ParseShouldFailWhenThereAreSuperfluousArguments(),
         _ParseShouldFailWhenTransformerIsInvalid(),
     ])
 
@@ -52,16 +51,6 @@ class _ParseShouldFailWhenOperatorIsInvalid(_TestCaseBase):
         for transformer in ['', 'valid_symbol_name']:
             argument_variant_con = InstructionArgumentsVariantConstructor(operator='not_an_operator',
                                                                           operand='5')
-            with self.subTest(transformer=transformer):
-                self._check_variants_with_expectation_type(argument_variant_con)
-
-
-class _ParseShouldFailWhenThereAreSuperfluousArguments(_TestCaseBase):
-    def runTest(self):
-        for transformer in ['', 'valid_symbol_name']:
-            argument_variant_con = InstructionArgumentsVariantConstructor(operator=comparators.EQ.name,
-                                                                          operand='5',
-                                                                          superfluous_args_str='superfluous_argument')
             with self.subTest(transformer=transformer):
                 self._check_variants_with_expectation_type(argument_variant_con)
 

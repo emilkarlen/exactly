@@ -23,7 +23,6 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         _ParseWithMissingLineMatcherArgument(),
-        _ParseWithSuperfluousArgument(),
         _ParseWithInvalidLineMatcher(),
 
         _TestSymbolReferenceForStringTransformerIsReported(),
@@ -53,13 +52,6 @@ class _ParseWithMissingLineMatcherArgument(_TestCaseBase):
     def runTest(self):
         self._check_variants_with_expectation_type_and_any_or_every(
             tr.args_constructor_for(line_matcher=''))
-
-
-class _ParseWithSuperfluousArgument(_TestCaseBase):
-    def runTest(self):
-        self._check_variants_with_expectation_type_and_any_or_every(
-            tr.ArgumentsConstructorForPossiblyInvalidSyntax(line_matcher=syntax_for_regex_matcher('regex'),
-                                                            superfluous_args_str='superfluous'))
 
 
 class _ParseWithInvalidLineMatcher(_TestCaseBase):

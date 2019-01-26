@@ -19,7 +19,6 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        ParseShouldFailWhenThereAreSuperfluousArguments(),
         ParseShouldFailWhenRegexArgumentIsMissing(),
         ValidationShouldFailPreWhenHardCodedRegexIsInvalid(),
 
@@ -32,25 +31,6 @@ def suite() -> unittest.TestSuite:
         PartialMatchAcceptsExtraLineAfterMatchingLines(),
         FullMatchDoNotAcceptExtraLineAfterMatchingLines(),
     ])
-
-
-class ParseShouldFailWhenThereAreSuperfluousArguments(tc.TestWithNegationArgumentBase):
-    def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        parser = self.configuration.new_parser()
-        for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
-            for maybe_full_match in FULL_MATCH_OPTION_ALTERNATIVES:
-                with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option,
-                                  maybe_full_match=maybe_full_match):
-                    source = self.configuration.source_for(
-                        args(
-                            '{maybe_with_transformer_option} {maybe_not} {matches} '
-                            '{maybe_full_match} regex superfluous-argument',
-                            maybe_with_transformer_option=maybe_with_transformer_option,
-                            maybe_full_match=maybe_full_match,
-                            maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
-                    )
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(source)
 
 
 class ValidationShouldFailPreWhenHardCodedRegexIsInvalid(tc.TestWithNegationArgumentBase):

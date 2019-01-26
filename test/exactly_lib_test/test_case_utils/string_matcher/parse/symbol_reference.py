@@ -33,8 +33,6 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        ParseShouldFailWhenThereAreSuperfluousArguments(),
-        ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(),
         ValidationShouldFailIffItFailsForReferencedMatcher(),
         ActualFileIsEmpty(),
         ActualFileIsNonEmpty(),
@@ -46,38 +44,6 @@ SYMBOL_FOR_EMPTINESS_MATCHER = NameAndValue(
     'SYMBOL_NAME',
     StringMatcherResolverConstantTestImpl(EmptinessStringMatcher(ExpectationType.POSITIVE))
 )
-
-
-class ParseShouldFailWhenThereAreSuperfluousArguments(tc.TestWithNegationArgumentBase):
-    def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        parser = self.configuration.new_parser()
-        for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
-            with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
-                source = self.configuration.source_for(
-                    args('{maybe_with_transformer_option} {maybe_not} {symbol_reference} superfluous-argument',
-                         maybe_with_transformer_option=maybe_with_transformer_option,
-                         maybe_not=maybe_not.nothing__if_positive__not_option__if_negative,
-                         symbol_reference=SYMBOL_FOR_EMPTINESS_MATCHER.name),
-                )
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(source)
-
-
-class ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(
-    tc.TestWithNegationArgumentBase):
-    def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        parser = self.configuration.new_parser()
-        for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
-            with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
-                source = self.configuration.source_for(
-                    args('{maybe_with_transformer_option} {maybe_not} {symbol_reference} <<MARKER',
-                         maybe_with_transformer_option=maybe_with_transformer_option,
-                         maybe_not=maybe_not.nothing__if_positive__not_option__if_negative,
-                         symbol_reference=SYMBOL_FOR_EMPTINESS_MATCHER.name),
-                    ['single line',
-                     'MARKER'])
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(source)
 
 
 class ParseShouldFailWhenSymbolNameHasInvalidSyntax(tc.TestWithNegationArgumentBase):

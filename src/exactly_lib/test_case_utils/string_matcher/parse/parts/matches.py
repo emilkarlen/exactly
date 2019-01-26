@@ -6,7 +6,6 @@ from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.program.string_or_file import SourceType
 from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import diff_msg, diff_msg_utils
@@ -33,8 +32,6 @@ def parse(expectation_type: ExpectationType,
     token_parser.require_has_valid_head_token(syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
     source_type, regex_resolver = parse_regex.parse_regex2(token_parser,
                                                            must_be_on_same_line=False)
-    if source_type is not SourceType.HERE_DOC:
-        token_parser.report_superfluous_arguments_if_not_at_eol()
 
     return value_resolver(
         expectation_type,

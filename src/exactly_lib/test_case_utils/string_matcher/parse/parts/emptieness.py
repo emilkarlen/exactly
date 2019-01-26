@@ -7,7 +7,6 @@ from exactly_lib.util.logic_types import ExpectationType
 
 def parse(expectation_type: ExpectationType,
           token_parser: TokenParser) -> StringMatcherResolver:
-    token_parser.report_superfluous_arguments_if_not_at_eol()
     return value_resolver(expectation_type)
 
 

@@ -2,8 +2,6 @@ import unittest
 
 from typing import Iterable
 
-from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
@@ -25,43 +23,10 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        ParseShouldFailWhenThereAreSuperfluousArguments(),
-        ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(),
-
         ActualFileIsEmpty(),
         ActualFileIsNonEmpty(),
         ActualFileIsEmptyAfterTransformation(),
     ])
-
-
-class ParseShouldFailWhenThereAreSuperfluousArguments(tc.TestWithNegationArgumentBase):
-    def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        parser = self.configuration.new_parser()
-        for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
-            with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
-                source = self.configuration.source_for(
-                    args('{maybe_with_transformer_option} {maybe_not} {empty} superfluous-argument',
-                         maybe_with_transformer_option=maybe_with_transformer_option,
-                         maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
-                )
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(source)
-
-
-class ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(
-    tc.TestWithNegationArgumentBase):
-    def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        parser = self.configuration.new_parser()
-        for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
-            with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
-                source = self.configuration.source_for(
-                    args('{maybe_with_transformer_option} {maybe_not} {empty} <<MARKER',
-                         maybe_with_transformer_option=maybe_with_transformer_option,
-                         maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
-                    ['single line',
-                     'MARKER'])
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(source)
 
 
 class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):

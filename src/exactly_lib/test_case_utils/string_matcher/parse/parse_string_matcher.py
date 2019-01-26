@@ -85,7 +85,6 @@ class _StringMatcherParser:
 
     def _symbol_reference(self, parsed_symbol_name: str, token_parser: TokenParser) -> StringMatcherResolver:
         if symbol_syntax.is_symbol_name(parsed_symbol_name):
-            token_parser.report_superfluous_arguments_if_not_at_eol()
             return resolvers.new_reference(parsed_symbol_name, self.expectation_type)
         else:
             err_msg_header = 'Neither a {matcher} nor the plain name of a {symbol}: '.format(
