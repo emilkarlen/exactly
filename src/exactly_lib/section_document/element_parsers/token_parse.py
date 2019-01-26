@@ -45,7 +45,8 @@ def parse_token_on_current_line(source: ParseSource,
     :raise SingleInstructionInvalidArgumentException: There is no token
     :raise SingleInstructionInvalidArgumentException: The token has invalid syntax
     """
-    token = parse_token_or_none_on_current_line(source)
+    token = parse_token_or_none_on_current_line(source,
+                                                argument_description)
     if token is None:
         raise SingleInstructionInvalidArgumentException('Missing ' + argument_description)
     return token

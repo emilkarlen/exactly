@@ -1,7 +1,6 @@
 import unittest
 
-from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.section_element_parsing import SectionElementError
 from exactly_lib.test_suite.instruction_set import utils as sut
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check, equivalent_source_variants
@@ -24,7 +23,7 @@ class TestParse(unittest.TestCase):
         for instruction_argument in test_cases:
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
                 for source in equivalent_source_variants(self, instruction_argument):
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    with self.assertRaises(SectionElementError):
                         sut.parse_file_names_resolver(source)
 
     def parse_plain_file_name(self):

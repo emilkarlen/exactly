@@ -5,11 +5,12 @@ from typing import List, Iterable, Callable
 from exactly_lib.definitions.instruction_arguments import FILE_ARGUMENT
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException, InvalidInstructionSyntaxException
 from exactly_lib.section_document.element_parsers.token_parse import parse_token_on_current_line
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_suite.instruction_set import instruction
 from exactly_lib.test_suite.instruction_set.instruction import FileNotAccessibleSimpleError
+from exactly_lib.util.line_source import line_sequence_from_line
 
 _WILDCARD_CHARACTERS = ('*', '?', '[')
 
@@ -37,19 +38,28 @@ def single_regular_file_resolver(path: Path) -> Path:
 
 def parse_file_names_resolver(source: ParseSource,
                               path_resolver: SinglePathResolver = single_regular_file_resolver) -> FileNamesResolver:
-    token = parse_token_on_current_line(source, 'file name or glob pattern')
-    source.consume_initial_space_on_current_line()
-    if not source.is_at_eol:
-        msg = 'Superfluous argument: `{}\''.format(source.remaining_part_of_current_line)
-        raise SingleInstructionInvalidArgumentException(msg)
-    source.consume_current_line()
-    if token.is_quoted:
-        return FileNamesResolverForPlainFileName(path_resolver, token.string)
-    else:
-        if is_wildcard_pattern(token.string):
-            return FileNamesResolverForGlobPattern(path_resolver, token.string)
-        else:
+    def parse_and_raise_instruction_exception() -> FileNamesResolver:
+        token = parse_token_on_current_line(source, 'file name or glob pattern')
+        source.consume_initial_space_on_current_line()
+        if not source.is_at_eol:
+            msg = 'Superfluous argument: `{}\''.format(source.remaining_part_of_current_line)
+            raise SingleInstructionInvalidArgumentException(msg)
+        source.consume_current_line()
+        if token.is_quoted:
             return FileNamesResolverForPlainFileName(path_resolver, token.string)
+        else:
+            if is_wildcard_pattern(token.string):
+                return FileNamesResolverForGlobPattern(path_resolver, token.string)
+            else:
+                return FileNamesResolverForPlainFileName(path_resolver, token.string)
+
+    first_line = source.current_line
+    try:
+        return parse_and_raise_instruction_exception()
+    except SingleInstructionInvalidArgumentException as ex:
+        raise InvalidInstructionSyntaxException(
+            line_sequence_from_line(first_line),
+            ex.error_message)
 
 
 class FileNamesResolverForPlainFileName(FileNamesResolver):

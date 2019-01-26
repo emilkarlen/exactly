@@ -486,6 +486,32 @@ class SuiteFileSyntaxError(check_exception.Setup):
                                     actual.source)
 
 
+class SuiteFileSyntaxErrorOfMissingClosingQuotation(check_exception.Setup):
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return Path('main.suite')
+
+    def file_structure_to_read(self) -> DirContents:
+        return DirContents([File('main.suite',
+                                 lines_content(['"starting but no closing double quote',
+                                                ])),
+                            ])
+
+    def expected_exception_class(self):
+        return SuiteSyntaxError
+
+    def check_exception(self,
+                        root_path: pathlib.Path,
+                        actual: Exception,
+                        put: unittest.TestCase):
+        put.assertIsInstance(actual, SuiteSyntaxError)
+        put.assertEqual(str(self.root_suite_based_at(root_path)),
+                        str(actual.suite_file),
+                        'Source file that contains the error')
+        assert_equals_line_sequence(put,
+                                    single_line_sequence(1, '"starting but no closing double quote'),
+                                    actual.source)
+
+
 class ReferencedSuiteFileDoesNotExist(check_exception.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return Path('main.suite')
@@ -645,6 +671,9 @@ class TestInvalidFileReferences(unittest.TestCase):
 class TestInvalidFileSyntax(unittest.TestCase):
     def test_invalid_section(self):
         check_exception.check(SuiteFileSyntaxError(), self)
+
+    def test_invalid_file_reference_syntax(self):
+        check_exception.check(SuiteFileSyntaxErrorOfMissingClosingQuotation(), self)
 
 
 if __name__ == '__main__':

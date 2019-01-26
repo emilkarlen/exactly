@@ -20,9 +20,11 @@ class InvalidInstructionSyntaxException(UnrecognizedSectionElementSourceError):
     The source line is not valid for an instruction.
     """
 
-    def __init__(self, source: line_source.LineSequence):
+    def __init__(self,
+                 source: line_source.LineSequence,
+                 error_message: str = 'Invalid instruction syntax'):
         super().__init__(source,
-                         'Invalid instruction syntax')
+                         error_message)
 
 
 class UnknownInstructionException(UnrecognizedSectionElementSourceError):

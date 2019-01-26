@@ -2,9 +2,7 @@ import unittest
 
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.section_document import parsed_section_element
-from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.section_element_parsing import SectionElementParser
+from exactly_lib.section_document.section_element_parsing import SectionElementParser, SectionElementError
 from exactly_lib.test_suite.instruction_set.sections import suites as sut
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -33,7 +31,7 @@ class TestParse(unittest.TestCase):
         for instruction_argument in test_cases:
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
                 for source in equivalent_source_variants(self, instruction_argument):
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    with self.assertRaises(SectionElementError):
                         parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_succeed_when_valid_syntax(self):

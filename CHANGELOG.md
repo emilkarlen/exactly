@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
  - symbol reference reporting: Source location
+ - suite parse: Do not crash when parsing suite file with invalid syntax
  
 ## [0.9.1] - 2019-01-17
 
