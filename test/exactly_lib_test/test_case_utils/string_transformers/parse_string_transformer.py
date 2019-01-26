@@ -1,11 +1,12 @@
-import re
 import unittest
+
+import re
 from typing import Iterable
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.resolver_structure import LogicValueResolver
+from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant

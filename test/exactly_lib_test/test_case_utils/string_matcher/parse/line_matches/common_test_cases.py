@@ -4,7 +4,7 @@ from typing import Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.resolver_structure import StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to

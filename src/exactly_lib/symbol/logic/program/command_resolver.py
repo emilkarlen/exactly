@@ -1,9 +1,9 @@
 from typing import Sequence
 
 from exactly_lib.symbol.data.list_resolver import ListResolver
+from exactly_lib.symbol.logic.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.resolver_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.utils import DirDepValueResolver

@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.resolver_structure import FileMatcherResolver
+from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.value_type import ValueType

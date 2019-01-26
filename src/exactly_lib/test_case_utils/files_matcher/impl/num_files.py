@@ -1,6 +1,6 @@
 from typing import Sequence, Optional
 
-from exactly_lib.symbol.files_matcher import FilesMatcherResolver, \
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     Environment, FilesMatcherModel, FilesMatcherValue
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference

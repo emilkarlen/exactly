@@ -1,7 +1,7 @@
 from typing import Sequence
 
+from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
-from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data import string_value as sv
 from exactly_lib.type_system.value_type import DataValueType, ValueType

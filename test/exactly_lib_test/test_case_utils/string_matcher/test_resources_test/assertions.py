@@ -2,7 +2,7 @@ import unittest
 
 from typing import Sequence
 
-from exactly_lib.symbol.resolver_structure import StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant

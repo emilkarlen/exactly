@@ -22,7 +22,7 @@ from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.program.command_resolver import CommandResolver
+from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, ParseException, Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction

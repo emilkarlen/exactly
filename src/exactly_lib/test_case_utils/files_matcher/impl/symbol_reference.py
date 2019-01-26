@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol import lookups
-from exactly_lib.symbol.files_matcher import FilesMatcherResolver, FilesMatcherValue
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, FilesMatcherValue
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironment
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference

@@ -4,12 +4,12 @@ from typing import Sequence
 from exactly_lib.section_document.source_location import FileLocationInfo, SourceLocationInfo
 from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
-from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver, \
-    SymbolValueResolver
+from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
 from exactly_lib.util import line_source
 from exactly_lib.util.symbol_table import SymbolTable, Entry

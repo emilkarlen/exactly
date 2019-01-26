@@ -1,11 +1,11 @@
 from typing import Sequence
 
 from exactly_lib.symbol import symbol_usage as su, resolver_structure as struct
+from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringFragmentResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data import string_value as sv, concrete_string_values as csv
 from exactly_lib.type_system.data.concrete_string_values import StrValueTransformer, TransformedStringFragment, \

@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.resolver_structure import StringTransformerResolver
+from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerValue
 from exactly_lib.type_system.logic.string_transformer_values import StringTransformerConstantValue

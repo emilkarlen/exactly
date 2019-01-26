@@ -3,7 +3,7 @@ from typing import Optional, Sequence, Set
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.resolver_structure import StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition

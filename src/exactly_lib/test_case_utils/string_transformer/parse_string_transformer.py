@@ -5,8 +5,8 @@ from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol import string_transformer
-from exactly_lib.symbol.resolver_structure import StringTransformerResolver
+from exactly_lib.symbol.logic import string_transformers
+from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
@@ -168,7 +168,7 @@ GRAMMAR = grammar.Grammar(
     },
     complex_expressions={
         SEQUENCE_OPERATOR_NAME: grammar.ComplexExpression(
-            string_transformer.StringTransformerSequenceResolver,
+            string_transformers.StringTransformerSequenceResolver,
             _SEQUENCE_SYNTAX_DESCRIPTION,
         ),
     },

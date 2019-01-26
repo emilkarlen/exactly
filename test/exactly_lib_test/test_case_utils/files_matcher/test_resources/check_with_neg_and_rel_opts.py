@@ -4,7 +4,7 @@ from abc import ABC
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.files_matcher import FilesMatcherResolver
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable

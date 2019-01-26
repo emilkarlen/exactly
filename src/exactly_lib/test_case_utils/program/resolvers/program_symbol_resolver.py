@@ -1,11 +1,11 @@
 from typing import Sequence
 
 from exactly_lib.symbol import lookups
+from exactly_lib.symbol.logic.program.arguments_resolver import ArgumentsResolver
+from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.program.stdin_data_resolver import StdinDataResolver
+from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironment
-from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
-from exactly_lib.symbol.program.program_resolver import ProgramResolver
-from exactly_lib.symbol.program.stdin_data_resolver import StdinDataResolver
-from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation

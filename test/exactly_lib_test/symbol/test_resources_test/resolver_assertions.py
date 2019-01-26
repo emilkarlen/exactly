@@ -1,11 +1,16 @@
 import unittest
+
 from typing import Sequence, Callable, TypeVar
 
-from exactly_lib.symbol.resolver_structure import DataValueResolver, LogicValueResolver, SymbolContainer
+from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
+from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
+from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data.concrete_string_values import ConstantFragment
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.string_value import StringValue
+from exactly_lib.type_system.logic.program.program_value import ProgramValue
+from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
 from exactly_lib.type_system.value_type import ValueType, DataValueType, TypeCategory, LogicValueType
 from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
@@ -240,7 +245,7 @@ class _ProgramResolverTestImpl(LogicValueResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self.explicit_references
 
-    def resolve(self, symbols: SymbolTable) -> FileRef:
+    def resolve(self, symbols: SymbolTable) -> ProgramValue:
         raise NotImplementedError('not used')
 
 
@@ -265,5 +270,5 @@ class _StringTransformerResolverTestImpl(LogicValueResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self.explicit_references
 
-    def resolve(self, symbols: SymbolTable) -> FileRef:
+    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
         raise NotImplementedError('not used')

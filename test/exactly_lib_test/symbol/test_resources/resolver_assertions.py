@@ -1,13 +1,17 @@
 import unittest
+
 from typing import Sequence
 
 from exactly_lib.symbol import resolver_structure as rs
+from exactly_lib.symbol.data.data_value_resolver import DataValueResolver, get_data_value_type
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.program.program_resolver import ProgramResolver
-from exactly_lib.symbol.resolver_structure import LogicValueResolver, DataValueResolver, StringTransformerResolver, \
-    LineMatcherResolver, FileMatcherResolver
+from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
+from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
+from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver, get_logic_value_type
+from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system.data.file_ref import FileRef
@@ -44,7 +48,7 @@ def is_resolver_of_data_type(data_value_type: DataValueType,
                                                         asrt.is_(TypeCategory.DATA)),
 
                                      asrt.sub_component('data_value_type',
-                                                        rs.get_data_value_type,
+                                                        get_data_value_type,
                                                         asrt.is_(data_value_type)),
 
                                      asrt.sub_component('value_type',
@@ -62,7 +66,7 @@ def is_resolver_of_logic_type(logic_value_type: LogicValueType,
                                                         asrt.is_(TypeCategory.LOGIC)),
 
                                      asrt.sub_component('logic_value_type',
-                                                        rs.get_logic_value_type,
+                                                        get_logic_value_type,
                                                         asrt.is_(logic_value_type)),
 
                                      asrt.sub_component('value_type',

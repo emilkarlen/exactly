@@ -6,7 +6,7 @@ from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol import lookups
-from exactly_lib.symbol.files_matcher import FilesMatcherValue, FilesMatcherModel, Environment
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherValue, FilesMatcherModel, Environment
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators

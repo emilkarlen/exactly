@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.program.command_resolver import CommandDriverResolver
+from exactly_lib.symbol.logic.program.command_resolver import CommandDriverResolver
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.logic.program.command_value import CommandValue
 

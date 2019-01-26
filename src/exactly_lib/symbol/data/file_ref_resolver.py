@@ -1,7 +1,7 @@
 from typing import Sequence
 
+from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolReferences
-from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.path_part import PathPart

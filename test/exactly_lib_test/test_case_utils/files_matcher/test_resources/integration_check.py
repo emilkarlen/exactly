@@ -6,7 +6,8 @@ from typing import Optional, Tuple
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.files_matcher import FilesMatcherResolver, FilesMatcherValue, Environment, FilesMatcherModel
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, FilesMatcherValue, Environment, \
+    FilesMatcherModel
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir

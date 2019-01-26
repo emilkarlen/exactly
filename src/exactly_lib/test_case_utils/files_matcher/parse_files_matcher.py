@@ -6,8 +6,8 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.files_matcher import FilesMatcherResolver
-from exactly_lib.symbol.resolver_structure import StringMatcherResolver
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as expression_parse
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_matcher import config

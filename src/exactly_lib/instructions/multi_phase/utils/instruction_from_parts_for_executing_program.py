@@ -6,7 +6,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import Ma
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \

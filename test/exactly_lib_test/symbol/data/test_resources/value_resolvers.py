@@ -3,9 +3,9 @@ from typing import Sequence
 from exactly_lib.definitions.type_system import DATA_TYPE_2_VALUE_TYPE
 from exactly_lib.symbol import symbol_usage
 from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue

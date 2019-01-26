@@ -1,10 +1,13 @@
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.files_matcher import FilesMatcherResolver
-from exactly_lib.symbol.program.program_resolver import ProgramResolver
-from exactly_lib.symbol.resolver_structure import SymbolContainer, StringTransformerResolver, LineMatcherResolver, \
-    FileMatcherResolver, StringMatcherResolver
+from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
+from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
+from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
+from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue

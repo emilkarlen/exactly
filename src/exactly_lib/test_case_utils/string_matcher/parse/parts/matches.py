@@ -6,7 +6,7 @@ from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.resolver_structure import StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import diff_msg, diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo

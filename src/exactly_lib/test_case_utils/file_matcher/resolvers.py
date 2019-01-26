@@ -1,8 +1,8 @@
 from typing import Sequence
 
 from exactly_lib.symbol import lookups
+from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
-from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.file_matcher import file_matchers

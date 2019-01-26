@@ -24,11 +24,15 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.files_matcher import FilesMatcherResolver
-from exactly_lib.symbol.program.program_resolver import ProgramResolver
-from exactly_lib.symbol.program.string_or_file import SourceType
-from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver, \
-    FileMatcherResolver, LineMatcherResolver, SymbolValueResolver, StringMatcherResolver
+from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
+from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
+from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
+from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.program.string_or_file import SourceType
+from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
+from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
@@ -295,7 +299,7 @@ def _parse_files_matcher(fs_location_info: FileSystemLocationInfo,
 
 
 def _parse_string_transformer(fs_location_info: FileSystemLocationInfo,
-                              token_parser: TokenParser) -> line_transformer_resolvers.StringTransformerResolver:
+                              token_parser: TokenParser) -> StringTransformerResolver:
     if token_parser.is_at_eol:
         return line_transformer_resolvers.StringTransformerConstant(IdentityStringTransformer())
     return parse_string_transformer.parse_string_transformer_from_token_parser(token_parser)

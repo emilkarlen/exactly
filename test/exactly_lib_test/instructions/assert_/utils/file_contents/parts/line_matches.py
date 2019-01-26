@@ -5,7 +5,7 @@ from typing import Callable
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.string_matcher_assertion_part import \
     StringMatcherAssertionPart
-from exactly_lib.symbol.resolver_structure import LineMatcherResolver
+from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver

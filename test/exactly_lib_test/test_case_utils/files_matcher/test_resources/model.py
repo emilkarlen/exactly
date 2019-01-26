@@ -2,7 +2,7 @@ from typing import Optional, Callable
 
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.resolver_structure import FileMatcherResolver
+from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 

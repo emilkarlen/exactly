@@ -7,7 +7,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
     token_parser_with_additional_error_message_format_map
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.resolver_structure import StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher import resolvers
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer

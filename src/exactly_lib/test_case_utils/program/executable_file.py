@@ -1,6 +1,6 @@
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.symbol.program.command_resolver import CommandResolver
+from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.program.command import command_resolvers
 
 

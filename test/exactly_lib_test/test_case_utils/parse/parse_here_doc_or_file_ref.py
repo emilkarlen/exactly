@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.program import string_or_file
+from exactly_lib.symbol.logic.program import string_or_file
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType

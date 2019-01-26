@@ -1,7 +1,8 @@
 from typing import Sequence
 
 from exactly_lib.symbol import lookups
-from exactly_lib.symbol.resolver_structure import StringTransformerResolver, LineMatcherResolver
+from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
+from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.string_transformer import transformers

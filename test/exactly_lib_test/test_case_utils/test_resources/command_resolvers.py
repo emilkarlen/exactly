@@ -2,7 +2,7 @@ import sys
 
 from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.program.command_resolver import CommandResolver
+from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.test_case_utils.program.command import driver_resolvers as drivers
 from exactly_lib.type_system.data import file_refs

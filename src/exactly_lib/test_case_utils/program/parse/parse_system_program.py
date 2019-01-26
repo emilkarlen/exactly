@@ -3,8 +3,8 @@ from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.symbol.program.command_resolver import CommandResolver
-from exactly_lib.symbol.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
+from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.program.command.driver_resolvers import CommandDriverResolverForSystemProgram
 from exactly_lib.test_case_utils.program.parse import parse_arguments

@@ -12,7 +12,7 @@ from exactly_lib.definitions.test_case.actors import command_line as texts
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.program.command_resolver import CommandResolver
+from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, ParseException, Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction

@@ -1,8 +1,8 @@
 from typing import Sequence
 
+from exactly_lib.symbol.logic.program.string_or_file import StringOrFileRefResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
-from exactly_lib.symbol.program.string_or_file import StringOrFileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue

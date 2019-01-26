@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.program.parse import parse_arguments
 from exactly_lib.test_case_utils.program.resolvers import program_symbol_resolver
 from exactly_lib.test_case_utils.program.resolvers.program_symbol_resolver import ProgramResolverForSymbolReference

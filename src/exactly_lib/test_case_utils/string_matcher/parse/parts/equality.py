@@ -5,9 +5,9 @@ from typing import List, Set, Optional
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.symbol.logic.program.string_or_file import StringOrFileRefResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.program.string_or_file import StringOrFileRefResolver
-from exactly_lib.symbol.resolver_structure import StringMatcherResolver
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, SingleStepValidator, ValidationStep, \
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition

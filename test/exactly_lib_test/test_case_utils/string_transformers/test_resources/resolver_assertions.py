@@ -1,4 +1,5 @@
-from exactly_lib.symbol.resolver_structure import StringTransformerResolver, LogicValueResolver
+from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
+from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util import symbol_table

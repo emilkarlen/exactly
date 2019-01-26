@@ -1,15 +1,16 @@
+import unittest
 from collections import Counter
 
 import types
-import unittest
 from typing import Sequence
 
 from exactly_lib.definitions import type_system
 from exactly_lib.definitions.type_system import DATA_TYPE_2_VALUE_TYPE
+from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr, reference_restrictions as sut
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
-from exactly_lib.symbol.resolver_structure import DataValueResolver, SymbolContainer, LogicValueResolver, \
-    SymbolValueResolver
+from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
+from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.value_type import DataValueType, ValueType, LogicValueType

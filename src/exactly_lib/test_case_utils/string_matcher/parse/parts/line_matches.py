@@ -4,8 +4,9 @@ from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.instruction_arguments import LINE_MATCHER
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.resolver_structure import LineMatcherResolver, StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg import diff_msg

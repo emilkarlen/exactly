@@ -14,7 +14,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction impo
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i

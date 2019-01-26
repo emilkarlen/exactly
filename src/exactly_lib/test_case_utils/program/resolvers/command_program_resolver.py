@@ -1,11 +1,11 @@
 from typing import Sequence
 
+from exactly_lib.symbol.logic.program.arguments_resolver import ArgumentsResolver
+from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
+from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.program.stdin_data_resolver import StdinDataResolver
+from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
-from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
-from exactly_lib.symbol.program.command_resolver import CommandResolver
-from exactly_lib.symbol.program.program_resolver import ProgramResolver
-from exactly_lib.symbol.program.stdin_data_resolver import StdinDataResolver
-from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator

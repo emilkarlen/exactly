@@ -3,8 +3,8 @@ import unittest
 from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers
 from exactly_lib.symbol.data import string_resolver as sr, file_ref_resolver as pr, list_resolver as lr, \
     visitor as sut
+from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.string_resolvers import str_constant
-from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system.value_type import ValueType, DataValueType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable

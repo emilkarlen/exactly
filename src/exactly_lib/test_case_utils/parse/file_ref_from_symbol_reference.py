@@ -1,12 +1,13 @@
 import pathlib
 from typing import Sequence
 
+from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver, PathPartResolver
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.data.visitor import DataValueResolverVisitor
-from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver
+from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.data import file_refs

@@ -1,4 +1,5 @@
 import unittest
+
 from typing import List, Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -6,7 +7,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import file_ref_resolvers, list_resolvers, string_resolvers
 from exactly_lib.symbol.data.file_ref_resolvers import constant
-from exactly_lib.symbol.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RESOLVING_DEPENDENCY_OF

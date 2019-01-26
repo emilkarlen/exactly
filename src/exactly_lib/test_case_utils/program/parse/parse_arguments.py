@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import list_resolvers
-from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
+from exactly_lib.symbol.logic.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import parse_list, parse_string, parse_file_ref
 from exactly_lib.test_case_utils.parse import rel_opts_configuration

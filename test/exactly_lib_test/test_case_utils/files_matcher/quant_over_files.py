@@ -4,7 +4,7 @@ import pathlib
 import shlex
 
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.symbol.files_matcher import FilesMatcherResolver
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType

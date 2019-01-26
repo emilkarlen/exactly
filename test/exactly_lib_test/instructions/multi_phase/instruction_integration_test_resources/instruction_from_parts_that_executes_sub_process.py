@@ -12,9 +12,9 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
-from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionSourceInfo

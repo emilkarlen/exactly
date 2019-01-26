@@ -3,12 +3,13 @@ from typing import Iterable
 from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
-from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver
+from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.data import file_ref as _file_ref

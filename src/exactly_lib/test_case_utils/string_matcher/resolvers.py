@@ -2,9 +2,10 @@ from typing import Sequence, Callable, Set, Optional
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.symbol import lookups
+from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironment
-from exactly_lib.symbol.resolver_structure import StringMatcherResolver, StringTransformerResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, ValidatorOfReferredResolverBase, \

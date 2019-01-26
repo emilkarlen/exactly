@@ -1,7 +1,7 @@
 from typing import Sequence, List, Optional, Iterator
 
 from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
-from exactly_lib.symbol.files_matcher import FilesMatcherResolver, \
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     Environment, FileModel, FilesMatcherModel, FilesMatcherValue
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference

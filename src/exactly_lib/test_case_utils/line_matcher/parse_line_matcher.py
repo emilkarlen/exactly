@@ -6,7 +6,7 @@ from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTE
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.resolver_structure import LineMatcherResolver
+from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import parse_integer_matcher
 from exactly_lib.test_case_utils.condition.syntax import OPERATOR_ARGUMENT
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression

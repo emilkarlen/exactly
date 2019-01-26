@@ -1,10 +1,10 @@
 from typing import Callable, List
 
+from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.symbol.err_msg.error_messages import defined_at_line__err_msg_lines
-from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver, \
-    DataValueResolver
+from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import FailureInfo, \
     DataTypeReferenceRestrictions
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory

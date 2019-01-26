@@ -7,7 +7,8 @@ from typing import Sequence, Optional, List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.files_matcher import FilesMatcherResolver, FilesMatcherValue, Environment, FilesMatcherModel
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, FilesMatcherValue, Environment, \
+    FilesMatcherModel
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironment
 from exactly_lib.symbol.symbol_usage import SymbolReference

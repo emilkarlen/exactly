@@ -2,13 +2,14 @@ from typing import Sequence
 
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.data import file_ref_resolvers
+from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.string_resolvers import str_constant
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
-from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver
+from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType

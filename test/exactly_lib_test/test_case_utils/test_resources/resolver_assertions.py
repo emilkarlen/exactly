@@ -1,7 +1,8 @@
 from typing import Any, Sequence, Type
 
 from exactly_lib.symbol import resolver_structure
-from exactly_lib.symbol.resolver_structure import LogicValueResolver, SymbolValueResolver
+from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
+from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.value_type import ValueType, LogicValueType

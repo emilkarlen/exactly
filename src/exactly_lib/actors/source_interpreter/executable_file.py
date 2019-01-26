@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.actors.source_interpreter import parser_and_executor as pa
 from exactly_lib.actors.source_interpreter.source_file_management import SourceInterpreterSetup
 from exactly_lib.actors.util.executor_made_of_parts import parts
-from exactly_lib.symbol.program.command_resolver import CommandResolver
+from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case_utils.program.command import command_resolvers
 

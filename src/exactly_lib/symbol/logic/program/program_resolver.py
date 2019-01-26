@@ -1,9 +1,10 @@
 from typing import Sequence
 
-from exactly_lib.symbol.program import stdin_data_resolver
-from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
-from exactly_lib.symbol.program.stdin_data_resolver import StdinDataResolver
-from exactly_lib.symbol.resolver_structure import StringTransformerResolver, LogicValueResolver
+from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
+from exactly_lib.symbol.logic.program import stdin_data_resolver
+from exactly_lib.symbol.logic.program.arguments_resolver import ArgumentsResolver
+from exactly_lib.symbol.logic.program.stdin_data_resolver import StdinDataResolver
+from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.resolver_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator

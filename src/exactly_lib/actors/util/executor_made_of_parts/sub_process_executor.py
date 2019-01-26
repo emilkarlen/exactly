@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.symbol.program.command_resolver import CommandResolver
+from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError

@@ -4,9 +4,9 @@ from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.symbol.data import file_ref_resolvers
-from exactly_lib.symbol.files_matcher import FilesMatcherResolver, \
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     Environment, FileModel, FilesMatcherModel, FilesMatcherValue
-from exactly_lib.symbol.resolver_structure import StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg

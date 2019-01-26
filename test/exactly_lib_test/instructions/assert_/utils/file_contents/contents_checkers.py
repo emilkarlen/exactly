@@ -5,7 +5,7 @@ from typing import Sequence
 
 import exactly_lib.type_system.error_message
 from exactly_lib.instructions.assert_.utils.file_contents.parts import contents_checkers as sut
-from exactly_lib.symbol.resolver_structure import StringTransformerResolver
+from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.err_msg.property_description import property_descriptor_with_just_a_constant_name
