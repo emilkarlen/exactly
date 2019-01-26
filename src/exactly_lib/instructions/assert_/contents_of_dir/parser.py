@@ -44,6 +44,9 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
             files_matcher_resolver = parse_files_matcher.parse_files_matcher(token_parser,
                                                                              must_be_on_current_line=False)
 
+            token_parser.report_superfluous_arguments_if_not_at_eol()
+            token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
+
             assertions = assertion_part.compose(
                 actual_path_checker_assertion_part,
                 impl_utils.FilesMatcherAsDirContentsAssertionPart(files_matcher_resolver),

@@ -33,7 +33,7 @@ class TestWithAssertionVariantForEmpty(tr.TestWithAssertionVariantBase):
         return files_matcher_setup_without_references(EmptyAssertionVariant())
 
 
-class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
+class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxWithMissingSelectorArgCaseBase,
                              TestWithAssertionVariantForEmpty):
     pass
 

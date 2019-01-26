@@ -17,8 +17,9 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_bui
     FilesMatcherArgumentsConstructor
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import Model, ModelConstructorFromRelOptConf
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess, \
@@ -107,7 +108,9 @@ class MatcherChecker:
                 etc = expectation_type_config__non_is_success(expectation_type_of_test_case)
                 instruction_arguments = make_instruction_arguments.apply(etc)
 
-                for source in equivalent_source_variants__with_source_check(self.put, instruction_arguments):
+                for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
+                        self.put,
+                        Arguments(instruction_arguments)):
                     self._check_(
                         source,
                         model_constructor(rel_opt_config),

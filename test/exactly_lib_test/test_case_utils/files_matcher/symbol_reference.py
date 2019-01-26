@@ -59,7 +59,7 @@ class TestWithAssertionVariantForSymbolReference(tr.TestWithAssertionVariantBase
         )
 
 
-class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
+class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxWithMissingSelectorArgCaseBase,
                              TestWithAssertionVariantForSymbolReference):
     pass
 

@@ -6,6 +6,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     AssertionVariantArgumentsConstructor
@@ -47,12 +48,11 @@ class TestParseInvalidSyntax(tr.TestCaseBaseForParser):
             for expectation_type in ExpectationType:
                 etc = pfh_expectation_type_config(expectation_type)
                 instruction_arguments = case.value.apply(etc)
+                source = remaining_source(instruction_arguments)
                 with self.subTest(case_name=case.name,
                                   expectation_type=str(expectation_type)):
-                    for source in equivalent_source_variants(self,
-                                                             instruction_arguments):
-                        with self.assertRaises(SingleInstructionInvalidArgumentException):
-                            parser.parse(source)
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        parser.parse(source)
 
 
 class InvalidAssertionVariantArgumentsConstructor(AssertionVariantArgumentsConstructor):

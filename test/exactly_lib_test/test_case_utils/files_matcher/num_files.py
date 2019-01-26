@@ -59,7 +59,7 @@ class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesChec
             condition=condition_str)
 
 
-class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
+class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxWithMissingSelectorArgCaseBase,
                              TestWithAssertionVariantForNumFiles):
     pass
 

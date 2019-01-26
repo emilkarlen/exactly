@@ -19,7 +19,8 @@ from exactly_lib.util.logic_types import Quantifier, ExpectationType
 
 
 def files_matcher_parser() -> Parser[FilesMatcherResolver]:
-    return parser_classes.ParserFromTokenParserFunction(parse_files_matcher)
+    return parser_classes.ParserFromTokenParserFunction(parse_files_matcher,
+                                                        consume_last_line_if_is_at_eol_after_parse=False)
 
 
 def parse_files_matcher(parser: TokenParser,
@@ -61,15 +62,12 @@ class _SimpleMatcherParser:
             return self.parse_symbol_reference(matcher_name, parser)
 
     def parse_empty_check(self, parser: TokenParser) -> FilesMatcherResolver:
-        self._expect_no_more_args_and_consume_current_line(parser)
         return emptiness.emptiness_matcher(ExpectationType.POSITIVE)
 
     def parse_num_files_check(self, parser: TokenParser) -> FilesMatcherResolver:
         cmp_op_and_rhs = expression_parse.parse_integer_comparison_operator_and_rhs(
             parser,
             expression_parse.validator_for_non_negative)
-
-        self._expect_no_more_args_and_consume_current_line(parser)
 
         return num_files.num_files_matcher(ExpectationType.POSITIVE, cmp_op_and_rhs)
 
@@ -81,7 +79,6 @@ class _SimpleMatcherParser:
 
     def parse_symbol_reference(self, parsed_symbol_name: str, parser: TokenParser) -> FilesMatcherResolver:
         if symbol_syntax.is_symbol_name(parsed_symbol_name):
-            self._expect_no_more_args_and_consume_current_line(parser)
             return symbol_reference.symbol_reference_matcher(parsed_symbol_name)
         else:
             err_msg_header = 'Neither a {matcher} nor the plain name of a {symbol}: '.format(
@@ -99,8 +96,6 @@ class _SimpleMatcherParser:
             must_be_on_current_line=True)
         matcher_on_existing_regular_file = parse_string_matcher.parse_string_matcher(parser)
 
-        self._expect_no_more_args_and_consume_current_line(parser)
-
         return self._file_quantified_assertion_part(quantifier,
                                                     matcher_on_existing_regular_file)
 
@@ -111,11 +106,6 @@ class _SimpleMatcherParser:
         return quant_over_files.quantified_matcher(ExpectationType.POSITIVE,
                                                    quantifier,
                                                    matcher_on_existing_regular_file)
-
-    @staticmethod
-    def _expect_no_more_args_and_consume_current_line(parser: TokenParser):
-        parser.report_superfluous_arguments_if_not_at_eol()
-        parser.consume_current_line_as_string_of_remaining_part_of_current_line()
 
 
 _SIMPLE_MATCHER_PARSER = _SimpleMatcherParser()

@@ -50,15 +50,14 @@ class TestParseValidMultiLineSyntax(unittest.TestCase):
                            EMPTINESS_CHECK_ARGUMENT,
                            'following line',
                        ]),
-                       source_assertion=asrt_source.is_at_beginning_of_line(2)
+                       source_assertion=asrt_source.is_at_end_of_line(1)
                        ),
-            SourceCase('Followed by empty line'
-                       '(a bit strange behaviour - should probably be at beginning of last line)',
+            SourceCase('Followed by empty line',
                        source=remaining_source_lines([
                            EMPTINESS_CHECK_ARGUMENT,
                            '',
                        ]),
-                       source_assertion=asrt_source.source_is_at_end
+                       source_assertion=asrt_source.is_at_end_of_line(1)
                        ),
             SourceCase('Selection and matcher on separate lines',
                        source=remaining_source_lines([
@@ -67,12 +66,7 @@ class TestParseValidMultiLineSyntax(unittest.TestCase):
                            '',
                            'following line',
                        ]),
-                       source_assertion=asrt_source.is_at_beginning_of_line(4)
-                       # Invalid handling of empty line
-                       # Maybe fixed by removing consumption of empty line,
-                       # as last part of parsing.
-                       # Look closer at this when implementing parsing of
-                       # FILES-MATCHER as other thing as last element on line/instruction.
+                       source_assertion=asrt_source.is_at_end_of_line(2)
                        ),
         ]
         for case in cases:
@@ -85,7 +79,7 @@ class TestParseValidMultiLineSyntax(unittest.TestCase):
                        source=remaining_source_lines([
                            instruction_arguments.NEGATION_ARGUMENT_STR + ' ' + EMPTINESS_CHECK_ARGUMENT,
                        ]),
-                       source_assertion=asrt_source.source_is_at_end
+                       source_assertion=asrt_source.is_at_end_of_line(1)
                        ),
             SourceCase('Dir on 1st line, Negation and DIR-CONTENTS-MATCHER on 2nd line, followed by non-instr lines',
                        source=remaining_source_lines([
@@ -93,7 +87,7 @@ class TestParseValidMultiLineSyntax(unittest.TestCase):
                            EMPTINESS_CHECK_ARGUMENT,
                            'following line',
                        ]),
-                       source_assertion=asrt_source.is_at_beginning_of_line(3)
+                       source_assertion=asrt_source.is_at_end_of_line(2)
                        ),
         ]
         for case in cases:
