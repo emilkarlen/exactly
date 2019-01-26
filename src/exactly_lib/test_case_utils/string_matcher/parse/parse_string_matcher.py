@@ -23,7 +23,8 @@ _FORMAT_MAP = {
 
 
 def string_matcher_parser() -> Parser[StringMatcherResolver]:
-    return parser_classes.ParserFromTokenParserFunction(parse_string_matcher)
+    return parser_classes.ParserFromTokenParserFunction(parse_string_matcher,
+                                                        consume_last_line_if_is_at_eol_after_parse=False)
 
 
 def parse_string_matcher(parser: TokenParser) -> StringMatcherResolver:
@@ -85,7 +86,6 @@ class _StringMatcherParser:
     def _symbol_reference(self, parsed_symbol_name: str, token_parser: TokenParser) -> StringMatcherResolver:
         if symbol_syntax.is_symbol_name(parsed_symbol_name):
             token_parser.report_superfluous_arguments_if_not_at_eol()
-            token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
             return resolvers.new_reference(parsed_symbol_name, self.expectation_type)
         else:
             err_msg_header = 'Neither a {matcher} nor the plain name of a {symbol}: '.format(

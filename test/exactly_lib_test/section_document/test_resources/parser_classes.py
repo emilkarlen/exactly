@@ -9,6 +9,7 @@ class ConstantParser(Generic[PARSE_RESULT], Parser[PARSE_RESULT]):
     """Parser with constant result, which does not consume any source."""
 
     def __init__(self, result: PARSE_RESULT):
+        super().__init__()
         self._result = result
 
     def parse(self, source: ParseSource) -> PARSE_RESULT:

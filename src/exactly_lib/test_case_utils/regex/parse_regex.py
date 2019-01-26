@@ -23,12 +23,15 @@ def regex_parser() -> Parser[RegexResolver]:
     return _PARSER
 
 
-def parse_regex(parser: TokenParser) -> RegexResolver:
-    return parse_regex2(parser)[1]
+def parse_regex(parser: TokenParser,
+                must_be_on_same_line: bool = True,
+                consume_last_here_doc_line: bool = False) -> RegexResolver:
+    return parse_regex2(parser, must_be_on_same_line, consume_last_here_doc_line)[1]
 
 
 def parse_regex2(parser: TokenParser,
-                 must_be_on_same_line: bool = True) -> Tuple[SourceType, RegexResolver]:
+                 must_be_on_same_line: bool = True,
+                 consume_last_here_doc_line: bool = False) -> Tuple[SourceType, RegexResolver]:
     if must_be_on_same_line:
         parser.require_is_not_at_eol(parse_reg_ex.MISSING_REGEX_ARGUMENT_ERR_MSG)
 
@@ -38,7 +41,8 @@ def parse_regex2(parser: TokenParser,
     if must_be_on_same_line:
         parser.require_is_not_at_eol(parse_reg_ex.MISSING_REGEX_ARGUMENT_ERR_MSG)
 
-    source_type, regex_pattern = parse_string_or_here_doc_from_token_parser(parser)
+    source_type, regex_pattern = parse_string_or_here_doc_from_token_parser(parser,
+                                                                            consume_last_here_doc_line)
     return source_type, _RegexResolver(is_ignore_case, regex_pattern)
 
 

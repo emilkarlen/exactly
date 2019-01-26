@@ -6,7 +6,7 @@ from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__multi_line
+    equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
@@ -75,7 +75,9 @@ class TestCaseBase(unittest.TestCase):
         args_variant = args_variant_constructor.construct(expectation_type)
         complete_instruction_arguments = self.configuration.arguments_for(args_variant)
 
-        for source in equivalent_source_variants__with_source_check__multi_line(self, complete_instruction_arguments):
+        for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
+                self,
+                complete_instruction_arguments):
             integration_check.check(
                 self,
                 self.configuration.new_parser(),
@@ -99,8 +101,9 @@ class TestCaseBase(unittest.TestCase):
                 args_variant = args_variant_constructor.construct(expectation_type)
                 complete_instruction_arguments = self.configuration.arguments_for(args_variant)
 
-                for source in equivalent_source_variants__with_source_check__multi_line(self,
-                                                                                        complete_instruction_arguments):
+                for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
+                        self,
+                        complete_instruction_arguments):
                     integration_check.check(
                         self,
                         self.configuration.new_parser(),

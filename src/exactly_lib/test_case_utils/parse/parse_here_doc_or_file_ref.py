@@ -42,23 +42,27 @@ def parse_from_parse_source(source: ParseSource,
 
 
 def parse_from_token_parser(token_parser: TokenParser,
-                            conf: RelOptionArgumentConfiguration = CONFIGURATION) -> StringOrFileRefResolver:
+                            conf: RelOptionArgumentConfiguration = CONFIGURATION,
+                            consume_last_here_doc_line: bool = True) -> StringOrFileRefResolver:
     token_parser.require_head_token_has_valid_syntax()
     file_ref = token_parser.consume_and_handle_optional_option(
         None,
         functools.partial(parse_file_ref.parse_file_ref_from_token_parser, conf),
         FILE_ARGUMENT_OPTION)
-    if file_ref:
+    if file_ref is not None:
         return StringOrFileRefResolver(SourceType.PATH, None, file_ref)
     else:
-        source_type, resolver = parse_string_or_here_doc_from_token_parser(token_parser)
+        source_type, resolver = parse_string_or_here_doc_from_token_parser(token_parser, consume_last_here_doc_line)
         return StringOrFileRefResolver(source_type, resolver, None)
 
 
-def parse_string_or_here_doc_from_token_parser(token_parser: TokenParser) -> Tuple[SourceType, StringResolver]:
+def parse_string_or_here_doc_from_token_parser(token_parser: TokenParser,
+                                               consume_last_here_doc_line: bool = True
+                                               ) -> Tuple[SourceType, StringResolver]:
     token_parser.require_head_token_has_valid_syntax()
     if token_parser.token_stream.head.source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
-        here_doc = parse_here_document.parse_as_last_argument_from_token_parser(True, token_parser)
+        here_doc = parse_here_document.parse_as_last_argument_from_token_parser(True, token_parser,
+                                                                                consume_last_here_doc_line)
         return SourceType.HERE_DOC, here_doc
     else:
         string_resolver = parse_string.parse_string_from_token_parser(token_parser)

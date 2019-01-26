@@ -39,10 +39,10 @@ def parse(expectation_type: ExpectationType,
     token_parser.require_has_valid_head_token(_EXPECTED_SYNTAX_ELEMENT_FOR_EQUALS)
     expected_contents = parse_here_doc_or_file_ref.parse_from_token_parser(
         token_parser,
-        EXPECTED_FILE_REL_OPT_ARG_CONFIG)
+        EXPECTED_FILE_REL_OPT_ARG_CONFIG,
+        consume_last_here_doc_line=False)
     if expected_contents.source_type is not SourceType.HERE_DOC:
         token_parser.report_superfluous_arguments_if_not_at_eol()
-        token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
 
     return value_resolver(
         expectation_type,

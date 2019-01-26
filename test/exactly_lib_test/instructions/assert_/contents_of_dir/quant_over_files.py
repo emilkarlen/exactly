@@ -103,6 +103,9 @@ class TestFailingValidationPreSdsDueToInvalidIntegerArgumentOfNumLines(expressio
                                         TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck(),
                                         invalid_integers_according_to_custom_validation=[-1, -2])
 
+    def test_invalid_integer_argument_according_to_custom_validation(self):
+        super().test_invalid_integer_argument_according_to_custom_validation()
+
 
 class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck(
     expression.InstructionArgumentsVariantConstructor):

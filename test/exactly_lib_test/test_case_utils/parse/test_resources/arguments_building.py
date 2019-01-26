@@ -46,6 +46,24 @@ class Arguments:
         return Arguments(self.first_line + first_line_separator + arguments.first_line,
                          self.following_lines + arguments.following_lines)
 
+    def last_line_followed_by(self,
+                              arguments,
+                              first_line_separator: str = ' '):
+        """
+        Appends arguments to the last line
+
+        :type arguments: Arguments
+        :param first_line_separator: String that separates the first line of the two arguments
+        :rtype: Arguments
+        """
+        if self.following_lines:
+            return Arguments(self.first_line,
+                             self.following_lines[:-1] +
+                             [self.following_lines[-1] + first_line_separator + arguments.first_line] +
+                             arguments.following_lines)
+        else:
+            return self.followed_by(arguments, first_line_separator)
+
     def followed_by_lines(self,
                           following_lines: List[str]):
         return Arguments(self.first_line,

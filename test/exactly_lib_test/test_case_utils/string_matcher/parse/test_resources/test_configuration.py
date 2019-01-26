@@ -14,7 +14,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_popul
     HomeOrSdsPopulator
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__multi_line
+    equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
@@ -39,8 +39,8 @@ class TestConfiguration:
             symbols=symbols,
         )
 
-    def arguments_for(self, additional_arguments: str) -> Arguments:
-        return Arguments(additional_arguments)
+    def arguments_for(self, additional_arguments: str, following_lines=()) -> Arguments:
+        return Arguments(additional_arguments, following_lines)
 
     def source_for_lines(self, argument_lines: List[str]) -> ParseSource:
         return self.source_for(argument_lines[0], argument_lines[1:])
@@ -85,7 +85,8 @@ class TestCaseBase(unittest.TestCase):
                                     model: ModelBuilder,
                                     arrangement: ArrangementPostAct,
                                     expectation: Expectation):
-        for source in equivalent_source_variants__with_source_check__multi_line(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
+                self, instruction_argument):
             integration_check.check(self, self.configuration.new_parser(), source, model, arrangement, expectation)
 
 

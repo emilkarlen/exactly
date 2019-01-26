@@ -641,7 +641,7 @@ def _check(put: unittest.TestCase,
     tcds = fake_home_and_sds()
 
     # ACT #
-    actual_resolver = sut.parse_regex(source)
+    actual_resolver = sut.parse_regex(source, consume_last_here_doc_line=True)
     # ASSERT #
     expectation.token_stream.apply_with_message(put,
                                                 source.token_stream,

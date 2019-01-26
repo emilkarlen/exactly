@@ -11,5 +11,7 @@ from exactly_lib.type_system.logic.string_matcher import FileToCheck
 
 def parse(token_parser: TokenParser) -> AssertionPart[ComparisonActualFile, FileToCheck]:
     string_matcher_resolver = parse_string_matcher.parse_string_matcher(token_parser)
+    token_parser.report_superfluous_arguments_if_not_at_eol()
+    token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
     return assertion_part.compose(ConstructFileToCheckAssertionPart(),
                                   StringMatcherAssertionPart(string_matcher_resolver))

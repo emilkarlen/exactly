@@ -99,6 +99,8 @@ class _SimpleMatcherParser:
             must_be_on_current_line=True)
         matcher_on_existing_regular_file = parse_string_matcher.parse_string_matcher(parser)
 
+        self._expect_no_more_args_and_consume_current_line(parser)
+
         return self._file_quantified_assertion_part(quantifier,
                                                     matcher_on_existing_regular_file)
 

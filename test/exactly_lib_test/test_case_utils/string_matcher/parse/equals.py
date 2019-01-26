@@ -9,9 +9,7 @@ from exactly_lib.test_case_utils.string_matcher.parse.parts.equality import \
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
-    is_at_beginning_of_line
+from exactly_lib_test.section_document.test_resources import parse_source_assertions  as asrt_source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
@@ -52,7 +50,6 @@ def suite() -> unittest.TestSuite:
     suite_with_negation = unittest.TestSuite([
         _ContentsEqualsAHereDocument(),
         _ContentsEqualsAString(),
-        _ContentsEqualsAStringAndFollowingLine(),
         _ContentsEqualsAHereDocumentWithSymbolReferences(),
         _ContentsDoNotEqualAHereDocument(),
     ])
@@ -169,15 +166,15 @@ class _ContentsEqualsAHereDocument(TestWithNegationArgumentBase):
             self.configuration.arrangement_for_contents(
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=maybe_not.pass__if_positive__fail__if_negative,
-                        source=source_is_at_end),
+                        source=asrt_source.is_at_end_of_line(3)),
         )
 
 
 class _ContentsEqualsAString(TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         expected_contents = 'expected contents'
-        self._check(
-            self.configuration.source_for(
+        self._check_with_source_variants(
+            self.configuration.arguments_for(
                 args('{maybe_not} {equals} {expected_contents}',
                      expected_contents=surrounded_by_hard_quotes_str(expected_contents),
                      maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
@@ -185,26 +182,7 @@ class _ContentsEqualsAString(TestWithNegationArgumentBase):
             model_construction.model_of(expected_contents),
             self.configuration.arrangement_for_contents(
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=maybe_not.pass__if_positive__fail__if_negative,
-                        source=source_is_at_end),
-        )
-
-
-class _ContentsEqualsAStringAndFollowingLine(TestWithNegationArgumentBase):
-    def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        expected_contents = 'expected contents'
-        self._check(
-            self.configuration.source_for(
-                args('{maybe_not} {equals} {expected_contents}  ',
-                     expected_contents=surrounded_by_hard_quotes_str(expected_contents),
-                     maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
-                ['following line']
-            ),
-            model_construction.model_of(expected_contents),
-            self.configuration.arrangement_for_contents(
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=maybe_not.pass__if_positive__fail__if_negative,
-                        source=asrt_source.is_at_beginning_of_line(2)),
+            Expectation(main_result=maybe_not.pass__if_positive__fail__if_negative),
         )
 
 
@@ -233,7 +211,7 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithNegationArgumentB
                         symbol_usages=equals_symbol_references([
                             SymbolReference(symbol.name, is_any_data_type())
                         ]),
-                        source=is_at_beginning_of_line(4)),
+                        source=asrt_source.is_at_end_of_line(3)),
         )
 
 
@@ -250,7 +228,7 @@ class _ContentsDoNotEqualAHereDocument(TestWithNegationArgumentBase):
             self.configuration.arrangement_for_contents(
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=maybe_not.fail__if_positive__pass_if_negative,
-                        source=is_at_beginning_of_line(4)),
+                        source=asrt_source.is_at_end_of_line(3)),
         )
 
 

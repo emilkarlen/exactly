@@ -1,5 +1,6 @@
-import random
 import unittest
+
+import random
 from typing import Optional
 
 from exactly_lib.instructions.multi_phase.utils import \
@@ -275,6 +276,7 @@ class _InstructionLogDirContainsOutFiles(ValueAssertionBase[SandboxDirectoryStru
 
 class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(Parser[ProgramResolver]):
     def __init__(self, validator: pre_or_post_validation.PreOrPostSdsValidator):
+        super().__init__()
         self.validator = validator
 
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
@@ -286,6 +288,7 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(P
 
 class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(Parser[ProgramResolver]):
     def __init__(self, validator: pre_or_post_validation.PreOrPostSdsValidator):
+        super().__init__()
         self.validator = validator
 
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:

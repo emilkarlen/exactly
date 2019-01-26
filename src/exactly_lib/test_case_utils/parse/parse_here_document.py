@@ -37,7 +37,8 @@ def parse_as_last_argument(here_document_is_mandatory: bool,
 
 
 def parse_as_last_argument_from_token_parser(here_document_is_mandatory: bool,
-                                             token_parser: TokenParser) -> Optional[StringResolver]:
+                                             token_parser: TokenParser,
+                                             consume_last_line: bool = True) -> Optional[StringResolver]:
     """
     Expects the here-document marker to be the ane and only token remaining on the current line.
     Consumes current line and all lines included in the here-document.
@@ -72,7 +73,10 @@ def parse_as_last_argument_from_token_parser(here_document_is_mandatory: bool,
     marker = marker_match.group(2)
 
     token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
-    return _parse_document_lines_from_token_parser(marker, token_parser)
+    string_resolver = _parse_document_lines_from_token_parser(marker, token_parser)
+    if consume_last_line:
+        token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
+    return string_resolver
 
 
 def _parse_document_lines(marker: str, source: ParseSource) -> StringResolver:
@@ -90,10 +94,11 @@ def _parse_document_lines(marker: str, source: ParseSource) -> StringResolver:
 def _parse_document_lines_from_token_parser(marker: str, token_parser: TokenParser) -> StringResolver:
     here_doc = []
     while token_parser.has_current_line:
-        line = token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
+        line = token_parser.consume_remaining_part_of_current_line_as_string()
         if line == marker:
             return _resolver_from_lines(here_doc)
         here_doc.append(line)
+        token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
     raise HereDocumentContentsParsingException("End Of File reached without finding Marker: '{}'".format(marker))
 
 

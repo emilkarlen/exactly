@@ -28,7 +28,6 @@ def parse(expectation_type: ExpectationType,
     cmp_op_and_rhs = parse_cmp_op.parse_integer_comparison_operator_and_rhs(token_parser,
                                                                             validator_for_non_negative)
     token_parser.report_superfluous_arguments_if_not_at_eol()
-    token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
     return value_resolver(expectation_type,
                           cmp_op_and_rhs)
 

@@ -49,7 +49,7 @@ class TestLineBreaksWithEmptyActualFile(TestCaseBase):
                      sb.format_lines(['',
                                       '{empty}'])),
                  source_assertion=
-                 asrt_source.source_is_at_end,
+                 asrt_source.is_at_end_of_line(2),
                  main_result_assertion=
                  is_matching_success(),
                  ),
@@ -60,7 +60,7 @@ class TestLineBreaksWithEmptyActualFile(TestCaseBase):
                                       '{constant_transformation_arguments}',
                                       '{empty}'])),
                  source_assertion=
-                 asrt_source.source_is_at_end,
+                 asrt_source.is_at_end_of_line(3),
                  main_result_assertion=
                  is_matching_success(),
                  ),
@@ -71,7 +71,7 @@ class TestLineBreaksWithEmptyActualFile(TestCaseBase):
                                       '{not}',
                                       '{empty}'])),
                  source_assertion=
-                 asrt_source.source_is_at_end,
+                 asrt_source.is_at_end_of_line(3),
                  main_result_assertion=
                  arbitrary_matching_failure(),
                  ),

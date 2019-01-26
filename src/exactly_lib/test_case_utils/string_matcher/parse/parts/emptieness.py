@@ -8,7 +8,6 @@ from exactly_lib.util.logic_types import ExpectationType
 def parse(expectation_type: ExpectationType,
           token_parser: TokenParser) -> StringMatcherResolver:
     token_parser.report_superfluous_arguments_if_not_at_eol()
-    token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
     return value_resolver(expectation_type)
 
 

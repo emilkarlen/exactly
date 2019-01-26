@@ -48,7 +48,6 @@ def _parse_line_matches_tokens_and_line_matcher(token_parser: TokenParser) -> Li
     token_parser.require_is_not_at_eol('Missing {_MATCHER_}')
     line_matcher_resolver = parse_line_matcher_from_token_parser(token_parser)
     token_parser.report_superfluous_arguments_if_not_at_eol()
-    token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
 
     return line_matcher_resolver
 

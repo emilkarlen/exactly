@@ -24,7 +24,7 @@ REL_OPT_ARG_CONF = RelOptionArgumentConfiguration(REL_OPTIONS_CONF,
 
 
 def parser(consume_last_line_if_is_at_eol_after_parse: bool = False) -> Parser[ArgumentsResolver]:
-    return _Parser(consume_last_line_if_is_at_eol_after_parse)
+    return _Parser(consume_last_line_if_is_at_eol_after_parse, True)
 
 
 def parse(source: ParseSource) -> ArgumentsResolver:
@@ -36,8 +36,12 @@ def parse_from_token_parser(token_parser: TokenParser) -> ArgumentsResolver:
 
 
 class _Parser(Parser[ArgumentsResolver]):
-    def __init__(self, consume_last_line_if_is_at_eol_after_parse: bool = True):
-        self._consume_last_line_if_is_at_eol_after_parse = consume_last_line_if_is_at_eol_after_parse
+    def __init__(self,
+                 consume_last_line_if_is_at_eol_after_parse: bool = True,
+                 consume_last_line_if_is_at_eof_after_parse: bool = False,
+                 ):
+        super().__init__(consume_last_line_if_is_at_eol_after_parse,
+                         consume_last_line_if_is_at_eof_after_parse)
         self._element_choices = [
             parsing.TokenSyntaxSetup(
                 token_matchers.is_unquoted_and_equals(syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER),
