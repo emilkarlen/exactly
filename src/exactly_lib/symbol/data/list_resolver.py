@@ -31,7 +31,7 @@ class Element:
         """
         raise NotImplementedError()
 
-    def resolve(self, symbols: SymbolTable) -> List[str]:
+    def resolve(self, symbols: SymbolTable) -> List[StringValue]:
         """Gives the list of string values that this element represents"""
         raise NotImplementedError()
 
@@ -54,7 +54,7 @@ class StringResolverElement(Element):
     def references(self) -> Sequence[SymbolReference]:
         return tuple(self._string_resolver.references)
 
-    def resolve(self, symbols: SymbolTable) -> List[str]:
+    def resolve(self, symbols: SymbolTable) -> List[StringValue]:
         return [self._string_resolver.resolve(symbols)]
 
 
@@ -72,7 +72,7 @@ class SymbolReferenceElement(Element):
     def references(self) -> Sequence[SymbolReference]:
         return self._symbol_reference,
 
-    def resolve(self, symbols: SymbolTable) -> list:
+    def resolve(self, symbols: SymbolTable) -> List[StringValue]:
         container = symbols.lookup(self._symbol_reference.name)
         value = container.resolver.resolve(symbols)
         if isinstance(value, StringValue):

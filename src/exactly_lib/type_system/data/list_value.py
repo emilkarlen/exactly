@@ -1,4 +1,4 @@
-from typing import List, Set
+from typing import List, Set, Sequence
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -9,13 +9,10 @@ from exactly_lib.type_system.data.string_value import StringValue
 
 class ListValue(MultiDirDependentValue[List[str]]):
     def __init__(self, string_value_elements: List[StringValue]):
-        """
-        :param string_value_elements: list of :class:`StringValue`
-        """
         self._string_value_elements = tuple(string_value_elements)
 
     @property
-    def string_value_elements(self) -> tuple:
+    def string_value_elements(self) -> Sequence[StringValue]:
         return self._string_value_elements
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
