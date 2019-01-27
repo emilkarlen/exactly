@@ -1,7 +1,6 @@
 import unittest
 
 import os
-import pathlib
 from typing import Optional, Tuple
 
 from exactly_lib.execution import phase_step
@@ -10,10 +9,11 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.util.file_utils import preserved_cwd
+from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib_test.symbol.test_resources import resolver_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
@@ -52,10 +52,10 @@ class Executor:
     def __init__(self,
                  put: unittest.TestCase,
                  parser: Parser[FileMatcherResolver],
-                 model: ModelConstructor,
+                 model_constructor: ModelConstructor,
                  arrangement: ArrangementPostAct,
                  expectation: Expectation):
-        self.model = model
+        self.model_constructor = model_constructor
         self.put = put
         self.parser = parser
         self.arrangement = arrangement
@@ -116,9 +116,8 @@ class Executor:
 
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(tcds))
             write_act_result(tcds.sds, act_result)
-            model = self.model(environment.home_and_sds)
 
-            self._execute_main(model, matcher)
+            self._execute_main(tcds, matcher)
 
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
             self.expectation.main_side_effects_on_home_and_sds.apply(self.put, tcds)
@@ -177,8 +176,9 @@ class Executor:
         return result
 
     def _execute_main(self,
-                      model: pathlib.Path,
+                      tcds: HomeAndSds,
                       matcher: FileMatcher):
+        model = self._new_model(tcds)
         try:
             main_result = matcher.matches2(model)
             self._check_main_result(main_result)
@@ -208,3 +208,9 @@ class Executor:
             raise _CheckIsDoneException()
         else:
             self.put.fail('Unexpected HARD_ERROR')
+
+    def _new_model(self, tcds: HomeAndSds) -> FileMatcherModel:
+        return FileMatcherModel(
+            TmpDirFileSpaceAsDirCreatedOnDemand(tcds.sds.internal_tmp_dir),
+            self.model_constructor(tcds)
+        )

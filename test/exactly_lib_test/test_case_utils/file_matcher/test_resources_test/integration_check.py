@@ -18,7 +18,7 @@ from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMat
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromParts, no_resolving_dependencies
 from exactly_lib.type_system.error_message import ConstantErrorMessageResolver
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
@@ -260,8 +260,8 @@ def file_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> FileMatc
 
 
 class FileMatcherTestImplBase(FileMatcher):
-    def matches(self, model: pathlib.Path) -> bool:
-        self._matches_side_effects(model)
+    def matches(self, model: FileMatcherModel) -> bool:
+        self._matches_side_effects(model.path)
         return True
 
     def _matches_side_effects(self, model: pathlib.Path):
@@ -277,7 +277,7 @@ class _FileMatcherThatReportsHardError(FileMatcher):
     def option_description(self) -> str:
         return 'unconditional HARD ERROR'
 
-    def matches(self, model: pathlib.Path) -> bool:
+    def matches(self, model: FileMatcherModel) -> bool:
         raise HardErrorException(ConstantErrorMessageResolver('unconditional hard error'))
 
 
