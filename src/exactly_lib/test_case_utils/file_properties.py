@@ -3,6 +3,7 @@ import os
 import pathlib
 import stat
 import types
+from typing import Callable
 
 
 class FileType(enum.Enum):
@@ -16,7 +17,7 @@ class FileTypeInfo:
                  type_argument: str,
                  description: str,
                  stat_mode_predicate: types.FunctionType,
-                 pathlib_path_predicate: types.FunctionType):
+                 pathlib_path_predicate: Callable[[pathlib.Path], bool]):
         self.type_argument = type_argument
         self.pathlib_path_predicate = pathlib_path_predicate
         self.stat_mode_predicate = stat_mode_predicate

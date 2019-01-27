@@ -7,6 +7,8 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.definitions.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
+from exactly_lib.definitions.test_case.file_check_properties import REGULAR_FILE_CONTENTS
+from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -15,12 +17,13 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
-from exactly_lib.test_case_utils.file_matcher import file_matchers
+from exactly_lib.test_case_utils.file_matcher import file_matchers, regular_file_contents
 from exactly_lib.test_case_utils.file_matcher import resolvers
 from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_FILE
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_reg_ex
+from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -59,8 +62,19 @@ class FileSelectionDescriptor(ErrorMessagePartConstructor):
 
 
 def parse_resolver_from_parse_source(source: ParseSource) -> FileMatcherResolver:
-    with token_stream_parser.from_parse_source(source) as tp:
-        return parse_resolver(tp)
+    return _PARSER.parse(source)
+
+
+def parser() -> parser_classes.Parser[FileMatcherResolver]:
+    return _PARSER
+
+
+class _Parser(parser_classes.Parser[FileMatcherResolver]):
+    def parse_from_token_parser(self, parser: TokenParser) -> FileMatcherResolver:
+        return parse_resolver(parser)
+
+
+_PARSER = _Parser()
 
 
 def parse_optional_selection_resolver(parser: TokenParser) -> FileMatcherResolver:
@@ -119,6 +133,11 @@ def _parse_type_matcher(parser: TokenParser) -> FileMatcherResolver:
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE.get,
         '{_TYPE_}')
     return _constant(file_matchers.FileMatcherType(file_type))
+
+
+def _parse_regular_file_contents(parser: TokenParser) -> FileMatcherResolver:
+    string_matcher = parse_string_matcher.parse_string_matcher(parser)
+    return regular_file_contents.RegularFileMatchesStringMatcherResolver(string_matcher)
 
 
 def _constant(matcher: file_matchers.FileMatcher) -> FileMatcherResolver:
@@ -211,6 +230,13 @@ TYPE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     description_rest=_type_matcher_sed_description()
 )
 
+REGULAR_FILE_CONTENTS_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
+    argument_usage_list=[
+        a.Single(a.Multiplicity.MANDATORY,
+                 TYPE_MATCHER_ARGUMENT)],
+    description_rest=_type_matcher_sed_description()
+)
+
 GRAMMAR = grammar.Grammar(
     concept=grammar.Concept(
         name=FILE_MATCHER_TYPE_INFO.name,
@@ -223,6 +249,8 @@ GRAMMAR = grammar.Grammar(
                                                     NAME_SYNTAX_DESCRIPTION),
         TYPE_MATCHER_NAME: grammar.SimpleExpression(_parse_type_matcher,
                                                     TYPE_SYNTAX_DESCRIPTION),
+        REGULAR_FILE_CONTENTS: grammar.SimpleExpression(_parse_regular_file_contents,
+                                                        REGULAR_FILE_CONTENTS_SYNTAX_DESCRIPTION)
     },
     complex_expressions={
         expression.AND_OPERATOR_NAME:
