@@ -8,6 +8,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.definitions.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
 from exactly_lib.definitions.test_case.file_check_properties import REGULAR_FILE_CONTENTS
+from exactly_lib.processing import exit_values
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -27,7 +28,6 @@ from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matche
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -45,10 +45,6 @@ REG_EX_OPTION = a.OptionName(long_name='regex')
 
 REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
                            syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name)
-
-_TEXT_PARSER = TextParser({
-    'MATCHER': syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
-})
 
 
 class FileSelectionDescriptor(ErrorMessagePartConstructor):
@@ -151,6 +147,9 @@ ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_GLOB_PATTERN_': NAME_MATCHER_ARGUMENT.name,
     '_TYPE_': TYPE_MATCHER_ARGUMENT.name,
     '_SYMLINK_TYPE_': file_properties.TYPE_INFO[FileType.SYMLINK].type_argument,
+    '_STRING_MATCHER_': syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.singular_name,
+    'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
+    'regular_file': file_properties.TYPE_INFO[FileType.REGULAR].description,
     '_GLOB_PATTERN_INFORMATIVE_NAME_': syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.single_line_description_str.lower(),
     '_REG_EX_PATTERN_INFORMATIVE_NAME_': syntax_elements.REGEX_SYNTAX_ELEMENT.single_line_description_str.lower(),
 }
@@ -167,9 +166,16 @@ Matches files who's ...
   * base name : matches {_REG_EX_PATTERN_INFORMATIVE_NAME_}
 """
 
+_REGULAR_FILE_CONTENTS_MATCHER_SED_DESCRIPTION = """\
+Matches regular files who's contents satisfies {_STRING_MATCHER_}.
 
-def _type_matcher_sed_description() -> list:
-    return _fnap(_TYPE_MATCHER_SED_DESCRIPTION) + [_file_types_table()]
+
+The result is {HARD_ERROR} for a file that is not a {regular_file}.
+"""
+
+
+def _type_matcher_sed_description() -> List[docs.ParagraphItem]:
+    return _TP.fnap(_TYPE_MATCHER_SED_DESCRIPTION) + [_file_types_table()]
 
 
 _TYPE_MATCHER_SED_DESCRIPTION = """\
@@ -189,16 +195,14 @@ _OR_SED_DESCRIPTION = """\
 Matches files matched by any matcher.
 """
 
-
-def _fnap(s: str) -> list:
-    return normalize_and_parse(s.format_map(ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS))
+_TP = TextParser(ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
 
 
 def _file_types_table() -> docs.ParagraphItem:
     def row(type_name: str, description: str) -> list:
         return [
             docs.cell(docs.paras(doc_format.enum_name_text(type_name))),
-            docs.cell(_fnap(description)),
+            docs.cell(_TP.fnap(description)),
         ]
 
     return docs.plain_table([
@@ -216,7 +220,7 @@ NAME_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
                      REG_EX_ARGUMENT,
                  ])
     ],
-    description_rest=_fnap(_NAME_MATCHER_SED_DESCRIPTION),
+    description_rest=_TP.fnap(_NAME_MATCHER_SED_DESCRIPTION),
     see_also_targets=cross_reference_id_list([
         syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT,
         syntax_elements.REGEX_SYNTAX_ELEMENT,
@@ -233,8 +237,11 @@ TYPE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
 REGULAR_FILE_CONTENTS_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     argument_usage_list=[
         a.Single(a.Multiplicity.MANDATORY,
-                 TYPE_MATCHER_ARGUMENT)],
-    description_rest=_type_matcher_sed_description()
+                 syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.argument)],
+    description_rest=_TP.fnap(_REGULAR_FILE_CONTENTS_MATCHER_SED_DESCRIPTION),
+    see_also_targets=cross_reference_id_list([
+        syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
+    ])
 )
 
 GRAMMAR = grammar.Grammar(
@@ -256,19 +263,19 @@ GRAMMAR = grammar.Grammar(
         expression.AND_OPERATOR_NAME:
             grammar.ComplexExpression(resolvers.FileMatcherAndResolver,
                                       grammar.OperatorExpressionDescription(
-                                          _fnap(_AND_SED_DESCRIPTION)
+                                          _TP.fnap(_AND_SED_DESCRIPTION)
                                       )),
         expression.OR_OPERATOR_NAME:
             grammar.ComplexExpression(resolvers.FileMatcherOrResolver,
                                       grammar.OperatorExpressionDescription(
-                                          _fnap(_OR_SED_DESCRIPTION)
+                                          _TP.fnap(_OR_SED_DESCRIPTION)
                                       )),
     },
     prefix_expressions={
         expression.NOT_OPERATOR_NAME:
             grammar.PrefixExpression(resolvers.FileMatcherNotResolver,
                                      grammar.OperatorExpressionDescription(
-                                         _fnap(_NOT_SED_DESCRIPTION)
+                                         _TP.fnap(_NOT_SED_DESCRIPTION)
                                      ))
     },
 )
