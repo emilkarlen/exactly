@@ -2,8 +2,8 @@ from typing import Sequence
 
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherValueFromPrimitiveValue
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
-from exactly_lib.type_system.logic.file_matchers import FileMatcherValueFromPrimitiveValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage

@@ -8,7 +8,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
-from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_FILE_VALUE, FileMatcherAndValue
+from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherAndValue, MATCH_EVERY_FILE_VALUE
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import PropertyDescriptor

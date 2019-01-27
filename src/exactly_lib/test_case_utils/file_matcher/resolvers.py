@@ -5,9 +5,9 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.file_matcher import file_matchers
+from exactly_lib.test_case_utils.file_matcher import file_matcher_values
+from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherValueFromPrimitiveValue
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
-from exactly_lib.type_system.logic.file_matchers import FileMatcherValueFromPrimitiveValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -58,7 +58,7 @@ class FileMatcherNotResolver(FileMatcherResolver):
         self._resolver = file_matcher_resolver
 
     def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
-        return file_matchers.FileMatcherNotValue(self._resolver.resolve(symbols))
+        return file_matcher_values.FileMatcherNotValue(self._resolver.resolve(symbols))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -71,7 +71,7 @@ class FileMatcherAndResolver(FileMatcherResolver):
         self._references = references_from_objects_with_symbol_references(parts)
 
     def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
-        return file_matchers.FileMatcherAndValue([
+        return file_matcher_values.FileMatcherAndValue([
             part.resolve(symbols)
             for part in self._resolvers
         ])
@@ -87,7 +87,7 @@ class FileMatcherOrResolver(FileMatcherResolver):
         self._references = references_from_objects_with_symbol_references(parts)
 
     def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
-        return file_matchers.FileMatcherOrValue([
+        return file_matcher_values.FileMatcherOrValue([
             part.resolve(symbols)
             for part in self._resolvers
         ])

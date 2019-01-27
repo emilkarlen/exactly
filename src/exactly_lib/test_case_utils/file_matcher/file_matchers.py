@@ -1,13 +1,9 @@
 import pathlib
-from abc import ABC
-from typing import Set, List, Callable
+from typing import List, Iterator
 
 from exactly_lib.definitions import expression
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
-from exactly_lib.type_system.logic.file_matchers import FileMatcherValueFromPrimitiveValue
+from exactly_lib.type_system.logic.file_matcher import FileMatcher
 
 
 class FileMatcherConstant(FileMatcher):
@@ -101,41 +97,6 @@ class FileMatcherNot(FileMatcher):
         return not self._matcher.matches(path)
 
 
-class FileMatcherCompositionValueBase(FileMatcherValue, ABC):
-    def __init__(self,
-                 parts: List[FileMatcherValue],
-                 mk_primitive_value: Callable[[List[FileMatcher]], FileMatcher]):
-        self._mk_primitive_value = mk_primitive_value
-        self._parts = parts
-        if not parts:
-            raise ValueError('Composition must have at least one element')
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        ret_val = self._parts[0].resolving_dependencies()
-        for composed in self._parts[1:]:
-            ret_val.update(composed.resolving_dependencies())
-
-        return ret_val
-
-    def value_when_no_dir_dependencies(self) -> FileMatcher:
-        return self._mk_primitive_value([
-            part.value_when_no_dir_dependencies()
-            for part in self._parts
-        ])
-
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> FileMatcher:
-        return self._mk_primitive_value([
-            part.value_of_any_dependency(tcds)
-            for part in self._parts
-        ])
-
-
-class FileMatcherNotValue(FileMatcherCompositionValueBase):
-    def __init__(self, matcher: FileMatcherValue):
-        super().__init__([matcher],
-                         lambda values: FileMatcherNot(values[0]))
-
-
 class FileMatcherAnd(FileMatcher):
     """Matcher that and:s a list of matchers."""
 
@@ -154,12 +115,6 @@ class FileMatcherAnd(FileMatcher):
     def matches(self, path: pathlib.Path) -> bool:
         return all([matcher.matches(path)
                     for matcher in self._matchers])
-
-
-class FileMatcherAndValue(FileMatcherCompositionValueBase):
-    def __init__(self, parts: List[FileMatcherValue]):
-        super().__init__(parts,
-                         lambda values: FileMatcherAnd(values))
 
 
 class FileMatcherOr(FileMatcher):
@@ -182,14 +137,7 @@ class FileMatcherOr(FileMatcher):
                     for matcher in self._matchers])
 
 
-class FileMatcherOrValue(FileMatcherCompositionValueBase):
-    def __init__(self, parts: List[FileMatcherValue]):
-        super().__init__(parts,
-                         lambda values: FileMatcherOr(values))
-
-
 MATCH_EVERY_FILE = FileMatcherConstant(True)
-MATCH_EVERY_FILE_VALUE = FileMatcherValueFromPrimitiveValue(MATCH_EVERY_FILE)
 
 
 class FileMatcherStructureVisitor:
@@ -240,3 +188,7 @@ class FileMatcherStructureVisitor:
 
     def visit_or(self, matcher: FileMatcherOr):
         raise NotImplementedError('abstract method')
+
+
+def matching_files_in_dir(matcher: FileMatcher, dir_path: pathlib.Path) -> Iterator[pathlib.Path]:
+    return filter(matcher.matches, dir_path.iterdir())

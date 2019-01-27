@@ -2,7 +2,7 @@ import unittest
 
 import pathlib
 
-from exactly_lib.type_system.logic import file_matchers as sut
+from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 
