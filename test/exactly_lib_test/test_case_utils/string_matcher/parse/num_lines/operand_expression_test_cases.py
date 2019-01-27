@@ -134,5 +134,5 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
                     arrangement=
                     self.configuration.arrangement_for_contents(),
                     expectation=
-                    Expectation(validation_pre_sds=matcher_assertions.arbitrary_validation_failure())
+                    Expectation(validation_pre_sds=matcher_assertions.is_arbitrary_validation_failure())
                 )

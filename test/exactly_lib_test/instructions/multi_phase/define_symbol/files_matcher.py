@@ -152,7 +152,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                 ])
                 ),
             NEA('should not match',
-                expected=matcher_assertions.arbitrary_matching_failure(),
+                expected=matcher_assertions.is_arbitrary_matching_failure(),
                 actual=DirContents([
                     empty_file('a.x'),
                     empty_file('b.y'),

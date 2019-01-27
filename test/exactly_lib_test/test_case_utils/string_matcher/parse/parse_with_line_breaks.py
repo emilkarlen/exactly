@@ -12,7 +12,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_c
     TestCaseBase
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import arbitrary_matching_failure, \
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_arbitrary_matching_failure, \
     is_matching_success, Expectation
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -73,7 +73,7 @@ class TestLineBreaksWithEmptyActualFile(TestCaseBase):
                  source_assertion=
                  asrt_source.is_at_end_of_line(3),
                  main_result_assertion=
-                 arbitrary_matching_failure(),
+                 is_arbitrary_matching_failure(),
                  ),
         ]
         for case in cases:

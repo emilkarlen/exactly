@@ -13,10 +13,11 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 
 class FileMatcherResolverConstantTestImpl(FileMatcherResolver):
-    def __init__(self, resolved_value: FileMatcher,
+    def __init__(self,
+                 resolved_value: FileMatcher,
                  references: Sequence[SymbolReference] = ()):
-        self._resolved_value = resolved_value
         self._references = list(references)
+        self._resolved_value = resolved_value
 
     @property
     def resolved_value(self) -> FileMatcher:

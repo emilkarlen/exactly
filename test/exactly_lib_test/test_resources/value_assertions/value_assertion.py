@@ -392,6 +392,16 @@ def sub_component(component_name: str,
                         component_assertion)
 
 
+def sub_component_many(component_name: str,
+                       component_getter: Callable[[T], U],
+                       component_assertions: List[ValueAssertion[U]],
+                       component_separator: str = COMPONENT_SEPARATOR) -> ValueAssertion[T]:
+    return sub_component(component_name,
+                         component_getter,
+                         and_(component_assertions),
+                         component_separator)
+
+
 def with_transformed_message(message_builder_transformer: Callable[[MessageBuilder], MessageBuilder],
                              value_assertion: ValueAssertion[T]) -> ValueAssertion[T]:
     return _WithTransformedMessage(message_builder_transformer, value_assertion)

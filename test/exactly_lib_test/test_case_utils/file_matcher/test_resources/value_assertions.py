@@ -1,5 +1,10 @@
 import unittest
 
+from typing import Set
+
+from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherStructureVisitor
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
@@ -16,6 +21,48 @@ def equals_file_matcher(expected: FileMatcher,
 def value_equals_file_matcher(expected: FileMatcher,
                               description: str = '') -> ValueAssertion[FileMatcherValue]:
     return _EqualsAssertionValue(expected, description)
+
+
+def matches_file_matcher_value(
+        primitive_value: ValueAssertion[FileMatcher] = asrt.anything_goes(),
+        resolving_dependencies: ValueAssertion[Set[DirectoryStructurePartition]] = asrt.anything_goes(),
+        validator: ValueAssertion[PreOrPostSdsValueValidator] = asrt.anything_goes(),
+        tcds: HomeAndSds = fake_home_and_sds(),
+) -> ValueAssertion[FileMatcherValue]:
+    def resolve_primitive_value(value: FileMatcherValue):
+        return value.value_of_any_dependency(tcds)
+
+    def get_resolving_dependencies(value: FileMatcherValue):
+        return value.resolving_dependencies()
+
+    def get_validator(value: FileMatcherValue):
+        return value.validator()
+
+    return asrt.is_instance_with_many(
+        FileMatcherValue,
+        [
+            asrt.sub_component_many(
+                'resolving dependencies',
+                get_resolving_dependencies,
+                [
+                    asrt.is_set_of(asrt.is_instance(DirectoryStructurePartition)),
+                    resolving_dependencies,
+                ]
+            ),
+            asrt.sub_component(
+                'primitive value',
+                resolve_primitive_value,
+                asrt.is_instance_with(FileMatcher,
+                                      primitive_value)
+            ),
+            asrt.sub_component(
+                'validator',
+                get_validator,
+                asrt.is_instance_with(PreOrPostSdsValueValidator,
+                                      validator)
+            ),
+        ]
+    )
 
 
 class _EqualsAssertion(ValueAssertionBase[FileMatcher]):

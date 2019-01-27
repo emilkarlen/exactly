@@ -15,7 +15,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_c
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import arbitrary_model
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_matching_success, \
-    arbitrary_matching_failure
+    is_arbitrary_matching_failure
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -92,7 +92,7 @@ class TestParseValidMultiLineSyntax(unittest.TestCase):
         ]
         for case in cases:
             self._check_sub_test(case,
-                                 arbitrary_matching_failure())
+                                 is_arbitrary_matching_failure())
 
 
 if __name__ == '__main__':

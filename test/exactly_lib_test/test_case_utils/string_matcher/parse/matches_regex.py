@@ -12,7 +12,8 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.argume
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES, TRANSFORMER_OPTION_ALTERNATIVES_ELEMENTS
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import arbitrary_validation_failure, Expectation
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_arbitrary_validation_failure, \
+    Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 
@@ -48,7 +49,7 @@ class ValidationShouldFailPreWhenHardCodedRegexIsInvalid(tc.TestWithNegationArgu
                         model_construction.empty_model(),
                         self.configuration.arrangement_for_contents(),
                         Expectation(
-                            validation_pre_sds=arbitrary_validation_failure())
+                            validation_pre_sds=is_arbitrary_validation_failure())
                     )
 
 

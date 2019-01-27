@@ -213,7 +213,7 @@ class TestFailingExpectations(TestCaseBase):
                         arbitrary_model(),
                         sut.ArrangementPostAct(),
                         Expectation(
-                            validation_pre_sds=matcher_assertions.arbitrary_validation_failure()),
+                            validation_pre_sds=matcher_assertions.is_arbitrary_validation_failure()),
                         )
 
     def test_fail_due_to_unexpected_result_from_post_validation(self):
@@ -223,7 +223,7 @@ class TestFailingExpectations(TestCaseBase):
                         arbitrary_model(),
                         sut.ArrangementPostAct(),
                         Expectation(
-                            validation_post_sds=matcher_assertions.arbitrary_validation_failure()),
+                            validation_post_sds=matcher_assertions.is_arbitrary_validation_failure()),
                         )
 
     def test_fail_due_to_unexpected_result_from_main(self):
@@ -234,7 +234,7 @@ class TestFailingExpectations(TestCaseBase):
                 arbitrary_model(),
                 sut.ArrangementPostAct(),
                 Expectation(
-                    main_result=matcher_assertions.arbitrary_matching_failure()),
+                    main_result=matcher_assertions.is_arbitrary_matching_failure()),
             )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):

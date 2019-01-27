@@ -1,12 +1,17 @@
-from typing import Sequence, List
+from typing import Sequence, List, Set, Callable
 
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.file_matcher import file_matcher_values
-from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherValueFromPrimitiveValue
+from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherValueFromPrimitiveValue, \
+    FileMatcherValueFromParts
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -95,3 +100,36 @@ class FileMatcherOrResolver(FileMatcherResolver):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
+
+
+class FileMatcherResolverFromParts(FileMatcherResolver):
+    def __init__(self,
+                 references: Sequence[SymbolReference],
+                 resolving_dependencies: Callable[[SymbolTable], Set[DirectoryStructurePartition]],
+                 validator: PreOrPostSdsValueValidator,
+                 matcher: Callable[[PathResolvingEnvironmentPreOrPostSds], FileMatcher]):
+        self._matcher = matcher
+        self._resolving_dependencies = resolving_dependencies
+        self._validator = validator
+        self._references = references
+
+    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
+        def get_matcher(tcds: HomeAndSds) -> FileMatcher:
+            environment = PathResolvingEnvironmentPreOrPostSds(tcds, symbols)
+            return self._matcher(environment)
+
+        return FileMatcherValueFromParts(self._resolving_dependencies(symbols),
+                                         self._validator,
+                                         get_matcher,
+                                         )
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._references
+
+    def __str__(self):
+        return str(type(self))
+
+
+def no_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
+    return set()

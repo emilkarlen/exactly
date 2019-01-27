@@ -1,6 +1,7 @@
 from abc import ABC
 from typing import List, Callable, Set
 
+from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherNot, FileMatcherAnd, FileMatcherOr, \
@@ -67,6 +68,26 @@ class FileMatcherOrValue(FileMatcherCompositionValueBase):
     def __init__(self, parts: List[FileMatcherValue]):
         super().__init__(parts,
                          lambda values: FileMatcherOr(values))
+
+
+class FileMatcherValueFromParts(FileMatcherValue):
+    def __init__(self,
+                 resolving_dependencies: Set[DirectoryStructurePartition],
+                 validator: PreOrPostSdsValueValidator,
+                 matcher: Callable[[HomeAndSds], FileMatcher],
+                 ):
+        self._resolving_dependencies = resolving_dependencies
+        self._validator = validator
+        self._matcher = matcher
+
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
+        return self._resolving_dependencies
+
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return self._validator
+
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> FileMatcher:
+        return self._matcher(home_and_sds)
 
 
 MATCH_EVERY_FILE_VALUE = FileMatcherValueFromPrimitiveValue(MATCH_EVERY_FILE)

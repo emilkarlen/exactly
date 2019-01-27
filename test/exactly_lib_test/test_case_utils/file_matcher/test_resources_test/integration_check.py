@@ -3,39 +3,37 @@ Test of test-infrastructure: instruction_check.
 """
 import unittest
 
-from typing import Sequence, Optional, List, Set
+import pathlib
+from typing import Sequence, Optional, List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds, PathResolvingEnvironment, PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case import pre_or_post_validation
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.pre_or_post_value_validation import constant_success_validator, PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
-from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
+from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherValueFromPrimitiveValue
+from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
+from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromParts, no_resolving_dependencies
+from exactly_lib.type_system.error_message import ConstantErrorMessageResolver
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
-from exactly_lib.type_system.logic.string_matcher_values import StringMatcherConstantValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl
+from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check as sut
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder, empty_model
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.string_matchers import StringMatcherTestImplBase
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check as sut
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.model_construction import ModelConstructor, \
+    constant_relative_file_name
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, is_pass, is_hard_error
-from exactly_lib_test.test_resources.files.file_checks import FileChecker
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     sds_2_home_and_sds_assertion
@@ -57,9 +55,9 @@ class TestCaseBase(unittest.TestCase):
         self.tc = utils.TestCaseWithTestErrorAsFailureException()
 
     def _check(self,
-               parser: Parser[StringMatcherResolver],
+               parser: Parser[FileMatcherResolver],
                source: ParseSource,
-               model: ModelBuilder,
+               model: ModelConstructor,
                arrangement: sut.ArrangementPostAct,
                expectation: matcher_assertions.Expectation):
         sut.check(self.tc, parser, source, model, arrangement, expectation)
@@ -71,7 +69,7 @@ class TestPopulate(TestCaseBase):
         self._check(
             PARSER_THAT_GIVES_MATCHER_THAT_MATCHES,
             utils.single_line_source(),
-            empty_model(),
+            constant_relative_file_name('file.txt'),
             sut.ArrangementPostAct(
                 non_home_contents=non_home_populator.rel_option(
                     non_home_populator.RelNonHomeOptionType.REL_TMP,
@@ -86,7 +84,7 @@ class TestPopulate(TestCaseBase):
         self._check(
             PARSER_THAT_GIVES_MATCHER_THAT_MATCHES,
             utils.single_line_source(),
-            empty_model(),
+            constant_relative_file_name('file.txt'),
             sut.ArrangementPostAct(
                 sds_contents=sds_populator.contents_in(
                     sds_populator.RelSdsOptionType.REL_TMP,
@@ -106,7 +104,7 @@ class TestSymbolReferences(TestCaseBase):
                     references=unexpected_symbol_usages
                 ),
                 utils.single_line_source(),
-                empty_model(),
+                constant_relative_file_name('file.txt'),
                 sut.ArrangementPostAct(),
                 matcher_assertions.Expectation(),
             )
@@ -120,7 +118,7 @@ class TestSymbolReferences(TestCaseBase):
                     references=symbol_usages_of_matcher
                 ),
                 utils.single_line_source(),
-                empty_model(),
+                constant_relative_file_name('file.txt'),
                 sut.ArrangementPostAct(),
                 matcher_assertions.Expectation(
                     symbol_usages=sym_asrt.equals_symbol_references(symbol_usages_of_expectation)),
@@ -135,12 +133,12 @@ class TestSymbolReferences(TestCaseBase):
                                                                                         symbol_value)
         expectation = asrt_sym.equals_symbol_table(expected_symbol_table)
 
-        resolver_that_checks_symbols = StringMatcherResolverThatAssertsThatSymbolsAreAsExpected(self, expectation)
+        resolver_that_checks_symbols = FileMatcherResolverThatAssertsThatSymbolsAreAsExpected(self, expectation)
 
         self._check(
             ConstantParser(resolver_that_checks_symbols),
             utils.single_line_source(),
-            empty_model(),
+            constant_relative_file_name('file.txt'),
             sut.ArrangementPostAct(
                 symbols=symbol_table_of_arrangement),
             matcher_assertions.Expectation(),
@@ -150,12 +148,12 @@ class TestSymbolReferences(TestCaseBase):
 class TestHardError(TestCaseBase):
     def test_expected_hard_error_is_detected(self):
         parser_that_gives_value_that_causes_hard_error = parser_for_constant(
-            _StringMatcherThatReportsHardError()
+            _FileMatcherThatReportsHardError()
         )
         self._check(
             parser_that_gives_value_that_causes_hard_error,
             utils.single_line_source(),
-            empty_model(),
+            constant_relative_file_name('file.txt'),
             sut.ArrangementPostAct(),
             sut.Expectation(
                 is_hard_error=is_hard_error(),
@@ -166,7 +164,7 @@ class TestHardError(TestCaseBase):
             self._check(
                 PARSER_THAT_GIVES_MATCHER_THAT_MATCHES,
                 utils.single_line_source(),
-                empty_model(),
+                constant_relative_file_name('file.txt'),
                 sut.ArrangementPostAct(),
                 sut.Expectation(
                     is_hard_error=is_hard_error(),
@@ -178,20 +176,7 @@ class TestMisc(TestCaseBase):
         self._check(
             PARSER_THAT_GIVES_MATCHER_THAT_MATCHES,
             utils.single_line_source(),
-            empty_model(),
-            sut.ArrangementPostAct(),
-            is_pass())
-
-    def test_model_is_correct(self):
-        contents = 'expected model file\ncontents'
-
-        mode = empty_model().with_original_file_contents(contents)
-
-        self._check(
-            ConstantParser(string_matcher_that_asserts_models_is_expected(self,
-                                                                          contents)),
-            utils.single_line_source(),
-            mode,
+            constant_relative_file_name('file.txt'),
             sut.ArrangementPostAct(),
             is_pass())
 
@@ -201,7 +186,7 @@ class TestFailingExpectations(TestCaseBase):
         with self.assertRaises(utils.TestError):
             self._check(ConstantParser(_MATCHER_THAT_MATCHES),
                         utils.single_line_source(),
-                        empty_model(),
+                        constant_relative_file_name('file.txt'),
                         sut.ArrangementPostAct(),
                         Expectation(
                             validation_pre_sds=matcher_assertions.is_arbitrary_validation_failure()),
@@ -211,7 +196,7 @@ class TestFailingExpectations(TestCaseBase):
         with self.assertRaises(utils.TestError):
             self._check(ConstantParser(_MATCHER_THAT_MATCHES),
                         utils.single_line_source(),
-                        empty_model(),
+                        constant_relative_file_name('file.txt'),
                         sut.ArrangementPostAct(),
                         Expectation(
                             validation_post_sds=matcher_assertions.is_arbitrary_validation_failure()),
@@ -222,7 +207,7 @@ class TestFailingExpectations(TestCaseBase):
             self._check(
                 ConstantParser(_MATCHER_THAT_MATCHES),
                 utils.single_line_source(),
-                empty_model(),
+                constant_relative_file_name('file.txt'),
                 sut.ArrangementPostAct(),
                 Expectation(
                     main_result=matcher_assertions.is_arbitrary_matching_failure()),
@@ -233,7 +218,7 @@ class TestFailingExpectations(TestCaseBase):
             self._check(
                 ConstantParser(_MATCHER_THAT_MATCHES),
                 utils.single_line_source(),
-                empty_model(),
+                constant_relative_file_name('file.txt'),
                 sut.ArrangementPostAct(),
                 Expectation(
                     main_side_effects_on_sds=act_dir_contains_exactly(
@@ -242,9 +227,9 @@ class TestFailingExpectations(TestCaseBase):
 
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
         self._check(
-            ConstantParser(string_matcher_that_raises_test_error_if_cwd_is_is_not_test_root()),
+            ConstantParser(file_matcher_that_raises_test_error_if_cwd_is_is_not_test_root()),
             utils.single_line_source(),
-            empty_model(),
+            constant_relative_file_name('file.txt'),
             sut.ArrangementPostAct(),
             is_pass())
 
@@ -253,7 +238,7 @@ class TestFailingExpectations(TestCaseBase):
             self._check(
                 ConstantParser(_MATCHER_THAT_MATCHES),
                 utils.single_line_source(),
-                empty_model(),
+                constant_relative_file_name('file.txt'),
                 sut.ArrangementPostAct(),
                 Expectation(
                     main_side_effects_on_home_and_sds=sds_2_home_and_sds_assertion(
@@ -262,54 +247,54 @@ class TestFailingExpectations(TestCaseBase):
             )
 
 
-def string_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> StringMatcherResolver:
-    def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
-        return StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(environment.home_and_sds)
+def file_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> FileMatcherResolver:
+    def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> FileMatcher:
+        return FileMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(environment.home_and_sds)
 
-    return StringMatcherResolverFromParts(
+    return FileMatcherResolverFromParts(
         (),
+        no_resolving_dependencies,
         ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(),
-        no_resolving_dependencies,
         get_matcher,
     )
 
 
-def string_matcher_that_asserts_models_is_expected(put: unittest.TestCase,
-                                                   expected_model_string_contents: str
-                                                   ) -> StringMatcherResolver:
-    def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
-        return StringMatcherThatAssertsModelsIsExpected(put, expected_model_string_contents)
+class FileMatcherTestImplBase(FileMatcher):
+    def matches(self, model: pathlib.Path) -> bool:
+        self._matches_side_effects(model)
+        return True
 
-    return StringMatcherResolverFromParts(
-        (),
-        pre_or_post_validation.ConstantSuccessValidator(),
-        no_resolving_dependencies,
-        get_matcher,
-    )
+    def _matches_side_effects(self, model: pathlib.Path):
+        pass
+
+    @property
+    def option_description(self) -> str:
+        return str(self)
 
 
-class _StringMatcherThatReportsHardError(StringMatcher):
+class _FileMatcherThatReportsHardError(FileMatcher):
     @property
     def option_description(self) -> str:
         return 'unconditional HARD ERROR'
 
-    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+    def matches(self, model: pathlib.Path) -> bool:
         raise HardErrorException(ConstantErrorMessageResolver('unconditional hard error'))
 
 
-def parser_for_constant(resolved_value: StringMatcher = StringMatcherConstant(None),
+def parser_for_constant(resolved_value: FileMatcher = FileMatcherConstant(True),
                         references: Sequence[SymbolReference] = (),
-                        validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()
-                        ) -> Parser[StringMatcherResolver]:
+                        validator: PreOrPostSdsValueValidator = constant_success_validator()
+                        ) -> Parser[FileMatcherResolver]:
     return ConstantParser(
-        StringMatcherResolverConstantTestImpl(
-            resolved_value=resolved_value,
+        FileMatcherResolverFromParts(
             references=references,
+            resolving_dependencies=no_resolving_dependencies,
             validator=validator,
+            matcher=lambda tcds: resolved_value,
         ))
 
 
-class StringMatcherResolverThatAssertsThatSymbolsAreAsExpected(StringMatcherResolver):
+class FileMatcherResolverThatAssertsThatSymbolsAreAsExpected(FileMatcherResolver):
     def __init__(self,
                  put: unittest.TestCase,
                  expectation: ValueAssertion[SymbolTable]):
@@ -320,84 +305,32 @@ class StringMatcherResolverThatAssertsThatSymbolsAreAsExpected(StringMatcherReso
     def references(self) -> List[SymbolReference]:
         return []
 
-    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
         self._expectation.apply_with_message(self._put, symbols, 'symbols given to resolve')
 
-        return StringMatcherConstantValue(StringMatcherConstant(None))
-
-    @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return ValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(self._put,
-                                                                         self._expectation)
+        return FileMatcherValueFromPrimitiveValue(FileMatcherConstant(True))
 
 
-class ValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(PreOrPostSdsValidator):
-    def __init__(self,
-                 put: unittest.TestCase,
-                 expectation: ValueAssertion[SymbolTable]):
-        self._put = put
-        self._expectation = expectation
+class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrPostSdsValueValidator):
+    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[str]:
+        return None
 
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
-        return self._apply(environment)
-
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
-        return self._apply(environment)
-
-    def _apply(self, environment: PathResolvingEnvironment) -> Optional[str]:
-        self._expectation.apply_with_message(self._put, environment.symbols,
-                                             'symbols given to validator')
-
+    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[str]:
+        utils.raise_test_error_if_cwd_is_not_test_root(tcds.sds)
         return None
 
 
-class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrPostSdsValidator):
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
-        return None
-
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
-        utils.raise_test_error_if_cwd_is_not_test_root(environment.sds)
-        return None
-
-
-class StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(StringMatcherTestImplBase):
+class FileMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(FileMatcherTestImplBase):
     def __init__(self, tcds: HomeAndSds):
         self.tcds = tcds
 
-    def _matches_side_effects(self, model: FileToCheck):
+    def _matches_side_effects(self, model: pathlib.Path):
         utils.raise_test_error_if_cwd_is_not_test_root(self.tcds.sds)
-
-
-class StringMatcherThatAssertsModelsIsExpected(StringMatcherTestImplBase):
-    def __init__(self,
-                 put: unittest.TestCase,
-                 expected_model_string_contents: str):
-        self.put = put
-        self.expected_model_string_contents = expected_model_string_contents
-
-    def _matches_side_effects(self, model: FileToCheck):
-        self._assert_original_file_is_existing_regular_file_with_expected_contents(model)
-        self._assert_transformer_is_identity_transformer(model)
-
-    def _assert_original_file_is_existing_regular_file_with_expected_contents(self, model: FileToCheck):
-        checker = FileChecker(self.put, 'original file')
-        checker.assert_is_plain_file_with_contents(model.original_file_path,
-                                                   self.expected_model_string_contents)
-
-    def _assert_transformer_is_identity_transformer(self, model: FileToCheck):
-        checker = FileChecker(self.put, 'transformed file')
-        checker.assert_is_plain_file_with_contents(model.transformed_file_path(),
-                                                   self.expected_model_string_contents)
 
 
 PARSER_THAT_GIVES_MATCHER_THAT_MATCHES = parser_for_constant()
 
-_MATCHER_THAT_MATCHES = StringMatcherConstant(None)
-
-
-def no_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
-    return set()
-
+_MATCHER_THAT_MATCHES = FileMatcherResolverConstantTestImpl(FileMatcherConstant(True))
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

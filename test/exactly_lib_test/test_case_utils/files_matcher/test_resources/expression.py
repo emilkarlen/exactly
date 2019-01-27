@@ -71,7 +71,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                         source,
                         ArrangementPostAct(),
                         Expectation(
-                            validation_pre_sds=asrt_matcher.arbitrary_validation_failure(),
+                            validation_pre_sds=asrt_matcher.is_arbitrary_validation_failure(),
                             symbol_usages=asrt.is_empty_sequence,
                         ),
                     )
@@ -91,7 +91,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                         source,
                         ArrangementPostAct(),
                         Expectation(
-                            validation_pre_sds=asrt_matcher.arbitrary_validation_failure(),
+                            validation_pre_sds=asrt_matcher.is_arbitrary_validation_failure(),
                             symbol_usages=asrt.is_empty_sequence,
                         ),
                     )
@@ -125,7 +125,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                                 })
                             ),
                             Expectation(
-                                validation_pre_sds=asrt_matcher.arbitrary_validation_failure(),
+                                validation_pre_sds=asrt_matcher.is_arbitrary_validation_failure(),
                                 symbol_usages=equals_symbol_references([
                                     SymbolReference(symbol.name,
                                                     string_made_up_by_just_strings())

@@ -53,3 +53,7 @@ class ConstantPreOrPostSdsValueValidator(PreOrPostSdsValueValidator):
 
     def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[str]:
         return self._post_sds_result
+
+
+def constant_success_validator() -> PreOrPostSdsValueValidator:
+    return ConstantPreOrPostSdsValueValidator(None, None)
