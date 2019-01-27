@@ -7,6 +7,7 @@ from exactly_lib.symbol.object_with_symbol_references import references_from_obj
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -18,7 +19,7 @@ def sub_set_selection_matcher(selector: FileMatcherResolver,
 
 class _SubSetSelectorMatcherValue(FilesMatcherValue):
     def __init__(self,
-                 selector: FileMatcherResolver,
+                 selector: FileMatcherValue,
                  matcher_on_selection: FilesMatcherValue):
         self._selector = selector
         self._matcher_on_selection = matcher_on_selection
@@ -56,13 +57,14 @@ class _SubSetSelectorMatcher(FilesMatcherResolver):
 
     def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
         return _SubSetSelectorMatcherValue(
-            self._selector,
+            self._selector.resolve(symbols),
             self._matcher_on_selection.resolve(symbols)
         )
 
     def matches(self,
                 environment: Environment,
                 files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        value = self.resolve(environment.symbols)
-        return value.matches(environment,
-                             files_source.sub_set(self._selector))
+        selector = self._selector.resolve(environment.symbols)
+        matcher_on_selection = self.resolve(environment.symbols)
+        return matcher_on_selection.matches(environment,
+                                            files_source.sub_set(selector))

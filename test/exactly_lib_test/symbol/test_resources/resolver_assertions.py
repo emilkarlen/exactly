@@ -17,7 +17,7 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependen
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.program.program_value import ProgramValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
@@ -137,12 +137,12 @@ def matches_resolver_of_path(references: ValueAssertion[Sequence[SymbolReference
 
 
 def matches_resolver_of_file_matcher(references: ValueAssertion[Sequence[SymbolReference]],
-                                     resolved_value: ValueAssertion[FileMatcher],
+                                     resolved_value: ValueAssertion[FileMatcherValue],
                                      custom: ValueAssertion[FileMatcherResolver] = asrt.anything_goes(),
                                      symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_file_matcher_type(),
                             references,
-                            asrt.is_instance_with(FileMatcher, resolved_value),
+                            asrt.is_instance_with(FileMatcherValue, resolved_value),
                             custom,
                             symbol_table_from_none_or_value(symbols))
 

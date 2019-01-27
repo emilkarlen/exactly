@@ -3,16 +3,16 @@ from typing import Iterator, Optional
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
-from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import ErrorMessageInfo, FileModel, FilesMatcherModel
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
-from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherAndResolver
+from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_FILE_VALUE, FileMatcherAndValue
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import PropertyDescriptor
+from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
 
 
 class FileModelForDir(FileModel):
@@ -42,17 +42,17 @@ class FilesMatcherModelForDir(FilesMatcherModel):
     def __init__(self,
                  dir_path_resolver: FileRefResolver,
                  environment: PathResolvingEnvironmentPreOrPostSds,
-                 files_selection: Optional[FileMatcherResolver] = None,
+                 files_selection: Optional[FileMatcherValue] = None,
                  ):
         self._dir_path_resolver = dir_path_resolver
         self._files_selection = files_selection
         self._environment = environment
 
-    def sub_set(self, selector: FileMatcherResolver) -> FilesMatcherModel:
+    def sub_set(self, selector: FileMatcherValue) -> FilesMatcherModel:
         new_file_selector = (selector
                              if self._files_selection is None
-                             else FileMatcherAndResolver([self._files_selection,
-                                                          selector])
+                             else FileMatcherAndValue([self._files_selection,
+                                                       selector])
                              )
 
         return FilesMatcherModelForDir(self._dir_path_resolver,
@@ -65,7 +65,7 @@ class FilesMatcherModelForDir(FilesMatcherModel):
         file_selector = (self._files_selection
                          if self._files_selection is not None
                          else
-                         parse_file_matcher.CONSTANT_TRUE_MATCHER_RESOLVER
+                         MATCH_EVERY_FILE_VALUE
                          )
 
         return ErrorMessageInfoForDir(self._dir_path_resolver,
@@ -87,7 +87,7 @@ class FilesMatcherModelForDir(FilesMatcherModel):
         file_paths = dir_path_to_check.iterdir()
 
         if self._files_selection is not None:
-            file_matcher = self._files_selection.resolve(self._environment.symbols)
+            file_matcher = self._files_selection.value_of_any_dependency(self._environment.home_and_sds)
             file_paths = filter(file_matcher.matches, file_paths)
 
         return map(mk_model, file_paths)
@@ -96,7 +96,7 @@ class FilesMatcherModelForDir(FilesMatcherModel):
 class ErrorMessageInfoForDir(ErrorMessageInfo):
     def __init__(self,
                  dir_path_resolver: FileRefResolver,
-                 files_selection: FileMatcherResolver):
+                 files_selection: FileMatcherValue):
         self._dir_path_resolver = dir_path_resolver
         self._files_selection = files_selection
 

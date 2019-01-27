@@ -2,7 +2,8 @@ from typing import Sequence
 
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
+from exactly_lib.type_system.logic.file_matchers import FileMatcherValueFromPrimitiveValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -25,8 +26,8 @@ class FileMatcherResolverConstantTestImpl(FileMatcherResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcher:
-        return self._resolved_value
+    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
+        return FileMatcherValueFromPrimitiveValue(self._resolved_value)
 
 
 IS_FILE_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILE_MATCHER)

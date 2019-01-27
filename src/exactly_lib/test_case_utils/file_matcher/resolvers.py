@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, List
 
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
@@ -6,7 +6,8 @@ from exactly_lib.symbol.object_with_symbol_references import references_from_obj
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.file_matcher import file_matchers
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
+from exactly_lib.type_system.logic.file_matchers import FileMatcherValueFromPrimitiveValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -19,8 +20,8 @@ class FileMatcherConstantResolver(FileMatcherResolver):
     def __init__(self, value: FileMatcher):
         self._value = value
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcher:
-        return self._value
+    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
+        return FileMatcherValueFromPrimitiveValue(self._value)
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -40,7 +41,7 @@ class FileMatcherReferenceResolver(FileMatcherResolver):
         self._references = [SymbolReference(name_of_referenced_resolver,
                                             ValueTypeRestriction(ValueType.FILE_MATCHER))]
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcher:
+    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
         resolver = lookups.lookup_file_matcher(symbols, self._name_of_referenced_resolver)
         return resolver.resolve(symbols)
 
@@ -53,15 +54,11 @@ class FileMatcherReferenceResolver(FileMatcherResolver):
 
 
 class FileMatcherNotResolver(FileMatcherResolver):
-    """
-    Resolver of :class:`FileMatcherNot`
-    """
-
     def __init__(self, file_matcher_resolver: FileMatcherResolver):
         self._resolver = file_matcher_resolver
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcher:
-        return file_matchers.FileMatcherNot(self._resolver.resolve(symbols))
+    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
+        return file_matchers.FileMatcherNotValue(self._resolver.resolve(symbols))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -69,18 +66,14 @@ class FileMatcherNotResolver(FileMatcherResolver):
 
 
 class FileMatcherAndResolver(FileMatcherResolver):
-    """
-    Resolver of :class:`FileMatcherAnd`
-    """
+    def __init__(self, parts: List[FileMatcherResolver]):
+        self._resolvers = parts
+        self._references = references_from_objects_with_symbol_references(parts)
 
-    def __init__(self, file_matcher_resolver_list: list):
-        self._resolvers = file_matcher_resolver_list
-        self._references = references_from_objects_with_symbol_references(file_matcher_resolver_list)
-
-    def resolve(self, symbols: SymbolTable) -> FileMatcher:
-        return file_matchers.FileMatcherAnd([
-            resolver.resolve(symbols)
-            for resolver in self._resolvers
+    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
+        return file_matchers.FileMatcherAndValue([
+            part.resolve(symbols)
+            for part in self._resolvers
         ])
 
     @property
@@ -89,18 +82,14 @@ class FileMatcherAndResolver(FileMatcherResolver):
 
 
 class FileMatcherOrResolver(FileMatcherResolver):
-    """
-    Resolver of :class:`FileMatcherOr`
-    """
+    def __init__(self, parts: List[FileMatcherResolver]):
+        self._resolvers = parts
+        self._references = references_from_objects_with_symbol_references(parts)
 
-    def __init__(self, file_matcher_resolver_list: list):
-        self._resolvers = file_matcher_resolver_list
-        self._references = references_from_objects_with_symbol_references(file_matcher_resolver_list)
-
-    def resolve(self, symbols: SymbolTable) -> FileMatcher:
-        return file_matchers.FileMatcherOr([
-            resolver.resolve(symbols)
-            for resolver in self._resolvers
+    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
+        return file_matchers.FileMatcherOrValue([
+            part.resolve(symbols)
+            for part in self._resolvers
         ])
 
     @property

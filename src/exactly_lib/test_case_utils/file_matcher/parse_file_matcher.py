@@ -22,6 +22,7 @@ from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConsta
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_reg_ex
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
@@ -48,11 +49,11 @@ _TEXT_PARSER = TextParser({
 
 
 class FileSelectionDescriptor(ErrorMessagePartConstructor):
-    def __init__(self, resolver: FileMatcherResolver):
-        self.resolver = resolver
+    def __init__(self, matcher_value: FileMatcherValue):
+        self.matcher_value = matcher_value
 
     def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
-        matcher = self.resolver.resolve(environment.symbols)
+        matcher = self.matcher_value.value_of_any_dependency(environment.tcds)
         line = SELECTION.name.capitalize() + ' : ' + matcher.option_description
         return [line]
 

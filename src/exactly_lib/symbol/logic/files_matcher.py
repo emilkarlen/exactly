@@ -2,12 +2,12 @@ import pathlib
 from abc import ABC, abstractmethod
 from typing import Optional, Iterator
 
-from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import ErrorMessageResolver, PropertyDescriptor
+from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
@@ -57,7 +57,7 @@ class FilesMatcherModel(ABC):
         pass
 
     @abstractmethod
-    def sub_set(self, selector: FileMatcherResolver):
+    def sub_set(self, selector: FileMatcherValue):
         """
         :return a new object that represents a sub set of this object.
 

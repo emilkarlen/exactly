@@ -2,17 +2,19 @@ import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherStructureVisitor
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 def equals_file_matcher(expected: FileMatcher,
-                        description: str = '') -> ValueAssertion:
-    """
-    :return: A assertion on a :class:`FileMatcher`
-    """
+                        description: str = '') -> ValueAssertion[FileMatcher]:
     return _EqualsAssertion(expected, description)
+
+
+def value_equals_file_matcher(expected: FileMatcher,
+                              description: str = '') -> ValueAssertion[FileMatcherValue]:
+    return _EqualsAssertionValue(expected, description)
 
 
 class _EqualsAssertion(ValueAssertionBase):
@@ -35,6 +37,26 @@ class _EqualsAssertion(ValueAssertionBase):
                                     self.description
                                     )
         checker.visit(value)
+
+
+class _EqualsAssertionValue(ValueAssertionBase[FileMatcherValue]):
+    def __init__(self,
+                 expected: FileMatcher,
+                 description: str):
+        self.expected = expected
+        self.description = description
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
+        assert_is_file_selector_type = asrt.is_instance(FileMatcherValue, self.description)
+        assert_is_file_selector_type.apply_with_message(put, value,
+                                                        'Value must be a ' + str(FileMatcherValue))
+        assert isinstance(value, FileMatcherValue)
+
+        assertion_on_primitive_value = equals_file_matcher(self.expected, self.description)
+        assertion_on_primitive_value.apply(put, value.value_when_no_dir_dependencies(), message_builder)
 
 
 class _StructureChecker(FileMatcherStructureVisitor):
