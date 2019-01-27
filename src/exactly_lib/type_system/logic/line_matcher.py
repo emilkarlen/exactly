@@ -1,8 +1,14 @@
-from typing import Tuple
+from abc import ABC, abstractmethod
+from typing import Tuple, Set
 
+from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 
 LineMatcherLine = Tuple[int, str]
+
+FIRST_LINE_NUMBER = 1
 
 
 class LineMatcher(Matcher[LineMatcherLine]):
@@ -22,31 +28,18 @@ class LineMatcher(Matcher[LineMatcherLine]):
         raise NotImplementedError('abstract method')
 
 
-FIRST_LINE_NUMBER = 1
+class LineMatcherValue(MultiDirDependentValue[LineMatcher], ABC):
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
+        return set()
 
+    @abstractmethod
+    def value_when_no_dir_dependencies(self) -> LineMatcher:
+        """
+        :raises DirDependencyError: This value has dir dependencies.
+        """
+        pass
 
-def model_iter_from_file_line_iter(lines: iter) -> iter:
-    """
-    Gives a sequence of line matcher models, corresponding to input lines read from file.
-    New lines are expected to appear only as last character of lines, or not at all, if
-    last line is not ended with new line in the file.
-
-    @:param strings: lines from an input source
-    """
-    return enumerate((l.rstrip('\n') for l in lines),
-                     1)
-
-
-def original_and_model_iter_from_file_line_iter(lines: iter) -> iter:
-    """
-    Gives a sequence of pairs, corresponding to each element in lines.
-    (original line, line-matcher-model-for-line).
-
-    See also docs of model_iter_from_file_line_iter.
-
-    @:param strings: lines from an input source
-    """
-    return (
-        (original, (line_num, original.rstrip('\n')))
-        for line_num, original in enumerate(lines, 1)
-    )
+    @abstractmethod
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> LineMatcher:
+        """Gives the value, regardless of actual dependency."""
+        pass

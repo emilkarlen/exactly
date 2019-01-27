@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_system.logic import line_matcher as sut
+from exactly_lib.type_system.logic import line_matchers as sut
 
 
 def suite() -> unittest.TestSuite:

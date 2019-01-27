@@ -5,8 +5,8 @@ from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.instruction_arguments import LINE_MATCHER
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg import diff_msg
@@ -19,7 +19,8 @@ from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherRe
 from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_from_references
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver, \
     ErrorMessageResolvingEnvironment, ConstantErrorMessageResolver
-from exactly_lib.type_system.logic.line_matcher import LineMatcher, model_iter_from_file_line_iter
+from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
+from exactly_lib.type_system.logic.line_matchers import model_iter_from_file_line_iter
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -155,7 +156,7 @@ class _StringMatcherBase(StringMatcher):
     def _report_fail_with_line(self,
                                checked_file_describer: FilePropertyDescriptorConstructor,
                                cause: str,
-                               number__contents: str):
+                               number__contents: LineMatcherLine):
         single_line_actual_value = 'Line {} {}'.format(number__contents[0], cause)
 
         failure_info_resolver = self._diff_failure_info_resolver(checked_file_describer)
