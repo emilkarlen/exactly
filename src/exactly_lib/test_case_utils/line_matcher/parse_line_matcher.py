@@ -40,9 +40,9 @@ def parse_line_matcher(source: ParseSource) -> LineMatcherResolver:
 
 
 def parse_optional_matcher_resolver(parser: TokenParser) -> LineMatcherResolver:
-    return parser.consume_and_handle_optional_option(
-        CONSTANT_TRUE_MATCHER_RESOLVER,
+    return parser.consume_and_handle_optional_option2(
         parse_line_matcher_from_token_parser,
+        CONSTANT_TRUE_MATCHER_RESOLVER,
         WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 

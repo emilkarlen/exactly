@@ -5,7 +5,7 @@ from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.string_transformer import transformers
+from exactly_lib.test_case_utils.string_transformer.filter import SelectStringTransformerValue
 from exactly_lib.type_system.logic import string_transformer_values
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerValue
 from exactly_lib.type_system.value_type import ValueType
@@ -73,16 +73,11 @@ class StringTransformerReference(StringTransformerResolver):
 
 
 class StringTransformerSelectResolver(StringTransformerResolver):
-    """
-    Resolver of :class:`SelectLinesTransformer`
-    """
-
     def __init__(self, line_matcher_resolver: LineMatcherResolver):
         self.line_matcher_resolver = line_matcher_resolver
 
-    def resolve(self, symbols: SymbolTable) -> StringTransformer:
-        return string_transformer_values.StringTransformerConstantValue(
-            transformers.SelectStringTransformer(self.line_matcher_resolver.resolve(symbols)))
+    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
+        return SelectStringTransformerValue(self.line_matcher_resolver.resolve(symbols))
 
     @property
     def references(self) -> Sequence[SymbolReference]:

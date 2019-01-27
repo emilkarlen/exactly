@@ -8,5 +8,5 @@ T = TypeVar('T')
 class Matcher(Generic[T], WithOptionDescription):
     """Matches a model."""
 
-    def matches(self, model) -> bool:
+    def matches(self, model: T) -> bool:
         raise NotImplementedError('abstract method')

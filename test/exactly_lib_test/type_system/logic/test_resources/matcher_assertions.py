@@ -1,15 +1,18 @@
-import types
 import unittest
+
+from typing import List, Generic, TypeVar, Callable
 
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
+MODEL = TypeVar('MODEL')
 
-class ModelInfo:
+
+class ModelInfo(Generic[MODEL]):
     def __init__(self,
-                 model,
-                 mk_description_of_model: types.FunctionType = str):
+                 model: MODEL,
+                 mk_description_of_model: Callable[[MODEL], str] = str):
         self.model = model
         self._mk_description_of_model = mk_description_of_model
 
@@ -18,15 +21,15 @@ class ModelInfo:
         return self._mk_description_of_model(self.model)
 
 
-def is_equivalent_to(expected_equivalent: Matcher,
-                     model_infos: list) -> ValueAssertion:
+def is_equivalent_to(expected_equivalent: Matcher[MODEL],
+                     model_infos: List[ModelInfo[MODEL]]) -> ValueAssertion[Matcher[MODEL]]:
     return MatcherEquivalenceAssertion(expected_equivalent, model_infos)
 
 
-class MatcherEquivalenceAssertion(ValueAssertionBase):
+class MatcherEquivalenceAssertion(Generic[MODEL], ValueAssertionBase[Matcher[MODEL]]):
     def __init__(self,
-                 expected_equivalent: Matcher,
-                 model_infos: list):
+                 expected_equivalent: Matcher[MODEL],
+                 model_infos: List[ModelInfo[MODEL]]):
         self.expected_equivalent = expected_equivalent
         self._model_infos = model_infos
 
@@ -57,10 +60,10 @@ class MatcherEquivalenceAssertion(ValueAssertionBase):
         application_assertions.apply(put, value, message_builder.for_sub_component('application'))
 
 
-class MatcherEquivalenceOfCaseAssertion(ValueAssertionBase):
+class MatcherEquivalenceOfCaseAssertion(Generic[MODEL], ValueAssertionBase[Matcher[MODEL]]):
     def __init__(self,
-                 expected_equivalent: Matcher,
-                 model_info: ModelInfo):
+                 expected_equivalent: Matcher[MODEL],
+                 model_info: ModelInfo[MODEL]):
         self._expected_equivalent = expected_equivalent
         self._model_info = model_info
 

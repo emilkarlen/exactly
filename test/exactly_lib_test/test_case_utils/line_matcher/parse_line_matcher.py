@@ -1,10 +1,13 @@
-import re
 import unittest
+
+import re
+from typing import List, Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher, \
     IntegerMatcherFromComparisonOperator
@@ -23,6 +26,7 @@ from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.resolver_assertions import \
     resolved_value_equals_line_matcher
+from exactly_lib_test.test_case_utils.line_matcher.test_resources.value_assertions import value_matches_line_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.test_resources import matcher_parse_check
 from exactly_lib_test.test_case_utils.test_resources.matcher_parse_check import Expectation
@@ -327,19 +331,23 @@ class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase)
 
 
 def resolved_value_is_regex_matcher(regex_str: str,
-                                    references: ValueAssertion = asrt.is_empty_sequence) -> ValueAssertion:
+                                    references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence
+                                    ) -> ValueAssertion[SymbolValueResolver]:
     expected_matcher = regex_matcher(regex_str)
     return resolved_value_equals_line_matcher(expected_matcher,
                                               references=references)
 
 
 def resolved_value_is_line_number_matcher(integer_matcher: IntegerMatcher,
-                                          model_infos: list,
-                                          references: ValueAssertion = asrt.is_empty_sequence) -> ValueAssertion:
+                                          model_infos: List[ModelInfo],
+                                          references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence
+                                          ) -> ValueAssertion[SymbolValueResolver]:
     expected_matcher = is_equivalent_to(LineMatcherLineNumber(integer_matcher),
                                         model_infos)
-    return resolver_assertions.matches_resolver_of_line_matcher(references,
-                                                                expected_matcher)
+    return resolver_assertions.matches_resolver_of_line_matcher(
+        references,
+        value_matches_line_matcher(expected_matcher)
+    )
 
 
 def regex_matcher(regex_str: str) -> LineMatcherRegex:

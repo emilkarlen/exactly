@@ -30,7 +30,7 @@ class TokenParser:
 
     def __init__(self,
                  token_stream: TokenStream,
-                 error_message_format_map: dict = None,
+                 error_message_format_map: Dict[str, str] = None,
                  first_line_number: int = 0):
         """
 
@@ -313,6 +313,15 @@ class TokenParser:
             return argument_parser(self)
         else:
             return return_value_if_no_match
+
+    def consume_and_handle_optional_option2(self,
+                                            argument_parser: Callable[[TokenParserType], T],
+                                            return_value_if_no_match: T,
+                                            option_name: OptionName,
+                                            ) -> T:
+        return self.consume_and_handle_optional_option(return_value_if_no_match,
+                                                       argument_parser,
+                                                       option_name)
 
     def parse_choice_of_optional_option(self,
                                         continuation_if_present: types.FunctionType,

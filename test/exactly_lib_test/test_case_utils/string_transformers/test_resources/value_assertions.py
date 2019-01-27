@@ -12,9 +12,6 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 def equals_string_transformer(expected: StringTransformer,
                               description: str = '') -> ValueAssertion[StringTransformer]:
-    """
-    :return: A assertion on a :class:`LinesTransformer`
-    """
     return _EqualsAssertion(expected, description)
 
 

@@ -92,7 +92,7 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
         actual_references = [actual_reference]
         resolver = fake(references=actual_references)
         assertion_to_check = sut.resolved_value_equals_file_matcher(resolver.resolved_value,
-                                                                    expected_references=asrt.matches_sequence([
+                                                                    references=asrt.matches_sequence([
                                                                         asrt.is_(actual_reference)
                                                                     ]),
                                                                     )
@@ -117,7 +117,7 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_to_check = sut.resolved_value_equals_file_matcher(resolver.resolved_value,
-                                                                            expected_references=case.value,
+                                                                            references=case.value,
                                                                             )
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check, resolver)

@@ -58,17 +58,21 @@ def matcher_for_any_line_matches(expectation_type: ExpectationType,
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
         err_msg_env = ErrorMessageResolvingEnvironment(environment.home_and_sds,
                                                        environment.symbols)
+        line_matcher = line_matcher_resolver \
+            .resolve(environment.symbols) \
+            .value_of_any_dependency(environment.home_and_sds)
+
         if expectation_type is ExpectationType.POSITIVE:
             return _AnyLineMatchesStringMatcherForPositiveMatch(
                 instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
                 expectation_type,
-                line_matcher_resolver.resolve(environment.symbols),
+                line_matcher,
                 err_msg_env)
         else:
             return _AnyLineMatchesStringMatcherForNegativeMatch(
                 instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
                 expectation_type,
-                line_matcher_resolver.resolve(environment.symbols),
+                line_matcher,
                 err_msg_env)
 
     def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
@@ -87,17 +91,21 @@ def matcher_for_every_line_matches(expectation_type: ExpectationType,
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
         err_msg_env = ErrorMessageResolvingEnvironment(environment.home_and_sds,
                                                        environment.symbols)
+        line_matcher = line_matcher_resolver \
+            .resolve(environment.symbols) \
+            .value_of_any_dependency(environment.home_and_sds)
+
         if expectation_type is ExpectationType.POSITIVE:
             return _EveryLineMatchesStringMatcherForPositiveMatch(
                 instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
                 expectation_type,
-                line_matcher_resolver.resolve(environment.symbols),
+                line_matcher,
                 err_msg_env)
         else:
             return _EveryLineMatchesStringMatcherForNegativeMatch(
                 instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
                 expectation_type,
-                line_matcher_resolver.resolve(environment.symbols),
+                line_matcher,
                 err_msg_env)
 
     def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:

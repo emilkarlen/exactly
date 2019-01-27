@@ -1,5 +1,6 @@
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
-from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.test_case_utils.line_matcher.line_matcher_values import LineMatcherValueFromPrimitiveValue
+from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -23,8 +24,8 @@ class LineMatcherResolverConstantTestImpl(LineMatcherResolver):
     def references(self) -> list:
         return self._references
 
-    def resolve(self, symbols: SymbolTable) -> LineMatcher:
-        return self._resolved_value
+    def resolve(self, symbols: SymbolTable) -> LineMatcherValue:
+        return LineMatcherValueFromPrimitiveValue(self._resolved_value)
 
 
 IS_LINE_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.LINE_MATCHER)

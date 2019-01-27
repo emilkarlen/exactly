@@ -8,8 +8,6 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 class StringTransformerResolver(LogicValueResolver):
-    """ Base class for resolvers of :class:`LinesTransformer`. """
-
     @property
     def logic_value_type(self) -> LogicValueType:
         return LogicValueType.STRING_TRANSFORMER
