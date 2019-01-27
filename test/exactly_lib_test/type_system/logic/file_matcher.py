@@ -1,7 +1,8 @@
-import pathlib
 import unittest
 
-from exactly_lib.type_system.logic import file_matcher as sut
+import pathlib
+
+from exactly_lib.type_system.logic import file_matchers as sut
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 
