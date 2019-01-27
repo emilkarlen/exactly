@@ -1,22 +1,6 @@
-from typing import Set, Iterator, Tuple
+from typing import Iterator, Tuple
 
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherValue, LineMatcherLine
-
-
-class LineMatcherValueFromPrimitiveValue(LineMatcherValue):
-    def __init__(self, primitive_value: LineMatcher):
-        self._primitive_value = primitive_value
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return set()
-
-    def value_when_no_dir_dependencies(self) -> LineMatcher:
-        return self._primitive_value
-
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> LineMatcher:
-        return self._primitive_value
+from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 
 
 def model_iter_from_file_line_iter(lines: Iterator[str]) -> Iterator[LineMatcherLine]:
