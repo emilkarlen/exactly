@@ -1,10 +1,10 @@
-import pathlib
-import re
 import unittest
+
+import re
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 
 
 def suite() -> unittest.TestSuite:
@@ -146,5 +146,5 @@ class UnknownFileMatcher(FileMatcher):
     def option_description(self) -> str:
         return str(type(self))
 
-    def matches(self, path: pathlib.Path) -> bool:
+    def matches(self, model: FileMatcherModel) -> bool:
         raise NotImplementedError('this method should never be called')

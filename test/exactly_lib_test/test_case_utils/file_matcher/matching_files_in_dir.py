@@ -3,6 +3,7 @@ import unittest
 import pathlib
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 
@@ -51,8 +52,8 @@ class BaseNameMatcher(sut.FileMatcher):
     def __init__(self, base_name_that_matches: str):
         self.base_name_that_matches = base_name_that_matches
 
-    def matches(self, path: pathlib.Path) -> bool:
-        return path.name == self.base_name_that_matches
+    def matches(self, model: FileMatcherModel) -> bool:
+        return model.path.name == self.base_name_that_matches
 
     @property
     def option_description(self) -> str:
@@ -63,7 +64,7 @@ class ConstantResultMatcher(sut.FileMatcher):
     def __init__(self, result: bool):
         self.result = result
 
-    def matches(self, path: pathlib.Path) -> bool:
+    def matches(self, model: FileMatcherModel) -> bool:
         return self.result
 
     @property

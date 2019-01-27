@@ -1,4 +1,3 @@
-import pathlib
 from typing import List, Set
 
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
@@ -11,7 +10,7 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.error_message import ConstantErrorMessageResolver
-from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.string_matcher import StringMatcherValue, StringMatcher
 from exactly_lib.util.symbol_table import SymbolTable
@@ -22,9 +21,9 @@ class RegularFileMatchesStringMatcher(FileMatcher):
         self._string_matcher = string_matcher
         self._pathlib_file_type_predicate = file_properties.TYPE_INFO[FileType.REGULAR].pathlib_path_predicate
 
-    def matches(self, path: pathlib.Path) -> bool:
-        if not self._pathlib_file_type_predicate(path):
-            raise HardErrorException(ConstantErrorMessageResolver('Not a regular file: ' + str(path)))
+    def matches(self, model: FileMatcherModel) -> bool:
+        if not self._pathlib_file_type_predicate(model.path):
+            raise HardErrorException(ConstantErrorMessageResolver('Not a regular file: ' + str(model.path)))
         return False
 
     @property

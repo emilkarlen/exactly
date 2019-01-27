@@ -3,7 +3,7 @@ from typing import List, Iterator
 
 from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 
 
 class FileMatcherConstant(FileMatcher):
@@ -20,7 +20,7 @@ class FileMatcherConstant(FileMatcher):
     def option_description(self) -> str:
         return 'any file' if self._result else 'no file'
 
-    def matches(self, path: pathlib.Path) -> bool:
+    def matches(self, model: FileMatcherModel) -> bool:
         return self._result
 
 
@@ -38,8 +38,8 @@ class FileMatcherNameGlobPattern(FileMatcher):
     def option_description(self) -> str:
         return 'name matches glob pattern ' + self._glob_pattern
 
-    def matches(self, path: pathlib.Path) -> bool:
-        return path.match(self._glob_pattern)
+    def matches(self, model: FileMatcherModel) -> bool:
+        return model.path.match(self._glob_pattern)
 
 
 class FileMatcherBaseNameRegExPattern(FileMatcher):
@@ -56,8 +56,8 @@ class FileMatcherBaseNameRegExPattern(FileMatcher):
     def option_description(self) -> str:
         return 'base name matches regular expression ' + self.reg_ex_pattern
 
-    def matches(self, path: pathlib.Path) -> bool:
-        return self._compiled_reg_ex.search(path.name) is not None
+    def matches(self, model: FileMatcherModel) -> bool:
+        return self._compiled_reg_ex.search(model.path.name) is not None
 
 
 class FileMatcherType(FileMatcher):
@@ -75,8 +75,8 @@ class FileMatcherType(FileMatcher):
     def option_description(self) -> str:
         return 'type is ' + file_properties.TYPE_INFO[self._file_type].description
 
-    def matches(self, path: pathlib.Path) -> bool:
-        return self._pathlib_predicate(path)
+    def matches(self, model: FileMatcherModel) -> bool:
+        return self._pathlib_predicate(model.path)
 
 
 class FileMatcherNot(FileMatcher):
@@ -93,8 +93,8 @@ class FileMatcherNot(FileMatcher):
     def option_description(self) -> str:
         return expression.NOT_OPERATOR_NAME + ' ' + self._matcher.option_description
 
-    def matches(self, path: pathlib.Path) -> bool:
-        return not self._matcher.matches(path)
+    def matches(self, model: FileMatcherModel) -> bool:
+        return not self._matcher.matches(model)
 
 
 class FileMatcherAnd(FileMatcher):
@@ -112,8 +112,8 @@ class FileMatcherAnd(FileMatcher):
         op = ' ' + expression.AND_OPERATOR_NAME + ' '
         return '({})'.format(op.join(map(lambda fm: fm.option_description, self.matchers)))
 
-    def matches(self, path: pathlib.Path) -> bool:
-        return all([matcher.matches(path)
+    def matches(self, model: FileMatcherModel) -> bool:
+        return all([matcher.matches(model)
                     for matcher in self._matchers])
 
 
@@ -132,8 +132,8 @@ class FileMatcherOr(FileMatcher):
     def matchers(self) -> List[FileMatcher]:
         return list(self._matchers)
 
-    def matches(self, path: pathlib.Path) -> bool:
-        return any([matcher.matches(path)
+    def matches(self, model: FileMatcherModel) -> bool:
+        return any([matcher.matches(model)
                     for matcher in self._matchers])
 
 

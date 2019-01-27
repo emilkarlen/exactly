@@ -1,6 +1,4 @@
-import pathlib
-
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 
 
 class FileMatcherThatSelectsAllFilesTestImpl(FileMatcher):
@@ -8,5 +6,5 @@ class FileMatcherThatSelectsAllFilesTestImpl(FileMatcher):
     def option_description(self) -> str:
         return str(type(self))
 
-    def matches(self, path: pathlib.Path) -> bool:
+    def matches(self, model: FileMatcherModel) -> bool:
         return True

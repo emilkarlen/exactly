@@ -1,8 +1,7 @@
-import pathlib
 from typing import Iterable, Callable
 
 from exactly_lib.test_case_utils.string_transformer import transformers as sut
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 
 
@@ -19,7 +18,7 @@ class FileMatcherTestImpl(FileMatcher):
     def option_description(self) -> str:
         return str(type(self))
 
-    def matches(self, path: pathlib.Path) -> bool:
+    def matches(self, model: FileMatcherModel) -> bool:
         raise NotImplementedError('should never be used')
 
 

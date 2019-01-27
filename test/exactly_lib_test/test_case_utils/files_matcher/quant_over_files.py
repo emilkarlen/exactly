@@ -1,6 +1,5 @@
 import unittest
 
-import pathlib
 import shlex
 
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
@@ -12,7 +11,7 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -562,8 +561,8 @@ class FileMatcherThatMatchesAnyFileWhosNameStartsWith(FileMatcher):
     def __init__(self, prefix_of_name_for_match: str):
         self._prefix_of_name_for_match = prefix_of_name_for_match
 
-    def matches(self, path: pathlib.Path) -> bool:
-        return path.name.startswith(self._prefix_of_name_for_match)
+    def matches(self, model: FileMatcherModel) -> bool:
+        return model.path.name.startswith(self._prefix_of_name_for_match)
 
 
 if __name__ == '__main__':

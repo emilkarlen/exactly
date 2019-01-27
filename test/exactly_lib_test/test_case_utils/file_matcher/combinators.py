@@ -1,7 +1,9 @@
-import pathlib
 import unittest
 
+import pathlib
+
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib_test.test_case_utils.test_resources import matcher_combinators_check
 
 
@@ -65,6 +67,6 @@ class FileMatcherThatRegistersModelArgument(sut.FileMatcher,
     def option_description(self) -> str:
         raise NotImplementedError('this method should not be used')
 
-    def matches(self, line: str) -> bool:
-        self.register_argument(line)
+    def matches(self, model: FileMatcherModel) -> bool:
+        self.register_argument(model.path)
         return self._constant_result
