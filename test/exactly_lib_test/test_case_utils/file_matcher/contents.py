@@ -47,6 +47,7 @@ def suite() -> unittest.TestSuite:
         ActualFileIsEmptyAfterTransformation(),
         TestComplexMatcher(),
         TestComplexMatcherWithParenthesis(),
+        TestEvaluationIsLazyFromLeftToRight(),
     ])
 
 
@@ -281,6 +282,34 @@ class TestComplexMatcherWithParenthesis(tc.TestWithNegationArgumentBase):
             expectation=
             Expectation(
                 main_result=maybe_not.pass__if_positive__fail__if_negative
+            ),
+        )
+
+
+class TestEvaluationIsLazyFromLeftToRight(tc.TestCaseBase):
+    def runTest(self):
+        checked_file = empty_dir('a-dir')
+
+        self._check(
+            source=
+            elements(
+                [
+                    argument_syntax.type_matcher_of(FileType.REGULAR),
+                    expression.AND_OPERATOR_NAME,
+                    argument_syntax.contents_matcher_of(
+                        str(EqualsStringAssertionArgumentsConstructor(
+                            surrounded_by_hard_quotes_str('expected contents')))),
+                ]
+            ).as_remaining_source,
+            model=
+            model_construction.constant_relative_file_name(checked_file.name),
+            arrangement=
+            ArrangementPostAct(
+                sds_contents=single_file_in_current_dir(checked_file)
+            ),
+            expectation=
+            Expectation(
+                main_result=matcher_assertions.is_arbitrary_matching_failure()
             ),
         )
 

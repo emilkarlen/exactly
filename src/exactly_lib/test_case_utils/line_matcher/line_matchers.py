@@ -89,8 +89,8 @@ class LineMatcherAnd(LineMatcher):
         return list(self._matchers)
 
     def matches(self, line: LineMatcherLine) -> bool:
-        return all([matcher.matches(line)
-                    for matcher in self._matchers])
+        return all((matcher.matches(line)
+                    for matcher in self._matchers))
 
 
 class LineMatcherOr(LineMatcher):
@@ -109,8 +109,8 @@ class LineMatcherOr(LineMatcher):
         return list(self._matchers)
 
     def matches(self, line: LineMatcherLine) -> bool:
-        return any([matcher.matches(line)
-                    for matcher in self._matchers])
+        return any((matcher.matches(line)
+                    for matcher in self._matchers))
 
 
 class LineMatcherStructureVisitor:

@@ -113,8 +113,8 @@ class FileMatcherAnd(FileMatcher):
         return '({})'.format(op.join(map(lambda fm: fm.option_description, self.matchers)))
 
     def matches(self, model: FileMatcherModel) -> bool:
-        return all([matcher.matches(model)
-                    for matcher in self._matchers])
+        return all((matcher.matches(model)
+                    for matcher in self._matchers))
 
 
 class FileMatcherOr(FileMatcher):
@@ -133,8 +133,8 @@ class FileMatcherOr(FileMatcher):
         return list(self._matchers)
 
     def matches(self, model: FileMatcherModel) -> bool:
-        return any([matcher.matches(model)
-                    for matcher in self._matchers])
+        return any((matcher.matches(model)
+                    for matcher in self._matchers))
 
 
 MATCH_EVERY_FILE = FileMatcherConstant(True)
