@@ -32,8 +32,6 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.check_with_ne
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.arguments import file_contents_arg2
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.misc import \
     FileMatcherThatMatchesAnyFileWhosNameStartsWith
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import \
-    arguments_building as string_matcher_args
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building2 as sm_arg
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.contents_transformation import \
     ToUppercaseStringTransformer
@@ -77,15 +75,6 @@ class TestWithAssertionVariantForFileContents(tr.TestWithAssertionVariantBase):
                 file_contents_arg2(sm_arg.Empty()),
             )
         )
-
-
-def file_contents_arg(
-        contents_variant: string_matcher_args.FileContentsArgumentsConstructor,
-        common: string_matcher_args.CommonArgumentsConstructor = string_matcher_args.CommonArgumentsConstructor()
-) -> string_matcher_args.ImplicitActualFileArgumentsConstructor:
-    return string_matcher_args.ImplicitActualFileArgumentsConstructor(
-        common,
-        contents_variant)
 
 
 class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
