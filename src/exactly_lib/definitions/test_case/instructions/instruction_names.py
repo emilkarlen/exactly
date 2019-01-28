@@ -1,4 +1,5 @@
 from exactly_lib.definitions import conf_params
+from exactly_lib.definitions.test_case import file_check_properties
 
 RUN_INSTRUCTION_NAME = 'run'
 
@@ -19,6 +20,10 @@ SYMBOL_DEFINITION_INSTRUCTION_NAME = 'def'
 CONTENTS_OF_STDOUT_INSTRUCTION_NAME = 'stdout'
 
 CONTENTS_OF_STDIN_INSTRUCTION_NAME = 'stdin'
+
+CONTENTS_OF_EXPLICIT_FILE_INSTRUCTION_NAME = file_check_properties.REGULAR_FILE_CONTENTS
+
+CONTENTS_OF_EXPLICIT_DIR_INSTRUCTION_NAME = file_check_properties.DIR_CONTENTS
 
 EXIT_CODE_INSTRUCTION_NAME = 'exit-code'
 

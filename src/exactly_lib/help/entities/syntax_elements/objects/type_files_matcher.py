@@ -9,7 +9,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.processing import exit_values
-from exactly_lib.test_case_utils import negation_of_predicate, file_contents_check_syntax
+from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTY_ARGUMENT_CONSTANT
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.type_system.value_type import TypeCategory
@@ -34,6 +34,7 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
             'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
             'FILE_MATCHER': instruction_arguments.SELECTION_OPTION.argument,
+            'FILE_MATCHER_SYNTAX_ELEMENT': syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
             'this_type': formatting.symbol_type(types.FILES_MATCHER_TYPE_INFO.singular_name),
         })
 
@@ -93,9 +94,10 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
 
         file_contents_args = ([quantifier_arg,
                                file_arg,
-                               separator_arg] +
-                              file_contents_check_syntax.file_contents_checker_arguments__non_program()
-                              )
+                               separator_arg,
+                               syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.single_mandatory
+                               ]
+        )
         symbol_argument = a.Single(a.Multiplicity.MANDATORY,
                                    syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument)
 
@@ -122,7 +124,6 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
         name_and_cross_refs = [
             syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT,
             syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
-            syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
             syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
         ]
         return cross_reference_id_list(name_and_cross_refs)
@@ -161,11 +162,7 @@ Tests the number of files.
 """
 
 _DESCRIPTION_OF_FILE_QUANTIFICATION = """\
-Tests that {any}/{every} file satisfies the given matcher
-on the contents of an individual file.
-
-
-The result is {HARD_ERROR} if a tested file is not a regular file.
+Tests that {any}/{every} file satisfies the given {FILE_MATCHER_SYNTAX_ELEMENT}.
 """
 
 _SYMBOL_REF_DESCRIPTION = """\
