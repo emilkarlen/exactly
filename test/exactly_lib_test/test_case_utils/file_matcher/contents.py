@@ -6,6 +6,7 @@ from exactly_lib.definitions import expression
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
@@ -135,7 +136,7 @@ class TestHardErrorWhenActualFileDoesNotExist(tc.TestWithNegationArgumentBase):
             ArrangementPostAct(),
             expectation=
             Expectation(
-                main_result=matcher_assertions.is_hard_error()
+                is_hard_error=matcher_assertions.is_hard_error()
             ),
         )
 
@@ -157,7 +158,7 @@ class TestHardErrorWhenActualFileIsADirectory(tc.TestWithNegationArgumentBase):
             ),
             expectation=
             Expectation(
-                main_result=matcher_assertions.is_hard_error()
+                is_hard_error=matcher_assertions.is_hard_error()
             ),
         )
 
