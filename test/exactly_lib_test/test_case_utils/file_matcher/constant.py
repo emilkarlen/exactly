@@ -1,7 +1,10 @@
-import pathlib
 import unittest
 
+import pathlib
+
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matcher_models import \
+    with_tmp_dir_space_that_must_not_be_used
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
@@ -26,13 +29,13 @@ class TestConstant(unittest.TestCase):
                          )),
         ]
         for case in cases:
-            constant_result, line, expected_result = case.value
+            constant_result, path, expected_result = case.value
             with self.subTest(case_name=case.name):
                 matcher = sut.FileMatcherConstant(constant_result)
                 # ACT #
                 actual_result_constant = matcher.result_constant
 
-                actual_result = matcher.matches(line)
+                actual_result = matcher.matches(with_tmp_dir_space_that_must_not_be_used(path))
 
                 # ASSERT #
 
