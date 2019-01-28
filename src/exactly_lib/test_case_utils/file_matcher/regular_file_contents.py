@@ -26,11 +26,6 @@ class RegularFileMatchesStringMatcher(FileMatcher):
         self._expected_file_type = file_properties.TYPE_INFO[FileType.REGULAR]
         self._pathlib_file_type_predicate = self._expected_file_type.pathlib_path_predicate
 
-    def matches(self, model: FileMatcherModel) -> bool:
-        if not self._pathlib_file_type_predicate(model.path):
-            raise HardErrorException(ConstantErrorMessageResolver('Not a regular file: ' + str(model.path)))
-        return False
-
     @property
     def option_description(self) -> str:
         return 'contents matches STRING-MATCHER'
