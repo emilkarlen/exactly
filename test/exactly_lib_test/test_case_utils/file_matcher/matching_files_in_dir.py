@@ -4,8 +4,8 @@ import pathlib
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.single_dir_checks import single_dir_setup
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir
-from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 
 
 def suite() -> unittest.TestSuite:
@@ -25,9 +25,10 @@ class TestMatchingFilesInDir(unittest.TestCase):
             empty_dir(self.dir_2_name),
             empty_file(self.file_3_name),
         ])
-        with tmp_dir(dir_contents) as tmp_dir_path:
+        with single_dir_setup(dir_contents) as setup:
             # ACT #
-            actual_matching_file_paths = sut.matching_files_in_dir(matcher, tmp_dir_path)
+            actual_matching_file_paths = sut.matching_files_in_dir(matcher,
+                                                                   setup.model_with_action_dir_as_path_to_match())
             # ASSERT #
             actual_matching_file_base_names = set(map(pathlib.Path.name.fget, actual_matching_file_paths))
             self.assertEqual(expected_matching_file_base_names,

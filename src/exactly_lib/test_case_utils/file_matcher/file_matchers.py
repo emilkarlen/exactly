@@ -190,5 +190,11 @@ class FileMatcherStructureVisitor:
         raise NotImplementedError('abstract method')
 
 
-def matching_files_in_dir(matcher: FileMatcher, dir_path: pathlib.Path) -> Iterator[pathlib.Path]:
-    return filter(matcher.matches, dir_path.iterdir())
+def matching_files_in_dir(matcher: FileMatcher, model: FileMatcherModel) -> Iterator[pathlib.Path]:
+    tmp_file_space = model.tmp_file_space
+    return (
+        path
+        for path in model.path.iterdir()
+        if matcher.matches(FileMatcherModel(tmp_file_space,
+                                            path))
+    )
