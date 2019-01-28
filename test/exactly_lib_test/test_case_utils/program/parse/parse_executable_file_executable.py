@@ -1,6 +1,6 @@
 import sys
-
 import unittest
+
 from typing import Sequence
 
 from exactly_lib.definitions import file_ref as file_ref_texts
@@ -28,6 +28,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators as home_or_sds_pop
 from exactly_lib_test.test_case_utils.test_resources import relativity_options, \
     pre_or_post_sds_validator as validator_util, parse_executable_file_executable_cases as utils
+from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.parse_executable_file_executable_cases import \
     RelativityConfiguration, \
     suite_for, \
@@ -67,7 +68,7 @@ def suite() -> unittest.TestSuite:
 class TestCaseConfiguration:
     def __init__(self,
                  executable: str,
-                 validation_result: validator_util.Expectation,
+                 validation_result: validation.Expectation,
                  file_resolver_value: FileRef,
                  expected_symbol_references_of_file: list,
                  expected_symbol_references_of_argument: list,
@@ -235,7 +236,7 @@ class TestParseInvalidSyntax(unittest.TestCase):
 
 CONFIGURATION_FOR_PYTHON_EXECUTABLE = TestCaseConfiguration(
     syntax_elements.PYTHON_EXECUTABLE_OPTION_STRING,
-    validation_result=validator_util.expect_passes_all_validations(),
+    validation_result=validation.expect_passes_all_validations(),
     file_resolver_value=file_refs.absolute_file_name(sys.executable),
     expected_symbol_references_of_file=[],
     expected_symbol_references_of_argument=[],
@@ -243,7 +244,7 @@ CONFIGURATION_FOR_PYTHON_EXECUTABLE = TestCaseConfiguration(
 
 CONFIGURATION_FOR_ABSOLUTE_PATH_OF_EXISTING_EXECUTABLE_FILE = TestCaseConfiguration(
     string_formatting.file_name(sys.executable),
-    validation_result=validator_util.expect_passes_all_validations(),
+    validation_result=validation.expect_passes_all_validations(),
     file_resolver_value=file_refs.absolute_file_name(sys.executable),
     expected_symbol_references_of_file=[],
     expected_symbol_references_of_argument=[],
@@ -253,7 +254,7 @@ _ABSOLUT_PATH_THAT_DOES_NOT_EXIST = str(non_existing_absolute_path('/absolute/pa
 
 CONFIGURATION_FOR_ABSOLUTE_PATH_OF_NON_EXISTING_FILE = TestCaseConfiguration(
     string_formatting.file_name(_ABSOLUT_PATH_THAT_DOES_NOT_EXIST),
-    validation_result=validator_util.expect_validation_pre_eds(False),
+    validation_result=validation.expect_validation_pre_eds(False),
     file_resolver_value=file_refs.absolute_file_name(_ABSOLUT_PATH_THAT_DOES_NOT_EXIST),
     expected_symbol_references_of_file=[],
     expected_symbol_references_of_argument=[],
@@ -319,8 +320,8 @@ class TestParseAbsolutePath(unittest.TestCase):
             expected_symbol_references_of_argument=[],
         )
 
-        validator_expectation = validator_util.Expectation(passes_pre_sds=True,
-                                                           passes_post_sds=True)
+        validator_expectation = validation.Expectation(passes_pre_sds=True,
+                                                       passes_post_sds=True)
 
         self._check(arguments_str,
                     expected_source_after_parse=has_remaining_part_of_first_line('remaining args'),
@@ -338,8 +339,8 @@ class TestParseAbsolutePath(unittest.TestCase):
             expected_symbol_references_of_file=[],
             expected_symbol_references_of_argument=[],
         )
-        validator_expectation = validator_util.Expectation(passes_pre_sds=False,
-                                                           passes_post_sds=True)
+        validator_expectation = validation.Expectation(passes_pre_sds=False,
+                                                       passes_post_sds=True)
 
         self._check(arguments_str,
                     expected_source_after_parse=has_remaining_part_of_first_line('remaining args'),
@@ -350,7 +351,7 @@ class TestParseAbsolutePath(unittest.TestCase):
                arguments_str: str,
                expected_source_after_parse: ValueAssertion[ParseSource],
                expectation_on_exe_file: ExpectationOnExeFile,
-               validator_expectation: validator_util.Expectation):
+               validator_expectation: validation.Expectation):
         # ARRANGE #
         source = ParseSource(arguments_str)
         # ACT #

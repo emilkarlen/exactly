@@ -25,8 +25,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, here_document
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.regex.test_resources.assertions import matches_regex_resolver
-from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidationExpectation, \
-    all_validations_passes, pre_sds_validation_fails, post_sds_validation_fails
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes, \
+    pre_sds_validation_fails, post_sds_validation_fails
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \

@@ -1,6 +1,7 @@
+import unittest
+
 import os
 import pathlib
-import unittest
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -19,6 +20,7 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_validator as validator_util
+from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.test_resources.files.file_structure import File, executable_file, empty_file, DirContents
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -93,7 +95,7 @@ class ExpectationOnExeFile:
 class Expectation:
     def __init__(self,
                  source: ValueAssertion[ParseSource],
-                 validation_result: validator_util.Expectation,
+                 validation_result: validation.Expectation,
                  file_resolver_value: FileRef,
                  expected_symbol_references_of_file: list,
                  argument_resolver_value: ListValue,
@@ -179,15 +181,15 @@ class CheckBase(unittest.TestCase):
     def _assert_passes_validation(self, actual: ExecutableFileWithArgsResolver,
                                   environment: PathResolvingEnvironmentPreOrPostSds):
         validator_util.check(self, actual.as_command.validator, environment,
-                             validator_util.expect_passes_all_validations())
+                             validation.expect_passes_all_validations())
 
     def _assert_does_not_pass_validation(self, actual: ExecutableFileWithArgsResolver,
                                          environment: PathResolvingEnvironmentPreOrPostSds):
         passes_pre_sds = not self.configuration.exists_pre_sds
         passes_post_sds = not passes_pre_sds
         validator_util.check(self, actual.as_command.validator, environment,
-                             validator_util.Expectation(passes_pre_sds=passes_pre_sds,
-                                                        passes_post_sds=passes_post_sds))
+                             validation.Expectation(passes_pre_sds=passes_pre_sds,
+                                                    passes_post_sds=passes_post_sds))
 
 
 class CheckExistingFile(CheckBase):

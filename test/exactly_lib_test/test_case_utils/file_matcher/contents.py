@@ -29,7 +29,7 @@ from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
-from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidationExpectation
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation
 from exactly_lib_test.test_resources.files.file_structure import empty_file, File, DirContents, empty_dir, \
     FileSystemElement
 from exactly_lib_test.test_resources.name_and_value import NameAndValue

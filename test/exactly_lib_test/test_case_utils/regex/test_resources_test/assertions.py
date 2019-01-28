@@ -16,7 +16,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_utils.regex.test_resources import assertions as sut
 from exactly_lib_test.test_case_utils.regex.test_resources.regex_values import RegexResolverConstantTestImpl
-from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import pre_sds_validation_fails, \
+from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails, \
     post_sds_validation_fails
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
