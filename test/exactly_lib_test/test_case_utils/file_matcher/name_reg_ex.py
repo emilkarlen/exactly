@@ -1,8 +1,10 @@
-import pathlib
-import re
 import unittest
 
+import pathlib
+import re
+
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as model
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
@@ -46,7 +48,7 @@ class TestRegExPatternOnBaseName(unittest.TestCase):
                 # ACT #
                 actual_reg_ex_pattern = matcher.reg_ex_pattern
 
-                actual_result = matcher.matches(path)
+                actual_result = matcher.matches(model.with_dir_space_that_must_not_be_used(path))
 
                 # ASSERT #
 
