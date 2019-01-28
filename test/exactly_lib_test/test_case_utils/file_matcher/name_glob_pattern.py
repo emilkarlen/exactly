@@ -1,7 +1,9 @@
-import pathlib
 import unittest
 
+import pathlib
+
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as model
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
@@ -45,7 +47,7 @@ class TestGlobPattern(unittest.TestCase):
                 # ACT #
                 actual_glob_pattern = matcher.glob_pattern
 
-                actual_result = matcher.matches(path)
+                actual_result = matcher.matches(model.with_dir_space_that_must_not_be_used(path))
 
                 # ASSERT #
 
