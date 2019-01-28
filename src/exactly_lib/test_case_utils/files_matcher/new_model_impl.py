@@ -7,7 +7,7 @@ from exactly_lib.symbol.logic.files_matcher import ErrorMessageInfo, FileModel, 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.file_matcher import parse_file_matcher, file_matchers
 from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherAndValue, MATCH_EVERY_FILE_VALUE
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
@@ -88,7 +88,7 @@ class FilesMatcherModelForDir(FilesMatcherModel):
 
         if self._files_selection is not None:
             file_matcher = self._files_selection.value_of_any_dependency(self._environment.home_and_sds)
-            file_paths = filter(file_matcher.matches, file_paths)
+            file_paths = file_matchers.matching_files_in_dir(file_matcher, dir_path_to_check)
 
         return map(mk_model, file_paths)
 
