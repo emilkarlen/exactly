@@ -8,4 +8,4 @@ file a-dir/2-empty.txt
 [assert]
 
 
-dir-contents a-dir any file : num-lines > 1
+dir-contents a-dir any file : contents num-lines > 1
