@@ -1,12 +1,13 @@
-import os
 import unittest
+
+import os
 
 from exactly_lib.default.default_main_program_setup import default_main_program, default_output
 
 CWD = '/Users/emil/vcs/exactly/0/examples/intro/home-directories'
 SRC_DIR = '/Users/emil/vcs/exactly/0/err_msg_tests/symbols/validation/illegal-type/'
 
-TEST_CASE_FILE = 'cases/home-directories-with-file-inclusion.case'
+TEST_CASE_FILE = '/Users/emil/vcs/exactly/0/examples/intro/misc-instructions/dir-contents/file-contents.case'
 
 # TEST_CASE_FILE = SRC_DIR + 'instruction-error-in-stand-alone-case.case'
 
