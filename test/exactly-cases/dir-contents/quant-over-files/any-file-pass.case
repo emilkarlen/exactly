@@ -15,19 +15,19 @@ file the-dir/empty-2.txt
 
 
 dir-contents the-dir
-             any file : empty
+             any file : contents empty
 
 dir-contents the-dir
              -selection name empty*.txt
-             any file : empty
+             any file : contents empty
 
 dir-contents the-dir
-             any file : ! empty
-
-dir-contents the-dir
-             -selection name non-empty*.txt
-             any file : ! empty
+             any file : contents ! empty
 
 dir-contents the-dir
              -selection name non-empty*.txt
-             any file : equals @[CONTENTS_OF_NON_EMPTY_FILE]@
+             any file : contents ! empty
+
+dir-contents the-dir
+             -selection name non-empty*.txt
+             any file : contents equals @[CONTENTS_OF_NON_EMPTY_FILE]@
