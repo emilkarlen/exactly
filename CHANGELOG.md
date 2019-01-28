@@ -4,6 +4,12 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [next.release] - 20??-??-??
+
+### Added
+
+ - FILE-MATCHER: New primitive: `contents STRING-MATCHER`
+
 ## [0.9.1.1] - 2019-01-26
 
 ### Fixed
