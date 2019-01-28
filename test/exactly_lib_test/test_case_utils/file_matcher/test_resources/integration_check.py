@@ -183,8 +183,7 @@ class Executor:
             main_result = matcher.matches2(model)
             self._check_main_result(main_result)
         except HardErrorException as ex:
-            if self.expectation.is_hard_error is not None:
-                self._check_hard_error(ex)
+            self._check_hard_error(ex)
 
     def _check_main_result(self, result: Optional[ErrorMessageResolver]):
         if self.expectation.is_hard_error is not None:
