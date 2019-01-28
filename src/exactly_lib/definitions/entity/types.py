@@ -85,7 +85,7 @@ LINE_MATCHER_TYPE_INFO = name_and_ref_target(
 FILE_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.FILE_MATCHER,
     name_with_plural_s('file matcher'),
-    'Matches properties of a file, like name and type.'
+    'Matches properties of a file - type, name and contents.'
 )
 
 FILES_MATCHER_TYPE_INFO = name_and_ref_target(
