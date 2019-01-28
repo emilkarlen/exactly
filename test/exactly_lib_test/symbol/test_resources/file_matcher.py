@@ -31,9 +31,36 @@ class FileMatcherResolverConstantTestImpl(FileMatcherResolver):
         return FileMatcherValueFromPrimitiveValue(self._resolved_value)
 
 
+class FileMatcherResolverConstantValueTestImpl(FileMatcherResolver):
+    def __init__(self,
+                 resolved_value: FileMatcherValue,
+                 references: Sequence[SymbolReference] = ()):
+        self._references = list(references)
+        self._resolved_value = resolved_value
+
+    @property
+    def resolved_value(self) -> FileMatcherValue:
+        return self._resolved_value
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._references
+
+    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
+        return self._resolved_value
+
+
 IS_FILE_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILE_MATCHER)
 
 
 def is_file_matcher_reference_to(symbol_name: str) -> ValueAssertion:
     return asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
                                             IS_FILE_REFERENCE_RESTRICTION)
+
+
+def is_file_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[SymbolReference]:
+    return asrt.is_instance_with(
+        SymbolReference,
+        asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
+                                         IS_FILE_REFERENCE_RESTRICTION)
+    )
