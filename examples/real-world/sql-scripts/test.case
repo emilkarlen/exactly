@@ -9,6 +9,9 @@ act-home = file-name-structure
 
 # act-home = invalid-dml-contents
 
+# Exemplifies error detection - so it fails
+status = FAIL
+
 
 [setup]
 
@@ -49,4 +52,4 @@ dir-contents @[SCRIPTS_DIR]@
 
 dir-contents @[SCRIPTS_DIR]@
              -selection IS_DML_FILE
-             every file : ! any line : matches IS_DDL_STATEMENT_LINE
+             every file : ! any line : IS_DDL_STATEMENT_LINE
