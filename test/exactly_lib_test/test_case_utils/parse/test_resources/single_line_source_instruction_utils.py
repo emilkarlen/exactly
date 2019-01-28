@@ -8,6 +8,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import every_line_is_consumed, \
     is_at_beginning_of_line
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -64,6 +65,25 @@ def equivalent_source_variants__with_source_check__following_content_on_last_lin
             source_assertion.apply_with_message(put, source, 'source after parse')
 
 
+def equivalent_source_variants__with_source_check__for_expression_parser(
+        put: unittest.TestCase,
+        original_arguments: Arguments):
+    """
+    Yields a ParseSource
+
+    Checks that the first line of the source has been consumed.
+
+    Assumes that the body of the loop parses using the given source.
+    """
+    for following_arguments, source_assertion in _source_variants_with__for_expression_parser():
+        with put.subTest(additional_arguments_on_same_line=repr(following_arguments.first_line),
+                         additional_lines=repr(following_arguments.following_lines)):
+            source = original_arguments.last_line_followed_by(following_arguments,
+                                                              first_line_separator='').as_remaining_source
+            yield source
+            source_assertion.apply_with_message(put, source, 'source after parse')
+
+
 def equivalent_source_variants(put: unittest.TestCase,
                                instruction_argument: str) -> Iterator[ParseSource]:
     """
@@ -102,6 +122,22 @@ def _source_variants_with_accepted_following_content_on_same_line(
         (Arguments('', []), asrt_source.is_at_end_of_line(num_source_lines)),
         (Arguments('', ['following line']), asrt_source.is_at_end_of_line(num_source_lines)),
         (Arguments('', ['  ']), asrt_source.is_at_end_of_line(num_source_lines)),
+    ]
+
+
+def _source_variants_with__for_expression_parser() -> List[Tuple[Arguments, ValueAssertion[ParseSource]]]:
+    space = '  '
+    following_argument = 'argumentOfOthers'
+    return [
+        (Arguments('', []), asrt_source.source_is_at_end),
+
+        (Arguments(space, ['following line']),
+         asrt_source.assert_source(current_line_number=asrt.equals(1),
+                                   remaining_part_of_current_line=asrt.equals(space[1:]))),
+
+        (Arguments(space + following_argument, ['  ']),
+         asrt_source.assert_source(current_line_number=asrt.equals(1),
+                                   remaining_part_of_current_line=asrt.equals(space[1:] + following_argument))),
     ]
 
 

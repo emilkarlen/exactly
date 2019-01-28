@@ -19,6 +19,9 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_synta
     type_matcher_of, name_reg_ex_pattern_matcher_of
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
     resolved_value_equals_file_matcher
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.test_resources import matcher_parse_check
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -192,10 +195,10 @@ class TestFileType(TestCaseBase):
                            assert_source(current_line_number=asrt.equals(1),
                                          remaining_part_of_current_line=asrt.equals(space[1:])),
                            ),
-                SourceCase('single name argument followed by arguments',
-                           remaining_source(
-                               type_matcher_of(file_type) + space + name_glob_pattern_matcher_of('no-matching-file'),
-                               ['following line']),
+                SourceCase('single name argument followed by arguments, and following lines',
+                           remaining_source(type_matcher_of(file_type) + space +
+                                            name_glob_pattern_matcher_of('no-matching-file'),
+                                            ['following line']),
                            assert_source(current_line_number=asrt.equals(1),
                                          remaining_part_of_current_line=asrt.equals(
                                              space[1:] + name_glob_pattern_matcher_of('no-matching-file'))),
@@ -213,3 +216,16 @@ class TestFileType(TestCaseBase):
                             source=source_case.source_assertion,
                         ),
                     )
+
+    def test_parse_with_the_predefined_source_variants(self):
+        file_type = FileType.REGULAR
+        for source in equivalent_source_variants__with_source_check__for_expression_parser(
+                self, Arguments(type_matcher_of(file_type))):
+            with self.subTest(file_type=str(file_type)):
+                self._check_parse(
+                    source,
+                    Expectation(
+                        resolved_value_equals_file_matcher(file_matchers.FileMatcherType(file_type)),
+                        source=asrt.anything_goes(),
+                    ),
+                )
