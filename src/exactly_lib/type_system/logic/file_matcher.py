@@ -1,4 +1,5 @@
 import pathlib
+from abc import ABC, abstractmethod
 from typing import Set, Optional
 
 from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
@@ -6,12 +7,13 @@ from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValue
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
+from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver, \
+    FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib.util.file_utils import TmpDirFileSpace
 
 
-class FileMatcherModel:
+class FileMatcherModel(ABC):
     def __init__(self,
                  tmp_file_space: TmpDirFileSpace,
                  path: pathlib.Path):
@@ -26,6 +28,11 @@ class FileMatcherModel:
     def path(self) -> pathlib.Path:
         """Path of the file to match. May or may not exist."""
         return self._path
+
+    @property
+    @abstractmethod
+    def file_descriptor(self) -> FilePropertyDescriptorConstructor:
+        pass
 
 
 class FileMatcher(Matcher[FileMatcherModel]):

@@ -7,7 +7,7 @@ from exactly_lib.default.default_main_program_setup import default_main_program,
 CWD = '/Users/emil/vcs/exactly/0/examples/intro/home-directories'
 SRC_DIR = '/Users/emil/vcs/exactly/0/err_msg_tests/symbols/validation/illegal-type/'
 
-TEST_CASE_FILE = '/Users/emil/vcs/exactly/0/examples/intro/misc-instructions/dir-contents/file-contents.case'
+TEST_CASE_FILE = '/Users/emil/vcs/exactly/0/err_msg_tests/instructions/dir-contents/file-quant/all/hard-error--one-file-is-a-directory.case'
 
 # TEST_CASE_FILE = SRC_DIR + 'instruction-error-in-stand-alone-case.case'
 

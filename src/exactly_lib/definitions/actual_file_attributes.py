@@ -1,4 +1,5 @@
 CONTENTS_ATTRIBUTE = 'contents'
+TYPE_ATTRIBUTE = 'type'
 PLAIN_FILE_OBJECT_NAME = 'file'
 PLAIN_DIR_OBJECT_NAME = 'directory'
 OUTPUT_FROM_PROGRAM_OBJECT_NAME = 'output from program'

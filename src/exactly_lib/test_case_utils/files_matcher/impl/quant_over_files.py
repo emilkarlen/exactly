@@ -11,6 +11,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
+from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForFileWithDescriptor
 from exactly_lib.test_case_utils.file_system_element_matcher import \
     FileSystemElementReference
 from exactly_lib.test_case_utils.files_matcher import config
@@ -184,8 +185,9 @@ class _ModelsFactory:
                            self._destination_file_path_getter)
 
     def file_matcher_model(self, file_element: FileModel) -> FileMatcherModel:
-        return FileMatcherModel(self._tmp_file_space,
-                                file_element.path)
+        return FileMatcherModelForFileWithDescriptor(self._tmp_file_space,
+                                                     file_element.path,
+                                                     _FilePropertyDescriptorConstructorForFileInDir(file_element))
 
     def file_system_element_reference(self, file_element: FileModel) -> FileSystemElementReference:
         return FileSystemElementReference(

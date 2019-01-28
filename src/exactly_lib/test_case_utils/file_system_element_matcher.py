@@ -5,7 +5,8 @@ from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import path_description, diff_msg_utils, diff_msg
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment, \
+    PropertyDescriptor
 
 
 class FileSystemElementReference:
@@ -47,6 +48,29 @@ class _ErrorMessageResolverForFailingFileProperties(ErrorMessageResolver):
             property_descriptor,
             ExpectationType.POSITIVE,
             diff_msg_utils.ConstantExpectedValueResolver('existing regular file'),
+        )
+        actual_info = diff_msg.ActualInfo(file_properties.render_property(self.failure))
+        return diff_failure_resolver.resolve(environment, actual_info).error_message()
+
+
+class ErrorMessageResolverForFailingFileProperties2(ErrorMessageResolver):
+    def __init__(self,
+                 failing_file_property_descriptor: PropertyDescriptor,
+                 failure: file_properties.Properties,
+                 expected: file_properties.FileType):
+        self.expected = expected
+        self.failing_file_property_descriptor = failing_file_property_descriptor
+        self.failure = failure
+
+    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+        from exactly_lib.util.logic_types import ExpectationType
+
+        expected_file_type_description = file_properties.TYPE_INFO[self.expected].description
+
+        diff_failure_resolver = diff_msg_utils.DiffFailureInfoResolver(
+            self.failing_file_property_descriptor,
+            ExpectationType.POSITIVE,
+            diff_msg_utils.ConstantExpectedValueResolver('existing ' + expected_file_type_description),
         )
         actual_info = diff_msg.ActualInfo(file_properties.render_property(self.failure))
         return diff_failure_resolver.resolve(environment, actual_info).error_message()

@@ -5,6 +5,8 @@ import stat
 import types
 from typing import Callable
 
+from exactly_lib.definitions import actual_file_attributes
+
 
 class FileType(enum.Enum):
     SYMLINK = 0
@@ -186,7 +188,8 @@ def render_property(properties: Properties) -> str:
         )
     else:
         file_type = properties.type_of_existing_file
-        return 'file type is {file_type} ({symlink_info})'.format(
+        return 'file {type} is {file_type} ({symlink_info})'.format(
+            type=actual_file_attributes.TYPE_ATTRIBUTE,
             file_type=file_type.name if file_type else 'unknown',
             symlink_info=symlink_info
         )

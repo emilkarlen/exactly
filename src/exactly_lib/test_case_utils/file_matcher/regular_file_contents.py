@@ -1,6 +1,6 @@
-import pathlib
 from typing import List, Set, Optional
 
+from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -9,10 +9,8 @@ from exactly_lib.test_case.pre_or_post_value_validators import ValueValidatorFro
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
-from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.type_system.error_message import ConstantErrorMessageResolver, ErrorMessageResolver, \
-    FilePropertyDescriptorConstructor, PropertyDescriptor, ErrorMessageResolvingEnvironment
+from exactly_lib.test_case_utils.file_system_element_matcher import ErrorMessageResolverForFailingFileProperties2
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic import string_matcher
 from exactly_lib.type_system.logic import string_transformer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher, FileMatcherModel
@@ -23,8 +21,9 @@ from exactly_lib.util.symbol_table import SymbolTable
 class RegularFileMatchesStringMatcher(FileMatcher):
     def __init__(self, string_matcher: string_matcher.StringMatcher):
         self._string_matcher = string_matcher
-        self._expected_file_type = file_properties.TYPE_INFO[FileType.REGULAR]
-        self._pathlib_file_type_predicate = self._expected_file_type.pathlib_path_predicate
+        self._expected_file_type = file_properties.FileType.REGULAR
+        self._is_regular_file_check = file_properties.ActualFilePropertiesResolver(self._expected_file_type,
+                                                                                   follow_symlinks=True)
 
     @property
     def option_description(self) -> str:
@@ -34,21 +33,27 @@ class RegularFileMatchesStringMatcher(FileMatcher):
         return self.matches2(model) is None
 
     def matches2(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
-        self._hard_error_if_not_regular_file(model.path)
+        self._hard_error_if_not_regular_file(model)
         model = self._string_matcher_model(model)
         return self._string_matcher.matches(model)
 
-    def _hard_error_if_not_regular_file(self, path: pathlib.Path):
-        if not self._expected_file_type.pathlib_path_predicate(path):
-            err_msg = 'Not a {}: {}'.format(self._expected_file_type.description,
-                                            path)
-            raise HardErrorException(ConstantErrorMessageResolver(err_msg))
+    def _hard_error_if_not_regular_file(self, model: FileMatcherModel):
+        failure_info_properties = self._is_regular_file_check.resolve_failure_info(model.path)
+        if failure_info_properties:
+            property_descriptor = model.file_descriptor.construct_for_contents_attribute(
+                actual_file_attributes.TYPE_ATTRIBUTE
+            )
+            raise HardErrorException(
+                ErrorMessageResolverForFailingFileProperties2(property_descriptor,
+                                                              failure_info_properties,
+                                                              self._expected_file_type)
+            )
 
     @staticmethod
     def _string_matcher_model(model: FileMatcherModel) -> string_matcher.FileToCheck:
         return string_matcher.FileToCheck(
             model.path,
-            _FilePropertyDescriptorConstructor(model.path),
+            model.file_descriptor,
             model.tmp_file_space,
             string_transformer.IdentityStringTransformer(),
             string_matcher.DestinationFilePathGetter(),
@@ -91,19 +96,3 @@ class RegularFileMatchesStringMatcherResolver(FileMatcherResolver):
                 self._string_matcher.validator
             )
         )
-
-
-class _FilePropertyDescriptorConstructor(FilePropertyDescriptorConstructor):
-    def __init__(self, path: pathlib.Path):
-        self._path = path
-
-    def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
-        from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptorWithConstantPropertyName
-        path = self._path
-
-        class _ErrorMessagePartConstructor(ErrorMessagePartConstructor):
-            def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
-                return [str(path)]
-
-        return PropertyDescriptorWithConstantPropertyName(contents_attribute,
-                                                          _ErrorMessagePartConstructor())

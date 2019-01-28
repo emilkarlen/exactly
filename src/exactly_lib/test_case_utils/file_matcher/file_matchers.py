@@ -3,6 +3,7 @@ from typing import List, Iterator
 
 from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForPrimitivePath
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 
 
@@ -195,6 +196,6 @@ def matching_files_in_dir(matcher: FileMatcher, model: FileMatcherModel) -> Iter
     return (
         path
         for path in model.path.iterdir()
-        if matcher.matches(FileMatcherModel(tmp_file_space,
-                                            path))
+        if matcher.matches(FileMatcherModelForPrimitivePath(tmp_file_space,
+                                                            path))
     )
