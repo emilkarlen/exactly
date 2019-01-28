@@ -2,6 +2,7 @@ import unittest
 
 from typing import Iterable, List
 
+from exactly_lib.definitions import expression
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
@@ -17,10 +18,12 @@ from exactly_lib_test.symbol.test_resources.string_transformer import is_referen
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_configuration as tc
-from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args as sm_args
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, elements
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args as sm_args, \
+    EqualsStringAssertionArgumentsConstructor
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -31,15 +34,18 @@ from exactly_lib_test.test_resources.files.file_structure import empty_file, Fil
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         TestHardErrorWhenActualFileDoesNotExist(),
         TestHardErrorWhenActualFileIsADirectory(),
-        TestFailingValidation(),
+        TestFailingValidationCausedByReferencedStringMatcherSymbol(),
         ActualFileIsEmpty(),
         ActualFileIsEmptyAfterTransformation(),
+        TestComplexMatcher(),
+        TestComplexMatcherWithParenthesis(),
     ])
 
 
@@ -63,8 +69,8 @@ def single_file_in_current_dir(f: FileSystemElement) -> sds_populator.SdsPopulat
     )
 
 
-class TestFailingValidation(tc.TestCaseBase):
-    def test_failing_validation_caused_by_referenced_string_matcher_symbol(self):
+class TestFailingValidationCausedByReferencedStringMatcherSymbol(tc.TestCaseBase):
+    def runTest(self):
         cases = [
             NEA('failure pre sds',
                 expected=
@@ -215,6 +221,66 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
             Expectation(
                 main_result=maybe_not.pass__if_positive__fail__if_negative,
                 symbol_usages=expected_symbol_usages),
+        )
+
+
+class TestComplexMatcher(tc.TestWithNegationArgumentBase):
+    def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
+        checked_file = File('actual.txt', 'file contents')
+
+        self._check(
+            source=
+            elements(
+                maybe_not.empty__if_positive__not_option__if_negative +
+                [
+                    argument_syntax.contents_matcher_of(
+                        str(EqualsStringAssertionArgumentsConstructor(
+                            surrounded_by_hard_quotes_str(checked_file.contents)))),
+                    expression.AND_OPERATOR_NAME,
+                    argument_syntax.name_glob_pattern_matcher_of(checked_file.name),
+                ]
+            ).as_remaining_source,
+            model=
+            model_construction.constant_relative_file_name(checked_file.name),
+            arrangement=
+            ArrangementPostAct(
+                sds_contents=single_file_in_current_dir(checked_file)
+            ),
+            expectation=
+            Expectation(
+                main_result=maybe_not.pass__if_positive__fail__if_negative
+            ),
+        )
+
+
+class TestComplexMatcherWithParenthesis(tc.TestWithNegationArgumentBase):
+    def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
+        checked_file = File('actual.txt', 'file contents')
+
+        self._check(
+            source=
+            elements(
+                maybe_not.empty__if_positive__not_option__if_negative +
+                [
+                    '(',
+                    argument_syntax.contents_matcher_of(
+                        str(EqualsStringAssertionArgumentsConstructor(
+                            surrounded_by_hard_quotes_str(checked_file.contents)))),
+                    expression.AND_OPERATOR_NAME,
+                    argument_syntax.name_glob_pattern_matcher_of(checked_file.name),
+                    ')',
+                ]
+            ).as_remaining_source,
+            model=
+            model_construction.constant_relative_file_name(checked_file.name),
+            arrangement=
+            ArrangementPostAct(
+                sds_contents=single_file_in_current_dir(checked_file)
+            ),
+            expectation=
+            Expectation(
+                main_result=maybe_not.pass__if_positive__fail__if_negative
+            ),
         )
 
 
