@@ -52,4 +52,4 @@ dir-contents @[SCRIPTS_DIR]@
 
 dir-contents @[SCRIPTS_DIR]@
              -selection IS_DML_FILE
-             every file : ! any line : IS_DDL_STATEMENT_LINE
+             every file : contents ! any line : IS_DDL_STATEMENT_LINE
