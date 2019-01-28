@@ -7,6 +7,8 @@ from exactly_lib.symbol.object_with_symbol_references import references_from_obj
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation as validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
+    resolver_validator_for_file_matcher
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
 from exactly_lib.util.symbol_table import SymbolTable
@@ -49,11 +51,8 @@ class _SubSetSelectorMatcher(FilesMatcherResolver):
             selector, matcher_on_selection
         ])
 
-        def get_validator_of_selector(symbols: SymbolTable) -> validation.PreOrPostSdsValueValidator:
-            return selector.resolve(symbols).validator()
-
         self._validator = validation.AndValidator([
-            validation.PreOrPostSdsValidatorFromValueValidator(get_validator_of_selector),
+            resolver_validator_for_file_matcher(selector),
             self._matcher_on_selection.validator(),
         ])
 

@@ -8,18 +8,18 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     Environment, FileModel, FilesMatcherModel, FilesMatcherValue
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.file_system_element_matcher import \
-    FileSystemElementReference, FileSystemElementPropertiesMatcher
+    FileSystemElementReference
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
+from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
+    resolver_validator_for_file_matcher
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
     FilePropertyDescriptorConstructor, ErrorMessageResolver, ErrorMessageResolverFromFunction
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcherModel
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util import logic_types
@@ -69,14 +69,9 @@ class _QuantifiedMatcher(FilesMatcherResolverBase):
                  expectation_type: ExpectationType,
                  quantifier: Quantifier,
                  matcher_on_file: FileMatcherResolver):
-        from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidatorFromValueValidator
-        from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
-
-        def get_value_validator(symbols: SymbolTable) -> PreOrPostSdsValueValidator:
-            return matcher_on_file.resolve(symbols).validator()
-
         super().__init__(expectation_type,
-                         PreOrPostSdsValidatorFromValueValidator(get_value_validator))
+                         resolver_validator_for_file_matcher(matcher_on_file),
+                         )
         self._quantifier = quantifier
         self._matcher_on_file = matcher_on_file
 
@@ -126,10 +121,6 @@ class _Checker:
         self.error_reporting = _ErrorReportingHelper(expectation_type,
                                                      files_source_model,
                                                      quantifier)
-        self.is_existing_regular_file_checker = FileSystemElementPropertiesMatcher(
-            file_properties.ActualFilePropertiesResolver(file_properties.FileType.REGULAR,
-                                                         follow_symlinks=True)
-        )
         self.models_factory = _ModelsFactory(environment)
 
     def check(self) -> Optional[ErrorMessageResolver]:
@@ -176,11 +167,6 @@ class _Checker:
         return self.files_source_model.files()
 
     def check_file(self, file_element: FileModel) -> Optional[ErrorMessageResolver]:
-        mb_error = self.is_existing_regular_file_checker.matches(
-            self.models_factory.file_system_element_reference(file_element))
-        if mb_error is not None:
-            raise HardErrorException(mb_error)
-
         return self.matcher_on_file.matches2(self.models_factory.file_matcher_model(file_element))
 
 

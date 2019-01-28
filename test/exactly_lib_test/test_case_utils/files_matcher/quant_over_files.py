@@ -7,6 +7,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
+from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
@@ -20,6 +21,7 @@ from exactly_lib_test.symbol.test_resources.string_transformer import is_referen
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import expression, integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import model
@@ -55,10 +57,11 @@ def suite() -> unittest.TestSuite:
 
         unittest.makeSuite(TestFailingValidationPreSdsDueToInvalidIntegerArgumentOfNumLines),
 
-        unittest.makeSuite(TestHardErrorWhenAFileThatIsNotARegularFileIsTested),
+        unittest.makeSuite(TestHardErrorWhenContentsOfAFileThatIsNotARegularFileIsTested),
 
-        unittest.makeSuite(TestExistsEmptyFile),
-        unittest.makeSuite(TestForAllEmptyFile),
+        unittest.makeSuite(TestExistsContentsEmptyFile),
+        unittest.makeSuite(TestForAllContentsEmptyFile),
+        unittest.makeSuite(TestExistsTypeDir),
 
         unittest.makeSuite(TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked),
 
@@ -147,7 +150,7 @@ class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
         assertion.apply_without_message(self, actual_symbol_references)
 
 
-class TestHardErrorWhenAFileThatIsNotARegularFileIsTested(unittest.TestCase):
+class TestHardErrorWhenContentsOfAFileThatIsNotARegularFileIsTested(unittest.TestCase):
     name_of_checked_dir = 'checked-dir'
     file_content_assertion_variants = [
         sm_arg.Empty(),
@@ -207,7 +210,7 @@ class TestHardErrorWhenAFileThatIsNotARegularFileIsTested(unittest.TestCase):
 AN_ACCEPTED_SDS_REL_OPT_CONFIG = rel_opt_conf.conf_rel_sds(RelSdsOptionType.REL_TMP)
 
 
-class TestExistsEmptyFile(unittest.TestCase):
+class TestExistsContentsEmptyFile(unittest.TestCase):
     name_of_checked_dir = 'checked-dir'
     exists__empty__arguments = args.complete_arguments_constructor(
         FileQuantificationAssertionVariant(
@@ -271,7 +274,47 @@ class TestExistsEmptyFile(unittest.TestCase):
         )
 
 
-class TestForAllEmptyFile(unittest.TestCase):
+class TestExistsTypeDir(unittest.TestCase):
+    name_of_checked_dir = 'checked-dir'
+    exists__type_dir__arguments = args.complete_arguments_constructor(
+        FileQuantificationAssertionVariant(
+            Quantifier.EXISTS,
+            fm_args.WithOptionalNegation(fm_args.Type(file_properties.FileType.DIRECTORY)))
+    )
+
+    @property
+    def instruction_checker(self) -> MatcherChecker:
+        return MatcherChecker(self, sut.files_matcher_parser())
+
+    def test_one_dir_and_one_regular(self):
+        self.instruction_checker.check_expectation_type_variants(
+            self.exists__type_dir__arguments,
+            model.model_with_source_path_as_sub_dir_of_rel_root(self.name_of_checked_dir),
+            main_result_for_positive_expectation=PassOrFail.PASS,
+            root_dir_of_dir_contents=AN_ACCEPTED_SDS_REL_OPT_CONFIG,
+            contents_of_relativity_option_root=DirContents([
+                Dir(self.name_of_checked_dir, [
+                    empty_file('regular.txt'),
+                    empty_dir('dir'),
+                ]),
+            ]),
+        )
+
+    def test_just_one_regular(self):
+        self.instruction_checker.check_expectation_type_variants(
+            self.exists__type_dir__arguments,
+            model.model_with_source_path_as_sub_dir_of_rel_root(self.name_of_checked_dir),
+            root_dir_of_dir_contents=AN_ACCEPTED_SDS_REL_OPT_CONFIG,
+            main_result_for_positive_expectation=PassOrFail.FAIL,
+            contents_of_relativity_option_root=DirContents([
+                Dir(self.name_of_checked_dir, [
+                    empty_file('regular.txt'),
+                ]),
+            ]),
+        )
+
+
+class TestForAllContentsEmptyFile(unittest.TestCase):
     name_of_checked_dir = 'checked-dir'
     for_all__empty__arguments = args.complete_arguments_constructor(
         FileQuantificationAssertionVariant(
