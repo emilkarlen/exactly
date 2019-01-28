@@ -198,12 +198,14 @@ class _Executor:
 
     def _new_model(self, environment: PathResolvingEnvironmentPreOrPostSds
                    ) -> Tuple[Environment, FilesMatcherModel]:
+        tmp_file_space = TmpDirFileSpaceAsDirCreatedOnDemand(environment.sds.log_dir)
         return (
             Environment(
                 environment,
-                TmpDirFileSpaceAsDirCreatedOnDemand(environment.sds.log_dir)
+                tmp_file_space
             ),
             FilesMatcherModelForDir(
+                tmp_file_space,
                 self.model.dir_path_resolver,
                 environment,
                 self.model.files_selection,

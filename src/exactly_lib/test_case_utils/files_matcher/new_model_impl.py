@@ -12,7 +12,8 @@ from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMat
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import PropertyDescriptor
-from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
+from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcherModel
+from exactly_lib.util.file_utils import TmpDirFileSpace
 
 
 class FileModelForDir(FileModel):
@@ -40,10 +41,12 @@ class FileModelForDir(FileModel):
 
 class FilesMatcherModelForDir(FilesMatcherModel):
     def __init__(self,
+                 tmp_file_space: TmpDirFileSpace,
                  dir_path_resolver: FileRefResolver,
                  environment: PathResolvingEnvironmentPreOrPostSds,
                  files_selection: Optional[FileMatcherValue] = None,
                  ):
+        self._tmp_file_space = tmp_file_space
         self._dir_path_resolver = dir_path_resolver
         self._files_selection = files_selection
         self._environment = environment
@@ -55,7 +58,8 @@ class FilesMatcherModelForDir(FilesMatcherModel):
                                                        selector])
                              )
 
-        return FilesMatcherModelForDir(self._dir_path_resolver,
+        return FilesMatcherModelForDir(self._tmp_file_space,
+                                       self._dir_path_resolver,
                                        self._environment,
                                        new_file_selector,
                                        )
@@ -87,8 +91,9 @@ class FilesMatcherModelForDir(FilesMatcherModel):
         file_paths = dir_path_to_check.iterdir()
 
         if self._files_selection is not None:
+            file_matcher_model = FileMatcherModel(self._tmp_file_space, dir_path_to_check)
             file_matcher = self._files_selection.value_of_any_dependency(self._environment.home_and_sds)
-            file_paths = file_matchers.matching_files_in_dir(file_matcher, dir_path_to_check)
+            file_paths = file_matchers.matching_files_in_dir(file_matcher, file_matcher_model)
 
         return map(mk_model, file_paths)
 

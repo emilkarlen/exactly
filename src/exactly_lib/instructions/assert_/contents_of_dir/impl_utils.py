@@ -64,7 +64,8 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
               files_source: FilesSource) -> FilesSource:
         env = Environment(environment.path_resolving_environment_pre_or_post_sds,
                           environment.phase_logging.space_for_instruction())
-        model = FilesMatcherModelForDir(files_source.path_of_dir,
+        model = FilesMatcherModelForDir(environment.phase_logging.space_for_instruction(),
+                                        files_source.path_of_dir,
                                         env.path_resolving_environment)
         value = self._files_matcher.resolve(environment.symbols)
         try:
