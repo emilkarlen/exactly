@@ -11,7 +11,7 @@ from exactly_lib.util import symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dep_value_assertions import \
     matches_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
-from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import \
+from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_validator import \
     PreOrPostSdsValueValidationAssertion
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
