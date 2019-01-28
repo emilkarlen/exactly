@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as model
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -25,7 +26,7 @@ class TestFileType(unittest.TestCase):
         with tmp_dir(dir_contents) as tmp_dir_path:
             file_path_to_check = tmp_dir_path / base_name_of_file_to_check
 
-            actual_result = matcher_to_check.matches(file_path_to_check)
+            actual_result = matcher_to_check.matches(model.with_dir_space_that_must_not_be_used(file_path_to_check))
 
             # ASSERT #
 
