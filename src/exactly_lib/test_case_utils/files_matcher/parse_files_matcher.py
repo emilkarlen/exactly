@@ -6,15 +6,14 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol import symbol_syntax
+from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as expression_parse
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, sub_set_selection, \
     negation
 from exactly_lib.test_case_utils.files_matcher.impl import symbol_reference
-from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 
 
@@ -94,18 +93,18 @@ class _SimpleMatcherParser:
         parser.consume_mandatory_constant_unquoted_string(
             instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
             must_be_on_current_line=True)
-        matcher_on_existing_regular_file = parse_string_matcher.parse_string_matcher(parser)
+        matcher_on_file = parse_file_matcher.parse_resolver(parser)
 
         return self._file_quantified_assertion_part(quantifier,
-                                                    matcher_on_existing_regular_file)
+                                                    matcher_on_file)
 
     def _file_quantified_assertion_part(self,
                                         quantifier: Quantifier,
-                                        matcher_on_existing_regular_file: StringMatcherResolver,
+                                        matcher_on_file: FileMatcherResolver,
                                         ) -> FilesMatcherResolver:
         return quant_over_files.quantified_matcher(ExpectationType.POSITIVE,
                                                    quantifier,
-                                                   matcher_on_existing_regular_file)
+                                                   matcher_on_file)
 
 
 _SIMPLE_MATCHER_PARSER = _SimpleMatcherParser()

@@ -9,9 +9,9 @@ from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndExpectSetup
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import \
     file_matcher_arguments
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import ExpectationTypeConfig
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -53,21 +53,22 @@ class NumFilesAssertionVariant(AssertionVariantArgumentsConstructor):
             condition=self._condition)
 
 
-class FilesContentsAssertionVariant(AssertionVariantArgumentsConstructor):
+class FileQuantificationAssertionVariant(AssertionVariantArgumentsConstructor):
     def __init__(self,
                  quantifier: Quantifier,
-                 file_contents_assertion: arguments_building.ImplicitActualFileArgumentsConstructor,
-                 contents_argument_expectation_type: ExpectationType = ExpectationType.POSITIVE):
+                 file_matcher: fm_args.WithOptionalNegation,
+                 file_matcher_expectation_type: ExpectationType = ExpectationType.POSITIVE):
         self._quantifier = quantifier
-        self._file_contents_assertion = file_contents_assertion
-        self._contents_argument_expectation_type = contents_argument_expectation_type
+        self._file_assertion = file_matcher.get(file_matcher_expectation_type)
+        self._contents_argument_expectation_type = file_matcher_expectation_type
 
     def __str__(self):
-        return '{quantifier} {file} {separator} {contents_assertion}'.format(
+        return '{quantifier} {file} {separator} {file_assertion}'.format(
             quantifier=instruction_arguments.QUANTIFIER_ARGUMENTS[self._quantifier],
             file=config.QUANTIFICATION_OVER_FILE_ARGUMENT,
             separator=instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
-            contents_assertion=self._file_contents_assertion.apply(self._contents_argument_expectation_type))
+            file_assertion=str(self._file_assertion)
+        )
 
 
 class SubSetSelectionArgumentConstructor:

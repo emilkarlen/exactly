@@ -10,7 +10,6 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import instruction_arguments as args
@@ -29,11 +28,14 @@ from exactly_lib_test.test_case.result.test_resources import pfh_assertions as a
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
-    FilesContentsAssertionVariant, FilesMatcherArgumentsSetup, \
+    FileQuantificationAssertionVariant, FilesMatcherArgumentsSetup, \
     files_matcher_setup_without_references
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import \
-    EmptyAssertionArgumentsConstructor, NumLinesAssertionArgumentsConstructor, EqualsStringAssertionArgumentsConstructor
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.arguments import file_contents_arg2
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.misc import \
+    FileMatcherThatMatchesAnyFileWhosNameStartsWith
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import \
+    arguments_building as string_matcher_args
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building2 as sm_arg
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.contents_transformation import \
     ToUppercaseStringTransformer
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -70,18 +72,18 @@ class TestWithAssertionVariantForFileContents(tr.TestWithAssertionVariantBase):
     @property
     def assertion_variant(self) -> FilesMatcherArgumentsSetup:
         return files_matcher_setup_without_references(
-            FilesContentsAssertionVariant(
+            FileQuantificationAssertionVariant(
                 Quantifier.ALL,
-                file_contents_arg(EmptyAssertionArgumentsConstructor()),
+                file_contents_arg2(sm_arg.Empty()),
             )
         )
 
 
 def file_contents_arg(
-        contents_variant: arguments_building.FileContentsArgumentsConstructor,
-        common: arguments_building.CommonArgumentsConstructor = arguments_building.CommonArgumentsConstructor()
-) -> arguments_building.ImplicitActualFileArgumentsConstructor:
-    return arguments_building.ImplicitActualFileArgumentsConstructor(
+        contents_variant: string_matcher_args.FileContentsArgumentsConstructor,
+        common: string_matcher_args.CommonArgumentsConstructor = string_matcher_args.CommonArgumentsConstructor()
+) -> string_matcher_args.ImplicitActualFileArgumentsConstructor:
+    return string_matcher_args.ImplicitActualFileArgumentsConstructor(
         common,
         contents_variant)
 
@@ -115,9 +117,9 @@ class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesChec
     def apply(self, condition_str: str) -> str:
         arguments_constructor = args.complete_arguments_constructor(
             'ignored-dir-path',
-            FilesContentsAssertionVariant(
+            FileQuantificationAssertionVariant(
                 Quantifier.ALL,
-                file_contents_arg(NumLinesAssertionArgumentsConstructor(condition_str))))
+                file_contents_arg2(sm_arg.NumLines(condition_str))))
         return arguments_constructor.apply(pfh_expectation_type_config(ExpectationType.POSITIVE),
                                            tr.DEFAULT_REL_OPT_CONFIG)
 
@@ -136,9 +138,9 @@ class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
         )
         arguments_constructor = args.complete_arguments_constructor(
             'ignored-dir-path',
-            FilesContentsAssertionVariant(
+            FileQuantificationAssertionVariant(
                 Quantifier.ALL,
-                file_contents_arg(NumLinesAssertionArgumentsConstructor(condition_str))))
+                file_contents_arg2(sm_arg.NumLines(condition_str))))
 
         argument = arguments_constructor.apply(pfh_expectation_type_config(ExpectationType.NEGATIVE),
                                                tr.DEFAULT_REL_OPT_CONFIG)
@@ -167,9 +169,9 @@ class TestRelativityVariantsOfCheckedDir(unittest.TestCase):
     name_of_checked_dir = 'checked-dir'
     arguments_constructor_for_emptiness = args.complete_arguments_constructor(
         name_of_checked_dir,
-        FilesContentsAssertionVariant(
+        FileQuantificationAssertionVariant(
             Quantifier.ALL,
-            file_contents_arg(EmptyAssertionArgumentsConstructor())))
+            file_contents_arg2(sm_arg.Empty())))
 
     @property
     def instruction_checker(self) -> InstructionChecker:
@@ -201,9 +203,9 @@ class TestRelativityVariantsOfCheckedDir(unittest.TestCase):
 class TestHardErrorWhenAFileThatIsNotARegularFileIsTested(unittest.TestCase):
     name_of_checked_dir = 'checked-dir'
     file_content_assertion_variants = [
-        EmptyAssertionArgumentsConstructor(),
-        NumLinesAssertionArgumentsConstructor(int_condition(comparators.NE, 0)),
-        EqualsStringAssertionArgumentsConstructor('expected'),
+        sm_arg.Empty(),
+        sm_arg.NumLines(int_condition(comparators.NE, 0)),
+        sm_arg.Equals('expected'),
     ]
 
     def test_hard_error_when_there_is_a_single_file_that_is_not_a_regular_file(self):
@@ -219,9 +221,9 @@ class TestHardErrorWhenAFileThatIsNotARegularFileIsTested(unittest.TestCase):
             for quantifier in Quantifier:
                 arguments_constructor = args.complete_arguments_constructor(
                     name_of_checked_dir,
-                    FilesContentsAssertionVariant(
+                    FileQuantificationAssertionVariant(
                         quantifier,
-                        file_contents_arg(file_contents_assertion)))
+                        file_contents_arg2(file_contents_assertion)))
                 for expectation_type in ExpectationType:
                     arguments = arguments_constructor.apply(pfh_expectation_type_config(expectation_type),
                                                             relativity_root_conf)
@@ -256,9 +258,9 @@ class TestExistsEmptyFile(unittest.TestCase):
     name_of_checked_dir = 'checked-dir'
     exists__empty__arguments = args.complete_arguments_constructor(
         name_of_checked_dir,
-        FilesContentsAssertionVariant(
+        FileQuantificationAssertionVariant(
             Quantifier.EXISTS,
-            file_contents_arg(EmptyAssertionArgumentsConstructor()))
+            file_contents_arg2(sm_arg.Empty()))
     )
 
     @property
@@ -317,9 +319,9 @@ class TestForAllEmptyFile(unittest.TestCase):
     name_of_checked_dir = 'checked-dir'
     for_all__empty__arguments = args.complete_arguments_constructor(
         name_of_checked_dir,
-        FilesContentsAssertionVariant(
+        FileQuantificationAssertionVariant(
             Quantifier.ALL,
-            file_contents_arg(EmptyAssertionArgumentsConstructor()))
+            file_contents_arg2(sm_arg.Empty()))
     )
 
     @property
@@ -376,9 +378,9 @@ class TestForAllEmptyFile(unittest.TestCase):
 
 class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
     file_content_assertion_variants_that_pass_iff_file_is_empty = [
-        EmptyAssertionArgumentsConstructor(),
-        NumLinesAssertionArgumentsConstructor(int_condition(comparators.EQ, 0)),
-        EqualsStringAssertionArgumentsConstructor(shlex.quote('')),
+        sm_arg.Empty(),
+        sm_arg.NumLines(int_condition(comparators.EQ, 0)),
+        sm_arg.Equals(shlex.quote('')),
     ]
 
     def test__all__SHOULD_consider_only_files_matched_by_the_file_matcher(self):
@@ -414,12 +416,12 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        for file_is_empty_assertion in self.file_content_assertion_variants_that_pass_iff_file_is_empty:
+        for pass_iff_file_is_empty_assertion in self.file_content_assertion_variants_that_pass_iff_file_is_empty:
             arguments_constructor = args.complete_arguments_constructor(
                 name_of_checked_dir,
-                FilesContentsAssertionVariant(
+                FileQuantificationAssertionVariant(
                     Quantifier.ALL,
-                    file_contents_arg(file_is_empty_assertion)),
+                    file_contents_arg2(pass_iff_file_is_empty_assertion)),
                 file_matcher=name_starts_with_selected.name
             )
             for expectation_type in ExpectationType:
@@ -485,9 +487,9 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         for file_is_empty_assertion in self.file_content_assertion_variants_that_pass_iff_file_is_empty:
             arguments_constructor = args.complete_arguments_constructor(
                 name_of_checked_dir,
-                FilesContentsAssertionVariant(
+                FileQuantificationAssertionVariant(
                     Quantifier.EXISTS,
-                    file_contents_arg(file_is_empty_assertion)),
+                    file_contents_arg2(file_is_empty_assertion)),
                 file_matcher=name_starts_with_selected.name
             )
             for expectation_type in ExpectationType:
@@ -550,12 +552,10 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
 
         for_all__equals__arguments = args.complete_arguments_constructor(
             self.name_of_checked_dir,
-            FilesContentsAssertionVariant(
+            FileQuantificationAssertionVariant(
                 Quantifier.ALL,
-                arguments_building.ImplicitActualFileArgumentsConstructor(
-                    arguments_building.CommonArgumentsConstructor(
-                        file_transformer=transform_to_uppercase.name),
-                    EqualsStringAssertionArgumentsConstructor(expected_transformer_contents)),
+                file_contents_arg2(sm_arg.Transformed(transform_to_uppercase.name,
+                                                      sm_arg.Equals(expected_transformer_contents)))
             ))
         relativity_root_conf = tr.DEFAULT_REL_OPT_CONFIG
         etc = pfh_expectation_type_config(ExpectationType.POSITIVE)
@@ -585,18 +585,6 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
                 symbol_usages=expected_symbol_references
             )
         )
-
-
-class FileMatcherThatMatchesAnyFileWhosNameStartsWith(FileMatcher):
-    @property
-    def option_description(self) -> str:
-        return 'Matches files beginning with ' + self._prefix_of_name_for_match
-
-    def __init__(self, prefix_of_name_for_match: str):
-        self._prefix_of_name_for_match = prefix_of_name_for_match
-
-    def matches(self, model: FileMatcherModel) -> bool:
-        return model.path.name.startswith(self._prefix_of_name_for_match)
 
 
 if __name__ == '__main__':

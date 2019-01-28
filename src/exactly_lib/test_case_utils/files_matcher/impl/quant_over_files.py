@@ -4,9 +4,9 @@ from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.symbol.data import file_ref_resolvers
+from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     Environment, FileModel, FilesMatcherModel, FilesMatcherValue
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
@@ -18,8 +18,9 @@ from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
     FilePropertyDescriptorConstructor, ErrorMessageResolver, ErrorMessageResolverFromFunction
+from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck, StringMatcherValue
+from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util import logic_types
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
@@ -28,28 +29,28 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 def quantified_matcher(expectation_type: ExpectationType,
                        quantifier: Quantifier,
-                       matcher_on_existing_regular_file: StringMatcherResolver,
+                       matcher_on_file: FileMatcherResolver,
                        ) -> FilesMatcherResolver:
     return _QuantifiedMatcher(expectation_type,
                               quantifier,
-                              matcher_on_existing_regular_file)
+                              matcher_on_file)
 
 
 class _QuantifiedMatcherValue(FilesMatcherValue):
     def __init__(self,
                  expectation_type: ExpectationType,
                  quantifier: Quantifier,
-                 matcher_on_existing_regular_file: StringMatcherValue):
+                 matcher_on_file: FileMatcherValue):
         self._expectation_type = expectation_type
         self._quantifier = quantifier
-        self._matcher_on_existing_regular_file = matcher_on_existing_regular_file
+        self._matcher_on_file = matcher_on_file
 
     @property
     def negation(self) -> FilesMatcherValue:
         return _QuantifiedMatcherValue(
             logic_types.negation(self._expectation_type),
             self._quantifier,
-            self._matcher_on_existing_regular_file,
+            self._matcher_on_file,
         )
 
     def matches(self,
@@ -57,7 +58,7 @@ class _QuantifiedMatcherValue(FilesMatcherValue):
                 files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         checker = _Checker(self._expectation_type,
                            self._quantifier,
-                           self._matcher_on_existing_regular_file,
+                           self._matcher_on_file,
                            environment,
                            files_source)
         return checker.check()
@@ -67,20 +68,27 @@ class _QuantifiedMatcher(FilesMatcherResolverBase):
     def __init__(self,
                  expectation_type: ExpectationType,
                  quantifier: Quantifier,
-                 matcher_on_existing_regular_file: StringMatcherResolver):
-        super().__init__(expectation_type, matcher_on_existing_regular_file.validator)
+                 matcher_on_file: FileMatcherResolver):
+        from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidatorFromValueValidator
+        from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
+
+        def get_value_validator(symbols: SymbolTable) -> PreOrPostSdsValueValidator:
+            return matcher_on_file.resolve(symbols).validator()
+
+        super().__init__(expectation_type,
+                         PreOrPostSdsValidatorFromValueValidator(get_value_validator))
         self._quantifier = quantifier
-        self._matcher_on_existing_regular_file = matcher_on_existing_regular_file
+        self._matcher_on_file = matcher_on_file
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self._matcher_on_existing_regular_file.references
+        return self._matcher_on_file.references
 
     def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
         return _QuantifiedMatcherValue(
             self._expectation_type,
             self._quantifier,
-            self._matcher_on_existing_regular_file.resolve(symbols),
+            self._matcher_on_file.resolve(symbols),
         )
 
     @property
@@ -88,7 +96,7 @@ class _QuantifiedMatcher(FilesMatcherResolverBase):
         return _QuantifiedMatcher(
             logic_types.negation(self._expectation_type),
             self._quantifier,
-            self._matcher_on_existing_regular_file
+            self._matcher_on_file
         )
 
 
@@ -101,7 +109,7 @@ class _Checker:
     def __init__(self,
                  expectation_type: ExpectationType,
                  quantifier: Quantifier,
-                 matcher_on_existing_regular_file: StringMatcherValue,
+                 matcher_on_file: FileMatcherValue,
                  environment: Environment,
                  files_source_model: FilesMatcherModel,
                  ):
@@ -112,8 +120,8 @@ class _Checker:
         pre = environment.path_resolving_environment
         self.path_resolving_environment = pre
 
-        self.matcher_on_existing_regular_file = (matcher_on_existing_regular_file
-                                                 .value_of_any_dependency(pre.home_and_sds))
+        self.matcher_on_file = matcher_on_file.value_of_any_dependency(pre.home_and_sds)
+
         self.environment = environment
         self.error_reporting = _ErrorReportingHelper(expectation_type,
                                                      files_source_model,
@@ -173,7 +181,7 @@ class _Checker:
         if mb_error is not None:
             raise HardErrorException(mb_error)
 
-        return self.matcher_on_existing_regular_file.matches(self.models_factory.file_to_check(file_element))
+        return self.matcher_on_file.matches2(self.models_factory.file_matcher_model(file_element))
 
 
 class _ModelsFactory:
@@ -188,6 +196,10 @@ class _ModelsFactory:
                            self._tmp_file_space,
                            self._id_trans,
                            self._destination_file_path_getter)
+
+    def file_matcher_model(self, file_element: FileModel) -> FileMatcherModel:
+        return FileMatcherModel(self._tmp_file_space,
+                                file_element.path)
 
     def file_system_element_reference(self, file_element: FileModel) -> FileSystemElementReference:
         return FileSystemElementReference(
