@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - FILE-MATCHER: New primitive: `contents STRING-MATCHER`
  - FILES-MATCHER: Quantification on files applies `FILE-MATCHER` (instead of `STRING-MATCHER`)
 
+### Changed
+
+ - LINE-MATCHER: Changes name of primitive: "regex" -> "matches"
+
 ## [0.9.1.1] - 2019-01-26
 
 ### Fixed
