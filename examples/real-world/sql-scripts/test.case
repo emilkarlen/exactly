@@ -28,7 +28,7 @@ def file-matcher IS_DML_FILE    = name -regex 'DML-...\.sql$'
 def file-matcher FILE_NAME_HAS_EXPECTED_STRUCTURE = name -regex '^[0-9]{3}-.*-(DDL|DML)-[0-9]{3}\.sql$'
 
 
-def line-matcher IS_DDL_STATEMENT_LINE = regex -ignore-case '^\s*(CREATE|ALTER|DROP)\b'
+def line-matcher IS_DDL_STATEMENT_LINE = matches -ignore-case '^\s*(CREATE|ALTER|DROP)\b'
 
 
 [assert]
