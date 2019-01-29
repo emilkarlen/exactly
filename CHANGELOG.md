@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
  - FILE-MATCHER: New primitive: `contents STRING-MATCHER`
+ - FILES-MATCHER: Quantification on files applies `FILE-MATCHER` (instead of `STRING-MATCHER`)
 
 ## [0.9.1.1] - 2019-01-26
 
