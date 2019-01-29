@@ -51,8 +51,6 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParseInvalidSyntax),
 
-        unittest.makeSuite(TestCommonFailureConditions),
-
         unittest.makeSuite(TestSymbolReferences),
 
         unittest.makeSuite(TestFailingValidationPreSdsDueToInvalidIntegerArgumentOfNumLines),
@@ -82,11 +80,6 @@ class TestWithAssertionVariantForFileContents(tr.TestWithAssertionVariantBase):
 
 class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
                              TestWithAssertionVariantForFileContents):
-    pass
-
-
-class TestCommonFailureConditions(tr.TestCommonFailureConditionsBase,
-                                  TestWithAssertionVariantForFileContents):
     pass
 
 

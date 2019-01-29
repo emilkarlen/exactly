@@ -34,8 +34,6 @@ def suite() -> unittest.TestSuite:
 
         unittest.makeSuite(TestReferencedMatcherShouldBeValidated),
 
-        unittest.makeSuite(TestCommonFailureConditions),
-
         unittest.makeSuite(TestSymbolReferences),
 
         unittest.makeSuite(TestResultShouldBeEqualToResultOfReferencedMatcher),
@@ -61,11 +59,6 @@ class TestWithAssertionVariantForSymbolReference(tr.TestWithAssertionVariantBase
 
 class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxWithMissingSelectorArgCaseBase,
                              TestWithAssertionVariantForSymbolReference):
-    pass
-
-
-class TestCommonFailureConditions(tr.TestCommonFailureConditionsBase,
-                                  TestWithAssertionVariantForSymbolReference):
     pass
 
 

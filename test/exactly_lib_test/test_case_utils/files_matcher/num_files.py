@@ -28,8 +28,6 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParseInvalidSyntax),
 
-        unittest.makeSuite(TestCommonFailureConditions),
-
         unittest.makeSuite(TestSymbolReferences),
 
         unittest.makeSuite(TestDifferentSourceVariants),
@@ -61,11 +59,6 @@ class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesChec
 
 class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxWithMissingSelectorArgCaseBase,
                              TestWithAssertionVariantForNumFiles):
-    pass
-
-
-class TestCommonFailureConditions(tr.TestCommonFailureConditionsBase,
-                                  TestWithAssertionVariantForNumFiles):
     pass
 
 

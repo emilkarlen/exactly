@@ -77,15 +77,6 @@ class TestParseInvalidSyntaxWithMissingSelectorArgCaseBase(TestParseInvalidSynta
                     parser.parse(source)
 
 
-class TestCommonFailureConditionsBase(TestWithAssertionVariantBase):
-    @property
-    def _checker(self) -> MatcherChecker:
-        return MatcherChecker(
-            self,
-            sut.files_matcher_parser(),
-        )
-
-
 class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
     def test_file_matcher_reference_is_reported(self):
         name_of_file_matcher = 'a_file_matcher_symbol'

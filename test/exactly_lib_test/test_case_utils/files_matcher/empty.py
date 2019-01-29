@@ -17,8 +17,6 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParseInvalidSyntax),
 
-        unittest.makeSuite(TestCommonFailureConditions),
-
         unittest.makeSuite(TestSymbolReferences),
 
         unittest.makeSuite(TestPassingAndFailingScenarios),
@@ -35,11 +33,6 @@ class TestWithAssertionVariantForEmpty(tr.TestWithAssertionVariantBase):
 
 class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxWithMissingSelectorArgCaseBase,
                              TestWithAssertionVariantForEmpty):
-    pass
-
-
-class TestCommonFailureConditions(tr.TestCommonFailureConditionsBase,
-                                  TestWithAssertionVariantForEmpty):
     pass
 
 
