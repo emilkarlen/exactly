@@ -7,6 +7,6 @@ hello-world -o output.txt
 exists -file output.txt
 
 contents output.txt
-         every line : regex 'Hello'
+         every line : matches 'Hello'
 
 stderr empty

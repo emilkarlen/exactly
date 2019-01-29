@@ -2,4 +2,4 @@ $ echo Hello World
 
 [assert]
 
-stdout any line : regex Hello
+stdout any line : matches Hello
