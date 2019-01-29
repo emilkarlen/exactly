@@ -2,10 +2,7 @@ from exactly_lib.definitions import expression
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
-from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
-from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import parse_integer_matcher
 from exactly_lib.test_case_utils.condition.syntax import OPERATOR_ARGUMENT
@@ -32,18 +29,6 @@ _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMEN
 LINE_MATCHER_ARGUMENT = a.Named(types.LINE_MATCHER_TYPE_INFO.syntax_element_name)
 
 LINE_NUMBER_PROPERTY = 'line number'
-
-
-def parse_line_matcher(source: ParseSource) -> LineMatcherResolver:
-    with token_stream_parser.from_parse_source(source) as tp:
-        return parse_optional_matcher_resolver(tp)
-
-
-def parse_optional_matcher_resolver(parser: TokenParser) -> LineMatcherResolver:
-    return parser.consume_and_handle_optional_option2(
-        parse_line_matcher_from_token_parser,
-        CONSTANT_TRUE_MATCHER_RESOLVER,
-        WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
 def parse_line_matcher_from_token_parser(parser: TokenParser) -> LineMatcherResolver:
