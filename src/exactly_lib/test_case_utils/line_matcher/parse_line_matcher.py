@@ -19,7 +19,7 @@ from exactly_lib.util.textformat.parse import normalize_and_parse
 
 CONSTANT_TRUE_MATCHER_RESOLVER = resolvers.LineMatcherConstantResolver(line_matchers.LineMatcherConstant(True))
 
-REGEX_MATCHER_NAME = 'regex'
+REGEX_MATCHER_NAME = 'matches'
 
 LINE_NUMBER_MATCHER_NAME = 'line-num'
 
