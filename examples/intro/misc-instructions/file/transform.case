@@ -15,7 +15,7 @@ EOF
 
 
 file great-bikes.txt  = -file bike-ratings.txt
-                        -transformed-by select regex '^great'
+                        -transformed-by select matches '^great'
 
 [assert]
 

@@ -14,13 +14,13 @@ second
 third
 EOF
 
-def line-matcher THIRD = regex third
+def line-matcher THIRD = matches third
 
 
 [assert]
 
 
-contents my-file.txt -transformed-by ( select regex 'second' ) equals <<EOF
+contents my-file.txt -transformed-by ( select matches 'second' ) equals <<EOF
 second
 EOF
 
@@ -28,12 +28,12 @@ contents my-file.txt -transformed-by select THIRD equals <<EOF
 third
 EOF
 
-contents my-file.txt -transformed-by ( select regex first || regex third ) equals <<EOF
+contents my-file.txt -transformed-by ( select matches first || matches third ) equals <<EOF
 first
 third
 EOF
 
-contents my-file.txt -transformed-by ( select ! regex second ) equals <<EOF
+contents my-file.txt -transformed-by ( select ! matches second ) equals <<EOF
 first
 third
 EOF
