@@ -7,7 +7,8 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
+from exactly_lib.test_case import pre_or_post_validation as ppv
+from exactly_lib.test_case import pre_or_post_value_validation as ppvv
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
@@ -80,7 +81,7 @@ def matcher_for_any_line_matches(expectation_type: ExpectationType,
 
     return StringMatcherResolverFromParts(
         line_matcher_resolver.references,
-        ConstantSuccessValidator(),
+        _validator_for_line_matcher(line_matcher_resolver),
         get_resolving_dependencies,
         get_matcher,
     )
@@ -113,10 +114,17 @@ def matcher_for_every_line_matches(expectation_type: ExpectationType,
 
     return StringMatcherResolverFromParts(
         line_matcher_resolver.references,
-        ConstantSuccessValidator(),
+        _validator_for_line_matcher(line_matcher_resolver),
         get_resolving_dependencies,
         get_matcher,
     )
+
+
+def _validator_for_line_matcher(line_matcher_resolver: LineMatcherResolver) -> ppv.PreOrPostSdsValidator:
+    def get_validator(symbols: SymbolTable) -> ppvv.PreOrPostSdsValueValidator:
+        return line_matcher_resolver.resolve(symbols).validator()
+
+    return ppv.PreOrPostSdsValidatorFromValueValidator(get_validator)
 
 
 class _StringMatcherBase(StringMatcher):

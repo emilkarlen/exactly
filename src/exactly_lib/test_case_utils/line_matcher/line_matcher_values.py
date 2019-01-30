@@ -1,6 +1,7 @@
 from abc import ABC
 from typing import Set, List, Callable
 
+from exactly_lib.test_case import pre_or_post_value_validation
 from exactly_lib.test_case import pre_or_post_value_validators
 from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -10,11 +11,18 @@ from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherV
 
 
 class LineMatcherValueFromPrimitiveValue(LineMatcherValue):
-    def __init__(self, primitive_value: LineMatcher):
+    def __init__(self,
+                 primitive_value: LineMatcher,
+                 validator: PreOrPostSdsValueValidator =
+                 pre_or_post_value_validation.constant_success_validator()):
         self._primitive_value = primitive_value
+        self._validator = validator
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return set()
+
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return self._validator
 
     def value_when_no_dir_dependencies(self) -> LineMatcher:
         return self._primitive_value

@@ -1,4 +1,7 @@
+from typing import Sequence
+
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.line_matcher.line_matcher_values import LineMatcherValueFromPrimitiveValue
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherValue
 from exactly_lib.type_system.value_type import ValueType
@@ -21,11 +24,30 @@ class LineMatcherResolverConstantTestImpl(LineMatcherResolver):
         return self._resolved_value
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._references
 
     def resolve(self, symbols: SymbolTable) -> LineMatcherValue:
         return LineMatcherValueFromPrimitiveValue(self._resolved_value)
+
+
+class LineMatcherResolverConstantValueTestImpl(LineMatcherResolver):
+    def __init__(self,
+                 resolved_value: LineMatcherValue,
+                 references: Sequence[SymbolReference] = ()):
+        self._resolved_value = resolved_value
+        self._references = list(references)
+
+    @property
+    def resolved_value(self) -> LineMatcher:
+        return self._resolved_value
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._references
+
+    def resolve(self, symbols: SymbolTable) -> LineMatcherValue:
+        return self._resolved_value
 
 
 IS_LINE_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.LINE_MATCHER)

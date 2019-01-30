@@ -27,6 +27,10 @@ def model_of(contents: str) -> ModelBuilder:
     return ModelBuilder().with_original_file_contents(contents)
 
 
+def arbitrary_model() -> ModelBuilder:
+    return empty_model()
+
+
 class ModelConstructor:
     """Constructs a :class:^FileToCheck^ given an environment with existing directories"""
 
