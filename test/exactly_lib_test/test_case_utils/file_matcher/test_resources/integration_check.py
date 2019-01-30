@@ -26,16 +26,6 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-class TestCaseBase(unittest.TestCase):
-    def _check(self,
-               parser: Parser[FileMatcherResolver],
-               source: ParseSource,
-               model: ModelConstructor,
-               arrangement: ArrangementPostAct,
-               expectation: Expectation):
-        check(self, parser, source, model, arrangement, expectation)
-
-
 def check(put: unittest.TestCase,
           parser: Parser[FileMatcherResolver],
           source: ParseSource,

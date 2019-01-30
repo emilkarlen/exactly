@@ -21,7 +21,7 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPo
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import model_construction
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_configuration as tc
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as tc
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, elements
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args as sm_args, \
     EqualsStringAssertionArgumentsConstructor
