@@ -1,22 +1,15 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import List
 
 from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib_test.test_resources import matcher_argument
+from exactly_lib_test.test_resources.matcher_argument import MatcherArg
 
 
-class LineMatcherArg(ABC):
-    """Generate source using __str__"""
+class LineMatcherArg(MatcherArg, ABC):
     pass
-
-    def __str__(self):
-        return ' '.join([str(element) for element in self.elements])
-
-    @property
-    @abstractmethod
-    def elements(self) -> List:
-        pass
 
 
 class Custom(LineMatcherArg):
@@ -61,20 +54,28 @@ class Not(LineMatcherArg):
                 ]
 
 
-class And(LineMatcherArg):
-    def __init__(self, matchers: List[LineMatcherArg]):
+class _BinaryOperatorBase(LineMatcherArg):
+    def __init__(self,
+                 operator_name: str,
+                 matchers: List[LineMatcherArg]):
         self.matchers = matchers
-        if len(matchers) == 0:
-            raise ValueError(expression.AND_OPERATOR_NAME +
-                             ' must have at least one matcher')
+        self.operator_name = operator_name
+        matcher_argument.value_error_if_empty(operator_name, matchers)
 
     @property
     def elements(self) -> List:
-        ret_val = self.matchers[0].elements
-        for matcher in self.matchers[1:]:
-            ret_val.append(expression.AND_OPERATOR_NAME)
-            ret_val += matcher.elements
-        return ret_val
+        return matcher_argument.concat_and_intersperse_non_empty_list(self.operator_name,
+                                                                      self.matchers)
+
+
+class And(_BinaryOperatorBase):
+    def __init__(self, matchers: List[LineMatcherArg]):
+        super().__init__(expression.AND_OPERATOR_NAME, matchers)
+
+
+class Or(_BinaryOperatorBase):
+    def __init__(self, matchers: List[LineMatcherArg]):
+        super().__init__(expression.OR_OPERATOR_NAME, matchers)
 
 
 class WithOptionalNegation:
