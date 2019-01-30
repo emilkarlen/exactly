@@ -13,6 +13,8 @@ class LineMatcherArg(MatcherArg, ABC):
 
 
 class Custom(LineMatcherArg):
+    """Argument for building invalid syntax"""
+
     def __init__(self, matcher: str):
         self.matcher = matcher
 
