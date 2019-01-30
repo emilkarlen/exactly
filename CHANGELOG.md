@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
  - LINE-MATCHER: Changes name of primitive: "regex" -> "matches"
+ - LINE-MATCHER: Substitutes symbol references in regex string 
 
 ## [0.9.1.1] - 2019-01-26
 
