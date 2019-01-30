@@ -1,0 +1,22 @@
+[setup]
+
+file abc.txt
+file xyz.txt
+
+[assert]
+
+dir-contents .
+             -selection name ab*c*
+             num-files == 1
+
+def string AB_GLOB_PATTERN = ab*
+
+dir-contents .
+             -selection name @[AB_GLOB_PATTERN]@c*
+             num-files == 1
+
+def file-matcher NAME_AB_GLOB_PATTERN = name @[AB_GLOB_PATTERN]@c*
+
+dir-contents .
+             -selection NAME_AB_GLOB_PATTERN
+             num-files == 1

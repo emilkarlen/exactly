@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from exactly_lib.definitions.entity.types import STRING_TYPE_INFO
+from exactly_lib.definitions.entity import types
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
@@ -24,7 +24,7 @@ class Configuration:
         self.reference_restrictions = reference_restrictions
 
 
-DEFAULT_CONFIGURATION = Configuration(STRING_TYPE_INFO.identifier,
+DEFAULT_CONFIGURATION = Configuration(types.STRING_TYPE_INFO.identifier,
                                       reference_restrictions=None)
 
 
