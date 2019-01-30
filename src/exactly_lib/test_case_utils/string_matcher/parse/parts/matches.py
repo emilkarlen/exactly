@@ -1,25 +1,19 @@
-import difflib
-import pathlib
-from typing import List, Optional, Pattern, Match
+from typing import Optional, Pattern, Match
 
-from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_utils.err_msg import diff_msg, diff_msg_utils
-from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
-from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
+from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.regex import parse_regex
+from exactly_lib.test_case_utils.regex.error_messages import ExpectedValueResolver, ErrorMessageResolverConstructor
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromValueWithValidation, \
     StringMatcherValueWithValidation
-from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver, \
-    ErrorMessageResolvingEnvironment, ConstantErrorMessageResolver
+from exactly_lib.type_system.error_message import ErrorMessageResolver, \
+    ConstantErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
-from exactly_lib.util import file_utils
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -43,9 +37,9 @@ def parse(expectation_type: ExpectationType,
 def value_resolver(expectation_type: ExpectationType,
                    is_full_match: bool,
                    contents_matcher: RegexResolver) -> StringMatcherResolver:
-    error_message_constructor = _ErrorMessageResolverConstructor(expectation_type,
-                                                                 ExpectedValueResolver(matcher_options.MATCHES_ARGUMENT,
-                                                                                       contents_matcher))
+    error_message_constructor = ErrorMessageResolverConstructor(expectation_type,
+                                                                ExpectedValueResolver(matcher_options.MATCHES_ARGUMENT,
+                                                                                      contents_matcher))
 
     def get_value_with_validator(symbols: SymbolTable) -> StringMatcherValueWithValidation:
         regex_value = contents_matcher.resolve(symbols)
@@ -70,49 +64,12 @@ def value_resolver(expectation_type: ExpectationType,
     )
 
 
-class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
-    def __init__(self,
-                 prefix: str,
-                 expected_contents: RegexResolver):
-        self._prefix = prefix
-        self.expected_contents = expected_contents
-
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
-        prefix = ''
-        if self._prefix:
-            prefix = self._prefix + ' '
-        return prefix + self._expected_obj_description(environment)
-
-    def _expected_obj_description(self, environment: ErrorMessageResolvingEnvironment) -> str:
-        return 'todo'
-
-    def _string_fragment(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
-        return 'todo'
-
-
-class _ErrorMessageResolverConstructor:
-    def __init__(self,
-                 expectation_type: ExpectationType,
-                 expected_value: diff_msg_utils.ExpectedValueResolver,
-                 ):
-        self._expectation_type = expectation_type
-        self._expected_value = expected_value
-
-    def construct(self,
-                  checked_file: FilePropertyDescriptorConstructor,
-                  actual_info: ActualInfo) -> ErrorMessageResolver:
-        return _ErrorMessageResolver(self._expectation_type,
-                                     self._expected_value,
-                                     checked_file,
-                                     actual_info)
-
-
 class MatchesRegexStringMatcher(StringMatcher):
     def __init__(self,
                  expectation_type: ExpectationType,
                  is_full_match: bool,
                  pattern: Pattern[str],
-                 error_message_constructor: _ErrorMessageResolverConstructor,
+                 error_message_constructor: ErrorMessageResolverConstructor,
                  ):
         self._expectation_type = expectation_type
         self._is_full_match = is_full_match
@@ -146,37 +103,3 @@ class MatchesRegexStringMatcher(StringMatcher):
     @property
     def option_description(self) -> str:
         return diff_msg.negation_str(self._expectation_type) + matcher_options.MATCHES_ARGUMENT
-
-
-def _file_diff_description(actual_file_path: pathlib.Path,
-                           expected_file_path: pathlib.Path) -> List[str]:
-    expected_lines = file_utils.lines_of(expected_file_path)
-    actual_lines = file_utils.lines_of(actual_file_path)
-    diff = difflib.unified_diff(expected_lines,
-                                actual_lines,
-                                fromfile='Expected',
-                                tofile='Actual')
-    return list(diff)
-
-
-class _ErrorMessageResolver(ErrorMessageResolver):
-    def __init__(self,
-                 expectation_type: ExpectationType,
-                 expected_value: ExpectedValueResolver,
-                 checked_file_describer: FilePropertyDescriptorConstructor,
-                 actual_info: ActualInfo
-                 ):
-        self._expected_value = expected_value
-        self._expectation_type = expectation_type
-        self._checked_file_describer = checked_file_describer
-        self._actual_info = actual_info
-
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
-        description_of_actual_file = self._checked_file_describer.construct_for_contents_attribute(CONTENTS_ATTRIBUTE)
-        failure_info_resolver = DiffFailureInfoResolver(
-            description_of_actual_file,
-            self._expectation_type,
-            self._expected_value,
-        )
-        failure_info = failure_info_resolver.resolve(environment, self._actual_info)
-        return failure_info.error_message()
