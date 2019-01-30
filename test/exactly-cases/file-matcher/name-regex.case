@@ -1,0 +1,22 @@
+[setup]
+
+file abc.txt
+file xyz.txt
+
+[assert]
+
+dir-contents .
+             -selection name -regex ^abc
+             num-files == 1
+
+def string AB_REGEX = ^ab
+
+dir-contents .
+             -selection name -regex @[AB_REGEX]@c
+             num-files == 1
+
+def file-matcher NAME_AB_REGEX = name -regex @[AB_REGEX]@c
+
+dir-contents .
+             -selection NAME_AB_REGEX
+             num-files == 1

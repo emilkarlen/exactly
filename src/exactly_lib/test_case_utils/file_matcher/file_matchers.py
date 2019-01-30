@@ -1,5 +1,5 @@
 import pathlib
-from typing import List, Iterator
+from typing import List, Iterator, Pattern
 
 from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils import file_properties
@@ -46,7 +46,7 @@ class FileMatcherNameGlobPattern(FileMatcher):
 class FileMatcherBaseNameRegExPattern(FileMatcher):
     """Matches the base name of a path on a regular expression."""
 
-    def __init__(self, compiled_reg_ex):
+    def __init__(self, compiled_reg_ex: Pattern):
         self._compiled_reg_ex = compiled_reg_ex
 
     @property

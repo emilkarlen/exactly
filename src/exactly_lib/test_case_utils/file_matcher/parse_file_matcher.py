@@ -21,9 +21,9 @@ from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import file_matchers, regular_file_contents
 from exactly_lib.test_case_utils.file_matcher import resolvers
 from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_FILE
+from exactly_lib.test_case_utils.file_matcher.impl import name_regex
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.parse import parse_reg_ex
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
@@ -119,8 +119,7 @@ def _parse_name_glob_pattern_matcher(parser: TokenParser) -> FileMatcherResolver
 
 
 def _parse_name_reg_ex_matcher(parser: TokenParser) -> FileMatcherResolver:
-    compiled_reg_ex = parse_reg_ex.parse_regex(parser)
-    return _constant(file_matchers.FileMatcherBaseNameRegExPattern(compiled_reg_ex))
+    return name_regex.parse(parser)
 
 
 def _parse_type_matcher(parser: TokenParser) -> FileMatcherResolver:

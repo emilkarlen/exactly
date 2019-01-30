@@ -131,5 +131,23 @@ class FileMatcherResolverFromParts(FileMatcherResolver):
         return str(type(self))
 
 
+class FileMatcherResolverFromValueParts(FileMatcherResolver):
+    def __init__(self,
+                 references: Sequence[SymbolReference],
+                 make_value: Callable[[SymbolTable], FileMatcherValue]):
+        self._make_value = make_value
+        self._references = references
+
+    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
+        return self._make_value(symbols)
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._references
+
+    def __str__(self):
+        return str(type(self))
+
+
 def no_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
     return set()
