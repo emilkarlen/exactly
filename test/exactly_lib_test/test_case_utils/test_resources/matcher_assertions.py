@@ -46,4 +46,20 @@ class Expectation:
         self.symbol_usages = symbol_usages
 
 
+def expectation(
+        validation: ValidationExpectation = all_validations_passes(),
+        symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+        main_result: Optional[ValueAssertion[Optional[str]]] = None,
+        is_hard_error: Optional[ValueAssertion[str]] = None,
+        source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+) -> Expectation:
+    return Expectation(
+        validation_pre_sds=validation.pre_sds,
+        validation_post_sds=validation.post_sds,
+        main_result=main_result,
+        is_hard_error=is_hard_error,
+        symbol_usages=symbol_references,
+        source=source)
+
+
 is_pass = Expectation

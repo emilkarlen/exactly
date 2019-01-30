@@ -1,5 +1,7 @@
 import unittest
 
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
@@ -26,6 +28,10 @@ class TestCaseBase(unittest.TestCase):
                                 model,
                                 arrangement,
                                 expectation)
+
+    def _assert_failing_parse(self, source: ParseSource):
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            sut.parser().parse(source)
 
     def _check_with_source_variants(self,
                                     arguments: Arguments,

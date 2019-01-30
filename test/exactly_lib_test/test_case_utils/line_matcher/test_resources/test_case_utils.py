@@ -23,6 +23,10 @@ class TestCaseBase(unittest.TestCase):
                expectation: Expectation):
         integration_check.check(self, source, model, arrangement, expectation)
 
+    def _assert_failing_parse(self, source: ParseSource):
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            sut.parser().parse(source)
+
     def _check_with_source_variants(self,
                                     arguments: Arguments,
                                     model: LineMatcherLine,
@@ -41,7 +45,3 @@ class TestWithNegationArgumentBase(TestCaseBase):
 
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         raise NotImplementedError('abstract method')
-
-    def _assert_failing_parse(self, source: ParseSource):
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parser().parse(source)
