@@ -1,6 +1,8 @@
 from abc import ABC
 from typing import Set, List, Callable
 
+from exactly_lib.test_case import pre_or_post_value_validators
+from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherNot, LineMatcherAnd, LineMatcherOr
@@ -29,6 +31,10 @@ class LineMatcherCompositionValueBase(LineMatcherValue, ABC):
         self._parts = parts
         if not parts:
             raise ValueError('Composition must have at least one element')
+        self._validator = pre_or_post_value_validators.all_of([
+            part.validator()
+            for part in parts
+        ])
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         ret_val = self._parts[0].resolving_dependencies()
@@ -36,6 +42,9 @@ class LineMatcherCompositionValueBase(LineMatcherValue, ABC):
             ret_val.update(composed.resolving_dependencies())
 
         return ret_val
+
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return self._validator
 
     def value_when_no_dir_dependencies(self) -> LineMatcher:
         return self._mk_primitive_value([

@@ -101,10 +101,6 @@ class TestRegexParser(unittest.TestCase):
                 remaining_source('',
                                  ['regex']),
             ),
-            (
-                'invalid REGEX',
-                remaining_source('**'),
-            ),
         ]
         for name, source in cases:
             with self.subTest(case_name=name):

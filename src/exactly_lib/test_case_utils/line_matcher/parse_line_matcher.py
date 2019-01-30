@@ -3,13 +3,14 @@ from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import parse_integer_matcher
 from exactly_lib.test_case_utils.condition.syntax import OPERATOR_ARGUMENT
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import line_matchers
 from exactly_lib.test_case_utils.line_matcher import resolvers
-from exactly_lib.test_case_utils.parse import parse_reg_ex
+from exactly_lib.test_case_utils.line_matcher.impl import matches_regex
 from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
@@ -31,13 +32,24 @@ LINE_MATCHER_ARGUMENT = a.Named(types.LINE_MATCHER_TYPE_INFO.syntax_element_name
 LINE_NUMBER_PROPERTY = 'line number'
 
 
+def parser() -> Parser[LineMatcherResolver]:
+    return _PARSER
+
+
+class _Parser(Parser[LineMatcherResolver]):
+    def parse_from_token_parser(self, parser: TokenParser) -> LineMatcherResolver:
+        return parse_line_matcher_from_token_parser(parser)
+
+
+_PARSER = _Parser()
+
+
 def parse_line_matcher_from_token_parser(parser: TokenParser) -> LineMatcherResolver:
     return parse_expression.parse(GRAMMAR, parser)
 
 
 def parse_regex(parser: TokenParser) -> LineMatcherResolver:
-    regex = parse_reg_ex.parse_regex(parser)
-    return resolvers.LineMatcherConstantResolver(line_matchers.LineMatcherRegex(regex))
+    return matches_regex.parse(parser)
 
 
 def parse_line_number(parser: TokenParser) -> LineMatcherResolver:
