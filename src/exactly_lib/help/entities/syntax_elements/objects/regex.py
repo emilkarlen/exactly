@@ -1,8 +1,10 @@
 from exactly_lib.common.help.see_also import SeeAlsoUrlInfo
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, cli_argument_syntax_element_description
+from exactly_lib.definitions import formatting
 from exactly_lib.definitions.argument_rendering import cl_syntax
-from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation
+from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.parse import parse_reg_ex
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -20,6 +22,8 @@ _CL_ARGUMENTS = [
 _TEXT_PARSER = TextParser({
     'STRING': syntax_elements.STRING_SYNTAX_ELEMENT.argument.name,
     'SYMBOL_REFERENCE': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.argument.name,
+    'file_matcher': formatting.entity_(types.FILE_MATCHER_TYPE_INFO),
+    'name': parse_file_matcher.NAME_MATCHER_NAME,
 })
 
 SEE_ALSO_URL_INFO = SeeAlsoUrlInfo('Python regular expressions',
@@ -30,7 +34,12 @@ Makes the matching ignore case.
 """
 
 _MAIN_DESCRIPTION_REST = """\
-Any {SYMBOL_REFERENCE} in {STRING} is NOT substituted!
+Support for substitution of {SYMBOL_REFERENCE} in {STRING} is inconsistent.
+
+
+Any {SYMBOL_REFERENCE} is not substituted for the "{name}" {file_matcher}.
+
+In all other places, they are substituted. 
 """
 
 DOCUMENTATION = syntax_element_documentation(
