@@ -27,6 +27,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_c
     TestConfigurationForMatcher, TestCaseBase
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
+from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -77,7 +78,7 @@ class _ParseWithInvalidLineMatcher(_TestCaseBase):
 class _TestLineMatcherValidatorIsApplied(TestCaseBase):
     def runTest(self):
         failure_message = 'failure'
-        assert_failing_validation = matcher_assertions.matches_validation_failure(asrt.equals(failure_message))
+        assert_failing_validation = asrt_validation.matches_validation_failure(asrt.equals(failure_message))
         line_matcher_symbol_name = 'line_matcher_with_failing_validation'
 
         asserted_symbol_references = asrt.matches_sequence([

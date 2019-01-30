@@ -31,6 +31,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check as sut
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import Model, arbitrary_model
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
+from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, is_pass, is_hard_error
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_sds, \
     RelativityOptionConfigurationForRelSds
@@ -213,7 +214,7 @@ class TestFailingExpectations(TestCaseBase):
                         arbitrary_model(),
                         sut.ArrangementPostAct(),
                         Expectation(
-                            validation_pre_sds=matcher_assertions.is_arbitrary_validation_failure()),
+                            validation_pre_sds=asrt_validation.is_arbitrary_validation_failure()),
                         )
 
     def test_fail_due_to_unexpected_result_from_post_validation(self):
@@ -223,7 +224,7 @@ class TestFailingExpectations(TestCaseBase):
                         arbitrary_model(),
                         sut.ArrangementPostAct(),
                         Expectation(
-                            validation_post_sds=matcher_assertions.is_arbitrary_validation_failure()),
+                            validation_post_sds=asrt_validation.is_arbitrary_validation_failure()),
                         )
 
     def test_fail_due_to_unexpected_result_from_main(self):

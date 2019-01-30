@@ -33,6 +33,7 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources import integra
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.model_construction import ModelConstructor, \
     constant_relative_file_name
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
+from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, is_pass, is_hard_error
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -189,7 +190,7 @@ class TestFailingExpectations(TestCaseBase):
                         constant_relative_file_name('file.txt'),
                         sut.ArrangementPostAct(),
                         Expectation(
-                            validation_pre_sds=matcher_assertions.is_arbitrary_validation_failure()),
+                            validation_pre_sds=asrt_validation.is_arbitrary_validation_failure()),
                         )
 
     def test_fail_due_to_unexpected_result_from_post_validation(self):
@@ -199,7 +200,7 @@ class TestFailingExpectations(TestCaseBase):
                         constant_relative_file_name('file.txt'),
                         sut.ArrangementPostAct(),
                         Expectation(
-                            validation_post_sds=matcher_assertions.is_arbitrary_validation_failure()),
+                            validation_post_sds=asrt_validation.is_arbitrary_validation_failure()),
                         )
 
     def test_fail_due_to_unexpected_result_from_main(self):

@@ -8,19 +8,6 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def is_arbitrary_validation_failure() -> ValueAssertion[Optional[str]]:
-    return asrt.is_instance(str)
-
-
-def is_validation_success() -> ValueAssertion[Optional[str]]:
-    return asrt.is_none
-
-
-def matches_validation_failure(message: ValueAssertion[str]) -> ValueAssertion[Optional[str]]:
-    """Matcher on the resolved error message"""
-    return asrt.is_instance_with(str, message)
-
-
 def is_arbitrary_matching_failure() -> ValueAssertion[Optional[str]]:
     """Matcher on the resolved error message"""
     return asrt.is_instance(str)

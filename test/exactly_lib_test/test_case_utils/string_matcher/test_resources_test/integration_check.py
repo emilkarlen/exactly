@@ -34,6 +34,7 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources import integ
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder, empty_model
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.string_matchers import StringMatcherTestImplBase
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
+from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, is_pass, is_hard_error
 from exactly_lib_test.test_resources.files.file_checks import FileChecker
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
@@ -204,7 +205,7 @@ class TestFailingExpectations(TestCaseBase):
                         empty_model(),
                         sut.ArrangementPostAct(),
                         Expectation(
-                            validation_pre_sds=matcher_assertions.is_arbitrary_validation_failure()),
+                            validation_pre_sds=asrt_validation.is_arbitrary_validation_failure()),
                         )
 
     def test_fail_due_to_unexpected_result_from_post_validation(self):
@@ -214,7 +215,7 @@ class TestFailingExpectations(TestCaseBase):
                         empty_model(),
                         sut.ArrangementPostAct(),
                         Expectation(
-                            validation_post_sds=matcher_assertions.is_arbitrary_validation_failure()),
+                            validation_post_sds=asrt_validation.is_arbitrary_validation_failure()),
                         )
 
     def test_fail_due_to_unexpected_result_from_main(self):

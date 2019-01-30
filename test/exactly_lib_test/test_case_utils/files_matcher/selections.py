@@ -19,8 +19,8 @@ from exactly_lib_test.test_case_utils.condition.integer.test_resources import ar
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax as fm_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fsm_args, model
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.test_resources import matcher_assertions as asrt_matcher
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_confs, matcher_assertions
+from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success
@@ -89,7 +89,7 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
             NEA('pre sds validation',
                 expected=
                 Expectation(
-                    validation_pre_sds=asrt_matcher.matches_validation_failure(asrt.equals(err_msg_from_validator)),
+                    validation_pre_sds=asrt_validation.matches_validation_failure(asrt.equals(err_msg_from_validator)),
                     symbol_usages=expected_symbol_usages,
                 ),
                 actual=
@@ -98,7 +98,7 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
             NEA('post sds validation',
                 expected=
                 Expectation(
-                    validation_post_sds=asrt_matcher.matches_validation_failure(asrt.equals(err_msg_from_validator)),
+                    validation_post_sds=asrt_validation.matches_validation_failure(asrt.equals(err_msg_from_validator)),
                     symbol_usages=expected_symbol_usages,
                 ),
                 actual=

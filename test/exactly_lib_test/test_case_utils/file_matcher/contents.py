@@ -26,6 +26,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args as sm_args, \
     EqualsStringAssertionArgumentsConstructor
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
+from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
@@ -76,15 +77,15 @@ class TestFailingValidationCausedByReferencedStringMatcherSymbol(tc.TestCaseBase
         cases = [
             NEA('failure pre sds',
                 expected=
-                ValidationExpectation(pre_sds=matcher_assertions.is_arbitrary_validation_failure(),
-                                      post_sds=matcher_assertions.is_validation_success()),
+                ValidationExpectation(pre_sds=asrt_validation.is_arbitrary_validation_failure(),
+                                      post_sds=asrt_validation.is_validation_success()),
                 actual=
                 ConstantResultValidator(pre_sds='failure')
                 ),
             NEA('failure post sds',
                 expected=
-                ValidationExpectation(pre_sds=matcher_assertions.is_validation_success(),
-                                      post_sds=matcher_assertions.is_arbitrary_validation_failure()),
+                ValidationExpectation(pre_sds=asrt_validation.is_validation_success(),
+                                      post_sds=asrt_validation.is_arbitrary_validation_failure()),
                 actual=
                 ConstantResultValidator(post_setup='failure')
                 ),

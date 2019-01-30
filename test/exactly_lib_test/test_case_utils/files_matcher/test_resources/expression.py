@@ -17,7 +17,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import model
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
-from exactly_lib_test.test_case_utils.test_resources import matcher_assertions as asrt_matcher
+from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -71,7 +71,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                         source,
                         ArrangementPostAct(),
                         Expectation(
-                            validation_pre_sds=asrt_matcher.is_arbitrary_validation_failure(),
+                            validation_pre_sds=asrt_validation.is_arbitrary_validation_failure(),
                             symbol_usages=asrt.is_empty_sequence,
                         ),
                     )
@@ -91,7 +91,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                         source,
                         ArrangementPostAct(),
                         Expectation(
-                            validation_pre_sds=asrt_matcher.is_arbitrary_validation_failure(),
+                            validation_pre_sds=asrt_validation.is_arbitrary_validation_failure(),
                             symbol_usages=asrt.is_empty_sequence,
                         ),
                     )
@@ -125,7 +125,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                                 })
                             ),
                             Expectation(
-                                validation_pre_sds=asrt_matcher.is_arbitrary_validation_failure(),
+                                validation_pre_sds=asrt_validation.is_arbitrary_validation_failure(),
                                 symbol_usages=equals_symbol_references([
                                     SymbolReference(symbol.name,
                                                     string_made_up_by_just_strings())
