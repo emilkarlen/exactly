@@ -6,14 +6,20 @@ from typing import Iterable
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.string import lines_content, line_separated
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     TestCaseBase
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
+    failing_validation_cases
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -28,6 +34,7 @@ def suite() -> unittest.TestSuite:
 
         _NumLinesDoesNotMatch(),
 
+        _StringTransformerShouldBeValidated(),
         _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents(),
     ])
 
@@ -102,6 +109,31 @@ class _NumLinesDoesNotMatch(TestCaseBase):
                     expected_result_of_positive_test=PassOrFail.FAIL,
                     actual_file_contents=actual_contents,
                 )
+
+
+class _StringTransformerShouldBeValidated(TestCaseBase):
+    def runTest(self):
+        for case in failing_validation_cases():
+            for expectation_type in ExpectationType:
+                with self.subTest(validation_case=case.name,
+                                  expectation_type=expectation_type):
+                    self._check(
+                        remaining_source(
+                            InstructionArgumentsVariantConstructor(
+                                transformer=case.value.symbol_context.name,
+                                operator=comparators.EQ.name,
+                                operand='0'
+                            ).construct(expectation_type)
+                        ),
+                        model_construction.empty_model(),
+                        self.configuration.arrangement_for_contents(
+                            symbols=case.value.symbol_context.symbol_table
+                        ),
+                        expectation(
+                            validation=case.value.expectation,
+                            symbol_references=case.value.symbol_context.references_assertion
+                        ),
+                    )
 
 
 class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents(TestCaseBase):

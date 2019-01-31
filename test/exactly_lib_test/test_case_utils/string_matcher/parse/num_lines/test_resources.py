@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import ExpectationType
@@ -63,6 +64,22 @@ class TestCaseBase(unittest.TestCase):
 
     def shortDescription(self):
         return str(type(self.configuration))
+
+    def _check(
+            self,
+            source: ParseSource,
+            model: ModelBuilder,
+            arrangement: integration_check.ArrangementPostAct,
+            expectation: Expectation):
+
+        integration_check.check(
+            self,
+            self.configuration.new_parser(),
+            source,
+            model,
+            arrangement=arrangement,
+            expectation=expectation,
+        )
 
     def _check_single_expression_type(
             self,

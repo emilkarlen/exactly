@@ -11,8 +11,9 @@ from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to, \
-    successful_matcher_with_validation
+    successful_matcher_with_validation, resolver_of_unconditionally_matching_matcher
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
+from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_containers
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.arguments_building import NOT_A_LINE_MATCHER
@@ -23,8 +24,11 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.argume
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
     TestConfigurationForMatcher, TestCaseBase
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
+    failing_validation_cases
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -36,6 +40,7 @@ def suite() -> unittest.TestSuite:
         _ParseWithInvalidLineMatcher(),
 
         _TestLineMatcherValidatorIsApplied(),
+        _TestStringTransformerValidatorIsApplied(),
 
         _TestSymbolReferenceForStringTransformerIsReported(),
         _TestSymbolReferenceForLineMatcherIsReported(),
@@ -127,6 +132,54 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
                                 symbols=symbols
                             ),
                             expectation=case.expected
+                        )
+
+
+class _TestStringTransformerValidatorIsApplied(TestCaseBase):
+    def runTest(self):
+        line_matcher_symbol = NameAndValue(
+            'valid_line_matcher',
+            symbol_utils.container(
+                resolver_of_unconditionally_matching_matcher()
+            )
+        )
+
+        for case in failing_validation_cases():
+            symbol_context = case.value.symbol_context
+
+            symbols = symbol_table_from_name_and_containers([
+                line_matcher_symbol,
+                symbol_context.name_and_container,
+            ])
+
+            expected_symbol_references = asrt.matches_sequence([
+                symbol_context.reference_assertion,
+                is_line_matcher_reference_to(line_matcher_symbol.name)
+            ])
+
+            for quantifier in Quantifier:
+
+                arguments_constructor = arguments_building.ImplicitActualFileArgumentsConstructor(
+                    CommonArgumentsConstructor(symbol_context.name),
+                    arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier,
+                                                                                line_matcher_symbol.name)
+                )
+                for expectation_type in ExpectationType:
+                    arguments = arguments_constructor.apply(expectation_type)
+                    source = self.configuration.arguments_for(arguments).as_remaining_source
+                    with self.subTest(case=case.name,
+                                      expectation_type=expectation_type,
+                                      quantifier=quantifier):
+                        self._check(
+                            source=source,
+                            model=model_construction.arbitrary_model(),
+                            arrangement=ArrangementPostAct(
+                                symbols=symbols
+                            ),
+                            expectation=matcher_assertions.expectation(
+                                validation=case.value.expectation,
+                                symbol_references=expected_symbol_references,
+                            )
                         )
 
 

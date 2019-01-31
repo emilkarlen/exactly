@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -85,6 +86,24 @@ class TestCaseBase(unittest.TestCase):
 
     def shortDescription(self):
         return str(type(self.configuration))
+
+    def _check(
+            self,
+            source: ParseSource,
+            model: model_construction.ModelBuilder,
+            arrangement: integration_check.ArrangementPostAct,
+            expectation: Expectation):
+        integration_check.check(
+            self,
+            self.configuration.new_parser(),
+            source,
+            model=
+            model,
+            arrangement=
+            arrangement,
+            expectation=
+            expectation
+        )
 
     def _check_variants_with_expectation_type(
             self,

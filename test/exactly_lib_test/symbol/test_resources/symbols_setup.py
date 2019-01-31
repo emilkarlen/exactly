@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Sequence, List, TypeVar, Generic
 
-from exactly_lib.symbol.resolver_structure import SymbolValueResolver
+from exactly_lib.symbol.resolver_structure import SymbolValueResolver, SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolUsage, SymbolReference
 from exactly_lib.util import symbol_table
 from exactly_lib.util.symbol_table import Entry, SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -68,6 +69,15 @@ class ResolverSymbolContext(Generic[RESOLVER_TYPE], ABC):
         pass
 
     @property
+    def symbol_table_container(self) -> SymbolContainer:
+        return symbol_utils.container(self.resolver)
+
+    @property
+    def name_and_container(self) -> NameAndValue[SymbolContainer]:
+        return NameAndValue(self.name,
+                            self.symbol_table_container)
+
+    @property
     @abstractmethod
     def reference_assertion(self) -> ValueAssertion[SymbolReference]:
         pass
@@ -81,5 +91,5 @@ class ResolverSymbolContext(Generic[RESOLVER_TYPE], ABC):
     @property
     def symbol_table(self) -> SymbolTable:
         return SymbolTable({
-            self.name: symbol_utils.container(self.resolver)
+            self.name: self.symbol_table_container
         })

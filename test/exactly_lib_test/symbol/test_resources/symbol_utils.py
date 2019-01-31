@@ -13,6 +13,7 @@ from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueRe
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
 from exactly_lib.util import line_source
 from exactly_lib.util.symbol_table import SymbolTable, Entry
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
 def container(value_resolver: SymbolValueResolver,
@@ -51,6 +52,21 @@ def symbol_table_from_symbol_definitions(definitions: Sequence[SymbolDefinition]
     elements = [(sym_def.name, sym_def.resolver_container)
                 for sym_def in definitions]
     return SymbolTable(dict(elements))
+
+
+def symbol_table_from_name_and_containers(name_and_containers: Sequence[NameAndValue[SymbolContainer]]) -> SymbolTable:
+    return SymbolTable({
+        nac.name: nac.value
+        for nac in name_and_containers
+    })
+
+
+def symbol_table_from_name_and_resolvers(
+        name_and_resolvers: Sequence[NameAndValue[SymbolValueResolver]]) -> SymbolTable:
+    return SymbolTable({
+        nar.name: container(nar.value)
+        for nar in name_and_resolvers
+    })
 
 
 _FL = FileLocationInfo(pathlib.Path('/'))
