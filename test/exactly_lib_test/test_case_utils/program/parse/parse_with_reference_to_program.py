@@ -31,6 +31,8 @@ from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_
 from exactly_lib_test.test_case_utils.program.test_resources import program_execution_check as pgm_exe_check
 from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
+from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_validator
+from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -152,6 +154,8 @@ class TestValidation(unittest.TestCase):
     def test_failing_validation_pre_sds(self):
         parser = sut.program_parser()
 
+        expected_validation = validation.pre_sds_validation_fails()
+
         program_symbol_with_ref_to_non_exit_exe_file = NameAndValue(
             'PGM_WITH_REF_TO_EXE_FILE',
             program_resolvers.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_HOME_ACT,
@@ -195,17 +199,16 @@ class TestValidation(unittest.TestCase):
                 self.assertIsInstance(program_resolver, ProgramResolver)
                 with home_and_sds_with_act_as_curr_dir(hds_contents=case.home_contents,
                                                        symbols=symbols) as environment:
-                    # ACT #
-                    actual = program_resolver.validator.validate_pre_sds_if_applicable(environment)
-                    # ASSERT #
-                    self.assertIsNotNone(actual)
-                    # ACT #
-                    actual = program_resolver.validator.validate_post_sds_if_applicable(environment)
-                    # ASSERT #
-                    self.assertIsNone(actual)
+                    validation_assertion = pre_or_post_sds_validator.PreOrPostSdsValidatorAssertion(
+                        expected_validation,
+                        environment
+                    )
+                    validation_assertion.apply_without_message(self, program_resolver.validator)
 
     def test_failing_validation_post_sds(self):
         parser = sut.program_parser()
+
+        expected_validation = validation.post_sds_validation_fails()
 
         program_symbol_with_ref_to_non_exit_exe_file = NameAndValue(
             'PGM_WITH_REF_TO_EXE_FILE',
@@ -250,14 +253,11 @@ class TestValidation(unittest.TestCase):
                 self.assertIsInstance(program_resolver, ProgramResolver)
                 with home_and_sds_with_act_as_curr_dir(sds_contents=case.sds_contents,
                                                        symbols=symbols) as environment:
-                    # ACT #
-                    actual = program_resolver.validator.validate_pre_sds_if_applicable(environment)
-                    # ASSERT #
-                    self.assertIsNone(actual)
-                    # ACT #
-                    actual = program_resolver.validator.validate_post_sds_if_applicable(environment)
-                    # ASSERT #
-                    self.assertIsNotNone(actual)
+                    validation_assertion = pre_or_post_sds_validator.PreOrPostSdsValidatorAssertion(
+                        expected_validation,
+                        environment
+                    )
+                    validation_assertion.apply_without_message(self, program_resolver.validator)
 
 
 class TestExecution(unittest.TestCase):
