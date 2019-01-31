@@ -1,14 +1,11 @@
 import unittest
 
-from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case_utils.string_matcher import resolvers as sut
-from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerReference
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -43,28 +40,3 @@ class TestWithTransformation(unittest.TestCase):
         # ASSERT #
 
         expected_references.apply_without_message(self, actual)
-
-    def test_validator_SHOULD_be_same_as_validator_of_original_matcher(self):
-        # ARRANGE #
-
-        expected_validator = pre_or_post_validation.ConstantSuccessValidator()
-
-        original_matcher_reference = StringMatcherResolverConstantTestImpl(
-            StringMatcherConstant(None),
-            validator=expected_validator
-        )
-
-        transformer_resolver = StringTransformerReference('THE_TRANSFORMER')
-
-        resolver = sut.new_with_transformation(
-            transformer_resolver,
-            original_matcher_reference,
-        )
-        # ACT #
-
-        actual_validator = resolver.validator
-
-        # ASSERT #
-
-        self.assertIs(expected_validator,
-                      actual_validator)
