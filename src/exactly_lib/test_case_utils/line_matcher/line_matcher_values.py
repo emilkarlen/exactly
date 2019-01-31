@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Set, List, Callable
+from typing import Set, List, Callable, Optional
 
 from exactly_lib.test_case import pre_or_post_value_validation
 from exactly_lib.test_case import pre_or_post_value_validators
@@ -14,12 +14,16 @@ class LineMatcherValueFromPrimitiveValue(LineMatcherValue):
     def __init__(self,
                  primitive_value: LineMatcher,
                  validator: PreOrPostSdsValueValidator =
-                 pre_or_post_value_validation.constant_success_validator()):
+                 pre_or_post_value_validation.constant_success_validator(),
+                 resolving_dependencies: Optional[Set[DirectoryStructurePartition]] = None):
         self._primitive_value = primitive_value
         self._validator = validator
+        self._resolving_dependencies = (set()
+                                        if resolving_dependencies is None
+                                        else resolving_dependencies)
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return set()
+        return self._resolving_dependencies
 
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator

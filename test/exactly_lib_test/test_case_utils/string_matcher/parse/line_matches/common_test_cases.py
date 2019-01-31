@@ -6,15 +6,12 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.pre_or_post_value_validation import ConstantPreOrPostSdsValueValidator, \
-    PreOrPostSdsValueValidator
-from exactly_lib.test_case_utils.line_matcher.line_matcher_values import LineMatcherValueFromPrimitiveValue
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
+from exactly_lib.test_case.pre_or_post_value_validation import ConstantPreOrPostSdsValueValidator
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to, \
-    LineMatcherResolverConstantValueTestImpl
+    successful_matcher_with_validation
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
@@ -107,7 +104,7 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
 
             symbols = SymbolTable({
                 line_matcher_symbol_name: symbol_utils.container(
-                    _successful_matcher_with_validation(case.actual)
+                    successful_matcher_with_validation(case.actual)
                 )
             })
             for quantifier in Quantifier:
@@ -189,12 +186,3 @@ class _TestSymbolReferenceForLineMatcherIsReported(_TestSymbolReferencesBase):
         # ACT & ASSERT #
 
         self._check_expectation_variants(common_arguments, line_matcher, expected_symbol_references)
-
-
-def _successful_matcher_with_validation(validator: PreOrPostSdsValueValidator):
-    return LineMatcherResolverConstantValueTestImpl(
-        LineMatcherValueFromPrimitiveValue(
-            LineMatcherConstant(True),
-            validator
-        )
-    )

@@ -3,6 +3,7 @@ import unittest
 from typing import Optional, Sequence
 
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
@@ -11,7 +12,6 @@ from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcher, LineMatcherLine
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
-from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -28,7 +28,7 @@ class Expectation:
             source: ValueAssertion[ParseSource] = asrt.anything_goes(),
             symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
             validation: ValidationExpectation = all_validations_passes(),
-            main_result: Optional[ValueAssertion[Optional[str]]] = matcher_assertions.is_matching_success,
+            main_result: Optional[ValueAssertion[Optional[str]]] = None,
             is_hard_error: Optional[ValueAssertion[str]] = None,
     ):
         self.source = source
@@ -38,12 +38,24 @@ class Expectation:
         self.is_hard_error = is_hard_error
 
 
+is_pass = Expectation
+
+
 def check(put: unittest.TestCase,
           source: ParseSource,
           model: LineMatcherLine,
           arrangement: Arrangement,
           expectation: Expectation):
-    _Checker(put, source, model, arrangement, expectation).check()
+    _Checker(put, source, model, sut.parser(), arrangement, expectation).check()
+
+
+def check_with_custom_parser(put: unittest.TestCase,
+                             source: ParseSource,
+                             model: LineMatcherLine,
+                             parser: Parser[LineMatcherResolver],
+                             arrangement: Arrangement,
+                             expectation: Expectation):
+    _Checker(put, source, model, parser, arrangement, expectation).check()
 
 
 class _CheckIsDoneException(Exception):
@@ -55,11 +67,13 @@ class _Checker:
                  put: unittest.TestCase,
                  source: ParseSource,
                  model: LineMatcherLine,
+                 parser: Parser[LineMatcherResolver],
                  arrangement: Arrangement,
                  expectation: Expectation):
+        self.put = put
         self.source = source
         self.model = model
-        self.put = put
+        self.parser = parser
         self.arrangement = arrangement
         self.expectation = expectation
         self.tcds = fake_home_and_sds()
@@ -91,7 +105,7 @@ class _Checker:
         self._check_application(matcher)
 
     def _parse(self) -> LineMatcherResolver:
-        resolver = sut.parser().parse(self.source)
+        resolver = self.parser.parse(self.source)
         asrt.is_instance(LineMatcherResolver).apply_with_message(self.put,
                                                                  resolver,
                                                                  'resolver')
