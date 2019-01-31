@@ -21,23 +21,20 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc i
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.validation_cases import failing_validation_cases
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
-from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidatorThat
-from exactly_lib_test.test_case_utils.test_resources.validation import all_validations_passes, pre_sds_validation_fails, \
-    post_sds_validation_fails
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        ValidationShouldFailIffItFailsForReferencedMatcher(),
         ActualFileIsEmpty(),
         ActualFileIsNonEmpty(),
         ActualFileIsEmptyAfterTransformation(),
+        ReferencedMatcherShouldBeValidated(),
     ])
 
 
@@ -62,54 +59,24 @@ class ParseShouldFailWhenSymbolNameHasInvalidSyntax(tc.TestWithNegationArgumentB
                     parser.parse(source)
 
 
-class ValidationShouldFailIffItFailsForReferencedMatcher(tc.TestWithNegationArgumentBase):
+class ReferencedMatcherShouldBeValidated(tc.TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        validation_cases = [
-            NEA('fail pre sds',
-                expected=pre_sds_validation_fails(),
-                actual=ValidatorThat(pre_sds_return_value='pre sds validation error'),
-                ),
-            NEA('fail post sds',
-                expected=post_sds_validation_fails(),
-                actual=ValidatorThat(post_setup_return_value='post sds validation error'),
-                ),
-            NEA('no failure',
-                expected=all_validations_passes(),
-                actual=ValidatorThat(),
-                ),
-        ]
-        for validation_case in validation_cases:
-
-            referenced_matcher = NameAndValue('REFERENCED_MATCHER',
-                                              StringMatcherResolverConstantTestImpl(
-                                                  EmptinessStringMatcher(ExpectationType.POSITIVE),
-                                                  validator=validation_case.actual
-                                              ))
-            symbols = SymbolTable({
-                referenced_matcher.name: container(referenced_matcher.value),
-            })
-            expected_symbol_references = asrt.matches_sequence([
-                is_reference_to_string_matcher(referenced_matcher.name),
-            ])
-
-            for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
-                with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
-                    self._check_with_source_variants(
-                        self.configuration.arguments_for(
-                            args('{maybe_with_transformer_option} {maybe_not} {symbol_reference}',
-                                 maybe_with_transformer_option=maybe_with_transformer_option,
-                                 maybe_not=maybe_not.nothing__if_positive__not_option__if_negative,
-                                 symbol_reference=referenced_matcher.name)),
-                        model_construction.empty_model(),
-                        self.configuration.arrangement_for_contents(
-                            symbols=symbols),
-                        Expectation(
-                            main_result=maybe_not.pass__if_positive__fail__if_negative,
-                            symbol_usages=expected_symbol_references,
-                            validation_pre_sds=validation_case.expected.pre_sds,
-                            validation_post_sds=validation_case.expected.post_sds,
-                        ),
-                    )
+        for case in failing_validation_cases():
+            with self.subTest(validation_case=case.name):
+                self._check(
+                    self.configuration.source_for(
+                        args('{maybe_not} {symbol_reference}',
+                             symbol_reference=case.value.symbol_context.name,
+                             maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
+                    model_construction.empty_model(),
+                    self.configuration.arrangement_for_contents(
+                        symbols=case.value.symbol_context.symbol_table
+                    ),
+                    expectation(
+                        validation=case.value.expectation,
+                        symbol_references=case.value.symbol_context.references_assertion
+                    ),
+                )
 
 
 class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):

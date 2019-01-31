@@ -11,6 +11,7 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.symbol.test_resources.symbols_setup import ResolverSymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -46,3 +47,27 @@ IS_STRING_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.ST
 def is_reference_to_string_matcher(name_of_matcher: str) -> ValueAssertion[su.SymbolUsage]:
     return asrt_sym_usage.matches_reference(asrt.equals(name_of_matcher),
                                             IS_STRING_MATCHER_REFERENCE_RESTRICTION)
+
+
+def is_reference_to_string_matcher__ref(name_of_matcher: str) -> ValueAssertion[su.SymbolReference]:
+    return asrt.is_instance_with(
+        su.SymbolReference,
+        asrt_sym_usage.matches_reference(asrt.equals(name_of_matcher),
+                                         IS_STRING_MATCHER_REFERENCE_RESTRICTION)
+    )
+
+
+class StringMatcherSymbolContext(ResolverSymbolContext[StringMatcherResolver]):
+    def __init__(self,
+                 name: str,
+                 resolver: StringMatcherResolver):
+        super().__init__(name)
+        self._resolver = resolver
+
+    @property
+    def resolver(self) -> StringMatcherResolver:
+        return self._resolver
+
+    @property
+    def reference_assertion(self) -> ValueAssertion[SymbolReference]:
+        return is_reference_to_string_matcher__ref(self.name)
