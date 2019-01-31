@@ -11,17 +11,20 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.argume
     FULL_MATCH_ARGUMENT
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES, TRANSFORMER_OPTION_ALTERNATIVES_ELEMENTS
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
+    failing_validation_cases
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
-from exactly_lib_test.test_case_utils.test_resources.validation import is_arbitrary_validation_failure
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
+from exactly_lib_test.test_case_utils.test_resources.validation import is_arbitrary_validation_failure
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         ParseShouldFailWhenRegexArgumentIsMissing(),
         ValidationShouldFailPreWhenHardCodedRegexIsInvalid(),
+        StringTransformerShouldBeValidated(),
 
         FullMatchSingleLineWoNewline(),
         PartialMatchSingleLineWoNewline(),
@@ -32,6 +35,26 @@ def suite() -> unittest.TestSuite:
         PartialMatchAcceptsExtraLineAfterMatchingLines(),
         FullMatchDoNotAcceptExtraLineAfterMatchingLines(),
     ])
+
+
+class StringTransformerShouldBeValidated(tc.TestWithNegationArgumentBase):
+    def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
+        for case in failing_validation_cases():
+            with self.subTest(validation_case=case.name):
+                self._check(
+                    self.configuration.source_for(
+                        args('{transformer_option} {maybe_not} {matches} .',
+                             transformer_option=case.value.transformer_arguments_string,
+                             maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
+                    model_construction.empty_model(),
+                    self.configuration.arrangement_for_contents(
+                        symbols=case.value.symbol_context.symbol_table
+                    ),
+                    expectation(
+                        validation=case.value.expectation,
+                        symbol_references=case.value.symbol_context.references_assertion
+                    ),
+                )
 
 
 class ValidationShouldFailPreWhenHardCodedRegexIsInvalid(tc.TestWithNegationArgumentBase):

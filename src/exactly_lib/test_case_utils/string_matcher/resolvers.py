@@ -8,8 +8,8 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, ValidatorOfReferredResolverBase, \
-    PreOrPostSdsValidatorFromValueValidator
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
@@ -80,6 +80,12 @@ class _StringMatcherWithTransformationResolver(StringMatcherResolver):
                  original: StringMatcherResolver):
         self._transformer = transformer
         self._original = original
+        self._validator = pre_or_post_validation.AndValidator([
+            pre_or_post_validation.PreOrPostSdsValidatorFromValueValidator(
+                lambda symbols: transformer.resolve(symbols).validator()
+            ),
+            original.validator,
+        ])
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
         transformer_value = self._transformer.resolve(symbols)
@@ -102,7 +108,7 @@ class _StringMatcherWithTransformationResolver(StringMatcherResolver):
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
-        return self._original.validator
+        return self._validator
 
     def __str__(self):
         return str(type(self))
@@ -178,7 +184,7 @@ class StringMatcherResolverFromValueWithValidation(StringMatcherResolver):
                  make_value: Callable[[SymbolTable], StringMatcherValueWithValidation]):
         self._make_value = make_value
         self._references = references
-        self._validator = PreOrPostSdsValidatorFromValueValidator(self._get_value_validator)
+        self._validator = pre_or_post_validation.PreOrPostSdsValidatorFromValueValidator(self._get_value_validator)
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherValueWithValidation:
         return self._make_value(symbols)
@@ -263,7 +269,7 @@ class _NegationStringMatcher(StringMatcher):
         return ConstantErrorMessageResolver(self.option_description)
 
 
-class _ValidatorOfReferredResolver(ValidatorOfReferredResolverBase):
+class _ValidatorOfReferredResolver(pre_or_post_validation.ValidatorOfReferredResolverBase):
     def _referred_validator(self, environment: PathResolvingEnvironment) -> PreOrPostSdsValidator:
         referred_matcher_resolver = lookups.lookup_string_matcher(environment.symbols, self.symbol_name)
         return referred_matcher_resolver.validator

@@ -24,11 +24,13 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.relati
     TestWithRelativityOptionAndNegationBase
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
     TestWithNegationArgumentBase
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
+    failing_validation_cases
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File
@@ -52,6 +54,7 @@ def suite() -> unittest.TestSuite:
         _ContentsEqualsAString(),
         _ContentsEqualsAHereDocumentWithSymbolReferences(),
         _ContentsDoNotEqualAHereDocument(),
+        _StringTransformerShouldBeValidated(),
     ])
 
     return unittest.TestSuite([
@@ -276,3 +279,28 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
                 symbol_usages=expected_symbol_usages,
             ),
         )
+
+
+class _StringTransformerShouldBeValidated(TestWithNegationArgumentBase):
+    def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
+        for case in failing_validation_cases():
+            expected_contents = 'expected contents'
+            with self.subTest(validation_case=case.name):
+                self._check(
+                    self.configuration.source_for(
+                        args('{transformer_option} {maybe_not} {equals} {expected_contents}',
+                             transformer_option=case.value.transformer_arguments_string,
+                             expected_contents=surrounded_by_hard_quotes_str(expected_contents),
+                             maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
+                    ),
+                    model_construction.model_of(expected_contents),
+                    self.configuration.arrangement_for_contents(
+                        symbols=case.value.symbol_context.symbol_table
+                    ),
+                    expectation(
+                        validation=case.value.expectation,
+                        symbol_references=case.value.symbol_context.references_assertion
+                    ),
+                )
+
+
