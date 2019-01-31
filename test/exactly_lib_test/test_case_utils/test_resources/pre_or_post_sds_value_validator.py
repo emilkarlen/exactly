@@ -2,10 +2,12 @@ import unittest
 
 from typing import Optional, Callable, Any
 
-from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
+    ConstantPreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib_test.test_case_utils.test_resources.validation import Expectation, ValidationExpectation
+from exactly_lib_test.test_case_utils.test_resources.validation import Expectation, ValidationExpectation, \
+    ValidationActual
 from exactly_lib_test.test_resources.actions import do_nothing
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder
 
@@ -58,6 +60,13 @@ class ValidatorThat(PreOrPostSdsValueValidator):
     def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[str]:
         self.post_setup_action(tcds)
         return self.post_setup_return_value
+
+
+def constant_validator(result: ValidationActual) -> PreOrPostSdsValueValidator:
+    return ConstantPreOrPostSdsValueValidator(
+        pre_sds_result=result.pre_sds,
+        post_sds_result=result.post_sds,
+    )
 
 
 class PreOrPostSdsValidatorAssertion(ValueAssertionBase[PreOrPostSdsValueValidator]):

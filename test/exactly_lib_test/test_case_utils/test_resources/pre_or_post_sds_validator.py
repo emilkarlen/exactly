@@ -7,7 +7,8 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.test_case_utils.test_resources.validation import Expectation, ValidationExpectation
+from exactly_lib_test.test_case_utils.test_resources.validation import Expectation, ValidationExpectation, \
+    ValidationActual
 from exactly_lib_test.test_resources.actions import do_nothing
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, \
     MessageBuilder
@@ -63,6 +64,13 @@ class ValidatorThat(PreOrPostSdsValidator):
         return self.post_setup_return_value
 
 
+def constant_validator(result: ValidationActual) -> PreOrPostSdsValidator:
+    return ValidatorThat(
+        pre_sds_return_value=result.pre_sds,
+        post_setup_return_value=result.post_sds,
+    )
+
+
 class PreOrPostSdsValidatorAssertion(ValueAssertionBase[PreOrPostSdsValidator]):
     def __init__(self,
                  expectation: ValidationExpectation,
@@ -111,5 +119,3 @@ class PreOrPostSdsValidationAssertion(ValueAssertionBase[PreOrPostSdsValidator])
             self.expectation.post_sds.apply_with_message(put,
                                                          validation_result,
                                                          message_builder.apply('post sds validation'))
-
-
