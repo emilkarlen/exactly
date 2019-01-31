@@ -1,7 +1,8 @@
-from typing import Dict, Sequence, List
+from abc import ABC, abstractmethod
+from typing import Dict, Sequence, List, TypeVar, Generic
 
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
-from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.symbol.symbol_usage import SymbolUsage, SymbolReference
 from exactly_lib.util import symbol_table
 from exactly_lib.util.symbol_table import Entry, SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_utils
@@ -48,3 +49,37 @@ class SymbolsArrAndExpectSetup:
             list(precedes) +
             self.expected_references_list
         )
+
+
+RESOLVER_TYPE = TypeVar('RESOLVER_TYPE')
+
+
+class ResolverSymbolContext(Generic[RESOLVER_TYPE], ABC):
+    def __init__(self, name: str):
+        self._name = name
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    @abstractmethod
+    def resolver(self) -> RESOLVER_TYPE:
+        pass
+
+    @property
+    @abstractmethod
+    def reference_assertion(self) -> ValueAssertion[SymbolReference]:
+        pass
+
+    @property
+    def references_assertion(self) -> ValueAssertion[Sequence[SymbolReference]]:
+        return asrt.matches_sequence([
+            self.reference_assertion,
+        ])
+
+    @property
+    def symbol_table(self) -> SymbolTable:
+        return SymbolTable({
+            self.name: symbol_utils.container(self.resolver)
+        })
