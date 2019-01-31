@@ -1,3 +1,9 @@
+from typing import TypeVar, Generic
+
+EXPECTED = TypeVar('EXPECTED')
+ACTUAL = TypeVar('ACTUAL')
+
+
 class EA:
     """One expected value and one actual value."""
 
@@ -8,13 +14,13 @@ class EA:
         self.actual = actual
 
 
-class NEA:
+class NEA(Generic[EXPECTED, ACTUAL]):
     """A name, one expected value and one actual value."""
 
     def __init__(self,
                  name: str,
-                 expected,
-                 actual):
+                 expected: EXPECTED,
+                 actual: ACTUAL):
         self.name = name
         self.expected = expected
         self.actual = actual
