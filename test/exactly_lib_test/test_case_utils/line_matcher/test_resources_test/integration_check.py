@@ -3,13 +3,12 @@ Test of test-infrastructure: instruction_check.
 """
 import unittest
 
-from typing import Sequence, List
+from typing import List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.pre_or_post_value_validation import constant_success_validator, PreOrPostSdsValueValidator
 from exactly_lib.type_system.error_message import ConstantErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine, LineMatcherValue
@@ -18,7 +17,7 @@ from exactly_lib_test.section_document.test_resources.parser_classes import Cons
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
 from exactly_lib_test.symbol.test_resources.line_matcher import line_matcher_from_primitive_value, \
-    resolver_of_unconditionally_matching_matcher, value_of_unconditionally_matching_matcher, LineMatcherConstantTestImpl
+    resolver_of_unconditionally_matching_matcher, value_of_unconditionally_matching_matcher
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check as sut
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import Expectation, is_pass
@@ -71,8 +70,8 @@ class TestSymbolReferences(TestCaseBase):
             self._check(
                 utils.single_line_source(),
                 ARBITRARY_MODEL,
-                parser_for_constant(
-                    references=symbol_usages_of_matcher
+                ConstantParser(
+                    line_matcher_from_primitive_value(references=symbol_usages_of_matcher)
                 ),
                 sut.Arrangement(),
                 sut.Expectation(
@@ -178,19 +177,6 @@ class _LineMatcherThatReportsHardError(LineMatcher):
 
     def matches(self, model: LineMatcherLine) -> bool:
         raise HardErrorException(ConstantErrorMessageResolver('unconditional hard error'))
-
-
-def parser_for_constant(resolved_value: LineMatcher = LineMatcherConstantTestImpl(True),
-                        references: Sequence[SymbolReference] = (),
-                        validator: PreOrPostSdsValueValidator = constant_success_validator()
-                        ) -> Parser[LineMatcherResolver]:
-    return ConstantParser(
-        line_matcher_from_primitive_value(
-            resolved_value,
-            references,
-            validator,
-        )
-    )
 
 
 class LineMatcherResolverThatAssertsThatSymbolsAreAsExpected(LineMatcherResolver):
