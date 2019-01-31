@@ -11,6 +11,7 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.symbol.test_resources.symbols_setup import ResolverSymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -101,6 +102,14 @@ def is_line_matcher_reference_to(symbol_name: str) -> ValueAssertion:
                                             IS_LINE_MATCHER_REFERENCE_RESTRICTION)
 
 
+def is_line_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[SymbolReference]:
+    return asrt.is_instance_with(
+        SymbolReference,
+        asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
+                                         IS_LINE_MATCHER_REFERENCE_RESTRICTION)
+    )
+
+
 def successful_matcher_with_validation(validator: PreOrPostSdsValueValidator):
     return LineMatcherResolverConstantValueTestImpl(
         LineMatcherValueTestImpl(
@@ -129,3 +138,19 @@ def value_of_unconditionally_matching_matcher() -> LineMatcherValue:
     return LineMatcherValueFromPrimitiveValue(
         LineMatcherConstantTestImpl(True)
     )
+
+
+class LineMatcherSymbolContext(ResolverSymbolContext[LineMatcherResolver]):
+    def __init__(self,
+                 name: str,
+                 resolver: LineMatcherResolver):
+        super().__init__(name)
+        self._resolver = resolver
+
+    @property
+    def resolver(self) -> LineMatcherResolver:
+        return self._resolver
+
+    @property
+    def reference_assertion(self) -> ValueAssertion[SymbolReference]:
+        return is_line_matcher_reference_to__ref(self.name)
