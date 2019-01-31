@@ -6,6 +6,8 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.util.functional import compose_first_and_second
 
+StringTransformerModel = Iterable[str]
+
 
 class StringTransformer:
     """
@@ -19,7 +21,7 @@ class StringTransformer:
         """
         return False
 
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
         raise NotImplementedError('abstract method')
 
     def __str__(self):
@@ -46,7 +48,7 @@ class IdentityStringTransformer(StringTransformer):
     def is_identity_transformer(self) -> bool:
         return True
 
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
         return lines
 
 
@@ -62,7 +64,7 @@ class SequenceStringTransformer(StringTransformer):
     def transformers(self) -> Sequence[StringTransformer]:
         return self._transformers
 
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
         if not self._transformers:
             return lines
         else:

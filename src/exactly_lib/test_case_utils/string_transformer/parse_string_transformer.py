@@ -5,6 +5,7 @@ from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic import string_transformers
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
@@ -46,18 +47,30 @@ class StringTransformerDescriptor(ErrorMessagePartConstructor):
         return [line]
 
 
+def parser() -> Parser[StringTransformerResolver]:
+    return _PARSER
+
+
+class _Parser(Parser[StringTransformerResolver]):
+    def parse_from_token_parser(self, parser: TokenParser) -> StringTransformerResolver:
+        return parse_string_transformer_from_token_parser(parser)
+
+
+_PARSER = _Parser()
+
+
 def parse_string_transformer(source: ParseSource) -> StringTransformerResolver:
     with token_stream_parser.from_parse_source(source) as tp:
         return parse_optional_transformer_resolver(tp)
 
 
-def parse_optional_transformer_resolver(parser: TokenParser) -> StringTransformerResolver:
+def parse_optional_transformer_resolver(token_parser: TokenParser) -> StringTransformerResolver:
     """
     :return: The identity transformer, if transformer option is not given.
     """
-    return parser.consume_and_handle_optional_option(
-        IDENTITY_TRANSFORMER_RESOLVER,
+    return token_parser.consume_and_handle_optional_option2(
         parse_string_transformer_from_token_parser,
+        IDENTITY_TRANSFORMER_RESOLVER,
         instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
