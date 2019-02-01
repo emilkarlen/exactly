@@ -12,7 +12,7 @@ from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherR
     is_reference_to_string_matcher
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl, \
     is_reference_to_string_transformer
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_resolvers
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration as tc
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
@@ -68,11 +68,11 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
         prepend_and_equals_expected_matcher = NameAndValue('PREPEND_AND_EQUALS_EXPECTED',
                                                            prepend_and_equals_expected_matcher_resolver)
 
-        symbols = SymbolTable({
-            equals_expected_matcher.name: container(equals_expected_matcher.value),
-            prepend_transformer_symbol.name: container(prepend_transformer_symbol.value),
-            prepend_and_equals_expected_matcher.name: container(prepend_and_equals_expected_matcher.value),
-        })
+        symbols = symbol_table_from_name_and_resolvers([
+            equals_expected_matcher,
+            prepend_transformer_symbol,
+            prepend_and_equals_expected_matcher,
+        ])
         expected_symbol_references = asrt.matches_sequence([
             is_reference_to_string_transformer(prepend_transformer_symbol.name),
             is_reference_to_string_matcher(prepend_and_equals_expected_matcher.name),

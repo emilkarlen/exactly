@@ -20,8 +20,8 @@ from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYM
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
-from exactly_lib_test.test_case_utils.string_transformers import parse_string_transformer
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import transformers
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.resolver_assertions import \
     resolved_value_equals_string_transformer
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -76,7 +76,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         replacement_str = 'the_replacement'
 
         symbol = NameAndValue('the_symbol_name',
-                              parse_string_transformer.CustomStringTransformerTestImpl())
+                              transformers.CustomStringTransformerTestImpl())
 
         replace_transformer_syntax = argument_syntax.syntax_for_replace_transformer(regex_str,
                                                                                     replacement_str)
@@ -125,8 +125,8 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
         the_sequence_transformer = SequenceStringTransformer([
             symbol.value,
-            parse_string_transformer.replace_transformer(regex_str,
-                                                         replacement_str),
+            transformers.replace_transformer(regex_str,
+                                             replacement_str),
         ])
 
         expected_container = matches_container(

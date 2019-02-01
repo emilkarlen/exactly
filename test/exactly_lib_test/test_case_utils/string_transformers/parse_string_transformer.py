@@ -1,19 +1,14 @@
 import unittest
 
 import re
-from typing import Iterable
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
-from exactly_lib.test_case_utils.string_transformer.transformers import ReplaceStringTransformer, \
-    SelectStringTransformer
-from exactly_lib.type_system.logic.line_matcher import LineMatcher
-from exactly_lib.type_system.logic.string_transformer import SequenceStringTransformer, CustomStringTransformer
+from exactly_lib.type_system.logic.string_transformer import SequenceStringTransformer
 from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
@@ -28,7 +23,10 @@ from exactly_lib_test.test_case_utils.parse.test_resources.source_case import So
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.argument_syntax import \
     syntax_for_replace_transformer, syntax_for_sequence_of_transformers, syntax_for_select_transformer
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.resolver_assertions import \
-    resolved_value_equals_string_transformer
+    resolved_value_equals_string_transformer, resolved_value_is_replace_transformer, \
+    resolved_value_is_select_regex_transformer, resolved_value_is_select_transformer
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.transformers import replace_transformer, \
+    CustomStringTransformerTestImpl
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -369,46 +367,3 @@ class TestParseLineTransformer(unittest.TestCase):
                     }),
                 )),
         )
-
-
-def resolved_value_is_replace_transformer(regex_str: str,
-                                          replacement_str: str,
-                                          references: ValueAssertion = asrt.is_empty_sequence
-                                          ) -> ValueAssertion[LogicValueResolver]:
-    expected_transformer = replace_transformer(regex_str, replacement_str)
-    return resolved_value_equals_string_transformer(expected_transformer,
-                                                    references=references)
-
-
-def replace_transformer(regex_str: str, replacement_str: str) -> ReplaceStringTransformer:
-    return ReplaceStringTransformer(re.compile(regex_str),
-                                    replacement_str)
-
-
-def resolved_value_is_select_regex_transformer(regex_str: str,
-                                               references: ValueAssertion = asrt.is_empty_sequence
-                                               ) -> ValueAssertion[LogicValueResolver]:
-    expected_transformer = select_regex_transformer(regex_str)
-    return resolved_value_equals_string_transformer(expected_transformer,
-                                                    references=references)
-
-
-def resolved_value_is_select_transformer(line_matcher: LineMatcher,
-                                         references: ValueAssertion = asrt.is_empty_sequence
-                                         ) -> ValueAssertion[LogicValueResolver]:
-    expected_transformer = select_transformer(line_matcher)
-    return resolved_value_equals_string_transformer(expected_transformer,
-                                                    references=references)
-
-
-def select_regex_transformer(regex_str: str) -> SelectStringTransformer:
-    return select_transformer(LineMatcherRegex(re.compile(regex_str)))
-
-
-def select_transformer(line_matcher: LineMatcher) -> SelectStringTransformer:
-    return SelectStringTransformer(line_matcher)
-
-
-class CustomStringTransformerTestImpl(CustomStringTransformer):
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
-        raise NotImplementedError('should not be used')
