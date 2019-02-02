@@ -6,11 +6,12 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \
     instruction_log_dir
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator, \
-    SingleStepValidator, ValidationStep
+    ValidationStep
 from exactly_lib.test_case_utils import file_ref_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
@@ -122,14 +123,21 @@ class FileMakerForContentsFromExistingFile(FileMaker):
                                         file_properties.must_exist_as(file_properties.FileType.REGULAR,
                                                                       follow_symlinks=True)))
 
+        self._validator = pre_or_post_validation.AndValidator([
+            pre_or_post_validation.SingleStepValidator(ValidationStep.PRE_SDS,
+                                                       self._src_file_validator),
+            pre_or_post_validation.PreOrPostSdsValidatorFromValueValidator(
+                lambda symbols: self._transformer.resolve(symbols).validator(),
+            )
+        ])
+
     @property
     def symbol_references(self) -> Sequence[SymbolReference]:
         return tuple(self._transformer.references) + tuple(self._src_path.references)
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
-        return SingleStepValidator(ValidationStep.PRE_SDS,
-                                   self._src_file_validator)
+        return self._validator
 
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,

@@ -13,6 +13,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionTy
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.instructions.multi_phase.new_file.test_resources import utils as new_file_utils
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.arguments_building import \
     source_of, complete_argument_elements
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.common_test_cases import \
@@ -20,7 +21,7 @@ from exactly_lib_test.instructions.multi_phase.new_file.test_resources.common_te
     TestCommonFailingScenariosDueToInvalidDestinationFileBase, InvalidDestinationFileTestCasesData
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils import Step, \
     ALLOWED_DST_FILE_RELATIVITIES, IS_FAILURE_OF_VALIDATION, IS_FAILURE, IS_SUCCESS, just_parse
-from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, expectation
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import file_with_rel_opt_conf, \
     accepted_non_home_source_relativities, ALLOWED_SRC_FILE_RELATIVITIES, TransformableContentsConstructor
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -32,6 +33,8 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
+    failing_validation_cases
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_home, every_conf_rel_home, \
     conf_rel_non_home, conf_rel_any, RelativityOptionConfigurationForRelNonHome, RelativityOptionConfiguration
@@ -286,6 +289,44 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                                 is_reference_to_string_transformer(to_upper_transformer.name),
                             ])
                         ))
+
+    def test_validation_should_include_validation_of_string_transformer(self):
+        # ARRANGE #
+
+        src_file = fs.File('source-file.txt', 'contents of source file')
+        expected_file = fs.File('a-file-name.txt', src_file.contents.upper())
+
+        a_dst_rel_opt_conf = new_file_utils.AN_ALLOWED_DST_FILE_RELATIVITY
+        a_src_rel_opt_conf = ALLOWED_SRC_FILE_RELATIVITIES[0]
+
+        for failing_string_transformer_case in failing_validation_cases():
+            failing_symbol_context = failing_string_transformer_case.value.symbol_context
+
+            file_contents_arg = TransformableContentsConstructor(
+                file_with_rel_opt_conf(src_file.name, a_src_rel_opt_conf)
+            ).with_transformation(failing_symbol_context.name).as_arguments
+
+            with self.subTest(failing_string_transformer_case.name):
+                # ACT & ASSERT #
+
+                self._check(
+                    remaining_source(
+                        '{rel_opt} {file_name} {contents_arguments_with_transformation}'.format(
+                            rel_opt=a_dst_rel_opt_conf.option_argument,
+                            file_name=expected_file.file_name,
+                            contents_arguments_with_transformation=file_contents_arg.first_line
+                        ),
+                        file_contents_arg.following_lines),
+                    ArrangementWithSds(
+                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                        home_or_sds_contents=a_src_rel_opt_conf.populator_for_relativity_option_root(
+                            DirContents([src_file])),
+                        symbols=failing_symbol_context.symbol_table,
+                    ),
+                    expectation(
+                        validation=failing_string_transformer_case.value.expectation,
+                        symbol_usages=failing_symbol_context.references_assertion
+                    ))
 
     def test_no_new_line_variants(self):
         # ARRANGE #

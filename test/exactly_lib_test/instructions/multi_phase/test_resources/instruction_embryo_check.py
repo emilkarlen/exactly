@@ -14,6 +14,8 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.test_case_utils.test_resources import validation as validation_utils
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -53,6 +55,33 @@ class Expectation:
         self.symbols_after_main = symbols_after_main
         self.main_side_effect_on_environment_variables = main_side_effect_on_environment_variables
         self.assertion_on_instruction_environment = assertion_on_instruction_environment
+
+
+def expectation(validation: ValidationExpectation = validation_utils.all_validations_passes(),
+                main_result: ValueAssertion = asrt.anything_goes(),
+                symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+                symbols_after_main: ValueAssertion[SymbolTable] = asrt.anything_goes(),
+                main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
+                side_effects_on_home_and_sds: ValueAssertion[HomeAndSds] = asrt.anything_goes(),
+                side_effects_on_home: ValueAssertion[pathlib.Path] = asrt.anything_goes(),
+                source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+                main_side_effect_on_environment_variables: ValueAssertion[Dict[str, str]] = asrt.anything_goes(),
+                assertion_on_instruction_environment:
+                ValueAssertion[InstructionEnvironmentForPostSdsStep] = asrt.anything_goes(),
+                ):
+    return Expectation(
+        validation_pre_sds=validation.pre_sds,
+        validation_post_sds=validation.post_sds,
+        main_result=main_result,
+        symbol_usages=symbol_usages,
+        symbols_after_main=symbols_after_main,
+        main_side_effects_on_sds=main_side_effects_on_sds,
+        side_effects_on_home_and_sds=side_effects_on_home_and_sds,
+        side_effects_on_home=side_effects_on_home,
+        source=source,
+        main_side_effect_on_environment_variables=main_side_effect_on_environment_variables,
+        assertion_on_instruction_environment=assertion_on_instruction_environment,
+    )
 
 
 class TestCaseBase(unittest.TestCase):
