@@ -6,10 +6,16 @@ from exactly_lib.test_case_utils.string_transformer import transformers as sut
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerSelectResolver
 from exactly_lib.test_case_utils.string_transformer.transformers import SelectStringTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResolverConstantTestImpl, \
     is_line_matcher_reference_to
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_arg
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import validation_cases
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as st_args
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import resolver_assertions as asrt_resolver
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -20,6 +26,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestSelectTransformer),
         unittest.makeSuite(TestSelectTransformerResolver),
+        ValidatorShouldValidateLineMatcher(),
     ])
 
 
@@ -152,6 +159,29 @@ class TestSelectTransformerResolver(unittest.TestCase):
         # ACT & ASSERT #
         assertion_on_resolver.apply_without_message(self,
                                                     actual_resolver)
+
+
+class ValidatorShouldValidateLineMatcher(unittest.TestCase):
+    def runTest(self):
+        for case in validation_cases.failing_validation_cases():
+            line_matcher_symbol_context = case.value.symbol_context
+            line_matcher_arg = lm_arg.SymbolReference(line_matcher_symbol_context.name)
+
+            arguments = st_args.syntax_for_select_transformer(str(line_matcher_arg))
+
+            with self.subTest(case.name):
+                integration_check.check(
+                    self,
+                    remaining_source(arguments),
+                    [],
+                    integration_check.Arrangement(
+                        symbols=line_matcher_symbol_context.symbol_table
+                    ),
+                    integration_check.Expectation(
+                        validation=case.value.expectation,
+                        symbol_references=line_matcher_symbol_context.references_assertion
+                    )
+                )
 
 
 def sub_string_line_matcher(sub_string: str) -> LineMatcher:

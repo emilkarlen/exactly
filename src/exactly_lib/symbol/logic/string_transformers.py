@@ -9,9 +9,9 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 class StringTransformerSequenceResolver(StringTransformerResolver):
-    def __init__(self, transformer_resolver_list: Sequence[StringTransformerResolver]):
-        self.transformers = transformer_resolver_list
-        self._references = references_from_objects_with_symbol_references(transformer_resolver_list)
+    def __init__(self, transformers: Sequence[StringTransformerResolver]):
+        self.transformers = transformers
+        self._references = references_from_objects_with_symbol_references(transformers)
 
     def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
         return string_transformer_values.StringTransformerSequenceValue([

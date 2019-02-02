@@ -1,6 +1,6 @@
 import unittest
 
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Callable
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
@@ -13,6 +13,9 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformer, 
     StringTransformerModel
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -57,6 +60,25 @@ def check_with_custom_parser(put: unittest.TestCase,
                              arrangement: Arrangement,
                              expectation: Expectation):
     _Checker(put, source, model, parser, arrangement, expectation).check()
+
+
+class TestCaseWithCheckMethods(unittest.TestCase):
+    def _check(self,
+               source: ParseSource,
+               model: StringTransformerModel,
+               arrangement: Arrangement,
+               expectation: Expectation
+               ):
+        check(self, source, model, arrangement, expectation)
+
+    def _check_with_source_variants(self,
+                                    arguments: Arguments,
+                                    get_model: Callable[[], StringTransformerModel],
+                                    arrangement: Arrangement,
+                                    expectation: Expectation
+                                    ):
+        for source in equivalent_source_variants__with_source_check__for_expression_parser(self, arguments):
+            self._check(source, get_model(), arrangement, expectation)
 
 
 class _CheckIsDoneException(Exception):

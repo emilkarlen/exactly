@@ -23,6 +23,15 @@ class Custom(LineMatcherArg):
         return [self.matcher]
 
 
+class SymbolReference(LineMatcherArg):
+    def __init__(self, symbol_name: str):
+        self._symbol_name = symbol_name
+
+    @property
+    def elements(self) -> List:
+        return [self._symbol_name]
+
+
 class LineNum(LineMatcherArg):
     def __init__(self, int_condition: str):
         self._int_condition = int_condition

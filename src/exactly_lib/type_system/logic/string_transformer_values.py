@@ -1,5 +1,7 @@
 from typing import Sequence, Set, Callable
 
+from exactly_lib.test_case import pre_or_post_value_validators
+from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic import string_transformer
@@ -23,22 +25,29 @@ class StringTransformerConstantValue(StringTransformerValue):
 
 
 class StringTransformerSequenceValue(StringTransformerValue):
-    def __init__(self, sequence: Sequence[StringTransformerValue]):
-        self._sequence = sequence
+    def __init__(self, transformers: Sequence[StringTransformerValue]):
+        self._transformers = transformers
+        self._validator = pre_or_post_value_validators.AndValidator([
+            transformer.validator()
+            for transformer in transformers
+        ])
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return resolving_dependencies_from_sequence(self._sequence)
+        return resolving_dependencies_from_sequence(self._transformers)
+
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return self._validator
 
     def value_when_no_dir_dependencies(self) -> StringTransformer:
         return string_transformer.SequenceStringTransformer([
             transformer.value_when_no_dir_dependencies()
-            for transformer in self._sequence
+            for transformer in self._transformers
         ])
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> string_transformer.SequenceStringTransformer:
         return string_transformer.SequenceStringTransformer([
             transformer.value_of_any_dependency(home_and_sds)
-            for transformer in self._sequence
+            for transformer in self._transformers
         ])
 
 

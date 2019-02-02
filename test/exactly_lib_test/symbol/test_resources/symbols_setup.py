@@ -73,6 +73,11 @@ class ResolverSymbolContext(Generic[RESOLVER_TYPE], ABC):
         return symbol_utils.container(self.resolver)
 
     @property
+    def name_and_resolver(self) -> NameAndValue[SymbolContainer]:
+        return NameAndValue(self.name,
+                            self.resolver)
+
+    @property
     def name_and_container(self) -> NameAndValue[SymbolContainer]:
         return NameAndValue(self.name,
                             self.symbol_table_container)

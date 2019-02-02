@@ -11,12 +11,13 @@ from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 class ValidationCase:
     def __init__(self,
+                 symbol_name: str,
                  expectation: ValidationExpectation,
                  actual: ValidationActual,
                  ):
         self._expectation = expectation
         self._symbol_context = StringTransformerSymbolContext(
-            'string_transformer_symbol',
+            symbol_name,
             string_transformer_from_primitive_value(
                 validator=constant_validator(actual)
             )
@@ -37,11 +38,12 @@ class ValidationCase:
         return self._expectation
 
 
-def failing_validation_cases() -> Sequence[NameAndValue[ValidationCase]]:
+def failing_validation_cases(symbol_name: str = 'string_transformer_symbol') -> Sequence[NameAndValue[ValidationCase]]:
     return [
         NameAndValue(
             case.name,
-            ValidationCase(case.expected,
+            ValidationCase(symbol_name,
+                           case.expected,
                            case.actual)
         )
         for case in validation.failing_validation_cases()

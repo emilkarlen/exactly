@@ -1,5 +1,6 @@
 from typing import Set
 
+from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.string_transformer import transformers
@@ -18,6 +19,9 @@ class SelectStringTransformerValue(StringTransformerValue):
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self._line_matcher.resolving_dependencies()
+
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return self._line_matcher.validator()
 
     def value_when_no_dir_dependencies(self) -> StringTransformer:
         return transformers.SelectStringTransformer(self._line_matcher.value_when_no_dir_dependencies())

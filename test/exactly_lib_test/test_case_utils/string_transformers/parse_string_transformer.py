@@ -8,8 +8,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
-from exactly_lib.type_system.logic.string_transformer import SequenceStringTransformer
-from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
+from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
@@ -21,11 +20,11 @@ from exactly_lib_test.test_case_utils.expression.test_resources import \
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.argument_syntax import \
-    syntax_for_replace_transformer, syntax_for_sequence_of_transformers, syntax_for_select_transformer
+    syntax_for_replace_transformer, syntax_for_select_transformer
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.resolver_assertions import \
     resolved_value_equals_string_transformer, resolved_value_is_replace_transformer, \
     resolved_value_is_select_regex_transformer, resolved_value_is_select_transformer
-from exactly_lib_test.test_case_utils.string_transformers.test_resources.transformers import replace_transformer, \
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.transformers import \
     CustomStringTransformerTestImpl
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -325,45 +324,4 @@ class TestParseLineTransformer(unittest.TestCase):
             Expectation(
                 resolver=resolved_value_is_select_transformer(
                     LineMatcherRegex(re.compile(regex_str)))),
-        )
-
-    def test_sequence(self):
-        # ARRANGE #
-        symbol_1 = NameAndValue('symbol_1_name',
-                                CustomStringTransformerTestImpl())
-        symbol_2 = NameAndValue('symbol_2_name',
-                                CustomStringTransformerTestImpl())
-
-        regex_str = 'regex'
-        replacement_str = 'replacement'
-
-        the_replace_transformer = replace_transformer(regex_str,
-                                                      replacement_str)
-        replace_transformer_syntax = syntax_for_replace_transformer(regex_str,
-                                                                    replacement_str)
-
-        arguments = syntax_for_sequence_of_transformers([
-            symbol_1.name,
-            replace_transformer_syntax,
-            symbol_2.name,
-        ])
-        # ACT & ASSERT #
-        self._check(
-            remaining_source(arguments),
-            Expectation(
-                resolver=resolved_value_equals_string_transformer(
-                    SequenceStringTransformer([
-                        symbol_1.value,
-                        the_replace_transformer,
-                        symbol_2.value,
-                    ]),
-                    references=asrt.matches_sequence([
-                        is_reference_to_string_transformer(symbol_1.name),
-                        is_reference_to_string_transformer(symbol_2.name),
-                    ]),
-                    symbols=SymbolTable({
-                        symbol_1.name: container(StringTransformerConstant(symbol_1.value)),
-                        symbol_2.name: container(StringTransformerConstant(symbol_2.value)),
-                    }),
-                )),
         )
