@@ -264,8 +264,6 @@ class TestExecution(unittest.TestCase):
     def test(self):
         # ARRANGE #
 
-        parser = sut.program_parser()
-
         cases = [
             NameAndValue('0 exit code',
                          0),
@@ -292,22 +290,25 @@ class TestExecution(unittest.TestCase):
                 })
 
                 # ACT & ASSERT #
-                pgm_exe_check.check(self,
-                                    parser,
-                                    source,
-                                    pgm_exe_check.Arrangement(
-                                        symbols=symbols),
-                                    pgm_exe_check.Expectation(
-                                        symbol_references=asrt.matches_sequence([
-                                            asrt_pgm.is_program_reference_to(program_that_executes_py_source.name),
-                                        ]),
-                                        result=pgm_exe_check.assert_process_result_data(
-                                            exitcode=asrt.equals(case.value),
-                                            stdout_contents=asrt.equals(''),
-                                            stderr_contents=asrt.equals(''),
-                                            contents_after_transformation=asrt.equals(''),
-                                        )
-                                    ))
+                pgm_exe_check.check_custom_parser(
+                    self,
+                    sut.program_parser(),
+                    source,
+                    pgm_exe_check.Arrangement(
+                        symbols=symbols),
+                    pgm_exe_check.Expectation(
+                        symbol_references=asrt.matches_sequence([
+                            asrt_pgm.is_program_reference_to(
+                                program_that_executes_py_source.name),
+                        ]),
+                        result=pgm_exe_check.assert_process_result_data(
+                            exitcode=asrt.equals(case.value),
+                            stdout_contents=asrt.equals(''),
+                            stderr_contents=asrt.equals(''),
+                            contents_after_transformation=asrt.equals(''),
+                        )
+                    )
+                )
 
 
 class ResolvingCase:

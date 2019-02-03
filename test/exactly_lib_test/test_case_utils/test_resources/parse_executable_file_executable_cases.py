@@ -2,9 +2,11 @@ import unittest
 
 import os
 import pathlib
+from typing import List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_executable
@@ -75,9 +77,9 @@ def token_stream_has_remaining_source(source: str) -> ValueAssertion:
 class ExpectationOnExeFile:
     def __init__(self,
                  file_resolver_value: FileRef,
-                 expected_symbol_references_of_file: list,
+                 expected_symbol_references_of_file: List[SymbolReference],
                  argument_resolver_value: ListValue,
-                 expected_symbol_references_of_argument: list,
+                 expected_symbol_references_of_argument: List[SymbolReference],
                  symbol_for_value_checks: SymbolTable = None):
         self.symbol_for_value_checks = symbol_for_value_checks
         if symbol_for_value_checks is None:
@@ -97,9 +99,9 @@ class Expectation:
                  source: ValueAssertion[ParseSource],
                  validation_result: validation.Expectation,
                  file_resolver_value: FileRef,
-                 expected_symbol_references_of_file: list,
+                 expected_symbol_references_of_file: List[SymbolReference],
                  argument_resolver_value: ListValue,
-                 expected_symbol_references_of_argument: list):
+                 expected_symbol_references_of_argument: List[SymbolReference]):
         self.source = source
         self.validation_result = validation_result
         self.expectation_on_exe_file = ExpectationOnExeFile(file_resolver_value=file_resolver_value,

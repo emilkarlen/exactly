@@ -1,7 +1,7 @@
 import sys
 import unittest
 
-from typing import Sequence
+from typing import Sequence, List
 
 from exactly_lib.definitions import file_ref as file_ref_texts
 from exactly_lib.definitions.file_ref import REL_symbol_OPTION
@@ -70,8 +70,8 @@ class TestCaseConfiguration:
                  executable: str,
                  validation_result: validation.Expectation,
                  file_resolver_value: FileRef,
-                 expected_symbol_references_of_file: list,
-                 expected_symbol_references_of_argument: list,
+                 expected_symbol_references_of_file: List[SymbolReference],
+                 expected_symbol_references_of_argument: List[SymbolReference],
                  ):
         self.executable = executable
         self.file_resolver_value = file_resolver_value

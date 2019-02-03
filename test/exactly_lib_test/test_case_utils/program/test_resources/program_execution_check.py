@@ -11,6 +11,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case_utils.program.execution import store_result_in_instruction_tmp_dir as pgm_execution
+from exactly_lib.test_case_utils.program.parse import parse_program as sut
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util import file_utils
 from exactly_lib.util.process_execution import executable_factories
@@ -21,6 +22,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators, \
     home_and_sds_populators, sds_populator
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
 from exactly_lib_test.test_resources.files import tmp_dir
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -111,8 +113,7 @@ class Arrangement(ArrangementWithSds):
 class Expectation:
     def __init__(self,
                  result: ValueAssertion[ResultWithTransformationData] = assert_process_result_data(),
-                 validation_pre_sds: ValueAssertion[str] = asrt.is_none,
-                 validation_post_sds: ValueAssertion[str] = asrt.is_none,
+                 validation: ValidationExpectation = all_validations_passes(),
                  symbol_references: ValueAssertion = asrt.is_empty_sequence,
                  main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
                  main_side_effects_on_home_and_sds: ValueAssertion = asrt.anything_goes(),
@@ -120,18 +121,24 @@ class Expectation:
                  ):
         self.source = source
         self.symbol_references = symbol_references
-        self.validation_pre_sds = validation_pre_sds
-        self.validation_post_sds = validation_post_sds
+        self.validation = validation
         self.result = result
         self.main_side_effects_on_home_and_sds = main_side_effects_on_home_and_sds
         self.main_side_effects_on_sds = main_side_effects_on_sds
 
 
 def check(put: unittest.TestCase,
-          parser: Parser[ProgramResolver],
           source: ParseSource,
           arrangement: Arrangement,
           expectation: Expectation):
+    Executor(put, arrangement, expectation).execute(sut.program_parser(), source)
+
+
+def check_custom_parser(put: unittest.TestCase,
+                        parser: Parser[ProgramResolver],
+                        source: ParseSource,
+                        arrangement: Arrangement,
+                        expectation: Expectation):
     Executor(put, arrangement, expectation).execute(parser, source)
 
 
@@ -193,14 +200,14 @@ class Executor:
                               environment: PathResolvingEnvironmentPreSds,
                               program_resolver: ProgramResolver) -> Optional[str]:
         actual = program_resolver.validator.validate_pre_sds_if_applicable(environment)
-        self.expectation.validation_pre_sds.apply_with_message(self.put, actual, 'validation-pre-sds')
+        self.expectation.validation.pre_sds.apply_with_message(self.put, actual, 'validation-pre-sds')
         return actual
 
     def _execute_post_sds_validate(self,
                                    environment: PathResolvingEnvironmentPostSds,
                                    program_resolver: ProgramResolver) -> Optional[str]:
         actual = program_resolver.validator.validate_post_sds_if_applicable(environment)
-        self.expectation.validation_post_sds.apply_with_message(self.put, actual, 'validation-post-sds')
+        self.expectation.validation.post_sds.apply_with_message(self.put, actual, 'validation-post-sds')
         return actual
 
     def _execute_program(self,

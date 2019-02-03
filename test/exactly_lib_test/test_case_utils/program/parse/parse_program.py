@@ -54,8 +54,6 @@ class TestParseSymbolReferenceProgram(unittest.TestCase):
     def test(self):
         # ARRANGE #
 
-        parser = sut.program_parser()
-
         cases = [
             NameAndValue('0 exit code',
                          0),
@@ -84,7 +82,6 @@ class TestParseSymbolReferenceProgram(unittest.TestCase):
 
                 # ACT & ASSERT #
                 pgm_exe_check.check(self,
-                                    parser,
                                     source,
                                     pgm_exe_check.Arrangement(
                                         symbols=symbols),
