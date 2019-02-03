@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, List
 
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSymbolContext, \
     string_transformer_from_primitive_value
@@ -26,6 +26,12 @@ class ValidationCase:
     @property
     def transformer_arguments_string(self) -> str:
         return argument_syntax.syntax_for_transformer_option(
+            self._symbol_context.name
+        )
+
+    @property
+    def transformer_arguments_elements(self) -> List[str]:
+        return argument_syntax.arguments_for_transformer_option(
             self._symbol_context.name
         )
 

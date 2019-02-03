@@ -1,9 +1,20 @@
+from typing import Sequence
+
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer, Stringable
 from exactly_lib_test.test_resources.programs import python_program_execution
+
+
+def symbol_ref_command_line(command_line: Stringable) -> ArgumentElementRenderer:
+    return ab.sequence([syntax_elements.SYMBOL_REF_PROGRAM_TOKEN, command_line])
+
+
+def symbol_ref_command_elements(symbol_name: str, arguments: Sequence = ()) -> ArgumentElements:
+    return ArgumentElements([syntax_elements.SYMBOL_REF_PROGRAM_TOKEN, symbol_name] +
+                            list(arguments))
 
 
 def shell_command(command_line: Stringable) -> ArgumentElements:
@@ -14,8 +25,8 @@ def shell_command_line(command_line: Stringable) -> ArgumentElementRenderer:
     return ab.sequence([syntax_elements.SHELL_COMMAND_TOKEN, command_line])
 
 
-def symbol_ref_command_line(command_line: Stringable) -> ArgumentElementRenderer:
-    return ab.sequence([syntax_elements.SYMBOL_REF_PROGRAM_TOKEN, command_line])
+def system_program_argument_elements(command_line: Stringable) -> ArgumentElements:
+    return ArgumentElements([syntax_elements.SYSTEM_PROGRAM_TOKEN, command_line])
 
 
 def system_program_command_line(command_line: Stringable) -> ArgumentElementRenderer:
@@ -28,10 +39,6 @@ def interpret_py_source(python_source: Stringable) -> Arguments:
 
 def interpret_py_source_elements(python_source: Stringable) -> ArgumentElements:
     return ArgumentElements([interpret_py_source_line(python_source)])
-
-
-def system_program_argument_elements(command_line: Stringable) -> ArgumentElements:
-    return ArgumentElements([syntax_elements.SYSTEM_PROGRAM_TOKEN, command_line])
 
 
 def interpret_py_source_line(python_source: Stringable) -> ArgumentElementRenderer:

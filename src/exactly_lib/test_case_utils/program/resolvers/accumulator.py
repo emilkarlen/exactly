@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, List
 
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.logic.program import stdin_data_resolver
@@ -10,7 +10,7 @@ from exactly_lib.symbol.object_with_symbol_references import references_from_obj
 from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, PreOrPostSdsValidatorFromValueValidator
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
@@ -30,7 +30,7 @@ class ProgramElementsAccumulator(ObjectWithSymbolReferencesAndValidation):
         self.stdin = stdin
         self.arguments = arguments
         self.transformations = transformations
-        self.validators = validators
+        self.validators = list(validators) + self._validators_of_transformers(transformations)
 
     def new_accumulated(self,
                         additional_stdin: StdinDataResolver,
@@ -58,6 +58,14 @@ class ProgramElementsAccumulator(ObjectWithSymbolReferencesAndValidation):
 
     def resolve_transformations(self, symbols: SymbolTable) -> StringTransformerValue:
         return StringTransformerSequenceResolver(self.transformations).resolve(symbols)
+
+    @staticmethod
+    def _validators_of_transformers(transformations: Sequence[StringTransformerResolver]
+                                    ) -> List[PreOrPostSdsValidator]:
+        return [
+            PreOrPostSdsValidatorFromValueValidator(lambda symbols: transformation.resolve(symbols).validator())
+            for transformation in transformations
+        ]
 
 
 def empty() -> ProgramElementsAccumulator:

@@ -1,16 +1,24 @@
 import unittest
 
+from typing import Sequence
+
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator
 from exactly_lib.test_case_utils.program.parse import parse_program as sut
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_resolvers
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.parse import parse_system_program
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_execution_check as pgm_exe_check
 from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
+    failing_validation_cases
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -20,6 +28,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParseSymbolReferenceProgram),
         unittest.makeSuite(TestParseSystemProgram),
+        unittest.makeSuite(TestValidationOfProgramShouldIncludeValidationOfTransformer),
 
     ])
 
@@ -98,8 +107,63 @@ class TestParseSymbolReferenceProgram(unittest.TestCase):
                                     ))
 
 
+class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        program_symbol = NameAndValue('A_PROGRAM',
+                                      _ProgramResolverWithoutImplementation())
+
+        pgm_and_args_cases = [
+            NameAndValue('shell command',
+                         pgm_args.shell_command('shell-command arg')
+                         ),
+            NameAndValue('system command',
+                         pgm_args.system_program_argument_elements('system command arg')
+                         ),
+            NameAndValue('python',
+                         pgm_args.interpret_py_source_elements('exit(0)')
+                         ),
+            NameAndValue('symbol reference',
+                         pgm_args.symbol_ref_command_elements(program_symbol.name, [])
+                         ),
+        ]
+        for pgm_and_args_case in pgm_and_args_cases:
+            for validation_case in failing_validation_cases():
+                source = pgm_and_args_case.value.followed_by_lines(
+                    [validation_case.value.transformer_arguments_elements]
+                ).as_remaining_source
+
+                symbols = symbol_table_from_name_and_resolvers([
+                    program_symbol,
+                    validation_case.value.symbol_context.name_and_resolver,
+                ])
+
+                with self.subTest(pgm_and_args_case=pgm_and_args_case.name,
+                                  validation_case=validation_case.name):
+                    # ACT & ASSERT #
+                    pgm_exe_check.check(self,
+                                        source,
+                                        pgm_exe_check.Arrangement(
+                                            symbols=symbols),
+                                        pgm_exe_check.Expectation(
+                                            symbol_references=asrt.anything_goes(),
+                                            validation=validation_case.value.expectation,
+                                            result=asrt.anything_goes(),
+                                        ))
+
+
 def parse_source_of(single_line: ArgumentElementRenderer) -> ParseSource:
     return ArgumentElements([single_line]).as_remaining_source
+
+
+class _ProgramResolverWithoutImplementation(ProgramResolver):
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return ()
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return ConstantSuccessValidator()
 
 
 if __name__ == '__main__':
