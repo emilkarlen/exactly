@@ -95,15 +95,17 @@ class ParseShouldFailWhenPatternArgumentIsMissing(test_case_utils.TestWithNegati
 
 
 class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
-    any_char_regex_string_symbol = NameAndValue(
+    any_char_glob_pattern_string_symbol = NameAndValue(
         'glob_pattern_string_symbol',
         container(string_resolvers.str_constant('*'))
     )
     argument_w_opt_neg = arg.WithOptionalNegation(
-        arg.Name(arg.NameGlobPatternVariant('AB' + symbol_reference_syntax_for_name(any_char_regex_string_symbol.name)))
+        arg.Name(arg.NameGlobPatternVariant(
+            'AB' + symbol_reference_syntax_for_name(any_char_glob_pattern_string_symbol.name))
+        )
     )
     arrangement = ArrangementPostAct(symbols=SymbolTable({
-        any_char_regex_string_symbol.name: any_char_regex_string_symbol.value,
+        any_char_glob_pattern_string_symbol.name: any_char_glob_pattern_string_symbol.value,
     }))
 
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
@@ -115,7 +117,7 @@ class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
             arrangement=self.arrangement,
             expectation=expectation(
                 symbol_references=asrt.matches_sequence([
-                    is_reference_to_valid_regex_string_part(self.any_char_regex_string_symbol.name),
+                    is_reference_to_valid_regex_string_part(self.any_char_glob_pattern_string_symbol.name),
                 ]),
                 main_result=maybe_not.main_result(PassOrFail.PASS)
             )
