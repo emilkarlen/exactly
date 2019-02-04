@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.string_transformer import case_converters as sut
+from exactly_lib.test_case_utils.string_transformer.impl import case_converters as sut
 
 
 def suite() -> unittest.TestSuite:

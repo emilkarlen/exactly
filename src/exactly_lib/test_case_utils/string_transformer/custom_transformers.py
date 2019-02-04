@@ -1,5 +1,5 @@
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
-from exactly_lib.test_case_utils.string_transformer import case_converters, env_vars_replacement
+from exactly_lib.test_case_utils.string_transformer.impl import env_vars_replacement, case_converters
 from exactly_lib.test_case_utils.string_transformer import resolvers
 from exactly_lib.test_case_utils.symbol.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.util.textformat.structure import document
