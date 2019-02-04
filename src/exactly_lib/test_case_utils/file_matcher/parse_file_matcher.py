@@ -107,17 +107,9 @@ def _parse(parser: TokenParser) -> FileMatcherResolver:
 
 
 def _parse_name_matcher(parser: TokenParser) -> FileMatcherResolver:
-    return parser.parse_choice_of_optional_option(_parse_name_reg_ex_matcher,
-                                                  _parse_name_glob_pattern_matcher,
+    return parser.parse_choice_of_optional_option(name_regex.parse,
+                                                  name_glob_pattern.parse,
                                                   REG_EX_OPTION)
-
-
-def _parse_name_glob_pattern_matcher(parser: TokenParser) -> FileMatcherResolver:
-    return name_glob_pattern.parse(parser)
-
-
-def _parse_name_reg_ex_matcher(parser: TokenParser) -> FileMatcherResolver:
-    return name_regex.parse(parser)
 
 
 def _parse_type_matcher(parser: TokenParser) -> FileMatcherResolver:

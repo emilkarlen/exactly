@@ -324,10 +324,10 @@ class TokenParser:
                                                        option_name)
 
     def parse_choice_of_optional_option(self,
-                                        continuation_if_present: types.FunctionType,
-                                        continuation_if_not_present: types.FunctionType,
+                                        continuation_if_present: Callable[[TokenParserType], T],
+                                        continuation_if_not_present: Callable[[TokenParserType], T],
                                         option_name: OptionName,
-                                        ):
+                                        ) -> T:
         """
         Looks at the current argument and checks if it is the given option.
         Depending on if the option is present:
