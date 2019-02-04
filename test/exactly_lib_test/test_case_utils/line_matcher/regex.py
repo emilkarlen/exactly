@@ -2,19 +2,18 @@ import unittest
 
 import re
 
-from exactly_lib.symbol.data import file_ref_resolvers, string_resolvers
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.line_matcher import line_matchers
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_resolvers
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import test_case_utils
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import Arrangement, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
-from exactly_lib_test.test_case_utils.test_resources import validation
+from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases import failing_regex_validation_cases
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess, PassOrFail
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -25,8 +24,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestRegex),
         ParseShouldFailWhenRegexArgumentIsMissing(),
-        ValidationShouldFailPreSdsWhenHardCodedRegexIsInvalid(),
-        ValidationShouldFailPostSdsWhenRegexWithPostSdsValueRefIsInvalid(),
+        ValidationShouldFailWhenRegexIsInvalid(),
         TestWithSymbolReferences(),
     ])
 
@@ -96,54 +94,30 @@ class ParseShouldFailWhenRegexArgumentIsMissing(test_case_utils.TestWithNegation
         )
 
 
-class ValidationShouldFailPreSdsWhenHardCodedRegexIsInvalid(test_case_utils.TestWithNegationArgumentBase):
-    argument_w_opt_neg = arg.WithOptionalNegation(
-        arg.Matches('*')
-    )
-
+class ValidationShouldFailWhenRegexIsInvalid(test_case_utils.TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        self._check_with_source_variants(
-            arguments=
-            Arguments(str(self.argument_w_opt_neg.get(maybe_not.expectation_type))),
-            model=
-            ARBITRARY,
-            arrangement=
-            Arrangement(),
-            expectation=
-            Expectation(
-                validation=validation.pre_sds_validation_fails()
+        for regex_case in failing_regex_validation_cases():
+            argument_w_opt_neg = arg.WithOptionalNegation(
+                arg.Matches(regex_case.regex_string)
             )
-        )
 
-
-class ValidationShouldFailPostSdsWhenRegexWithPostSdsValueRefIsInvalid(test_case_utils.TestWithNegationArgumentBase):
-    post_sds_file_ref = NameAndValue(
-        'post_sds_file_ref_symbol',
-        container(file_ref_resolvers.of_rel_option(RelOptionType.REL_ACT))
-    )
-    argument_w_opt_neg = arg.WithOptionalNegation(
-        arg.Matches('*' + symbol_reference_syntax_for_name(post_sds_file_ref.name))
-    )
-
-    arrangement = Arrangement(symbols=SymbolTable({
-        post_sds_file_ref.name: post_sds_file_ref.value,
-    }))
-    expectation = Expectation(
-        symbol_references=asrt.matches_sequence([
-            is_reference_to_valid_regex_string_part(post_sds_file_ref.name),
-        ]),
-        validation=validation.post_sds_validation_fails()
-    )
-
-    def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        self._check_with_source_variants(
-            arguments=
-            Arguments(str(self.argument_w_opt_neg.get(maybe_not.expectation_type))),
-            model=
-            ARBITRARY,
-            arrangement=self.arrangement,
-            expectation=self.expectation
-        )
+            with self.subTest(expectation_type=maybe_not.expectation_type,
+                              validation_case=regex_case.case_name):
+                self._check_with_source_variants(
+                    arguments=
+                    Arguments(str(argument_w_opt_neg.get(maybe_not.expectation_type))),
+                    model=
+                    ARBITRARY,
+                    arrangement=
+                    Arrangement(
+                        symbols=symbol_table_from_name_and_resolvers(regex_case.symbols)
+                    ),
+                    expectation=
+                    Expectation(
+                        symbol_references=asrt.matches_sequence(regex_case.reference_assertions),
+                        validation=regex_case.expectation
+                    )
+                )
 
 
 class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
