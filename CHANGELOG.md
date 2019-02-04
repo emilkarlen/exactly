@@ -10,11 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
  - FILE-MATCHER: New primitive: `contents STRING-MATCHER`
  - FILES-MATCHER: Quantification on files applies `FILE-MATCHER` (instead of `STRING-MATCHER`)
+ - STRING-TRANSFORMER: replace: Substitutes symbol references in regex and replacement strings
 
 ### Changed
 
  - LINE-MATCHER: Changes name of primitive: "regex" -> "matches"
- - LINE-MATCHER: Substitutes symbol references in regex string 
+ - LINE-MATCHER: Substitutes symbol references in regex string
  - FILE-MATCHER: name -regex: Substitutes symbol references in regex string 
  - FILE-MATCHER: name GLOB-PATTERN: Substitutes symbol references in pattern string 
 
