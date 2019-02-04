@@ -1,7 +1,8 @@
-import re
 import unittest
 
-from exactly_lib.test_case_utils.string_transformer import transformers as sut
+import re
+
+from exactly_lib.test_case_utils.string_transformer.impl import replace as sut
 
 
 def suite() -> unittest.TestSuite:

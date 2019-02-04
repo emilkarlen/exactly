@@ -1,11 +1,11 @@
 from typing import Iterable, Callable
 
-from exactly_lib.test_case_utils.string_transformer import transformers as sut
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
+from exactly_lib.type_system.logic.string_transformer import StringTransformer
 
 
-class FakeStringTransformer(sut.StringTransformer):
+class FakeStringTransformer(StringTransformer):
     def __init__(self):
         pass
 

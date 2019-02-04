@@ -2,11 +2,8 @@ import unittest
 
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver, LineMatcherReferenceResolver
-from exactly_lib.test_case_utils.string_transformer import transformers as sut
-from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerSelectResolver
-from exactly_lib.test_case_utils.string_transformer.transformers import SelectStringTransformer
+from exactly_lib.test_case_utils.string_transformer.impl import select
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
-from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResolverConstantTestImpl, \
@@ -32,11 +29,11 @@ def suite() -> unittest.TestSuite:
 
 class TestSelectTransformer(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = sut.SelectStringTransformer(sub_string_line_matcher('MATCH'))
+        transformer = select.SelectStringTransformer(sub_string_line_matcher('MATCH'))
         self.assertFalse(transformer.is_identity_transformer)
 
     def test_select_with_sub_string_matcher(self):
-        transformer = sut.SelectStringTransformer(sub_string_line_matcher('MATCH'))
+        transformer = select.SelectStringTransformer(sub_string_line_matcher('MATCH'))
         cases = [
             NameAndValue('no lines',
                          ([],
@@ -113,7 +110,7 @@ class TestSelectTransformer(unittest.TestCase):
         for case in cases:
             line_matcher, input_lines, expected_output_lines = case.value
             with self.subTest(case_name=case.name):
-                transformer = sut.SelectStringTransformer(line_matcher)
+                transformer = select.SelectStringTransformer(line_matcher)
                 # ACT #
                 actual = transformer.transform(iter(input_lines))
                 # ASSERT #
@@ -126,12 +123,12 @@ class TestSelectTransformerResolver(unittest.TestCase):
     def test_sans_references(self):
         line_matcher = LineMatcherConstant(False)
 
-        resolved_value = SelectStringTransformer(line_matcher)
+        resolved_value = select.SelectStringTransformer(line_matcher)
         assertion_on_resolver = asrt_resolver.resolved_value_equals_string_transformer(
             resolved_value,
             references=asrt.is_empty_sequence)
 
-        actual_resolver = StringTransformerSelectResolver(
+        actual_resolver = select.StringTransformerSelectResolver(
             LineMatcherResolverConstantTestImpl(line_matcher))
         assertion_on_resolver.apply_without_message(self,
                                                     actual_resolver)
@@ -141,12 +138,12 @@ class TestSelectTransformerResolver(unittest.TestCase):
         symbol = NameAndValue('matcher_symbol',
                               LineMatcherConstant(True))
 
-        actual_resolver = StringTransformerSelectResolver(
+        actual_resolver = select.StringTransformerSelectResolver(
             LineMatcherReferenceResolver(symbol.name))
 
         # EXPECTATION #
 
-        expected_resolved_value = SelectStringTransformer(symbol.value)
+        expected_resolved_value = select.SelectStringTransformer(symbol.value)
 
         assertion_on_resolver = asrt_resolver.resolved_value_equals_string_transformer(
             expected_resolved_value,

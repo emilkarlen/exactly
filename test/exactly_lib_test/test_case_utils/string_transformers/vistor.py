@@ -1,9 +1,11 @@
-import re
 import unittest
+
+import re
 from typing import Iterable
 
-import exactly_lib.test_case_utils.string_transformer.transformers as sut
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
+from exactly_lib.test_case_utils.string_transformer.impl import select, replace
+from exactly_lib.test_case_utils.string_transformer.transformer_visitor import StringTransformerStructureVisitor
 from exactly_lib.type_system.logic import string_transformer
 from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer
 
@@ -39,23 +41,23 @@ class TestStringTransformerStructureVisitor(unittest.TestCase):
 
     def test_visit_replace(self):
         # ARRANGE #
-        instance = sut.ReplaceStringTransformer(re.compile('pattern'), 'replacement')
+        instance = replace.ReplaceStringTransformer(re.compile('pattern'), 'replacement')
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([sut.ReplaceStringTransformer],
+        self.assertEqual([replace.ReplaceStringTransformer],
                          visitor.visited_types)
         self.assertIs(instance, ret_val)
 
     def test_visit_select(self):
         # ARRANGE #
-        instance = sut.SelectStringTransformer(LineMatcherConstant(True))
+        instance = select.SelectStringTransformer(LineMatcherConstant(True))
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([sut.SelectStringTransformer],
+        self.assertEqual([select.SelectStringTransformer],
                          visitor.visited_types)
         self.assertIs(instance, ret_val)
 
@@ -84,7 +86,7 @@ class TestStringTransformerStructureVisitor(unittest.TestCase):
     pass
 
 
-class AVisitorThatRecordsVisitedMethods(sut.StringTransformerStructureVisitor):
+class AVisitorThatRecordsVisitedMethods(StringTransformerStructureVisitor):
     def __init__(self):
         self.visited_types = []
 
@@ -96,12 +98,12 @@ class AVisitorThatRecordsVisitedMethods(sut.StringTransformerStructureVisitor):
         self.visited_types.append(string_transformer.SequenceStringTransformer)
         return transformer
 
-    def visit_replace(self, transformer: sut.ReplaceStringTransformer):
-        self.visited_types.append(sut.ReplaceStringTransformer)
+    def visit_replace(self, transformer: replace.ReplaceStringTransformer):
+        self.visited_types.append(replace.ReplaceStringTransformer)
         return transformer
 
-    def visit_select(self, transformer: sut.SelectStringTransformer):
-        self.visited_types.append(sut.SelectStringTransformer)
+    def visit_select(self, transformer: select.SelectStringTransformer):
+        self.visited_types.append(select.SelectStringTransformer)
         return transformer
 
     def visit_custom(self, transformer: string_transformer.CustomStringTransformer):

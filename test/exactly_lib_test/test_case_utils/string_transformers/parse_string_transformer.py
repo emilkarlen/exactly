@@ -7,6 +7,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
+from exactly_lib.test_case_utils.string_transformer.impl import select, replace
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
@@ -53,7 +54,7 @@ class TestReplaceParser(unittest.TestCase):
                source: TokenParser,
                expectation: Expectation):
         # ACT #
-        actual_resolver = sut.parse_replace(source)
+        actual_resolver = replace.parse_replace(source)
         # ASSERT #
         expectation.resolver.apply_with_message(self, actual_resolver,
                                                 'resolver')
@@ -84,7 +85,7 @@ class TestReplaceParser(unittest.TestCase):
         for name, source in cases:
             with self.subTest(case_name=name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_replace(source)
+                    replace.parse_replace(source)
 
     def test_successful_parse_of_unquoted_tokens(self):
         # ARRANGE #
@@ -186,7 +187,7 @@ class TestSelectParser(unittest.TestCase):
                source: TokenParser,
                expectation: Expectation):
         # ACT #
-        actual_resolver = sut.parse_select(source)
+        actual_resolver = select.parse_select(source)
         # ASSERT #
         expectation.resolver.apply_with_message(self, actual_resolver,
                                                 'resolver')
@@ -208,7 +209,7 @@ class TestSelectParser(unittest.TestCase):
         for name, source in cases:
             with self.subTest(case_name=name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_replace(source)
+                    replace.parse_replace(source)
 
     def test_successful_parse_with_regex_matcher(self):
         # ARRANGE #
@@ -278,7 +279,7 @@ class TestParseLineTransformer(unittest.TestCase):
         for name, source in cases:
             with self.subTest(case_name=name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_replace(source)
+                    replace.parse_replace(source)
 
     def test_reference(self):
         # ARRANGE #

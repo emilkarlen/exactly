@@ -10,3 +10,7 @@ def of_lines(lines: List[str]) -> ModelConstructor:
         return iter(lines)
 
     return ret_val
+
+
+def arbitrary_model() -> StringTransformerModel:
+    return iter(['string transformer model line'])
