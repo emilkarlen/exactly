@@ -33,19 +33,10 @@ _DESCRIPTION_OF_IGNORE_CASE_OPTION = """\
 Makes the matching ignore case.
 """
 
-_MAIN_DESCRIPTION_REST = """\
-Support for substitution of {SYMBOL_REFERENCE} in {STRING} is inconsistent.
-
-
-Any {SYMBOL_REFERENCE} is not substituted for the "{name}" {file_matcher}.
-
-In all other places, they are substituted. 
-"""
-
 DOCUMENTATION = syntax_element_documentation(
     None,
     syntax_elements.REGEX_SYNTAX_ELEMENT,
-    _TEXT_PARSER.fnap(_MAIN_DESCRIPTION_REST),
+    [],
     [
         InvokationVariant(
             cl_syntax.cl_syntax_for_args(_CL_ARGUMENTS)
