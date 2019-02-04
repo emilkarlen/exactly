@@ -185,7 +185,7 @@ Matches files not matched by the given matcher.
 """
 
 _AND_SED_DESCRIPTION = """\
-Matches files matched by all matchers.
+Matches files matched by every matcher.
 """
 
 _OR_SED_DESCRIPTION = """\
