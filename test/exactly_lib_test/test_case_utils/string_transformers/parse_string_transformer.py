@@ -77,10 +77,6 @@ class TestReplaceParser(unittest.TestCase):
                 remaining_source('regex',
                                  ['replacement']),
             ),
-            (
-                'invalid REGEX',
-                remaining_source('** replacement'),
-            ),
         ]
         for name, source in cases:
             with self.subTest(case_name=name):

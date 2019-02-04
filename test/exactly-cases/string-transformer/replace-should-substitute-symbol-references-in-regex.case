@@ -1,0 +1,22 @@
+[setup]
+
+file original.txt =
+<<-
+ 1 2
+ a b
+-
+
+def string CHARACTER = 'a'
+
+def string-transformer REMOVE_SPACE_CHARS = replace "\s@[CHARACTER]@" 'A'
+
+file transformed.txt = -file original.txt
+                       -transformed-by REMOVE_SPACE_CHARS
+
+[assert]
+
+contents transformed.txt equals
+<<-
+ 1 2
+A b
+-

@@ -1,0 +1,22 @@
+[setup]
+
+file original.txt =
+<<-
+anything
+untouched
+-
+
+def string REPLACEMENT = 'something'
+
+def string-transformer REMOVE_SPACE_CHARS = replace "anything" "@[REPLACEMENT]@ new"
+
+file transformed.txt = -file original.txt
+                       -transformed-by REMOVE_SPACE_CHARS
+
+[assert]
+
+contents transformed.txt equals
+<<-
+something new
+untouched
+-
