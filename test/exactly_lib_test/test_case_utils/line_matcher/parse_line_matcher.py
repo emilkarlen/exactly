@@ -3,6 +3,7 @@ import unittest
 import re
 from typing import List, Sequence
 
+import exactly_lib.test_case_utils.line_matcher.impl.line_number
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -23,7 +24,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     import remaining_source
 from exactly_lib_test.symbol.test_resources import resolver_assertions
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
-from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax, integration_check
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.resolver_assertions import \
     resolved_value_equals_line_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.value_assertions import value_matches_line_matcher
@@ -199,7 +200,7 @@ class TestLineNumberParser(unittest.TestCase):
                source: TokenParser,
                expectation: Expectation):
         # ACT #
-        actual_resolver = sut.parse_line_number(source)
+        actual_resolver = exactly_lib.test_case_utils.line_matcher.impl.line_number.parse_line_number(source)
         # ASSERT #
         expectation.resolver.apply_with_message(self, actual_resolver,
                                                 'resolver')
@@ -230,16 +231,17 @@ class TestLineNumberParser(unittest.TestCase):
         for name, source in cases:
             with self.subTest(case_name=name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_line_number(source)
+                    exactly_lib.test_case_utils.line_matcher.impl.line_number.parse_line_number(source)
 
     def test_successful_parse(self):
         # ARRANGE #
         def model_of(rhs: int) -> ModelInfo:
             return ModelInfo((rhs, 'irrelevant line contents'))
 
-        expected_integer_matcher = IntegerMatcherFromComparisonOperator(sut.LINE_NUMBER_PROPERTY,
-                                                                        comparators.LT,
-                                                                        69)
+        expected_integer_matcher = IntegerMatcherFromComparisonOperator(
+            exactly_lib.test_case_utils.line_matcher.impl.line_number.LINE_NUMBER_PROPERTY,
+            comparators.LT,
+            69)
         expected_resolver = resolved_value_is_line_number_matcher(expected_integer_matcher,
                                                                   [
                                                                       model_of(60),
@@ -280,7 +282,6 @@ class TestLineNumberParser(unittest.TestCase):
                             Expectation(expected_resolver,
                                         case.source_assertion))
 
-
 class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase):
     _conf = Configuration()
 
@@ -306,9 +307,10 @@ class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase)
 
         comparator = comparators.LT
         rhs = 72
-        expected_integer_matcher = IntegerMatcherFromComparisonOperator(sut.LINE_NUMBER_PROPERTY,
-                                                                        comparator,
-                                                                        rhs)
+        expected_integer_matcher = IntegerMatcherFromComparisonOperator(
+            exactly_lib.test_case_utils.line_matcher.impl.line_number.LINE_NUMBER_PROPERTY,
+            comparator,
+            rhs)
         expected_resolver = resolved_value_is_line_number_matcher(expected_integer_matcher,
                                                                   [
                                                                       model_of(69),

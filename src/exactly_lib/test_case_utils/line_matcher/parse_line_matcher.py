@@ -5,12 +5,11 @@ from exactly_lib.definitions.entity import types
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
-from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import parse_integer_matcher
 from exactly_lib.test_case_utils.condition.syntax import OPERATOR_ARGUMENT
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import line_matchers
 from exactly_lib.test_case_utils.line_matcher import resolvers
-from exactly_lib.test_case_utils.line_matcher.impl import matches_regex
+from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
 from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
@@ -28,8 +27,6 @@ REPLACE_REPLACEMENT_ARGUMENT = a.Named(types.STRING_TYPE_INFO.syntax_element_nam
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
 LINE_MATCHER_ARGUMENT = a.Named(types.LINE_MATCHER_TYPE_INFO.syntax_element_name)
-
-LINE_NUMBER_PROPERTY = 'line number'
 
 
 def parser() -> Parser[LineMatcherResolver]:
@@ -50,12 +47,6 @@ def parse_line_matcher_from_token_parser(parser: TokenParser) -> LineMatcherReso
 
 def parse_regex(parser: TokenParser) -> LineMatcherResolver:
     return matches_regex.parse(parser)
-
-
-def parse_line_number(parser: TokenParser) -> LineMatcherResolver:
-    integer_matcher = parse_integer_matcher(parser,
-                                            name_of_lhs=LINE_NUMBER_PROPERTY)
-    return resolvers.LineMatcherConstantResolver(line_matchers.LineMatcherLineNumber(integer_matcher))
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
@@ -133,7 +124,7 @@ GRAMMAR = grammar.Grammar(
             grammar.SimpleExpression(parse_regex,
                                      _REGEX_SYNTAX_DESCRIPTION),
         LINE_NUMBER_MATCHER_NAME:
-            grammar.SimpleExpression(parse_line_number,
+            grammar.SimpleExpression(line_number.parse_line_number,
                                      _LINE_NUMBER_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
