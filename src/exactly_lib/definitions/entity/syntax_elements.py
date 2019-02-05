@@ -104,7 +104,7 @@ INTEGER_SYNTAX_ELEMENT = name_and_ref_target(
 
 INTEGER_COMPARISON_SYNTAX_ELEMENT = name_and_ref_target(
     'INTEGER-COMPARISON',
-    'Matches an integer value using relational comparison with a given ' + INTEGER_SYNTAX_ELEMENT.argument.name
+    'Matches an integer value using comparison with a given ' + INTEGER_SYNTAX_ELEMENT.argument.name
 )
 
 ALL_SYNTAX_ELEMENTS = (

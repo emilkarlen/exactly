@@ -5,14 +5,13 @@ from exactly_lib.definitions.entity import types
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
-from exactly_lib.test_case_utils.condition.syntax import OPERATOR_ARGUMENT
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import line_matchers
 from exactly_lib.test_case_utils.line_matcher import resolvers
 from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
 from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.textformat.parse import normalize_and_parse
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 CONSTANT_TRUE_MATCHER_RESOLVER = resolvers.LineMatcherConstantResolver(line_matchers.LineMatcherConstant(True))
 
@@ -61,18 +60,12 @@ _HELP_TEXT_TEMPLATE_FORMATS.update({
     'INTEGER_COMPARISON': syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.argument.name,
 })
 
-
-def _fnap(s: str) -> list:
-    return normalize_and_parse(s.format_map(_HELP_TEXT_TEMPLATE_FORMATS))
-
+_TP = TextParser(_HELP_TEXT_TEMPLATE_FORMATS)
 
 _REGEX_MATCHER_SED_DESCRIPTION = """Matches lines that contains a given {_REG_EX_}."""
 
 _LINE_NUMBER_MATCHER_SED_DESCRIPTION = """\
 Matches lines with a given line number.
-
-
-Comparision is that of {INTEGER_COMPARISON}, except that symbol references are not substituted.
 
 
 Line numbers start at {FIRST_LINE_NUMBER}.
@@ -95,18 +88,15 @@ _REGEX_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
         a.Single(a.Multiplicity.MANDATORY,
                  REPLACE_REGEX_ARGUMENT),
     ],
-    description_rest=_fnap(_REGEX_MATCHER_SED_DESCRIPTION),
+    description_rest=_TP.fnap(_REGEX_MATCHER_SED_DESCRIPTION),
     see_also_targets=[syntax_elements.REGEX_SYNTAX_ELEMENT.cross_reference_target],
 )
 
 _LINE_NUMBER_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     argument_usage_list=[
-        a.Single(a.Multiplicity.MANDATORY,
-                 OPERATOR_ARGUMENT),
-        a.Single(a.Multiplicity.MANDATORY,
-                 a.Named('INT')),
+        syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory,
     ],
-    description_rest=_fnap(_LINE_NUMBER_MATCHER_SED_DESCRIPTION),
+    description_rest=_TP.fnap(_LINE_NUMBER_MATCHER_SED_DESCRIPTION),
     see_also_targets=[syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.cross_reference_target],
 )
 
@@ -131,19 +121,19 @@ GRAMMAR = grammar.Grammar(
         expression.AND_OPERATOR_NAME:
             grammar.ComplexExpression(resolvers.LineMatcherAndResolver,
                                       grammar.OperatorExpressionDescription(
-                                          _fnap(_AND_SED_DESCRIPTION)
+                                          _TP.fnap(_AND_SED_DESCRIPTION)
                                       )),
         expression.OR_OPERATOR_NAME:
             grammar.ComplexExpression(resolvers.LineMatcherOrResolver,
                                       grammar.OperatorExpressionDescription(
-                                          _fnap(_OR_SED_DESCRIPTION)
+                                          _TP.fnap(_OR_SED_DESCRIPTION)
                                       )),
     },
     prefix_expressions={
         expression.NOT_OPERATOR_NAME:
             grammar.PrefixExpression(resolvers.LineMatcherNotResolver,
                                      grammar.OperatorExpressionDescription(
-                                         _fnap(_NOT_SED_DESCRIPTION)
+                                         _TP.fnap(_NOT_SED_DESCRIPTION)
                                      ))
     },
 )
