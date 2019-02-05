@@ -41,6 +41,15 @@ class Expectation:
 is_pass = Expectation
 
 
+def main_result_is_success() -> Optional[ValueAssertion[Optional[str]]]:
+    return None
+
+
+def main_result_is_failure(error_message: ValueAssertion[Optional[str]] = asrt.is_instance(str)
+                           ) -> Optional[ValueAssertion[Optional[str]]]:
+    return error_message
+
+
 def check(put: unittest.TestCase,
           source: ParseSource,
           model: LineMatcherLine,

@@ -7,6 +7,7 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_resolver import \
     is_reference_to_symbol_in_expression
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.validation_cases import \
@@ -126,7 +127,12 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
                     ExpectationType.POSITIVE,
                     model_construction.arbitrary_model(),
                     arrangement=
-                    self.configuration.arrangement_for_contents(),
+                    ArrangementPostAct(
+                        symbols=case.symbol_table
+                    ),
                     expectation=
-                    expectation(validation=case.expectation)
+                    expectation(
+                        symbol_references=case.symbol_references_expectation,
+                        validation=case.expectation,
+                    )
                 )

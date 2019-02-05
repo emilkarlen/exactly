@@ -55,8 +55,7 @@ class _PrimitiveValueComputer:
         try:
             self._primitive_value = python_evaluate(int_expr)
         except NotAnIntegerException as ex:
-            msg = ('Argument is not an integer,'
-                   ' even though this should have been checked by the validation: `{}\''.format(ex.value_string))
+            msg = 'Not an integer expression: `{}\''.format(ex.value_string)
             raise NotAnIntegerException(msg)
 
         return self._primitive_value
@@ -64,10 +63,8 @@ class _PrimitiveValueComputer:
 
 class IntegerValue(OperandValue[int]):
     def __init__(self,
-                 property_name: str,
                  int_expression: StringValue,
                  custom_integer_validator: Optional[Callable[[int], Optional[str]]] = None):
-        self._property_name = property_name
         self._primitive_value_computer = _PrimitiveValueComputer(int_expression)
         self._validator = _IntegerValueValidator(self._primitive_value_computer,
                                                  custom_integer_validator)
@@ -129,8 +126,7 @@ class IntegerResolver(OperandResolver[int]):
             raise return_svh_via_exceptions.SvhHardErrorException(msg)
 
     def resolve(self, symbols: SymbolTable) -> IntegerValue:
-        return IntegerValue(self.property_name,
-                            self._value_resolver.resolve(symbols),
+        return IntegerValue(self._value_resolver.resolve(symbols),
                             self._custom_integer_validator)
 
 

@@ -1,7 +1,10 @@
 import unittest
 
+from typing import List, Optional
+
 from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
+from exactly_lib.symbol.resolver_structure import SymbolValueResolver
+from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name, SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcherFromComparisonOperator
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherLineNumber
@@ -13,8 +16,11 @@ from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_r
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.validation_cases import \
     failing_integer_validation_cases
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg, integration_check
+from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import main_result_is_success, \
+    main_result_is_failure
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -22,6 +28,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(Test),
         _SymbolReferencesInOperandShouldBeReported(),
         _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInteger(),
+        _ParseAndMatchTest(),
     ])
 
 
@@ -35,6 +42,22 @@ class Case:
         self.operator = operator
         self.constant_rhs = constant_rhs
         self.expected = expected
+
+
+class IntegrationCheckCase:
+    def __init__(self,
+                 name: str,
+                 line_num_of_model: int,
+                 operator: comparators.ComparisonOperator,
+                 int_expr: str,
+                 result: Optional[ValueAssertion[Optional[str]]],
+                 symbols: List[NameAndValue[SymbolValueResolver]]):
+        self.name = name
+        self.line_num_of_model = line_num_of_model
+        self.operator = operator
+        self.int_expr = int_expr
+        self.result = result
+        self.symbols = symbols
 
 
 class Test(unittest.TestCase):
@@ -139,6 +162,109 @@ class _SymbolReferencesInOperandShouldBeReported(unittest.TestCase):
             )
 
         )
+
+
+class _ParseAndMatchTest(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        symbol_1 = SymbolWithReferenceSyntax('symbol_1')
+        symbol_2 = SymbolWithReferenceSyntax('symbol_2')
+
+        cases = (
+                successful_and_unsuccessful(
+                    'constant single integer expression',
+                    line_num_of_model=72,
+                    successful_operator=comparators.EQ,
+                    unsuccessful_operator=comparators.NE,
+                    int_expr='72',
+                    symbols=[]
+                )
+                +
+                successful_and_unsuccessful(
+                    'constant complex expression',
+                    line_num_of_model=10,
+                    successful_operator=comparators.EQ,
+                    unsuccessful_operator=comparators.GT,
+                    int_expr='1+4+5',
+                    symbols=[]
+                )
+                +
+                successful_and_unsuccessful(
+                    'just one symbol reference with integer constant',
+                    line_num_of_model=72,
+                    successful_operator=comparators.EQ,
+                    unsuccessful_operator=comparators.NE,
+                    int_expr=str(symbol_1),
+                    symbols=[
+                        NameAndValue(symbol_1.name, string_resolvers.str_constant('72'))
+                    ]
+                )
+                +
+                successful_and_unsuccessful(
+                    'multiple symbols with python functions and operator in symbol value',
+                    line_num_of_model=13,
+                    successful_operator=comparators.EQ,
+                    unsuccessful_operator=comparators.NE,
+                    int_expr='len({}){}'.format(
+                        symbol_1,
+                        symbol_2
+                    ),
+                    symbols=[
+                        NameAndValue(symbol_1.name, string_resolvers.str_constant('"abc"')),
+                        NameAndValue(symbol_2.name, string_resolvers.str_constant('+(20-10)')),
+                    ]
+                )
+        )
+
+        for case in cases:
+            arguments = arg.LineNum(int_condition__expr(case.operator,
+                                                        case.int_expr))
+            expected_symbol_references = asrt.matches_sequence([
+                is_reference_to_symbol_in_expression(symbol.name)
+                for symbol in case.symbols
+            ])
+
+            # ACT & ASSERT #
+
+            with self.subTest(case.name):
+                integration_check.check(
+                    self,
+                    remaining_source(str(arguments)),
+                    (case.line_num_of_model, 'ignored line text'),
+                    integration_check.Arrangement(
+                        symbols=symbol_utils.symbol_table_from_name_and_resolvers(case.symbols)
+                    ),
+                    integration_check.Expectation(
+                        symbol_references=expected_symbol_references,
+                        main_result=case.result
+                    )
+                )
+
+
+def successful_and_unsuccessful(name: str,
+                                line_num_of_model: int,
+                                successful_operator: comparators.ComparisonOperator,
+                                unsuccessful_operator: comparators.ComparisonOperator,
+                                int_expr: str,
+                                symbols: List[NameAndValue[SymbolValueResolver]]) -> List[IntegrationCheckCase]:
+    return [
+        IntegrationCheckCase(
+            name + '/successful: ' + successful_operator.name,
+            line_num_of_model,
+            successful_operator,
+            int_expr,
+            main_result_is_success(),
+            symbols,
+        ),
+        IntegrationCheckCase(
+            name + '/unsuccessful: ' + unsuccessful_operator.name,
+            line_num_of_model,
+            unsuccessful_operator,
+            int_expr,
+            main_result_is_failure(),
+            symbols,
+        ),
+    ]
 
 
 def matcher_of(operator: comparators.ComparisonOperator,
