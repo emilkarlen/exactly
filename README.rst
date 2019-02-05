@@ -519,6 +519,8 @@ Including (but not limited to):
 * Improved string character escaping
 * Separate sets of environment variables for "action to check" and other processes
 * Possibility to set stdin for processes other than the "action to check"
+* New file-matcher: ``dir-contents``
+* ``dir-contents``: Check contents of directory recursively.
 * Variables - corresponding to symbol definitions -
   but for variable values
 * Macros and functions
