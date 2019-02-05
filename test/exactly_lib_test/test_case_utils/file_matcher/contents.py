@@ -7,14 +7,9 @@ from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.instruction_from_parts_that_executes_sub_process import \
-    ConstantResultValidator
-from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher, \
-    StringMatcherResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
@@ -25,16 +20,14 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_t
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, elements
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args as sm_args, \
     EqualsStringAssertionArgumentsConstructor
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
-from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation
 from exactly_lib_test.test_resources.files.file_structure import empty_file, File, DirContents, empty_dir, \
     FileSystemElement
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 
@@ -43,7 +36,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         TestHardErrorWhenActualFileDoesNotExist(),
         TestHardErrorWhenActualFileIsADirectory(),
-        TestFailingValidationCausedByReferencedStringMatcherSymbol(),
+        EmbeddedStringMatcherShouldBeValidated(),
         ActualFileIsEmpty(),
         ActualFileIsEmptyAfterTransformation(),
         TestComplexMatcher(),
@@ -72,43 +65,17 @@ def single_file_in_current_dir(f: FileSystemElement) -> sds_populator.SdsPopulat
     )
 
 
-class TestFailingValidationCausedByReferencedStringMatcherSymbol(tc.TestCaseBase):
+class EmbeddedStringMatcherShouldBeValidated(tc.TestCaseBase):
     def runTest(self):
-        cases = [
-            NEA('failure pre sds',
-                expected=
-                ValidationExpectation(pre_sds=asrt_validation.is_arbitrary_validation_failure(),
-                                      post_sds=asrt_validation.is_validation_success()),
-                actual=
-                ConstantResultValidator(pre_sds='failure')
-                ),
-            NEA('failure post sds',
-                expected=
-                ValidationExpectation(pre_sds=asrt_validation.is_validation_success(),
-                                      post_sds=asrt_validation.is_arbitrary_validation_failure()),
-                actual=
-                ConstantResultValidator(post_setup='failure')
-                ),
-        ]
-        for case in cases:
-            named_string_matcher = NameAndValue('the_string_matcher',
-                                                StringMatcherResolverConstantTestImpl(
-                                                    StringMatcherConstant(None),
-                                                    (),
-                                                    case.actual,
-                                                ))
-            symbols = SymbolTable({
-                named_string_matcher.name: container(named_string_matcher.value)
-            })
+        for case in validation_cases.failing_validation_cases():
+            symbol_context = case.value.symbol_context
+            symbols = symbol_context.symbol_table
 
-            expected_symbol_reference_to_transformer = is_reference_to_string_matcher(named_string_matcher.name)
-
-            expected_symbol_usages = asrt.matches_sequence([expected_symbol_reference_to_transformer])
             with self.subTest(case.name):
                 self._check(
                     source=
                     source_for(
-                        sm_args(named_string_matcher.name)
+                        sm_args(symbol_context.name)
                     ),
                     model=
                     model_construction.constant_relative_file_name('non-existing.txt'),
@@ -117,10 +84,9 @@ class TestFailingValidationCausedByReferencedStringMatcherSymbol(tc.TestCaseBase
                         symbols=symbols,
                     ),
                     expectation=
-                    Expectation(
-                        validation_pre_sds=case.expected.pre_sds,
-                        validation_post_sds=case.expected.post_sds,
-                        symbol_usages=expected_symbol_usages,
+                    expectation(
+                        validation=case.value.expectation,
+                        symbol_references=symbol_context.references_assertion,
                     ),
                 )
 
