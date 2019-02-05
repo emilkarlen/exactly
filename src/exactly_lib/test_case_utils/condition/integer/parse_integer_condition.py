@@ -1,5 +1,5 @@
 import types
-from typing import Callable
+from typing import Callable, Optional
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.instruction_arguments import INTEGER_ARGUMENT
@@ -72,7 +72,8 @@ def parse_integer_comparison_operator_and_rhs(
 
 def integer_resolver_of(property_name: str,
                         value_token: Token,
-                        custom_integer_restriction: types.FunctionType = None) -> integer_resolver.IntegerResolver:
+                        custom_integer_restriction: Optional[Callable[[int], Optional[str]]] = None
+                        ) -> integer_resolver.IntegerResolver:
     string_resolver = _string_resolver_of(value_token)
     return integer_resolver.IntegerResolver(property_name,
                                             string_resolver,

@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as sut
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher, \
@@ -25,7 +26,7 @@ class Case:
     def __init__(self,
                  name: str,
                  source,
-                 source_assertion: ValueAssertion,
+                 source_assertion: ValueAssertion[ParseSource],
                  result_assertion: ValueAssertion):
         self.name = name
         self.source = source

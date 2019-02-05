@@ -1,13 +1,11 @@
 from typing import Optional, Sequence, Set
 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
-    PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils import return_pfh_via_exceptions, return_svh_via_exceptions
+from exactly_lib.test_case_utils import return_pfh_via_exceptions
 from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
@@ -16,7 +14,6 @@ from exactly_lib.test_case_utils.condition.integer.parse_integer_condition impor
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
-from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util.logic_types import ExpectationType
@@ -46,7 +43,7 @@ def value_resolver(expectation_type: ExpectationType,
 
     return StringMatcherResolverFromParts(
         cmp_op_and_rhs.right_operand.references,
-        _PreOrPostSdsValidator(cmp_op_and_rhs.right_operand.validator),
+        cmp_op_and_rhs.right_operand.pre_or_post_sds_validator,
         get_resolving_dependencies,
         get_matcher,
     )
@@ -97,17 +94,3 @@ class NumLinesResolver(comparison_structures.OperandResolver[int]):
             for line in lines:
                 ret_val += 1
         return ret_val
-
-
-class _PreOrPostSdsValidator(PreOrPostSdsValidator):
-    def __init__(self, adapted: SvhPreSdsValidatorViaExceptions):
-        self._adapted = adapted
-
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
-        try:
-            self._adapted.validate_pre_sds(environment)
-        except return_svh_via_exceptions.SvhException as ex:
-            return ex.err_msg
-
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
-        return None

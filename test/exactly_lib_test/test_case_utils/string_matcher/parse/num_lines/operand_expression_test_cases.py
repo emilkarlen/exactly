@@ -6,15 +6,17 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources.string import is_string_made_up_of_just_strings_reference_to
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_resolver import \
+    is_reference_to_symbol_in_expression
+from exactly_lib_test.test_case_utils.condition.integer.test_resources.validation_cases import \
+    failing_integer_validation_cases
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     TestCaseBase
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
-from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -47,7 +49,7 @@ class _NumLinesMatchesWithOperandAsSymbolReference(TestCaseBase):
         })
 
         expected_symbol_usages = asrt.matches_sequence([
-            is_string_made_up_of_just_strings_reference_to(operand_symbol.name)
+            is_reference_to_symbol_in_expression(operand_symbol.name)
         ])
 
         self._check_variants_with_expectation_type(
@@ -82,7 +84,7 @@ class _NumLinesMatchesWithOperandAsSymbolReferenceAsPartOfPythonExpression(TestC
         })
 
         expected_symbol_usages = asrt.matches_sequence([
-            is_string_made_up_of_just_strings_reference_to(operand_symbol.name)
+            is_reference_to_symbol_in_expression(operand_symbol.name)
         ])
 
         self._check_variants_with_expectation_type(
@@ -114,25 +116,17 @@ class _NumLinesMatchesWithOperandAsPythonExpression(TestCaseBase):
 
 class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInteger(TestCaseBase):
     def runTest(self):
-        cases = [
-            'not_an_int',
-            '1+not_an_int',
-            '1.5',
-            '(1',
-        ]
-        actual_file_contents = 'actual file contents'
-
-        for invalid_expression in cases:
-            with self.subTest(invalid_value=invalid_expression):
+        for case in failing_integer_validation_cases():
+            with self.subTest(invalid_value=case.case_name):
                 args_variant_constructor = InstructionArgumentsVariantConstructor(
                     operator=comparators.NE.name,
-                    operand=invalid_expression)
+                    operand=case.integer_expr_string)
                 self._check_single_expression_type(
                     args_variant_constructor,
                     ExpectationType.POSITIVE,
-                    model_construction.model_of(actual_file_contents),
+                    model_construction.arbitrary_model(),
                     arrangement=
                     self.configuration.arrangement_for_contents(),
                     expectation=
-                    Expectation(validation_pre_sds=asrt_validation.is_arbitrary_validation_failure())
+                    expectation(validation=case.expectation)
                 )
