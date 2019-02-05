@@ -11,7 +11,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.parse import parse_reg_ex
+from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex import parse_regex as sut
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
 from exactly_lib.util.symbol_table import SymbolTable
@@ -598,10 +598,10 @@ class TestResolvingOfSymbolReferences(unittest.TestCase):
 
 OPTION_CASES = [
     '',
-    parse_reg_ex.IGNORE_CASE_OPTION + ' ',
+    parse_regex.IGNORE_CASE_OPTION + ' ',
 ]
 
-IGNORE_CASE_OPTION_FOLLOWED_BY_SPACE = parse_reg_ex.IGNORE_CASE_OPTION + ' '
+IGNORE_CASE_OPTION_FOLLOWED_BY_SPACE = parse_regex.IGNORE_CASE_OPTION + ' '
 
 
 def is_reference_to_valid_regex_string_part(symbol_name: str) -> ValueAssertion[SymbolReference]:

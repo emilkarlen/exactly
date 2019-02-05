@@ -4,7 +4,7 @@ from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.parse import parse_reg_ex
+from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.parse import token
 
@@ -56,7 +56,7 @@ def name_reg_ex_pattern_matcher_of(pattern: str,
         option_syntax.option_syntax(parse_file_matcher.REG_EX_OPTION),
     ]
     if ignore_case:
-        args.append(option_syntax.option_syntax(parse_reg_ex.IGNORE_CASE_OPTION_NAME))
+        args.append(option_syntax.option_syntax(parse_regex.IGNORE_CASE_OPTION_NAME))
 
     args.append(pattern_arg)
 

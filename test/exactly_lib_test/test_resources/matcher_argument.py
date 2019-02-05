@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from exactly_lib.definitions import expression
-from exactly_lib.test_case_utils.parse import parse_reg_ex
+from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.util.parse import token
 
 
@@ -48,7 +48,7 @@ class NameRegexComponent(MatcherArgComponent):
         ret_val = [quote_if_unquoted_with_space(self.regex)]
 
         if self.ignore_case:
-            ret_val.insert(0, parse_reg_ex.IGNORE_CASE_OPTION)
+            ret_val.insert(0, parse_regex.IGNORE_CASE_OPTION)
 
         return ret_val
 

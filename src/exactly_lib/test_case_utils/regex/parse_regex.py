@@ -2,6 +2,7 @@ import re
 from typing import Sequence, Set, Pattern, Optional, Tuple
 
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
@@ -12,11 +13,23 @@ from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.parse import parse_reg_ex
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import parse_string_or_here_doc_from_token_parser
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
 from exactly_lib.type_system.data.string_value import StringValue
+from exactly_lib.util.cli_syntax import option_syntax
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.symbol_table import SymbolTable
+
+IGNORE_CASE_OPTION_NAME = a.OptionName(long_name='ignore-case')
+
+IGNORE_CASE_OPTION = option_syntax.option_syntax(IGNORE_CASE_OPTION_NAME)
+
+MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name
+
+MISSING_STRING_ARGUMENT_FOR_REGEX_ERR_MSG = 'Missing {} argument for {}'.format(
+    syntax_elements.STRING_SYNTAX_ELEMENT.argument.name,
+    syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name,
+)
 
 
 def regex_parser() -> Parser[RegexResolver]:
@@ -33,13 +46,13 @@ def parse_regex2(parser: TokenParser,
                  must_be_on_same_line: bool = True,
                  consume_last_here_doc_line: bool = False) -> Tuple[SourceType, RegexResolver]:
     if must_be_on_same_line:
-        parser.require_is_not_at_eol(parse_reg_ex.MISSING_REGEX_ARGUMENT_ERR_MSG)
+        parser.require_is_not_at_eol(MISSING_REGEX_ARGUMENT_ERR_MSG)
 
     is_ignore_case = parser.consume_and_handle_optional_option(False,
                                                                lambda x: True,
-                                                               parse_reg_ex.IGNORE_CASE_OPTION_NAME)
+                                                               IGNORE_CASE_OPTION_NAME)
     if must_be_on_same_line:
-        parser.require_is_not_at_eol(parse_reg_ex.MISSING_REGEX_ARGUMENT_ERR_MSG)
+        parser.require_is_not_at_eol(MISSING_REGEX_ARGUMENT_ERR_MSG)
 
     source_type, regex_pattern = parse_string_or_here_doc_from_token_parser(parser,
                                                                             consume_last_here_doc_line)

@@ -10,10 +10,9 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.parse import parse_reg_ex, parse_string
+from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
-from exactly_lib.test_case_utils.string_transformer import resolvers
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
@@ -36,13 +35,6 @@ def parse_replace(token_parser: TokenParser) -> StringTransformerResolver:
 
     return _Resolver(regex_resolver,
                      replacement)
-
-
-def parse_replace_old(parser: TokenParser) -> StringTransformerResolver:
-    regex = parse_reg_ex.parse_regex(parser)
-    parser.require_is_not_at_eol(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
-    replacement = parser.consume_mandatory_token(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
-    return resolvers.StringTransformerConstant(ReplaceStringTransformer(regex, replacement.string))
 
 
 class _Resolver(StringTransformerResolver):
