@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - FILE-MATCHER: New primitive: `contents STRING-MATCHER`
  - FILES-MATCHER: Quantification on files applies `FILE-MATCHER` (instead of `STRING-MATCHER`)
  - STRING-TRANSFORMER: replace: Substitutes symbol references in regex and replacement strings
+ - LINE-MATCHER: line-num: Substitutes symbol references in integer comparison
 
 ### Changed
 
