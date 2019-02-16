@@ -1,5 +1,7 @@
 from typing import Optional, Sequence
 
+from exactly_lib.test_case.result import svh
+from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -109,4 +111,44 @@ def post_sds_validation_fails(expected_err_msg: ValueAssertion[str] = asrt.anyth
     return ValidationExpectation(
         pre_sds=asrt.is_none,
         post_sds=asrt.is_not_none_and(expected_err_msg),
+    )
+
+
+class ValidationExpectationSvh:
+    def __init__(self,
+                 pre_sds: ValueAssertion[svh.SuccessOrValidationErrorOrHardError],
+                 post_sds: ValueAssertion[svh.SuccessOrValidationErrorOrHardError],
+                 ):
+        self._pre_sds = pre_sds
+        self._post_sds = post_sds
+
+    @property
+    def pre_sds(self) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
+        return self._pre_sds
+
+    @property
+    def post_sds(self) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
+        return self._post_sds
+
+
+def all_validations_passes__svh() -> ValidationExpectationSvh:
+    return ValidationExpectationSvh(
+        pre_sds=asrt_svh.is_success(),
+        post_sds=asrt_svh.is_success(),
+    )
+
+
+def pre_sds_validation_fails__svh(error_message: ValueAssertion[str] = asrt.is_instance(str)
+                                  ) -> ValidationExpectationSvh:
+    return ValidationExpectationSvh(
+        pre_sds=asrt_svh.is_validation_error(error_message),
+        post_sds=asrt_svh.is_success(),
+    )
+
+
+def post_sds_validation_fails__svh(error_message: ValueAssertion[str] = asrt.is_instance(str)
+                                   ) -> ValidationExpectationSvh:
+    return ValidationExpectationSvh(
+        pre_sds=asrt_svh.is_success(),
+        post_sds=asrt_svh.is_validation_error(error_message),
     )

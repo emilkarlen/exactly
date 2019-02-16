@@ -1,5 +1,7 @@
 import unittest
 
+from typing import List
+
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -65,7 +67,7 @@ class InstructionChecker:
     def __init__(self,
                  put: unittest.TestCase,
                  parser: InstructionParser,
-                 accepted_rel_opt_configurations: list):
+                 accepted_rel_opt_configurations: List[RelativityOptionConfiguration]):
 
         self.put = put
         self.accepted_rel_opt_configurations = accepted_rel_opt_configurations

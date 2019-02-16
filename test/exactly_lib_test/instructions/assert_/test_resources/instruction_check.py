@@ -20,6 +20,8 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
+from exactly_lib_test.test_case_utils.test_resources.validation import all_validations_passes, \
+    ValidationExpectationSvh
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -48,6 +50,25 @@ class Expectation:
         self.main_side_effects_on_home_and_sds = main_side_effects_on_home_and_sds
         self.source = source
         self.symbol_usages = symbol_usages
+
+
+def expectation(
+        validation: ValidationExpectationSvh = all_validations_passes(),
+        main_result: ValueAssertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
+        symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+        main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
+        main_side_effects_on_home_and_sds: ValueAssertion[HomeAndSds] = asrt.anything_goes(),
+        source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+) -> Expectation:
+    return Expectation(
+        validation_pre_sds=validation.pre_sds,
+        validation_post_sds=validation.post_sds,
+        main_result=main_result,
+        symbol_usages=symbol_usages,
+        main_side_effects_on_sds=main_side_effects_on_sds,
+        main_side_effects_on_home_and_sds=main_side_effects_on_home_and_sds,
+        source=source,
+    )
 
 
 is_pass = Expectation
