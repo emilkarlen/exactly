@@ -78,5 +78,13 @@ if issue_of_commit_message is None:
     else:
         print('Commit does not contain issue number.')
         sys.exit(1)
+else:
+    issue_of_branch_name = get_issue_from_branch_name()
+    if issue_of_branch_name is not None:
+        if issue_of_branch_name != issue_of_commit_message:
+            print('Mismatch of issue of branch and commit message: %s != %s' % (issue_of_branch_name,
+                                                                                issue_of_commit_message))
+            sys.exit(1)
+
 
 sys.exit(0)

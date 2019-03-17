@@ -8,6 +8,8 @@ issue-number-should-be-added-to-commit-message.case
 
 issue-number-must-appear-at-start-of-commit-message.case
 
+commit-should-fail-when-conflicting-issue-numbers.case
+
 [setup]
 
 including get-git-log-msg-program.def
