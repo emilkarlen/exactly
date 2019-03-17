@@ -30,8 +30,7 @@ def any_line_contains_pattern(file_name, reg_exp_pattern):
 
 
 def get_issue_from_branch_name():
-    current_branch = subprocess.check_output('git branch | grep "*" | cut -d " " -f 2',
-                                             shell=True,
+    current_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'],
                                              universal_newlines=True)
     current_branch = current_branch.strip()
     m = re.match(issue_pattern, current_branch)
@@ -85,6 +84,5 @@ else:
             print('Mismatch of issue of branch and commit message: %s != %s' % (issue_of_branch_name,
                                                                                 issue_of_commit_message))
             sys.exit(1)
-
 
 sys.exit(0)
