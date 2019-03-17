@@ -1,0 +1,30 @@
+[setup]
+
+def string COMMIT_MESSAGE_WITHOUT_ISSUE = "commit message without issue number, since issue number XY-456 is not at start"
+
+
+including repo-in-cwd-with-installed-commit-hook.setup
+
+
+$ git checkout -b "AB-123-branch-with-issue-number"
+
+file file-to-add
+
+$ git add file-to-add
+
+
+[act]
+
+
+$ git commit -m "@[COMMIT_MESSAGE_WITHOUT_ISSUE]@"
+
+
+[assert]
+
+
+stdout -from
+       @ GET_LOG_MESSAGE_OF_LAST_COMMIT
+       equals
+<<-
+AB-123 : @[COMMIT_MESSAGE_WITHOUT_ISSUE]@
+-

@@ -7,8 +7,12 @@ issue_pattern = re.compile('([A-Z]{2,3}-[0-9]{1,5})', re.I)
 merge_pattern = re.compile('^.*(merge)+.*$', re.I)
 
 
-def is_merge(file_name):
-    return any_line_contains_pattern(file_name, merge_pattern)
+def is_merge(commit_message):
+    for line in commit_message.splitlines():
+        m = re.search(merge_pattern, line)
+        if m:
+            return True
+    return False
 
 
 def has_issue_issue(file_name):
@@ -25,14 +29,24 @@ def any_line_contains_pattern(file_name, reg_exp_pattern):
         return False
 
 
-def get_issue_issue_from_branch_name():
-    current_branch = subprocess.check_output('git branch | grep "*" | cut -d " " -f 2', shell=True)
-    current_branch = str(current_branch).strip()
-    m = re.search(issue_pattern, current_branch)
+def get_issue_from_branch_name():
+    current_branch = subprocess.check_output('git branch | grep "*" | cut -d " " -f 2',
+                                             shell=True,
+                                             universal_newlines=True)
+    current_branch = current_branch.strip()
+    m = re.match(issue_pattern, current_branch)
     if m:
         return m.group(0)
     else:
         print('Current branch name does not include an issue number in its name : %s' % current_branch)
+
+
+def get_issue_from_commit_message(message):
+    m = re.match(issue_pattern, message)
+    if m:
+        return m.group(0)
+    else:
+        return None
 
 
 def add_issue_number_to_commit(file_name, issue):
@@ -45,11 +59,20 @@ def add_issue_number_to_commit(file_name, issue):
 
 commit_message_file = sys.argv[1]
 
-if is_merge(commit_message_file):
+try:
+    with open(commit_message_file) as message_file:
+        commit_message = message_file.read()
+except IOError:
+    print('Unable to read commit message file ' + commit_message_file)
+    sys.exit(1)
+
+if is_merge(commit_message):
     sys.exit(0)
 
-if not has_issue_issue(commit_message_file):
-    issue_number = get_issue_issue_from_branch_name()
+issue_of_commit_message = get_issue_from_commit_message(commit_message)
+
+if issue_of_commit_message is None:
+    issue_number = get_issue_from_branch_name()
     if issue_number:
         add_issue_number_to_commit(commit_message_file, issue_number)
     else:
