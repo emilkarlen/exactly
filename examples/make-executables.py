@@ -118,6 +118,9 @@ README_FILES = itertools.chain.from_iterable([
     sts(Path('transform'),
         [PROGRAM_THAT_WRITES_LOG_FILE]
         ),
+    sts(Path('git-hook'),
+        ['prepare-commit-msg']
+        ),
 ])
 
 BUILTIN_HELP_FILES = [

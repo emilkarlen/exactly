@@ -384,6 +384,72 @@ For example, to just check that the names of some SQL files are correct::
                  empty
 
 
+Testing a git commit hook
+------------------------------------------------------------
+
+The following tests a git commit hook (`prepare-commit-msg`)::
+
+    [setup]
+
+
+    def program GET_LOG_MESSAGE_OF_LAST_COMMIT = % git log -1 --format=%s
+
+
+    ## Setup a (non empty) git repo.
+
+    $ git init
+
+    file file-in-repo = "A file in the repo"
+
+    $ git add file-in-repo
+
+    $ git commit -m 'commit of file already in repo'
+
+
+    ## Install the commit hook to test.
+
+    copy prepare-commit-msg .git/hooks
+
+
+    ## Setup a branch, with issue number in its name,
+    # and a file to commit.
+
+    $ git checkout -b "AB-123-branch-with-issue-number"
+
+    file file-to-add = "A file to add on the branch"
+
+    $ git add file-to-add
+
+
+    [act]
+
+
+    $ git commit -m "commit message without issue number"
+
+
+    [assert]
+
+
+    stdout -from
+           @ GET_LOG_MESSAGE_OF_LAST_COMMIT
+           equals
+    <<-
+    AB-123 : commit message without issue number
+    -
+
+
+Note: Since a test is executed in a sandbox directory, it is ok
+to create the git repo in CWD.
+
+Note: Since the test is rather long, it would increase readability
+to put part of it in external files, and including them using `including`.
+E.g.::
+
+    [setup]
+    ...
+    including repo-in-cwd-with-installed-commit-hook.setup
+
+
 ORGANIZING TESTS
 ========================================
 
