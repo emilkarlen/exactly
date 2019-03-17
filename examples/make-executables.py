@@ -180,11 +180,19 @@ WIKI_FILES = itertools.chain.from_iterable(
 
     ])
 
+REAL_WORLD_FILES = itertools.chain.from_iterable(
+    [
+        sts(Path('git-hook'),
+            ['prepare-commit-msg']
+            ),
+    ])
+
 SUB_DIR_CONFIGS = [
     (intro_sub_dir, INTRO_FILES),
     (readme_examples_root_dir, README_FILES),
     ('builtin-help', BUILTIN_HELP_FILES),
     (wiki_sub_dir, WIKI_FILES),
+    ('real-world', REAL_WORLD_FILES),
 ]
 
 if __name__ == '__main__':

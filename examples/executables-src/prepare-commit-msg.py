@@ -1,8 +1,7 @@
-#!/usr/bin/python
+import sys
 
 import re
 import subprocess
-import sys
 
 issue_pattern = re.compile('([A-Z]{2,3}-[0-9]{1,5})', re.I)
 merge_pattern = re.compile('^.*(merge)+.*$', re.I)
@@ -27,7 +26,8 @@ def any_line_contains_pattern(file_name, reg_exp_pattern):
 
 
 def get_issue_issue_from_branch_name():
-    current_branch = subprocess.check_output('git branch | grep "*" | cut -d " " -f 2', shell=True).strip()
+    current_branch = subprocess.check_output('git branch | grep "*" | cut -d " " -f 2', shell=True)
+    current_branch = str(current_branch).strip()
     m = re.search(issue_pattern, current_branch)
     if m:
         return m.group(0)
