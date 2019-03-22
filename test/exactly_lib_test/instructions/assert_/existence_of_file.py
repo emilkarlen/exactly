@@ -7,6 +7,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
     PathRelativityVariants, RelHomeOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
+from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
@@ -156,6 +157,11 @@ class TestCheckForAnyTypeOfFile(TestCaseBase):
                 DirContents(
                     [empty_dir('directory'),
                      Link(file_name, 'directory')])
+            ),
+            NameAndValue(
+                'broken sym-link',
+                DirContents(
+                    [Link(file_name, 'non-existing-target-file')])
             ),
         ]
 

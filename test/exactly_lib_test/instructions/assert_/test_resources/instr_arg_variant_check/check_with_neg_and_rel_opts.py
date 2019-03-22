@@ -1,5 +1,4 @@
 import unittest
-
 from typing import List
 
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
@@ -23,6 +22,7 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
     SymbolsConfiguration
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -230,18 +230,19 @@ class InstructionChecker:
 
     def check_multiple_cases_with_rel_opt_variants_and_expectation_type_variants(
             self,
-            test_cases_with_name_and_dir_contents: list,
+            test_cases_with_name_and_dir_contents: List[NameAndValue[DirContents]],
             make_instruction_arguments: InstructionArgumentsVariantConstructor,
             main_result_for_positive_expectation: PassOrFail,
             following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
 
         for case in test_cases_with_name_and_dir_contents:
-            self.check_rel_opt_variants_and_expectation_type_variants(
-                make_instruction_arguments,
-                main_result_for_positive_expectation,
-                contents_of_relativity_option_root=case.value,
-                test_case_name=case.name,
-                following_symbols_setup=following_symbols_setup)
+            with self.put.subTest(case.name):
+                self.check_rel_opt_variants_and_expectation_type_variants(
+                    make_instruction_arguments,
+                    main_result_for_positive_expectation,
+                    contents_of_relativity_option_root=case.value,
+                    test_case_name=case.name,
+                    following_symbols_setup=following_symbols_setup)
 
 
 MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR = MkSubDirAndMakeItCurrentDirectory(
