@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.definitions import file_ref as file_ref_texts
+from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib_test.test_resources import arguments_building
@@ -37,6 +38,10 @@ class FileRefArgument(SequenceOfArgumentsBase):
         else:
             return [self.relativity_argument,
                     self.name]
+
+
+def symbol_file_ref_argument(symbol_name: str) -> FileRefArgument:
+    return FileRefArgument(symbol_reference_syntax_for_name(symbol_name))
 
 
 class RelOptFileRefArgument(SequenceOfArgumentsBase):

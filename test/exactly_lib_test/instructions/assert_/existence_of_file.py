@@ -3,17 +3,24 @@ import unittest
 from exactly_lib.instructions.assert_ import existence_of_file as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType, \
     PathRelativityVariants, RelHomeOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
+from exactly_lib_test.instructions.assert_.test_resources import existence_of_file_arguments_building as args
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionArgumentsVariantConstructorWithTemplateStringBase, InstructionChecker
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import symbol_file_ref_argument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
+from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
@@ -24,11 +31,13 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, em
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParseInvalidSyntax),
+        unittest.makeSuite(SymbolUsagesTest),
         unittest.makeSuite(TestCheckForRegularFile),
         unittest.makeSuite(TestCheckForDirectory),
         unittest.makeSuite(TestCheckForSymLink),
@@ -79,6 +88,33 @@ class TestParseInvalidSyntax(instruction_check.TestCaseBase):
                 for source in equivalent_source_variants(self, instruction_argument):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+
+
+class SymbolUsagesTest(unittest.TestCase):
+    def test_without_file_matcher(self):
+        # ARRANGE #
+
+        path_symbol_name = 'the_path_symbol'
+        argument_building = args.WithOptionalNegation(args.PathArg(symbol_file_ref_argument(path_symbol_name)))
+
+        expected_symbol_usages = asrt.matches_sequence([
+            asrt_sym_ref.symbol_usage_equals_symbol_reference(
+                SymbolReference(path_symbol_name,
+                                file_ref_or_string_reference_restrictions(
+                                    EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS))
+            )
+        ])
+
+        for expectation_type in ExpectationType:
+            arguments = argument_building.get(expectation_type)
+            source = remaining_source(str(arguments))
+            with self.subTest(expectation_type=expectation_type):
+                # ACT #
+                instruction = sut.setup('the-instruction-name').parse(ARBITRARY_FS_LOCATION_INFO, source)
+                # ASSERT #
+                self.assertIsInstance(instruction, AssertPhaseInstruction)
+                expected_symbol_usages.apply_without_message(self,
+                                                             instruction.symbol_usages())
 
 
 class TheInstructionArgumentsVariantConstructor(InstructionArgumentsVariantConstructorWithTemplateStringBase):
