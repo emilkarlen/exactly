@@ -1,5 +1,4 @@
 import unittest
-
 from typing import Sequence
 
 from exactly_lib.instructions.multi_phase import new_file as sut
@@ -20,7 +19,7 @@ from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, Dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
+    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -90,7 +89,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
 
                     self._check(source,
                                 ArrangementWithSds(
-                                    pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                                    pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                                     home_or_sds_contents=cases_data.pre_existing_files,
                                     non_home_contents=non_home_contents,
                                     symbols=cases_data.symbols,

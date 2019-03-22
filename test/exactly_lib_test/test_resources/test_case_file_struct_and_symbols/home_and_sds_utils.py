@@ -1,7 +1,6 @@
-from time import strftime, localtime
-
 import os
 from contextlib import contextmanager
+from time import strftime, localtime
 
 from exactly_lib import program_info
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -61,5 +60,5 @@ def home_and_sds_with_act_as_curr_dir(
                 yield ret_val
 
 
-SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR = HomeAndSdsActionFromSdsAction(
+SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR = HomeAndSdsActionFromSdsAction(
     MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs())

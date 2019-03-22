@@ -1,5 +1,4 @@
 import unittest
-
 from typing import Sequence, Callable
 
 from exactly_lib.instructions.multi_phase import new_file as sut
@@ -42,7 +41,7 @@ from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, sym_link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
+    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.string_transformers import \
@@ -230,7 +229,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                             ),
                             file_contents_arg.following_lines),
                         ArrangementWithSds(
-                            pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                            pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                             home_or_sds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
                                 DirContents([src_file]))
                         ),
@@ -277,7 +276,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                             ),
                             file_contents_arg.following_lines),
                         ArrangementWithSds(
-                            pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                            pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                             home_or_sds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
                                 DirContents([src_file])),
                             symbols=symbols,
@@ -318,7 +317,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                         ),
                         file_contents_arg.following_lines),
                     ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                        pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                         home_or_sds_contents=a_src_rel_opt_conf.populator_for_relativity_option_root(
                             DirContents([src_file])),
                         symbols=failing_symbol_context.symbol_table,
@@ -389,7 +388,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
                     self._check(source,
                                 ArrangementWithSds(
-                                    pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                                    pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                                     home_or_sds_contents=src_file_rel_opt_conf.populator_for_relativity_option_root(
                                         DirContents([src_file])),
                                     symbols=symbols,
@@ -451,7 +450,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                             self._check(
                                 source,
                                 ArrangementWithSds(
-                                    pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                                    pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                                     home_or_sds_contents=src_file.relativity.populator_for_relativity_option_root(
                                         src_file_variant.value),
                                     symbols=symbols,

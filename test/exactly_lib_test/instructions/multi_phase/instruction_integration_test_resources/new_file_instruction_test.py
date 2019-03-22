@@ -35,7 +35,7 @@ from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout, \
     command_that_exits_with_code
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
+    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources.string_transformers import \
     MyToUppercaseTransformer
@@ -199,7 +199,7 @@ class TestContentsFromExistingFile_Successfully(TestCaseBase):
                 self,
                 source,
                 self.conf.arrangement(
-                    pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                    pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                     home_or_sds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
                         DirContents([src_file])),
                     symbols=symbols,
@@ -245,7 +245,7 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
                 self,
                 source,
                 self.conf.arrangement(
-                    pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                    pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                     symbols=symbols
                 ),
                 self.conf.expect_success(

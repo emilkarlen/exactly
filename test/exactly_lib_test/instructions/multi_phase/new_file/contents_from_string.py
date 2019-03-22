@@ -1,5 +1,4 @@
 import unittest
-
 from typing import Callable
 
 from exactly_lib.definitions import file_ref as file_ref_texts
@@ -43,7 +42,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import c
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
+    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt, value_assertion as asrt
 
 
@@ -71,7 +70,7 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
                 self._check(
                     arguments.as_remaining_source,
                     ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                        pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                     ),
                     Expectation(
                         main_result=IS_SUCCESS,
@@ -95,7 +94,7 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
         self._check(
             arguments.as_remaining_source,
             ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
             ),
             Expectation(
                 main_result=IS_SUCCESS,
@@ -119,7 +118,7 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
                 self._check(
                     arguments.as_remaining_source,
                     ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                        pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                     ),
                     Expectation(
                         main_result=IS_SUCCESS,
@@ -142,7 +141,7 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
         self._check(
             arguments.as_remaining_source,
             ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
             ),
             Expectation(
                 main_result=IS_SUCCESS,
@@ -177,7 +176,7 @@ class TestSymbolReferences(TestCaseBase):
                 [here_doc_line,
                  'THE_MARKER']),
             ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                 symbols=data_symbol_utils.symbol_table_with_single_file_ref_value(
                     symbol.name,
                     symbol.value),
@@ -238,7 +237,7 @@ class TestSymbolReferences(TestCaseBase):
                 ),
                 contents_arguments.following_lines),
             ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                 symbols=symbol_table,
             ),
             Expectation(
@@ -345,7 +344,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
                         ),
                         arguments.following_lines),
                     ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                        pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                     ),
                     Expectation(
                         main_result=IS_SUCCESS,
@@ -363,7 +362,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
                 ),
                 hd_args.following_lines + ['following line']),
             ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
             ),
             Expectation(
                 main_result=IS_SUCCESS,

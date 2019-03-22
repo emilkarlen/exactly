@@ -1,5 +1,4 @@
 import unittest
-
 from typing import List, Callable, Dict
 
 from exactly_lib.instructions.multi_phase import new_file as sut
@@ -54,7 +53,7 @@ from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
+    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -305,7 +304,7 @@ class TestSuccessfulScenariosWithDifferentSourceVariants(TestCaseBase):
                     self._check(
                         source,
                         ArrangementWithSds(
-                            pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                            pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                             symbols=symbols
                         ),
                         Expectation(

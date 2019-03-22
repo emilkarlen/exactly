@@ -26,7 +26,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import c
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
+    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -84,7 +84,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                         relativity_option=rel_opt_conf.option_argument,
                         file_name=file_name)),
                     ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                        pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                     ),
                     Expectation(
                         main_result=IS_SUCCESS,
@@ -105,7 +105,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                         sub_dir=sub_dir_name,
                         file_name=expected_file.file_name)),
                     ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                        pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                     ),
                     Expectation(
                         main_result=IS_SUCCESS,
@@ -128,7 +128,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                         sub_dir=sub_dir_name,
                         file_name=expected_file.file_name)),
                     ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                        pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                         non_home_contents=rel_opt_conf.populator_for_relativity_option_root__non_home(
                             fs.DirContents([fs.empty_dir(sub_dir_name)])
                         )
@@ -152,7 +152,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
                 '{file_name}'.format(file_name=expected_file.file_name),
             ),
             ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
             ),
             Expectation(
                 main_result=IS_SUCCESS,
@@ -167,7 +167,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
                 '{file_name}'.format(file_name=expected_file.file_name),
                 ['following line']),
             ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
             ),
             Expectation(
                 main_result=IS_SUCCESS,
