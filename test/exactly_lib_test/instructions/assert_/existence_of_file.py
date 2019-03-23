@@ -23,10 +23,12 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources import file_matcher as asrt_file_matcher
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import symbol_file_ref_argument, \
     file_ref_argument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.validation_cases import failing_validation_cases__svh
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
@@ -46,11 +48,12 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParseInvalidSyntax),
-        unittest.makeSuite(SymbolUsagesTest),
+        SymbolUsagesTest(),
+        FileMatcherValidationTest(),
+        unittest.makeSuite(TestCheckForAnyTypeOfFile),
         unittest.makeSuite(TestCheckForRegularFile),
         unittest.makeSuite(TestCheckForDirectory),
         unittest.makeSuite(TestCheckForSymLink),
-        unittest.makeSuite(TestCheckForAnyTypeOfFile),
         unittest.makeSuite(TestDifferentSourceVariants),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
@@ -140,6 +143,34 @@ class SymbolUsagesTest(unittest.TestCase):
                     self.assertIsInstance(instruction, AssertPhaseInstruction)
                     case.expected.apply_without_message(self,
                                                         instruction.symbol_usages())
+
+
+class FileMatcherValidationTest(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+
+        for failing_file_matcher_case in failing_validation_cases__svh():
+            failing_symbol_context = failing_file_matcher_case.value.symbol_context
+
+            argument = args.CompleteInstructionArg(
+                ExpectationType.POSITIVE,
+                args.PathArg(file_ref_argument('ignored-file')),
+                fm_args.SymbolReference(failing_symbol_context.name))
+
+            with self.subTest(failing_file_matcher_case.name):
+                # ACT & ASSERT #
+
+                instruction_check.check(
+                    self,
+                    sut.Parser(),
+                    remaining_source(str(argument)),
+                    ArrangementPostAct(
+                        symbols=failing_symbol_context.symbol_table,
+                    ),
+                    instruction_check.expectation(
+                        validation=failing_file_matcher_case.value.expectation,
+                        symbol_usages=failing_symbol_context.references_assertion
+                    ))
 
 
 class ArgumentsConstructorWithFileMatcher(InstructionArgumentsVariantConstructor):

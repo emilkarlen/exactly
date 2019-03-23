@@ -131,6 +131,22 @@ class ValidationExpectationSvh:
         return self._post_sds
 
 
+def failing_validation_cases__svh() -> Sequence[NEA[ValidationExpectationSvh, ValidationActual]]:
+    err_msg_pre_sds = 'validation err msg/pre sds'
+    err_msg_post_sds = 'validation err msg/post sds'
+    return [
+        NEA('validation fails/pre sds',
+            pre_sds_validation_fails__svh(asrt.equals(err_msg_pre_sds)),
+            ValidationActual.fails_pre_sds(err_msg_pre_sds),
+            ),
+
+        NEA('validation fails/post sds',
+            post_sds_validation_fails__svh(asrt.equals(err_msg_post_sds)),
+            ValidationActual.fails_post_sds(err_msg_post_sds),
+            ),
+    ]
+
+
 def all_validations_passes__svh() -> ValidationExpectationSvh:
     return ValidationExpectationSvh(
         pre_sds=asrt_svh.is_success(),

@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional
 
 
 class SuccessOrValidationErrorOrHardErrorEnum(Enum):
@@ -49,6 +50,13 @@ def new_svh_validation_error(failure_message: str) -> SuccessOrValidationErrorOr
     if failure_message is None:
         raise ValueError('A VALIDATION ERROR must have a failure message (that is not None)')
     return SuccessOrValidationErrorOrHardError(False, failure_message)
+
+
+def new_maybe_svh_validation_error(failure_message: Optional[str]) -> SuccessOrValidationErrorOrHardError:
+    if failure_message is None:
+        return new_svh_success()
+    else:
+        return SuccessOrValidationErrorOrHardError(False, failure_message)
 
 
 def new_svh_hard_error(failure_message: str) -> SuccessOrValidationErrorOrHardError:

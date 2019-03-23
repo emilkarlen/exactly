@@ -8,6 +8,7 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.symbol.test_resources.symbols_setup import ResolverSymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -64,3 +65,19 @@ def is_file_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
         asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
                                          IS_FILE_REFERENCE_RESTRICTION)
     )
+
+
+class FileMatcherSymbolContext(ResolverSymbolContext[FileMatcherResolver]):
+    def __init__(self,
+                 name: str,
+                 resolver: FileMatcherResolver):
+        super().__init__(name)
+        self._resolver = resolver
+
+    @property
+    def resolver(self) -> FileMatcherResolver:
+        return self._resolver
+
+    @property
+    def reference_assertion(self) -> ValueAssertion[SymbolReference]:
+        return is_file_matcher_reference_to__ref(self.name)

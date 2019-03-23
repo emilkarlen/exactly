@@ -17,10 +17,13 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.test_case import pre_or_post_value_validation
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
-from exactly_lib.test_case.result import pfh
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
@@ -206,6 +209,18 @@ class _Instruction(AssertPhaseInstruction):
     def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self._symbol_usages
 
+    def validate_pre_sds(self, environment: InstructionEnvironmentForPreSdsStep
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
+        validator = self._validator(environment)
+        maybe_err_msg = validator.validate_pre_sds_if_applicable(environment.hds)
+        return svh.new_maybe_svh_validation_error(maybe_err_msg)
+
+    def validate_post_setup(self, environment: InstructionEnvironmentForPostSdsStep
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
+        validator = self._validator(environment)
+        maybe_err_msg = validator.validate_post_sds_if_applicable(environment.home_and_sds)
+        return svh.new_maybe_svh_validation_error(maybe_err_msg)
+
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
@@ -272,6 +287,13 @@ class _Instruction(AssertPhaseInstruction):
         env = error_message.ErrorMessageResolvingEnvironment(environment.home_and_sds,
                                                              environment.symbols)
         return msg_resolver.resolve(env)
+
+    def _validator(self, environment: InstructionEnvironmentForPreSdsStep
+                   ) -> pre_or_post_value_validation.PreOrPostSdsValueValidator:
+        if self._file_matcher is None:
+            return pre_or_post_value_validation.constant_success_validator()
+        else:
+            return self._file_matcher.resolve(environment.symbols).validator()
 
 
 _TYPE_ELEMENT_DESCRIPTION_INTRO = """\
