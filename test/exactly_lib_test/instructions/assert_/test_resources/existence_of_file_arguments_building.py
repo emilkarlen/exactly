@@ -35,7 +35,7 @@ class CompleteInstructionArg(Argument):
     def __init__(self,
                  expectation_type: ExpectationType,
                  path: PathArg,
-                 file_matcher: Optional[FileMatcherArg]):
+                 file_matcher: Optional[FileMatcherArg] = None):
         self.expectation_type = expectation_type
         self.path = path
         self.file_matcher = file_matcher

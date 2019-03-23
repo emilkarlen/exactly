@@ -1,4 +1,4 @@
-from typing import Sequence, List
+from typing import Sequence, List, Optional
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
@@ -11,9 +11,10 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
-from exactly_lib.section_document.element_parsers.instruction_parsers import \
-    InstructionParserThatConsumesCurrentLine
-from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
+from exactly_lib.section_document.element_parsers import token_stream_parser
+from exactly_lib.section_document.element_parsers.section_element_parsers import \
+    InstructionParserWithoutSourceFileLocationInfo
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
@@ -22,12 +23,18 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAss
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate
+from exactly_lib.test_case_utils.file_matcher import file_matcher_models
+from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
+from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
+from exactly_lib.type_system import error_message
+from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.logic import hard_error
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument
+from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.textformat.structure import lists, structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.utils import transform_list_to_table
@@ -142,25 +149,41 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                        lists.Format(lists.ListType.VARIABLE_LIST))
 
 
-class Parser(InstructionParserThatConsumesCurrentLine):
+class Parser(InstructionParserWithoutSourceFileLocationInfo):
     def __init__(self):
         self.format_map = {
             'PATH': _PATH_ARGUMENT.name,
         }
 
-    def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
-        tokens = TokenParserExtra(new_token_stream(rest_of_line),
-                                  self.format_map)
-        is_negated = tokens.consume_and_return_true_if_first_argument_is_unquoted_and_equals(NEGATION_OPERATOR)
-        file_properties_check = tokens.consume_and_handle_first_matching_option(
-            _DEFAULT_FILE_PROPERTIES_CHECK,
-            _file_type_2_file_properties_check,
-            FILE_TYPE_OPTIONS)
-        if is_negated:
-            file_properties_check = file_properties.negation_of(file_properties_check)
-        file_ref_resolver = tokens.consume_file_ref(_REL_OPTION_CONFIG)
-        tokens.report_superfluous_arguments_if_not_at_eol()
-        return _Instruction(file_ref_resolver, file_properties_check)
+    def parse_from_source(self, source: ParseSource) -> AssertPhaseInstruction:
+        with token_stream_parser.from_parse_source(
+                source,
+                consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
+            assert isinstance(token_parser,
+                              token_stream_parser.TokenParser), 'Must have a TokenParser'  # Type info for IDE
+            return self._parse(token_parser)
+
+    def _parse(self, parser: token_stream_parser.TokenParser) -> AssertPhaseInstruction:
+        expectation_type = parser.consume_optional_negation_operator()
+
+        path_to_check = parse_file_ref.parse_file_ref_from_token_parser(_REL_OPTION_CONFIG,
+                                                                        parser)
+
+        file_matcher = parse_file_matcher.CONSTANT_TRUE_MATCHER_RESOLVER
+
+        if parser.is_at_eol:
+            parser.consume_current_line_as_string_of_remaining_part_of_current_line()
+        else:
+            file_matcher = parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
+                (instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,),
+                self._parse_file_matcher,
+            )
+            parser.report_superfluous_arguments_if_not_at_eol()
+
+        return _Instruction(expectation_type, path_to_check, file_matcher)
+
+    def _parse_file_matcher(self, ignored_string_token: str) -> parse_file_matcher.FileMatcherResolver:
+        return parse_file_matcher.CONSTANT_TRUE_MATCHER_RESOLVER
 
 
 def _file_type_2_file_properties_check(file_type: file_properties.FileType
@@ -172,10 +195,12 @@ def _file_type_2_file_properties_check(file_type: file_properties.FileType
 
 class _Instruction(AssertPhaseInstruction):
     def __init__(self,
+                 expectation_type: ExpectationType,
                  file_ref_resolver: FileRefResolver,
-                 expected_file_properties: file_properties.FilePropertiesCheck):
+                 file_matcher: parse_file_matcher.FileMatcherResolver):
+        self._expectation_type = expectation_type
         self._file_ref_resolver = file_ref_resolver
-        self._expected_file_properties = expected_file_properties
+        self._file_matcher = file_matcher
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self._file_ref_resolver.references
@@ -185,9 +210,49 @@ class _Instruction(AssertPhaseInstruction):
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         failure_message = pre_or_post_sds_failure_message_or_none(
             FileRefCheck(self._file_ref_resolver,
-                         self._expected_file_properties),
+                         self._expected_file_properties()),
             environment.path_resolving_environment_pre_or_post_sds)
-        return pfh.new_pfh_fail_if_has_failure_message(failure_message)
+
+        if failure_message:
+            return pfh.new_pfh_fail_if_has_failure_message(failure_message)
+
+        if self._expectation_type is ExpectationType.NEGATIVE:
+            return pfh.new_pfh_pass()
+        else:
+            try:
+                failure_message_resolver = self._matches_file_matcher(environment)
+                if failure_message_resolver is None:
+                    return pfh.new_pfh_pass()
+                else:
+                    return pfh.new_pfh_fail(self._err_msg_for(environment, failure_message_resolver))
+            except hard_error.HardErrorException as ex:
+                return pfh.new_pfh_hard_error(self._err_msg_for(environment, ex.error))
+
+    def _expected_file_properties(self) -> file_properties.FilePropertiesCheck:
+        file_existence_check = _DEFAULT_FILE_PROPERTIES_CHECK
+        if self._expectation_type is ExpectationType.NEGATIVE:
+            file_existence_check = file_properties.negation_of(file_existence_check)
+        return file_existence_check
+
+    def _matches_file_matcher(self, environment: i.InstructionEnvironmentForPostSdsStep
+                              ) -> Optional[ErrorMessageResolver]:
+        fm = self._file_matcher.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        existing_file_path = self._file_ref_resolver \
+            .resolve(environment.symbols) \
+            .value_of_any_dependency(environment.home_and_sds)
+
+        model = file_matcher_models.FileMatcherModelForPrimitivePath(
+            environment.phase_logging.space_for_instruction(),
+            existing_file_path)
+
+        return fm.matches2(model)
+
+    def _err_msg_for(self,
+                     environment: i.InstructionEnvironmentForPostSdsStep,
+                     msg_resolver: ErrorMessageResolver) -> str:
+        env = error_message.ErrorMessageResolvingEnvironment(environment.home_and_sds,
+                                                             environment.symbols)
+        return msg_resolver.resolve(env)
 
 
 _TYPE_ELEMENT_DESCRIPTION_INTRO = """\

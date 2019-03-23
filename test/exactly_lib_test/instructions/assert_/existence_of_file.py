@@ -1,4 +1,5 @@
 import unittest
+from typing import Optional
 
 from exactly_lib.instructions.assert_ import existence_of_file as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -7,19 +8,23 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType, \
     PathRelativityVariants, RelHomeOptionType
+from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.util.cli_syntax.elements.argument import OptionName
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.assert_.test_resources import existence_of_file_arguments_building as args
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
-    InstructionArgumentsVariantConstructorWithTemplateStringBase, InstructionChecker
+    InstructionChecker, \
+    InstructionArgumentsVariantConstructor
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import symbol_file_ref_argument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
@@ -48,23 +53,16 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-FILE_TYPE_OPTIONS_DICT = dict(sut.FILE_TYPE_OPTIONS)
-
-
-def file_type_option(file_type: FileType) -> str:
-    return '' if file_type is None else long_option_syntax(FILE_TYPE_OPTIONS_DICT[file_type].long)
-
-
 class TestParseInvalidSyntax(instruction_check.TestCaseBase):
     test_cases_with_no_negation_operator = [
         '',
-        '{type_option} file-name unexpected-argument'.format(
-            type_option=option_syntax(FILE_TYPE_OPTIONS_DICT[FileType.DIRECTORY])),
+        '{type_option} file-name'.format(
+            type_option=option_syntax(OptionName(file_properties.TYPE_INFO[FileType.REGULAR].type_argument))),
         '{type_option}'.format(
-            type_option=option_syntax(FILE_TYPE_OPTIONS_DICT[FileType.DIRECTORY])),
+            type_option=option_syntax(OptionName(file_properties.TYPE_INFO[FileType.DIRECTORY].type_argument))),
         '{invalid_option} file-name'.format(
             invalid_option=long_option_syntax('invalidOption')),
-        'file-name unexpected-argument',
+        'file-name unexpectedArgument',
     ]
 
     def test_raise_exception_WHEN_syntax_is_invalid(self):
@@ -118,19 +116,27 @@ class SymbolUsagesTest(unittest.TestCase):
                                                              instruction.symbol_usages())
 
 
-class TheInstructionArgumentsVariantConstructor(InstructionArgumentsVariantConstructorWithTemplateStringBase):
-    """
-    Constructs the instruction argument for a given negation-option config
-    and rel-opt config.
-    """
+class ArgumentsConstructorWithFileMatcher(InstructionArgumentsVariantConstructor):
+    def __init__(self,
+                 file_name: str,
+                 file_matcher: Optional[fm_args.FileMatcherArg] = None):
+        self._file_matcher = file_matcher
+        self._file_name = file_name
 
     def apply(self,
               etc: ExpectationTypeConfigForPfh,
-              rel_opt_config: RelativityOptionConfiguration,
-              ) -> str:
-        ret_val = self.instruction_argument_template.replace('<rel_opt>', str(rel_opt_config.option_argument))
-        ret_val = etc.instruction_arguments(ret_val)
-        return ret_val
+              rel_opt_config: RelativityOptionConfiguration) -> str:
+        argument = args.CompleteInstructionArg(
+            etc.expectation_type,
+            args.PathArg(rel_opt_config.file_argument_with_option(self._file_name)),
+            self._file_matcher)
+
+        return str(argument)
+
+
+def arguments_constructor_for_file_type(file_name: str,
+                                        file_type: FileType) -> InstructionArgumentsVariantConstructor:
+    return ArgumentsConstructorWithFileMatcher(file_name, fm_args.Type(file_type))
 
 
 class TestCaseBase(unittest.TestCase):
@@ -146,9 +152,8 @@ class TestCaseBase(unittest.TestCase):
 class TestDifferentSourceVariants(TestCaseBase):
     def test_without_file_type(self):
         file_name = 'existing-file'
-        instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
-            '<rel_opt> {file_name}'.format(file_name=file_name)
-        )
+        instruction_argument_constructor = ArgumentsConstructorWithFileMatcher(file_name)
+
         self.checker.check_parsing_with_different_source_variants(
             instruction_argument_constructor,
             default_relativity=RelOptionType.REL_CWD,
@@ -160,11 +165,8 @@ class TestDifferentSourceVariants(TestCaseBase):
 
     def test_with_file_type(self):
         file_name = 'existing-file'
-        instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
-            '{file_type_opt} <rel_opt> {file_name}'.format(
-                file_type_opt=file_type_option(FileType.REGULAR),
-                file_name=file_name)
-        )
+        instruction_argument_constructor = arguments_constructor_for_file_type(file_name, FileType.REGULAR)
+
         self.checker.check_parsing_with_different_source_variants(
             instruction_argument_constructor,
             default_relativity=RelOptionType.REL_CWD,
@@ -177,10 +179,9 @@ class TestDifferentSourceVariants(TestCaseBase):
 
 class TestCheckForAnyTypeOfFile(TestCaseBase):
     def test_file_exists(self):
+        # ARRANGE #
         file_name = 'existing-file'
-        instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
-            '<rel_opt> {file_name}'.format(file_name=file_name)
-        )
+        instruction_argument_constructor = ArgumentsConstructorWithFileMatcher(file_name)
 
         cases_with_existing_file_of_different_types = [
             NameAndValue(
@@ -209,9 +210,8 @@ class TestCheckForAnyTypeOfFile(TestCaseBase):
         )
 
     def test_file_does_not_exist(self):
-        instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
-            '<rel_opt> non-existing-file'
-        )
+        instruction_argument_constructor = ArgumentsConstructorWithFileMatcher('non-existing-file')
+
         self.checker.check_rel_opt_variants_and_expectation_type_variants(
             instruction_argument_constructor,
             main_result_for_positive_expectation=PassOrFail.FAIL)
@@ -219,11 +219,9 @@ class TestCheckForAnyTypeOfFile(TestCaseBase):
 
 class TestCheckForDirectory(TestCaseBase):
     file_name = 'name-of-checked-file'
-    instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
-        '{file_type_opt} <rel_opt> {file_name}'.format(
-            file_type_opt=file_type_option(FileType.DIRECTORY),
-            file_name=file_name),
-    )
+    instruction_argument_constructor = arguments_constructor_for_file_type(
+        file_name,
+        FileType.DIRECTORY)
 
     cases_with_existing_directory = [
         NameAndValue(
@@ -285,11 +283,9 @@ class TestCheckForDirectory(TestCaseBase):
 
 class TestCheckForRegularFile(TestCaseBase):
     file_name = 'name-of-checked-file'
-    instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
-        '{file_type_opt} <rel_opt> {file_name}'.format(
-            file_type_opt=file_type_option(FileType.REGULAR),
-            file_name=file_name),
-    )
+    instruction_argument_constructor = arguments_constructor_for_file_type(
+        file_name,
+        FileType.REGULAR)
 
     cases_with_existing_files_that_are_regular_files = [
         NameAndValue(
@@ -351,11 +347,10 @@ class TestCheckForRegularFile(TestCaseBase):
 
 class TestCheckForSymLink(TestCaseBase):
     file_name = 'the-name-of-checked-file'
-    instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
-        '{file_type_opt} <rel_opt> {file_name}'.format(
-            file_type_opt=file_type_option(FileType.SYMLINK),
-            file_name=file_name),
-    )
+    instruction_argument_constructor = arguments_constructor_for_file_type(
+        file_name,
+        FileType.SYMLINK)
+
     cases_with_existing_files_that_are_symbolic_links = [
         NameAndValue(
             'exists as sym-link to directory',
