@@ -27,7 +27,8 @@ from exactly_lib_test.test_case_utils.test_resources import relativity_options a
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     with_negation_argument, PassOrFail, ExpectationTypeConfigForPfh
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, Link
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, Link, \
+    empty_dir_contents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
@@ -253,6 +254,13 @@ class TestCheckForDirectory(TestCaseBase):
         ),
     ]
 
+    cases_with_non_existing_files = [
+        NameAndValue(
+            'non-existing file',
+            empty_dir_contents()
+        ),
+    ]
+
     def test_file_is_an_existing_directory(self):
         self.checker.check_multiple_cases_with_rel_opt_variants_and_expectation_type_variants(
             self.cases_with_existing_directory,
@@ -263,6 +271,13 @@ class TestCheckForDirectory(TestCaseBase):
     def test_file_exists_but_is_not_a_directory(self):
         self.checker.check_multiple_cases_with_rel_opt_variants_and_expectation_type_variants(
             self.cases_with_existing_files_that_are_not_directories,
+            self.instruction_argument_constructor,
+            main_result_for_positive_expectation=PassOrFail.FAIL,
+        )
+
+    def test_file_does_not_exist(self):
+        self.checker.check_multiple_cases_with_rel_opt_variants_and_expectation_type_variants(
+            self.cases_with_non_existing_files,
             self.instruction_argument_constructor,
             main_result_for_positive_expectation=PassOrFail.FAIL,
         )
@@ -305,6 +320,13 @@ class TestCheckForRegularFile(TestCaseBase):
         ),
     ]
 
+    cases_with_non_existing_files = [
+        NameAndValue(
+            'non-existing file',
+            empty_dir_contents()
+        ),
+    ]
+
     def test_file_exists_and_is_a_regular_file(self):
         self.checker.check_multiple_cases_with_rel_opt_variants_and_expectation_type_variants(
             self.cases_with_existing_files_that_are_regular_files,
@@ -315,6 +337,13 @@ class TestCheckForRegularFile(TestCaseBase):
     def test_file_exists_but_is_not_a_regular_file(self):
         self.checker.check_multiple_cases_with_rel_opt_variants_and_expectation_type_variants(
             self.cases_with_existing_files_that_are_not_regular_files,
+            self.instruction_argument_constructor,
+            main_result_for_positive_expectation=PassOrFail.FAIL,
+        )
+
+    def test_file_does_not_exist(self):
+        self.checker.check_multiple_cases_with_rel_opt_variants_and_expectation_type_variants(
+            self.cases_with_non_existing_files,
             self.instruction_argument_constructor,
             main_result_for_positive_expectation=PassOrFail.FAIL,
         )
@@ -355,6 +384,13 @@ class TestCheckForSymLink(TestCaseBase):
         ),
     ]
 
+    cases_with_non_existing_files = [
+        NameAndValue(
+            'non-existing file',
+            empty_dir_contents()
+        ),
+    ]
+
     def test_file_exists_and_is_a_regular_file(self):
         self.checker.check_multiple_cases_with_rel_opt_variants_and_expectation_type_variants(
             self.cases_with_existing_files_that_are_symbolic_links,
@@ -365,6 +401,13 @@ class TestCheckForSymLink(TestCaseBase):
     def test_file_exists_but_is_not_a_regular_file(self):
         self.checker.check_multiple_cases_with_rel_opt_variants_and_expectation_type_variants(
             self.cases_with_existing_files_that_are_not_symbolic_links,
+            self.instruction_argument_constructor,
+            main_result_for_positive_expectation=PassOrFail.FAIL,
+        )
+
+    def test_file_does_not_exist(self):
+        self.checker.check_multiple_cases_with_rel_opt_variants_and_expectation_type_variants(
+            self.cases_with_non_existing_files,
             self.instruction_argument_constructor,
             main_result_for_positive_expectation=PassOrFail.FAIL,
         )
