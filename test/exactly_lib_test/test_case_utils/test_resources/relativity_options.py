@@ -27,7 +27,8 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.test_case_file_structure.test_resources import arguments_building as file_ref_args, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
-from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import FileRefArgument
+from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import FileRefArgument, \
+    file_ref_argument
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator, \
@@ -100,7 +101,7 @@ class OptionStringConfiguration:
         return str(self.argument)
 
     def file_argument(self, file_name: str) -> FileRefArgument:
-        return FileRefArgument(file_name, self.argument)
+        return file_ref_argument(file_name, self.argument)
 
     def __str__(self):
         return '{}(option_string={})'.format(type(self),
@@ -192,7 +193,7 @@ class RelativityOptionConfiguration:
         return self._cli_option.argument
 
     def file_argument_with_option(self, file_name: str) -> FileRefArgument:
-        return FileRefArgument(file_name, self._cli_option.argument)
+        return file_ref_argument(file_name, self._cli_option.argument)
 
     @property
     def option_argument_str(self) -> str:

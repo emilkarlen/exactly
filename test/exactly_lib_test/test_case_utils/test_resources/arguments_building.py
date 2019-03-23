@@ -6,7 +6,7 @@ from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.symbol.test_resources import arguments_building as sym_ab
 from exactly_lib_test.test_case_file_structure.test_resources import arguments_building as fr_ab
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptFileRefArgument, \
-    FileRefArgument
+    FileRefArgument, file_ref_argument
 from exactly_lib_test.test_resources import arguments_building as ab
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer, QuotedStringArgument
 from exactly_lib_test.test_resources.arguments_building import Stringable
@@ -51,7 +51,7 @@ def rel_symbol_option(symbol_name: str) -> ArgumentElementRenderer:
 
 def file_ref(file_name: Stringable,
              relativity: ArgumentElementRenderer = None) -> FileRefArgument:
-    return FileRefArgument(file_name, relativity)
+    return file_ref_argument(file_name, relativity)
 
 
 def file_ref_rel_opt(file_name: str,

@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import Sequence
 
 from exactly_lib.definitions import file_ref as file_ref_texts
@@ -16,7 +17,23 @@ def rel_symbol_arg(symbol_name: str) -> ArgumentElementRenderer:
     ])
 
 
-class FileRefArgument(SequenceOfArgumentsBase):
+class FileRefArgument(SequenceOfArgumentsBase, ABC):
+    """
+    Renders a file ref argument with optional relativity option.
+    """
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        pass
+
+    @property
+    @abstractmethod
+    def arguments(self) -> Sequence[Stringable]:
+        pass
+
+
+class _FileRefArgumentWithRelativityOptionFromRenderer(FileRefArgument):
     """
     Renders a file ref argument with optional relativity option.
     """
@@ -40,11 +57,16 @@ class FileRefArgument(SequenceOfArgumentsBase):
                     self.name]
 
 
+def file_ref_argument(name: str,
+                      relativity: ArgumentElementRenderer = None) -> FileRefArgument:
+    return _FileRefArgumentWithRelativityOptionFromRenderer(name, relativity)
+
+
 def symbol_file_ref_argument(symbol_name: str) -> FileRefArgument:
-    return FileRefArgument(symbol_reference_syntax_for_name(symbol_name))
+    return file_ref_argument(symbol_reference_syntax_for_name(symbol_name))
 
 
-class RelOptFileRefArgument(SequenceOfArgumentsBase):
+class RelOptFileRefArgument(FileRefArgument):
     """
     Renders a file ref argument with optional relativity option.
     """
