@@ -199,8 +199,12 @@ class _Instruction(AssertPhaseInstruction):
         self._file_ref_resolver = file_ref_resolver
         self._file_matcher = file_matcher
 
+        self._symbol_usages = list(file_ref_resolver.references)
+        if file_matcher is not None:
+            self._symbol_usages += file_matcher.references
+
     def symbol_usages(self) -> Sequence[SymbolUsage]:
-        return self._file_ref_resolver.references
+        return self._symbol_usages
 
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,

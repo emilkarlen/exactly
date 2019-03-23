@@ -22,7 +22,9 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import symbol_file_ref_argument
+from exactly_lib_test.symbol.test_resources import file_matcher as asrt_file_matcher
+from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import symbol_file_ref_argument, \
+    file_ref_argument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
@@ -37,6 +39,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, em
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
+from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -90,30 +93,53 @@ class TestParseInvalidSyntax(instruction_check.TestCaseBase):
 
 
 class SymbolUsagesTest(unittest.TestCase):
-    def test_without_file_matcher(self):
+    def runTest(self):
         # ARRANGE #
 
         path_symbol_name = 'the_path_symbol'
-        argument_building = args.WithOptionalNegation(args.PathArg(symbol_file_ref_argument(path_symbol_name)))
+        file_matcher_symbol_name = 'the_file_matcher_symbol'
 
-        expected_symbol_usages = asrt.matches_sequence([
-            asrt_sym_ref.symbol_usage_equals_symbol_reference(
-                SymbolReference(path_symbol_name,
-                                file_ref_or_string_reference_restrictions(
-                                    EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS))
-            )
-        ])
+        expected_path_symbol_ref = asrt_sym_ref.symbol_usage_equals_symbol_reference(
+            SymbolReference(path_symbol_name,
+                            file_ref_or_string_reference_restrictions(
+                                EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS))
+        )
 
-        for expectation_type in ExpectationType:
-            arguments = argument_building.get(expectation_type)
-            source = remaining_source(str(arguments))
-            with self.subTest(expectation_type=expectation_type):
-                # ACT #
-                instruction = sut.setup('the-instruction-name').parse(ARBITRARY_FS_LOCATION_INFO, source)
-                # ASSERT #
-                self.assertIsInstance(instruction, AssertPhaseInstruction)
-                expected_symbol_usages.apply_without_message(self,
-                                                             instruction.symbol_usages())
+        expected_file_matcher_ref = asrt_file_matcher.is_file_matcher_reference_to__ref(file_matcher_symbol_name)
+
+        cases = [
+            NEA('no symbols',
+                asrt.matches_sequence([]),
+                args.WithOptionalNegation(args.PathArg(file_ref_argument('plain-file-name')))
+                ),
+            NEA('path symbol',
+                asrt.matches_sequence([
+                    expected_path_symbol_ref,
+                ]),
+                args.WithOptionalNegation(args.PathArg(symbol_file_ref_argument(path_symbol_name)))
+                ),
+            NEA('path symbol and file matcher symbol',
+                asrt.matches_sequence([
+                    expected_path_symbol_ref,
+                    expected_file_matcher_ref,
+                ]),
+                args.WithOptionalNegation(args.PathArg(symbol_file_ref_argument(path_symbol_name)),
+                                          fm_args.SymbolReference(file_matcher_symbol_name))
+                ),
+        ]
+
+        for case in cases:
+            for expectation_type in ExpectationType:
+                arguments = case.actual.get(expectation_type)
+                source = remaining_source(str(arguments))
+                with self.subTest(case=case.name,
+                                  expectation_type=expectation_type):
+                    # ACT #
+                    instruction = sut.setup('the-instruction-name').parse(ARBITRARY_FS_LOCATION_INFO, source)
+                    # ASSERT #
+                    self.assertIsInstance(instruction, AssertPhaseInstruction)
+                    case.expected.apply_without_message(self,
+                                                        instruction.symbol_usages())
 
 
 class ArgumentsConstructorWithFileMatcher(InstructionArgumentsVariantConstructor):

@@ -26,6 +26,15 @@ class Custom(FileMatcherArg):
         return [self.matcher]
 
 
+class SymbolReference(FileMatcherArg):
+    def __init__(self, symbol_name: str):
+        self.symbol_name = symbol_name
+
+    @property
+    def elements(self) -> List:
+        return [self.symbol_name]
+
+
 class Type(FileMatcherArg):
     def __init__(self, file_type: file_properties.FileType):
         self.file_type = file_type
