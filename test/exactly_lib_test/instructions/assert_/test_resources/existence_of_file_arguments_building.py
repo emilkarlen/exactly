@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from exactly_lib.definitions import expression
+from exactly_lib.definitions import expression, instruction_arguments
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import FileRefArgument
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
@@ -50,6 +50,7 @@ class CompleteInstructionArg(Argument):
         ret_val += self.path.elements
 
         if self.file_matcher is not None:
+            ret_val += [instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT]
             ret_val += self.file_matcher.elements
 
         return ret_val

@@ -25,6 +25,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.file_matcher import resolvers  as fm_resolvers
 from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
@@ -57,7 +58,7 @@ _TYPE_ARGUMENT_STR = 'TYPE'
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
-_DEFAULT_FILE_PROPERTIES_CHECK = file_properties.must_exist(follow_symlinks=False)
+_FILE_EXISTENCE_CHECK = file_properties.must_exist(follow_symlinks=False)
 
 _REL_OPTION_CONFIG = RelOptionArgumentConfiguration(
     RelOptionsConfiguration(
@@ -169,35 +170,31 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
         path_to_check = parse_file_ref.parse_file_ref_from_token_parser(_REL_OPTION_CONFIG,
                                                                         parser)
 
-        file_matcher = parse_file_matcher.CONSTANT_TRUE_MATCHER_RESOLVER
+        file_matcher = self._parse_optional_file_matcher(parser)
 
-        if parser.is_at_eol:
-            parser.consume_current_line_as_string_of_remaining_part_of_current_line()
-        else:
-            file_matcher = parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
-                (instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,),
-                self._parse_file_matcher,
-            )
-            parser.report_superfluous_arguments_if_not_at_eol()
+        parser.consume_current_line_as_string_of_remaining_part_of_current_line()
 
         return _Instruction(expectation_type, path_to_check, file_matcher)
 
-    def _parse_file_matcher(self, ignored_string_token: str) -> parse_file_matcher.FileMatcherResolver:
-        return parse_file_matcher.CONSTANT_TRUE_MATCHER_RESOLVER
+    def _parse_optional_file_matcher(self, parser: token_stream_parser.TokenParser
+                                     ) -> Optional[parse_file_matcher.FileMatcherResolver]:
+        file_matcher = None
 
+        if not parser.is_at_eol:
+            parser.consume_mandatory_constant_unquoted_string(
+                instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+                must_be_on_current_line=True)
+            file_matcher = parse_file_matcher.parse_resolver(parser)
+            parser.report_superfluous_arguments_if_not_at_eol()
 
-def _file_type_2_file_properties_check(file_type: file_properties.FileType
-                                       ) -> file_properties.FilePropertiesCheck:
-    follow_sym_links = file_type is not file_properties.FileType.SYMLINK
-    return file_properties.must_exist_as(file_type,
-                                         follow_sym_links)
+        return file_matcher
 
 
 class _Instruction(AssertPhaseInstruction):
     def __init__(self,
                  expectation_type: ExpectationType,
                  file_ref_resolver: FileRefResolver,
-                 file_matcher: parse_file_matcher.FileMatcherResolver):
+                 file_matcher: Optional[parse_file_matcher.FileMatcherResolver]):
         self._expectation_type = expectation_type
         self._file_ref_resolver = file_ref_resolver
         self._file_matcher = file_matcher
@@ -208,35 +205,44 @@ class _Instruction(AssertPhaseInstruction):
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        failure_message = pre_or_post_sds_failure_message_or_none(
+        failure_message_of_existence = pre_or_post_sds_failure_message_or_none(
             FileRefCheck(self._file_ref_resolver,
-                         self._expected_file_properties()),
+                         _FILE_EXISTENCE_CHECK),
             environment.path_resolving_environment_pre_or_post_sds)
 
-        if failure_message:
-            return pfh.new_pfh_fail_if_has_failure_message(failure_message)
+        if failure_message_of_existence:
+            return (pfh.new_pfh_fail(failure_message_of_existence)
+                    if self._is_positive_check()
+                    else pfh.new_pfh_pass()
+                    )
 
-        if self._expectation_type is ExpectationType.NEGATIVE:
-            return pfh.new_pfh_pass()
-        else:
-            try:
-                failure_message_resolver = self._matches_file_matcher(environment)
-                if failure_message_resolver is None:
-                    return pfh.new_pfh_pass()
-                else:
-                    return pfh.new_pfh_fail(self._err_msg_for(environment, failure_message_resolver))
-            except hard_error.HardErrorException as ex:
-                return pfh.new_pfh_hard_error(self._err_msg_for(environment, ex.error))
+        return (self._file_exists_and_no_file_matcher()
+                if self._file_matcher is None
+                else self._file_exists_but_must_also_satisfy_file_matcher(environment)
+                )
 
-    def _expected_file_properties(self) -> file_properties.FilePropertiesCheck:
-        file_existence_check = _DEFAULT_FILE_PROPERTIES_CHECK
-        if self._expectation_type is ExpectationType.NEGATIVE:
-            file_existence_check = file_properties.negation_of(file_existence_check)
-        return file_existence_check
+    def _file_exists_and_no_file_matcher(self) -> pfh.PassOrFailOrHardError:
+        return (pfh.new_pfh_pass()
+                if self._is_positive_check()
+                else pfh.new_pfh_fail('File exists TODO improve err msg')
+                )
 
-    def _matches_file_matcher(self, environment: i.InstructionEnvironmentForPostSdsStep
-                              ) -> Optional[ErrorMessageResolver]:
-        fm = self._file_matcher.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+    def _file_exists_but_must_also_satisfy_file_matcher(self, environment: i.InstructionEnvironmentForPostSdsStep
+                                                        ) -> pfh.PassOrFailOrHardError:
+        try:
+            failure_message_resolver = self._matches_file_matcher_for_expectation_type(environment)
+            if failure_message_resolver is None:
+                return pfh.new_pfh_pass()
+            else:
+                return pfh.new_pfh_fail(self._err_msg_for(environment, failure_message_resolver))
+        except hard_error.HardErrorException as ex:
+            return pfh.new_pfh_hard_error(self._err_msg_for(environment, ex.error))
+
+    def _matches_file_matcher_for_expectation_type(self, environment: i.InstructionEnvironmentForPostSdsStep
+                                                   ) -> Optional[ErrorMessageResolver]:
+        resolver = self._file_matcher_for_expectation_type()
+
+        fm = resolver.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
         existing_file_path = self._file_ref_resolver \
             .resolve(environment.symbols) \
             .value_of_any_dependency(environment.home_and_sds)
@@ -246,6 +252,15 @@ class _Instruction(AssertPhaseInstruction):
             existing_file_path)
 
         return fm.matches2(model)
+
+    def _file_matcher_for_expectation_type(self) -> parse_file_matcher.FileMatcherResolver:
+        return (self._file_matcher
+                if self._is_positive_check()
+                else fm_resolvers.FileMatcherNotResolver(self._file_matcher)
+                )
+
+    def _is_positive_check(self) -> bool:
+        return self._expectation_type is ExpectationType.POSITIVE
 
     def _err_msg_for(self,
                      environment: i.InstructionEnvironmentForPostSdsStep,
