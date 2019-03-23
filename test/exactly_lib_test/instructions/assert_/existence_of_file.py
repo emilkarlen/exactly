@@ -246,6 +246,11 @@ class TestCheckForDirectory(TestCaseBase):
             DirContents([empty_file('existing-file'),
                          Link(file_name, 'directory')]),
         ),
+        NameAndValue(
+            'broken sym-link',
+            DirContents(
+                [Link(file_name, 'non-existing-target-file')])
+        ),
     ]
 
     def test_file_is_an_existing_directory(self):
@@ -292,6 +297,11 @@ class TestCheckForRegularFile(TestCaseBase):
             'exists as sym-link to existing directory',
             DirContents([empty_dir('directory'),
                          Link(file_name, 'directory')]),
+        ),
+        NameAndValue(
+            'broken sym-link',
+            DirContents(
+                [Link(file_name, 'non-existing-target-file')])
         ),
     ]
 
