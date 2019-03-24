@@ -1,3 +1,3 @@
 [assert]
 
-exists -file @[CONF_FILE]@
+exists @[CONF_FILE]@ : type file

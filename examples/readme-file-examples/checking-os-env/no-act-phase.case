@@ -2,7 +2,7 @@
 
 def path SQL_DIR = -rel-here sql
 
-exists -dir @[SQL_DIR]@
+exists @[SQL_DIR]@ : type dir
 
 
 'sql/ must only contain sql files'

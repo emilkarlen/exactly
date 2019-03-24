@@ -101,10 +101,10 @@ appropriate directory::
 
     dir-contents input empty
 
-    exists -file output/good/a.txt
+    exists output/good/a.txt : type file
     dir-contents output/good num-files == 1
 
-    exists -file output/bad/b.txt
+    exists output/bad/b.txt : type file
     dir-contents output/bad num-files == 1
 
 
@@ -374,7 +374,7 @@ For example, to just check that the names of some SQL files are correct::
 
     def path SQL_DIR = -rel-here sql
 
-    exists -dir @[SQL_DIR]@
+    exists @[SQL_DIR]@ : type dir
 
 
     'sql/ must only contain sql files'
