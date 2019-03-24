@@ -543,7 +543,7 @@ INSTALLING
 
 Exactly is written in Python and does not require any external libraries.
 
-Exactly requires Python >= 3.5 (not tested on earlier version of Python 3).
+Exactly requires Python >= 3.5.
 
 Use ``pip`` or ``pip3`` to install::
 
