@@ -1,9 +1,8 @@
 """
 Test of test-infrastructure: instruction_check.
 """
-import unittest
-
 import pathlib
+import unittest
 from typing import Sequence, Optional, List
 
 from exactly_lib.section_document.parse_source import ParseSource
@@ -17,9 +16,7 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherValueFromPrimitiveValue
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromParts, no_resolving_dependencies
-from exactly_lib.type_system.error_message import ConstantErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue, FileMatcherModel
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
@@ -30,6 +27,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_home_po
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check as sut
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import FileMatcherThatReportsHardError
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.model_construction import ModelConstructor, \
     constant_relative_file_name
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
@@ -149,7 +147,7 @@ class TestSymbolReferences(TestCaseBase):
 class TestHardError(TestCaseBase):
     def test_expected_hard_error_is_detected(self):
         parser_that_gives_value_that_causes_hard_error = parser_for_constant(
-            _FileMatcherThatReportsHardError()
+            FileMatcherThatReportsHardError()
         )
         self._check(
             parser_that_gives_value_that_causes_hard_error,
@@ -271,15 +269,6 @@ class FileMatcherTestImplBase(FileMatcher):
     @property
     def option_description(self) -> str:
         return str(self)
-
-
-class _FileMatcherThatReportsHardError(FileMatcher):
-    @property
-    def option_description(self) -> str:
-        return 'unconditional HARD ERROR'
-
-    def matches(self, model: FileMatcherModel) -> bool:
-        raise HardErrorException(ConstantErrorMessageResolver('unconditional hard error'))
 
 
 def parser_for_constant(resolved_value: FileMatcher = FileMatcherConstant(True),

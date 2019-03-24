@@ -1,9 +1,9 @@
-import unittest
-
 import pathlib
+import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import ConstantResultMatcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.single_dir_checks import single_dir_setup
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir
 
@@ -55,18 +55,6 @@ class BaseNameMatcher(sut.FileMatcher):
 
     def matches(self, model: FileMatcherModel) -> bool:
         return model.path.name == self.base_name_that_matches
-
-    @property
-    def option_description(self) -> str:
-        return 'option description'
-
-
-class ConstantResultMatcher(sut.FileMatcher):
-    def __init__(self, result: bool):
-        self.result = result
-
-    def matches(self, model: FileMatcherModel) -> bool:
-        return self.result
 
     @property
     def option_description(self) -> str:
