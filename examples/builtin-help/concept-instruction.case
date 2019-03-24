@@ -12,4 +12,4 @@ run % python -c :> import sys; sys.stdout.write("Hello world")
 
 [assert]
 
-exists -file my-file.txt
+stdout empty

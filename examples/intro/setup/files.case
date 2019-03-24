@@ -42,6 +42,6 @@ contents non-empty-file.txt equals <<EOF
 Some contents.
 EOF
 
-exists -file empty-file.txt
+exists empty-file.txt : type file
 
-exists -dir new-directory
+exists new-directory : type dir

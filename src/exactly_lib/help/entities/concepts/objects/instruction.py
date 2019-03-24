@@ -119,7 +119,7 @@ E.g. asserting that the {atc} did not output anything to stdout:
 
 
 ```
-exists -file my-file.txt
+stdout empty
 ```
 
 
