@@ -7,13 +7,13 @@ from exactly_lib_test.instructions.assert_ import \
     new_file, \
     new_dir, \
     shell, \
-    existence_of_file, \
     env, \
     define_symbol
 from exactly_lib_test.instructions.assert_ import stdout, stderr
 from exactly_lib_test.instructions.assert_ import test_resources_test
 from exactly_lib_test.instructions.assert_.contents_of_dir import z_package_suite as contents_of_dir
 from exactly_lib_test.instructions.assert_.contents_of_file import z_package_suite as contents_of_file
+from exactly_lib_test.instructions.assert_.existence_of_file import z_package_suite as existence_of_file
 from exactly_lib_test.instructions.assert_.test_resources_test import z_package_suite as test_resources_test
 from exactly_lib_test.instructions.assert_.utils import z_package_suite as utils
 

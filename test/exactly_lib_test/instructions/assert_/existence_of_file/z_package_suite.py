@@ -16,7 +16,7 @@ from exactly_lib.util.cli_syntax.elements.argument import OptionName
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
-from exactly_lib_test.instructions.assert_.test_resources import existence_of_file_arguments_building as args
+from exactly_lib_test.instructions.assert_.existence_of_file import test_resources as args
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionChecker, \
