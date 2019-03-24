@@ -60,7 +60,7 @@ dir-contents @[INPUT_DIR]@ empty
 
 'Correct classification of good file'
 
-exists -file @[OUTPUT_GOOD_DIR]@/@[NAME_OF_GOOD_FILE]@
+exists @[OUTPUT_GOOD_DIR]@/@[NAME_OF_GOOD_FILE]@ : type file
 
 'The dir for good files should contain only the file found to be good'
 
@@ -73,7 +73,7 @@ dir-contents @[OUTPUT_GOOD_DIR]@ num-files == 1
 
 'Correct classification of bad file'
 
-exists -file @[OUTPUT_BAD_DIR]@/@[NAME_OF_BAD_FILE]@
+exists @[OUTPUT_BAD_DIR]@/@[NAME_OF_BAD_FILE]@ : type file
 
 'The dir for bad files should contain only the file found to be bad'
 

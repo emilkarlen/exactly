@@ -57,7 +57,7 @@ dir-contents -rel-act input-files empty
 
 'Correct detection of good file'
 
-exists -file -rel-act output-files/good/a-good-file.txt
+exists -rel-act output-files/good/a-good-file.txt : type file
 
 'The dir for good files should contain only the file found to be good'
 
@@ -70,7 +70,7 @@ dir-contents -rel-act output-files/good num-files == 1
 
 'Correct detection of bad file'
 
-exists -file -rel-act output-files/bad/a-bad-file.txt
+exists -rel-act output-files/bad/a-bad-file.txt : type file
 
 'The dir for bad files should contain only the file found to be bad'
 

@@ -9,4 +9,4 @@ stdout equals
 Hello, World!
 -
 
-exists -file file-created-by-instruction-in-suite.txt
+exists file-created-by-instruction-in-suite.txt : type file
