@@ -225,6 +225,24 @@ class _Assertion:
         self.file_matcher = file_matcher
 
     def apply(self) -> pfh.PassOrFailOrHardError:
+        if self.file_matcher is None:
+            return self._assert_without_file_matcher()
+        else:
+            return self._assert_with_file_matcher()
+
+    def _assert_without_file_matcher(self) -> pfh.PassOrFailOrHardError:
+        check = _FILE_EXISTENCE_CHECK
+        if self.expectation_type is ExpectationType.NEGATIVE:
+            check = file_properties.negation_of(check)
+
+        failure_message = pre_or_post_sds_failure_message_or_none(
+            FileRefCheck(self.file_ref_resolver,
+                         check),
+            self.environment.path_resolving_environment_pre_or_post_sds)
+
+        return pfh.new_pfh_fail_if_has_failure_message(failure_message)
+
+    def _assert_with_file_matcher(self) -> pfh.PassOrFailOrHardError:
         failure_message_of_existence = pre_or_post_sds_failure_message_or_none(
             FileRefCheck(self.file_ref_resolver,
                          _FILE_EXISTENCE_CHECK),
@@ -236,16 +254,7 @@ class _Assertion:
                     else pfh.new_pfh_pass()
                     )
 
-        return (self._file_exists_and_no_file_matcher()
-                if self.file_matcher is None
-                else self._file_exists_but_must_also_satisfy_file_matcher()
-                )
-
-    def _file_exists_and_no_file_matcher(self) -> pfh.PassOrFailOrHardError:
-        return (pfh.new_pfh_pass()
-                if self._is_positive_check()
-                else pfh.new_pfh_fail('File exists TODO improve err msg')
-                )
+        return self._file_exists_but_must_also_satisfy_file_matcher()
 
     def _file_exists_but_must_also_satisfy_file_matcher(self) -> pfh.PassOrFailOrHardError:
         try:
