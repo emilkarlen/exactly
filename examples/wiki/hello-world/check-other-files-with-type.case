@@ -4,7 +4,7 @@ hello-world -o output.txt
 
 [assert]
 
-exists -file output.txt
+exists output.txt : type file
 
 contents output.txt
          every line : matches 'Hello'
