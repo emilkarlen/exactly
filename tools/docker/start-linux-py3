@@ -13,16 +13,16 @@ REPO_ROOT_DIR=$(abs_path_of_repo_root)
 
 DOCKER_IMAGE='linux-py3:latest'
 
-SHARE_DIR=/tmp/responsys-test-docker-share
+SHARE_DIR=/tmp/exactly-docker-share
 
-REPO_ROOT_IN_CONTAINER=/app/ibe
+REPO_ROOT_IN_CONTAINER=/app/exactly
 SHARE_DIR_IN_CONTAINER=/share
 
 HELP="${EXE_NAME} [-h]
 
 Starts the docker container (${DOCKER_IMAGE})
 
-with the IBE repo (that contains this file) mounted inside the container (read-only) at
+with the Exactly repo (that contains this file) mounted inside the container (read-only) at
 
   ${REPO_ROOT_IN_CONTAINER}
 
