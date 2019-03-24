@@ -8,7 +8,6 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.element_parsers import token_stream_parser
@@ -37,11 +36,8 @@ from exactly_lib.type_system import error_message
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic import hard_error
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib.util.textformat.structure import lists, structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
-from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -52,12 +48,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 NEGATION_OPERATOR = instruction_arguments.NEGATION_ARGUMENT_STR
 
-FILE_TYPE_OPTIONS = [
-    (file_type, a.OptionName(long_name=file_info.type_argument))
-    for file_type, file_info in file_properties.TYPE_INFO.items()
-]
-
-_TYPE_ARGUMENT_STR = 'TYPE'
+PROPERTIES_SEPARATOR = instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
@@ -79,32 +70,33 @@ _REL_OPTION_CONFIG = RelOptionArgumentConfiguration(
 
 class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                   WithAssertPhasePurpose):
+    PROPERTIES = a.Named('PROPERTIES')
+
     def __init__(self, name: str):
-        self.type_argument = a.Named(_TYPE_ARGUMENT_STR)
         self.negation_argument = a.Constant(NEGATION_OPERATOR)
         super().__init__(name, {
             'PATH': _PATH_ARGUMENT.name,
-            'TYPE': _TYPE_ARGUMENT_STR,
-            'SYM_LNK': file_properties.TYPE_INFO[file_properties.FileType.SYMLINK].description,
+            'FILE_MATCHER': syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
             'NEGATION_OPERATOR': NEGATION_OPERATOR,
         })
 
     def single_line_description(self) -> str:
-        return 'Tests the existence, and optionally type, of a file'
+        return 'Tests the existence, and optionally properties, of a file'
 
     def main_description_rest(self) -> List[ParagraphItem]:
         return self._tp.fnap(_PART_OF_MAIN_DESCRIPTION_REST_THAT_IS_SPECIFIC_FOR_THIS_INSTRUCTION)
 
     def invokation_variants(self) -> List[InvokationVariant]:
-        type_arguments = [a.Single(a.Multiplicity.OPTIONAL, self.type_argument)]
         negation_arguments = [negation_of_predicate.optional_negation_argument_usage()]
         path_arguments = path_syntax.mandatory_path_with_optional_relativity(
             _PATH_ARGUMENT,
             _REL_OPTION_CONFIG.path_suffix_is_required)
-        arguments = negation_arguments + type_arguments + path_arguments
+        file_matcher_arguments = [a.Single(a.Multiplicity.OPTIONAL, self.PROPERTIES)]
 
         return [
-            invokation_variant_from_args(arguments,
+            invokation_variant_from_args(negation_arguments +
+                                         path_arguments +
+                                         file_matcher_arguments,
                                          []),
         ]
 
@@ -112,45 +104,27 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         negation_elements = [
             negation_of_predicate.assertion_syntax_element_description()
         ]
-        type_elements = [
-            SyntaxElementDescription(self.type_argument.name,
-                                     self._type_element_description(), []),
-        ]
         path_element = rel_path_doc.path_element_2(_REL_OPTION_CONFIG)
-        all_elements = negation_elements + type_elements + [path_element]
+        properties_elements = [
+            SyntaxElementDescription(self.PROPERTIES.name,
+                                     self._tp.fnap(_PROPERTIES_DESCRIPTION),
+                                     [self._properties_invokation_variant()]),
+        ]
 
-        return all_elements
+        return negation_elements + [path_element] + properties_elements
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
             syntax_elements.PATH_SYNTAX_ELEMENT.cross_reference_target,
+            syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
-    def _type_element_description(self) -> List[ParagraphItem]:
-        return (self._tp.fnap(_TYPE_ELEMENT_DESCRIPTION_INTRO)
-                +
-                [transform_list_to_table(self._file_type_list())])
-
-    def _file_type_list(self) -> lists.HeaderContentList:
-        def type_description(file_type: file_properties.FileType) -> List[ParagraphItem]:
-            text = 'Tests if {PATH} is a {file_type}, or a {SYM_LNK} to a {file_type}.'
-            if file_type is file_properties.FileType.SYMLINK:
-                text = 'Tests if {PATH} is a {SYM_LNK} (link target may or may not exist).'
-            extra = {
-                'file_type': file_properties.TYPE_INFO[file_type].description,
-            }
-            return self._tp.fnap(text, extra)
-
-        sort_value__list_items = [
-            (file_properties.TYPE_INFO[file_type],
-             docs.list_item(syntax_text(render_argument(a.Option(option_name))),
-                            type_description(file_type)))
-            for file_type, option_name in FILE_TYPE_OPTIONS]
-        sort_value__list_items.sort(key=lambda type_name__list_item: type_name__list_item[0].type_argument)
-        list_items = [type_name__list_item[1]
-                      for type_name__list_item in sort_value__list_items]
-        return lists.HeaderContentList(list_items,
-                                       lists.Format(lists.ListType.VARIABLE_LIST))
+    @staticmethod
+    def _properties_invokation_variant() -> InvokationVariant:
+        return invokation_variant_from_args([
+            a.Single(a.Multiplicity.MANDATORY, a.Constant(PROPERTIES_SEPARATOR)),
+            syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.single_mandatory,
+        ])
 
 
 class Parser(InstructionParserWithoutSourceFileLocationInfo):
@@ -185,7 +159,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 
         if not parser.is_at_eol:
             parser.consume_mandatory_constant_unquoted_string(
-                instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+                PROPERTIES_SEPARATOR,
                 must_be_on_current_line=True)
             file_matcher = parse_file_matcher.parse_resolver(parser)
             parser.report_superfluous_arguments_if_not_at_eol()
@@ -296,22 +270,23 @@ class _Instruction(AssertPhaseInstruction):
             return self._file_matcher.resolve(environment.symbols).validator()
 
 
-_TYPE_ELEMENT_DESCRIPTION_INTRO = """\
-Includes the file type in the assertion.
+_PROPERTIES_DESCRIPTION = """\
+Applies a {FILE_MATCHER} on {PATH}, if it exists.
 """
 
 _PART_OF_MAIN_DESCRIPTION_REST_THAT_IS_SPECIFIC_FOR_THIS_INSTRUCTION = """\
-If {TYPE} is not given, the type of the file is ignored.
+Symbolic links are not followed in the test of existence
+(so a broken symbolic link is considered to exist).
 
 
 When not negated, the assertion will
 PASS if, and only if:
 
-{PATH} exists, and is a file of the asserted type.
+{PATH} exists, and has the specified properties.
 
 
 When negated, the assertion will
 FAIL if, and only if:
 
-{PATH} exists, and is a file of the asserted type.
+{PATH} does not exist, or {PATH} does not have the specified properties.
 """
