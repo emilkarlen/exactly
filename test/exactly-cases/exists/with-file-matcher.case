@@ -1,0 +1,18 @@
+[setup]
+
+
+def string FILE_CONTENTS = 'the file contents'
+
+file f.txt = @[FILE_CONTENTS]@
+
+
+[assert]
+
+
+exists f.txt : type file
+
+exists f.txt : type file && contents equals @[FILE_CONTENTS]@
+
+exists f.txt :
+    type file &&
+    contents equals @[FILE_CONTENTS]@

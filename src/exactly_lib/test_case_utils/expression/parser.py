@@ -14,8 +14,9 @@ def parse_from_parse_source(grammar: Grammar,
 
 
 def parse(grammar: Grammar,
-          parser: TokenParser):
-    return _Parser(grammar, parser).parse(must_be_on_current_line=True)
+          parser: TokenParser,
+          must_be_on_current_line: bool = True):
+    return _Parser(grammar, parser).parse(must_be_on_current_line)
 
 
 class _Parser:

@@ -93,15 +93,17 @@ def parse_optional_selection_resolver2(parser: TokenParser) -> Optional[FileMatc
         SELECTION_OPTION.name)
 
 
-def parse_resolver(parser: TokenParser) -> FileMatcherResolver:
+def parse_resolver(parser: TokenParser,
+                   must_be_on_current_line: bool = True) -> FileMatcherResolver:
     parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
-    return _parse(parser)
+    return _parse(parser, must_be_on_current_line)
 
 
-def _parse(parser: TokenParser) -> FileMatcherResolver:
-    ret_val = ep.parse(GRAMMAR, parser)
+def _parse(parser: TokenParser,
+           must_be_on_current_line: bool) -> FileMatcherResolver:
+    ret_val = ep.parse(GRAMMAR, parser, must_be_on_current_line)
     assert isinstance(ret_val, FileMatcherResolver), ('Must have parsed a ' + str(FileMatcherResolver))
     return ret_val
 
