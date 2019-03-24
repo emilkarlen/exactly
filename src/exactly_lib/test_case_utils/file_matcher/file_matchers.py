@@ -1,9 +1,10 @@
 import pathlib
-from typing import List, Iterator, Pattern
+from typing import List, Iterator, Pattern, Optional
 
 from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForPrimitivePath
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 
 
@@ -112,6 +113,13 @@ class FileMatcherAnd(FileMatcher):
     def option_description(self) -> str:
         op = ' ' + expression.AND_OPERATOR_NAME + ' '
         return '({})'.format(op.join(map(lambda fm: fm.option_description, self.matchers)))
+
+    def matches2(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
+        for matcher in self._matchers:
+            error = matcher.matches2(model)
+            if error is not None:
+                return error
+        return None
 
     def matches(self, model: FileMatcherModel) -> bool:
         return all((matcher.matches(model)

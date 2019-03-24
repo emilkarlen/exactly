@@ -25,6 +25,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate
+from exactly_lib.test_case_utils.err_msg.path_description import PathValuePartConstructor
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.file_matcher import resolvers  as fm_resolvers
@@ -33,7 +34,7 @@ from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.type_system import error_message
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic import hard_error
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
@@ -225,10 +226,28 @@ class _Assertion:
         self.file_matcher = file_matcher
 
     def apply(self) -> pfh.PassOrFailOrHardError:
+        result = self._apply()
+        if result.is_error:
+            return pfh.PassOrFailOrHardError(
+                result.status,
+                self._prepend_path_description(result.failure_message))
+        else:
+            return result
+
+    def _apply(self) -> pfh.PassOrFailOrHardError:
         if self.file_matcher is None:
             return self._assert_without_file_matcher()
         else:
             return self._assert_with_file_matcher()
+
+    def _prepend_path_description(self, msg: str) -> str:
+        err_msg_env = ErrorMessageResolvingEnvironment(
+            self.environment.home_and_sds,
+            self.environment.symbols
+        )
+        path_lines = PathValuePartConstructor(self.file_ref_resolver).lines(err_msg_env)
+
+        return _ERROR_MESSAGE_HEADER + '\n'.join(path_lines) + '\n\n' + msg
 
     def _assert_without_file_matcher(self) -> pfh.PassOrFailOrHardError:
         check = _FILE_EXISTENCE_CHECK
@@ -262,7 +281,9 @@ class _Assertion:
             if failure_message_resolver is None:
                 return pfh.new_pfh_pass()
             else:
-                return pfh.new_pfh_fail(self._err_msg_for(failure_message_resolver))
+                err_msg = (_FILE_EXISTS_BUT_INVALID_PROPERTIES_ERR_MSG_HEADER +
+                           self._err_msg_for(failure_message_resolver))
+                return pfh.new_pfh_fail(err_msg)
         except hard_error.HardErrorException as ex:
             return pfh.new_pfh_hard_error(self._err_msg_for(ex.error))
 
@@ -294,6 +315,14 @@ class _Assertion:
                                                              self.environment.symbols)
         return msg_resolver.resolve(env)
 
+
+_ERROR_MESSAGE_HEADER = """\
+Failure for path:
+"""
+
+_FILE_EXISTS_BUT_INVALID_PROPERTIES_ERR_MSG_HEADER = """\
+File exists, but:
+"""
 
 _PROPERTIES_DESCRIPTION = """\
 Applies a {FILE_MATCHER} on {PATH}, if it exists.

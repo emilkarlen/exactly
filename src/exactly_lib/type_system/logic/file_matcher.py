@@ -43,7 +43,7 @@ class FileMatcher(Matcher[FileMatcherModel]):
         if self.matches(model):
             return None
         else:
-            return ConstantErrorMessageResolver('Failure of ' + self.option_description)
+            return ConstantErrorMessageResolver('Failure of: ' + self.option_description)
 
     def matches(self, model: FileMatcherModel) -> bool:
         raise NotImplementedError('abstract method')
