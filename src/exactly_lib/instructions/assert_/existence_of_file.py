@@ -153,7 +153,8 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 
         return _Instruction(expectation_type, path_to_check, file_matcher)
 
-    def _parse_optional_file_matcher(self, parser: token_stream_parser.TokenParser
+    @staticmethod
+    def _parse_optional_file_matcher(parser: token_stream_parser.TokenParser
                                      ) -> Optional[parse_file_matcher.FileMatcherResolver]:
         file_matcher = None
 
@@ -198,10 +199,36 @@ class _Instruction(AssertPhaseInstruction):
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        return _Assertion(environment,
+                          self._expectation_type,
+                          self._file_ref_resolver,
+                          self._file_matcher).apply()
+
+    def _validator(self, environment: InstructionEnvironmentForPreSdsStep
+                   ) -> pre_or_post_value_validation.PreOrPostSdsValueValidator:
+        if self._file_matcher is None:
+            return pre_or_post_value_validation.constant_success_validator()
+        else:
+            return self._file_matcher.resolve(environment.symbols).validator()
+
+
+class _Assertion:
+    def __init__(self,
+                 environment: i.InstructionEnvironmentForPostSdsStep,
+                 expectation_type: ExpectationType,
+                 file_ref_resolver: FileRefResolver,
+                 file_matcher: Optional[parse_file_matcher.FileMatcherResolver]
+                 ):
+        self.environment = environment
+        self.expectation_type = expectation_type
+        self.file_ref_resolver = file_ref_resolver
+        self.file_matcher = file_matcher
+
+    def apply(self) -> pfh.PassOrFailOrHardError:
         failure_message_of_existence = pre_or_post_sds_failure_message_or_none(
-            FileRefCheck(self._file_ref_resolver,
+            FileRefCheck(self.file_ref_resolver,
                          _FILE_EXISTENCE_CHECK),
-            environment.path_resolving_environment_pre_or_post_sds)
+            self.environment.path_resolving_environment_pre_or_post_sds)
 
         if failure_message_of_existence:
             return (pfh.new_pfh_fail(failure_message_of_existence)
@@ -210,8 +237,8 @@ class _Instruction(AssertPhaseInstruction):
                     )
 
         return (self._file_exists_and_no_file_matcher()
-                if self._file_matcher is None
-                else self._file_exists_but_must_also_satisfy_file_matcher(environment)
+                if self.file_matcher is None
+                else self._file_exists_but_must_also_satisfy_file_matcher()
                 )
 
     def _file_exists_and_no_file_matcher(self) -> pfh.PassOrFailOrHardError:
@@ -220,54 +247,43 @@ class _Instruction(AssertPhaseInstruction):
                 else pfh.new_pfh_fail('File exists TODO improve err msg')
                 )
 
-    def _file_exists_but_must_also_satisfy_file_matcher(self, environment: i.InstructionEnvironmentForPostSdsStep
-                                                        ) -> pfh.PassOrFailOrHardError:
+    def _file_exists_but_must_also_satisfy_file_matcher(self) -> pfh.PassOrFailOrHardError:
         try:
-            failure_message_resolver = self._matches_file_matcher_for_expectation_type(environment)
+            failure_message_resolver = self._matches_file_matcher_for_expectation_type()
             if failure_message_resolver is None:
                 return pfh.new_pfh_pass()
             else:
-                return pfh.new_pfh_fail(self._err_msg_for(environment, failure_message_resolver))
+                return pfh.new_pfh_fail(self._err_msg_for(failure_message_resolver))
         except hard_error.HardErrorException as ex:
-            return pfh.new_pfh_hard_error(self._err_msg_for(environment, ex.error))
+            return pfh.new_pfh_hard_error(self._err_msg_for(ex.error))
 
-    def _matches_file_matcher_for_expectation_type(self, environment: i.InstructionEnvironmentForPostSdsStep
-                                                   ) -> Optional[ErrorMessageResolver]:
+    def _matches_file_matcher_for_expectation_type(self) -> Optional[ErrorMessageResolver]:
         resolver = self._file_matcher_for_expectation_type()
 
-        fm = resolver.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
-        existing_file_path = self._file_ref_resolver \
-            .resolve(environment.symbols) \
-            .value_of_any_dependency(environment.home_and_sds)
+        fm = resolver.resolve(self.environment.symbols).value_of_any_dependency(self.environment.home_and_sds)
+        existing_file_path = self.file_ref_resolver \
+            .resolve(self.environment.symbols) \
+            .value_of_any_dependency(self.environment.home_and_sds)
 
         model = file_matcher_models.FileMatcherModelForPrimitivePath(
-            environment.phase_logging.space_for_instruction(),
+            self.environment.phase_logging.space_for_instruction(),
             existing_file_path)
 
         return fm.matches2(model)
 
     def _file_matcher_for_expectation_type(self) -> parse_file_matcher.FileMatcherResolver:
-        return (self._file_matcher
+        return (self.file_matcher
                 if self._is_positive_check()
-                else fm_resolvers.FileMatcherNotResolver(self._file_matcher)
+                else fm_resolvers.FileMatcherNotResolver(self.file_matcher)
                 )
 
     def _is_positive_check(self) -> bool:
-        return self._expectation_type is ExpectationType.POSITIVE
+        return self.expectation_type is ExpectationType.POSITIVE
 
-    def _err_msg_for(self,
-                     environment: i.InstructionEnvironmentForPostSdsStep,
-                     msg_resolver: ErrorMessageResolver) -> str:
-        env = error_message.ErrorMessageResolvingEnvironment(environment.home_and_sds,
-                                                             environment.symbols)
+    def _err_msg_for(self, msg_resolver: ErrorMessageResolver) -> str:
+        env = error_message.ErrorMessageResolvingEnvironment(self.environment.home_and_sds,
+                                                             self.environment.symbols)
         return msg_resolver.resolve(env)
-
-    def _validator(self, environment: InstructionEnvironmentForPreSdsStep
-                   ) -> pre_or_post_value_validation.PreOrPostSdsValueValidator:
-        if self._file_matcher is None:
-            return pre_or_post_value_validation.constant_success_validator()
-        else:
-            return self._file_matcher.resolve(environment.symbols).validator()
 
 
 _PROPERTIES_DESCRIPTION = """\
