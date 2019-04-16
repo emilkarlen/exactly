@@ -9,7 +9,7 @@ from exactly_lib.processing.standalone.accessor_resolver import AccessorResolver
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings, ReportingOption
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
-from exactly_lib.test_suite.file_reading.exception import SuiteSyntaxError
+from exactly_lib.test_suite.file_reading.exception import SuiteParseError
 from exactly_lib.util.std import StdOutputFiles
 
 
@@ -30,8 +30,8 @@ class Processor:
 
         try:
             processor = self._processor(settings, result_reporter)
-        except SuiteSyntaxError as ex:
-            reporter = result_reporting.TestSuiteSyntaxErrorReporter(std_output_files)
+        except SuiteParseError as ex:
+            reporter = result_reporting.TestSuiteParseErrorReporter(std_output_files)
             return reporter.report(ex)
 
         test_case_file_ref = test_case_processing.test_case_reference_of_source_file(settings.test_case_file_path)

@@ -93,7 +93,7 @@ class SuiteFileReferenceError(SuiteReadError):
         ]
 
 
-class SuiteSyntaxError(SuiteReadError):
+class SuiteParseError(SuiteReadError):
     def __init__(self,
                  suite_file: pathlib.Path,
                  source: line_source.LineSequence,

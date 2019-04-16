@@ -8,7 +8,7 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import test_case_reference_of_source_file
-from exactly_lib.test_suite.file_reading.exception import SuiteFileReferenceError, SuiteSyntaxError, \
+from exactly_lib.test_suite.file_reading.exception import SuiteFileReferenceError, SuiteParseError, \
     SuiteDoubleInclusion
 from exactly_lib.test_suite.structure import TestSuiteHierarchy
 from exactly_lib.util.line_source import single_line_sequence
@@ -471,13 +471,13 @@ class SuiteFileSyntaxError(check_exception.Setup):
                             ])
 
     def expected_exception_class(self):
-        return SuiteSyntaxError
+        return SuiteParseError
 
     def check_exception(self,
                         root_path: pathlib.Path,
                         actual: Exception,
                         put: unittest.TestCase):
-        put.assertIsInstance(actual, SuiteSyntaxError)
+        put.assertIsInstance(actual, SuiteParseError)
         put.assertEqual(str(self.root_suite_based_at(root_path)),
                         str(actual.suite_file),
                         'Source file that contains the error')
@@ -497,13 +497,13 @@ class SuiteFileSyntaxErrorOfMissingClosingQuotation(check_exception.Setup):
                             ])
 
     def expected_exception_class(self):
-        return SuiteSyntaxError
+        return SuiteParseError
 
     def check_exception(self,
                         root_path: pathlib.Path,
                         actual: Exception,
                         put: unittest.TestCase):
-        put.assertIsInstance(actual, SuiteSyntaxError)
+        put.assertIsInstance(actual, SuiteParseError)
         put.assertEqual(str(self.root_suite_based_at(root_path)),
                         str(actual.suite_file),
                         'Source file that contains the error')

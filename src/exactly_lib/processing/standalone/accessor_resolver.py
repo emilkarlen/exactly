@@ -23,7 +23,7 @@ class AccessorResolver:
                 explicit_suite_file_path: Optional[pathlib.Path]
                 ) -> Tuple[processing.Accessor, ActPhaseSetup]:
         """
-        :raises SuiteSyntaxError
+        :raises SuiteParseError
         """
         handling_setup = self._handling_setup(test_case_file_path,
                                               explicit_suite_file_path)
@@ -38,7 +38,7 @@ class AccessorResolver:
                         explicit_suite_file_path: Optional[pathlib.Path]
                         ) -> TestCaseHandlingSetup:
         """
-        :raises SuiteSyntaxError
+        :raises SuiteParseError
         """
 
         def get_suite_file() -> Optional[pathlib.Path]:

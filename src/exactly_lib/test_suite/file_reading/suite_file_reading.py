@@ -26,17 +26,17 @@ def read_suite_document(suite_file_path: pathlib.Path,
                         test_case_parsing_setup: TestCaseParsingSetup,
                         ) -> test_suite_doc.TestSuiteDocument:
     """
-    :raises parse.SuiteSyntaxError: The suite file has syntax errors
+    :raises parse.SuiteParseError: The suite file has an error related to parsing
     """
     parser = _Parser(configuration_section_parser,
                      test_case_parsing_setup)
     try:
         return parser.apply(suite_file_path)
     except FileSourceError as ex:
-        raise exception.SuiteSyntaxError(suite_file_path,
-                                         ex.source,
-                                         ex.error_message,
-                                         maybe_section_name=ex.maybe_section_name)
+        raise exception.SuiteParseError(suite_file_path,
+                                        ex.source,
+                                        ex.error_message,
+                                        maybe_section_name=ex.maybe_section_name)
 
 
 def resolve_test_case_handling_setup(

@@ -3,7 +3,7 @@ from exactly_lib.processing import exit_values
 from exactly_lib.processing.standalone import result_reporting
 from exactly_lib.processing.test_case_processing import AccessorError
 from exactly_lib.test_case.actor import ParseException
-from exactly_lib.test_suite.file_reading.exception import SuiteSyntaxError
+from exactly_lib.test_suite.file_reading.exception import SuiteParseError
 from exactly_lib.util.std import StdOutputFiles, file_printer_with_color_if_terminal
 
 
@@ -14,10 +14,10 @@ class CompletionReporter:
         self.out_printer = file_printer_with_color_if_terminal(output.out)
         self.err_printer = file_printer_with_color_if_terminal(output.err)
 
-    def report_suite_error(self, ex: SuiteSyntaxError) -> int:
+    def report_suite_error(self, ex: SuiteParseError) -> int:
         err_only_output = StdOutputFiles(self.output.err,
                                          self.output.err)
-        reporter = result_reporting.TestSuiteSyntaxErrorReporter(err_only_output)
+        reporter = result_reporting.TestSuiteParseErrorReporter(err_only_output)
         return reporter.report(ex)
 
     def report_access_error(self, error: AccessorError) -> int:

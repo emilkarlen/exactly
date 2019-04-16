@@ -4,11 +4,11 @@ from exactly_lib.test_suite.file_reading.exception import SuiteReadError
 from exactly_lib.util.std import FilePrinter
 
 
-def report_suite_read_error(ex: SuiteReadError,
-                            stdout_printer: FilePrinter,
-                            stderr_printer: FilePrinter,
-                            exit_value: ExitValue,
-                            ) -> int:
+def report_suite_parse_error(ex: SuiteReadError,
+                             stdout_printer: FilePrinter,
+                             stderr_printer: FilePrinter,
+                             exit_value: ExitValue,
+                             ) -> int:
     stdout_printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
     stdout_printer.file.flush()
     output_location(stderr_printer,

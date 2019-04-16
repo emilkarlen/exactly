@@ -10,7 +10,7 @@ from exactly_lib.processing.test_case_processing import TestCaseFileReference, n
 from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
-from exactly_lib.test_suite.file_reading.exception import SuiteSyntaxError
+from exactly_lib.test_suite.file_reading.exception import SuiteParseError
 from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import SuiteHierarchyReader
 from exactly_lib.test_suite.processing import Processor
 from exactly_lib.test_suite.structure import TestSuiteHierarchy
@@ -301,9 +301,9 @@ class TestCaseProcessorThatRaisesUnconditionally(tcp.Processor):
 
 class ReaderThatRaisesParseError(SuiteHierarchyReader):
     def apply(self, suite_file_path: pathlib.Path) -> TestSuiteHierarchy:
-        raise SuiteSyntaxError(suite_file_path,
-                               line_source.single_line_sequence(1, 'line'),
-                               'message')
+        raise SuiteParseError(suite_file_path,
+                              line_source.single_line_sequence(1, 'line'),
+                              'message')
 
 
 class ReaderThatGivesConstantSuite(SuiteHierarchyReader):

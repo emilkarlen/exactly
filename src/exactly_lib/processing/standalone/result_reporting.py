@@ -6,7 +6,7 @@ from exactly_lib.execution.full_execution.result import FullExeResultStatus, Ful
 from exactly_lib.processing import test_case_processing, exit_values
 from exactly_lib.processing.standalone.settings import ReportingOption
 from exactly_lib.processing.test_case_processing import ErrorInfo
-from exactly_lib.test_suite.file_reading.exception import SuiteSyntaxError
+from exactly_lib.test_suite.file_reading.exception import SuiteParseError
 from exactly_lib.util.std import StdOutputFiles, FilePrinter, file_printer_with_color_if_terminal
 
 
@@ -64,13 +64,13 @@ class ResultReporter:
         self._err_printer = file_printer_with_color_if_terminal(output_files.err)
 
 
-class TestSuiteSyntaxErrorReporter(ResultReporter):
-    def report(self, ex: SuiteSyntaxError) -> int:
-        from exactly_lib.test_suite.error_reporting import report_suite_read_error
-        return report_suite_read_error(ex,
-                                       self._out_printer,
-                                       self._err_printer,
-                                       exit_values.NO_EXECUTION__SYNTAX_ERROR)
+class TestSuiteParseErrorReporter(ResultReporter):
+    def report(self, ex: SuiteParseError) -> int:
+        from exactly_lib.test_suite.error_reporting import report_suite_parse_error
+        return report_suite_parse_error(ex,
+                                        self._out_printer,
+                                        self._err_printer,
+                                        exit_values.NO_EXECUTION__SYNTAX_ERROR)
 
 
 class TestCaseResultReporter(ResultReporter):

@@ -14,7 +14,7 @@ from exactly_lib.processing.test_case_processing import AccessorError
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import ParseException, ActionToCheck
-from exactly_lib.test_suite.file_reading.exception import SuiteSyntaxError
+from exactly_lib.test_suite.file_reading.exception import SuiteParseError
 from exactly_lib.util.std import StdOutputFiles
 
 
@@ -59,7 +59,7 @@ class Executor:
     def _parse(self) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheck]:
         try:
             accessor, act_phase_setup = self._accessor()
-        except SuiteSyntaxError as ex:
+        except SuiteParseError as ex:
             raise _InvalidTestCaseError(self.completion_reporter.report_suite_error(ex))
 
         try:
