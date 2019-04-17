@@ -590,6 +590,7 @@ Including (but not limited to):
 * Variables - corresponding to symbol definitions -
   but for variable values
 * Macros and functions
+* Ability to embedd Python code in test cases
 * Python library for running cases and suites from within Python as a DSEL
 
 
