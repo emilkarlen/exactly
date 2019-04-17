@@ -1,5 +1,4 @@
 import unittest
-
 from enum import Enum
 from pathlib import Path
 from typing import List, Dict, Callable, Sequence
@@ -21,7 +20,7 @@ from exactly_lib.test_case import os_services
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_suite import processing as sut, enumeration
 from exactly_lib.test_suite.file_reading import suite_hierarchy_reading
-from exactly_lib.test_suite.file_reading.exception import SuiteReadError
+from exactly_lib.test_suite.file_reading.exception import SuiteParseError
 from exactly_lib.test_suite.processing import TestCaseProcessorConstructor
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.processing.test_resources.test_case_setup import setup_with_null_act_phase_and_null_preprocessing
@@ -306,7 +305,7 @@ class TestBase(unittest.TestCase):
                     suite_and_case_files,
                     expectation)
 
-    def _when_syntax_error_in_case_phase_contents_then_suite_reading_should_raise_exception(self):
+    def _when_syntax_error_in_case_phase_contents_then_suite_parsing_should_raise_exception(self):
         # ARRANGE #
         suite_file = File(
             'the.suite',
@@ -325,7 +324,7 @@ class TestBase(unittest.TestCase):
                 tc_parsing_setup,
                 tc_handling_setup)
         )
-        with self.assertRaises(SuiteReadError):
+        with self.assertRaises(SuiteParseError):
             with tmp_dir_as_cwd(cwd_contents):
                 # ACT & ASSERT #
                 reader.apply(suite_file.name_as_path)

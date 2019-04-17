@@ -44,7 +44,7 @@ class Test(integration_test.TestBase):
         self._phase_instructions_in_suite_not_containing_cases()
 
     def test_WHEN_syntax_error_THEN_suite_reading_should_raise_exception(self):
-        self._when_syntax_error_in_case_phase_contents_then_suite_reading_should_raise_exception()
+        self._when_syntax_error_in_case_phase_contents_then_suite_parsing_should_raise_exception()
 
 
 
