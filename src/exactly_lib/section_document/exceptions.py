@@ -58,10 +58,6 @@ class FileSourceError(ParseError):
         return self._source
 
     @property
-    def error_message(self) -> str:
-        return self._message
-
-    @property
     def source_location_info(self) -> SourceLocationInfo:
         return self._source_location_info
 
