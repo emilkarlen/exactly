@@ -4,6 +4,13 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [next-release] - YYYY-MM-DD
+
+### Fixed
+
+ - Detection of file inclusion failures in suites
+ - Documentation : Case and Suite Outcome
+
 ## [0.11.0] - 2019-03-24
 
 ### Changed
