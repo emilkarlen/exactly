@@ -69,8 +69,7 @@ class TestSuiteParseErrorReporter(ResultReporter):
         from exactly_lib.test_suite.error_reporting import report_suite_parse_error
         return report_suite_parse_error(ex,
                                         self._out_printer,
-                                        self._err_printer,
-                                        exit_values.NO_EXECUTION__SYNTAX_ERROR)
+                                        self._err_printer)
 
 
 class TestCaseResultReporter(ResultReporter):

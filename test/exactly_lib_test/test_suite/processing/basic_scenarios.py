@@ -7,6 +7,8 @@ from exactly_lib.execution.full_execution.result import new_skipped
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.test_case_processing import TestCaseFileReference, new_internal_error, new_executed, \
     new_access_error, test_case_reference_of_source_file
+from exactly_lib.section_document.exceptions import FileSourceError
+from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
@@ -15,6 +17,7 @@ from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import SuiteHie
 from exactly_lib.test_suite.processing import Processor
 from exactly_lib.test_suite.structure import TestSuiteHierarchy
 from exactly_lib.util import line_source
+from exactly_lib_test.section_document.test_resources.source_elements import ARBITRARY_SOURCE_LOCATION_PATH
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -301,9 +304,15 @@ class TestCaseProcessorThatRaisesUnconditionally(tcp.Processor):
 
 class ReaderThatRaisesParseError(SuiteHierarchyReader):
     def apply(self, suite_file_path: pathlib.Path) -> TestSuiteHierarchy:
-        raise SuiteParseError(suite_file_path,
-                              line_source.single_line_sequence(1, 'line'),
-                              'message')
+        raise SuiteParseError(
+            suite_file_path,
+            FileSourceError(
+                line_source.single_line_sequence(1, 'line'),
+                'message',
+                None,
+                SourceLocationInfo(Path('/dir'),
+                                   ARBITRARY_SOURCE_LOCATION_PATH)),
+        )
 
 
 class ReaderThatGivesConstantSuite(SuiteHierarchyReader):

@@ -7,9 +7,9 @@ from exactly_lib.processing.parse.test_case_parser import SectionParserConstruct
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup, ComposedTestCaseTransformer, \
     TestCaseTransformer
 from exactly_lib.section_document import document_parsers
+from exactly_lib.section_document import exceptions
 from exactly_lib.section_document import section_parsing
 from exactly_lib.section_document.element_parsers.section_element_parsers import ParserFromSequenceOfParsers
-from exactly_lib.section_document.exceptions import FileSourceError
 from exactly_lib.section_document.model import ElementType, SectionContents
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case.test_case_doc import TestCase
@@ -32,11 +32,8 @@ def read_suite_document(suite_file_path: pathlib.Path,
                      test_case_parsing_setup)
     try:
         return parser.apply(suite_file_path)
-    except FileSourceError as ex:
-        raise exception.SuiteParseError(suite_file_path,
-                                        ex.source,
-                                        ex.error_message,
-                                        maybe_section_name=ex.maybe_section_name)
+    except exceptions.ParseError as ex:
+        raise exception.SuiteParseError(suite_file_path, ex)
 
 
 def resolve_test_case_handling_setup(

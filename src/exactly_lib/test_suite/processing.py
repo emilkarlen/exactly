@@ -64,12 +64,14 @@ class Processor:
     def _print_error_message(ex: SuiteReadError,
                              output: StdOutputFiles,
                              ):
+        from exactly_lib.test_suite.error_reporting import error_message_lines
+
         printer = file_printer_with_color_if_terminal(output.err)
         output_location(printer,
                         ex.source_location,
                         ex.maybe_section_name,
                         None)
-        printer.write_lines(ex.error_message_lines())
+        printer.write_lines(error_message_lines(ex))
 
 
 class SuitesExecutor:

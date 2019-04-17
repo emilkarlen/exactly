@@ -1,30 +1,39 @@
-import unittest
-
 import pathlib
+import unittest
 from pathlib import Path
 
 from exactly_lib.actors import command_line
+from exactly_lib.definitions.entity.directives import INCLUDING_DIRECTIVE_INFO
+from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import test_case_reference_of_source_file
+from exactly_lib.section_document import exceptions as sec_doc_exceptions
+from exactly_lib.section_document.source_location import SourceLocationPath, SourceLocation
 from exactly_lib.test_suite.file_reading.exception import SuiteFileReferenceError, SuiteParseError, \
     SuiteDoubleInclusion
 from exactly_lib.test_suite.structure import TestSuiteHierarchy
 from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.string import lines_content
+from exactly_lib_test.section_document.test_resources.source_location_assertions import equals_source_location_path
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir, empty_file
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.test_suite.file_reading.test_resources import check_structure, check_exception
 from exactly_lib_test.test_suite.file_reading.test_resources.check_structure import equals_test_suite
-from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line_sequence
+from exactly_lib_test.test_suite.file_reading.test_resources.exception_assertions import matches_suite_parse_error
+from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line_sequence, \
+    equals_line_sequence
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestInvalidFileSyntax),
-        unittest.makeSuite(TestInvalidFileReferences),
+        unittest.makeSuite(TestInvalidCaseOrSuiteFileReferences),
         unittest.makeSuite(TestStructure),
+        unittest.makeSuite(TestInvalidInclusionDirectiveFileReferences),
     ])
 
 
@@ -49,7 +58,7 @@ class MainSuiteWithTwoReferencedCases(check_structure.Setup):
 
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
         return DirContents([File('main.suite',
-                                 lines_content(['[cases]',
+                                 lines_content([section_names.CASES.syntax,
                                                 '1.case',
                                                 'sub/2.case',
                                                 ])),
@@ -74,7 +83,7 @@ class InvalidCaseContentShouldNotCauseParsingToFail(check_structure.Setup):
 
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
         return DirContents([File('main.suite',
-                                 lines_content(['[cases]',
+                                 lines_content([section_names.CASES.syntax,
                                                 'case-with-invalid-content.case',
                                                 ])),
                             File('case-with-invalid-content.case',
@@ -106,7 +115,7 @@ class MainSuiteWithTwoReferencedSuites(check_structure.Setup):
 
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
         return DirContents([File('main.suite',
-                                 lines_content(['[suites]',
+                                 lines_content([section_names.SUITES.syntax,
                                                 '1.suite',
                                                 'sub/2.suite',
                                                 ])),
@@ -137,9 +146,9 @@ class MainSuiteWithAbsoluteReferencesToSuitesAndCases(check_structure.Setup):
 
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
         return DirContents([File('main.suite',
-                                 lines_content(['[suites]',
+                                 lines_content([section_names.SUITES.syntax,
                                                 str(root_path / '1.suite'),
-                                                '[cases]',
+                                                section_names.CASES.syntax,
                                                 str(root_path / '1.case'),
                                                 ])),
                             empty_file('1.suite'),
@@ -174,13 +183,13 @@ class MainSuiteWithReferencedSuitesAndCasesAndMixedSections(check_structure.Setu
 
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
         return DirContents([File('main.suite',
-                                 lines_content(['[suites]',
+                                 lines_content([section_names.SUITES.syntax,
                                                 '1.suite',
-                                                '[cases]',
+                                                section_names.CASES.syntax,
                                                 '1.case',
-                                                '[suites]',
+                                                section_names.SUITES.syntax,
                                                 'sub/2.suite',
-                                                '[cases]',
+                                                section_names.CASES.syntax,
                                                 'sub/2.case',
                                                 ])),
                             empty_file('1.suite'),
@@ -213,7 +222,7 @@ class MainSuiteWithSuiteInSubDirWithCases(check_structure.Setup):
 
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
         return DirContents([File('main.suite',
-                                 lines_content(['[suites]',
+                                 lines_content([section_names.SUITES.syntax,
                                                 'sub-dir/sub.suite',
                                                 ])),
                             Dir('sub-dir',
@@ -250,9 +259,9 @@ class MainSuiteInSubDirWithCasesAndSuiteInSubDirWithCases(check_structure.Setup)
             Dir('main-sub-dir', [
                 File('main.suite',
                      lines_content([
-                         '[cases]',
+                         section_names.CASES.syntax,
                          'main.case',
-                         '[suites]',
+                         section_names.SUITES.syntax,
                          'suite-sub-dir/sub.suite',
                      ])),
                 empty_file('main.case'),
@@ -284,7 +293,7 @@ class MainSuiteInSubDirWithCasesInSuperDir(check_structure.Setup):
             Dir('main-sub-dir', [
                 File('main.suite',
                      lines_content([
-                         '[cases]',
+                         section_names.CASES.syntax,
                          '../main.case',
                      ])),
             ]),
@@ -319,7 +328,7 @@ class MainSuiteInSubDirWithSuiteWithCasesInSuperDir(check_structure.Setup):
             Dir('main-sub-dir', [
                 File('main.suite',
                      lines_content([
-                         '[suites]',
+                         section_names.SUITES.syntax,
                          '../super.suite',
                      ])),
             ]),
@@ -357,7 +366,7 @@ class MainSuiteInSubDirAndSuiteInSubDirWithCasesReferencedViaWildCards(check_str
             Dir('main-sub-dir', [
                 File('main.suite',
                      lines_content([
-                         '[suites]',
+                         section_names.SUITES.syntax,
                          'suite-sub-dir/sub.suite',
                      ])),
                 Dir('suite-sub-dir',
@@ -404,27 +413,27 @@ class ComplexStructure(check_structure.Setup):
 
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
         return DirContents([File('complex.suite',
-                                 lines_content(['[suites]',
+                                 lines_content([section_names.SUITES.syntax,
                                                 'local.suite',
                                                 'sub/sub.suite',
-                                                '[cases]',
+                                                section_names.CASES.syntax,
                                                 'from-main-suite.case',
                                                 ])),
                             File('local.suite',
-                                 lines_content(['[cases]',
+                                 lines_content([section_names.CASES.syntax,
                                                 'from-local-suite.case'])),
                             empty_file('from-main-suite.case'),
                             empty_file('from-local-suite.case'),
                             Dir('sub',
                                 [
                                     File('sub.suite',
-                                         lines_content(['[suites]',
+                                         lines_content([section_names.SUITES.syntax,
                                                         'sub-sub.suite',
-                                                        '[cases]',
+                                                        section_names.CASES.syntax,
                                                         'sub.case',
                                                         ])),
                                     File('sub-sub.suite',
-                                         lines_content(['[cases]',
+                                         lines_content([section_names.CASES.syntax,
                                                         'sub-sub.case',
                                                         ])),
                                     empty_file('sub.case'),
@@ -439,7 +448,7 @@ class ReferencedCaseFileDoesNotExist(check_exception.Setup):
 
     def file_structure_to_read(self) -> DirContents:
         return DirContents([File('main.suite',
-                                 lines_content(['[cases]',
+                                 lines_content([section_names.CASES.syntax,
                                                 'does-not_exist.case',
                                                 ])),
                             ])
@@ -460,6 +469,109 @@ class ReferencedCaseFileDoesNotExist(check_exception.Setup):
                                     actual.source)
 
 
+class ReferencedInclusionDirectiveFileDoesNotExist(check_exception.Setup):
+    file_inclusion_line = ' '.join([INCLUDING_DIRECTIVE_INFO.singular_name,
+                                    'does-not-exist.txt'])
+    root_suite_file = Path('main.suite')
+
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return self.root_suite_file
+
+    def file_structure_to_read(self) -> DirContents:
+        return DirContents([File(self.root_suite_file.name,
+                                 lines_content([phase_names.SETUP.syntax,
+                                                self.file_inclusion_line,
+                                                ])),
+                            ])
+
+    def expected_exception_class(self):
+        return SuiteFileReferenceError
+
+    def check_exception(self,
+                        root_path: pathlib.Path,
+                        actual: Exception,
+                        put: unittest.TestCase):
+        put.assertIsInstance(actual, SuiteParseError)
+
+        expected_source = single_line_sequence(2, self.file_inclusion_line)
+
+        expectation = matches_suite_parse_error(
+            suite_file=asrt.equals(self.root_suite_based_at(root_path)),
+            maybe_section_name=asrt.is_none,
+            source=equals_line_sequence(expected_source),
+            source_location=equals_source_location_path(
+                SourceLocationPath(
+                    SourceLocation(
+                        expected_source,
+                        self.root_suite_file,
+                    ),
+                    []
+                )
+            ),
+            document_parser_exception=asrt.is_instance(sec_doc_exceptions.FileAccessError),
+        )
+
+        expectation.apply(put, actual)
+
+
+class ReferencedInclusionDirectiveFileInIncludedFileDoesNotExist(check_exception.Setup):
+    file_1_invalid_inclusion_line = ' '.join([INCLUDING_DIRECTIVE_INFO.singular_name,
+                                              'does-not-exist.txt'])
+
+    file_1 = File('1.xly',
+                  lines_content([file_1_invalid_inclusion_line]))
+
+    root_suite_inclusion_line = ' '.join([INCLUDING_DIRECTIVE_INFO.singular_name,
+                                          file_1.name])
+    inclusion_line_in_file_1 = single_line_sequence(1, file_1_invalid_inclusion_line)
+
+    root_suite_file = File('0.suite',
+                           lines_content([phase_names.SETUP.syntax,
+                                          root_suite_inclusion_line,
+                                          ]))
+    inclusion_line_in_root_file = single_line_sequence(2, root_suite_inclusion_line)
+
+    expected_source_location_path = SourceLocationPath(
+        SourceLocation(
+            inclusion_line_in_file_1,
+            file_1.name_as_path,
+        ),
+        [
+            SourceLocation(
+                inclusion_line_in_root_file,
+                root_suite_file.name_as_path,
+            )
+        ]
+    )
+
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return self.root_suite_file.name_as_path
+
+    def file_structure_to_read(self) -> DirContents:
+        return DirContents([self.root_suite_file,
+                            self.file_1
+                            ])
+
+    def expected_exception_class(self):
+        return SuiteFileReferenceError
+
+    def check_exception(self,
+                        root_path: pathlib.Path,
+                        actual: Exception,
+                        put: unittest.TestCase):
+        put.assertIsInstance(actual, SuiteParseError)
+
+        expectation = matches_suite_parse_error(
+            suite_file=asrt.equals(self.root_suite_based_at(root_path)),
+            maybe_section_name=asrt.is_none,
+            source=equals_line_sequence(self.inclusion_line_in_file_1),
+            source_location=equals_source_location_path(self.expected_source_location_path),
+            document_parser_exception=asrt.is_instance(sec_doc_exceptions.FileAccessError),
+        )
+
+        expectation.apply(put, actual)
+
+
 class SuiteFileSyntaxError(check_exception.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return Path('main.suite')
@@ -478,12 +590,26 @@ class SuiteFileSyntaxError(check_exception.Setup):
                         actual: Exception,
                         put: unittest.TestCase):
         put.assertIsInstance(actual, SuiteParseError)
-        put.assertEqual(str(self.root_suite_based_at(root_path)),
-                        str(actual.suite_file),
-                        'Source file that contains the error')
-        assert_equals_line_sequence(put,
-                                    single_line_sequence(1, '[invalid-section]'),
-                                    actual.source)
+
+        expected_source = single_line_sequence(1, '[invalid-section]')
+
+        expectation = matches_suite_parse_error(
+            suite_file=asrt.equals(self.root_suite_based_at(root_path)),
+            maybe_section_name=asrt.is_none,
+            source=equals_line_sequence(expected_source),
+            source_location=equals_source_location_path(
+                SourceLocationPath(
+                    SourceLocation(
+                        expected_source,
+                        Path('main.suite'),
+                    ),
+                    []
+                )
+            ),
+            document_parser_exception=asrt.is_instance(sec_doc_exceptions.FileSourceError),
+        )
+
+        expectation.apply(put, actual)
 
 
 class SuiteFileSyntaxErrorOfMissingClosingQuotation(check_exception.Setup):
@@ -518,7 +644,7 @@ class ReferencedSuiteFileDoesNotExist(check_exception.Setup):
 
     def file_structure_to_read(self) -> DirContents:
         return DirContents([File('main.suite',
-                                 lines_content(['[suites]',
+                                 lines_content([section_names.SUITES.syntax,
                                                 'does-not_exist.suite',
                                                 ])),
                             ])
@@ -545,7 +671,7 @@ class DoubleInclusionOfMainFileFromMainFile(check_exception.Setup):
 
     def file_structure_to_read(self) -> DirContents:
         return DirContents([File('main.suite',
-                                 lines_content(['[suites]',
+                                 lines_content([section_names.SUITES.syntax,
                                                 'main.suite',
                                                 ])),
                             ])
@@ -578,16 +704,16 @@ class DoubleInclusionOfSuiteInSubDir(check_exception.Setup):
 
     def file_structure_to_read(self) -> DirContents:
         return DirContents([File('main.suite',
-                                 lines_content(['[suites]',
+                                 lines_content([section_names.SUITES.syntax,
                                                 'local-1.suite',
                                                 'local-2.suite',
                                                 ])),
                             File('local-1.suite',
-                                 lines_content(['[suites]',
+                                 lines_content([section_names.SUITES.syntax,
                                                 'subdir/in-subdir.suite',
                                                 ])),
                             File('local-2.suite',
-                                 lines_content(['[suites]',
+                                 lines_content([section_names.SUITES.syntax,
                                                 '',
                                                 'subdir/in-subdir.suite',
                                                 ])),
@@ -654,7 +780,7 @@ class TestStructure(unittest.TestCase):
         check_structure.check(MainSuiteInSubDirAndSuiteInSubDirWithCasesReferencedViaWildCards(), self)
 
 
-class TestInvalidFileReferences(unittest.TestCase):
+class TestInvalidCaseOrSuiteFileReferences(unittest.TestCase):
     def test_referenced_case_file_does_not_exist(self):
         check_exception.check(ReferencedCaseFileDoesNotExist(), self)
 
@@ -666,6 +792,14 @@ class TestInvalidFileReferences(unittest.TestCase):
 
     def test_double_inclusion_of_suite_in_sub_dir(self):
         check_exception.check(DoubleInclusionOfSuiteInSubDir(), self)
+
+
+class TestInvalidInclusionDirectiveFileReferences(unittest.TestCase):
+    def test_referenced_file_does_not_exist__direct(self):
+        check_exception.check(ReferencedInclusionDirectiveFileDoesNotExist(), self)
+
+    def test_referenced_file_does_not_exist__indirect(self):
+        check_exception.check(ReferencedInclusionDirectiveFileInIncludedFileDoesNotExist(), self)
 
 
 class TestInvalidFileSyntax(unittest.TestCase):
