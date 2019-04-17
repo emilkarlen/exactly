@@ -453,9 +453,6 @@ class ReferencedCaseFileDoesNotExist(check_exception.Setup):
                                                 ])),
                             ])
 
-    def expected_exception_class(self):
-        return SuiteFileReferenceError
-
     def check_exception(self,
                         root_path: pathlib.Path,
                         actual: Exception,
@@ -483,9 +480,6 @@ class ReferencedInclusionDirectiveFileDoesNotExist(check_exception.Setup):
                                                 self.file_inclusion_line,
                                                 ])),
                             ])
-
-    def expected_exception_class(self):
-        return SuiteFileReferenceError
 
     def check_exception(self,
                         root_path: pathlib.Path,
@@ -552,9 +546,6 @@ class ReferencedInclusionDirectiveFileInIncludedFileDoesNotExist(check_exception
                             self.file_1
                             ])
 
-    def expected_exception_class(self):
-        return SuiteFileReferenceError
-
     def check_exception(self,
                         root_path: pathlib.Path,
                         actual: Exception,
@@ -581,9 +572,6 @@ class SuiteFileSyntaxError(check_exception.Setup):
                                  lines_content(['[invalid-section]',
                                                 ])),
                             ])
-
-    def expected_exception_class(self):
-        return SuiteParseError
 
     def check_exception(self,
                         root_path: pathlib.Path,
@@ -622,9 +610,6 @@ class SuiteFileSyntaxErrorOfMissingClosingQuotation(check_exception.Setup):
                                                 ])),
                             ])
 
-    def expected_exception_class(self):
-        return SuiteParseError
-
     def check_exception(self,
                         root_path: pathlib.Path,
                         actual: Exception,
@@ -649,9 +634,6 @@ class ReferencedSuiteFileDoesNotExist(check_exception.Setup):
                                                 ])),
                             ])
 
-    def expected_exception_class(self):
-        return SuiteFileReferenceError
-
     def check_exception(self,
                         root_path: pathlib.Path,
                         actual: Exception,
@@ -675,9 +657,6 @@ class DoubleInclusionOfMainFileFromMainFile(check_exception.Setup):
                                                 'main.suite',
                                                 ])),
                             ])
-
-    def expected_exception_class(self):
-        return SuiteDoubleInclusion
 
     def check_exception(self,
                         root_path: pathlib.Path,
@@ -722,9 +701,6 @@ class DoubleInclusionOfSuiteInSubDir(check_exception.Setup):
                                     empty_file('in-subdir.suite')
                                 ])
                             ])
-
-    def expected_exception_class(self):
-        return SuiteDoubleInclusion
 
     def check_exception(self,
                         root_path: pathlib.Path,

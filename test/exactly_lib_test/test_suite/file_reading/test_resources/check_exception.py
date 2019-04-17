@@ -17,9 +17,6 @@ class Setup:
     def file_structure_to_read(self) -> DirContents:
         raise NotImplementedError()
 
-    def expected_exception_class(self):
-        raise NotImplementedError()
-
     def check_exception(self,
                         root_path: pathlib.Path,
                         actual: Exception,
