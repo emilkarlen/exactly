@@ -352,7 +352,7 @@ def _other_non_cli_errors() -> ParagraphItem:
                                    )
 
 
-_FILE_ACCESS_ERROR = 'Failure of accessing a file on the command line or referenced via {including}.'
+_FILE_ACCESS_ERROR = 'Failure of accessing a file referenced via {including}.'
 
 _SYNTAX_ERROR = """\
 Fails if the test case contains {an_error_in_source}.
