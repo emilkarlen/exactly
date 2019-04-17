@@ -193,7 +193,7 @@ class _Impl:
         """
         while not self.is_at_eof() and self.current_line_is_section_line():
             section_line = self._current_line
-            section_name = self.extract_section_name_and_consume_line()
+            section_name = self.extract_section_name_from_current_line()
             if not self.has_section(section_name):
                 msg = 'There is no {section} named "{name}"'.format(
                     section=self.configuration.section_element_name_for_error_messages,
@@ -202,6 +202,7 @@ class _Impl:
                                       msg,
                                       None,
                                       self._source_location_info_of_current_line())
+            self.move_one_line_forward()
             self.set_current_section(section_name)
 
     def read_rest_of_document_from_inside_section_or_at_eof(self):
@@ -245,7 +246,7 @@ class _Impl:
     def add_element_to_current_section(self, element: model.SectionContentElement):
         self._elements_for_current_section.append(element)
 
-    def extract_section_name_and_consume_line(self) -> str:
+    def extract_section_name_from_current_line(self) -> str:
         try:
             section_name = syntax.extract_section_name_from_section_line(self._current_line.text)
         except ValueError as ex:
@@ -253,7 +254,6 @@ class _Impl:
                                   str(ex),
                                   None,
                                   self._source_location_info_of_current_line())
-        self.move_one_line_forward()
         return section_name
 
     def set_current_section(self, section_name: str):

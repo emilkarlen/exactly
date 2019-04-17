@@ -181,6 +181,7 @@ class TestInvalidSyntax(ParseTestBase):
     def test_element_parser_SHOULD_be_able_to_report_syntax_error_by_returning_None(self):
         # ARRANGE #
         section_name = 'section-name'
+        unknown_section_name = 'unknown-section-name'
         parser = new_parser_for(
             SectionsConfiguration([SectionConfiguration(section_name,
                                                         SectionElementParserThatReturnsNone())],
@@ -206,8 +207,18 @@ class TestInvalidSyntax(ParseTestBase):
                     location_path=[
                         SourceLocation(single_line_sequence(1, unrecognized_line),
                                        EXPECTED_SOURCE_FILE_PATH)
-                    ],
-                )),
+                    ])
+                ),
+            NEA('unrecognized section name',
+                actual=[section_header(unknown_section_name),
+                        'following line'],
+                expected=matches_file_source_error(
+                    maybe_section_name=asrt.is_none,
+                    location_path=[
+                        SourceLocation(single_line_sequence(1, section_header(unknown_section_name)),
+                                       EXPECTED_SOURCE_FILE_PATH)
+                    ])
+                ),
         ]
         for nea in cases:
             with self.subTest(nea.name):
