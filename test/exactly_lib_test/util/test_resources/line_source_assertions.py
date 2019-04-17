@@ -5,6 +5,8 @@ from exactly_lib.util.line_source import Line, LineSequence, line_sequence_from_
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
+ARBITRARY_LINE_SEQUENCE = LineSequence(10, ('arbitrary line sequence',))
+
 
 def equals_line(expected: Line) -> ValueAssertion[Any]:
     return asrt.is_instance_with(Line,

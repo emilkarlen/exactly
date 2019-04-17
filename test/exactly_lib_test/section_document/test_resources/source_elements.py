@@ -13,3 +13,10 @@ SOURCE_LOCATION_PATH_WITH_INCLUSIONS_AND_FILE_NAMES = SourceLocationPath(
             Path('other src-file')),
     ]
 )
+
+ARBITRARY_SOURCE_LOCATION_PATH = SourceLocationPath(
+    SourceLocation(
+        single_line_sequence(1, 'the line'),
+        Path('src-file')),
+    []
+)

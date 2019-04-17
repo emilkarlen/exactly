@@ -1,11 +1,12 @@
+from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Sequence, Optional
+from typing import Sequence, Optional, TypeVar, Generic
 
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationInfo
 from exactly_lib.util.line_source import LineSequence
 
 
-class ParseError(Exception):
+class ParseError(ABC, Exception):
     """
     An exception from a document parser.
     """
@@ -15,6 +16,11 @@ class ParseError(Exception):
                  location_path: Sequence[SourceLocation]):
         self._message = message
         self._location_path = location_path
+
+    @property
+    @abstractmethod
+    def maybe_section_name(self) -> Optional[str]:
+        pass
 
     @property
     def location_path(self) -> Sequence[SourceLocation]:
@@ -69,5 +75,33 @@ class FileAccessError(ParseError):
         self._erroneous_path = erroneous_path
 
     @property
+    def maybe_section_name(self) -> Optional[str]:
+        return None
+
+    @property
     def erroneous_path(self) -> Path:
         return self._erroneous_path
+
+
+T = TypeVar('T')
+
+
+class ParseErrorVisitor(ABC, Generic[T]):
+    def visit(self, element: ParseError) -> T:
+        """
+        :return: Return value from _visit... method
+        """
+        if isinstance(element, FileSourceError):
+            return self.visit_file_source_error(element)
+        elif isinstance(element, FileAccessError):
+            return self.visit_file_access_error(element)
+        else:
+            raise TypeError('Unknown {}: {}'.format(ParseError, str(element)))
+
+    @abstractmethod
+    def visit_file_source_error(self, ex: FileSourceError) -> T:
+        pass
+
+    @abstractmethod
+    def visit_file_access_error(self, ex: FileAccessError) -> T:
+        pass
