@@ -12,11 +12,11 @@ from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
-from exactly_lib.test_suite.file_reading.exception import SuiteParseError
+from exactly_lib.test_suite.file_reading import exception as suite_read_ex
+from exactly_lib.test_suite.file_reading.exception import SuiteReadError
 from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import SuiteHierarchyReader
 from exactly_lib.test_suite.processing import Processor
 from exactly_lib.test_suite.structure import TestSuiteHierarchy
-from exactly_lib.util import line_source
 from exactly_lib_test.section_document.test_resources.source_elements import ARBITRARY_SOURCE_LOCATION_PATH
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
@@ -26,21 +26,58 @@ from exactly_lib_test.test_suite.test_resources.processing_utils import \
     FULL_RESULT_PASS, test_suite, TestCaseProcessorThatGivesConstantPerCase
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingProcessingReporter, \
     ExecutionTracingRootSuiteReporter, EventType, ExecutionTracingSubSuiteProgressReporter
+from exactly_lib_test.util.test_resources.line_source_assertions import ARBITRARY_LINE_SEQUENCE
 
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestError))
+    ret_val.addTest(unittest.makeSuite(TestSuiteReadError))
+    ret_val.addTest(unittest.makeSuite(TestOtherError))
     ret_val.addTest(unittest.makeSuite(TestReturnValueFromTestCaseProcessor))
     ret_val.addTest(unittest.makeSuite(TestComplexSuite))
     return ret_val
 
 
-class TestError(unittest.TestCase):
-    def test_error_when_reading_suite_structure(self):
+class TestSuiteReadError(unittest.TestCase):
+
+    def test_parse_error(self):
+        self._check(
+            suite_read_ex.SuiteParseError(
+                Path('root-suite-file'),
+                FileSourceError(
+                    ARBITRARY_LINE_SEQUENCE,
+                    'message',
+                    None,
+                    SourceLocationInfo(pathlib.Path(),
+                                       ARBITRARY_SOURCE_LOCATION_PATH)),
+            ))
+
+    def test_file_reference_error(self):
+        self._check(
+            suite_read_ex.SuiteFileReferenceError(
+                Path('root-suite-file'),
+                'section_name',
+                ARBITRARY_LINE_SEQUENCE,
+                Path('reference'),
+                'error_message_header',
+            ))
+
+    def test_double_inclusion_error(self):
+        self._check(
+            suite_read_ex.SuiteDoubleInclusion(
+                Path('root-suite-file'),
+                ARBITRARY_LINE_SEQUENCE,
+                Path('included_suite_file'),
+                Path('first_referenced_from'),
+            ))
+
+    def _check(self, exception_from_hierarchy_reader: SuiteReadError):
         # ARRANGE #
         str_std_out_files = StringStdOutFiles()
-        suite_hierarchy_reader = ReaderThatRaisesParseError()
+        suite_root_file_path = Path('root-suite-file')
+
+        suite_hierarchy_reader = ReaderThatRaises(exception_from_hierarchy_reader)
+
         reporter = ExecutionTracingProcessingReporter()
         processor = Processor(DUMMY_CASE_PROCESSING,
                               suite_hierarchy_reader,
@@ -48,7 +85,7 @@ class TestError(unittest.TestCase):
                               DepthFirstEnumerator(),
                               lambda x: TestCaseProcessorThatRaisesUnconditionally())
         # ACT #
-        exit_code = processor.process(Path('root-suite-file'), str_std_out_files.stdout_files)
+        exit_code = processor.process(suite_root_file_path, str_std_out_files.stdout_files)
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
                                          exit_values.INVALID_SUITE.exit_code,
@@ -61,6 +98,9 @@ class TestError(unittest.TestCase):
                                                               reporter.report_invalid_suite_invocations,
                                                               'report_invalid_suite_invocations')
         ExpectedSuiteReporting.check_list(self, [], reporter.complete_suite_reporter)
+
+
+class TestOtherError(unittest.TestCase):
 
     def test_internal_error_in_test_case_processor(self):
         # ARRANGE #
@@ -302,17 +342,12 @@ class TestCaseProcessorThatRaisesUnconditionally(tcp.Processor):
         raise NotImplementedError('Unconditional expected exception from test implementation')
 
 
-class ReaderThatRaisesParseError(SuiteHierarchyReader):
+class ReaderThatRaises(SuiteHierarchyReader):
+    def __init__(self, exception: SuiteReadError):
+        self.exception = exception
+
     def apply(self, suite_file_path: pathlib.Path) -> TestSuiteHierarchy:
-        raise SuiteParseError(
-            suite_file_path,
-            FileSourceError(
-                line_source.single_line_sequence(1, 'line'),
-                'message',
-                None,
-                SourceLocationInfo(Path('/dir'),
-                                   ARBITRARY_SOURCE_LOCATION_PATH)),
-        )
+        raise self.exception
 
 
 class ReaderThatGivesConstantSuite(SuiteHierarchyReader):
