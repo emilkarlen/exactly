@@ -139,21 +139,26 @@ class _Parser(processing_utils.Parser):
         source = ParseSource(test_case_plain_source)
         try:
             return file_parser.apply(test_case, source)
-        except exceptions.FileSourceError as ex:
-            error_info = ErrorInfo(error_description.syntax_error_of_message(ex.error_message),
-                                   source_location_path_of_non_empty_location_path(ex.location_path),
-                                   section_name=ex.maybe_section_name)
-            raise ProcessError(error_info)
-
-        except exceptions.FileAccessError as ex:
-            error_info = ErrorInfo(error_description.file_access_error_of_message(ex.message),
-                                   source_location_path_of_non_empty_location_path(ex.location_path))
-            raise AccessorError(AccessErrorType.FILE_ACCESS_ERROR,
-                                error_info)
+        except exceptions.ParseError as ex:
+            _ParseErrorHandler().visit(ex)
 
 
 def actor_for_setup(setup: ActPhaseSetup) -> Actor:
     return setup.actor
+
+
+class _ParseErrorHandler(exceptions.ParseErrorVisitor[None]):
+    def visit_file_source_error(self, ex: exceptions.FileSourceError) -> None:
+        error_info = ErrorInfo(error_description.syntax_error_of_message(ex.error_message),
+                               source_location_path_of_non_empty_location_path(ex.location_path),
+                               section_name=ex.maybe_section_name)
+        raise ProcessError(error_info)
+
+    def visit_file_access_error(self, ex: exceptions.FileAccessError) -> None:
+        error_info = ErrorInfo(error_description.file_access_error_of_message(ex.message),
+                               source_location_path_of_non_empty_location_path(ex.location_path))
+        raise AccessorError(AccessErrorType.FILE_ACCESS_ERROR,
+                            error_info)
 
 
 class _Executor(processing_utils.Executor):
