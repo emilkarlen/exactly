@@ -130,11 +130,11 @@ Invalid argument or an argument that denotes a non-existing file.
 """
 
 _INVALID_SUITE = """\
-Syntax error in a suite file, or a reference to a non-existing sub-suite file.
+Syntax error in a suite file, or a reference to a non-existing case or sub-suite file.
 """
 
 _COMPLETE_EXECUTION = """\
 The suite has been executed.
 
-Individual test cases may have failed, and referenced test case files may be missing. 
+Individual test cases may have failed, or may not be executable (due to syntax error, e.g.).
 """
