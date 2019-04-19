@@ -83,7 +83,9 @@ class TestFileAccessErrorShouldBeRaisedWhenFileIsInvalid(unittest.TestCase):
         self._check(root_file_path,
                     name_of_invalid_file=file_name,
                     expected_exception=matches_file_access_error(root_file_path,
-                                                                 []))
+                                                                 [],
+                                                                 section_name=None,
+                                                                 ))
 
     def test_invalid_included_file(self):
         # ARRANGE #
@@ -102,7 +104,9 @@ class TestFileAccessErrorShouldBeRaisedWhenFileIsInvalid(unittest.TestCase):
                         [
                             SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
                                            root_file_path)
-                        ]))
+                        ],
+                        section_name=SECTION_1_NAME,
+                    ))
 
     def test_invalid_sub_dir_of_included_file(self):
         # ARRANGE #
@@ -120,7 +124,9 @@ class TestFileAccessErrorShouldBeRaisedWhenFileIsInvalid(unittest.TestCase):
             [
                 SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
                                root_file_path)
-            ])
+            ],
+            section_name=SECTION_1_NAME,
+        )
         # ACT & ASSERT #
         check_and_expect_exception(
             self,
@@ -922,7 +928,8 @@ class TestInclusionFromInclusion(unittest.TestCase):
             [
                 setup.source_location_of_inclusion_of_file_1_from_root_file,
                 setup.source_location_of_inclusion_of_file_2_from_included_file_1,
-            ]
+            ],
+            section_name=SECTION_1_NAME,
         )
         # ACT & ASSERT #
         check_and_expect_exception(self, arrangement,
@@ -1039,6 +1046,7 @@ class TestDetectionOfInclusionCycles(unittest.TestCase):
         # EXPECTATION #
         expected_exception = is_file_access_error(
             matches_file_access_error(
+                section_name=SECTION_1_NAME,
                 erroneous_path=root_file_path,
                 location_path=[
                     SourceLocation(single_line_sequence(1, inclusion_of_file(root_file_name)),
@@ -1063,6 +1071,7 @@ class TestDetectionOfInclusionCycles(unittest.TestCase):
         cases = [
             NEA('root file is non-symlink file',
                 expected=matches_file_access_error(
+                    section_name=SECTION_1_NAME,
                     erroneous_path=symlink_file_path,
                     location_path=[
                         SourceLocation(single_line_sequence(1, inclusion_of_file(symlink_file_name)),
@@ -1079,6 +1088,7 @@ class TestDetectionOfInclusionCycles(unittest.TestCase):
                 ),
             NEA('root file is symlink file',
                 expected=matches_file_access_error(
+                    section_name=SECTION_1_NAME,
                     erroneous_path=non_symlink_file_path,
                     location_path=[
                         SourceLocation(single_line_sequence(1, inclusion_of_file(non_symlink_file_name)),
@@ -1147,6 +1157,7 @@ class TestDetectionOfInclusionCycles(unittest.TestCase):
         # EXPECTATION #
         expected_exception = is_file_access_error(
             matches_file_access_error(
+                section_name=SECTION_1_NAME,
                 erroneous_path=Path(inclusion_path_that_cause_circle),
                 location_path=[
                     SourceLocation(single_line_sequence(1, inclusion_of_file_1_source_code),

@@ -491,7 +491,7 @@ class ReferencedInclusionDirectiveFileDoesNotExist(check_exception.Setup):
 
         expectation = matches_suite_parse_error(
             suite_file=asrt.equals(self.root_suite_based_at(root_path)),
-            maybe_section_name=asrt.is_none,
+            maybe_section_name=asrt.equals(phase_names.SETUP.plain),
             source=equals_line_sequence(expected_source),
             source_location=equals_source_location_path(
                 SourceLocationPath(
@@ -520,7 +520,7 @@ class ReferencedInclusionDirectiveFileInIncludedFileDoesNotExist(check_exception
     inclusion_line_in_file_1 = single_line_sequence(1, file_1_invalid_inclusion_line)
 
     root_suite_file = File('0.suite',
-                           lines_content([phase_names.SETUP.syntax,
+                           lines_content([phase_names.CLEANUP.syntax,
                                           root_suite_inclusion_line,
                                           ]))
     inclusion_line_in_root_file = single_line_sequence(2, root_suite_inclusion_line)
@@ -554,7 +554,7 @@ class ReferencedInclusionDirectiveFileInIncludedFileDoesNotExist(check_exception
 
         expectation = matches_suite_parse_error(
             suite_file=asrt.equals(self.root_suite_based_at(root_path)),
-            maybe_section_name=asrt.is_none,
+            maybe_section_name=asrt.equals(phase_names.CLEANUP.plain),
             source=equals_line_sequence(self.inclusion_line_in_file_1),
             source_location=equals_source_location_path(self.expected_source_location_path),
             document_parser_exception=asrt.is_instance(sec_doc_exceptions.FileAccessError),

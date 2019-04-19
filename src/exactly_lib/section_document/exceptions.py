@@ -66,13 +66,16 @@ class FileAccessError(ParseError):
     def __init__(self,
                  erroneous_path: Path,
                  message: str,
-                 location_path: Sequence[SourceLocation]):
+                 location_path: Sequence[SourceLocation],
+                 section_name: Optional[str] = None,
+                 ):
         super().__init__(message, location_path)
         self._erroneous_path = erroneous_path
+        self._section_name = section_name
 
     @property
     def maybe_section_name(self) -> Optional[str]:
-        return None
+        return self._section_name
 
     @property
     def erroneous_path(self) -> Path:

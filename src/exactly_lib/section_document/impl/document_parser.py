@@ -75,12 +75,14 @@ def parse_file(conf: _SectionsConfigurationInternal,
     path_to_file = file_reference_relativity_root_dir / file_location_info.file_path_rel_referrer
     source = read_source_file(path_to_file,
                               file_location_info.file_path_rel_referrer,
-                              file_location_info.file_inclusion_chain)
+                              file_location_info.file_inclusion_chain,
+                              conf.default_section_name)
     abs_resolved_path_of_current_file = path_to_file.resolve()
     if abs_resolved_path_of_current_file in previously_visited_paths:
         raise FileAccessError(file_location_info.file_path_rel_referrer,
                               'Cyclic inclusion of file',
-                              file_location_info.file_inclusion_chain)
+                              file_location_info.file_inclusion_chain,
+                              conf.default_section_name)
     visited_paths = previously_visited_paths + [abs_resolved_path_of_current_file]
     file_reference_relativity_root_dir = path_to_file.parent
     return _parse_source(conf,

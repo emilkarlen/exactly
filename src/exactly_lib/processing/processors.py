@@ -156,7 +156,8 @@ class _ParseErrorHandler(exceptions.ParseErrorVisitor[None]):
 
     def visit_file_access_error(self, ex: exceptions.FileAccessError) -> None:
         error_info = ErrorInfo(error_description.file_access_error_of_message(ex.message),
-                               source_location_path_of_non_empty_location_path(ex.location_path))
+                               source_location_path_of_non_empty_location_path(ex.location_path),
+                               section_name=ex.maybe_section_name)
         raise AccessorError(AccessErrorType.FILE_ACCESS_ERROR,
                             error_info)
 
