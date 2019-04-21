@@ -71,6 +71,10 @@ def sequence_info__succeeding_phase(following_phase: SectionName) -> List[Paragr
                              )
 
 
+def sequence_info__succeeding_phase_of_act() -> List[ParagraphItem]:
+    return _TEXT_PARSER.fnap(_SEQUENCE_INFO__SUCCEEDING_PHASE_OF_ACT)
+
+
 def sequence_info__preceding_phase(following_phase: SectionName) -> List[ParagraphItem]:
     return _TEXT_PARSER.fnap(_SEQUENCE_INFO__PRECEDING_PHASE,
                              {'following_phase': following_phase}
@@ -126,6 +130,13 @@ If any of the instructions fail, then execution jumps to the {phase[cleanup]} ph
 and the test case halts with an error.
 
 Otherwise, the {following_phase} phase follows.
+"""
+
+_SEQUENCE_INFO__SUCCEEDING_PHASE_OF_ACT = """\
+If the {ATC} cannot be executed, then execution jumps to the {phase[cleanup]} phase,
+and the test case halts with an error.
+
+Otherwise, the {phase[before_assert]} phase follows.
 """
 
 _ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_DIR = """\
