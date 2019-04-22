@@ -11,9 +11,9 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.argume
     FULL_MATCH_ARGUMENT
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES, TRANSFORMER_OPTION_ALTERNATIVES_ELEMENTS
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
@@ -31,8 +31,9 @@ def suite() -> unittest.TestSuite:
         FullMatchDoNotAcceptPartialMatchSingleLineWoNewline(),
 
         FullMatchSingleLineWNewline(),
+        FullMatchTwoLinesWNewline(),
 
-        PartialMatchAcceptsExtraLineAfterMatchingLines(),
+        PartialMatchAcceptsExtraLinesBeforeOrAfterMatchingLines(),
         FullMatchDoNotAcceptExtraLineAfterMatchingLines(),
     ])
 
@@ -183,7 +184,7 @@ class FullMatchTwoLinesWNewline(tc.TestWithNegationArgumentBase):
                     )
 
 
-class PartialMatchAcceptsExtraLineAfterMatchingLines(tc.TestWithNegationArgumentBase):
+class PartialMatchAcceptsExtraLinesBeforeOrAfterMatchingLines(tc.TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         regex_lines = ['1.3',
                        '4.*6']
@@ -216,6 +217,8 @@ class PartialMatchAcceptsExtraLineAfterMatchingLines(tc.TestWithNegationArgument
 
 class FullMatchDoNotAcceptExtraLineAfterMatchingLines(tc.TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
+        regex_lines = ['1.3',
+                       '4.*6']
         actual_contents = lines_content(['123',
                                          '456',
                                          '789'])
@@ -225,8 +228,7 @@ class FullMatchDoNotAcceptExtraLineAfterMatchingLines(tc.TestWithNegationArgumen
                                                      maybe_not.empty__if_positive__not_option__if_negative +
                                                      [matcher_options.MATCHES_ARGUMENT,
                                                       FULL_MATCH_ARGUMENT]
-                                                     ).followed_by(here_document_as_elements(['1.3',
-                                                                                              '4.*6']))
+                                                     ).followed_by(here_document_as_elements(regex_lines))
                 self._check_with_source_variants(
                     argument_elements.as_arguments,
                     model_construction.model_of(actual_contents),
