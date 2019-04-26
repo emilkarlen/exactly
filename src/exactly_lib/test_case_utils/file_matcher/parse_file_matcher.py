@@ -18,10 +18,10 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
-from exactly_lib.test_case_utils.file_matcher import file_matchers, regular_file_contents
+from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import resolvers
 from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_FILE
-from exactly_lib.test_case_utils.file_matcher.impl import name_regex, name_glob_pattern
+from exactly_lib.test_case_utils.file_matcher.impl import name_regex, name_glob_pattern, regular_file_contents
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher

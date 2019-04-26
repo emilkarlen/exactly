@@ -1,7 +1,6 @@
 import pathlib
 from typing import List
 
-import exactly_lib.type_system.error_message
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
 from exactly_lib.test_case_file_structure import path_relativity as pr
@@ -10,7 +9,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor
 
 EXACTLY_SANDBOX_ROOT_DIR_NAME = 'EXACTLY_SANDBOX'
 
@@ -119,7 +118,7 @@ def path_value_with_relativity_name_prefix(path_value: FileRef,
 
 
 def path_value_description(property_name: str,
-                           path_resolver: FileRefResolver) -> exactly_lib.type_system.error_message.PropertyDescriptor:
+                           path_resolver: FileRefResolver) -> PropertyDescriptor:
     return property_description.PropertyDescriptorWithConstantPropertyName(
         property_name,
         PathValuePartConstructor(path_resolver),
