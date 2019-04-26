@@ -1,0 +1,10 @@
+[setup]
+
+file ok-1
+file ok-2
+file other-1
+file other-2
+
+[assert]
+
+dir-contents . every file : name -regex ok.*

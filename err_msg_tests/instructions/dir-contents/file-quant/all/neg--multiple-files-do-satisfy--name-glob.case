@@ -1,0 +1,8 @@
+[setup]
+
+file ok-1
+file ok-2
+
+[assert]
+
+dir-contents . ! every file : name ok*

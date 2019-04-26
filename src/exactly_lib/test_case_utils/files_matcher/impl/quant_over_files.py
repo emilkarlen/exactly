@@ -9,9 +9,9 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     Environment, FileModel, FilesMatcherModel, FilesMatcherValue
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
+from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.err_msg.err_msg_resolvers import ErrorMessageResolverFromFunction
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForFileWithDescriptor
 from exactly_lib.test_case_utils.file_system_element_matcher import \
     FileSystemElementReference
@@ -27,6 +27,12 @@ from exactly_lib.type_system.logic.string_transformer import IdentityStringTrans
 from exactly_lib.util import logic_types
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
+
+_ONE_FILE_SATISFIES = 'one file match'
+_NO_FILE_SATISFY = 'no file match'
+_FAILING_FILES_HEADER = 'There are non-matching files:'
+_QUANTIFIER__FILE__SATISFY = ' file match'
+_SATISFIES = 'matches'
 
 
 def quantified_matcher(expectation_type: ExpectationType,
@@ -138,11 +144,20 @@ class _Checker:
                 return self.check__exists__negative()
 
     def check__all__positive(self) -> Optional[ErrorMessageResolver]:
+        # REFACT 2019-04-26 [error messages]: Files after 1st non-matching file
+        # should be retrieved only when rendering error message.
+
+        failures = []
         for actual_file in self.resolved_actual_file_iter():
             mb_failure = self.check_file(actual_file)
             if mb_failure is not None:
-                return mb_failure
-        return None
+                failures.append(mb_failure)
+        return (
+            err_msg_resolvers.section(_FAILING_FILES_HEADER,
+                                      err_msg_resolvers.itemized_list(failures))
+            if failures
+            else None
+        )
 
     def check__all__negative(self) -> Optional[ErrorMessageResolver]:
         for actual_file in self.resolved_actual_file_iter():
@@ -156,13 +171,13 @@ class _Checker:
             mb_failure = self.check_file(actual_file)
             if mb_failure is None:
                 return None
-        return self.error_reporting.err_msg_for_dir('no file satisfy')
+        return self.error_reporting.err_msg_for_dir(_NO_FILE_SATISFY)
 
     def check__exists__negative(self) -> Optional[ErrorMessageResolver]:
         for actual_file in self.resolved_actual_file_iter():
             mb_failure = self.check_file(actual_file)
             if mb_failure is None:
-                return self.error_reporting.err_msg_for_file_in_dir('one file satisfies', actual_file)
+                return self.error_reporting.err_msg_for_file_in_dir(_ONE_FILE_SATISFIES, actual_file)
         return None
 
     def resolved_actual_file_iter(self) -> Iterator[FileModel]:
@@ -209,7 +224,7 @@ class _ErrorReportingHelper:
         self._destination_file_path_getter = DestinationFilePathGetter()
 
     def err_msg_for_dir__all_satisfies(self) -> ErrorMessageResolver:
-        single_line_value = instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier] + ' file satisfies'
+        single_line_value = instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier] + _QUANTIFIER__FILE__SATISFY
         return self.err_msg_for_dir(single_line_value)
 
     def err_msg_for_dir(self, single_line_value: str) -> ErrorMessageResolver:
@@ -217,7 +232,7 @@ class _ErrorReportingHelper:
             return self._diff_failure_info_for_dir().resolve(environment,
                                                              diff_msg.ActualInfo(single_line_value)).error_message()
 
-        return ErrorMessageResolverFromFunction(resolve)
+        return err_msg_resolvers.of_function(resolve)
 
     def err_msg_for_file_in_dir(self,
                                 single_line_value: str,
@@ -231,7 +246,7 @@ class _ErrorReportingHelper:
             return self._diff_failure_info_for_dir().resolve(environment,
                                                              actual_info).error_message()
 
-        return ErrorMessageResolverFromFunction(resolve)
+        return err_msg_resolvers.of_function(resolve)
 
     def _diff_failure_info_for_dir(self) -> diff_msg_utils.DiffFailureInfoResolver:
         file_property_name = property_description.file_property_name(actual_file_attributes.CONTENTS_ATTRIBUTE,
@@ -247,7 +262,7 @@ class _ErrorReportingHelper:
     def _description_of_expected(self):
         return ' '.join([instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier],
                          config.QUANTIFICATION_OVER_FILE_ARGUMENT,
-                         'satisfies',
+                         _SATISFIES,
                          syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.singular_name])
 
 
