@@ -1,5 +1,4 @@
 import pathlib
-import types
 from typing import Callable
 
 from exactly_lib.test_case_file_structure import path_relativity
@@ -47,7 +46,7 @@ class RelRootResolver:
 class RelHomeRootResolver(RelRootResolver):
     def __init__(self,
                  relativity_type: RelHomeOptionType,
-                 hds_2_root_fun: types.FunctionType):
+                 hds_2_root_fun: Callable[[HomeDirectoryStructure], pathlib.Path]):
         super().__init__(path_relativity.rel_any_from_rel_home(relativity_type))
         self._relativity_type_hds = relativity_type
         self._hds_2_root_fun = hds_2_root_fun

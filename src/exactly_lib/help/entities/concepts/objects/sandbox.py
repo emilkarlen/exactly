@@ -43,7 +43,7 @@ class _SandboxConcept(ConceptDocumentation):
         rest_paragraphs = []
         sub_sections = []
         rest_paragraphs += self._tp.fnap(_SANDBOX_PRE_DIRECTORY_TREE)
-        sub_sections.append(directory_structure_list_section(sds.execution_directories))
+        sub_sections.append(directory_structure_list_section(sds.DIRECTORIES))
         sub_sections += self._sandbox_directories_info_sections()
         return DescriptionWithSubSections(self.single_line_description(),
                                           SectionContents(rest_paragraphs, sub_sections))

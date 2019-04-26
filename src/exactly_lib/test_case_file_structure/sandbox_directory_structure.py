@@ -52,7 +52,7 @@ def empty_dir(name: str) -> DirWithSubDirs:
     return DirWithSubDirs(name, [])
 
 
-execution_directories = [
+DIRECTORIES = [
     empty_dir(SUB_DIRECTORY__ACT),
     empty_dir(SUB_DIRECTORY__RESULT),
     empty_dir(SUB_DIRECTORY__TMP_USER),
@@ -186,10 +186,10 @@ class SandboxDirectoryStructure(DirWithRoot):
         ]
 
 
-def construct_at(execution_directory_root: str) -> SandboxDirectoryStructure:
-    for d in execution_directories:
-        d.mk_dirs(Path(execution_directory_root))
-    return SandboxDirectoryStructure(execution_directory_root)
+def construct_at(directory_root: str) -> SandboxDirectoryStructure:
+    for d in DIRECTORIES:
+        d.mk_dirs(Path(directory_root))
+    return SandboxDirectoryStructure(directory_root)
 
 
 def construct_at_tmp_root() -> SandboxDirectoryStructure:
