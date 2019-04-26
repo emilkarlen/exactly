@@ -2,19 +2,20 @@ from typing import Sequence, Callable, Set, Optional
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.symbol import lookups
+from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironment
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case import pre_or_post_validation
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherOnTransformedFileToCheck
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic import string_matcher_values
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
 from exactly_lib.type_system.value_type import ValueType
@@ -266,7 +267,7 @@ class _NegationStringMatcher(StringMatcher):
             return None
 
     def _failure_message_resolver(self) -> ErrorMessageResolver:
-        return ConstantErrorMessageResolver(self.option_description)
+        return err_msg_resolvers.constant(self.option_description)
 
 
 class _ValidatorOfReferredResolver(pre_or_post_validation.ValidatorOfReferredResolverBase):

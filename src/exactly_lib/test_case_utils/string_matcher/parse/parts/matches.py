@@ -5,6 +5,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import diff_msg
+from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.error_messages import ExpectedValueResolver, ErrorMessageResolverConstructor
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
@@ -81,14 +82,14 @@ class MatchesRegexStringMatcher(StringMatcher):
         match = self._find_match(actual_contents)
         if match is None:
             if self._expectation_type is ExpectationType.POSITIVE:
-                return ConstantErrorMessageResolver('Not found: ' + self._pattern.pattern)
+                return err_msg_resolvers.constant('Not found: ' + self._pattern.pattern)
             else:
                 return None
         else:
             if self._expectation_type is ExpectationType.POSITIVE:
                 return None
             else:
-                return ConstantErrorMessageResolver('Found: ' + self._pattern.pattern)
+                return err_msg_resolvers.constant('Found: ' + self._pattern.pattern)
 
     def _find_match(self, actual_contents: str) -> Match:
         if self._is_full_match:

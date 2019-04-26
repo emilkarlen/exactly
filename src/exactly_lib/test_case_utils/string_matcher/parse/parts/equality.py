@@ -12,6 +12,7 @@ from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, 
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg import diff_msg
+from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.test_case_utils.file_properties import FileType
@@ -19,7 +20,7 @@ from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import ExpectedValueResolver
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver, \
-    ErrorMessageResolvingEnvironment, ConstantErrorMessageResolver
+    ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.program.string_or_file_ref_values import StringOrPath
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util import file_utils
@@ -167,7 +168,7 @@ class EqualityStringMatcher(StringMatcher):
         if error_message is None:
             return None
         else:
-            return ConstantErrorMessageResolver(error_message)
+            return err_msg_resolvers.constant(error_message)
 
 
 def _validator_of_expected(expected_contents: StringOrFileRefResolver) -> PreOrPostSdsValidator:

@@ -12,9 +12,10 @@ from exactly_lib.test_case_utils.condition.integer.parse_integer_condition impor
     IntegerComparisonOperatorAndRightOperand
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import validator_for_non_negative
 from exactly_lib.test_case_utils.err_msg import diff_msg
+from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -75,7 +76,7 @@ class NumLinesStringMatcher(StringMatcher):
         try:
             comparison_handler.execute(self._environment)
         except return_pfh_via_exceptions.PfhException as ex:
-            return ConstantErrorMessageResolver(ex.err_msg)
+            return err_msg_resolvers.constant(ex.err_msg)
 
 
 class NumLinesResolver(comparison_structures.OperandResolver[int]):

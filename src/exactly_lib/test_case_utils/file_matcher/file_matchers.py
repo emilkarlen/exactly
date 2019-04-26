@@ -3,8 +3,9 @@ from typing import List, Iterator, Pattern, Optional
 
 from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForPrimitivePath
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 
 
@@ -44,7 +45,7 @@ class FileMatcherNameGlobPattern(FileMatcher):
         if self.matches(model):
             return None
         else:
-            return ConstantErrorMessageResolver(str(model.path))
+            return err_msg_resolvers.constant(str(model.path))
 
     def matches(self, model: FileMatcherModel) -> bool:
         return model.path.match(self._glob_pattern)
@@ -68,7 +69,7 @@ class FileMatcherBaseNameRegExPattern(FileMatcher):
         if self.matches(model):
             return None
         else:
-            return ConstantErrorMessageResolver(str(model.path.name))
+            return err_msg_resolvers.constant(str(model.path.name))
 
     def matches(self, model: FileMatcherModel) -> bool:
         return self._compiled_reg_ex.search(model.path.name) is not None

@@ -1,6 +1,7 @@
 from typing import Sequence, Callable
 
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment, \
+    ConstantErrorMessageResolver
 
 
 def itemized_list(items: Sequence[ErrorMessageResolver],
@@ -17,6 +18,10 @@ def section(header: str,
 
 def of_function(resolver: Callable[[ErrorMessageResolvingEnvironment], str]) -> ErrorMessageResolver:
     return ErrorMessageResolverFromFunction(resolver)
+
+
+def constant(msg: str) -> ErrorMessageResolver:
+    return ConstantErrorMessageResolver(msg)
 
 
 class ErrorMessageResolverList(ErrorMessageResolver):

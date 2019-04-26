@@ -25,6 +25,7 @@ from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherL
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 
 
 def parse_any_line_matches_matcher(expectation_type: ExpectationType,
@@ -151,7 +152,7 @@ class _StringMatcherBase(StringMatcher):
         try:
             self._check(self._line_matcher, model)
         except PfhFailException as ex:
-            return ConstantErrorMessageResolver(ex.err_msg)
+            return err_msg_resolvers.constant(ex.err_msg)
 
     def _check(self,
                line_matcher: LineMatcher,
