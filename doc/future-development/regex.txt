@@ -1,0 +1,13 @@
+-*- org -*-
+
+
+<2019-04-22 Mon>
+
+* Make all flags in Python regex available
+<2019-04-22 Mon>
+
+ - DOTALL
+ - MULTILINE
+ etc
+* New data type: regex
+<2019-04-22 Mon>

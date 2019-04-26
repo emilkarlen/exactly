@@ -14,7 +14,7 @@ och Exactly skulle behöva bestämma hur en källkodsfil troligtvis
 körs av shellet.
 För unix: "source FILE"
 För Windows: något annat anpassat till CMD.EXE
-* Enklare sätt att testa stdout/stderr från program
+* DONE Enklare sätt att testa stdout/stderr från program
 <2018-03-20 tis>
 Nu krävs två steg:
 ----------------------------------------
@@ -147,3 +147,23 @@ Behövs steg:
  1. Validering av existens av filen
  2. Inläsning av filens innehåll
  3. Validering av referenser i filen
+* Include sym-def/ref from file with shell syntax
+<2019-04-22 Mon>
+Useful for sharing configuration with shell scripts.
+All symbols should probably be regarded as string symbol.
+
+E.g. "configuration.sh" =
+----------------------------------------
+DB_HOST=the-host              # def
+
+ROOT_DIR=the/root/dir         # def
+OTHER_DIR=${ROOT_DIR}/other   # def + ref
+----------------------------------------
+** Functionality
+*** symbol definition
+S=value
+*** symbol reference
+S=abc${REFERENCED_SYMBOL}xyz
+*** file inclusion
+source FILE
+. FILE
