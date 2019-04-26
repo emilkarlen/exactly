@@ -156,6 +156,9 @@ class FileMatcherStructureVisitor:
     The existence of this class means that the structure of :class:`FileMatcher`s
     is fixed. The reason for this is to, among other things, support optimizations
     of selectors.
+
+    REFACT 2019-04-26: This class should be removed - there should be
+    no need for a fixed hierarchy of FileMatcher.s.
     """
 
     def visit(self, matcher: FileMatcher):
