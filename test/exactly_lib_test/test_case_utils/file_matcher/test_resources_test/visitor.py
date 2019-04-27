@@ -2,6 +2,7 @@ import unittest
 
 import re
 
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import visitor
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
@@ -108,7 +109,7 @@ class TestFileMatcherStructureVisitor(unittest.TestCase):
                          'No visit method should have been executed.')
 
 
-class AVisitorThatRecordsVisitedMethods(sut.FileMatcherStructureVisitor):
+class AVisitorThatRecordsVisitedMethods(visitor.FileMatcherStructureVisitor):
     def __init__(self):
         self.visited_types = []
 
