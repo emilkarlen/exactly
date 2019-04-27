@@ -1,3 +1,5 @@
+from typing import Dict
+
 from exactly_lib.test_case_file_structure import relative_path_options as rpo
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
@@ -27,53 +29,53 @@ EXISTS_AT_BEFORE_ASSERT_MAIN = EXISTS_AT_SETUP_MAIN + SET_AT_BEFORE_ASSERT__ENV_
 ALL_REPLACED_ENV_VARS = EXISTS_AT_SETUP_MAIN
 
 
-def env_vars_rel_home(hds: HomeDirectoryStructure) -> dict:
+def env_vars_rel_home(hds: HomeDirectoryStructure) -> Dict[str, str]:
     return {
         ENV_VAR_HOME_CASE: str(hds.case_dir),
         ENV_VAR_HOME_ACT: str(hds.act_dir),
     }
 
 
-def set_at_setup_pre_validate(hds: HomeDirectoryStructure) -> dict:
+def set_at_setup_pre_validate(hds: HomeDirectoryStructure) -> Dict[str, str]:
     return env_vars_rel_home(hds)
 
 
-def set_at_setup_main(sds: SandboxDirectoryStructure) -> dict:
+def set_at_setup_main(sds: SandboxDirectoryStructure) -> Dict[str, str]:
     return {
         ENV_VAR_ACT: str(sds.act_dir),
         ENV_VAR_TMP: str(sds.user_tmp_dir),
     }
 
 
-def set_at_assert(sds: SandboxDirectoryStructure) -> dict:
+def set_at_assert(sds: SandboxDirectoryStructure) -> Dict[str, str]:
     return {
         ENV_VAR_RESULT: str(sds.result.root_dir),
     }
 
 
-def exists_at_config() -> dict:
+def exists_at_config() -> Dict[str, str]:
     return {}
 
 
-def exists_at_setup_pre_validate(hds: HomeDirectoryStructure) -> dict:
+def exists_at_setup_pre_validate(hds: HomeDirectoryStructure) -> Dict[str, str]:
     ret_val = exists_at_config()
     ret_val.update(set_at_setup_pre_validate(hds))
     return ret_val
 
 
-def exists_at_setup_main(home_and_sds: HomeAndSds) -> dict:
+def exists_at_setup_main(home_and_sds: HomeAndSds) -> Dict[str, str]:
     ret_val = set_at_setup_pre_validate(home_and_sds.hds)
     ret_val.update(set_at_setup_main(home_and_sds.sds))
     return ret_val
 
 
-def exists_at_assert(home_and_sds: HomeAndSds) -> dict:
+def exists_at_assert(home_and_sds: HomeAndSds) -> Dict[str, str]:
     ret_val = exists_at_setup_main(home_and_sds)
     ret_val.update(set_at_assert(home_and_sds.sds))
     return ret_val
 
 
-def replaced(home_and_sds: HomeAndSds) -> dict:
+def replaced(home_and_sds: HomeAndSds) -> Dict[str, str]:
     """
     The environment variables that are replaced by the REPLACE_TEST_CASE_DIRS transformer.
     """
