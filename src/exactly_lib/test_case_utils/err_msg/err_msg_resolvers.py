@@ -1,5 +1,7 @@
+import pathlib
 from typing import Sequence, Callable
 
+from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment, \
     ConstantErrorMessageResolver
 
@@ -22,6 +24,18 @@ def of_function(resolver: Callable[[ErrorMessageResolvingEnvironment], str]) -> 
 
 def constant(msg: str) -> ErrorMessageResolver:
     return ConstantErrorMessageResolver(msg)
+
+
+def of_path(path: pathlib.Path) -> ErrorMessageResolver:
+    return ErrorMessageResolverOfPath(path)
+
+
+class ErrorMessageResolverOfPath(ErrorMessageResolver):
+    def __init__(self, path: pathlib.Path):
+        self._path = path
+
+    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+        return path_description.path_value_with_relativity_name_prefix_str(self._path, environment.tcds)
 
 
 class ErrorMessageResolverList(ErrorMessageResolver):
