@@ -1,10 +1,9 @@
-import unittest
-
 import pathlib
+import unittest
 
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
+from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
@@ -62,7 +61,7 @@ class TestGlobPattern(unittest.TestCase):
             glob_pattern, path, expected_result = case.value
             with self.subTest(case_name=case.name,
                               glob_pattern=glob_pattern):
-                matcher = sut.FileMatcherNameGlobPattern(glob_pattern)
+                matcher = FileMatcherNameGlobPattern(glob_pattern)
                 # ACT #
                 actual_glob_pattern = matcher.glob_pattern
 

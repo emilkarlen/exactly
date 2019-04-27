@@ -1,11 +1,10 @@
-import unittest
-
 import pathlib
 import re
+import unittest
 
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
+from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -71,7 +70,7 @@ class TestRegExPatternOnBaseName(unittest.TestCase):
             reg_ex_pattern, path, expected_result = case.value
             with self.subTest(case_name=case.name,
                               glob_pattern=reg_ex_pattern):
-                matcher = sut.FileMatcherBaseNameRegExPattern(re.compile(reg_ex_pattern))
+                matcher = FileMatcherBaseNameRegExPattern(re.compile(reg_ex_pattern))
                 # ACT #
                 actual_reg_ex_pattern = matcher.reg_ex_pattern
 

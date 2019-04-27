@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
+from exactly_lib.test_case_utils.file_matcher.impl import file_type
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as model
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir
@@ -18,7 +18,7 @@ class TestFileType(unittest.TestCase):
                expected_result: bool,
                base_name_of_file_to_check: str,
                dir_contents: DirContents):
-        matcher_to_check = sut.FileMatcherType(file_type_to_check_for)
+        matcher_to_check = file_type.FileMatcherType(file_type_to_check_for)
         self.assertIsInstance(matcher_to_check.option_description,
                               str,
                               'option_description')

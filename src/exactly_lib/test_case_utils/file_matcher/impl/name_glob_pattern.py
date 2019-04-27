@@ -1,4 +1,4 @@
-from typing import Set
+from typing import Set, Optional
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -6,11 +6,12 @@ from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherNameGlobPattern
+from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromValueParts
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.data.string_value import StringValue
-from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher
+from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher, FileMatcherModel
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -46,3 +47,27 @@ class _Value(FileMatcherValue):
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> FileMatcher:
         return FileMatcherNameGlobPattern(self._glob_pattern.value_of_any_dependency(home_and_sds))
+
+
+class FileMatcherNameGlobPattern(FileMatcher):
+    """Matches the name (whole path, not just base name) of a path on a shell glob pattern."""
+
+    def __init__(self, glob_pattern: str):
+        self._glob_pattern = glob_pattern
+
+    @property
+    def glob_pattern(self) -> str:
+        return self._glob_pattern
+
+    @property
+    def option_description(self) -> str:
+        return 'name matches glob pattern ' + self._glob_pattern
+
+    def matches2(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
+        if self.matches(model):
+            return None
+        else:
+            return err_msg_resolvers.of_path(model.path)
+
+    def matches(self, model: FileMatcherModel) -> bool:
+        return model.path.match(self._glob_pattern)

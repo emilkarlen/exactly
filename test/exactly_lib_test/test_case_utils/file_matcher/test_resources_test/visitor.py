@@ -1,11 +1,13 @@
+import re
 import unittest
 
-import re
-
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import visitor
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
+from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
+from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
+from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import visitor
 
 
 def suite() -> unittest.TestSuite:
@@ -27,36 +29,36 @@ class TestFileMatcherStructureVisitor(unittest.TestCase):
 
     def test_visit_name_glob_pattern(self):
         # ARRANGE #
-        instance = sut.FileMatcherNameGlobPattern('glob pattern')
+        instance = FileMatcherNameGlobPattern('glob pattern')
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([sut.FileMatcherNameGlobPattern],
+        self.assertEqual([FileMatcherNameGlobPattern],
                          visitor.visited_types)
         self.assertIs(instance,
                       ret_val)
 
     def test_visit_name_reg_ex_pattern(self):
         # ARRANGE #
-        instance = sut.FileMatcherBaseNameRegExPattern(re.compile('reg-ex pattern'))
+        instance = FileMatcherBaseNameRegExPattern(re.compile('reg-ex pattern'))
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([sut.FileMatcherBaseNameRegExPattern],
+        self.assertEqual([FileMatcherBaseNameRegExPattern],
                          visitor.visited_types)
         self.assertIs(instance,
                       ret_val)
 
     def test_visit_type(self):
         # ARRANGE #
-        instance = sut.FileMatcherType(FileType.REGULAR)
+        instance = FileMatcherType(FileType.REGULAR)
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([sut.FileMatcherType],
+        self.assertEqual([FileMatcherType],
                          visitor.visited_types)
         self.assertIs(instance,
                       ret_val)
@@ -117,16 +119,16 @@ class AVisitorThatRecordsVisitedMethods(visitor.FileMatcherStructureVisitor):
         self.visited_types.append(sut.FileMatcherConstant)
         return matcher
 
-    def visit_name_glob_pattern(self, matcher: sut.FileMatcherNameGlobPattern):
-        self.visited_types.append(sut.FileMatcherNameGlobPattern)
+    def visit_name_glob_pattern(self, matcher: FileMatcherNameGlobPattern):
+        self.visited_types.append(FileMatcherNameGlobPattern)
         return matcher
 
-    def visit_name_reg_ex_pattern(self, matcher: sut.FileMatcherBaseNameRegExPattern):
-        self.visited_types.append(sut.FileMatcherBaseNameRegExPattern)
+    def visit_name_reg_ex_pattern(self, matcher: FileMatcherBaseNameRegExPattern):
+        self.visited_types.append(FileMatcherBaseNameRegExPattern)
         return matcher
 
-    def visit_type(self, matcher: sut.FileMatcherType):
-        self.visited_types.append(sut.FileMatcherType)
+    def visit_type(self, matcher: FileMatcherType):
+        self.visited_types.append(FileMatcherType)
         return matcher
 
     def visit_not(self, matcher: sut.FileMatcherNot):

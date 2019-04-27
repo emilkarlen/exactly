@@ -1,9 +1,7 @@
 import pathlib
-from typing import List, Iterator, Pattern, Optional
+from typing import List, Iterator, Optional
 
 from exactly_lib.definitions import expression
-from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForPrimitivePath
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
@@ -25,73 +23,6 @@ class FileMatcherConstant(FileMatcher):
 
     def matches(self, model: FileMatcherModel) -> bool:
         return self._result
-
-
-class FileMatcherNameGlobPattern(FileMatcher):
-    """Matches the name (whole path, not just base name) of a path on a shell glob pattern."""
-
-    def __init__(self, glob_pattern: str):
-        self._glob_pattern = glob_pattern
-
-    @property
-    def glob_pattern(self) -> str:
-        return self._glob_pattern
-
-    @property
-    def option_description(self) -> str:
-        return 'name matches glob pattern ' + self._glob_pattern
-
-    def matches2(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
-        if self.matches(model):
-            return None
-        else:
-            return err_msg_resolvers.of_path(model.path)
-
-    def matches(self, model: FileMatcherModel) -> bool:
-        return model.path.match(self._glob_pattern)
-
-
-class FileMatcherBaseNameRegExPattern(FileMatcher):
-    """Matches the base name of a path on a regular expression."""
-
-    def __init__(self, compiled_reg_ex: Pattern):
-        self._compiled_reg_ex = compiled_reg_ex
-
-    @property
-    def reg_ex_pattern(self) -> str:
-        return self._compiled_reg_ex.pattern
-
-    @property
-    def option_description(self) -> str:
-        return 'base name matches regular expression ' + self.reg_ex_pattern
-
-    def matches2(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
-        if self.matches(model):
-            return None
-        else:
-            return err_msg_resolvers.constant(str(model.path.name))
-
-    def matches(self, model: FileMatcherModel) -> bool:
-        return self._compiled_reg_ex.search(model.path.name) is not None
-
-
-class FileMatcherType(FileMatcher):
-    """Matches the type of file."""
-
-    def __init__(self, file_type: file_properties.FileType):
-        self._file_type = file_type
-        self._pathlib_predicate = file_properties.TYPE_INFO[self._file_type].pathlib_path_predicate
-
-    @property
-    def file_type(self) -> file_properties.FileType:
-        return self._file_type
-
-    @property
-    def option_description(self) -> str:
-        return 'type is ' + file_properties.TYPE_INFO[self._file_type].description
-
-    def matches(self, model: FileMatcherModel) -> bool:
-        return self._pathlib_predicate(model.path)
 
 
 class FileMatcherNot(FileMatcher):

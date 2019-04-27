@@ -22,6 +22,7 @@ from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import resolvers
 from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_FILE
 from exactly_lib.test_case_utils.file_matcher.impl import name_regex, name_glob_pattern, regular_file_contents
+from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
@@ -119,7 +120,7 @@ def _parse_type_matcher(parser: TokenParser) -> FileMatcherResolver:
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE,
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE.get,
         '{_TYPE_}')
-    return _constant(file_matchers.FileMatcherType(file_type))
+    return _constant(FileMatcherType(file_type))
 
 
 def _parse_regular_file_contents(parser: TokenParser) -> FileMatcherResolver:

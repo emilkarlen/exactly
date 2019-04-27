@@ -1,6 +1,5 @@
-import unittest
-
 import re
+import unittest
 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -8,6 +7,9 @@ from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
+from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
+from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
+from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
@@ -133,7 +135,7 @@ class TestNameGlobPattern(TestCaseBase):
                 self._check_parse(
                     case.source,
                     Expectation(
-                        resolved_value_equals_file_matcher(file_matchers.FileMatcherNameGlobPattern(pattern)),
+                        resolved_value_equals_file_matcher(FileMatcherNameGlobPattern(pattern)),
                         source=case.source_assertion,
                     )
                 )
@@ -166,7 +168,7 @@ class TestBaseNameRegExPattern(TestCaseBase):
                                      remaining_part_of_current_line=asrt.equals(space[1:] + 'following argument')),
                        ),
         ]
-        expected = file_matchers.FileMatcherBaseNameRegExPattern(re.compile(pattern))
+        expected = FileMatcherBaseNameRegExPattern(re.compile(pattern))
         for case in cases:
             with self.subTest(case=case.name):
                 self._check_parse(
@@ -212,7 +214,7 @@ class TestFileType(TestCaseBase):
                     self._check_parse(
                         source_case.source,
                         Expectation(
-                            resolved_value_equals_file_matcher(file_matchers.FileMatcherType(file_type)),
+                            resolved_value_equals_file_matcher(FileMatcherType(file_type)),
                             source=source_case.source_assertion,
                         ),
                     )
@@ -225,7 +227,7 @@ class TestFileType(TestCaseBase):
                 self._check_parse(
                     source,
                     Expectation(
-                        resolved_value_equals_file_matcher(file_matchers.FileMatcherType(file_type)),
+                        resolved_value_equals_file_matcher(FileMatcherType(file_type)),
                         source=asrt.anything_goes(),
                     ),
                 )

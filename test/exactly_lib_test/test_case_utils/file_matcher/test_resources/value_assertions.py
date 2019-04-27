@@ -1,14 +1,16 @@
 import unittest
-
 from typing import Set
 
+from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
 from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.file_matcher import file_matchers
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.visitor import FileMatcherStructureVisitor
+from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
+from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.visitor import FileMatcherStructureVisitor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
@@ -130,16 +132,16 @@ class _StructureChecker(FileMatcherStructureVisitor):
                              self.expected.option_description,
                              'option_description')
 
-    def visit_name_glob_pattern(self, actual: file_matchers.FileMatcherNameGlobPattern):
+    def visit_name_glob_pattern(self, actual: FileMatcherNameGlobPattern):
         self._common(actual)
-        assert isinstance(self.expected, file_matchers.FileMatcherNameGlobPattern)  # Type info for IDE
+        assert isinstance(self.expected, FileMatcherNameGlobPattern)  # Type info for IDE
         self.put.assertEqual(self.expected.glob_pattern,
                              actual.glob_pattern,
                              'glob_pattern')
 
-    def visit_name_reg_ex_pattern(self, actual: file_matchers.FileMatcherBaseNameRegExPattern):
+    def visit_name_reg_ex_pattern(self, actual: FileMatcherBaseNameRegExPattern):
         self._common(actual)
-        assert isinstance(self.expected, file_matchers.FileMatcherBaseNameRegExPattern)  # Type info for IDE
+        assert isinstance(self.expected, FileMatcherBaseNameRegExPattern)  # Type info for IDE
         self.put.assertEqual(self.expected.reg_ex_pattern,
                              actual.reg_ex_pattern,
                              'reg_ex_pattern')
@@ -151,9 +153,9 @@ class _StructureChecker(FileMatcherStructureVisitor):
                              actual.result_constant,
                              'result_constant')
 
-    def visit_type(self, actual: file_matchers.FileMatcherType):
+    def visit_type(self, actual: FileMatcherType):
         self._common(actual)
-        assert isinstance(self.expected, file_matchers.FileMatcherType)  # Type info for IDE
+        assert isinstance(self.expected, FileMatcherType)  # Type info for IDE
         self.put.assertEqual(self.expected.file_type,
                              actual.file_type,
                              'file_type')

@@ -1,9 +1,11 @@
 import unittest
 
+from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
 from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.file_matcher import file_matchers
+from exactly_lib.test_case_utils.file_matcher.impl import file_type
 from exactly_lib.test_case_utils.file_matcher.parse_file_matcher import NAME_MATCHER_NAME
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
@@ -48,11 +50,11 @@ class TestSuccessfulScenarios(TestCaseBase):
              ),
             ('name pattern in RHS SHOULD give selection of name pattern',
              file_matcher_arguments(name_pattern=name_pattern),
-             file_matchers.FileMatcherNameGlobPattern(name_pattern),
+             FileMatcherNameGlobPattern(name_pattern),
              ),
             ('file type in RHS SHOULD give selection of name pattern',
              file_matcher_arguments(type_match=FileType.REGULAR),
-             file_matchers.FileMatcherType(FileType.REGULAR),
+             file_type.FileMatcherType(FileType.REGULAR),
              ),
         ]
         # ARRANGE #
