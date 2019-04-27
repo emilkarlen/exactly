@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List
 
 from exactly_lib import program_info
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.util.process_execution import process_output_files
 
 LOG__PHASE_SUB_DIR = 'phase'
@@ -52,21 +53,29 @@ def empty_dir(name: str) -> DirWithSubDirs:
     return DirWithSubDirs(name, [])
 
 
-DIRECTORIES = [
-    empty_dir(SUB_DIRECTORY__ACT),
-    empty_dir(SUB_DIRECTORY__RESULT),
-    empty_dir(SUB_DIRECTORY__TMP_USER),
-    DirWithSubDirs(SUB_DIRECTORY__INTERNAL, [
-        empty_dir(SUB_DIRECTORY__TMP_INTERNAL),
-        empty_dir(SUB_DIRECTORY__LOG),
-        empty_dir(SUB_DIRECTORY__TEST_CASE),
-    ]),
-]
+SDS_SUB_DIRECTORIES = {
+    RelSdsOptionType.REL_ACT: pathlib.PurePosixPath(SUB_DIRECTORY__ACT),
+    RelSdsOptionType.REL_TMP: pathlib.PurePosixPath(SUB_DIRECTORY__TMP_USER),
+    RelSdsOptionType.REL_RESULT: pathlib.PurePosixPath(SUB_DIRECTORY__RESULT),
+}
+
+DIRECTORIES = (
+        [
+            empty_dir(str(path))
+            for path in SDS_SUB_DIRECTORIES.values()
+        ] +
+        [
+            DirWithSubDirs(SUB_DIRECTORY__INTERNAL, [
+                empty_dir(SUB_DIRECTORY__TMP_INTERNAL),
+                empty_dir(SUB_DIRECTORY__LOG),
+                empty_dir(SUB_DIRECTORY__TEST_CASE),
+            ]),
+        ]
+)
 
 
 class DirWithRoot:
-    def __init__(self,
-                 root_dir: Path):
+    def __init__(self, root_dir: Path):
         self.__root_dir = root_dir
 
     @property
@@ -129,9 +138,9 @@ class SandboxDirectoryStructure(DirWithRoot):
 
     def __init__(self, dir_name: str):
         super().__init__(Path(dir_name))
-        self.__act_dir = self.root_dir / SUB_DIRECTORY__ACT
-        self.__user_tmp = self.root_dir / SUB_DIRECTORY__TMP_USER
-        self.__result = Result(self.root_dir / SUB_DIRECTORY__RESULT)
+        self.__act_dir = self.root_dir / SDS_SUB_DIRECTORIES[RelSdsOptionType.REL_ACT]
+        self.__user_tmp = self.root_dir / SDS_SUB_DIRECTORIES[RelSdsOptionType.REL_TMP]
+        self.__result = Result(self.root_dir / SDS_SUB_DIRECTORIES[RelSdsOptionType.REL_RESULT])
         self.__internal = Internal(self.root_dir / SUB_DIRECTORY__INTERNAL)
 
     @property
