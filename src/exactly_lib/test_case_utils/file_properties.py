@@ -3,7 +3,7 @@ import os
 import pathlib
 import stat
 import types
-from typing import Callable
+from typing import Callable, Optional
 
 from exactly_lib.definitions import actual_file_attributes
 
@@ -35,7 +35,7 @@ TYPE_INFO = {
 SYNTAX_TOKEN_2_FILE_TYPE = dict([(info.type_argument, ft) for ft, info in TYPE_INFO.items()])
 
 
-def lookup_file_type(stat_result) -> FileType:
+def lookup_file_type(stat_result) -> Optional[FileType]:
     """
     :return: None iff the type is an unknown type
     """

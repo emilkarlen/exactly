@@ -2,6 +2,8 @@ import unittest
 
 from exactly_lib.test_case_utils.file_matcher.impl import file_type
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib_test.test_case.test_resources.instruction_environment import fake_error_message_resolving_environment
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as model
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
@@ -13,11 +15,14 @@ def suite() -> unittest.TestSuite:
 
 
 class TestFileType(unittest.TestCase):
+    ERR_MSG_ENV = fake_error_message_resolving_environment()
+
     def _check(self,
                file_type_to_check_for: FileType,
                expected_result: bool,
                base_name_of_file_to_check: str,
                dir_contents: DirContents):
+
         matcher_to_check = file_type.FileMatcherType(file_type_to_check_for)
         self.assertIsInstance(matcher_to_check.option_description,
                               str,
@@ -26,17 +31,32 @@ class TestFileType(unittest.TestCase):
         with tmp_dir(dir_contents) as tmp_dir_path:
             file_path_to_check = tmp_dir_path / base_name_of_file_to_check
 
-            actual_result = matcher_to_check.matches(model.with_dir_space_that_must_not_be_used(file_path_to_check))
+            with self.subTest('match'):
+                actual_result = matcher_to_check.matches(model.with_dir_space_that_must_not_be_used(file_path_to_check))
 
-            # ASSERT #
+                # ASSERT #
 
-            self.assertEqual(file_type_to_check_for,
-                             matcher_to_check.file_type,
-                             'file type')
+                self.assertEqual(file_type_to_check_for,
+                                 matcher_to_check.file_type,
+                                 'file type')
 
-            self.assertEqual(expected_result,
-                             actual_result,
-                             'result')
+                self.assertEqual(expected_result,
+                                 actual_result,
+                                 'result')
+
+            with self.subTest('matches2'):
+                actual_result = matcher_to_check.matches2(
+                    model.with_dir_space_that_must_not_be_used(file_path_to_check))
+
+                # ASSERT #
+
+                if expected_result:
+                    self.assertIsNone(actual_result, 'result')
+                else:
+                    self.assertIsInstance(actual_result, ErrorMessageResolver,
+                                          'result')
+                    err_msg = actual_result.resolve(self.ERR_MSG_ENV)
+                    self.assertIsInstance(err_msg, str, 'error message')
 
     def test_regular(self):
         file_to_check = 'file-to-check.txt'

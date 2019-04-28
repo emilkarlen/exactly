@@ -18,6 +18,11 @@ def section(header: str,
     return ErrorMessageResolverSection(header, contents, separator)
 
 
+def sequence_of_parts(parts: Sequence[ErrorMessageResolver],
+                      separator: str = '\n\n') -> ErrorMessageResolver:
+    return ErrorMessageResolverParts(parts, separator)
+
+
 def of_function(resolver: Callable[[ErrorMessageResolvingEnvironment], str]) -> ErrorMessageResolver:
     return ErrorMessageResolverFromFunction(resolver)
 
@@ -53,6 +58,23 @@ class ErrorMessageResolverList(ErrorMessageResolver):
         parts_output = [
             self._item_header_prefix + part.resolve(environment)
             for part in self._items
+        ]
+        return self._separator.join(parts_output)
+
+
+class ErrorMessageResolverParts(ErrorMessageResolver):
+    """A sequence of resolvers separated by a constant string"""
+
+    def __init__(self,
+                 parts: Sequence[ErrorMessageResolver],
+                 separator: str = '\n\n'):
+        self._parts = parts
+        self._separator = separator
+
+    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+        parts_output = [
+            part.resolve(environment)
+            for part in self._parts
         ]
         return self._separator.join(parts_output)
 
