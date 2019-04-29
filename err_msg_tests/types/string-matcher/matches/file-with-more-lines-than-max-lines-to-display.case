@@ -1,0 +1,7 @@
+[setup]
+
+copy file-with-more-lines-than-max-lines-to-display.txt f.txt
+
+[assert]
+
+exists f.txt : contents matches 'non-matching-regex'

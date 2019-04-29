@@ -1,0 +1,13 @@
+[setup]
+
+file f.txt = <<-
+matching
+regex
+-
+
+[assert]
+
+exists f.txt : ! contents matches <<-
+matching
+regex
+-

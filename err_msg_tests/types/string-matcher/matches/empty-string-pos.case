@@ -1,0 +1,10 @@
+[setup]
+
+file f.txt
+
+[assert]
+
+exists f.txt : contents matches <<-
+non matching
+regex
+-

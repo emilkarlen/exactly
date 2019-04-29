@@ -1,0 +1,10 @@
+[setup]
+
+file f.txt = 'file contents'
+
+[assert]
+
+exists f.txt : contents matches -full <<-
+non matching
+regex
+-
