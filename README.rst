@@ -580,7 +580,7 @@ Future development
 More functionality is needed, smaller and larger.
 Including (but not limited to):
 
-* More string transformers
+* More string transformers, file matchers etc
 * Possibility to use "program" values in more places, e.g. in ``[act]``
 * Improved string character escaping
 * Separate sets of environment variables for "action to check" and other processes
@@ -590,8 +590,9 @@ Including (but not limited to):
 * Variables - corresponding to symbol definitions -
   but for variable values
 * Macros and functions
-* Ability to embedd Python code in test cases
+* Ability to embed Python code in test cases
 * Python library for running cases and suites from within Python as a DSEL
+* Improve error messages
 
 
 AUTHOR
