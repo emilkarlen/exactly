@@ -1,4 +1,7 @@
-from exactly_lib.definitions.entity import types, syntax_elements
+from exactly_lib.definitions import misc_texts, formatting
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
+    HelpPredefinedContentsPart
+from exactly_lib.definitions.entity import types, syntax_elements, conf_params, concepts
 from exactly_lib.help.entities.types.contents_structure import LogicTypeWithExpressionGrammarDocumentation, \
     TypeDocumentation
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
@@ -7,6 +10,14 @@ from exactly_lib.test_case_utils.string_transformer import parse_string_transfor
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import empty_section_contents
+from exactly_lib.util.textformat.textformat_parser import TextParser
+
+_TP = TextParser({
+    'os_process': misc_texts.OS_PROCESS_NAME,
+    'program_type': formatting.symbol_type(types.PROGRAM_TYPE_INFO.singular_name),
+    'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
+    'timeout_conf_param': formatting.conf_param_(conf_params.TIMEOUT_CONF_PARAM_INFO),
+})
 
 LINE_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     types.LINE_MATCHER_TYPE_INFO,
@@ -36,7 +47,19 @@ FILES_MATCHER_DOCUMENTATION = TypeDocumentation(TypeCategory.LOGIC,
                                                 syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT,
                                                 docs.empty_section_contents())
 
+_PROGRAM_DESCRIPTION_REST = """\
+A {program_type} is executed as an {os_process}.
+
+
+The timeout of the {os_process} is determined by the {timeout_conf_param} {conf_param}.
+"""
+
 PROGRAM_DOCUMENTATION = TypeDocumentation(TypeCategory.LOGIC,
                                           types.PROGRAM_TYPE_INFO,
                                           syntax_elements.PROGRAM_SYNTAX_ELEMENT,
-                                          docs.empty_section_contents())
+                                          _TP.section_contents(_PROGRAM_DESCRIPTION_REST),
+                                          [
+                                              conf_params.TIMEOUT_CONF_PARAM_INFO.cross_reference_target,
+                                              PredefinedHelpContentsPartReference(
+                                                  HelpPredefinedContentsPart.TEST_CASE_SPEC),
+                                          ])
