@@ -1,0 +1,9 @@
+-*- org -*-
+
+* HARD_ERROR on OSError?
+Is it not more appropriate with HARD_ERROR than FAIL
+when a file cannot be accessed?
+
+Now when "exists" may apply a FILE-MATCHER, then
+HARD_ERROR feels even more appropriate, since
+existence is checked by other means.
