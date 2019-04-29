@@ -12,13 +12,10 @@ from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher import resolvers
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib.util.messages import grammar_options_syntax
 
 COMPARISON_OPERATOR = 'COMPARISON OPERATOR'
 _FORMAT_MAP = {
     '_MATCHER_': instruction_arguments.LINE_MATCHER.name,
-    '_CHECK_': '{} ({})'.format(COMPARISON_OPERATOR,
-                                grammar_options_syntax.alternatives_list(matcher_options.ALL_CHECKS)),
 }
 
 
