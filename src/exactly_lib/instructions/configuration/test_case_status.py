@@ -82,5 +82,5 @@ class _Instruction(ConfigurationPhaseInstruction):
 
 
 _MAIN_DESCRIPTION_REST = """\
-The default {status_config_param} (if not changed by this instruction) is {default_mode}.
+The default {status_config_param} is {default_mode}.
 """
