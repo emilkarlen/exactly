@@ -4,8 +4,9 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
@@ -26,7 +27,7 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -48,6 +49,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
             RELATIVITY_OPTIONS_CONFIGURATION,
             the_path_of('the file that will be the contents of stdin.')
         )
+        self._tp = TextParser({
+            'HERE_DOCUMENT': formatting.syntax_element_(syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT),
+            'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
+            'FILE': RELATIVITY_OPTIONS_CONFIGURATION.argument_syntax_name,
+        })
 
     def single_line_description(self) -> str:
         return 'Sets the contents of stdin for the act phase program'
@@ -58,8 +64,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
                 ]
         return [
             invokation_variant_from_args(args,
-                                         docs.paras(
-                                             'Sets stdin to be the contents of a string, "here document" or file')),
+                                         self._tp.fnap(_DESCRIPTION_REST)),
         ]
 
     def syntax_element_descriptions(self) -> list:
@@ -123,3 +128,11 @@ class _InstructionForFileRef(InstructionWithFileRefsBase):
         file_ref = self.redirect_file.resolve(environment.symbols)
         settings_builder.stdin.file_name = file_ref.value_of_any_dependency(env.home_and_sds)
         return sh.new_sh_success()
+
+
+_DESCRIPTION_REST = """\
+Sets stdin to be the contents of a string, {HERE_DOCUMENT} or file.
+
+
+Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the file {FILE} is NOT substituted.
+"""

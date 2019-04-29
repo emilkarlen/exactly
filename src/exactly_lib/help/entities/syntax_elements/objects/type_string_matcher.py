@@ -51,6 +51,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
             'REGEX': syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
             'full_regex_match': option_syntax.option_syntax(matcher_options.FULL_MATCH_ARGUMENT_OPTION),
             'this_type': formatting.symbol_type(types.STRING_MATCHER_TYPE_INFO.singular_name),
+            'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
         })
 
     def main_description_rest_paragraphs(self) -> List[ParagraphItem]:
@@ -198,6 +199,9 @@ Matches if the string is empty.
 _DESCRIPTION_OF_EQUALS_STRING = """\
 Matches if the string is equal to a given
 string, {HERE_DOCUMENT} or file.
+
+
+Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the file {expected_file_arg} is NOT substituted.
 """
 
 _DESCRIPTION_OF_MATCHES_REGEX = """\

@@ -47,6 +47,8 @@ class FileContentsDocumentation:
             'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
             'TRANSFORMATION': instruction_arguments.STRING_TRANSFORMATION_ARGUMENT.name,
             'transformer': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
+            'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
+            'SRC_PATH_ARGUMENT': _SRC_PATH_ARGUMENT.name,
         })
 
     def syntax_element_descriptions(self) -> list:
@@ -219,4 +221,7 @@ and an optional {TRANSFORMATION} on a following line.
 
 _FILE_DESCRIPTION = """\
 The contents of an existing file.
+
+
+Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the file {SRC_PATH_ARGUMENT} is NOT substituted.
 """

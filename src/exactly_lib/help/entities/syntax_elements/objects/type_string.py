@@ -106,6 +106,10 @@ Characters surrounded by {hard_quotes} ({HARD_Q}).
 Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the string is NOT substituted.
 """
 
+_SYMBOL_REFERENCE_DESCRIPTION_FOR_FILE = """\
+Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the file is NOT substituted.
+"""
+
 _SYMBOL_REFERENCE_DESCRIPTION = """\
 A reference to a {symbol} defined as either {string_type}, {list_type} or {path_type}.
 
