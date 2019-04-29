@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
  - Detection of file inclusion failures in suites
- - Documentation : Case and Suite Outcome
+ - Help text bug fixes
+ - Help text improvements
+ - Improvement of some error messages
 
 ## [0.11.0] - 2019-03-24
 
