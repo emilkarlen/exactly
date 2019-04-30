@@ -7,7 +7,7 @@ from exactly_lib.help.entities.types import render as sut
 from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
 from exactly_lib.help.entities.types.entity_configuration import TYPE_ENTITY_CONFIGURATION
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
-from exactly_lib.util.name import name_with_plural_s
+from exactly_lib.util.name import a_name_with_plural_s
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import empty_section_contents
@@ -67,7 +67,7 @@ A_SYNTAX_ELEMENT_INFO = syntax_elements.SyntaxElementInfo(
 )
 
 A_TYPE_NAME_AND_CROSS_REFERENCE_ID = types.name_and_ref_target(ValueType.STRING,
-                                                               name_with_plural_s('type_name'),
+                                                               a_name_with_plural_s('type_name'),
                                                                'single line description')
 
 CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())

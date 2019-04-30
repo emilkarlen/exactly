@@ -5,7 +5,8 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPlur
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.name import Name, name_with_plural_s
+from exactly_lib.util.name import NameWithGender, NameWithGenderWithFormatting, \
+    a_name_with_plural_s
 
 
 def type_cross_ref(type_name: str) -> EntityCrossReferenceId:
@@ -16,14 +17,14 @@ def type_cross_ref(type_name: str) -> EntityCrossReferenceId:
 class TypeNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):
     def __init__(self,
                  value_type: ValueType,
-                 name: Name,
+                 name: NameWithGender,
                  single_line_description_str: str,
                  cross_reference_target: CrossReferenceId):
         super().__init__(name,
                          single_line_description_str,
                          cross_reference_target)
         self._value_type = value_type
-        self._name = name
+        self._name = NameWithGenderWithFormatting(name)
         self._single_string_type_name = self._name.singular.replace(' ', '-')
 
     @property
@@ -31,7 +32,7 @@ class TypeNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):
         return self._value_type
 
     @property
-    def name(self) -> Name:
+    def name(self) -> NameWithGenderWithFormatting:
         return self._name
 
     @property
@@ -49,7 +50,7 @@ class TypeNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):
 
 
 def name_and_ref_target(value_type: ValueType,
-                        name: Name,
+                        name: NameWithGender,
                         single_line_description_str: str) -> TypeNameAndCrossReferenceId:
     return TypeNameAndCrossReferenceId(value_type,
                                        name,
@@ -59,56 +60,56 @@ def name_and_ref_target(value_type: ValueType,
 
 STRING_TYPE_INFO = name_and_ref_target(
     ValueType.STRING,
-    name_with_plural_s('string'),
+    a_name_with_plural_s('string'),
     'A sequence of characters.',
 )
 
 LIST_TYPE_INFO = name_and_ref_target(
     ValueType.LIST,
-    name_with_plural_s('list'),
+    a_name_with_plural_s('list'),
     'A sequence of zero or more strings.',
 )
 
 PATH_TYPE_INFO = name_and_ref_target(
     ValueType.PATH,
-    name_with_plural_s('path'),
+    a_name_with_plural_s('path'),
     'A file path, with special support for directories in the ' + formatting.concept_(
         concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO),
 )
 
 LINE_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.LINE_MATCHER,
-    name_with_plural_s('line matcher'),
+    a_name_with_plural_s('line matcher'),
     'Matches individual text lines.'
 )
 
 FILE_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.FILE_MATCHER,
-    name_with_plural_s('file matcher'),
+    a_name_with_plural_s('file matcher'),
     'Matches properties of an existing file - type, name and contents.'
 )
 
 FILES_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.FILES_MATCHER,
-    name_with_plural_s('files matcher'),
+    a_name_with_plural_s('files matcher'),
     'Matches a set of files (e.g. the contents of a directory).'
 )
 
 STRING_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.STRING_MATCHER,
-    name_with_plural_s('string matcher'),
+    a_name_with_plural_s('string matcher'),
     'Matches a string (a sequence of new-line separated text lines).',
 )
 
 STRING_TRANSFORMER_TYPE_INFO = name_and_ref_target(
     ValueType.STRING_TRANSFORMER,
-    name_with_plural_s('string transformer'),
+    a_name_with_plural_s('string transformer'),
     'Transforms a string (a sequence of new-line separated text lines).',
 )
 
 PROGRAM_TYPE_INFO = name_and_ref_target(
     ValueType.PROGRAM,
-    name_with_plural_s('program'),
+    a_name_with_plural_s('program'),
     'An external program, with optional arguments, and optional transformation of the output.',
 )
 
