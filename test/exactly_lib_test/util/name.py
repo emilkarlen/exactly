@@ -84,9 +84,64 @@ class NameWithGenderWithFormattingTest(unittest.TestCase):
         name = sut.NameWithGenderWithFormatting(sut.NameWithGender('an', 'instruction name', 'instruction names'),
                                                 quoting_begin='[',
                                                 quoting_end=']')
-        self._check_with_flags(name,
-                               name.singular_determined,
-                               SC.DETERMINED)
+        cases = [
+            Case(
+                'flags: none',
+                '',
+                expected=' '.join([name.determinator_word,
+                                   name.singular])
+            ),
+            Case(
+                'flags: quoted',
+                SC.FLAG_SEPARATOR + SC.QUOTED_FLAG,
+                expected=' '.join([name.determinator_word,
+                                   ''.join([name.quoting_begin,
+                                            name.singular,
+                                            name.quoting_end])])
+            ),
+            Case(
+                'flags:init_cap',
+                SC.FLAG_SEPARATOR + SC.INIT_CAP_FLAG,
+                expected=' '.join([name.determinator_word.capitalize(),
+                                   name.singular])
+            ),
+            Case(
+                'flags:upper',
+                SC.FLAG_SEPARATOR + SC.UPPER_CASE_FLAG,
+                expected=' '.join([name.determinator_word.upper(),
+                                   name.singular.upper()])
+            ),
+            Case(
+                'flags:upper quoted',
+                SC.FLAG_SEPARATOR +
+                SC.UPPER_CASE_FLAG +
+                SC.QUOTED_FLAG,
+                expected=' '.join([name.determinator_word.upper(),
+                                   ''.join([name.quoting_begin,
+                                            name.singular.upper(),
+                                            name.quoting_end])])
+            ),
+            Case(
+                'flags:quoted upper',
+                SC.FLAG_SEPARATOR +
+                SC.QUOTED_FLAG +
+                SC.UPPER_CASE_FLAG,
+                expected=' '.join([name.determinator_word.upper(),
+                                   ''.join([name.quoting_begin,
+                                            name.singular.upper(),
+                                            name.quoting_end])])
+            ),
+        ]
+
+        for case in cases:
+            format_tail = ':' + SC.DETERMINED + case.format_string
+            with self.subTest(name=case.name,
+                              format_string=case.format_string,
+                              format_tail=format_tail):
+                string_to_format = '{{x{format_string}}}'.format(format_string=format_tail)
+                actual = string_to_format.format(x=name)
+
+            self.assertEqual(case.expected, actual)
 
     def _check_with_flags(self,
                           name: sut.NameWithGenderWithFormatting,

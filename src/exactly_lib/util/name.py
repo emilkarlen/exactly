@@ -1,3 +1,6 @@
+from typing import Tuple
+
+
 class Name:
     def __init__(self,
                  singular: str,
@@ -52,6 +55,18 @@ class NameWithGender(Name):
         return self._determinator_word
 
 
+def _init_cap__determined(det: str, word: str) -> Tuple[str, str]:
+    return det.capitalize(), word
+
+
+def _init_cap__undetermined(det: str, word: str) -> Tuple[str, str]:
+    return det, word.capitalize()
+
+
+def _upper_case(det: str, word: str) -> Tuple[str, str]:
+    return det.upper(), word.upper()
+
+
 class NameWithGenderWithFormatting(NameWithGender):
     SINGULAR = 'singular'
     PLURAL = 's'
@@ -64,9 +79,14 @@ class NameWithGenderWithFormatting(NameWithGender):
     INIT_CAP_FLAG = 'u'
     UPPER_CASE_FLAG = 'U'
 
-    _MODIFIERS = {
-        INIT_CAP_FLAG: str.capitalize,
-        UPPER_CASE_FLAG: str.upper,
+    _MODIFIERS_UNDETERMINED = {
+        INIT_CAP_FLAG: _init_cap__undetermined,
+        UPPER_CASE_FLAG: _upper_case,
+    }
+
+    _MODIFIERS_DETERMINED = {
+        INIT_CAP_FLAG: _init_cap__determined,
+        UPPER_CASE_FLAG: _upper_case,
     }
 
     def __init__(self,
@@ -81,7 +101,7 @@ class NameWithGenderWithFormatting(NameWithGender):
         self._formats = {
             self.SINGULAR: name.singular,
             self.PLURAL: name.plural,
-            self.DETERMINED: name.determinator_word + ' ' + name.singular,
+            self.DETERMINED: name.singular,
             self.DETERMINATOR_WORD: name.determinator_word,
             self.DEFAULT: name.singular,
         }
@@ -99,20 +119,34 @@ class NameWithGenderWithFormatting(NameWithGender):
 
     def __format__(self, format_spec: str) -> str:
         try:
+
             parts = format_spec.split(self.FLAG_SEPARATOR, 1)
             do_quote = False
-            ret_val = self._formats[parts[0]]
+            fmt = parts[0]
+
+            det = self.determinator_word
+            name_string = self._formats[fmt]
+
+            modifiers = (self._MODIFIERS_DETERMINED
+                         if fmt == self.DETERMINED
+                         else self._MODIFIERS_UNDETERMINED)
+
             if len(parts) == 2:
                 for flag in parts[1]:
                     if flag == self.QUOTED_FLAG:
                         do_quote = True
                     else:
-                        ret_val = self._MODIFIERS[flag](ret_val)
+                        det, name_string = modifiers[flag](det, name_string)
                 if do_quote:
-                    ret_val = self.quoting_begin + ret_val + self.quoting_end
-            return ret_val
+                    name_string = self.quoting_begin + name_string + self.quoting_end
+
+            return (
+                det + ' ' + name_string
+                if fmt == self.DETERMINED
+                else name_string
+            )
         except KeyError:
-            raise ValueError('Invalid word-with-gender format: "%s"' % format_spec)
+            raise ValueError('Invalid name-with-gender format: "%s"' % format_spec)
 
 
 def a_name(name: Name) -> NameWithGender:
