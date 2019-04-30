@@ -3,7 +3,7 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
-from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.file_maker import FileMaker, FileMakerForConstantContents, \
     FileMakerForContentsFromProgram, FileMakerForContentsFromExistingFile
@@ -45,6 +45,7 @@ class FileContentsDocumentation:
         self._tp = TextParser({
             'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
             'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
+            'program_type': types.PROGRAM_TYPE_INFO.name,
             'TRANSFORMATION': instruction_arguments.STRING_TRANSFORMATION_ARGUMENT.name,
             'transformer': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
             'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
@@ -212,11 +213,14 @@ Transforms the original contents.
 """
 
 _PROGRAM_DESCRIPTION = """\
-The output from a {PROGRAM}.
+The output from {program_type:a/q}.
 
 
 {PROGRAM} includes arguments until end of line,
 and an optional {TRANSFORMATION} on a following line.
+
+
+The {program_type} must terminate.
 """
 
 _FILE_DESCRIPTION = """\

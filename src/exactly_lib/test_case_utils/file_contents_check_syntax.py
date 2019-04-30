@@ -24,7 +24,7 @@ class FileContentsCheckerHelp:
             'checked_file': checked_file,
             'contents_matcher': formatting.syntax_element_(syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT),
             'action_to_check': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
-            'program_type': formatting.symbol_type_(types.PROGRAM_TYPE_INFO),
+            'program_type': types.PROGRAM_TYPE_INFO.name,
         })
 
     def invokation_variants__file(self, actual_file: a.Named) -> List[InvokationVariant]:
@@ -98,7 +98,10 @@ Asserts that {checked_file} from the {action_to_check} satisfies {contents_match
 """
 
 _MAIN_INVOKATION__STDOUT_ERR_PROGRAM__SYNTAX_DESCRIPTION = """\
-Asserts that {checked_file} from a {program_type} satisfies {contents_matcher}.
+Asserts that {checked_file} from {program_type:a/q} satisfies {contents_matcher}.
+
+
+The {program_type} must terminate.
 """
 
 

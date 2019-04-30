@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Any
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.definitions.formatting import InstructionName
@@ -19,7 +19,7 @@ class InstructionDocumentationWithTextParserBase(InstructionDocumentation):
 
     def __init__(self,
                  instruction_name: str,
-                 format_map: Dict[str, str]):
+                 format_map: Dict[str, Any]):
         super().__init__(instruction_name)
         fm = {'instruction_name': InstructionName(instruction_name)}
         fm.update(format_map)

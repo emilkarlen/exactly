@@ -3,6 +3,7 @@ from typing import List
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.instructions.multi_phase.utils import \
@@ -37,24 +38,32 @@ NON_ASSERT_PHASE_DESCRIPTION_REST = """\
 It is considered an error if the program exits with a non-zero exit code.
 """
 
+NON_ASSERT_PHASE_SINGLE_LINE_DESCRIPTION = 'Runs {program_type:a/q}'.format_map({
+    'program_type': types.PROGRAM_TYPE_INFO.name
+})
+
 
 class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                   IsBothAssertionAndHelperIfInAssertPhase):
     def __init__(self,
                  name: str,
-                 single_line_description: str = 'Runs a ' + types.PROGRAM_TYPE_INFO.singular_name,
+                 single_line_description: str,
                  description_rest_text: str = None):
         self.description_rest_text = description_rest_text
-        super().__init__(name, dict())
+        super().__init__(name, {
+            'program_type': types.PROGRAM_TYPE_INFO.name
+        })
         self._single_line_description = single_line_description
 
     def single_line_description(self) -> str:
         return self._single_line_description
 
     def main_description_rest(self) -> List[ParagraphItem]:
+        ret_val = []
         if self.description_rest_text:
-            return self._tp.fnap(self.description_rest_text)
-        return []
+            ret_val += self._tp.fnap(self.description_rest_text)
+        ret_val += self._tp.fnap(_MAIN_DESCRIPTION_REST)
+        return ret_val
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return [
@@ -63,9 +72,14 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
             ]),
         ]
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         name_and_cross_ref_list = [
             types.PROGRAM_TYPE_INFO,
             syntax_elements.PROGRAM_SYNTAX_ELEMENT,
         ]
         return cross_reference_id_list(name_and_cross_ref_list)
+
+
+_MAIN_DESCRIPTION_REST = """\
+The {program_type} must terminate.
+"""
