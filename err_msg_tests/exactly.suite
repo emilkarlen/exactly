@@ -1,0 +1,14 @@
+[suites]
+
+instructions
+integer-cmp
+integer-symbol-value
+misc
+path-presentation
+source-file-info
+symbols
+types
+
+# suites
+# ^ Cannot be included here
+# since causes INVALID_SUITE

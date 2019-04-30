@@ -1,0 +1,6 @@
+[suites]
+
+assertion-failure
+non-existing-file
+syntax-error
+validation-error

@@ -1,6 +1,6 @@
 [conf]
 
-act-home act-home-dir
+act-home = act-home-dir
 
 
 [setup]

@@ -1,0 +1,6 @@
+[suites]
+
+create-file
+dir-contents
+file-contents
+file-existence
