@@ -14,9 +14,11 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _TP = TextParser({
     'os_process': misc_texts.OS_PROCESS_NAME,
-    'program_type': formatting.symbol_type(types.PROGRAM_TYPE_INFO.singular_name),
+    'program_type': types.PROGRAM_TYPE_INFO.name,
     'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
     'timeout_conf_param': formatting.conf_param_(conf_params.TIMEOUT_CONF_PARAM_INFO),
+    'os_proc_env_section_header': misc_texts.OS_PROCESS_ENVIRONMENT_SECTION_HEADER,
+    'test_case_spec_title': misc_texts.TEST_CASE_SPEC_TITLE,
 })
 
 LINE_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
@@ -48,10 +50,14 @@ FILES_MATCHER_DOCUMENTATION = TypeDocumentation(TypeCategory.LOGIC,
                                                 docs.empty_section_contents())
 
 _PROGRAM_DESCRIPTION_REST = """\
-A {program_type} is executed as an {os_process}.
+{program_type:a/uq} is executed as an {os_process}.
 
 
 The timeout of the {os_process} is determined by the {timeout_conf_param} {conf_param}.
+
+
+The environment in which a {program_type} is executed
+is described in "{test_case_spec_title}" / "{os_proc_env_section_header}".
 """
 
 PROGRAM_DOCUMENTATION = TypeDocumentation(TypeCategory.LOGIC,

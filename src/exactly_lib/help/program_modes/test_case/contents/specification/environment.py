@@ -115,7 +115,7 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
             ),
             h.child_hierarchy(
                 'os-proc',
-                tp.text('{os_process} environment'),
+                tp.text(misc_texts.OS_PROCESS_ENVIRONMENT_SECTION_HEADER),
                 paragraphs.constant(tp.fnap(_OS_PROC_INTRO)),
                 [
                     const_paragraphs_child(
