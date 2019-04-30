@@ -1,5 +1,4 @@
 import itertools
-
 from typing import List
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant, \
@@ -26,7 +25,7 @@ class Syntax:
 
         self._tp = TextParser({
             'symbol_concept': formatting.concept_(SYMBOL_CONCEPT_INFO),
-            'concept_name': self.grammar.concept.name.singular,
+            'concept_name': self.grammar.concept.name,
         })
 
     def syntax_element_description(self) -> SyntaxElementDescription:
@@ -137,7 +136,7 @@ def _see_also_targets_for_expr(expressions_dict: dict) -> iter:
 
 _SYMBOL_REF_DESCRIPTION = """\
 Reference to a {symbol_concept},
-that must have been defined as a {concept_name}.
+that must have been defined as {concept_name:a}.
 """
 
 _GLOBAL_DESCRIPTION = """\

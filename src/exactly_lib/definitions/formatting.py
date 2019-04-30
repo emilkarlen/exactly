@@ -127,6 +127,10 @@ def concept_name_with_formatting(name: NameWithGender) -> NameWithGenderWithForm
     return _common_name_with_formatting(name)
 
 
+def type_name_with_formatting(name: NameWithGender) -> NameWithGenderWithFormatting:
+    return _common_name_with_formatting(name)
+
+
 def concept_(x: SingularNameAndCrossReferenceId) -> str:
     return concept(x.singular_name)
 

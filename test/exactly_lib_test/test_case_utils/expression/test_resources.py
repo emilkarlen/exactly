@@ -2,6 +2,7 @@ from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossRef
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.name import NameWithGenderWithFormatting, NameWithGender
 
 
 class Expr:
@@ -102,10 +103,13 @@ PREFIX_Q = 'prefix_q'
 COMPLEX_A = 'complex_a'
 COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME = '||'
 
-CONCEPT = grammar.Concept(grammar.Name('concept singular',
-                                       'concept plural'),
-                          'type-system-name',
-                          a.Named('SYNTAX-ELEMENT-NAME'))
+CONCEPT = grammar.Concept(
+    NameWithGenderWithFormatting(
+        NameWithGender('a',
+                       'concept singular',
+                       'concept plural')),
+    'type-system-name',
+    a.Named('SYNTAX-ELEMENT-NAME'))
 
 SIMPLE_EXPRESSIONS = {
     SIMPLE_WITH_ARG: grammar.SimpleExpression(parse_simple_with_arg,

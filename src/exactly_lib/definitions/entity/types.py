@@ -24,7 +24,7 @@ class TypeNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):
                          single_line_description_str,
                          cross_reference_target)
         self._value_type = value_type
-        self._name = NameWithGenderWithFormatting(name)
+        self._name = formatting.type_name_with_formatting(name)
         self._single_string_type_name = self._name.singular.replace(' ', '-')
 
     @property

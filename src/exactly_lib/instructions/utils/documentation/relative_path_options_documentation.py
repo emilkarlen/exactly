@@ -192,11 +192,6 @@ _REL_HOME_ACT_DESCRIPTION = """\
 {PATH} is relative the {home_act_directory}.
 """
 
-_REL_SYMBOL_DESCRIPTION = """\
-{PATH} is relative the path denoted by the symbol {SYMBOL_NAME}
-(which must have been defined as a {PATH_SYMBOL_TYPE} symbol).
-"""
-
 _DISPLAY_ORDER = (
     RelOptionType.REL_HOME_CASE,
     RelOptionType.REL_HOME_ACT,

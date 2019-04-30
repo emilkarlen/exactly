@@ -260,15 +260,15 @@ EXECUTABLE_ARG = a.Named('EXECUTABLE')
 
 _TEXT_PARSER = TextParser({
     'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-    'string_type': formatting.keyword(types.STRING_TYPE_INFO.name.singular),
+    'string_type': types.STRING_TYPE_INFO.name,
     'string_se': formatting.syntax_element_(syntax_elements.STRING_SYNTAX_ELEMENT),
-    'list_type': formatting.keyword(types.LIST_TYPE_INFO.name.singular),
+    'list_type': types.LIST_TYPE_INFO.name,
     'list_se': formatting.syntax_element_(syntax_elements.LIST_SYNTAX_ELEMENT),
-    'path_type': formatting.keyword(types.PATH_TYPE_INFO.name.singular),
+    'path_type': types.PATH_TYPE_INFO.name,
     'path_se': formatting.syntax_element_(syntax_elements.PATH_SYNTAX_ELEMENT),
-    'program_type': formatting.keyword(types.PROGRAM_TYPE_INFO.name.singular),
-    'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
-    'hds': formatting.concept_(concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO),
+    'program_type': types.PROGRAM_TYPE_INFO.name,
+    'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
+    'hds': concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.name,
     'SYMBOL_REFERENCE_SYNTAX_ELEMENT': formatting.syntax_element_(syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT),
     'TRANSFORMATION': instruction_arguments.STRING_TRANSFORMATION_ARGUMENT.name,
     'define_symbol': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
@@ -316,7 +316,7 @@ _SYM_REF_PROGRAM_DESCRIPTION = """\
 Reference to a program that has been defined using the {define_symbol} instruction.
 
 
-{SYMBOL_NAME} must have been defined as a {program_type}.
+{SYMBOL_NAME} must have been defined as {program_type:a/q}.
 
 
 Arguments and transformations are appended to existing arguments and transformations
@@ -333,15 +333,15 @@ the Python interpreter is guaranteed to be available on the system.
 
 _ARGUMENT_DESCRIPTION = """\
 An individual argument, or a list of arguments, in case of an unquoted reference
-to a {list_type} {symbol}.
+to {list_type:a/q} {symbol:/q}.
 
 
-An argument list is an ordinary {list_type} value, with additional features
+An argument list is an ordinary {list_type:/q} value, with additional features
 for text-until-end-of-line and references to existing files.
 """
 
 _ARGUMENT__STRING_DESCRIPTION = """\
-{path_type} values are handled as {string_type} values the usual way -
+{path_type:/q} values are handled as {string_type:/q} values the usual way -
 rendered as an absolute path.
 """
 
@@ -364,7 +364,7 @@ A {path_se}, with additional check for existence.
 
 
 The check for existence is done as soon as possible - during validation
-if {PATH_OF_EXISTING_FILE} is absolute or resides inside the {hds}.
+if {PATH_OF_EXISTING_FILE} is absolute or resides inside the {hds:/q}.
 
 
 Values are rendered as absolute paths.

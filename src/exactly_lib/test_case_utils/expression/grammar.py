@@ -1,5 +1,5 @@
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.name import Name
+from exactly_lib.util.name import NameWithGenderWithFormatting
 
 
 class SimpleExpressionDescription:
@@ -55,7 +55,7 @@ class PrefixExpression:
 
 class Concept:
     def __init__(self,
-                 name: Name,
+                 name: NameWithGenderWithFormatting,
                  type_system_type_name: str,
                  syntax_element_name: a.Named):
         self.type_system_type_name = type_system_type_name

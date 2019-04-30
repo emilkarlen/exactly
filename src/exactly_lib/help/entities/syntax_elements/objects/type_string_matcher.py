@@ -41,7 +41,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
             EXPECTED_FILE_REL_OPT_ARG_CONFIG,
             the_path_of('the file that contains the expected contents.'))
         self._parser = TextParser({
-            'symbol_concept': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
+            'symbol_concept': concepts.SYMBOL_CONCEPT_INFO.name,
             'expected_file_arg': _EXPECTED_PATH_NAME,
             'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
@@ -50,7 +50,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
             'INTEGER_COMPARISON': syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name,
             'REGEX': syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
             'full_regex_match': option_syntax.option_syntax(matcher_options.FULL_MATCH_ARGUMENT_OPTION),
-            'this_type': formatting.symbol_type(types.STRING_MATCHER_TYPE_INFO.singular_name),
+            'this_type': types.STRING_MATCHER_TYPE_INFO.name,
             'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
         })
 
@@ -221,8 +221,8 @@ Matches if the number of lines of the string matches {INTEGER_COMPARISON}.
 """
 
 _SYMBOL_REF_DESCRIPTION = """\
-Reference to a {symbol_concept},
-that must have been defined as a {this_type}.
+Reference to {symbol_concept:a/q},
+that must have been defined as {this_type:a/q}.
 """
 
 DOCUMENTATION = _StringMatcherDocumentation()

@@ -2,7 +2,7 @@ from typing import List
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args, \
     SyntaxElementDescription, cli_argument_syntax_element_description
-from exactly_lib.definitions import instruction_arguments, formatting
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
@@ -27,7 +27,7 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
         super().__init__(TypeCategory.LOGIC,
                          syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT)
         self._tp = TextParser({
-            'symbol_concept': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
+            'symbol_concept': concepts.SYMBOL_CONCEPT_INFO.name,
             'selection': instruction_arguments.SELECTION.name,
             'file_matcher': types.FILE_MATCHER_TYPE_INFO.name.singular,
             'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
@@ -35,7 +35,7 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
             'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
             'FILE_MATCHER': instruction_arguments.SELECTION_OPTION.argument,
             'FILE_MATCHER_SYNTAX_ELEMENT': syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
-            'this_type': formatting.symbol_type(types.FILES_MATCHER_TYPE_INFO.singular_name),
+            'this_type': types.FILES_MATCHER_TYPE_INFO.name,
         })
 
     def main_description_rest_paragraphs(self) -> List[ParagraphItem]:
@@ -166,6 +166,6 @@ Tests that {any}/{every} file satisfies the given {FILE_MATCHER_SYNTAX_ELEMENT}.
 """
 
 _SYMBOL_REF_DESCRIPTION = """\
-Reference to a {symbol_concept},
-that must have been defined as a {this_type}.
+Reference to {symbol_concept:a},
+that must have been defined as {this_type:a}.
 """
