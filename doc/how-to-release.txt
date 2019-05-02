@@ -2,14 +2,8 @@
 
 https://packaging.python.org/
 
-* Test
-** run-test-suite.py
-** Run tests towards installed program
-* Set version number
-in src/exactly_lib/program_info.py (if not already done)
-* Update CHANGELOG.md
-  - set version and release date
-  - make sure changes are included (see https://keepachangelog.com/en/1.0.0/)
+* CHANGELOG should contain entry for each change
+See https://keepachangelog.com/en/1.0.0/
 **  Template
 ## [VERSION] - YYYY-MM-DD
 ## [Unreleased]
@@ -20,12 +14,24 @@ in src/exactly_lib/program_info.py (if not already done)
 ### Removed
 ### Fixed
 ### Security
-* Make sure release year is included in COPYRIGHT
 * README/Future development
 Make sure to be in line with the release
-* doc
+* Test
+** run-test-suite.py
+** Run tests towards installed program
+* doc/
 ** TODOs
 ** BUGSs
+* Contact info in COPYRIGHT
+Make sure the contact info at the end of the COPYRIGHT is correct.
+* Set version number and date
+** code
+src/exactly_lib/program_info.py
+** CHANGELOG
+  - version
+  - release date
+** COPYRIGHT
+Make sure release year is included in COPYRIGHT
 * Make release artifacts
 ** Remove existing distributables
 > rm -rf dist
