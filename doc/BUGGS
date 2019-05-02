@@ -7,55 +7,6 @@ say it is relative.
 
 Solution:
 Validate that all resolved PathPart:s are relative paths.
-* suite: env instruction modifes env of following test cases
-<2018-07-08 Sun>
-* linux: exactly suite SUITE-FILE (where SUITE-FILE is a dir)
-<2018-05-12 lör>
-----------------------------------------
-~/vcs/filelist/default/tests/packages/file-path$ xly suite non-existing-files/
-Traceback (most recent call last):
-  File "/home/karlen/vcs/exactly/0/src/default-main-program-runner.py", line 12, in <module>
-    exit_status = main()
-  File "/home/karlen/vcs/exactly/0/src/exactly_lib/default/default_main_program_setup.py", line 30, in main
-    return default_main_program().execute(sys.argv[1:])
-  File "/home/karlen/vcs/exactly/0/src/exactly_lib/cli/main_program.py", line 129, in execute
-    command_line_arguments[1:])
-  File "/home/karlen/vcs/exactly/0/src/exactly_lib/cli/main_program.py", line 208, in _parse_and_exit_on_error
-    return parse_arguments_and_execute_callable(arguments)
-  File "/home/karlen/vcs/exactly/0/src/exactly_lib/cli/main_program.py", line 180, in _parse_and_execute_test_suite
-    return self.execute_test_suite(settings)
-  File "/home/karlen/vcs/exactly/0/src/exactly_lib/cli/main_program.py", line 164, in execute_test_suite
-    return executor.execute()
-  File "/home/karlen/vcs/exactly/0/src/exactly_lib/test_suite/execution.py", line 44, in execute
-    return self._execute_and_let_reporter_report_final_result()
-  File "/home/karlen/vcs/exactly/0/src/exactly_lib/test_suite/execution.py", line 48, in _execute_and_let_reporter_report_final_result
-    root_suite = self._read_structure(self._suite_root_file_path)
-  File "/home/karlen/vcs/exactly/0/src/exactly_lib/test_suite/execution.py", line 67, in _read_structure
-    return self._suite_hierarchy_reader.apply(suite_file_path)
-  File "/home/karlen/vcs/exactly/0/src/exactly_lib/test_suite/suite_hierarchy_reading.py", line 50, in apply
-    return _SingleFileReader(self._environment, suite_file_path).apply()
-  File "/home/karlen/vcs/exactly/0/src/exactly_lib/test_suite/suite_hierarchy_reading.py", line 62, in apply
-    return self.__call__([], self._root_suite_file_path)
-  File "/home/karlen/vcs/exactly/0/src/exactly_lib/test_suite/suite_hierarchy_reading.py", line 69, in __call__
-    self.environment.test_case_parsing_setup)
-  File "/home/karlen/vcs/exactly/0/src/exactly_lib/test_suite/suite_file_reading.py", line 31, in read_suite_document
-    source = new_for_file(suite_file_path)
-  File "/home/karlen/vcs/exactly/0/src/exactly_lib/section_document/utils.py", line 7, in new_for_file
-    with path.open() as fo:
-  File "/usr/lib/python3.5/pathlib.py", line 1151, in open
-    opener=self._opener)
-IsADirectoryError: [Errno 21] Is a directory: '/home/karlen/vcs/filelist/default/tests/packages/file-path/non-existing-files'
-----------------------------------------
-* contents: FAIL when ACTUAL-FILE -rel-act-home does not exist
-<2018-05-12 Sat>
-Should be VALIDATE error.
-Apparently, only EXPECTED-FILE is checked for existence pre-sds,
-but not ACTUAL-FILE.
-
-** Maybe this is not a bug
-<2018-05-14 Mon>
-Maybe this behaviour is intentional - it is used to be able to
-refer to non-existing files.
 * Exception: 'ascii' codec can't decode byte
 ----------------------------------------
 $ xly empty-interval.case 
