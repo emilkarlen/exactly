@@ -115,12 +115,13 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
         self._output_file.write_colored_line(exit_value.exit_identifier, exit_value.color)
         return exit_value.exit_code
 
-    def _valid_suite_exit_value(self) -> Tuple[
-        int, Dict[ExitValue, List[TestCaseFileReference]], exit_values.ExitValue]:
+    def _valid_suite_exit_value(self) -> Tuple[int,
+                                               Dict[str, List[TestCaseFileReference]],
+                                               exit_values.ExitValue]:
         errors = {}
 
         def add_error(exit_value: exit_values.ExitValue, case: TestCaseFileReference):
-            current = errors.setdefault(exit_value, [])
+            current = errors.setdefault(exit_value.exit_identifier, [])
             current.append(case)
 
         num_tests = 0
@@ -143,7 +144,7 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
 def format_final_result_for_valid_suite(num_cases: int,
                                         elapsed_time: datetime.timedelta,
                                         relativity_root_abs_path: pathlib.Path,
-                                        errors: Dict[ExitValue, List[TestCaseFileReference]]) -> List[str]:
+                                        errors: Dict[str, List[TestCaseFileReference]]) -> List[str]:
     """
     :return: The list of lines that should be reported.
     """
@@ -159,10 +160,10 @@ def format_final_result_for_valid_suite(num_cases: int,
 
     def error_lines() -> List[str]:
         ret_val = []
-        sorted_exit_values = sorted(errors.keys(), key=ExitValue.exit_identifier.fget)
-        for exit_value in sorted_exit_values:
-            ret_val.append(exit_value.exit_identifier)
-            for case in errors[exit_value]:
+        sorted_exit_identifiers = sorted(errors.keys())
+        for exit_identifier in sorted_exit_identifiers:
+            ret_val.append(exit_identifier)
+            for case in errors[exit_identifier]:
                 ret_val.append('  ' + path_presenter.present(case.file_path))
         return ret_val
 

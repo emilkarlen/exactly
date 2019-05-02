@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
  - Detection of file inclusion failures in suites
+ - suite "progress reporter": Grouping of failing tests
+   according to "exit identifier"
  - Help text bug fixes
  - Help text improvements
  - Improvement of some error messages

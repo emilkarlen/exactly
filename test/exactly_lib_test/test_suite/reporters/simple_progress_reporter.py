@@ -144,18 +144,70 @@ class TestFinalResultFormatting(unittest.TestCase):
                              [],
                              'Lines after "Ran ..."')
 
+    def test_that_report_of_failing_tests_are_grouped_by_exit_identifiers(self):
+        cases = [
+            (FULL_RESULT_FAIL, case_ev.EXECUTION__FAIL),
+            (FULL_RESULT_HARD_ERROR, case_ev.EXECUTION__HARD_ERROR),
+            (FULL_RESULT_VALIDATE, case_ev.EXECUTION__VALIDATION_ERROR),
+            (FULL_RESULT_IMPLEMENTATION_ERROR, case_ev.EXECUTION__IMPLEMENTATION_ERROR),
+        ]
+        test_case_file_name = 'test-case-file'
+        for case_result, expected_case_exit_value in cases:
+            with self.subTest(case_result_status=case_result.status,
+                              expected_case_exit_value=expected_case_exit_value):
+                # ARRANGE #
+
+                root_suite = test_suite('root file name', [], [test_case(test_case_file_name)])
+                test_suites = [root_suite]
+                std_output_files = StringStdOutFiles()
+                executor = _suite_executor_for_case_processing_that_unconditionally(case_result,
+                                                                                    root_suite,
+                                                                                    std_output_files,
+                                                                                    Path())
+                # ACT #
+
+                executor.execute_and_report(test_suites)
+
+                # ASSERT #
+
+                std_output_files.finish()
+
+                stderr_contents = std_output_files.stderr_contents
+                exit_ident_pos = stderr_contents.find(expected_case_exit_value.exit_identifier)
+
+                self.assertNotEqual(-1,
+                                    exit_ident_pos,
+                                    'stderr must contain the exit identifier')
+                start_of_exit_ident_group = stderr_contents[exit_ident_pos:]
+
+                group_elements = start_of_exit_ident_group.split()
+
+                self.assertEqual(
+                    len(group_elements),
+                    2,
+                    'Expecting to find EXIT_IDENTIFIER followed by CASE-FILE-NAME as final contents of stderr')
+
+                self.assertEqual(expected_case_exit_value.exit_identifier,
+                                 group_elements[0],
+                                 'Expects the exit identifier as a single word')
+
+                self.assertEqual(test_case_file_name,
+                                 group_elements[1],
+                                 'Expects the test case file name to follow the exit identifier')
+
     def test_with_multiple_errors(self):
         # ARRANGE #
         elapsed_time = datetime.timedelta(seconds=1)
         num_test_cases = 6
         rel_root = Path.cwd().resolve()
-        the_exit_value = ExitValue(4, 'identifier_4', ForegroundColor.RED)
-        errors = {the_exit_value:
-            [
-                test_case_reference_of_source_file(rel_root / Path('fip-1') / 'case-1'),
-                test_case_reference_of_source_file(rel_root / Path('fip-2') / 'case-2'),
-            ],
-            ExitValue(12, 'longer_identifier_12', ForegroundColor.RED):
+        the_exit_identifier = 'identifier_4'
+        errors = {
+            the_exit_identifier:
+                [
+                    test_case_reference_of_source_file(rel_root / Path('fip-1') / 'case-1'),
+                    test_case_reference_of_source_file(rel_root / Path('fip-2') / 'case-2'),
+                ],
+            'longer_identifier_12':
                 [
                     test_case_reference_of_source_file(rel_root / Path('fip-3') / 'case-3'),
                 ],
@@ -168,7 +220,7 @@ class TestFinalResultFormatting(unittest.TestCase):
         self._assert_at_least_one_line_was_generated(actual_lines)
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
         self.assertListEqual(['',
-                              the_exit_value.exit_identifier,
+                              the_exit_identifier,
                               '  ' + str(Path('fip-1') / Path('case-1')),
                               '  ' + str(Path('fip-2') / Path('case-2')),
                               'longer_identifier_12',
@@ -182,11 +234,12 @@ class TestFinalResultFormatting(unittest.TestCase):
         elapsed_time = datetime.timedelta(seconds=1)
         num_test_cases = 6
         rel_root = Path.cwd().resolve()
-        the_exit_value = ExitValue(4, 'exit_identifier_4', ForegroundColor.RED)
-        errors = {the_exit_value:
-            [
-                test_case_reference_of_source_file(rel_root.parent / Path('fip-1') / 'case-1'),
-            ],
+        the_exit_identifier = 'exit_identifier_4'
+        errors = {
+            the_exit_identifier:
+                [
+                    test_case_reference_of_source_file(rel_root.parent / Path('fip-1') / 'case-1'),
+                ],
         }
         # ACT #
         actual_lines = sut.format_final_result_for_valid_suite(num_test_cases, elapsed_time,
@@ -196,7 +249,7 @@ class TestFinalResultFormatting(unittest.TestCase):
         self._assert_at_least_one_line_was_generated(actual_lines)
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
         self.assertListEqual(['',
-                              the_exit_value.exit_identifier,
+                              the_exit_identifier,
                               '  ' + str(rel_root.parent / Path('fip-1') / Path('case-1')),
                               ],
                              actual_lines[1:],
@@ -219,10 +272,11 @@ class TestFinalResultFormatting(unittest.TestCase):
                          'Sanity check: number of read cases')
         test_case_file_reference = read_suite_hierarchy.test_cases[0]
 
-        the_exit_value = ExitValue(4, 'exit_identifier_4', ForegroundColor.RED)
-        errors = {the_exit_value: [
-            test_case_file_reference,
-        ],
+        the_exit_identifier = 'exit_identifier_4'
+        errors = {
+            the_exit_identifier: [
+                test_case_file_reference,
+            ],
         }
         # ACT #
         actual_lines = sut.format_final_result_for_valid_suite(num_test_cases, elapsed_time,
@@ -232,7 +286,7 @@ class TestFinalResultFormatting(unittest.TestCase):
         self._assert_at_least_one_line_was_generated(actual_lines)
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
         self.assertListEqual(['',
-                              the_exit_value.exit_identifier,
+                              the_exit_identifier,
                               '  ' + str(dir_with_suite.name_as_path / case_file.name_as_path),
                               ],
                              actual_lines[1:],
