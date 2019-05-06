@@ -1,4 +1,5 @@
 import datetime
+import os
 import re
 import unittest
 from pathlib import Path
@@ -57,7 +58,7 @@ class TestInvalidSuite(unittest.TestCase):
                                       str_std_out_files.stdout_files)
         # ASSERT #
         str_std_out_files.finish()
-        self.assertEqual(exit_value.exit_identifier + '\n',
+        self.assertEqual(exit_value.exit_identifier + os.linesep,
                          str_std_out_files.stdout_contents,
                          'Output to stdout')
         self.assertEqual('',
