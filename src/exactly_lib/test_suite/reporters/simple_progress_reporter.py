@@ -109,6 +109,7 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
         lines = format_final_result_for_valid_suite(num_cases, self._total_time_timedelta,
                                                     self._root_suite_dir_abs_path,
                                                     errors)
+        self._std_output_files.out.flush()
         lines.insert(0, '')
         self._error_file.write_line(os.linesep.join(lines))
         self._std_output_files.err.flush()
@@ -158,6 +159,15 @@ def format_final_result_for_valid_suite(num_cases: int,
         ret_val.append(''.join(elapsed_time_value_and_unit(elapsed_time)))
         return ' '.join(ret_val)
 
+    def num_unsuccessful_lines() -> List[str]:
+        if not errors:
+            return []
+        num_failing = sum([len(cases) for cases in errors.values()])
+        return [
+            '',
+            str(num_failing) + ' unsuccessful'
+        ]
+
     def error_lines() -> List[str]:
         ret_val = []
         sorted_exit_identifiers = sorted(errors.keys())
@@ -167,9 +177,9 @@ def format_final_result_for_valid_suite(num_cases: int,
                 ret_val.append('  ' + path_presenter.present(case.file_path))
         return ret_val
 
-    ret_val = []
-    ret_val.append(num_tests_line())
+    ret_val = [num_tests_line()]
+    ret_val += num_unsuccessful_lines()
     if errors:
         ret_val.append('')
-        ret_val.extend(error_lines())
+        ret_val += error_lines()
     return ret_val

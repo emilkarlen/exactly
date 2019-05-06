@@ -220,14 +220,19 @@ class TestFinalResultFormatting(unittest.TestCase):
         # ASSERT #
         self._assert_at_least_one_line_was_generated(actual_lines)
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
-        self.assertListEqual(['',
-                              the_exit_identifier,
+        self.assertEqual(
+            ['',
+             _number_of_unsuccessful_tests_line(3),
+             ''],
+            actual_lines[1:4],
+            'Reporting of number of unsuccessful tests (including separating lines)')
+        self.assertListEqual([the_exit_identifier,
                               '  ' + str(Path('fip-1') / Path('case-1')),
                               '  ' + str(Path('fip-2') / Path('case-2')),
                               'longer_identifier_12',
                               '  ' + str(Path('fip-3') / Path('case-3')),
                               ],
-                             actual_lines[1:],
+                             actual_lines[4:],
                              'Lines after "Ran ..."')
 
     def test_with_error_of_path_below_relativity_root(self):
@@ -249,12 +254,17 @@ class TestFinalResultFormatting(unittest.TestCase):
         # ASSERT #
         self._assert_at_least_one_line_was_generated(actual_lines)
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
-        self.assertListEqual(['',
-                              the_exit_identifier,
+        self.assertEqual(
+            ['',
+             _number_of_unsuccessful_tests_line(1),
+             ''],
+            actual_lines[1:4],
+            'Reporting of number of unsuccessful tests (including separating lines)')
+        self.assertListEqual([the_exit_identifier,
                               '  ' + str(rel_root.parent / Path('fip-1') / Path('case-1')),
                               ],
-                             actual_lines[1:],
-                             'Lines after "Ran ..."')
+                             actual_lines[4:],
+                             'Lines after "Num unsuccessful ..."')
 
     def test_with_error_of_path_below_relativity_root__file_names_from_applied_hierarchy_reader(self):
         # ARRANGE #
@@ -286,12 +296,17 @@ class TestFinalResultFormatting(unittest.TestCase):
         # ASSERT #
         self._assert_at_least_one_line_was_generated(actual_lines)
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
-        self.assertListEqual(['',
-                              the_exit_identifier,
+        self.assertEqual(
+            ['',
+             _number_of_unsuccessful_tests_line(1),
+             ''],
+            actual_lines[1:4],
+            'Reporting of number of unsuccessful tests (including separating lines)')
+        self.assertListEqual([the_exit_identifier,
                               '  ' + str(dir_with_suite.name_as_path / case_file.name_as_path),
                               ],
-                             actual_lines[1:],
-                             'Lines after "Ran ..."')
+                             actual_lines[4:],
+                             'Lines after "Num unsuccessful ..."')
 
     def _assert_at_least_one_line_was_generated(self, actual_lines):
         if not actual_lines:
@@ -302,6 +317,10 @@ class TestFinalResultFormatting(unittest.TestCase):
         self.assertRegex(line,
                          reg_ex,
                          'Line that reports number of tests and elapsed time')
+
+
+def _number_of_unsuccessful_tests_line(num_cases: int) -> str:
+    return str(num_cases) + ' unsuccessful'
 
 
 def _suite_executor_for_case_processing_that_unconditionally(execution_result: FullExeResult,
