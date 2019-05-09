@@ -17,6 +17,21 @@ class Name:
         return self._plural
 
 
+class NumberOfItemsString:
+    """Formatting of strings as: N item(s)"""
+
+    def __init__(self, item_type_name: Name):
+        self._item_type_name = item_type_name
+
+    def of(self, num_items: int) -> str:
+        if num_items == 1 or num_items == -1:
+            item_name = self._item_type_name.singular
+        else:
+            item_name = self._item_type_name.plural
+
+        return str(num_items) + ' ' + item_name
+
+
 class NameWithGender(Name):
     SINGULAR = 'singular'
     PLURAL = 'plural'

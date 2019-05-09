@@ -1,10 +1,48 @@
 import unittest
 
 from exactly_lib.util import name as sut
+from exactly_lib_test.test_resources.test_utils import NEA
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(NameWithGenderWithFormattingTest)
+    return unittest.TestSuite([
+        unittest.makeSuite(NumberOfItemsStringTest),
+        unittest.makeSuite(NameWithGenderWithFormattingTest),
+    ])
+
+
+class NumberOfItemsStringTest(unittest.TestCase):
+    def runTest(self):
+        singular = 'singular'
+        plural = 'plural'
+
+        test_object = sut.NumberOfItemsString(sut.Name(singular,
+                                                       plural))
+
+        cases = [
+            NEA('1',
+                '1 ' + singular,
+                1),
+            NEA('2',
+                '2 ' + plural,
+                2),
+            NEA('0',
+                '0 ' + plural,
+                0),
+            NEA('-1',
+                '-1 ' + singular,
+                -1),
+            NEA('-2',
+                '-2 ' + plural,
+                -2),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                # ACT #
+                actual = test_object.of(case.actual)
+                # ASSERT #
+                self.assertEqual(case.expected,
+                                 actual)
 
 
 class Case:
