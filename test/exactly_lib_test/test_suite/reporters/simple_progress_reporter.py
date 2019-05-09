@@ -14,6 +14,7 @@ from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import Reader
 from exactly_lib.test_suite.processing import SuitesExecutor
 from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
+from exactly_lib.util import name
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.string import lines_content_with_os_linesep, lines_content
 from exactly_lib_test.execution.full_execution.test_resources.result_values import FULL_RESULT_HARD_ERROR, \
@@ -222,7 +223,7 @@ class TestFinalResultFormatting(unittest.TestCase):
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
         self.assertEqual(
             ['',
-             _number_of_unsuccessful_tests_line(3),
+             _NUMBER_OF_ERRORS.of(3),
              ''],
             actual_lines[1:4],
             'Reporting of number of unsuccessful tests (including separating lines)')
@@ -256,7 +257,7 @@ class TestFinalResultFormatting(unittest.TestCase):
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
         self.assertEqual(
             ['',
-             _number_of_unsuccessful_tests_line(1),
+             _NUMBER_OF_ERRORS.of(1),
              ''],
             actual_lines[1:4],
             'Reporting of number of unsuccessful tests (including separating lines)')
@@ -298,7 +299,7 @@ class TestFinalResultFormatting(unittest.TestCase):
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
         self.assertEqual(
             ['',
-             _number_of_unsuccessful_tests_line(1),
+             _NUMBER_OF_ERRORS.of(1),
              ''],
             actual_lines[1:4],
             'Reporting of number of unsuccessful tests (including separating lines)')
@@ -320,7 +321,10 @@ class TestFinalResultFormatting(unittest.TestCase):
 
 
 def _number_of_unsuccessful_tests_line(num_cases: int) -> str:
-    return str(num_cases) + ' unsuccessful'
+    return _NUMBER_OF_ERRORS.of(num_cases)
+
+
+_NUMBER_OF_ERRORS = name.NumberOfItemsString(name.name_with_plural_s('error'))
 
 
 def _suite_executor_for_case_processing_that_unconditionally(execution_result: FullExeResult,

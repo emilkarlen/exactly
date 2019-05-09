@@ -9,6 +9,7 @@ from exactly_lib.processing import test_case_processing, exit_values as test_cas
 from exactly_lib.processing.test_case_processing import Status, TestCaseFileReference
 from exactly_lib.test_suite import reporting, structure, exit_values
 from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
+from exactly_lib.util import name
 from exactly_lib.util.std import StdOutputFiles, FilePrinter, file_printer_with_color_if_terminal
 from exactly_lib.util.timedelta_format import elapsed_time_value_and_unit
 
@@ -152,12 +153,12 @@ def format_final_result_for_valid_suite(num_cases: int,
     path_presenter = _RelPathPresenter(relativity_root_abs_path)
 
     def num_tests_line() -> str:
-        ret_val = ['Ran']
-        num_tests = '1 test' if num_cases == 1 else '%d tests' % num_cases
-        ret_val.append(num_tests)
-        ret_val.append('in')
-        ret_val.append(''.join(elapsed_time_value_and_unit(elapsed_time)))
-        return ' '.join(ret_val)
+        return ' '.join([
+            'Ran',
+            _NUMBER_OF_TESTS.of(num_cases),
+            'in',
+            ''.join(elapsed_time_value_and_unit(elapsed_time)),
+        ])
 
     def num_unsuccessful_lines() -> List[str]:
         if not errors:
@@ -165,7 +166,7 @@ def format_final_result_for_valid_suite(num_cases: int,
         num_failing = sum([len(cases) for cases in errors.values()])
         return [
             '',
-            str(num_failing) + ' unsuccessful'
+            _NUMBER_OF_ERRORS.of(num_failing)
         ]
 
     def error_lines() -> List[str]:
@@ -183,3 +184,8 @@ def format_final_result_for_valid_suite(num_cases: int,
         ret_val.append('')
         ret_val += error_lines()
     return ret_val
+
+
+_NUMBER_OF_TESTS = name.NumberOfItemsString(name.name_with_plural_s('test'))
+
+_NUMBER_OF_ERRORS = name.NumberOfItemsString(name.name_with_plural_s('error'))
