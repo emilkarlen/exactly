@@ -49,10 +49,12 @@ Distribute source and wheel
 Run tests in examples/wiki,
 and if changes are needed to make these work,
 make the same changes to wiki.
-** Generate new Reference.html
 * Tag repo with version
 > git tag vVERSION
 > git push --tags
+* github pages
+** Generate new Reference Manual
+exactly/reference-manual.html
 * Make release on github
 * Learning PyPi
 http://peterdowns.com/posts/first-time-with-pypi.html
