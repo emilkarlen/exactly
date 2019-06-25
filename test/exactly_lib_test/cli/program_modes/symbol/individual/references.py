@@ -12,7 +12,7 @@ from exactly_lib.util.string import lines_content
 from exactly_lib_test.cli.program_modes.symbol.individual.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
-from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
+from exactly_lib_test.cli.program_modes.symbol.test_resources.source_type_checks import check_case_and_suite
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, File
@@ -30,11 +30,11 @@ def suite() -> unittest.TestSuite:
 
 class TestInvalidSymbolNameArguments(unittest.TestCase):
     def test_superfluous_arguments(self):
-        case_file = empty_file('test.case')
+        case_file = empty_file('test.xly')
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
+            symbol_command_arguments=
             symbol_args.individual__references(
                 case_file.name,
                 'symbol_name',
@@ -50,11 +50,11 @@ class TestInvalidSymbolNameArguments(unittest.TestCase):
         )
 
     def test_invalid_symbol_name(self):
-        case_file = empty_file('test.case')
+        case_file = empty_file('test.xly')
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
+            symbol_command_arguments=
             symbol_args.individual__references(
                 case_file.name,
                 NOT_A_VALID_SYMBOL_NAME,
@@ -70,16 +70,16 @@ class TestInvalidSymbolNameArguments(unittest.TestCase):
         )
 
     def test_invalid_option(self):
-        case_file = empty_file('test.case')
+        case_file = empty_file('test.xly')
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
-            symbol_args.arguments([
+            symbol_command_arguments=
+            [
                 case_file.name,
                 'symbol_name',
                 short_and_long_option_syntax.long_syntax('invalid'),
-            ]),
+            ],
             arrangement=
             Arrangement(
                 cwd_contents=DirContents([case_file])
@@ -96,15 +96,15 @@ class TestCaseContainsNoSymbolWithTheGivenName(unittest.TestCase):
         name_of_existing_symbol = 'STRING_SYMBOL'
         not_the_name_of_an_existing_symbol = 'NON_EXISTING_SYMBOL'
 
-        case_with_single_def = File('test.case',
+        case_with_single_def = File('test.xly',
                                     lines_content([
                                         phase_names.SETUP.syntax,
                                         sym_def.define_string(name_of_existing_symbol, 'value'),
                                     ]))
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
+            symbol_command_arguments=
             symbol_args.individual__references(
                 case_with_single_def.name,
                 not_the_name_of_an_existing_symbol,
@@ -127,15 +127,15 @@ class TestSuccessfulScenarios(unittest.TestCase):
     def test_no_references(self):
         name_of_existing_symbol = 'STRING_SYMBOL'
 
-        case_with_single_def = File('test.case',
+        case_with_single_def = File('test.xly',
                                     lines_content([
                                         phase_names.SETUP.syntax,
                                         sym_def.define_string(name_of_existing_symbol, 'value'),
                                     ]))
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
+            symbol_command_arguments=
             symbol_args.individual__references(
                 case_with_single_def.name,
                 name_of_existing_symbol,
@@ -157,7 +157,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
         name_of_existing_symbol = 'STRING_SYMBOL'
 
         reference_source = sym_def.reference_to(name_of_existing_symbol, ValueType.STRING)
-        case_with_single_def = File('test.case',
+        case_with_single_def = File('test.xly',
                                     lines_content([
                                         phase_names.SETUP.syntax,
                                         sym_def.define_string(name_of_existing_symbol, 'value'),
@@ -174,9 +174,9 @@ class TestSuccessfulScenarios(unittest.TestCase):
             ]
         )
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
+            symbol_command_arguments=
             symbol_args.individual__references(
                 case_with_single_def.name,
                 name_of_existing_symbol,
@@ -198,7 +198,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
         name_of_existing_symbol = 'STRING_SYMBOL'
 
         reference_source = sym_def.reference_to(name_of_existing_symbol, ValueType.STRING)
-        case_with_single_def = File('test.case',
+        case_with_single_def = File('test.xly',
                                     lines_content([
                                         phase_names.SETUP.syntax,
                                         sym_def.define_string(name_of_existing_symbol, 'value'),
@@ -214,9 +214,9 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 reference_source,
             ]
         )
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
+            symbol_command_arguments=
             symbol_args.individual__references(
                 case_with_single_def.name,
                 name_of_existing_symbol,
@@ -239,7 +239,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
         name_of_existing_symbol = 'STRING_SYMBOL'
 
         reference_source = sym_def.reference_to(name_of_existing_symbol, ValueType.STRING)
-        case_with_references = File('test.case',
+        case_with_references = File('test.xly',
                                     lines_content([
                                         phase_names.SETUP.syntax,
                                         sym_def.define_string(name_of_existing_symbol, 'value'),
@@ -295,9 +295,9 @@ class TestSuccessfulScenarios(unittest.TestCase):
                                       expected_reference_outputs)))
         )
         )
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
+            symbol_command_arguments=
             symbol_args.individual__references(
                 case_with_references.name,
                 name_of_existing_symbol,

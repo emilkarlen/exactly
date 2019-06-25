@@ -1,8 +1,8 @@
 from typing import List
 
-from exactly_lib.cli.definitions.common_cli_options import SYMBOL_COMMAND
-from exactly_lib.cli.definitions.program_modes.symbol import command_line_options
-from exactly_lib.cli.definitions.program_modes.test_case import command_line_options
+from exactly_lib.cli.definitions.common_cli_options import SYMBOL_COMMAND, SUITE_COMMAND
+from exactly_lib.cli.definitions.program_modes.symbol import command_line_options as symbol_clo
+from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as case_clo
 from exactly_lib_test.cli.test_resources import cli_arguments
 from exactly_lib_test.processing.test_resources import preprocessor_utils
 
@@ -11,9 +11,13 @@ def arguments(symbol_arguments: List[str]) -> List[str]:
     return [SYMBOL_COMMAND] + symbol_arguments
 
 
+def arguments__suite(symbol_arguments: List[str]) -> List[str]:
+    return [SYMBOL_COMMAND, SUITE_COMMAND] + symbol_arguments
+
+
 def explicit_suite__part(suite_file_name: str) -> List[str]:
     return [
-        command_line_options.OPTION_FOR_SUITE,
+        case_clo.OPTION_FOR_SUITE,
         suite_file_name,
     ]
 
@@ -50,17 +54,17 @@ def py_search_replace_preprocessing_and_case(py_preprocessor_source_file_name: s
 def individual__definition(case_file: str,
                            symbol_name: str
                            ) -> List[str]:
-    return arguments([
+    return [
         case_file,
-        symbol_name
-    ])
+        symbol_name,
+    ]
 
 
 def individual__references(case_file: str,
                            symbol_name: str
                            ) -> List[str]:
-    return arguments([
+    return [
         case_file,
         symbol_name,
-        command_line_options.OPTION_FOR_SYMBOL_REFERENCES,
-    ])
+        symbol_clo.OPTION_FOR_SYMBOL_REFERENCES,
+    ]

@@ -9,7 +9,7 @@ from exactly_lib.util.string import lines_content
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
 from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
-from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
+from exactly_lib_test.cli.program_modes.symbol.test_resources.source_type_checks import check_case_and_suite
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, File
@@ -30,14 +30,14 @@ class TestInvalidSymbolNameArguments(unittest.TestCase):
     def test_superfluous_symbol_name(self):
         case_file = empty_file('test.case')
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
-            symbol_args.arguments([
+            symbol_command_arguments=
+            [
                 case_file.name,
                 'symbol_name',
                 'superfluous',
-            ]),
+            ],
             arrangement=
             Arrangement(
                 cwd_contents=DirContents([case_file])
@@ -51,9 +51,9 @@ class TestInvalidSymbolNameArguments(unittest.TestCase):
     def test_invalid_symbol_name(self):
         case_file = empty_file('test.case')
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
+            symbol_command_arguments=
             symbol_args.individual__definition(
                 case_file.name,
                 NOT_A_VALID_SYMBOL_NAME,
@@ -71,14 +71,14 @@ class TestInvalidSymbolNameArguments(unittest.TestCase):
     def test_invalid_option(self):
         case_file = empty_file('test.case')
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
-            symbol_args.arguments([
+            symbol_command_arguments=
+            [
                 case_file.name,
                 'symbol_name',
                 short_and_long_option_syntax.long_syntax('invalid'),
-            ]),
+            ],
             arrangement=
             Arrangement(
                 cwd_contents=DirContents([case_file])
@@ -101,9 +101,9 @@ class TestCaseContainsNoSymbolWithTheGivenName(unittest.TestCase):
                                         sym_def.define_string(name_of_existing_symbol, 'value'),
                                     ]))
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
+            symbol_command_arguments=
             symbol_args.individual__definition(
                 case_with_single_def.name,
                 not_the_name_of_an_existing_symbol,
@@ -135,9 +135,9 @@ class TestSuccessfulScenarios(unittest.TestCase):
         expected_first_line = output.list_of([output.SymbolReport(name_of_existing_symbol,
                                                                   ValueType.STRING,
                                                                   num_refs=0)]).rstrip()
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
+            symbol_command_arguments=
             symbol_args.individual__definition(
                 case_with_single_def.name,
                 name_of_existing_symbol,

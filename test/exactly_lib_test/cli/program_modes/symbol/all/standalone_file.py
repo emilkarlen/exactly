@@ -7,10 +7,9 @@ from exactly_lib.processing import exit_values
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
 from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
-from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
+from exactly_lib_test.cli.program_modes.symbol.test_resources.source_type_checks import check_case_and_suite
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRaisesParseException
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File, empty_dir
@@ -44,9 +43,9 @@ class TestFailingScenarios(unittest.TestCase):
             with self.subTest(case.name):
                 cli_arguments = case.value
                 # ACT & ASSERT #
-                test_with_files_in_tmp_dir.check(
+                check_case_and_suite(
                     self,
-                    symbol_args.arguments(cli_arguments),
+                    cli_arguments,
                     arrangement=
                     Arrangement(),
                     expectation=
@@ -58,9 +57,9 @@ class TestFailingScenarios(unittest.TestCase):
     def test_invalid_type_of_file_arguments(self):
         # ARRANGE #
         a_dir = empty_dir('dir.xly')
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            symbol_args.arguments([a_dir.name]),
+            [a_dir.name],
             arrangement=
             Arrangement(
                 cwd_contents=DirContents([a_dir])
@@ -73,14 +72,14 @@ class TestFailingScenarios(unittest.TestCase):
 
     def test_invalid_syntax(self):
         file_with_invalid_syntax = File(
-            'invalid-syntax.case',
+            'invalid-syntax.xly',
             lines_content([
                 SectionName('nonExistingSection').syntax,
             ]))
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            symbol_args.arguments([file_with_invalid_syntax.name]),
+            [file_with_invalid_syntax.name],
             Arrangement(
                 cwd_contents=DirContents([
                     file_with_invalid_syntax,
@@ -93,16 +92,16 @@ class TestFailingScenarios(unittest.TestCase):
 
     def test_invalid_syntax_of_act_phase(self):
         file_with_invalid_syntax = File(
-            'invalid-syntax.case',
+            'invalid-syntax.xly',
             lines_content([
                 phase_names.ACT.syntax,
                 'invalid contents',
             ]))
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
-            symbol_args.arguments([file_with_invalid_syntax.name]),
+            symbol_command_arguments=
+            [file_with_invalid_syntax.name],
             arrangement=
             Arrangement(
                 main_program_config=sym_def.main_program_config(
@@ -121,12 +120,12 @@ class TestFailingScenarios(unittest.TestCase):
 
 class TestSuccessfulScenarios(unittest.TestCase):
     def test_empty_file(self):
-        emtpy_test_case_file = empty_file('empty.case')
+        emtpy_test_case_file = empty_file('empty.xly')
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
-            symbol_args.arguments([emtpy_test_case_file.name]),
+            symbol_command_arguments=
+            [emtpy_test_case_file.name],
             arrangement=
             Arrangement(
                 cwd_contents=DirContents([
@@ -141,16 +140,16 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
     def test_single_definition(self):
         symbol_name = 'STRING_SYMBOL'
-        case_with_single_def = File('test.case',
+        case_with_single_def = File('test.xly',
                                     lines_content([
                                         phase_names.SETUP.syntax,
                                         sym_def.define_string(symbol_name, 'value'),
                                     ]))
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
-            symbol_args.arguments([case_with_single_def.name]),
+            symbol_command_arguments=
+            [case_with_single_def.name],
             arrangement=
             Arrangement(
                 cwd_contents=DirContents([
@@ -169,17 +168,17 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
     def test_single_definition_with_single_reference(self):
         symbol_name = 'STRING_SYMBOL'
-        case_with_single_def = File('test.case',
+        case_with_single_def = File('test.xly',
                                     lines_content([
                                         phase_names.SETUP.syntax,
                                         sym_def.define_string(symbol_name, 'value'),
                                         sym_def.reference_to(symbol_name, ValueType.STRING),
                                     ]))
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
-            symbol_args.arguments([case_with_single_def.name]),
+            symbol_command_arguments=
+            [case_with_single_def.name],
             arrangement=
             Arrangement(
                 cwd_contents=DirContents([
@@ -198,7 +197,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
     def test_single_definition_with_single_reference_in_act_phase(self):
         symbol_name = 'STRING_SYMBOL'
-        case_with_single_def = File('test.case',
+        case_with_single_def = File('test.xly',
                                     lines_content([
                                         phase_names.SETUP.syntax,
                                         sym_def.define_string(symbol_name, 'value'),
@@ -207,10 +206,10 @@ class TestSuccessfulScenarios(unittest.TestCase):
                                         sym_def.reference_to(symbol_name, ValueType.STRING),
                                     ]))
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
-            symbol_args.arguments([case_with_single_def.name]),
+            symbol_command_arguments=
+            [case_with_single_def.name],
             arrangement=
             Arrangement(
                 cwd_contents=DirContents([
@@ -231,7 +230,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
         leaf_name = 'LEAF_SYMBOL_SYMBOL'
         referrer_name = 'REFERRER_SYMBOL'
         case_with_single_def = File(
-            'test.case',
+            'test.xly',
             lines_content([
                 phase_names.SETUP.syntax,
                 sym_def.define_string(leaf_name, 'value'),
@@ -239,10 +238,10 @@ class TestSuccessfulScenarios(unittest.TestCase):
                                       symbol_reference_syntax_for_name(leaf_name)),
             ]))
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
-            symbol_args.arguments([case_with_single_def.name]),
+            symbol_command_arguments=
+            [case_with_single_def.name],
             arrangement=
             Arrangement(
                 cwd_contents=DirContents([
@@ -266,7 +265,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
         assert_symbol_name = 'ASSERT_SYMBOL'
         cleanup_symbol_name = 'CLEANUP_SYMBOL'
         case_with_one_def_per_phase = File(
-            'test.case',
+            'test.xly',
             lines_content([
                 phase_names.SETUP.syntax,
                 sym_def.define_string(setup_symbol_name, setup_symbol_name + 'value'),
@@ -283,10 +282,10 @@ class TestSuccessfulScenarios(unittest.TestCase):
                                       cleanup_symbol_name + 'value'),
             ]))
 
-        test_with_files_in_tmp_dir.check(
+        check_case_and_suite(
             self,
-            command_line_arguments=
-            symbol_args.arguments([case_with_one_def_per_phase.name]),
+            symbol_command_arguments=
+            [case_with_one_def_per_phase.name],
             arrangement=
             Arrangement(
                 cwd_contents=DirContents([
