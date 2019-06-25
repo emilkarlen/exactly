@@ -1,3 +1,4 @@
+import itertools
 from typing import List, Optional
 
 from exactly_lib.definitions import doc_format
@@ -43,8 +44,8 @@ class _ProgramDocumentationRenderer:
                                     sections)
 
     def _synopsis_section(self, program: CliProgramSyntaxDocumentation) -> docs.Section:
-        return synopsis_section(
-            docs.SectionContents([self._list(map(self._synopsis_list_item, program.synopsises()))]))
+        list_items = itertools.chain.from_iterable(map(self._synopsis_list_items, program.synopsises()))
+        return synopsis_section(docs.SectionContents([self._list(list_items)]))
 
     @staticmethod
     def _description_sections(program: CliProgramSyntaxDocumentation) -> List[docs.Section]:
@@ -84,15 +85,22 @@ class _ProgramDocumentationRenderer:
             ret_val.append(see_also_items_paragraph(argument.see_also_items, self.environment))
         return ret_val
 
-    def _synopsis_list_item(self, synopsis: Synopsis) -> lists.HeaderContentListItem:
-        header = self.cmd_line_syntax_renderer.apply(synopsis.command_line)
+    def _synopsis_list_items(self, synopsis: Synopsis) -> List[lists.HeaderContentListItem]:
+        headers = list(map(self.cmd_line_syntax_renderer.apply, synopsis.command_lines))
         content_paragraph_items = []
         if synopsis.maybe_single_line_description:
             content_paragraph_items.append(docs.para(synopsis.maybe_single_line_description))
         content_paragraph_items += synopsis.paragraphs
-        return docs.list_item(header, content_paragraph_items)
+        return (
+                [
+                    docs.list_item(header)
+                    for header in headers[:-1]
+                ] +
+                [docs.list_item(headers[-1], content_paragraph_items)]
+        )
 
-    def _list(self, items):
+    @staticmethod
+    def _list(items: List[lists.HeaderContentListItem]) -> lists.HeaderContentList:
         return lists.HeaderContentList(items,
                                        lists.Format(lists.ListType.VARIABLE_LIST,
                                                     custom_indent_spaces=0,

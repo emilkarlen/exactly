@@ -29,6 +29,6 @@ OS_PROCESS_ENVIRONMENT_SECTION_HEADER = OS_PROCESS_NAME.singular + ' environment
 
 TEST_SUITE_SPEC_TITLE = 'Specification of test suite functionality'
 
-SYMBOL_COMMAND_SINGLE_LINE_DESCRIPTION = 'Reports the usage of symbols in a test case'
+SYMBOL_COMMAND_SINGLE_LINE_DESCRIPTION = 'Reports the usage of symbols in a test case or test suite'
 
 SUITE_COMMAND_SINGLE_LINE_DESCRIPTION = 'Runs a test suite'

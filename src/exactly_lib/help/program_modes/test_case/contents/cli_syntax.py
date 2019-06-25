@@ -48,7 +48,8 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
     def synopsises(self) -> List[cli_syntax.Synopsis]:
         return [
-            cli_syntax.Synopsis(self.synopsis.command_line)
+            cli_syntax.Synopsis(command_line)
+            for command_line in self.synopsis.command_lines
         ]
 
     def argument_descriptions(self) -> List[cli_syntax.DescribedArgument]:

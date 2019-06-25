@@ -23,8 +23,12 @@ class Synopsis(tuple):
     def __new__(cls,
                 command_line: arg.CommandLine,
                 single_line_description: Optional[docs.Text] = None,
-                paragraphs: Sequence[docs.ParagraphItem] = ()):
-        return tuple.__new__(cls, (command_line, single_line_description, list(paragraphs)))
+                paragraphs: Sequence[docs.ParagraphItem] = (),
+                additional_command_lines: Sequence[arg.CommandLine] = ()):
+        return tuple.__new__(cls, (command_line,
+                                   single_line_description,
+                                   list(paragraphs),
+                                   list(additional_command_lines)))
 
     @property
     def command_line(self) -> arg.CommandLine:
@@ -37,3 +41,11 @@ class Synopsis(tuple):
     @property
     def paragraphs(self) -> List[docs.ParagraphItem]:
         return self[2]
+
+    @property
+    def additional_command_lines(self) -> Sequence[arg.CommandLine]:
+        return self[3]
+
+    @property
+    def command_lines(self) -> List[arg.CommandLine]:
+        return [self.command_line] + list(self.additional_command_lines)

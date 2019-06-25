@@ -55,7 +55,8 @@ class TestSuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
     def synopsises(self) -> List[cli_syntax.Synopsis]:
         return [
-            cli_syntax.Synopsis(self.synopsis.command_line)
+            cli_syntax.Synopsis(command_line)
+            for command_line in self.synopsis.command_lines
         ]
 
     def argument_descriptions(self) -> List[cli_syntax.DescribedArgument]:
@@ -65,7 +66,7 @@ class TestSuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         ]
 
     def files(self) -> Optional[SectionContents]:
-        return _TP.section_contents(_FILES_DESCRIPTION)
+        return _TP.section_contents(DEFAULT_SUITE_FILES_DESCRIPTION)
 
     def outcome(self, environment: ConstructionEnvironment) -> Optional[docs.SectionContents]:
         contents_constructor = SectionContentsConstructorFromHierarchyGenerator(
@@ -142,7 +143,7 @@ Options: {reporter_name_list} (default {default_reporter_name}).
 
 _FILE_ARGUMENT = arg.Named(opts.TEST_SUITE_FILE_ARGUMENT)
 
-_FILES_DESCRIPTION = """\
+DEFAULT_SUITE_FILES_DESCRIPTION = """\
 If {TEST_SUITE_FILE} is a directory
 that contains a file "{default_suite_file}",
 then this file becomes the suite file argument.
