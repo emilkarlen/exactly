@@ -1,7 +1,7 @@
 import argparse
 import pathlib
 import stat
-from typing import List
+from typing import List, Tuple
 
 from exactly_lib import program_info
 from exactly_lib.cli.definitions import common_cli_options as common_opts
@@ -18,7 +18,8 @@ from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.util.argument_parsing_utils import ArgumentParsingError, \
-    parse_args__raise_exception_instead_of_exiting_on_error
+    parse_args__raise_exception_instead_of_exiting_on_error, \
+    parse_known_args__raise_exception_instead_of_exiting_on_error
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
 from .settings import TestSuiteExecutionSettings
 
@@ -29,6 +30,14 @@ def parse(default: TestCaseHandlingSetup,
     :raises ArgumentParsingError Invalid usage
     """
     return _Parser(default).parse(argv)
+
+
+def parse_known_args(default: TestCaseHandlingSetup,
+                     argv: List[str]) -> Tuple[TestSuiteExecutionSettings, List[str]]:
+    """
+    :raises ArgumentParsingError Invalid usage
+    """
+    return _Parser(default).parse_known_args(argv)
 
 
 class _Parser:
@@ -47,6 +56,16 @@ class _Parser:
         argument_parser = self._new_argument_parser()
         namespace = parse_args__raise_exception_instead_of_exiting_on_error(argument_parser,
                                                                             argv)
+        return self._execution_settings(namespace)
+
+    def parse_known_args(self, argv: List[str]) -> Tuple[TestSuiteExecutionSettings, List[str]]:
+        argument_parser = self._new_argument_parser()
+        namespace, remaining_args = parse_known_args__raise_exception_instead_of_exiting_on_error(argument_parser,
+                                                                                                  argv)
+        execution_settings = self._execution_settings(namespace)
+        return execution_settings, remaining_args
+
+    def _execution_settings(self, namespace: argparse.Namespace) -> TestSuiteExecutionSettings:
         actor = resolve_actor_from_argparse_argument(self.default.actor,
                                                      namespace.actor)
         suite_file_path = self._resolve_file_path(namespace.file)

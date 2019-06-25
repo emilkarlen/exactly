@@ -10,6 +10,12 @@ def is_result_for_exit_value(expected: ExitValue) -> ValueAssertion[SubProcessRe
     return SubProcessExitValueAssertion(expected)
 
 
+def is_result_for_exit_value_on_stderr_and_empty_stdout(expected: ExitValue) -> ValueAssertion[SubProcessResult]:
+    return sub_process_result(exitcode=asrt.equals(expected.exit_code),
+                              stderr=asrt.equals(expected.exit_identifier + '\n'),
+                              stdout=asrt.equals(''))
+
+
 def is_result_for_failure_exit_value_on_stderr(expected: ExitValue) -> ValueAssertion[SubProcessResult]:
     return SubProcessExitValueOnStdErrAssertion(expected)
 

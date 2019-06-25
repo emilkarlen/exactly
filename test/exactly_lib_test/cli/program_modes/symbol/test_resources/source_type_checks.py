@@ -33,7 +33,7 @@ _SOURCE_TYPE_CASES = [
     NameAndValue('case',
                  symbol_args.arguments,
                  ),
-    # NameAndValue('suite',
-    #              symbol_args.arguments__suite,
-    #              ),
+    NameAndValue('suite',
+                 symbol_args.arguments__suite,
+                 ),
 ]

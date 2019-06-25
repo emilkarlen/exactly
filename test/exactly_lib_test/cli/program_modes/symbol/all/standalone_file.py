@@ -12,7 +12,7 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_ins
 from exactly_lib_test.cli.program_modes.symbol.test_resources.source_type_checks import check_case_and_suite
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRaisesParseException
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File, empty_dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -53,22 +53,6 @@ class TestFailingScenarios(unittest.TestCase):
                         exit_codes.EXIT_INVALID_USAGE
                     )
                 )
-
-    def test_invalid_type_of_file_arguments(self):
-        # ARRANGE #
-        a_dir = empty_dir('dir.xly')
-        check_case_and_suite(
-            self,
-            [a_dir.name],
-            arrangement=
-            Arrangement(
-                cwd_contents=DirContents([a_dir])
-            ),
-            expectation=
-            asrt_proc_result.is_result_for_empty_stdout(
-                exit_values.NO_EXECUTION__SYNTAX_ERROR.exit_code
-            )
-        )
 
     def test_invalid_syntax(self):
         file_with_invalid_syntax = File(

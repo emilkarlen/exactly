@@ -26,7 +26,7 @@ def read_suite_document(suite_file_path: pathlib.Path,
                         test_case_parsing_setup: TestCaseParsingSetup,
                         ) -> test_suite_doc.TestSuiteDocument:
     """
-    :raises parse.SuiteParseError: The suite file has an error related to parsing
+    :raises exception.SuiteParseError: The suite file has an error related to parsing
     """
     parser = _Parser(configuration_section_parser,
                      test_case_parsing_setup)
@@ -39,7 +39,7 @@ def read_suite_document(suite_file_path: pathlib.Path,
 def resolve_test_case_handling_setup(
         test_suite: test_suite_doc.TestSuiteDocument,
         default_handling_setup: TestCaseHandlingSetup) -> TestCaseHandlingSetup:
-    instruction_environment = _derive_conf_section_environment(test_suite, default_handling_setup)
+    instruction_environment = derive_conf_section_environment(test_suite, default_handling_setup)
     transformer_that_adds_instr_from_suite = _TestCaseInstructionsFromTestSuiteAdder(test_suite)
     return TestCaseHandlingSetup(instruction_environment.act_phase_setup,
                                  instruction_environment.preprocessor,
@@ -47,9 +47,9 @@ def resolve_test_case_handling_setup(
                                                              transformer_that_adds_instr_from_suite))
 
 
-def _derive_conf_section_environment(test_suite: test_suite_doc.TestSuiteDocument,
-                                     default_handling_setup: TestCaseHandlingSetup
-                                     ) -> ConfigurationSectionEnvironment:
+def derive_conf_section_environment(test_suite: test_suite_doc.TestSuiteDocument,
+                                    default_handling_setup: TestCaseHandlingSetup
+                                    ) -> ConfigurationSectionEnvironment:
     instruction_environment = ConfigurationSectionEnvironment(default_handling_setup.preprocessor,
                                                               default_handling_setup.act_phase_setup)
     for section_element in test_suite.configuration_section.elements:
