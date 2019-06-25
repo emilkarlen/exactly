@@ -15,11 +15,8 @@ class TestSuiteHierarchy:
                  source_file: pathlib.Path,
                  suite_file_inclusions_leading_to_this_file: List[Path],
                  test_case_handling_setup: TestCaseHandlingSetup,
-                 sub_test_suites: list,
+                 sub_test_suites: List['TestSuiteHierarchy'],
                  test_cases: List[TestCaseFileReference]):
-        """
-        :param sub_test_suites: List[<this-class>]
-        """
         self.__source_file = source_file
         self.__suite_file_inclusions_leading_to_this_file = suite_file_inclusions_leading_to_this_file
         self.__test_case_handling_setup = test_case_handling_setup
@@ -39,10 +36,7 @@ class TestSuiteHierarchy:
         return self.__test_case_handling_setup
 
     @property
-    def sub_test_suites(self) -> list:
-        """
-        :return: [<this-class>]
-        """
+    def sub_test_suites(self) -> List['TestSuiteHierarchy']:
         return self.__sub_test_suites
 
     @property
