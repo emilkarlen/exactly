@@ -1,9 +1,8 @@
 from typing import List, Optional
 
-import exactly_lib.cli.definitions.program_modes.symbol.command_line_options
+from exactly_lib.cli.definitions.program_modes.symbol import command_line_options
 from exactly_lib import program_info
 from exactly_lib.cli.definitions import common_cli_options as common_opts
-from exactly_lib.cli.definitions.program_modes.symbol.command_line_options import OPTION_FOR_SYMBOL_REFERENCES__LONG
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
@@ -24,7 +23,7 @@ from exactly_lib.util.textformat.section_target_hierarchy.generator import Secti
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-_INDIVIDUAL_REFERENCES_OPTION = arg.short_long_option(long_name=OPTION_FOR_SYMBOL_REFERENCES__LONG)
+_INDIVIDUAL_REFERENCES_OPTION = arg.short_long_option(long_name=command_line_options.OPTION_FOR_SYMBOL_REFERENCES__LONG)
 
 
 def root(header: str) -> SectionHierarchyGenerator:
@@ -164,5 +163,5 @@ _TP = TextParser({
     'exit_identifier': misc_texts.EXIT_IDENTIFIER,
     'TEST_CASE_FILE': TEST_CASE_FILE_ARGUMENT.name,
     'default_suite_file': file_names.DEFAULT_SUITE_FILE,
-    'ref_option': exactly_lib.cli.definitions.program_modes.symbol.command_line_options.OPTION_FOR_SYMBOL_REFERENCES,
+    'ref_option': command_line_options.OPTION_FOR_SYMBOL_REFERENCES,
 })
