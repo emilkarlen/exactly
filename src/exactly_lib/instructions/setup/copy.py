@@ -26,8 +26,9 @@ from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
+from exactly_lib.util import file_printables
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.failure_details import new_failure_details_from_message
+from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
@@ -194,7 +195,7 @@ class _MainWithExplicitDestination:
                     instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
                     self.dst_path)
                 raise exception_detection.DetectedException(
-                    new_failure_details_from_message(err_msg))
+                    FailureDetails.new_constant_message(err_msg))
         else:
             self.os_services.make_dir_if_not_exists__detect_ex(self.dst_path.parent)
             _install_into_directory(self.os_services,
@@ -210,9 +211,14 @@ def _install_into_directory(os_services: OsServices,
     target = dst_container_path / dst_file_name
     if target.exists():
         raise exception_detection.DetectedException(
-            new_failure_details_from_message('{} already exists: {}'.format(
-                instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
-                target)))
+            FailureDetails.new_message(
+                file_printables.of_format_string(
+                    '{dst} already exists: {target}',
+                    {
+                        'dst': instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
+                        'target': target,
+                    }))
+        )
     src = str(src_file_path)
     dst = str(target)
     if src_file_path.is_dir():

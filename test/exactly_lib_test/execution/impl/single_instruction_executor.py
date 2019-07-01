@@ -11,9 +11,9 @@ from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.section_document.source_location import FileLocationInfo
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
-from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_exception, \
-    new_failure_details_from_message
+from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib_test.section_document.test_resources.elements import new_ls_from_line
+from exactly_lib_test.util.test_resources.failure_details_assertions import assert_equal_failure_details
 
 
 def suite() -> unittest.TestSuite:
@@ -96,7 +96,7 @@ class Test(unittest.TestCase):
             element.instruction_info)
         self._check_failure_result(PartialExeResultStatus.IMPLEMENTATION_ERROR,
                                    result,
-                                   new_failure_details_from_exception(exception))
+                                   FailureDetails.new_exception(exception))
 
     def _executor_that_returns_failure_helper(self,
                                               failure_status_of_executor: PartialControlledFailureEnum,
@@ -110,7 +110,7 @@ class Test(unittest.TestCase):
             element.instruction_info)
         self._check_failure_result(expected_status,
                                    result,
-                                   new_failure_details_from_message('error message'))
+                                   FailureDetails.new_constant_message('error message'))
 
     def _check_failure_result(self,
                               expected_status: PartialExeResultStatus,
@@ -124,23 +124,6 @@ class Test(unittest.TestCase):
         assert_equal_failure_details(self,
                                      expected_failure_details,
                                      result.failure_details)
-
-
-def assert_equal_failure_details(unit_tc: unittest.TestCase,
-                                 expected: FailureDetails,
-                                 actual: FailureDetails):
-    if expected.is_only_failure_message:
-        unit_tc.assertTrue(actual.is_only_failure_message,
-                           'An error message is expected')
-        unit_tc.assertEqual(expected.failure_message,
-                            actual.failure_message,
-                            'The failure message should be the expected')
-    else:
-        unit_tc.assertFalse(actual.is_only_failure_message,
-                            'An exception is expected')
-        unit_tc.assertEqual(expected.exception,
-                            actual.exception,
-                            'The exception should be the expected')
 
 
 def assert_equal_lines(unit_tc: unittest.TestCase,

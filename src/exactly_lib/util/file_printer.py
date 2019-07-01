@@ -55,14 +55,6 @@ class FilePrintable(ABC):
         pass
 
 
-class FilePrintableOfConstantString(FilePrintable):
-    def __init__(self, s: str):
-        self._s = s
-
-    def print_on(self, printer: FilePrinter):
-        printer.write(self._s)
-
-
 class FilePrinterWithAnsiColor(FilePrinter):
     def write_colored_line(self, line: str, color: Optional[ForegroundColor]):
         s = ansi.ansi_escape(color, line) if color else line

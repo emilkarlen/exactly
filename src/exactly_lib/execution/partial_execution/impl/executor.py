@@ -22,8 +22,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, construct_at
-from exactly_lib.util.failure_details import new_failure_details_from_message, new_failure_details_from_exception, \
-    FailureDetails
+from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.file_utils import resolved_path_name
 
 
@@ -70,11 +69,11 @@ class _PhaseStepFailureResultConstructor:
 
     def implementation_error(self, ex: Exception) -> PhaseStepFailure:
         return self.apply(PartialExeResultStatus.IMPLEMENTATION_ERROR,
-                          new_failure_details_from_exception(ex))
+                          FailureDetails.new_exception(ex))
 
     def implementation_error_msg(self, msg: str) -> PhaseStepFailure:
         return self.apply(PartialExeResultStatus.IMPLEMENTATION_ERROR,
-                          new_failure_details_from_message(msg))
+                          FailureDetails.new_constant_message(msg))
 
 
 class _PartialExecutor:
@@ -249,7 +248,7 @@ class _PartialExecutor:
                 self._atc_executor = actor.parse(instructions)
             except ParseException as ex:
                 return failure_con.apply(PartialExeResultStatus.VALIDATION_ERROR,
-                                         new_failure_details_from_message(ex.cause.failure_message))
+                                         FailureDetails.new_constant_message(ex.cause.failure_message))
             return None
 
         return _execute_action_and_catch_implementation_exception(parse_action, failure_con)
@@ -264,7 +263,7 @@ class _PartialExecutor:
                 return None
             else:
                 return failure_con.apply(PartialExeResultStatus(res.status.value),
-                                         new_failure_details_from_message(res.error_message))
+                                         FailureDetails.new_constant_message(res.error_message))
 
         return _execute_action_and_catch_implementation_exception(action, failure_con)
 
@@ -277,7 +276,7 @@ class _PartialExecutor:
                 return None
             else:
                 return failure_con.apply(PartialExeResultStatus(res.status.value),
-                                         new_failure_details_from_message(res.failure_message))
+                                         FailureDetails.new_constant_message(res.failure_message))
 
         return _execute_action_and_catch_implementation_exception(action, failure_con)
 

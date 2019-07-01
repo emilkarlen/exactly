@@ -1,6 +1,7 @@
 import unittest
 from typing import Optional, Type
 
+from exactly_lib.util import file_printer
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
@@ -58,10 +59,58 @@ class _ExpectedFailureDetails(ValueAssertionBase[FailureDetails]):
             put.assertIsNone(actual,
                              message_header)
         elif self.error_message_or_none is not None:
+            err_msg = message_builder.for_sub_component('failure message')
+            put.assertIsNotNone(actual.failure_message,
+                                err_msg)
+            actual_failure_message = file_printer.print_to_string(actual.failure_message)
             self.error_message_or_none.apply(put,
-                                             actual.failure_message,
-                                             message_builder.for_sub_component('failure message'))
+                                             actual_failure_message,
+                                             err_msg)
         else:
             put.assertIsInstance(actual.exception,
                                  self.exception_class_or_none,
                                  message_builder.for_sub_component('exception class'))
+
+
+class _EqualsFailureDetails(ValueAssertionBase[FailureDetails]):
+    def __init__(self, expected: FailureDetails):
+        self._expected = expected
+
+    def _apply(self,
+               put: unittest.TestCase,
+               actual: FailureDetails,
+               message_builder: MessageBuilder):
+        put.assertEqual(self._expected.failure_message is not None,
+                        actual.failure_message is not None,
+                        message_builder.apply('has message'))
+
+        put.assertEqual(self._expected.is_only_failure_message is not None,
+                        actual.is_only_failure_message is not None,
+                        message_builder.apply('is_only_failure_message'))
+
+        put.assertEqual(self._expected.has_exception is not None,
+                        actual.has_exception is not None,
+                        message_builder.apply('has exception'))
+
+        if self._expected.failure_message is not None:
+            expected_msg = file_printer.print_to_string(self._expected.failure_message)
+            actual_msg = file_printer.print_to_string(actual.failure_message)
+
+            put.assertEqual(expected_msg,
+                            actual_msg,
+                            message_builder.apply('failure_message'))
+
+        if self._expected.exception is not None:
+            put.assertEqual(self._expected.exception,
+                            actual.exception,
+                            message_builder.apply('exception'))
+
+
+def equals_failure_details(expected: FailureDetails) -> ValueAssertion[FailureDetails]:
+    return _EqualsFailureDetails(expected)
+
+
+def assert_equal_failure_details(put: unittest.TestCase,
+                                 expected: FailureDetails,
+                                 actual: FailureDetails):
+    equals_failure_details(expected).apply_without_message(put, actual)

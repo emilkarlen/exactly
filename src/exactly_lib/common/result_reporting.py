@@ -13,6 +13,8 @@ from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case import error_description
+from exactly_lib.util import file_printer
+from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.file_printer import FilePrinter
 
 
@@ -28,11 +30,17 @@ def print_error_message_for_full_result(printer: FilePrinter, the_full_result: F
         _SourceDisplayer(printer).visit(failure_info)
         failure_details = failure_info.failure_details
         if failure_details.is_only_failure_message:
-            ed = error_description.of_message(failure_details.failure_message)
+            ed = error_description.of_message(_message_as_str_of(failure_details))
         else:
             ed = error_description.of_exception(failure_details.exception,
-                                                failure_details.failure_message)
+                                                _message_as_str_of(failure_details))
         _ErrorDescriptionDisplayer(printer).visit(ed)
+
+
+def _message_as_str_of(fd: FailureDetails) -> Optional[str]:
+    msg = fd.failure_message
+    return (None if msg is None
+            else file_printer.print_to_string(msg))
 
 
 def error_message_for_error_info(error_info: ErrorInfo) -> str:

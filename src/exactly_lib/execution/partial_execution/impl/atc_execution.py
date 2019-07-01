@@ -11,8 +11,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.setup import StdinConfiguration
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_hard_error
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import stdin_contents_file
-from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_exception, \
-    new_failure_details_from_message
+from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.file_utils import open_and_make_read_only_on_close, write_new_text_file
 from exactly_lib.util.std import StdFiles, StdOutputFiles
 
@@ -64,7 +63,7 @@ class ActionToCheckExecutor:
                 return None
             else:
                 return failure_con(PartialExeResultStatus(res.status.value),
-                                   new_failure_details_from_message(res.failure_message))
+                                   FailureDetails.new_constant_message(res.failure_message))
 
         return action
 
@@ -77,7 +76,7 @@ class ActionToCheckExecutor:
                 return None
             else:
                 return failure_con(PartialExeResultStatus.HARD_ERROR,
-                                   new_failure_details_from_message(res.failure_message))
+                                   FailureDetails.new_constant_message(res.failure_message))
 
         return action
 
@@ -104,7 +103,7 @@ class ActionToCheckExecutor:
             with file_name.open() as f_stdin:
                 return self._run_act_program_with_stdin_file(f_stdin)
         except IOError as ex:
-            return new_eh_hard_error(new_failure_details_from_exception(
+            return new_eh_hard_error(FailureDetails.new_exception(
                 ex,
                 'Failure to open stdin file: ' + str(file_name)))
 

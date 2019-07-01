@@ -47,7 +47,12 @@ class TestVisitor(unittest.TestCase):
 
     def testVisitNonSubClassObject(self):
         with self.assertRaises(TypeError):
-            self.VISITOR.visit('string is not a sub class of ErrorDescription')
+            self.VISITOR.visit(UnknownErrorDescriptionType())
+
+
+class UnknownErrorDescriptionType(sut.ErrorDescription):
+    def __init__(self):
+        super().__init__('unknown')
 
 
 if __name__ == '__main__':

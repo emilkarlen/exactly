@@ -8,8 +8,8 @@ from exactly_lib.test_case import exception_detection
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
-from exactly_lib.util import failure_details
-from exactly_lib.util.failure_details import new_failure_details_from_exception, FailureDetails
+from exactly_lib.util import file_printables
+from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.process_execution import executable_factories
 from exactly_lib.util.process_execution.command import Command
 from exactly_lib.util.process_execution.executable_factory import ExecutableFactory
@@ -89,21 +89,28 @@ class _Default(OsServices):
             shutil.copy2(src, dst)
         except OSError as ex:
             raise exception_detection.DetectedException(
-                FailureDetails('Failed to copy file {} -> {}:\n{}'.format(src, dst, str(ex)),
-                               ex))
+                FailureDetails.new_message(
+                    file_printables.of_format_string('Failed to copy file {src} -> {dst}',
+                                                     {'src': src,
+                                                      'dst': dst
+                                                      }),
+                    ex))
 
     def copy_tree_preserve_as_much_as_possible__detect_ex(self, src: str, dst: str):
         try:
             shutil.copytree(src, dst)
         except OSError as ex:
             raise exception_detection.DetectedException(
-                FailureDetails('Failed to copy tree {} -> {}:\n{}'.format(src, dst, str(ex)),
-                               ex))
+                FailureDetails.new_message(
+                    file_printables.of_format_string('Failed to copy tree {src} -> {dst}',
+                                                     {'src': src,
+                                                      'dst': dst}),
+                    ex))
 
     def executable_factory__detect_ex(self) -> ExecutableFactory:
         if self._platform_system_not_supported:
             raise exception_detection.DetectedException(
-                failure_details.new_failure_details_from_message(self._platform_system_not_supported)
+                FailureDetails.new_constant_message(self._platform_system_not_supported)
             )
         return self._executable_factory
 
@@ -136,7 +143,7 @@ class AtcSubProcessExecutor(AtcOsProcessExecutor):
     @staticmethod
     def _exception(ex: Exception) -> ExitCodeOrHardError:
         msg = 'Error executing {atc} in sub process.'.format(atc=concepts.ACTION_TO_CHECK_CONCEPT_INFO.singular_name)
-        return new_eh_hard_error(new_failure_details_from_exception(ex, message=msg))
+        return new_eh_hard_error(FailureDetails.new_exception(ex, message=msg))
 
 
 class _AtcSubProcessExecutorForUnsupportedOperatingSystem(AtcOsProcessExecutor):
@@ -160,5 +167,9 @@ DEFAULT_ATC_OS_PROCESS_EXECUTOR = _atc_os_process_executor_for_current_system()
 
 def _raise_fail_to_make_dir_exception(path: pathlib.Path, ex: Exception):
     raise exception_detection.DetectedException(
-        FailureDetails('Failed to make directory {}:\n{}'.format(path, str(ex)),
-                       ex))
+        FailureDetails.new_message(
+            file_printables.of_format_string(
+                'Failed to make directory {path}',
+                {'path': path}
+            ),
+            ex))

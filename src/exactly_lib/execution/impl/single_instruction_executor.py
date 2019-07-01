@@ -5,6 +5,7 @@ from exactly_lib.section_document.model import SectionContentElement, Instructio
 from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import failure_details
+from exactly_lib.util.failure_details import FailureDetails
 
 
 class PartialControlledFailureEnum(Enum):
@@ -108,13 +109,13 @@ def execute_element(executor: ControlledInstructionExecutor,
         return SingleInstructionExecutionFailure(
             PartialExeResultStatus(fail_info.status.value),
             element.source_location_info.source_location_path,
-            failure_details.new_failure_details_from_message(
-                fail_info.error_message))
+            FailureDetails.new_constant_message(fail_info.error_message))
     except Exception as ex:
         return SingleInstructionExecutionFailure(
             PartialExeResultStatus.IMPLEMENTATION_ERROR,
             element.source_location_info.source_location_path,
-            failure_details.new_failure_details_from_exception(ex))
+            FailureDetails.new_exception(ex)
+        )
 
 
 _INSTRUCTION_TYPE_ERROR_MESSAGE = 'Instruction in test-case must be ' + str(TestCaseInstruction)

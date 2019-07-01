@@ -1,6 +1,6 @@
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
-from exactly_lib.util.failure_details import new_failure_details_from_message
+from exactly_lib.util.failure_details import FailureDetails
 
 
 def validate_action_that_returns(ret_val: svh.SuccessOrValidationErrorOrHardError):
@@ -41,7 +41,7 @@ def prepare_action_that_returns_hard_error_with_message(message: str):
 
 def execute_action_that_returns_hard_error_with_message(message: str):
     def f(*args, **kwargs) -> ExitCodeOrHardError:
-        return new_eh_hard_error(new_failure_details_from_message(message))
+        return new_eh_hard_error(FailureDetails.new_constant_message(message))
 
     return f
 
