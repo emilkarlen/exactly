@@ -13,7 +13,7 @@ from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case import error_description
-from exactly_lib.util.std import FilePrinter
+from exactly_lib.util.file_printer import FilePrinter
 
 
 def error_message_for_full_result(the_full_result: FullExeResult) -> str:

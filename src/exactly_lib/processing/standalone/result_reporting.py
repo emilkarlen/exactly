@@ -7,7 +7,8 @@ from exactly_lib.processing import test_case_processing, exit_values
 from exactly_lib.processing.standalone.settings import ReportingOption
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError
-from exactly_lib.util.std import StdOutputFiles, FilePrinter, file_printer_with_color_if_terminal
+from exactly_lib.util.file_printer import FilePrinter, file_printer_with_color_if_terminal
+from exactly_lib.util.std import StdOutputFiles
 
 
 class _FullExecutionHandler:

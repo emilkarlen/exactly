@@ -8,8 +8,8 @@ from exactly_lib.common import result_reporting as sut
 from exactly_lib.common.err_msg.definitions import SOURCE_LINE_INDENT
 from exactly_lib.section_document.source_location import SourceLocationPath, SourceLocation
 from exactly_lib.section_document.syntax import section_header
+from exactly_lib.util.file_printer import FilePrinter
 from exactly_lib.util.line_source import LineSequence
-from exactly_lib.util.std import FilePrinter
 from exactly_lib_test.test_resources.test_utils import NIE
 
 

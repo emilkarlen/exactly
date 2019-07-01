@@ -7,7 +7,7 @@ from exactly_lib.section_document import exceptions as sec_doc_exceptions
 from exactly_lib.test_case import error_description
 from exactly_lib.test_suite.file_reading import exception as suite_exception
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError, SuiteReadError, SuiteReadErrorVisitor
-from exactly_lib.util.std import FilePrinter
+from exactly_lib.util.file_printer import FilePrinter
 
 
 def report_suite_parse_error(ex: SuiteParseError,
