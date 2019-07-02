@@ -228,18 +228,23 @@ def _install_into_directory(os_services: OsServices,
 
 
 _MAIN_DESCRIPTION_REST = """\
-If {DESTINATION} is not given, then {SOURCE} is installed in the {current_dir},
-as a file/directory with the basename of {SOURCE}.
+  * If {DESTINATION} is not given
+
+    {SOURCE} is installed in the {current_dir},
+    as a file/directory with the basename of {SOURCE}.
 
 
-If {DESTINATION} is given, but does not exist, then {SOURCE} is copied as
-a file/directory with the path of {DESTINATION}
+  * If {DESTINATION} is given, but does not exist
+  
+    {SOURCE} is copied as a file/directory with the path of {DESTINATION}
 
-(the basename of {SOURCE} is not preserved).
+    (the basename of {SOURCE} is not preserved).
 
 
-If {DESTINATION} does exist, it must be a directory, and {SOURCE} is copied into that directory
-as a file/directory with the basename of {SOURCE}.
+  * If {DESTINATION} does exist
+  
+    it must be a directory, and {SOURCE} is copied into that directory,
+    as a file/directory with the basename of {SOURCE}.
 
 
 As many attributes as possible of the copied files are preserved
