@@ -4,4 +4,4 @@ $ exit 10
 
 [assert]
 
-exitcode ! 10
+exit-code ! 10
