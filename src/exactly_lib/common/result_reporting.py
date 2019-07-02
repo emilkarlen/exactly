@@ -13,8 +13,6 @@ from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case import error_description
-from exactly_lib.util import file_printer
-from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.file_printer import FilePrinter
 
 
@@ -30,17 +28,11 @@ def print_error_message_for_full_result(printer: FilePrinter, the_full_result: F
         _SourceDisplayer(printer).visit(failure_info)
         failure_details = failure_info.failure_details
         if failure_details.is_only_failure_message:
-            ed = error_description.of_message(_message_as_str_of(failure_details))
+            ed = error_description.of_message(failure_details.failure_message)
         else:
             ed = error_description.of_exception(failure_details.exception,
-                                                _message_as_str_of(failure_details))
+                                                failure_details.failure_message)
         _ErrorDescriptionDisplayer(printer).visit(ed)
-
-
-def _message_as_str_of(fd: FailureDetails) -> Optional[str]:
-    msg = fd.failure_message
-    return (None if msg is None
-            else file_printer.print_to_string(msg))
 
 
 def error_message_for_error_info(error_info: ErrorInfo) -> str:
@@ -120,19 +112,24 @@ class _ErrorDescriptionDisplayer(error_description.ErrorDescriptionVisitor):
         self.out = out
 
     def _visit_message(self, ed: error_description.ErrorDescriptionOfMessage):
-        self.out.write_line_if_present(ed.message)
+        self._output_message_line_if_present(ed)
 
     def _visit_exception(self, ed: error_description.ErrorDescriptionOfException):
-        self.out.write_line_if_present(ed.message)
+        self._output_message_line_if_present(ed)
         self.out.write_line('Exception:')
         self.out.write_line(str(ed.exception))
 
     def _visit_external_process_error(self, ed: error_description.ErrorDescriptionOfExternalProcessError):
-        self.out.write_line_if_present(ed.message)
+        self._output_message_line_if_present(ed)
         self.out.write_line(misc_texts.EXIT_CODE.singular.capitalize() + ': ' +
                             str(ed.external_process_error.exit_code))
         if ed.external_process_error.stderr_output:
             self.out.write_line(ed.external_process_error.stderr_output)
+
+    def _output_message_line_if_present(self, ed: error_description.ErrorDescription):
+        if ed.message is not None:
+            ed.message.print_on(self.out)
+            self.out.write_empty_line()
 
 
 class _SourceDisplayer(FailureInfoVisitor):

@@ -2,6 +2,7 @@ import enum
 import unittest
 
 from exactly_lib.test_case import error_description as sut
+from exactly_lib.util import file_printables
 
 
 def suite() -> unittest.TestSuite:
@@ -30,7 +31,7 @@ class TestVisitor(unittest.TestCase):
     VISITOR = Visitor()
 
     def testVisitMessage(self):
-        ret_val = self.VISITOR.visit(sut.of_message('message'))
+        ret_val = self.VISITOR.visit(sut.of_constant_message('message'))
         self.assertIs(ReturnValueEnum.MESSAGE,
                       ret_val)
 
@@ -52,7 +53,7 @@ class TestVisitor(unittest.TestCase):
 
 class UnknownErrorDescriptionType(sut.ErrorDescription):
     def __init__(self):
-        super().__init__('unknown')
+        super().__init__(file_printables.of_constant_string('unknown'))
 
 
 if __name__ == '__main__':

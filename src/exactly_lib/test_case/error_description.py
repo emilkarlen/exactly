@@ -1,64 +1,76 @@
+from typing import Optional
+
 from exactly_lib.definitions import misc_texts
+from exactly_lib.util import file_printables
+from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.name import Name
 
 
 class ErrorDescription:
-    def __init__(self,
-                 message: str):
+    def __init__(self, message: Optional[FilePrintable]):
         self.__message = message
 
     @property
-    def message(self) -> str:
+    def message(self) -> Optional[FilePrintable]:
         return self.__message
 
 
-def of_message(message: str) -> ErrorDescription:
+def of_message(message: Optional[FilePrintable]) -> ErrorDescription:
     return ErrorDescriptionOfMessage(message)
 
 
-def formatted_error_message_str(category: Name, message: str) -> str:
-    return category.singular.capitalize() + ': ' + message
+def of_constant_message(message: str) -> ErrorDescription:
+    return ErrorDescriptionOfMessage(file_printables.of_constant_string(message))
 
 
-def syntax_error_message(message: str) -> str:
+def formatted_error_message_str(category: Name, message: FilePrintable) -> FilePrintable:
+    return file_printables.of_sequence(
+        [
+            file_printables.of_constant_string(category.singular.capitalize() + ': '),
+            message,
+        ]
+    )
+
+
+def syntax_error_message(message: FilePrintable) -> FilePrintable:
     return formatted_error_message_str(misc_texts.SYNTAX_ERROR_NAME, message)
 
 
-def file_access_error_message(message: str) -> str:
+def file_access_error_message(message: FilePrintable) -> FilePrintable:
     return formatted_error_message_str(misc_texts.FILE_ACCESS_ERROR_NAME,
                                        message)
 
 
-def syntax_error_of_message(message: str) -> ErrorDescription:
+def syntax_error_of_message(message: FilePrintable) -> ErrorDescription:
     return ErrorDescriptionOfMessage(syntax_error_message(message))
 
 
-def file_access_error_of_message(message: str) -> ErrorDescription:
+def file_access_error_of_message(message: FilePrintable) -> ErrorDescription:
     return ErrorDescriptionOfMessage(file_access_error_message(message))
 
 
 def of_exception(exception: Exception,
-                 message: str = None) -> ErrorDescription:
+                 message: Optional[FilePrintable] = None) -> ErrorDescription:
     return ErrorDescriptionOfException(exception, message)
 
 
 def of_external_process_error(exit_code: int,
                               stderr_output: str,
-                              message: str = None) -> ErrorDescription:
+                              message: Optional[FilePrintable] = None) -> ErrorDescription:
     return ErrorDescriptionOfExternalProcessError(ExternalProcessError(exit_code,
                                                                        stderr_output),
                                                   message)
 
 
 class ErrorDescriptionOfMessage(ErrorDescription):
-    def __init__(self, message: str):
+    def __init__(self, message: FilePrintable):
         super().__init__(message)
 
 
 class ErrorDescriptionOfException(ErrorDescription):
     def __init__(self,
                  exception: Exception,
-                 message: str = None):
+                 message: Optional[FilePrintable] = None):
         super().__init__(message)
         self.__exception = exception
 
@@ -85,7 +97,7 @@ class ExternalProcessError(tuple):
 class ErrorDescriptionOfExternalProcessError(ErrorDescription):
     def __init__(self,
                  external_process_error: ExternalProcessError,
-                 message: str = None):
+                 message: Optional[FilePrintable] = None):
         super().__init__(message)
         self.__external_process_error = external_process_error
 

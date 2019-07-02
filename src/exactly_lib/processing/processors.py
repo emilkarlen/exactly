@@ -22,6 +22,7 @@ from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
+from exactly_lib.util import file_printables
 from exactly_lib.util.std import StdOutputFiles
 
 
@@ -149,15 +150,19 @@ def actor_for_setup(setup: ActPhaseSetup) -> Actor:
 
 class _ParseErrorHandler(exceptions.ParseErrorVisitor[None]):
     def visit_file_source_error(self, ex: exceptions.FileSourceError) -> None:
-        error_info = ErrorInfo(error_description.syntax_error_of_message(ex.message),
-                               source_location_path_of_non_empty_location_path(ex.location_path),
-                               section_name=ex.maybe_section_name)
+        error_info = ErrorInfo(
+            error_description.syntax_error_of_message(file_printables.of_constant_string(ex.message)),
+            source_location_path_of_non_empty_location_path(ex.location_path),
+            section_name=ex.maybe_section_name,
+        )
         raise ProcessError(error_info)
 
     def visit_file_access_error(self, ex: exceptions.FileAccessError) -> None:
-        error_info = ErrorInfo(error_description.file_access_error_of_message(ex.message),
-                               source_location_path_of_non_empty_location_path(ex.location_path),
-                               section_name=ex.maybe_section_name)
+        error_info = ErrorInfo(
+            error_description.file_access_error_of_message(file_printables.of_constant_string(ex.message)),
+            source_location_path_of_non_empty_location_path(ex.location_path),
+            section_name=ex.maybe_section_name,
+        )
         raise AccessorError(AccessErrorType.FILE_ACCESS_ERROR,
                             error_info)
 

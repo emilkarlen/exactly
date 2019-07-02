@@ -72,7 +72,7 @@ class Processor:
                         ex.source_location,
                         ex.maybe_section_name,
                         None)
-        printer.write_lines(error_message_lines(ex))
+        error_message_lines(ex).print_on(printer)
 
 
 class SuitesExecutor:

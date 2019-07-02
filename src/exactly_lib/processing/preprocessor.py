@@ -7,6 +7,8 @@ from exactly_lib import program_info
 from exactly_lib.processing.test_case_processing import Preprocessor, ProcessError, ErrorInfo
 from exactly_lib.section_document.source_location import source_location_path_of
 from exactly_lib.test_case import error_description
+from exactly_lib.util import file_printables
+from exactly_lib.util.file_printer import FilePrintable
 
 
 class IdentityPreprocessor(Preprocessor):
@@ -74,5 +76,5 @@ class PreprocessorViaExternalProgram(Preprocessor):
                          source_location_path_of(test_case_file_path,
                                                  None))
 
-    def __error_message(self) -> str:
-        return 'Error from preprocessing by: ' + str(self.external_program)
+    def __error_message(self) -> FilePrintable:
+        return file_printables.of_constant_string('Error from preprocessing by: ' + str(self.external_program))

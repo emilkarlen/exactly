@@ -3,7 +3,7 @@ from exactly_lib.test_case import error_description
 
 
 def of_message(message: str) -> ErrorInfo:
-    return ErrorInfo(error_description.of_message(message))
+    return ErrorInfo(error_description.of_constant_message(message))
 
 
 def of_exception(exception: Exception) -> ErrorInfo:
