@@ -1,4 +1,4 @@
-from typing import List, Sequence
+from typing import List, Sequence, Optional
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
@@ -19,6 +19,7 @@ from exactly_lib.test_case_utils.condition.integer.parse_integer_condition impor
     parse_integer_comparison_operator_and_rhs
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
+from exactly_lib.util import file_printables
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
@@ -94,29 +95,39 @@ class ExitCodeResolver(comparison_structures.OperandResolver[int]):
             f = sds.result.exitcode_file.open()
         except IOError:
             rel_path = sds.relative_to_sds_root(sds.result.exitcode_file)
-            raise return_pfh_via_exceptions.PfhHardErrorException(
-                'Cannot read {exit_code} from file {file}'.format(
-                    exit_code=_PROPERTY_NAME,
-                    file=str(rel_path)))
+            err_msg = file_printables.of_format_string(
+                'Cannot read {exit_code} from file {file}',
+                {
+                    'exit_code': _PROPERTY_NAME,
+                    'file': rel_path,
+                }
+            )
+            raise return_pfh_via_exceptions.PfhHardErrorException(err_msg)
         try:
             contents = f.read()
         except IOError:
             raise return_pfh_via_exceptions.PfhHardErrorException(
-                'Failed to read contents from ' + str(sds.result.exitcode_file))
+                file_printables.of_sequence([
+                    _FAILED_TO_READ_CONTENTS_FROM__PRINTER,
+                    file_printables.of_to_string(sds.result.exitcode_file),
+                ]))
         finally:
             f.close()
 
         try:
             return int(contents)
         except ValueError:
-            msg = 'The contents of the file for {exit_code} ("{file}") is not an integer: "{contents}"'.format(
-                exit_code=_PROPERTY_NAME,
-                file=str(sds.result.exitcode_file),
-                contents=contents)
+            msg = file_printables.of_format_string(
+                'The contents of the file for {exit_code} ("{file}") is not an integer: "{contents}"',
+                {
+                    'exit_code': _PROPERTY_NAME,
+                    'file': sds.result.exitcode_file,
+                    'contents': contents,
+                })
             raise return_pfh_via_exceptions.PfhHardErrorException(msg)
 
 
-def must_be_within_byte_range(actual: int) -> str:
+def must_be_within_byte_range(actual: int) -> Optional[str]:
     if actual < 0 or actual > 255:
         return expected_found.unexpected_lines(_OPERAND_DESCRIPTION,
                                                str(actual))
@@ -126,3 +137,7 @@ def must_be_within_byte_range(actual: int) -> str:
 _MAIN_DESCRIPTION = """\
 {PASS} if, and only if, the {EXIT_CODE} satisfies {INTEGER_COMPARISON}.
 """
+
+_FAILED_TO_READ_CONTENTS_FROM__PRINTER = file_printables.of_constant_string(
+    'Failed to read contents from '
+)

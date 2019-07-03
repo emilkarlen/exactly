@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils import return_pfh_via_exceptions as sut
+from exactly_lib.util import file_printables
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -53,9 +54,9 @@ DO_HARD_ERROR = 2
 
 def test_action(what_to_do: int, message: str):
     if what_to_do == DO_HARD_ERROR:
-        raise sut.PfhHardErrorException(message)
+        raise sut.PfhHardErrorException(file_printables.of_constant_string(message))
     if what_to_do == DO_FAIL:
-        raise sut.PfhFailException(message)
+        raise sut.PfhFailException(file_printables.of_constant_string(message))
     if what_to_do != DO_SUCCESS:
         raise ValueError('unexpected what_to_do: ' + str(what_to_do))
 

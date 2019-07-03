@@ -5,6 +5,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file
 from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhHardErrorException
 from exactly_lib.type_system.logic.program.program_value import Program
+from exactly_lib.util import file_printables
 from exactly_lib.util.process_execution import process_output_files
 from exactly_lib.util.process_execution.executable_factory import ExecutableFactory
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
@@ -60,7 +61,7 @@ def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
                                                                      result_path,
                                                                      program.transformation)
     if error_message is not None:
-        raise PfhHardErrorException(error_message)
+        raise PfhHardErrorException(file_printables.of_constant_string(error_message))
 
     return ResultWithTransformation(result,
                                     result_path.name)

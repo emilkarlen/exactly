@@ -3,6 +3,8 @@ from typing import Sequence, Optional, List
 from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorInfo
 from exactly_lib.type_system.error_message import PropertyDescription
+from exactly_lib.util import file_printables
+from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.string import line_separated
 
@@ -48,6 +50,9 @@ class DiffErrorInfo(ErrorInfo):
         self.property_description = property_description
         self.expected = expected
         self.actual = actual
+
+    def error_message_as_printable(self) -> FilePrintable:
+        return file_printables.of_constant_string(self.error_message())
 
     def error_message(self) -> str:
         lines = []

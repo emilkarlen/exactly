@@ -15,6 +15,7 @@ from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_fro
 from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
     ErrorMessageResolver
+from exactly_lib.util import file_printables
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -209,7 +210,7 @@ class _ComparisonExecutor(Generic[T]):
 
     def _raise_fail_exception(self):
         err_msg = self.failure_reporter.unexpected_value_message()
-        raise return_pfh_via_exceptions.PfhFailException(err_msg)
+        raise return_pfh_via_exceptions.PfhFailException(file_printables.of_constant_string(err_msg))
 
     def _get_err_msg_resolver(self) -> ErrorMessageResolver:
         return self.failure_reporter.err_msg_resolver

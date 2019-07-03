@@ -12,6 +12,7 @@ from exactly_lib.test_case_utils import file_ref_check
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
 from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.util import file_printables
 
 
 class FilesSource:
@@ -43,7 +44,7 @@ class AssertPathIsExistingDirectory(AssertionPart[FilesSource, FilesSource]):
                                         expect_existing_dir),
             path_resolving_env)
         if failure_message is not None:
-            raise pfh_ex_method.PfhFailException(failure_message)
+            raise pfh_ex_method.PfhFailException(file_printables.of_constant_string(failure_message))
         else:
             return files_source
 
@@ -72,10 +73,13 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
             mb_error_message = value.matches(env,
                                              model)
             if mb_error_message is not None:
-                raise PfhFailException(mb_error_message.resolve(err_msg_env_from_instr_env(environment)))
+                raise PfhFailException(
+                    file_printables.of_constant_string(
+                        mb_error_message.resolve(err_msg_env_from_instr_env(environment)))
+                )
 
             return files_source
         except HardErrorException as ex:
             err_msg_env = err_msg_env_from_instr_env(environment)
             err_msg = ex.error.resolve(err_msg_env)
-            raise PfhHardErrorException(err_msg)
+            raise PfhHardErrorException(file_printables.of_constant_string(err_msg))

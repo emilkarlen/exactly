@@ -39,6 +39,14 @@ class TestSimple(unittest.TestCase):
         # ASSERT #
         self.assertEqual(os.linesep, actual)
 
+    def test_to_string(self):
+        # ACT #
+        value = 10
+        file_printable = sut.of_to_string(value)
+        actual = sut.print_to_string(file_printable)
+        # ASSERT #
+        self.assertEqual(str(value), actual)
+
     def test_format_string(self):
         # ARRANGE #
         format_map = {

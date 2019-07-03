@@ -8,6 +8,7 @@ from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhHardErrorException
 from exactly_lib.test_case_utils.return_svh_via_exceptions import SvhValidationException, SvhHardErrorException
+from exactly_lib.util import file_printables
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, \
     symbol_reference_assertions as asrt_sym_ref
@@ -135,7 +136,9 @@ class TestMain(unittest.TestCase):
                 asrt_pfh.is_hard_error(asrt.equals('error error in left op')),
 
                 operand_resolver_that(
-                    resolve_return_value_action=actions.do_raise(PfhHardErrorException('error error in left op'))),
+                    resolve_return_value_action=actions.do_raise(
+                        PfhHardErrorException(file_printables.of_constant_string('error error in left op'))
+                    )),
                 operand_resolver_that(),
             ),
             (
@@ -144,7 +147,9 @@ class TestMain(unittest.TestCase):
 
                 operand_resolver_that(),
                 operand_resolver_that(
-                    resolve_return_value_action=actions.do_raise(PfhHardErrorException('error error in right op'))),
+                    resolve_return_value_action=actions.do_raise(
+                        PfhHardErrorException(file_printables.of_constant_string('error error in right op')))
+                ),
             ),
         ]
 

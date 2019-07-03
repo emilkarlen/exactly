@@ -12,6 +12,10 @@ def of_constant_string(s: str) -> FilePrintable:
     return _FilePrintableOfConstantString(s)
 
 
+def of_to_string(x) -> FilePrintable:
+    return _FilePrintableOfToString(x)
+
+
 def of_format_string(format_str: str, format_map: Mapping[str, Any]) -> FilePrintable:
     return _FilePrintableOfFormatString(format_str, format_map)
 
@@ -56,6 +60,14 @@ class _FilePrintableOfConstantString(FilePrintable):
 
     def print_on(self, printer: FilePrinter):
         printer.write(self._s)
+
+
+class _FilePrintableOfToString(FilePrintable):
+    def __init__(self, x):
+        self._x = x
+
+    def print_on(self, printer: FilePrinter):
+        printer.write(str(self._x))
 
 
 class _FilePrintableSequence(FilePrintable):

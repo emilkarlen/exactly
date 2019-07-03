@@ -1,5 +1,4 @@
 import unittest
-
 from typing import Sequence, Any
 
 from exactly_lib.instructions.assert_.utils import assertion_part as sut
@@ -11,6 +10,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.util import file_printables
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh, svh_assertions as asrt_svh
@@ -18,6 +18,7 @@ from exactly_lib_test.test_case.test_resources.instruction_environment import fa
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidatorThat
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
 
 
 def suite() -> unittest.TestSuite:
@@ -109,9 +110,14 @@ class TestSequence(unittest.TestCase):
         # ACT & ASSERT #
         with self.assertRaises(PfhFailException) as cm:
             assertion_part.check(self.environment, self.the_os_services, 'custom env', 0)
-        self.assertEqual(PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE,
-                         cm.exception.err_msg,
-                         'error message from failing assertion_part should appear in PFH exception')
+        assertion = asrt_file_printable.equals_string(
+            PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE
+        )
+        assertion.apply_with_message(
+            self,
+            cm.exception.err_msg,
+            'error message from failing assertion_part should appear in PFH exception'
+        )
 
     def test_references_from_assertion_part_SHOULD_be_reported(self):
         # ARRANGE #
@@ -354,7 +360,7 @@ class PartThatRaisesFailureExceptionIfArgumentIsEqualToOne(sut.AssertionPart[int
               custom_environment,
               arg: int):
         if arg == 1:
-            raise PfhFailException(self.ERROR_MESSAGE)
+            raise PfhFailException(file_printables.of_constant_string(self.ERROR_MESSAGE))
         else:
             return arg + 1
 

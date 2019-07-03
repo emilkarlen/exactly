@@ -3,6 +3,8 @@ from typing import List, Optional
 
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.util import file_printables
+from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -38,6 +40,14 @@ class ConstantErrorMessageResolver(ErrorMessageResolver):
 
     def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
         return self._constant
+
+
+class OfFilePrintable(ErrorMessageResolver):
+    def __init__(self, printable: FilePrintable):
+        self._printable = printable
+
+    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+        return file_printables.print_to_string(self._printable)
 
 
 class PropertyDescription:
