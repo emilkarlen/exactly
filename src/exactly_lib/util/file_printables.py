@@ -33,6 +33,13 @@ def of_newline_ended_items(printable_sequence: Sequence[FilePrintable]) -> FileP
     return _FilePrintableSequence(list(itertools.chain.from_iterable(printable_list_list)))
 
 
+def of_newline_separated_items(items: Sequence[FilePrintable]) -> FilePrintable:
+    separated_items = items[:1]
+    for item in items[1:]:
+        separated_items += [_NEW_LINE, item]
+    return _FilePrintableSequence(separated_items)
+
+
 class _FilePrintableOfNewLine(FilePrintable):
     def print_on(self, printer: FilePrinter):
         printer.write_empty_line()

@@ -1,11 +1,11 @@
 import unittest
 from typing import Optional, Type
 
-from exactly_lib.util import file_printables
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
 
 
 def is_failure_message_of(msg: str) -> ValueAssertion[FailureDetails]:
@@ -30,9 +30,6 @@ class _ExpectedFailureDetails(ValueAssertionBase[FailureDetails]):
     def __init__(self,
                  error_message_or_none: Optional[ValueAssertion[str]],
                  exception_class_or_none: Optional[type]):
-        if error_message_or_none is not None:
-            if isinstance(error_message_or_none, str):
-                raise TypeError(error_message_or_none)
         self._error_message_or_none = error_message_or_none
         self._exception_class_or_none = exception_class_or_none
 
@@ -43,7 +40,7 @@ class _ExpectedFailureDetails(ValueAssertionBase[FailureDetails]):
         self.assertions(put, value, message_builder.apply(''))
 
     @property
-    def error_message_or_none(self) -> ValueAssertion:
+    def error_message_or_none(self) -> Optional[ValueAssertion[str]]:
         return self._error_message_or_none
 
     @property
@@ -58,18 +55,21 @@ class _ExpectedFailureDetails(ValueAssertionBase[FailureDetails]):
         if self.error_message_or_none is None and self.exception_class_or_none is None:
             put.assertIsNone(actual,
                              message_header)
-        elif self.error_message_or_none is not None:
-            err_msg = message_builder.for_sub_component('failure message')
-            put.assertIsNotNone(actual.failure_message,
-                                err_msg)
-            actual_failure_message = file_printables.print_to_string(actual.failure_message)
-            self.error_message_or_none.apply(put,
-                                             actual_failure_message,
-                                             err_msg)
         else:
-            put.assertIsInstance(actual.exception,
-                                 self.exception_class_or_none,
-                                 message_builder.for_sub_component('exception class'))
+            if self.error_message_or_none is not None:
+                err_msg = message_builder.for_sub_component('failure message')
+                put.assertIsNotNone(actual.failure_message,
+                                    err_msg)
+                assertion = asrt_file_printable.matches(self.error_message_or_none)
+                assertion.apply(put, actual.failure_message, err_msg)
+
+            if self.exception_class_or_none is None:
+                put.assertIsNone(actual.exception,
+                                 message_builder.for_sub_component('exception'))
+            else:
+                put.assertIsInstance(actual.exception,
+                                     self.exception_class_or_none,
+                                     message_builder.for_sub_component('exception'))
 
 
 class _EqualsFailureDetails(ValueAssertionBase[FailureDetails]):
@@ -93,12 +93,11 @@ class _EqualsFailureDetails(ValueAssertionBase[FailureDetails]):
                         message_builder.apply('has exception'))
 
         if self._expected.failure_message is not None:
-            expected_msg = file_printables.print_to_string(self._expected.failure_message)
-            actual_msg = file_printables.print_to_string(actual.failure_message)
-
-            put.assertEqual(expected_msg,
-                            actual_msg,
-                            message_builder.apply('failure_message'))
+            failure_message_assertion = asrt_file_printable.equals(self._expected.failure_message)
+            failure_message_assertion.apply(put,
+                                            actual.failure_message,
+                                            message_builder.for_sub_component(
+                                                'failure_message'))
 
         if self._expected.exception is not None:
             put.assertEqual(self._expected.exception,

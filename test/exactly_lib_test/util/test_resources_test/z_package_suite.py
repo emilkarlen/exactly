@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.util.test_resources_test import symbol_table_assertions, line_source_assertions, \
-    command_assertions
+    command_assertions, file_printable_assertions
 
 
 def suite() -> unittest.TestSuite:
@@ -9,6 +9,7 @@ def suite() -> unittest.TestSuite:
         symbol_table_assertions.suite(),
         line_source_assertions.suite(),
         command_assertions.suite(),
+        file_printable_assertions.suite(),
     ])
 
 
