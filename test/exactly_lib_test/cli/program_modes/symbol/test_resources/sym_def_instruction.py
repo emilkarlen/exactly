@@ -1,5 +1,4 @@
 import itertools
-
 from typing import Callable, List, Sequence, Optional
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
@@ -22,6 +21,7 @@ from exactly_lib.test_case.actor import Actor, ActionToCheck, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.result import svh
 from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.util import file_printables
 from exactly_lib_test.cli.program_modes.test_resources import main_program_execution
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import MainProgramConfig
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
@@ -150,7 +150,7 @@ class _ActorThatParsesReferences(Actor):
                 symbol_usages_action=do_return(references)
             )
         except SingleInstructionInvalidArgumentException as ex:
-            raise ParseException(svh.new_svh_validation_error(ex.error_message))
+            raise ParseException(svh.new_svh_validation_error__const(ex.error_message))
 
     def _get_reference_instruction_arguments(self, lines: Sequence[str]) -> List[str]:
         ret_val = []
@@ -161,7 +161,8 @@ class _ActorThatParsesReferences(Actor):
             if len(parts) == 2 and parts[0] == self._reference_instruction_name:
                 ret_val.append(parts[1])
             else:
-                err_msg = 'Invalid act phase instruction: {}\nExpecting: {}'.format(
+                err_msg = file_printables.of_format_string_args(
+                    'Invalid act phase instruction: {}\nExpecting: {}',
                     line,
                     self._reference_instruction_name)
                 raise ParseException(svh.new_svh_validation_error(err_msg))

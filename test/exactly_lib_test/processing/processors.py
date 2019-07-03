@@ -371,7 +371,7 @@ class InstructionWithFailingValidationFactory:
     """
 
     def __init__(self):
-        self.do_return_validation_error = do_return(svh.new_svh_validation_error('validation error message'))
+        self.do_return_validation_error = do_return(svh.new_svh_validation_error__const('validation error message'))
 
     def conf_instr_setup(self) -> SingleInstructionSetup:
         return instr_setup(instr.configuration_phase_instruction_that())

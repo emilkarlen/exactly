@@ -1,9 +1,8 @@
-import sys
-import unittest
-
 import os
 import pathlib
 import subprocess
+import sys
+import unittest
 from typing import Dict
 
 from exactly_lib.execution import phase_step_simple as phase_step
@@ -70,7 +69,7 @@ class CwdRegisterer:
 class TestExecutionSequence(unittest.TestCase):
     def test_WHEN_parse_raises_parse_exception_THEN_execution_SHOULD_stop_with_result_of_validation_error(self):
         # ARRANGE #
-        expected_cause = svh.new_svh_validation_error('failure message')
+        expected_cause = svh.new_svh_validation_error__const('failure message')
         atc_that_does_nothing = ActionToCheckThatRunsConstantActions()
         step_recorder = ListRecorder()
         recording_atc = ActionToCheckWrapperThatRecordsSteps(step_recorder,
@@ -91,7 +90,7 @@ class TestExecutionSequence(unittest.TestCase):
 
     def test_WHEN_parse_raises_unknown_exception_THEN_execution_SHOULD_stop_with_result_of_implementation_error(self):
         # ARRANGE #
-        expected_cause = svh.new_svh_validation_error('failure message')
+        expected_cause = svh.new_svh_validation_error__const('failure message')
         atc_that_does_nothing = ActionToCheckThatRunsConstantActions()
         step_recorder = ListRecorder()
         recording_atc = ActionToCheckWrapperThatRecordsSteps(step_recorder,

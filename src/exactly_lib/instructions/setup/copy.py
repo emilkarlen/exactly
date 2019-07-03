@@ -119,7 +119,7 @@ class _InstallInstructionBase(SetupPhaseInstruction):
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         path = self._src_path(environment)
         if not path.exists():
-            return svh.new_svh_validation_error('File does not exist: {}'.format(str(path)))
+            return svh.new_svh_validation_error__const('File does not exist: ' + str(path))
         return svh.new_svh_success()
 
     def main(self,

@@ -182,7 +182,7 @@ class PreOrPostSdsSvhValidationErrorValidator:
     @staticmethod
     def _translate(error_message_or_none: str) -> svh.SuccessOrValidationErrorOrHardError:
         if error_message_or_none is not None:
-            return svh.new_svh_validation_error(error_message_or_none)
+            return svh.new_svh_validation_error__const(error_message_or_none)
         return svh.new_svh_success()
 
 

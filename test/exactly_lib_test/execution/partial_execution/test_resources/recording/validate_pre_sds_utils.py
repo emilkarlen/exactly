@@ -45,7 +45,7 @@ class TestValidationError(TestCaseBase):
         conf = self.configuration
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(conf.phase,
-                 conf.instruction_that_returns(svh.new_svh_validation_error('validation error message')))
+                 conf.instruction_that_returns(svh.new_svh_validation_error__const('validation error message')))
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),
@@ -69,7 +69,7 @@ class TestHardError(TestCaseBase):
         conf = self.configuration
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(conf.phase,
-                 conf.instruction_that_returns(svh.new_svh_hard_error('Error message from hard error')))
+                 conf.instruction_that_returns(svh.new_svh_hard_error__const('Error message from hard error')))
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),

@@ -82,8 +82,8 @@ def pre_sds_validate(file_ref_check: FileRefCheck,
     if not validation_result.is_success:
         fr = file_ref_check.file_ref_resolver.resolve(environment.symbols)
         file_path = fr.value_pre_sds(environment.hds)
-        return svh.new_svh_validation_error(render_failure(validation_result.cause,
-                                                           file_path))
+        return svh.new_svh_validation_error__const(render_failure(validation_result.cause,
+                                                                  file_path))
     return svh.new_svh_success()
 
 
@@ -92,5 +92,5 @@ def pre_or_post_sds_validate(file_ref_check: FileRefCheck,
                              ) -> svh.SuccessOrValidationErrorOrHardError:
     failure_message = pre_or_post_sds_failure_message_or_none(file_ref_check, environment)
     if failure_message is not None:
-        return svh.new_svh_validation_error(failure_message)
+        return svh.new_svh_validation_error__const(failure_message)
     return svh.new_svh_success()

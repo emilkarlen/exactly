@@ -26,7 +26,7 @@ def translate_svh_exception_to_svh(action,
         return svh.new_svh_success()
 
     except SvhValidationException as ex:
-        return svh.new_svh_validation_error(ex.err_msg)
+        return svh.new_svh_validation_error__const(ex.err_msg)
 
     except SvhHardErrorException as ex:
-        return svh.new_svh_hard_error(ex.err_msg)
+        return svh.new_svh_hard_error__const(ex.err_msg)

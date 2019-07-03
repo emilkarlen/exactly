@@ -1,7 +1,6 @@
-import unittest
-
 import os
 import random
+import unittest
 from contextlib import contextmanager
 
 from exactly_lib.test_case import phase_identifier
@@ -12,6 +11,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType
+from exactly_lib.util import file_printables
 from exactly_lib_test.actors.test_resources import act_phase_execution
 from exactly_lib_test.actors.test_resources.act_phase_execution import \
     assert_is_list_of_act_phase_instructions, ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode
@@ -124,7 +124,7 @@ class TestExecuteBase(unittest.TestCase):
         if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
             self.fail('Expecting success. Found {}: {}'.format(
                 step_result.status,
-                step_result.failure_message,
+                file_printables.print_to_string(step_result.failure_message),
             ))
         with sds_with_act_as_curr_dir() as path_resolving_env:
             environment = InstructionEnvironmentForPostSdsStep(environment.hds,

@@ -29,7 +29,7 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_validate_pre_sds=validate_action_that_returns(
-                            svh.new_svh_hard_error('error in act/validate-pre-sds'))),
+                            svh.new_svh_hard_error__const('error in act/validate-pre-sds'))),
             Expectation(
                 asrt_result.matches2(PartialExeResultStatus.HARD_ERROR,
                                      asrt_result.has_no_sds(),
@@ -51,7 +51,7 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_validate_pre_sds=validate_action_that_returns(
-                            svh.new_svh_validation_error('error in act/validate-pre-sds'))),
+                            svh.new_svh_validation_error__const('error in act/validate-pre-sds'))),
             Expectation(
                 asrt_result.matches2(
                     PartialExeResultStatus.VALIDATION_ERROR,
@@ -95,7 +95,7 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_validate_post_setup=validate_action_that_returns(
-                            svh.new_svh_validation_error('error in act/validate-post-setup'))),
+                            svh.new_svh_validation_error__const('error in act/validate-post-setup'))),
             Expectation(
                 asrt_result.matches2(PartialExeResultStatus.VALIDATION_ERROR,
                                      asrt_result.has_sds(),
@@ -122,7 +122,7 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_validate_post_setup=validate_action_that_returns(
-                            svh.new_svh_hard_error('error in act/validate-post-setup'))),
+                            svh.new_svh_hard_error__const('error in act/validate-post-setup'))),
             Expectation(
                 asrt_result.matches2(PartialExeResultStatus.HARD_ERROR,
                                      asrt_result.has_sds(),

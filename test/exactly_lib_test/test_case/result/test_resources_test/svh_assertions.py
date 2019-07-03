@@ -1,6 +1,8 @@
 import unittest
 
 from exactly_lib.test_case.result import svh
+from exactly_lib.util import file_printables
+from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -28,10 +30,16 @@ class TestIsSuccess(unittest.TestCase):
         # ARRANGE #
         cases = [
             NameAndValue('VALIDATION_ERROR',
-                         svh.new_svh_validation_error('failure msg')
+                         svh.new_svh_validation_error(_printable_of_str('failure msg'))
+                         ),
+            NameAndValue('VALIDATION_ERROR/const msg',
+                         svh.new_svh_validation_error__const('failure msg')
                          ),
             NameAndValue('HARD_ERROR',
-                         svh.new_svh_hard_error('hard error msg')
+                         svh.new_svh_hard_error(_printable_of_str('hard error msg'))
+                         ),
+            NameAndValue('HARD_ERROR/const msg',
+                         svh.new_svh_hard_error__const('hard error msg')
                          ),
         ]
         assertion = sut.is_success()
@@ -51,11 +59,19 @@ class TestStatusIs(unittest.TestCase):
                 ),
             NEA('VALIDATION_ERROR',
                 svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                svh.new_svh_validation_error('validation msg'),
+                svh.new_svh_validation_error(_printable_of_str('validation msg')),
+                ),
+            NEA('VALIDATION_ERROR/const msg',
+                svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                svh.new_svh_validation_error__const('validation msg'),
                 ),
             NEA('HARD_ERROR',
                 svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR,
-                svh.new_svh_hard_error('hard err msg'),
+                svh.new_svh_hard_error(_printable_of_str('hard err msg')),
+                ),
+            NEA('HARD_ERROR/const msg',
+                svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR,
+                svh.new_svh_hard_error__const('hard err msg'),
                 ),
         ]
         for case in cases:
@@ -69,11 +85,19 @@ class TestStatusIs(unittest.TestCase):
         cases = [
             NEA('SUCCESS',
                 svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                svh.new_svh_validation_error('fail msg'),
+                svh.new_svh_validation_error(_printable_of_str('fail msg')),
+                ),
+            NEA('SUCCESS/const msg',
+                svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                svh.new_svh_validation_error__const('fail msg'),
                 ),
             NEA('VALIDATION_ERROR',
                 svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                svh.new_svh_hard_error('hard err msg'),
+                svh.new_svh_hard_error(_printable_of_str('hard err msg')),
+                ),
+            NEA('VALIDATION_ERROR/const msg',
+                svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                svh.new_svh_hard_error__const('hard err msg'),
                 ),
             NEA('HARD_ERROR',
                 svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR,
@@ -94,21 +118,21 @@ class TestStatusIsNotSuccess(unittest.TestCase):
         cases = [
             NEA('VALIDATION/any error message',
                 sut.status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR),
-                svh.new_svh_validation_error(expected_err_msg),
+                svh.new_svh_validation_error__const(expected_err_msg),
                 ),
             NEA('VALIDATION/matching error message',
                 sut.status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                                           asrt.equals(expected_err_msg)),
-                svh.new_svh_validation_error(expected_err_msg),
+                svh.new_svh_validation_error__const(expected_err_msg),
                 ),
             NEA('HARD_ERROR/any error message',
                 sut.status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR),
-                svh.new_svh_hard_error(expected_err_msg),
+                svh.new_svh_hard_error__const(expected_err_msg),
                 ),
             NEA('HARD_ERROR/matching error message',
                 sut.status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR,
                                           asrt.equals(expected_err_msg)),
-                svh.new_svh_hard_error(expected_err_msg),
+                svh.new_svh_hard_error__const(expected_err_msg),
                 ),
         ]
         for case in cases:
@@ -128,7 +152,12 @@ class TestStatusIsNotSuccess(unittest.TestCase):
             NEA('VALIDATION - VALIDATION/non-matching error message',
                 sut.status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                                           asrt.equals(expected_err_msg)),
-                svh.new_svh_validation_error(actual_err_msg),
+                svh.new_svh_validation_error(_printable_of_str(actual_err_msg)),
+                ),
+            NEA('VALIDATION - VALIDATION/non-matching error message/const msg',
+                sut.status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                                          asrt.equals(expected_err_msg)),
+                svh.new_svh_validation_error__const(actual_err_msg),
                 ),
             NEA('HARD_ERROR - SUCCESS/any error message',
                 sut.status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR),
@@ -137,10 +166,19 @@ class TestStatusIsNotSuccess(unittest.TestCase):
             NEA('HARD_ERROR - HARD_ERROR/non-matching error message',
                 sut.status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR,
                                           asrt.equals(expected_err_msg)),
-                svh.new_svh_hard_error(actual_err_msg),
+                svh.new_svh_hard_error(_printable_of_str(actual_err_msg)),
+                ),
+            NEA('HARD_ERROR - HARD_ERROR/non-matching error message/const msg',
+                sut.status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR,
+                                          asrt.equals(expected_err_msg)),
+                svh.new_svh_hard_error__const(actual_err_msg),
                 ),
         ]
         for case in cases:
             with self.subTest(case.name):
                 # ACT & ASSERT #
                 assert_that_assertion_fails(case.expected, case.actual)
+
+
+def _printable_of_str(s: str) -> FilePrintable:
+    return file_printables.of_constant_string(s)

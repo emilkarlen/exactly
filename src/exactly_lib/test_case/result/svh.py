@@ -1,6 +1,9 @@
 from enum import Enum
 from typing import Optional
 
+from exactly_lib.util import file_printables
+from exactly_lib.util.file_printer import FilePrintable
+
 
 class SuccessOrValidationErrorOrHardErrorEnum(Enum):
     SUCCESS = 0
@@ -10,8 +13,8 @@ class SuccessOrValidationErrorOrHardErrorEnum(Enum):
 
 class SuccessOrValidationErrorOrHardError(tuple):
     def __new__(cls,
-                is_hard_error: bool,
-                failure_message: str):
+                is_hard_error: Optional[bool],
+                failure_message: Optional[FilePrintable]):
         return tuple.__new__(cls, (is_hard_error, failure_message,))
 
     @property
@@ -24,10 +27,10 @@ class SuccessOrValidationErrorOrHardError(tuple):
 
     @property
     def is_success(self) -> bool:
-        return self.failure_message is None
+        return self[1] is None
 
     @property
-    def failure_message(self) -> str:
+    def failure_message(self) -> Optional[FilePrintable]:
         """
         :return None iff the object represents SUCCESS.
         """
@@ -46,20 +49,39 @@ def new_svh_success() -> SuccessOrValidationErrorOrHardError:
     return __SVH_SUCCESS
 
 
-def new_svh_validation_error(failure_message: str) -> SuccessOrValidationErrorOrHardError:
+def new_svh_validation_error__const(failure_message: str) -> SuccessOrValidationErrorOrHardError:
+    if failure_message is None:
+        raise ValueError('A VALIDATION ERROR must have a failure message (that is not None)')
+    return SuccessOrValidationErrorOrHardError(False, file_printables.of_constant_string(failure_message))
+
+
+def new_svh_validation_error(failure_message: FilePrintable) -> SuccessOrValidationErrorOrHardError:
     if failure_message is None:
         raise ValueError('A VALIDATION ERROR must have a failure message (that is not None)')
     return SuccessOrValidationErrorOrHardError(False, failure_message)
 
 
-def new_maybe_svh_validation_error(failure_message: Optional[str]) -> SuccessOrValidationErrorOrHardError:
+def new_maybe_svh_validation_error__const(failure_message: Optional[str]) -> SuccessOrValidationErrorOrHardError:
+    if failure_message is None:
+        return new_svh_success()
+    else:
+        return SuccessOrValidationErrorOrHardError(False, file_printables.of_constant_string(failure_message))
+
+
+def new_maybe_svh_validation_error(failure_message: Optional[FilePrintable]) -> SuccessOrValidationErrorOrHardError:
     if failure_message is None:
         return new_svh_success()
     else:
         return SuccessOrValidationErrorOrHardError(False, failure_message)
 
 
-def new_svh_hard_error(failure_message: str) -> SuccessOrValidationErrorOrHardError:
+def new_svh_hard_error__const(failure_message: str) -> SuccessOrValidationErrorOrHardError:
+    if failure_message is None:
+        raise ValueError('A HARD ERROR must have a failure message (that is not None)')
+    return SuccessOrValidationErrorOrHardError(True, file_printables.of_constant_string(failure_message))
+
+
+def new_svh_hard_error(failure_message: FilePrintable) -> SuccessOrValidationErrorOrHardError:
     if failure_message is None:
         raise ValueError('A HARD ERROR must have a failure message (that is not None)')
     return SuccessOrValidationErrorOrHardError(True, failure_message)

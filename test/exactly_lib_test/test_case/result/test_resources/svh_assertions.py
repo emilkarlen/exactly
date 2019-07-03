@@ -1,9 +1,11 @@
 import unittest
 
 from exactly_lib.test_case.result import svh
+from exactly_lib.util import file_printables
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
 
 
 def status_is(expected_status: svh.SuccessOrValidationErrorOrHardErrorEnum) -> ValueAssertion:
@@ -20,7 +22,7 @@ def status_is_not_success(expected_status: svh.SuccessOrValidationErrorOrHardErr
         status_is(expected_status),
         asrt.sub_component('error message',
                            svh.SuccessOrValidationErrorOrHardError.failure_message.fget,
-                           assertion_on_error_message)
+                           asrt_file_printable.matches(assertion_on_error_message))
     ])
 
 
@@ -42,7 +44,7 @@ class _IsSuccess(ValueAssertionBase):
                 'Expected: ' + svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS.name,
                 'Actual  : {st}: {msg}'.format(
                     st=value.status.name,
-                    msg=repr(value.failure_message))
+                    msg=repr(file_printables.print_to_string(value.failure_message)))
             ]))
 
 

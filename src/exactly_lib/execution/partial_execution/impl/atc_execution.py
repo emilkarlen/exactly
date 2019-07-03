@@ -63,7 +63,7 @@ class ActionToCheckExecutor:
                 return None
             else:
                 return failure_con(PartialExeResultStatus(res.status.value),
-                                   FailureDetails.new_constant_message(res.failure_message))
+                                   FailureDetails.new_message(res.failure_message))
 
         return action
 
