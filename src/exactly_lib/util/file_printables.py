@@ -1,5 +1,4 @@
 import io
-import itertools
 from typing import Mapping, Any, Sequence
 
 from exactly_lib.util.file_printer import FilePrintable, FilePrinter
@@ -25,12 +24,11 @@ def of_newline_ended_sequence(printable_sequence: Sequence[FilePrintable]) -> Fi
     return _FilePrintableSequence(list(printable_sequence) + [_NEW_LINE])
 
 
-def of_newline_ended_items(printable_sequence: Sequence[FilePrintable]) -> FilePrintable:
-    printable_list_list = [
-        [p, of_new_line()]
-        for p in printable_sequence
-    ]
-    return _FilePrintableSequence(list(itertools.chain.from_iterable(printable_list_list)))
+def of_newline_ended_items(items: Sequence[FilePrintable]) -> FilePrintable:
+    nl_ended_items = []
+    for item in items:
+        nl_ended_items += [item, _NEW_LINE]
+    return _FilePrintableSequence(nl_ended_items)
 
 
 def of_newline_separated_items(items: Sequence[FilePrintable]) -> FilePrintable:

@@ -10,6 +10,7 @@ from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruc
     ConfigurationBuilder
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import pfh, sh, svh
+from exactly_lib.util import file_printables
 from .symbol_validation import validate_symbol_usages
 
 
@@ -19,17 +20,17 @@ def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidation
         return None
     elif res.is_validation_error:
         return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.VALIDATION_ERROR,
-                                                       res.failure_message)
+                                                       file_printables.of_constant_string(res.failure_message))
     else:
         return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.HARD_ERROR,
-                                                       res.failure_message)
+                                                       file_printables.of_constant_string(res.failure_message))
 
 
 def _from_success_or_hard_error(res: sh.SuccessOrHardError) -> PartialInstructionControlledFailureInfo:
     return None \
         if res.is_success \
         else PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.HARD_ERROR,
-                                                     res.failure_message)
+                                                     file_printables.of_constant_string(res.failure_message))
 
 
 def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> PartialInstructionControlledFailureInfo:
@@ -37,7 +38,7 @@ def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> PartialI
         return None
     else:
         return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum(res.status.value),
-                                                       res.failure_message)
+                                                       file_printables.of_constant_string(res.failure_message))
 
 
 class ConfigurationMainExecutor(ControlledInstructionExecutor):

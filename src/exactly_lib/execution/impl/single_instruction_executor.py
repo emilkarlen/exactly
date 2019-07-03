@@ -6,6 +6,7 @@ from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import failure_details
 from exactly_lib.util.failure_details import FailureDetails
+from exactly_lib.util.file_printer import FilePrintable
 
 
 class PartialControlledFailureEnum(Enum):
@@ -26,7 +27,7 @@ class PartialInstructionControlledFailureInfo(tuple):
 
     def __new__(cls,
                 partial_controlled_failure_enum: PartialControlledFailureEnum,
-                error_message: str):
+                error_message: FilePrintable):
         return tuple.__new__(cls, (partial_controlled_failure_enum,
                                    error_message))
 
@@ -35,7 +36,7 @@ class PartialInstructionControlledFailureInfo(tuple):
         return self[0]
 
     @property
-    def error_message(self) -> str:
+    def error_message(self) -> FilePrintable:
         return self[1]
 
 
@@ -109,7 +110,7 @@ def execute_element(executor: ControlledInstructionExecutor,
         return SingleInstructionExecutionFailure(
             PartialExeResultStatus(fail_info.status.value),
             element.source_location_info.source_location_path,
-            FailureDetails.new_constant_message(fail_info.error_message))
+            FailureDetails.new_message(fail_info.error_message))
     except Exception as ex:
         return SingleInstructionExecutionFailure(
             PartialExeResultStatus.IMPLEMENTATION_ERROR,

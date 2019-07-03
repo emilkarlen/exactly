@@ -7,6 +7,7 @@ from exactly_lib.execution.impl.single_instruction_executor import ControlledIns
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.section_document.model import SectionContents
+from exactly_lib.util.file_printables import of_constant_string
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.execution.test_resources import failure_assertions as asrt_failure
 from exactly_lib_test.execution.test_resources.phase_step_execution import RecordingMedia, \
@@ -96,7 +97,7 @@ class Test(unittest.TestCase):
             any_instruction,
             recording_media.new_recorder_with_header('instruction executor'),
             PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
-                                                    'fail message')
+                                                    of_constant_string('fail message'))
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
                                                                   TestInstruction('The instruction')),
@@ -117,7 +118,7 @@ class Test(unittest.TestCase):
             any_instruction,
             recording_media.new_recorder_with_header('instruction executor'),
             PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.HARD_ERROR,
-                                                    'hard error message')
+                                                    of_constant_string('hard error message'))
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
                                                                   TestInstruction('The instruction')),
@@ -158,7 +159,7 @@ class Test(unittest.TestCase):
             instruction_with_name('First instruction'),
             recording_media.new_recorder_with_header('instruction executor'),
             PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
-                                                    'fail message')
+                                                    of_constant_string('fail message'))
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
                                                                   TestInstruction('First instruction')),
@@ -181,7 +182,7 @@ class Test(unittest.TestCase):
             instruction_with_name('Middle instruction'),
             recording_media.new_recorder_with_header('instruction executor'),
             PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
-                                                    'fail message')
+                                                    of_constant_string('fail message'))
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
                                                                   TestInstruction('First instruction')),
@@ -209,7 +210,7 @@ class Test(unittest.TestCase):
             instruction_with_name('Last instruction'),
             recording_media.new_recorder_with_header('instruction executor'),
             PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
-                                                    'fail message')
+                                                    of_constant_string('fail message'))
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
                                                                   TestInstruction('First instruction')),
@@ -235,7 +236,7 @@ class Test(unittest.TestCase):
             any_instruction,
             recording_media.new_recorder_with_header('instruction executor'),
             PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
-                                                    'fail message')
+                                                    of_constant_string('fail message'))
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
                                                                   TestInstruction('First instruction')),

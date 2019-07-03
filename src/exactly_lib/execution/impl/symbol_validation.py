@@ -6,6 +6,8 @@ from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.err_msg import error_messages
 from exactly_lib.symbol.err_msg import restriction_failures
 from exactly_lib.symbol.resolver_structure import SymbolContainer
+from exactly_lib.util import file_printables
+from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -66,12 +68,14 @@ def _validate_symbol_reference(symbol_table: SymbolTable,
 
 
 def _validate_reference(symbol_reference: su.SymbolReference,
-                        symbols: SymbolTable) -> Optional[str]:
+                        symbols: SymbolTable) -> Optional[FilePrintable]:
     referenced_resolver_container = symbols.lookup(symbol_reference.name)
     assert isinstance(referenced_resolver_container, SymbolContainer), \
-        'Values in SymbolTable must be ResolverContainer'
+        'Values in SymbolTable must be SymbolContainer'
     result = symbol_reference.restrictions.is_satisfied_by(symbols, symbol_reference.name,
                                                            referenced_resolver_container)
     if result is None:
         return None
-    return restriction_failures.error_message(symbol_reference.name, symbols, result)
+    return file_printables.of_constant_string(
+        restriction_failures.error_message(symbol_reference.name, symbols, result)
+    )

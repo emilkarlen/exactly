@@ -11,6 +11,7 @@ from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure
 from exactly_lib.symbol.err_msg.error_message_format import source_lines
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.line_source import LineSequence
 
 _WHICH_IS_A_BUILTIN_SYMBOL = 'which is a builtin symbol'
@@ -86,7 +87,7 @@ def _type_name_of(value_type: ValueType) -> str:
 
 
 def duplicate_symbol_definition(already_defined_symbol: Optional[SourceLocationInfo],
-                                name: str) -> str:
+                                name: str) -> FilePrintable:
     header_block = [
         'Symbol `{}\' has already been defined:'.format(name)
     ]
@@ -97,19 +98,19 @@ def duplicate_symbol_definition(already_defined_symbol: Optional[SourceLocationI
     )
     blocks = [header_block] + def_src_blocks
 
-    return rendering.blocks_as_str(blocks)
+    return rendering.blocks_as_printable(blocks)
 
 
-def undefined_symbol(reference: su.SymbolReference) -> str:
+def undefined_symbol(reference: su.SymbolReference) -> FilePrintable:
     from exactly_lib.definitions.formatting import InstructionName
     from exactly_lib.definitions.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
     def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
-    lines = [
-        'Symbol `{}\' is undefined.'.format(reference.name),
-        '',
-        'Define a symbol using the {} instruction.'.format(def_name_emphasised),
+    blocks = [
+        ['Symbol `{}\' is undefined.'.format(reference.name)],
+        ['Define a symbol using the {} instruction.'.format(def_name_emphasised)],
     ]
-    return '\n'.join(lines)
+
+    return rendering.blocks_as_printable(blocks)
 
 
 def defined_at_line__err_msg_lines(definition_source: Optional[SourceLocationInfo]) -> List[str]:

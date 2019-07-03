@@ -10,7 +10,7 @@ from exactly_lib.section_document.element_builder import SectionContentElementBu
 from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.section_document.source_location import FileLocationInfo
 from exactly_lib.test_case.phases.common import TestCaseInstruction
-from exactly_lib.util import line_source
+from exactly_lib.util import line_source, file_printables
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib_test.section_document.test_resources.elements import new_ls_from_line
 from exactly_lib_test.util.test_resources.failure_details_assertions import assert_equal_failure_details
@@ -103,9 +103,10 @@ class Test(unittest.TestCase):
                                               expected_status: PartialExeResultStatus):
         element = new_dummy_instruction_element()
         result = execute_element(
-            FailingExecutor(NameRecorder().new_function_that_records('s'),
-                            PartialInstructionControlledFailureInfo(failure_status_of_executor,
-                                                                    'error message')),
+            FailingExecutor(
+                NameRecorder().new_function_that_records('s'),
+                PartialInstructionControlledFailureInfo(failure_status_of_executor,
+                                                        file_printables.of_constant_string('error message'))),
             element,
             element.instruction_info)
         self._check_failure_result(expected_status,

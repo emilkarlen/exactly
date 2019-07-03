@@ -3,10 +3,13 @@ from pathlib import Path
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.err_msg import error_messages as sut
+from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib_test.section_document.test_resources.source_elements import \
     SOURCE_LOCATION_PATH_WITH_INCLUSIONS_AND_FILE_NAMES
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
 
 
 def suite() -> unittest.TestSuite:
@@ -42,8 +45,7 @@ class TestDuplicateDefinition(unittest.TestCase):
     def test_clash_with_builtin(self):
         actual = sut.duplicate_symbol_definition(None,
                                                  'the_symbol_name')
-
-        self.assertIsInstance(actual, str)
+        _assert_is_file_printable().apply_without_message(self, actual)
 
     def test_clash_with_user_defined(self):
         sli = SourceLocationInfo(Path.cwd(),
@@ -51,11 +53,15 @@ class TestDuplicateDefinition(unittest.TestCase):
         actual = sut.duplicate_symbol_definition(sli,
                                                  'the_symbol_name')
 
-        self.assertIsInstance(actual, str)
+        _assert_is_file_printable().apply_without_message(self, actual)
 
 
 class TestUndefinedSymbol(unittest.TestCase):
     def test(self):
         actual = sut.undefined_symbol(data_symbol_utils.symbol_reference('symbol_name'))
 
-        self.assertIsInstance(actual, str)
+        _assert_is_file_printable().apply_without_message(self, actual)
+
+
+def _assert_is_file_printable() -> ValueAssertion[FilePrintable]:
+    return asrt_file_printable.matches(asrt.anything_goes())
