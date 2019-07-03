@@ -33,8 +33,7 @@ def execute_action_that_returns_exit_code(exit_code: int = 0):
 
 def prepare_action_that_returns_hard_error_with_message(message: str):
     def f(*args, **kwargs) -> sh.SuccessOrHardError:
-        # return sh.new_sh_hard_error(new_failure_details_from_message(message))
-        return sh.new_sh_hard_error(message)
+        return sh.new_sh_hard_error__const(message)
 
     return f
 

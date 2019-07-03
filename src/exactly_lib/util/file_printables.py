@@ -16,6 +16,10 @@ def of_format_string(format_str: str, format_map: Mapping[str, Any]) -> FilePrin
     return _FilePrintableOfFormatString(format_str, format_map)
 
 
+def of_format_string_args(format_str: str, *args) -> FilePrintable:
+    return _FilePrintableOfFormatStringArgs(format_str, args)
+
+
 def of_sequence(printable_sequence: Sequence[FilePrintable]) -> FilePrintable:
     return _FilePrintableSequence(printable_sequence)
 
@@ -70,6 +74,15 @@ class _FilePrintableOfFormatString(FilePrintable):
 
     def print_on(self, printer: FilePrinter):
         printer.write(self._format_str.format_map(self._format_map))
+
+
+class _FilePrintableOfFormatStringArgs(FilePrintable):
+    def __init__(self, format_str: str, args: tuple):
+        self._format_str = format_str
+        self._args = args
+
+    def print_on(self, printer: FilePrinter):
+        printer.write(self._format_str.format(*self._args))
 
 
 def print_to_string(printable: FilePrintable) -> str:

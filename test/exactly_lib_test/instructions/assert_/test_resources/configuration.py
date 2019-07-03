@@ -43,19 +43,19 @@ class AssertConfigurationBase(ConfigurationBase):
             symbol_usages=symbol_usages)
 
     def expect_failure_of_main(self,
-                               assertion_on_error_message: ValueAssertion = asrt.anything_goes()):
+                               assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
         return Expectation(main_result=pfh_assertions.is_fail(assertion_on_error_message))
 
     def expect_hard_error_of_main(self,
-                                  assertion_on_error_message: ValueAssertion = asrt.anything_goes()):
+                                  assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
         return Expectation(main_result=pfh_assertions.is_hard_error(assertion_on_error_message))
 
     def expect_failing_validation_pre_sds(self,
-                                          assertion_on_error_message: ValueAssertion = asrt.anything_goes()):
+                                          assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
         return Expectation(validation_pre_sds=svh_assertions.is_validation_error(assertion_on_error_message))
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: ValueAssertion = asrt.anything_goes()):
+                                             assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
         return Expectation(validation_post_sds=svh_assertions.is_validation_error(assertion_on_error_message))
 
     def arrangement(self,

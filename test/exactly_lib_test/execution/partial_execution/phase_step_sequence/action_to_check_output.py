@@ -1,6 +1,5 @@
-import unittest
-
 import os
+import unittest
 from typing import Optional
 
 from exactly_lib.actors.source_interpreter import python3
@@ -181,7 +180,7 @@ class TestFailure(TestCaseBase):
             act_phase_source=py_pgm_setup.as_line_sequence()) \
             .add(PartialPhase.SETUP,
                  test.setup_phase_instruction_that(
-                     main=do_return(sh.new_sh_hard_error('hard error msg from setup'))))
+                     main=do_return(sh.new_sh_hard_error__const('hard error msg from setup'))))
         self._check(
             arr_for_py3_source(test_case),
             Expectation(
@@ -296,7 +295,7 @@ class TestFailure(TestCaseBase):
             act_phase_source=py_pgm_setup.as_line_sequence()) \
             .add(PartialPhase.CLEANUP,
                  test.cleanup_phase_instruction_that(
-                     main=do_return(sh.new_sh_hard_error('hard error msg from CLEANUP'))))
+                     main=do_return(sh.new_sh_hard_error__const('hard error msg from CLEANUP'))))
         self._check(
             arr_for_py3_source(test_case),
             Expectation(

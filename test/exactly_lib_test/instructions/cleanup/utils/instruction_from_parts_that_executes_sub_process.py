@@ -10,9 +10,10 @@ from exactly_lib_test.instructions.cleanup.test_resources.configuration import C
 from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources import \
     instruction_from_parts_that_executes_sub_process as test_impl
-from exactly_lib_test.test_case.result.test_resources import sh_assertions
+from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
 
 
 def suite() -> unittest.TestSuite:
@@ -30,17 +31,18 @@ class ConfigurationForTheCleanupPhase(CleanupConfigurationBase, test_impl.Config
         return instruction_from_parts.Parser(parts_parser)
 
     def expectation_for_zero_exitcode(self) -> Expectation:
-        return Expectation(main_result=sh_assertions.is_success())
+        return Expectation(main_result=asrt_sh.is_success())
 
     def expectation_for_non_zero_exitcode(self) -> Expectation:
-        return Expectation(main_result=sh_assertions.is_hard_error())
+        return Expectation(main_result=asrt_sh.is_hard_error())
 
     def expect_hard_error_in_main(self) -> Expectation:
-        return Expectation(main_result=sh_assertions.is_hard_error())
+        return Expectation(main_result=asrt_sh.is_hard_error())
 
-    def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: ValueAssertion = asrt.anything_goes()):
-        return Expectation(main_result=sh_assertions.is_hard_error(assertion_on_error_message))
+    def expect_failing_validation_post_setup(
+            self,
+            assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
+        return Expectation(main_result=asrt_sh.is_hard_error(asrt_file_printable.matches(assertion_on_error_message)))
 
 
 if __name__ == '__main__':

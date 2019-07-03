@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
     Configuration, suite_for
 from exactly_lib_test.instructions.setup.test_resources.configuration import SetupConfigurationBase
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import Expectation
-from exactly_lib_test.test_case.result.test_resources import sh_assertions
+from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh
 
 
 def suite() -> unittest.TestSuite:
@@ -18,7 +18,7 @@ class TheConfiguration(SetupConfigurationBase, Configuration):
         return sut.setup('instruction name')
 
     def expectation_for_non_zero_exitcode(self) -> Expectation:
-        return Expectation(main_result=sh_assertions.is_hard_error())
+        return Expectation(main_result=asrt_sh.is_hard_error())
 
     def expectation_for_zero_exitcode(self) -> Expectation:
         return Expectation()

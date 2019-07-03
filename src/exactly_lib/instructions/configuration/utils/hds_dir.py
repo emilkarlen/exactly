@@ -18,6 +18,7 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
+from exactly_lib.util import file_printables
 
 _RELATIVITY_ROOT = 'location of the current source file - the file that contains the instruction'
 
@@ -89,9 +90,11 @@ class _Instruction(ConfigurationPhaseInstruction):
     def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
         new_path = self._new_path()
         if not new_path.exists():
-            return sh.new_sh_hard_error('Directory does not exist: {}'.format(new_path))
+            return sh.new_sh_hard_error(file_printables.of_format_string_args('Directory does not exist: {}',
+                                                                              new_path))
         if not new_path.is_dir():
-            return sh.new_sh_hard_error('Not a directory: {}'.format(new_path))
+            return sh.new_sh_hard_error(file_printables.of_format_string_args('Not a directory: {}',
+                                                                              new_path))
         configuration_builder.set_hds_dir(self.dir_to_set, new_path.resolve())
         return sh.new_sh_success()
 

@@ -80,9 +80,9 @@ def parts_parser(instruction_name: str,
 def result_to_sh(result_and_stderr: ResultAndStderr) -> sh.SuccessOrHardError:
     result = result_and_stderr.result
     if not result.is_success:
-        return sh.new_sh_hard_error(result.error_message)
+        return sh.new_sh_hard_error__const(result.error_message)
     if result.exit_code != 0:
-        return sh.new_sh_hard_error(failure_message_for_nonzero_status(result_and_stderr))
+        return sh.new_sh_hard_error__const(failure_message_for_nonzero_status(result_and_stderr))
     return sh.new_sh_success()
 
 

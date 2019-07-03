@@ -2,9 +2,12 @@ import unittest
 from typing import Any
 
 from exactly_lib.test_case.result import sh
+from exactly_lib.util import file_printables
+from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
 
 
 def is_success() -> ValueAssertion[sh.SuccessOrHardError]:
@@ -23,18 +26,18 @@ class _IsSuccess(ValueAssertionBase[sh.SuccessOrHardError]):
         if not value.is_success:
             put.fail('\n'.join([
                 'Expected: success',
-                'Actual  : hard_error: ' + str(value.failure_message)
+                'Actual  : hard_error: ' + file_printables.print_to_string(value.failure_message)
             ]))
 
 
-def is_hard_error(assertion_on_error_message: ValueAssertion = asrt.anything_goes()
+def is_hard_error(assertion_on_error_message: ValueAssertion[FilePrintable] = asrt_file_printable.matches()
                   ) -> ValueAssertion[sh.SuccessOrHardError]:
     return is_sh_and(asrt.And([
         asrt.sub_component('is_hard_error',
                            sh.SuccessOrHardError.is_hard_error.fget,
                            asrt.equals(True,
                                        'Status is expected to be hard-error')),
-        asrt.sub_component('error message',
+        asrt.sub_component('failure_message',
                            sh.SuccessOrHardError.failure_message.fget,
                            assertion_on_error_message)
     ]))

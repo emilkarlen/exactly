@@ -4,6 +4,7 @@ from exactly_lib.test_case.result import sh
 from exactly_lib_test.test_case.result.test_resources import sh_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
 
 
 def suite() -> unittest.TestSuite:
@@ -23,7 +24,7 @@ class TestIsSuccess(unittest.TestCase):
 
     def test_fail(self):
         # ARRANGE #
-        actual = sh.new_sh_hard_error('failure msg')
+        actual = sh.new_sh_hard_error__const('failure msg')
         assertion = sut.is_success()
         # ACT #
         assert_that_assertion_fails(assertion, actual)
@@ -34,12 +35,12 @@ class TestIsHardError(unittest.TestCase):
         the_error_message = 'error message'
         cases = [
             ('no assertion on error message',
-             sh.new_sh_hard_error(the_error_message),
-             asrt.anything_goes(),
+             sh.new_sh_hard_error__const(the_error_message),
+             asrt_file_printable.matches(asrt.anything_goes()),
              ),
             ('assertion on error message',
-             sh.new_sh_hard_error(the_error_message),
-             asrt.equals(the_error_message),
+             sh.new_sh_hard_error__const(the_error_message),
+             asrt_file_printable.equals_string(the_error_message),
              ),
         ]
         for name, actual, assertion_on_error_message in cases:
@@ -54,11 +55,11 @@ class TestIsHardError(unittest.TestCase):
         cases = [
             ('is success',
              sh.new_sh_success(),
-             asrt.anything_goes(),
+             asrt_file_printable.matches(asrt.anything_goes()),
              ),
             ('assertion on error message fails',
-             sh.new_sh_hard_error(the_error_message),
-             asrt.equals(the_error_message + ' - part of message not in actual'),
+             sh.new_sh_hard_error__const(the_error_message),
+             asrt_file_printable.equals_string(the_error_message + ' - part of message not in actual'),
              ),
         ]
         for name, actual, assertion_on_error_message in cases:

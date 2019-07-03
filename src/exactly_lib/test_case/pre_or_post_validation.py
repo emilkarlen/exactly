@@ -206,7 +206,7 @@ class PreOrPostSdsSvhValidationForSuccessOrHardError:
     @staticmethod
     def _translate(error_message_or_none: str) -> sh.SuccessOrHardError:
         if error_message_or_none is not None:
-            return sh.new_sh_hard_error(error_message_or_none)
+            return sh.new_sh_hard_error__const(error_message_or_none)
         return sh.new_sh_success()
 
 

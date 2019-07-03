@@ -36,7 +36,7 @@ class ConfigurationForTheAssertPhase(AssertConfigurationBase, test_impl.Configur
         return Expectation(main_result=pfh_assertions.is_pass())
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: ValueAssertion = asrt.anything_goes()):
+                                             assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
         return Expectation(validation_post_sds=svh_assertions.is_validation_error(assertion_on_error_message))
 
     def expect_hard_error_in_main(self) -> Expectation:

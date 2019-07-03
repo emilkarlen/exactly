@@ -63,7 +63,7 @@ class Test(TestCaseBase):
     def test_hard_error_in_configuration_phase(self):
         test_case_generator = test_case_with_two_instructions_in_each_phase() \
             .add(phase_identifier.CONFIGURATION,
-                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
+                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error__const('hard error msg'))))
         self._check(
             Arrangement(test_case_generator),
             Expectation(

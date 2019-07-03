@@ -1,7 +1,6 @@
-import unittest
-
 import pathlib
 import tempfile
+import unittest
 from typing import Any, Callable, Dict
 
 from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import \
@@ -524,7 +523,7 @@ DO_RAISES_EXCEPTION = do_raise(ValueError('implementation error msg'))
 SVH_VALIDATION_ERROR = do_return(svh.new_svh_validation_error('validation error msg'))
 SVH_HARD_ERROR = do_return(svh.new_svh_hard_error('hard error msg'))
 
-SH_HARD_ERROR = do_return(sh.new_sh_hard_error('hard error msg'))
+SH_HARD_ERROR = do_return(sh.new_sh_hard_error__const('hard error msg'))
 
 
 def output_is_sds_which_should_be_preserved(sds_dir_name: str) -> ValueAssertion[str]:

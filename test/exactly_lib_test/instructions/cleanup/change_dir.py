@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.cleanup.test_resources.configuration import C
 from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.change_dir_instruction_test import \
     Configuration, suite_for
-from exactly_lib_test.test_case.result.test_resources import sh_assertions
+from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -22,7 +22,7 @@ class TheConfiguration(CleanupConfigurationBase, Configuration):
                            symbol_usages=symbol_usages)
 
     def expect_target_is_not_a_directory(self):
-        return Expectation(main_result=sh_assertions.is_hard_error())
+        return Expectation(main_result=asrt_sh.is_hard_error())
 
 
 def suite() -> unittest.TestSuite:

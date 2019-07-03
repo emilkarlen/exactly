@@ -30,7 +30,7 @@ def _from_success_or_hard_error(res: sh.SuccessOrHardError) -> PartialInstructio
     return None \
         if res.is_success \
         else PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.HARD_ERROR,
-                                                     file_printables.of_constant_string(res.failure_message))
+                                                     res.failure_message)
 
 
 def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> PartialInstructionControlledFailureInfo:

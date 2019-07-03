@@ -28,7 +28,7 @@ class Test(TestCaseBase):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.SETUP,
                  test.setup_phase_instruction_that(
-                     main=do_return(sh.new_sh_hard_error('hard error msg from setup'))))
+                     main=do_return(sh.new_sh_hard_error__const('hard error msg from setup'))))
         self._check(
             Arrangement(test_case),
             Expectation(
@@ -82,7 +82,7 @@ class Test(TestCaseBase):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.BEFORE_ASSERT,
                  test.before_assert_phase_instruction_that(
-                     main=do_return(sh.new_sh_hard_error('hard error msg'))))
+                     main=do_return(sh.new_sh_hard_error__const('hard error msg'))))
         self._check(
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(0)),
@@ -298,7 +298,7 @@ class Test(TestCaseBase):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.CLEANUP,
                  test.cleanup_phase_instruction_that(
-                     main=do_return(sh.new_sh_hard_error('hard error msg from CLEANUP'))))
+                     main=do_return(sh.new_sh_hard_error__const('hard error msg from CLEANUP'))))
         self._check(
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(3)),

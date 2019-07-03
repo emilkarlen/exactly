@@ -113,7 +113,7 @@ class Test(TestCaseBase):
             .add(phase_identifier.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(TestCaseStatus.FAIL)) \
             .add(phase_identifier.CONFIGURATION,
-                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
+                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error__const('hard error msg'))))
         self._check(
             Arrangement(test_case),
             Expectation(

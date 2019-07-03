@@ -53,6 +53,20 @@ class TestSimple(unittest.TestCase):
         # ASSERT #
         self.assertEqual(expected, actual)
 
+    def test_format_string_args(self):
+        # ARRANGE #
+        format_args = (
+            'A',
+            'bb',
+        )
+        format_string = 'First {} then {}'
+        expected = format_string.format(*format_args)
+        # ACT #
+        file_printable = sut.of_format_string_args(format_string, *format_args)
+        actual = sut.print_to_string(file_printable)
+        # ASSERT #
+        self.assertEqual(expected, actual)
+
 
 class TestComplex(unittest.TestCase):
     def test_sequence(self):
