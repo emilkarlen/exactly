@@ -1,14 +1,17 @@
+from typing import Optional
+
+
 class SuccessOrHardError(tuple):
     """
     Represents EITHER success OR hard error.
     """
 
     def __new__(cls,
-                failure_message: str):
+                failure_message: Optional[str]):
         return tuple.__new__(cls, (failure_message,))
 
     @property
-    def failure_message(self) -> str:
+    def failure_message(self) -> Optional[str]:
         """
         :return None iff the object represents SUCCESS.
         """

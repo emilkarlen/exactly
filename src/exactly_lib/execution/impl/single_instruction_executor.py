@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional
 
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.section_document.model import SectionContentElement, InstructionInfo
@@ -26,9 +27,9 @@ class PartialInstructionControlledFailureInfo(tuple):
     """
 
     def __new__(cls,
-                partial_controlled_failure_enum: PartialControlledFailureEnum,
+                status: PartialControlledFailureEnum,
                 error_message: FilePrintable):
-        return tuple.__new__(cls, (partial_controlled_failure_enum,
+        return tuple.__new__(cls, (status,
                                    error_message))
 
     @property
@@ -95,7 +96,7 @@ class SingleInstructionExecutionFailure(tuple):
 
 def execute_element(executor: ControlledInstructionExecutor,
                     element: SectionContentElement,
-                    instruction_info: InstructionInfo) -> SingleInstructionExecutionFailure:
+                    instruction_info: InstructionInfo) -> Optional[SingleInstructionExecutionFailure]:
     """
     :param element: Must be an instruction (i.e., element.is_instruction is True)
     :return: If None, then the execution was successful.
