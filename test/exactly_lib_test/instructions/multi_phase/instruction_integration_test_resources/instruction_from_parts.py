@@ -198,7 +198,7 @@ class TestFailureOfMainOfInstructionFromParser(TestCaseBase):
         the_error_message = 'the error message'
         parts = instruction_parts.InstructionParts(
             ValidatorThat(),
-            MainStepExecutorThat(assertion_return_value=pfh.new_pfh_fail(the_error_message),
+            MainStepExecutorThat(assertion_return_value=pfh.new_pfh_fail__const(the_error_message),
                                  non_assertion_return_value=sh.new_sh_hard_error__const(the_error_message)))
         parser = self.conf.instruction_parser_from_parts_parser(PartsParserThatGives(parts))
         source = remaining_source('ignored')

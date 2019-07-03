@@ -10,7 +10,7 @@ class ErrorInfo:
         raise NotImplementedError('abstract method')
 
     def as_pfh_fail(self) -> pfh.PassOrFailOrHardError:
-        return pfh.new_pfh_fail(self.error_message())
+        return pfh.new_pfh_fail__const(self.error_message())
 
 
 class ExplanationErrorInfo(ErrorInfo):

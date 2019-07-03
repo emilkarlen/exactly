@@ -38,7 +38,7 @@ def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> PartialI
         return None
     else:
         return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum(res.status.value),
-                                                       file_printables.of_constant_string(res.failure_message))
+                                                       res.failure_message_printable)
 
 
 class ConfigurationMainExecutor(ControlledInstructionExecutor):

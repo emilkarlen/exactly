@@ -381,10 +381,10 @@ class TestPhasesInPartialExecution(unittest.TestCase):
             STEP__MAIN:
                 {
                     EXECUTION__FAIL:
-                        assert_phase_instruction_that(main=do_return(pfh.new_pfh_fail('fail msg'))),
+                        assert_phase_instruction_that(main=do_return(pfh.new_pfh_fail__const('fail msg'))),
 
                     EXECUTION__HARD_ERROR:
-                        assert_phase_instruction_that(main=do_return(pfh.new_pfh_hard_error('hard error msg'))),
+                        assert_phase_instruction_that(main=do_return(pfh.new_pfh_hard_error__const('hard error msg'))),
 
                     EXECUTION__IMPLEMENTATION_ERROR:
                         assert_phase_instruction_that(main_initial_action=DO_RAISES_EXCEPTION),

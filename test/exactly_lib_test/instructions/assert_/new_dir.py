@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.assert_.test_resources.configuration import A
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.new_dir_instruction_test import \
     Configuration, suite_for
-from exactly_lib_test.test_case.result.test_resources import pfh_assertions
+from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -21,7 +21,7 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
 
     def expect_failure_to_create_dir(self,
                                      symbol_usages: ValueAssertion = asrt.is_empty_sequence):
-        return Expectation(main_result=pfh_assertions.is_hard_error(),
+        return Expectation(main_result=asrt_pfh.is_hard_error(),
                            symbol_usages=symbol_usages)
 
 

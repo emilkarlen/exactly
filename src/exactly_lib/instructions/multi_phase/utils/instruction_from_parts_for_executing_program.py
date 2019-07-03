@@ -89,7 +89,7 @@ def result_to_sh(result_and_stderr: ResultAndStderr) -> sh.SuccessOrHardError:
 def result_to_pfh(result_and_stderr: ResultAndStderr) -> pfh.PassOrFailOrHardError:
     result = result_and_stderr.result
     if not result.is_success:
-        return pfh.new_pfh_hard_error(failure_message_for_nonzero_status(result_and_stderr))
+        return pfh.new_pfh_hard_error__const(failure_message_for_nonzero_status(result_and_stderr))
     if result.exit_code != 0:
-        return pfh.new_pfh_fail(failure_message_for_nonzero_status(result_and_stderr))
+        return pfh.new_pfh_fail__const(failure_message_for_nonzero_status(result_and_stderr))
     return pfh.new_pfh_pass()

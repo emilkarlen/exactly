@@ -1,5 +1,4 @@
 import unittest
-
 from pathlib import Path
 from typing import Optional
 
@@ -18,6 +17,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
+from exactly_lib.util import file_printables
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
 from exactly_lib_test.execution.test_resources.instruction_test_resources import assert_phase_instruction_that
@@ -182,7 +182,7 @@ def test_suite_definition_with_single_conf_instruction(name: str,
 
 
 ASSERT_PHASE_INSTRUCTION_THAT_FAILS_UNCONDITIONALLY = assert_phase_instruction_that(
-    main=do_return(pfh.new_pfh_fail('unconditional failure')))
+    main=do_return(pfh.new_pfh_fail__const('unconditional failure')))
 
 
 def assert_phase_instruction_that_pass_iff_stdout_is_success_indicator_string(expected: str) -> AssertPhaseInstruction:
@@ -200,8 +200,11 @@ class AssertPhaseInstructionThatPassIffStdoutEqualsString(AssertPhaseInstruction
         if actual_contents == self.expected:
             return pfh.new_pfh_pass()
         else:
-            err_msg = 'Expected: {}\nActual  : {}'.format(self.expected, actual_contents)
-            return pfh.new_pfh_fail(err_msg)
+            return pfh.new_pfh_fail(
+                file_printables.of_format_string_args(
+                    'Expected: {}\nActual  : {}',
+                    self.expected, actual_contents,
+                ))
 
 
 def preprocessor_that_gives_constant(s: str) -> Preprocessor:

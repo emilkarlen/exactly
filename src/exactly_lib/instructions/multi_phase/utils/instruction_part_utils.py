@@ -42,7 +42,7 @@ class MainStepResultTranslatorForErrorMessageStringResultAsHardError(MainStepRes
         return (
             pfh.new_pfh_pass()
             if error_message is None
-            else pfh.new_pfh_hard_error(error_message)
+            else pfh.new_pfh_hard_error__const(error_message)
         )
 
 

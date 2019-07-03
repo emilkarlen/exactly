@@ -166,7 +166,7 @@ class Test(TestCaseBase):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.ASSERT,
                  test.assert_phase_instruction_that(
-                     main=do_return(pfh.new_pfh_fail('fail msg from ASSERT'))))
+                     main=do_return(pfh.new_pfh_fail__const('fail msg from ASSERT'))))
         self._check(
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
@@ -210,7 +210,7 @@ class Test(TestCaseBase):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.ASSERT,
                  test.assert_phase_instruction_that(
-                     main=do_return(pfh.new_pfh_hard_error('hard error msg from ASSERT'))))
+                     main=do_return(pfh.new_pfh_hard_error__const('hard error msg from ASSERT'))))
         self._check(
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(72)),

@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 from typing import List, Sequence
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
@@ -258,7 +257,7 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
 
 def configuration_with_assert_instruction_that_fails(instruction_name: str) -> sut.Configuration:
     assert_instruction_setup = instr_setup(instr.assert_phase_instruction_that(
-        main=do_return(pfh.new_pfh_fail('fail error message')))
+        main=do_return(pfh.new_pfh_fail__const('fail error message')))
     )
 
     instruction_set = InstructionsSetup(

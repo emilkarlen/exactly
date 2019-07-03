@@ -1,4 +1,5 @@
 from exactly_lib.test_case.result import pfh
+from exactly_lib.util import file_printables
 
 
 class PfhException(Exception):
@@ -17,7 +18,7 @@ class PfhException(Exception):
     @property
     def pfh(self) -> pfh.PassOrFailOrHardError:
         return pfh.PassOrFailOrHardError(self._status,
-                                         self._err_msg)
+                                         file_printables.of_constant_string(self._err_msg))
 
     @property
     def err_msg(self) -> str:
