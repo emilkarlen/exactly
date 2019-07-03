@@ -1,6 +1,6 @@
 from typing import Optional
 
-from exactly_lib.util import file_printer, file_printables
+from exactly_lib.util import file_printables
 from exactly_lib.util.file_printer import FilePrintable
 
 
@@ -54,7 +54,7 @@ class FailureDetails:
         components = []
 
         if self.__failure_message is not None:
-            components += ['message=' + file_printer.print_to_string(self.__failure_message)]
+            components += ['message=' + file_printables.print_to_string(self.__failure_message)]
 
         if self.__exception is not None:
             components += ['exception=' + str(self.__exception)]

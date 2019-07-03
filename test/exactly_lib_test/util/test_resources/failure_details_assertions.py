@@ -1,7 +1,7 @@
 import unittest
 from typing import Optional, Type
 
-from exactly_lib.util import file_printer
+from exactly_lib.util import file_printables
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
@@ -62,7 +62,7 @@ class _ExpectedFailureDetails(ValueAssertionBase[FailureDetails]):
             err_msg = message_builder.for_sub_component('failure message')
             put.assertIsNotNone(actual.failure_message,
                                 err_msg)
-            actual_failure_message = file_printer.print_to_string(actual.failure_message)
+            actual_failure_message = file_printables.print_to_string(actual.failure_message)
             self.error_message_or_none.apply(put,
                                              actual_failure_message,
                                              err_msg)
@@ -93,8 +93,8 @@ class _EqualsFailureDetails(ValueAssertionBase[FailureDetails]):
                         message_builder.apply('has exception'))
 
         if self._expected.failure_message is not None:
-            expected_msg = file_printer.print_to_string(self._expected.failure_message)
-            actual_msg = file_printer.print_to_string(actual.failure_message)
+            expected_msg = file_printables.print_to_string(self._expected.failure_message)
+            actual_msg = file_printables.print_to_string(actual.failure_message)
 
             put.assertEqual(expected_msg,
                             actual_msg,

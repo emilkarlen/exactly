@@ -1,4 +1,3 @@
-import io
 import os
 from abc import ABC
 from typing import Optional, Sequence
@@ -66,11 +65,3 @@ def file_printer_with_color_if_terminal(file_object) -> FilePrinter:
     return (FilePrinterWithAnsiColor(file_object)
             if ansi.is_file_object_with_color(file_object)
             else FilePrinter(file_object))
-
-
-def print_to_string(printable: FilePrintable) -> str:
-    mem_file = io.StringIO()
-    printable.print_on(FilePrinter(mem_file))
-    ret_val = mem_file.getvalue()
-    mem_file.close()
-    return ret_val

@@ -1,3 +1,4 @@
+import io
 import itertools
 from typing import Mapping, Any, Sequence
 
@@ -64,3 +65,11 @@ class _FilePrintableOfFormatString(FilePrintable):
 
     def print_on(self, printer: FilePrinter):
         printer.write(self._format_str.format_map(self._format_map))
+
+
+def print_to_string(printable: FilePrintable) -> str:
+    mem_file = io.StringIO()
+    printable.print_on(FilePrinter(mem_file))
+    ret_val = mem_file.getvalue()
+    mem_file.close()
+    return ret_val
