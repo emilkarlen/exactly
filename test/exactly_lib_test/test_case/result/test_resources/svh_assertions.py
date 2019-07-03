@@ -14,7 +14,7 @@ def status_is(expected_status: svh.SuccessOrValidationErrorOrHardErrorEnum) -> V
 
 
 def status_is_not_success(expected_status: svh.SuccessOrValidationErrorOrHardErrorEnum,
-                          assertion_on_error_message: ValueAssertion
+                          assertion_on_error_message: ValueAssertion[str] = asrt.is_instance(str)
                           ) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
     return asrt.And([
         status_is(expected_status),
