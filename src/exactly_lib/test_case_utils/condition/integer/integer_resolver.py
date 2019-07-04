@@ -14,6 +14,7 @@ from exactly_lib.test_case_utils.condition.comparison_structures import OperandR
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import NotAnIntegerException, python_evaluate
 from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.type_system.data.string_value import StringValue
+from exactly_lib.util import file_printables
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -121,8 +122,10 @@ class IntegerResolver(OperandResolver[int]):
         try:
             return self._int_resolver.resolve(environment)
         except NotAnIntegerException as ex:
-            msg = ('Argument is not an integer,'
-                   ' even though this should have been checked by the validation: `{}\''.format(ex.value_string))
+            msg = file_printables.of_format_string_args(
+                'Argument is not an integer,'
+                ' even though this should have been checked by the validation: `{}\'',
+                ex.value_string)
             raise return_svh_via_exceptions.SvhHardErrorException(msg)
 
     def resolve(self, symbols: SymbolTable) -> IntegerValue:
@@ -142,7 +145,9 @@ class _Validator(SvhPreSdsValidatorViaExceptions):
         try:
             resolved_value = self._int_resolver.resolve(environment)
         except NotAnIntegerException as ex:
-            msg = 'Argument must be an integer: `{}\''.format(ex.value_string)
+            msg = file_printables.of_format_string_args(
+                'Argument must be an integer: `{}\'',
+                ex.value_string)
             raise return_svh_via_exceptions.SvhValidationException(msg)
 
         self._validate_custom(resolved_value)
@@ -151,7 +156,9 @@ class _Validator(SvhPreSdsValidatorViaExceptions):
         if self._custom_integer_validator:
             err_msg = self._custom_integer_validator(resolved_value)
             if err_msg:
-                raise return_svh_via_exceptions.SvhValidationException(err_msg)
+                raise return_svh_via_exceptions.SvhValidationException(
+                    file_printables.of_constant_string(err_msg)
+                )
 
 
 class _PreOrPostSdsValidator(PreOrPostSdsValidator):
@@ -162,7 +169,7 @@ class _PreOrPostSdsValidator(PreOrPostSdsValidator):
         try:
             self._adapted.validate_pre_sds(environment)
         except return_svh_via_exceptions.SvhException as ex:
-            return ex.err_msg
+            return file_printables.print_to_string(ex.err_msg)
 
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
         return None

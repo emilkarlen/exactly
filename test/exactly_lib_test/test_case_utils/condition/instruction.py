@@ -84,7 +84,9 @@ class TestValidation(unittest.TestCase):
                 asrt_svh.is_validation_error(asrt.equals('error in left op')),
 
                 operand_resolver_that(
-                    validate_pre_sds=actions.do_raise(SvhValidationException('error in left op'))),
+                    validate_pre_sds=actions.do_raise(SvhValidationException(
+                        file_printables.of_constant_string('error in left op')
+                    ))),
                 operand_resolver_that(),
             ),
             (
@@ -93,14 +95,18 @@ class TestValidation(unittest.TestCase):
 
                 operand_resolver_that(),
                 operand_resolver_that(
-                    validate_pre_sds=actions.do_raise(SvhValidationException('error in right op'))),
+                    validate_pre_sds=actions.do_raise(SvhValidationException(
+                        file_printables.of_constant_string('error in right op')
+                    ))),
             ),
             (
                 'hard error exception in left operand',
                 asrt_svh.is_hard_error(asrt.equals('error in left op')),
 
                 operand_resolver_that(
-                    validate_pre_sds=actions.do_raise(SvhHardErrorException('error in left op'))),
+                    validate_pre_sds=actions.do_raise(SvhHardErrorException(
+                        file_printables.of_constant_string('error in left op')
+                    ))),
                 operand_resolver_that(),
             ),
             (
@@ -109,7 +115,9 @@ class TestValidation(unittest.TestCase):
 
                 operand_resolver_that(),
                 operand_resolver_that(
-                    validate_pre_sds=actions.do_raise(SvhHardErrorException('error in right op'))),
+                    validate_pre_sds=actions.do_raise(SvhHardErrorException(
+                        file_printables.of_constant_string('error in right op')
+                    ))),
             ),
         ]
 

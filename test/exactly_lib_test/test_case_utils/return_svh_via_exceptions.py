@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils import return_svh_via_exceptions as sut
+from exactly_lib.util import file_printables
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -53,9 +54,9 @@ DO_HARD_ERROR = 2
 
 def test_action(what_to_do: int, message: str):
     if what_to_do == DO_HARD_ERROR:
-        raise sut.SvhHardErrorException(message)
+        raise sut.SvhHardErrorException(file_printables.of_constant_string(message))
     if what_to_do == DO_VALIDATION_ERROR:
-        raise sut.SvhValidationException(message)
+        raise sut.SvhValidationException(file_printables.of_constant_string(message))
     if what_to_do != DO_SUCCESS:
         raise ValueError('unexpected what_to_do: ' + str(what_to_do))
 

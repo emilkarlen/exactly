@@ -12,6 +12,8 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.test_case.test_resources import instruction_environment
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds, fake_sds
 from exactly_lib_test.test_resources.actions import do_return
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
 
 
 def suite() -> unittest.TestSuite:
@@ -99,15 +101,18 @@ class TestValidateAndResolve(unittest.TestCase):
                 resolver_to_check.validate_pre_sds(
                     the_instruction_environment.path_resolving_environment_pre_or_post_sds)
 
-                actual = resolver_to_check.resolve_value_of_any_dependency(the_instruction_environment)
+                actual = resolver_to_check.resolve_value_of_any_dependency(
+                    the_instruction_environment.path_resolving_environment_pre_or_post_sds
+                )
 
                 # ASSERT #
 
                 self.assertEqual(case.expected.resolved_value,
                                  actual)
 
-                equals_symbol_references(case.expected.symbol_references).apply_without_message(self,
-                                                                                                actual_symbol_references)
+                equals_symbol_references(case.expected.symbol_references) \
+                    .apply_without_message(self,
+                                           actual_symbol_references)
 
     def _symbol_table_with_string_values(self, all_symbols):
         return SymbolTable(
@@ -179,11 +184,9 @@ class TestValidationPreSds(unittest.TestCase):
                                                             custom_validator)
                     # ACT & ASSERT #
                     with self.assertRaises(SvhValidationException) as cm:
-                        resolver_to_check.validate_pre_sds(the_instruction_environment)
+                        resolver_to_check.validate_pre_sds(the_instruction_environment.path_resolving_environment)
 
-                    self.assertIsInstance(cm.exception.err_msg,
-                                          str,
-                                          'the error message should be a str')
+                    asrt_file_printable.matches().apply_without_message(self, cm.exception.err_msg)
 
     def test_validation_SHOULD_fail_WHEN_custom_validator_fails(self):
 
@@ -200,10 +203,10 @@ class TestValidationPreSds(unittest.TestCase):
                             error_message=error_message_from_custom_validator))
         # ACT & ASSERT #
         with self.assertRaises(SvhValidationException) as cm:
-            resolver_to_check.validate_pre_sds(the_instruction_environment)
+            resolver_to_check.validate_pre_sds(the_instruction_environment.path_resolving_environment)
 
-        self.assertEqual(error_message_from_custom_validator,
-                         cm.exception.err_msg)
+        err_msg_expectation = asrt_file_printable.matches(asrt.equals(error_message_from_custom_validator))
+        err_msg_expectation.apply_without_message(self, cm.exception.err_msg)
 
     def test_validation_SHOULD_succeed_WHEN_value_is_an_integer_and_custom_validator_succeeds(self):
 
@@ -230,7 +233,7 @@ class TestValidationPreSds(unittest.TestCase):
                     custom_validator)
                 with self.subTest(custom_validator_is_none=str(custom_validator is None),
                                   value_string=value_string):
-                    resolver_to_check.validate_pre_sds(the_instruction_environment)
+                    resolver_to_check.validate_pre_sds(the_instruction_environment.path_resolving_environment)
 
 
 class CustomValidator:

@@ -5,6 +5,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_utils import return_svh_via_exceptions
+from exactly_lib.util import file_printables
 
 
 class SvhValidatorViaReturnValues:
@@ -73,13 +74,13 @@ class PreOrPostSdsValidatorFromValidatorViaExceptions(PreOrPostSdsValidator):
         try:
             self._adapted.validate_pre_sds(environment)
         except return_svh_via_exceptions.SvhException as ex:
-            return ex.err_msg
+            return file_printables.print_to_string(ex.err_msg)
 
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
         try:
             self._adapted.validate_post_setup(environment)
         except return_svh_via_exceptions.SvhException as ex:
-            return ex.err_msg
+            return file_printables.print_to_string(ex.err_msg)
 
 
 class SvhValidatorViaReturnValuesFromValidatorViaExceptions(SvhValidatorViaReturnValues):
