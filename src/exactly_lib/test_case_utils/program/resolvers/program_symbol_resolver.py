@@ -8,8 +8,9 @@ from exactly_lib.symbol.logic.string_transformer import StringTransformerResolve
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironment
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case import pre_or_post_validation
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, ValidatorOfReferredResolverBase
+from exactly_lib.test_case.validation import pre_or_post_validation
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, \
+    ValidatorOfReferredResolverBase
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.accumulator import ProgramElementsAccumulator

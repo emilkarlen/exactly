@@ -1,5 +1,4 @@
 import unittest
-
 from typing import List, Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -9,8 +8,8 @@ from exactly_lib.symbol.data import list_resolvers, string_resolvers
 from exactly_lib.symbol.data.list_resolver import Element
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case import pre_or_post_validation
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import pre_or_post_validation
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType, RelOptionType, RelNonHomeOptionType
 from exactly_lib.test_case_utils.parse.parse_relativity import reference_restrictions_for_path_symbol
 from exactly_lib.test_case_utils.program import syntax_elements

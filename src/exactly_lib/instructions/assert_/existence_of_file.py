@@ -16,13 +16,13 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
-from exactly_lib.test_case import pre_or_post_value_validation
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import pfh, svh
+from exactly_lib.test_case.validation import pre_or_post_value_validation
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate
 from exactly_lib.test_case_utils.err_msg.path_description import PathValuePartConstructor

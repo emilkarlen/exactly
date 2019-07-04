@@ -4,7 +4,7 @@ from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 
 
 class ArgumentsResolver(ObjectWithTypedSymbolReferences):

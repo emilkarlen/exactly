@@ -2,8 +2,8 @@ from typing import List
 
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case import pre_or_post_validation
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import pre_or_post_validation
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.logic.string_matcher import StringMatcherValue
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable

@@ -7,7 +7,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
+from exactly_lib.test_case.validation.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_utils.pfh_exception import PfhFailException
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util import file_printables

@@ -1,11 +1,10 @@
-import unittest
-
 import re
+import unittest
 from typing import Sequence, Pattern
 
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.pre_or_post_value_validation import ConstantPreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.pre_or_post_value_validation import ConstantPreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition

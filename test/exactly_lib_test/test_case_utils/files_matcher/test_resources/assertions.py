@@ -1,7 +1,7 @@
 from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherValue, FilesMatcherResolver
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util import symbol_table
 from exactly_lib_test.symbol.test_resources.resolver_assertions import is_resolver_of_logic_type

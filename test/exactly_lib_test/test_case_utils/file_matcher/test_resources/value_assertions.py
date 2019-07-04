@@ -1,13 +1,13 @@
 import unittest
 from typing import Set
 
-from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
-from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
 from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
+from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.visitor import FileMatcherStructureVisitor

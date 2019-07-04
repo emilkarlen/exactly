@@ -1,8 +1,7 @@
 import unittest
-
 from typing import Optional, Callable, Any
 
-from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
+from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     ConstantPreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure

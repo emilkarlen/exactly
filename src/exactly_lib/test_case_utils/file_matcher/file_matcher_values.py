@@ -1,8 +1,8 @@
 from abc import ABC
 from typing import List, Callable, Set
 
-from exactly_lib.test_case import pre_or_post_value_validators
-from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation import pre_or_post_value_validators
+from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherNot, FileMatcherAnd, FileMatcherOr, \

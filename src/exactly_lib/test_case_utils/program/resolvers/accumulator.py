@@ -9,8 +9,9 @@ from exactly_lib.symbol.logic.string_transformers import StringTransformerSequen
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case import pre_or_post_validation
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, PreOrPostSdsValidatorFromValueValidator
+from exactly_lib.test_case.validation import pre_or_post_validation
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, \
+    PreOrPostSdsValidatorFromValueValidator
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue

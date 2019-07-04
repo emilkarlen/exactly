@@ -2,7 +2,8 @@ from typing import Sequence, Optional, Set
 
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
-from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator, constant_success_validator
+from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
+    constant_success_validator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerValue, \

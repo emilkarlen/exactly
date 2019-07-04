@@ -7,8 +7,8 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.resolver_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.utils import DirDepValueResolver
-from exactly_lib.test_case import pre_or_post_validation
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import pre_or_post_validation
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.type_system.logic.program.command_value import CommandValue, CommandDriverValue
 from exactly_lib.util.process_execution.command import Command

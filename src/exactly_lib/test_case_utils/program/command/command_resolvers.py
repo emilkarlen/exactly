@@ -5,7 +5,7 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.logic.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.test_case_utils.program.command import driver_resolvers as drivers
 from exactly_lib.util.process_execution.command import ProgramAndArguments

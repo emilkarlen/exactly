@@ -11,9 +11,9 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator, \
-    PreOrPostSdsSvhValidationForSuccessOrHardError
 from exactly_lib.test_case.result import sh, svh
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator, \
+    PreOrPostSdsSvhValidationForSuccessOrHardError
 
 
 class CleanupPhaseInstructionFromParts(CleanupPhaseInstruction):

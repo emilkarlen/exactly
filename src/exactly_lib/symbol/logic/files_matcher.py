@@ -4,7 +4,7 @@ from typing import Optional, Iterator
 
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import ErrorMessageResolver, PropertyDescriptor
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue

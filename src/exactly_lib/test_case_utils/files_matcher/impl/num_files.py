@@ -4,7 +4,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     Environment, FilesMatcherModel, FilesMatcherValue
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_expr
 from exactly_lib.test_case_utils.files_matcher import config

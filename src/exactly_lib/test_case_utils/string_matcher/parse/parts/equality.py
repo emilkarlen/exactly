@@ -8,7 +8,8 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.logic.program.string_or_file import StringOrFileRefResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, SingleStepValidator, ValidationStep, \
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, SingleStepValidator, \
+    ValidationStep, \
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg import diff_msg

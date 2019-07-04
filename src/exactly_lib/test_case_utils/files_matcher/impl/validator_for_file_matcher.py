@@ -1,6 +1,6 @@
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
-from exactly_lib.test_case import pre_or_post_validation as validation
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import pre_or_post_validation as validation
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.util.symbol_table import SymbolTable
 
 

@@ -14,10 +14,10 @@ from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
-from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionSourceInfo
 from exactly_lib.test_case.phases.common import instruction_log_dir
+from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.program.command import command_resolvers
 from exactly_lib.test_case_utils.program.resolvers import accumulator

@@ -1,11 +1,10 @@
 import unittest
-
 from typing import Sequence
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator
 from exactly_lib.test_case_utils.program.parse import parse_program as sut
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm

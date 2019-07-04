@@ -2,8 +2,8 @@ import pathlib
 from abc import ABC, abstractmethod
 from typing import Set, Optional
 
-from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
-    ConstantPreOrPostSdsValueValidator, constant_success_validator
+from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
+    constant_success_validator
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition

@@ -3,7 +3,7 @@ from typing import Pattern, Callable, Sequence
 
 from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue

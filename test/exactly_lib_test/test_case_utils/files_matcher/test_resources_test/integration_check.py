@@ -2,7 +2,6 @@
 Test of test-infrastructure: instruction_check.
 """
 import unittest
-
 from typing import Sequence, Optional, List
 
 from exactly_lib.section_document.parse_source import ParseSource
@@ -12,8 +11,8 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, FilesMa
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironment
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case import pre_or_post_validation
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import pre_or_post_validation
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver

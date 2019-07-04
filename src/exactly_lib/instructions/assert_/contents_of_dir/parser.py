@@ -11,7 +11,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import \
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
+from exactly_lib.test_case.validation.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
 from exactly_lib.test_case_utils.parse import parse_file_ref

@@ -1,8 +1,8 @@
 from abc import ABC
 
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
-from exactly_lib.test_case import pre_or_post_validation
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import pre_or_post_validation
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.util.logic_types import ExpectationType
 
 

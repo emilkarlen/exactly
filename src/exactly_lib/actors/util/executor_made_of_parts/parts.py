@@ -6,10 +6,10 @@ from exactly_lib.test_case.actor import ActionToCheck, Actor, AtcOsProcessExecut
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, \
-    PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, \
+    PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util.std import StdFiles
 
 
