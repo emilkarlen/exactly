@@ -7,14 +7,17 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import Matcher
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
+from exactly_lib.type_system.trace import trace_rendering
+from exactly_lib.type_system.trace.trace_building import TraceBuilder
+from exactly_lib.type_system.trace.trace_rendering import MatchingResult
 
 LineMatcherLine = Tuple[int, str]
 
 FIRST_LINE_NUMBER = 1
 
 
-class LineMatcher(Matcher[LineMatcherLine]):
+class LineMatcher(MatcherWTrace[LineMatcherLine]):
     """
     Matches text lines.
 
@@ -22,6 +25,24 @@ class LineMatcher(Matcher[LineMatcherLine]):
 
     Line numbers start at 1.
     """
+
+    @property
+    def name(self) -> str:
+        return self.option_description
+
+    def _new_tb(self) -> TraceBuilder:
+        return TraceBuilder(self.name)
+
+    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
+        mb_fail = self.matches2(line)
+
+        tb = self._new_tb()
+
+        if mb_fail is None:
+            return tb.build_result(True)
+        else:
+            tb.details.append(trace_rendering.DetailRendererOfErrorMessageResolver(mb_fail))
+            return tb.build_result(False)
 
     def matches2(self, line: LineMatcherLine) -> Optional[ErrorMessageResolver]:
         if self.matches(line):
@@ -33,7 +54,7 @@ class LineMatcher(Matcher[LineMatcherLine]):
         """
         :return: If the line matches the condition represented by the matcher
         """
-        raise NotImplementedError('abstract method')
+        raise NotImplementedError('abstract method of ' + str(type(self)))
 
 
 class LineMatcherValue(MultiDirDependentValue[LineMatcher], ABC):

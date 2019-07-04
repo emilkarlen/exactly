@@ -2,7 +2,6 @@
 Test of test-infrastructure: instruction_check.
 """
 import unittest
-
 from typing import List
 
 from exactly_lib.section_document.parse_source import ParseSource
@@ -12,6 +11,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.error_message import ConstantErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine, LineMatcherValue
+from exactly_lib.type_system.trace.trace_rendering import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
@@ -174,6 +174,9 @@ class _LineMatcherThatReportsHardError(LineMatcher):
     @property
     def option_description(self) -> str:
         return 'unconditional HARD ERROR'
+
+    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
+        raise HardErrorException(ConstantErrorMessageResolver('unconditional hard error'))
 
     def matches(self, model: LineMatcherLine) -> bool:
         raise HardErrorException(ConstantErrorMessageResolver('unconditional hard error'))

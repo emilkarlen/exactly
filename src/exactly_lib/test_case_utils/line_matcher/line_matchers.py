@@ -3,6 +3,9 @@ from typing import Sequence
 from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
+from exactly_lib.type_system.trace import trace
+from exactly_lib.type_system.trace import trace_rendering
+from exactly_lib.type_system.trace.trace_rendering import MatchingResult
 
 
 class LineMatcherConstant(LineMatcher):
@@ -19,6 +22,10 @@ class LineMatcherConstant(LineMatcher):
     def result_constant(self) -> bool:
         return self._result
 
+    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
+        return self._new_tb() \
+            .build_result(self.matches(line))
+
     def matches(self, line: LineMatcherLine) -> bool:
         return self._result
 
@@ -28,14 +35,26 @@ class LineMatcherRegex(LineMatcher):
 
     def __init__(self, compiled_regular_expression):
         self._compiled_regular_expression = compiled_regular_expression
+        self._regex_detail_renderer = trace_rendering.DetailRendererOfConstant(
+            trace.StringDetail(self.option_description)
+        )
+
+    @property
+    def name(self) -> str:
+        return 'matches (TODO use const)'
 
     @property
     def option_description(self) -> str:
-        return 'name matches regex ' + self.regex_pattern_string
+        return self.name + ' ' + self.regex_pattern_string
 
     @property
     def regex_pattern_string(self) -> str:
         return self._compiled_regular_expression.pattern
+
+    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
+        return self._new_tb() \
+            .append_detail(self._regex_detail_renderer) \
+            .build(self.matches(line))
 
     def matches(self, line: LineMatcherLine) -> bool:
         return bool(self._compiled_regular_expression.search(line[1]))
@@ -46,10 +65,24 @@ class LineMatcherLineNumber(LineMatcher):
 
     def __init__(self, integer_matcher: IntegerMatcher):
         self._integer_matcher = integer_matcher
+        self._detail_renderer_of_expected = trace_rendering.DetailRendererOfConstant(
+            trace.StringDetail(self.option_description)
+        )
+
+    @property
+    def name(self) -> str:
+        return 'line-num (TODO use const)'
 
     @property
     def option_description(self) -> str:
         return self._integer_matcher.option_description
+
+    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
+        is_match = self.matches(line)
+
+        return self._new_tb() \
+            .append_detail(self._detail_renderer_of_expected) \
+            .build_result(is_match)
 
     def matches(self, line: LineMatcherLine) -> bool:
         return self._integer_matcher.matches(line[0])
@@ -62,12 +95,23 @@ class LineMatcherNot(LineMatcher):
         self._matcher = matcher
 
     @property
+    def name(self) -> str:
+        return expression.NOT_OPERATOR_NAME
+
+    @property
     def option_description(self) -> str:
         return expression.NOT_OPERATOR_NAME + ' ' + self._matcher.option_description
 
     @property
     def negated_matcher(self) -> LineMatcher:
         return self._matcher
+
+    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
+        result = self._matcher.matches3(line)
+
+        return self._new_tb() \
+            .append_child(result.trace) \
+            .build_result(not result.value)
 
     def matches(self, line: LineMatcherLine) -> bool:
         return not self._matcher.matches(line)
@@ -80,6 +124,10 @@ class LineMatcherAnd(LineMatcher):
         self._matchers = tuple(matchers)
 
     @property
+    def name(self) -> str:
+        return expression.AND_OPERATOR_NAME
+
+    @property
     def option_description(self) -> str:
         op = ' ' + expression.AND_OPERATOR_NAME + ' '
         return '({})'.format(op.join(map(lambda fm: fm.option_description, self.matchers)))
@@ -87,6 +135,17 @@ class LineMatcherAnd(LineMatcher):
     @property
     def matchers(self) -> Sequence[LineMatcher]:
         return list(self._matchers)
+
+    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
+        tb = self._new_tb()
+
+        for sub_matcher in self._matchers:
+            result = sub_matcher.matches_w_trace(line)
+            tb.append_child(result.trace)
+            if not result.value:
+                return tb.build_result(False)
+
+        return tb.build_result(True)
 
     def matches(self, line: LineMatcherLine) -> bool:
         return all((matcher.matches(line)
@@ -100,6 +159,10 @@ class LineMatcherOr(LineMatcher):
         self._matchers = tuple(matchers)
 
     @property
+    def name(self) -> str:
+        return expression.OR_OPERATOR_NAME
+
+    @property
     def option_description(self) -> str:
         op = ' ' + expression.OR_OPERATOR_NAME + ' '
         return '({})'.format(op.join(map(lambda fm: fm.option_description, self.matchers)))
@@ -107,6 +170,17 @@ class LineMatcherOr(LineMatcher):
     @property
     def matchers(self) -> Sequence[LineMatcher]:
         return list(self._matchers)
+
+    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
+        tb = self._new_tb()
+
+        for sub_matcher in self._matchers:
+            result = sub_matcher.matches_w_trace(line)
+            tb.append_child(result.trace)
+            if result.value:
+                return tb.build_result(True)
+
+        return tb.build_result(False)
 
     def matches(self, line: LineMatcherLine) -> bool:
         return any((matcher.matches(line)

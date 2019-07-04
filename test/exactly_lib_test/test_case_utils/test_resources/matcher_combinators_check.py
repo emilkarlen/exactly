@@ -1,7 +1,12 @@
 import unittest
 
-from exactly_lib.type_system.logic.matcher_base_class import Matcher
+from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.logic.matcher_base_class import Matcher, MatcherWTrace
+from exactly_lib.type_system.trace.trace import Node
+from exactly_lib.type_system.trace.trace_rendering import MatchingResult
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.test_utils import NEA
 
 
 class MatcherThatRegistersModelArgument(Matcher):
@@ -15,6 +20,30 @@ class MatcherThatRegistersModelArgument(Matcher):
     @property
     def registered_argument(self):
         return self._registered_argument
+
+
+class MatcherWTraceThatRegistersModelArgument(MatcherWTrace):
+    def __init__(self, constant_result: bool):
+        self._constant_result = constant_result
+        self._registered_argument = None
+
+    @property
+    def option_description(self) -> str:
+        return str(type(self)) + ': ' + str(self._constant_result)
+
+    def register_argument(self, argument):
+        self._registered_argument = argument
+
+    @property
+    def registered_argument(self):
+        return self._registered_argument
+
+    def matches_w_trace(self, model) -> MatchingResult:
+        return self._new_tb().build_result(self.matches(model))
+
+    def matches(self, model) -> bool:
+        self.register_argument(model)
+        return self._constant_result
 
 
 class MatcherConfiguration:
@@ -49,23 +78,39 @@ class TestCaseBase(unittest.TestCase):
         # ARRANGE #
 
         conf = self.configuration
-        with self.subTest(case_name=case_name):
-            matcher_to_check = self.new_combinator_to_check(constructor_argument)
-            model = conf.irrelevant_model()
-
+        matcher_to_check = self.new_combinator_to_check(constructor_argument)
+        model = conf.irrelevant_model()
+        with self.subTest(case_name=case_name,
+                          type='old style matcher'):
             # ACT #
-
             actual_result = matcher_to_check.matches(model)
-
             # ASSERT #
-
             self.assertEqual(expected_result,
                              actual_result,
                              'result')
-
             self.assertIsInstance(matcher_to_check.option_description,
                                   str,
                                   'option_description')
+
+        if isinstance(matcher_to_check, MatcherWTrace):
+            with self.subTest(case_name=case_name,
+                              type='matcher w trace'):
+                # ACT #
+                actual_result = matcher_to_check.matches_w_trace(model)
+                # ASSERT #
+                self.assertIsInstance(actual_result, MatchingResult,
+                                      'result object type')
+                self.assertEqual(expected_result,
+                                 actual_result.value,
+                                 'result')
+                self.assertIsInstance(matcher_to_check.name,
+                                      str,
+                                      'name')
+                trace = actual_result.trace.render(_ARBITRARY_ERR_MSG_RESOLVING_ENV)
+
+                self.assertIsInstance(trace,
+                                      Node,
+                                      'type of rendered trace')
 
 
 class TestAndBase(TestCaseBase):
@@ -76,22 +121,19 @@ class TestAndBase(TestCaseBase):
 
     def test_single_matcher_SHOULD_evaluate_to_value_of_the_single_matcher(self):
         cases = [
-            NameAndValue('false',
-                         (
-                             [self.configuration.matcher_with_constant_result(False)],
-                             False,
-                         )),
-            NameAndValue('true',
-                         (
-                             [self.configuration.matcher_with_constant_result(True)],
-                             True,
-                         )),
+            NEA('false',
+                False,
+                [self.configuration.matcher_with_constant_result(False)],
+                ),
+            NEA('true',
+                True,
+                [self.configuration.matcher_with_constant_result(True)]
+                ),
         ]
         for case in cases:
-            anded_matchers, expected_result = case.value
             self._check(case.name,
-                        anded_matchers,
-                        expected_result)
+                        case.actual,
+                        case.expected)
 
     def test_more_than_one_matcher_SHOULD_evaluate_to_True_WHEN_all_matchers_evaluate_to_True(self):
         cases = [
@@ -275,3 +317,9 @@ class TestNotBase(TestCaseBase):
         self.assertIs(model_that_should_be_registered,
                       sub_matcher.registered_argument,
                       'sub_matcher matcher should have received the argument')
+
+
+_ARBITRARY_ERR_MSG_RESOLVING_ENV = ErrorMessageResolvingEnvironment(
+    fake_tcds(),
+    None,
+)

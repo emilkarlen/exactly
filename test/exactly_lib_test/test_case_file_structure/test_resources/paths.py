@@ -18,3 +18,7 @@ def fake_sds() -> SandboxDirectoryStructure:
 def fake_home_and_sds() -> HomeAndSds:
     return HomeAndSds(fake_hds(),
                       fake_sds())
+
+
+def fake_tcds() -> HomeAndSds:
+    return fake_home_and_sds()

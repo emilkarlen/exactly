@@ -4,4 +4,4 @@ class WithOptionDescription:
 
     @property
     def option_description(self) -> str:
-        raise NotImplementedError('abstract method')
+        raise NotImplementedError('abstract method of: ' + str(type(self)))

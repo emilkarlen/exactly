@@ -3,6 +3,7 @@ from typing import Iterable, Callable
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib.type_system.trace.trace_rendering import MatchingResult
 
 
 class FakeStringTransformer(StringTransformer):
@@ -27,6 +28,9 @@ class LineMatcherNotImplementedTestImpl(LineMatcher):
     def option_description(self) -> str:
         return str(type(self))
 
+    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
+        raise NotImplementedError('should never be used')
+
     def matches(self, line: LineMatcherLine) -> bool:
         raise NotImplementedError('should never be used')
 
@@ -43,10 +47,13 @@ class LineMatcherFromPredicates(LineMatcher):
         self.line_num = line_num_predicate
         self.line_contents = line_contents_predicate
 
-    def matches(self, line: LineMatcherLine) -> bool:
-        return self.line_num(line[0]) and \
-               self.line_contents(line[1])
-
     @property
     def option_description(self) -> str:
         return str(type(self))
+
+    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
+        return self._new_tb().build_result(self.matches(line))
+
+    def matches(self, line: LineMatcherLine) -> bool:
+        return self.line_num(line[0]) and \
+               self.line_contents(line[1])

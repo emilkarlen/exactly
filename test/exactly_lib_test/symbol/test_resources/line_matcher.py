@@ -8,6 +8,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.line_matcher.line_matcher_values import LineMatcherValueFromPrimitiveValue
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherValue, LineMatcherLine
+from exactly_lib.type_system.trace.trace_rendering import MatchingResult
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -30,6 +31,9 @@ class LineMatcherConstantTestImpl(LineMatcher):
     @property
     def result_constant(self) -> bool:
         return self._result
+
+    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
+        return self._new_tb().build_result(self._result)
 
     def matches(self, line: LineMatcherLine) -> bool:
         return self._result

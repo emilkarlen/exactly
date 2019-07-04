@@ -5,6 +5,7 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcherFromComparisonOperator
 from exactly_lib.test_case_utils.line_matcher import line_matchers as sut
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
+from exactly_lib.type_system.trace.trace_rendering import MatchingResult
 
 
 def suite() -> unittest.TestSuite:
@@ -132,5 +133,12 @@ class AVisitorThatRecordsVisitedMethods(sut.LineMatcherStructureVisitor):
 
 
 class UnknownLineMatcher(sut.LineMatcher):
+    @property
+    def option_description(self) -> str:
+        return 'unknown matcher type'
+
+    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
+        raise NotImplementedError('this method should never be called')
+
     def matches(self, line: LineMatcherLine) -> bool:
         raise NotImplementedError('this method should never be called')
