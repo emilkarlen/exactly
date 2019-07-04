@@ -32,7 +32,7 @@ class Test(TestCaseBase):
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(TestCaseStatus.FAIL)) \
             .add(phase_identifier.ASSERT,
                  test.assert_phase_instruction_that(
-                     main=do_return(pfh.new_pfh_fail__const('fail message'))))
+                     main=do_return(pfh.new_pfh_fail__str('fail message'))))
         self._check(Arrangement(test_case,
                                 execute_test_action=execute_action_that_returns_exit_code(11)),
                     Expectation(
@@ -113,7 +113,7 @@ class Test(TestCaseBase):
             .add(phase_identifier.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(TestCaseStatus.FAIL)) \
             .add(phase_identifier.CONFIGURATION,
-                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error__const('hard error msg'))))
+                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error__str('hard error msg'))))
         self._check(
             Arrangement(test_case),
             Expectation(

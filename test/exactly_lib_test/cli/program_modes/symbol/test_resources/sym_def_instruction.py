@@ -150,7 +150,7 @@ class _ActorThatParsesReferences(Actor):
                 symbol_usages_action=do_return(references)
             )
         except SingleInstructionInvalidArgumentException as ex:
-            raise ParseException(svh.new_svh_validation_error__const(ex.error_message))
+            raise ParseException(svh.new_svh_validation_error__str(ex.error_message))
 
     def _get_reference_instruction_arguments(self, lines: Sequence[str]) -> List[str]:
         ret_val = []

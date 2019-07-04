@@ -191,13 +191,13 @@ class _Instruction(AssertPhaseInstruction):
                          ) -> svh.SuccessOrValidationErrorOrHardError:
         validator = self._validator(environment)
         maybe_err_msg = validator.validate_pre_sds_if_applicable(environment.hds)
-        return svh.new_maybe_svh_validation_error__const(maybe_err_msg)
+        return svh.new_maybe_svh_validation_error__str(maybe_err_msg)
 
     def validate_post_setup(self, environment: InstructionEnvironmentForPostSdsStep
                             ) -> svh.SuccessOrValidationErrorOrHardError:
         validator = self._validator(environment)
         maybe_err_msg = validator.validate_post_sds_if_applicable(environment.home_and_sds)
-        return svh.new_maybe_svh_validation_error__const(maybe_err_msg)
+        return svh.new_maybe_svh_validation_error__str(maybe_err_msg)
 
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
@@ -251,7 +251,7 @@ class _Assertion:
 
         return file_printables.of_sequence(
             [
-                file_printables.of_constant_string(_ERROR_MESSAGE_HEADER + '\n'.join(path_lines) + '\n\n'),
+                file_printables.of_string(_ERROR_MESSAGE_HEADER + '\n'.join(path_lines) + '\n\n'),
                 msg,
             ]
         )
@@ -266,7 +266,7 @@ class _Assertion:
                          check),
             self.environment.path_resolving_environment_pre_or_post_sds)
 
-        return pfh.new_pfh_fail_if_has_failure_message__const(failure_message)
+        return pfh.new_pfh_fail_if_has_failure_message__str(failure_message)
 
     def _assert_with_file_matcher(self) -> pfh.PassOrFailOrHardError:
         failure_message_of_existence = pre_or_post_sds_failure_message_or_none(
@@ -275,7 +275,7 @@ class _Assertion:
             self.environment.path_resolving_environment_pre_or_post_sds)
 
         if failure_message_of_existence:
-            return (pfh.new_pfh_fail__const(failure_message_of_existence)
+            return (pfh.new_pfh_fail__str(failure_message_of_existence)
                     if self._is_positive_check()
                     else pfh.new_pfh_pass()
                     )
@@ -290,9 +290,9 @@ class _Assertion:
             else:
                 err_msg = (_FILE_EXISTS_BUT_INVALID_PROPERTIES_ERR_MSG_HEADER +
                            self._err_msg_for(failure_message_resolver))
-                return pfh.new_pfh_fail__const(err_msg)
+                return pfh.new_pfh_fail__str(err_msg)
         except hard_error.HardErrorException as ex:
-            return pfh.new_pfh_hard_error__const(self._err_msg_for(ex.error))
+            return pfh.new_pfh_hard_error__str(self._err_msg_for(ex.error))
 
     def _matches_file_matcher_for_expectation_type(self) -> Optional[ErrorMessageResolver]:
         resolver = self._file_matcher_for_expectation_type()

@@ -35,14 +35,14 @@ class MainStepResultTranslatorForErrorMessageStringResultAsHardError(MainStepRes
         return (
             sh.new_sh_success()
             if error_message is None
-            else sh.new_sh_hard_error__const(error_message)
+            else sh.new_sh_hard_error__str(error_message)
         )
 
     def translate_for_assertion(self, error_message) -> pfh.PassOrFailOrHardError:
         return (
             pfh.new_pfh_pass()
             if error_message is None
-            else pfh.new_pfh_hard_error__const(error_message)
+            else pfh.new_pfh_hard_error__str(error_message)
         )
 
 

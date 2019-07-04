@@ -46,10 +46,10 @@ class _GetParseErrorExitValue(sec_doc_exceptions.ParseErrorVisitor[ExitValue]):
 
 class _GetParseErrorErrorMessageLinesRenderer(sec_doc_exceptions.ParseErrorVisitor[List[FilePrintable]]):
     def visit_file_source_error(self, ex: sec_doc_exceptions.FileSourceError) -> List[FilePrintable]:
-        return [error_description.syntax_error_message(file_printables.of_constant_string(ex.message))]
+        return [error_description.syntax_error_message(file_printables.of_string(ex.message))]
 
     def visit_file_access_error(self, ex: sec_doc_exceptions.FileAccessError) -> List[FilePrintable]:
-        return [error_description.file_access_error_message(file_printables.of_constant_string(ex.message))]
+        return [error_description.file_access_error_message(file_printables.of_string(ex.message))]
 
 
 class _GetErrorMessageLinesRenderer(SuiteReadErrorVisitor[FilePrintable]):
@@ -58,11 +58,11 @@ class _GetErrorMessageLinesRenderer(SuiteReadErrorVisitor[FilePrintable]):
 
     def visit_double_inclusion_error(self, ex: suite_exception.SuiteDoubleInclusion) -> FilePrintable:
         return file_printables.of_newline_ended_items(
-            [file_printables.of_constant_string('The suite has already been included.')]
+            [file_printables.of_string('The suite has already been included.')]
         )
 
     def visit_file_reference_error(self, ex: suite_exception.SuiteFileReferenceError) -> FilePrintable:
         return file_printables.of_newline_ended_items([
-            file_printables.of_constant_string(ex.error_message_header + ':'),
-            file_printables.of_constant_string(str(ex.reference)),
+            file_printables.of_string(ex.error_message_header + ':'),
+            file_printables.of_string(str(ex.reference)),
         ])

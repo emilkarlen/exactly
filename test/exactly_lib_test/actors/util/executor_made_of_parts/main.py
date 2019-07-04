@@ -28,7 +28,7 @@ def suite() -> unittest.TestSuite:
 class TestConstructor(unittest.TestCase):
     def test_WHEN_parser_raises_exception_THEN_parse_SHOULD_raise_this_exception(self):
         # ARRANGE #
-        parser_error = svh.new_svh_validation_error__const('msg')
+        parser_error = svh.new_svh_validation_error__str('msg')
         parser = sut.ActorFromParts(ParserThatRaisesException(parser_error),
                                     validator_constructor_that_raises,
                                     executor_constructor_that_raises)

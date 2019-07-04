@@ -24,7 +24,7 @@ class TestIsSuccess(unittest.TestCase):
 
     def test_fail(self):
         # ARRANGE #
-        actual = sh.new_sh_hard_error__const('failure msg')
+        actual = sh.new_sh_hard_error__str('failure msg')
         assertion = sut.is_success()
         # ACT #
         assert_that_assertion_fails(assertion, actual)
@@ -35,11 +35,11 @@ class TestIsHardError(unittest.TestCase):
         the_error_message = 'error message'
         cases = [
             ('no assertion on error message',
-             sh.new_sh_hard_error__const(the_error_message),
+             sh.new_sh_hard_error__str(the_error_message),
              asrt_file_printable.matches(asrt.anything_goes()),
              ),
             ('assertion on error message',
-             sh.new_sh_hard_error__const(the_error_message),
+             sh.new_sh_hard_error__str(the_error_message),
              asrt_file_printable.equals_string(the_error_message),
              ),
         ]
@@ -58,7 +58,7 @@ class TestIsHardError(unittest.TestCase):
              asrt_file_printable.matches(asrt.anything_goes()),
              ),
             ('assertion on error message fails',
-             sh.new_sh_hard_error__const(the_error_message),
+             sh.new_sh_hard_error__str(the_error_message),
              asrt_file_printable.equals_string(the_error_message + ' - part of message not in actual'),
              ),
         ]

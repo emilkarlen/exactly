@@ -182,7 +182,7 @@ class PreOrPostSdsSvhValidationErrorValidator:
     @staticmethod
     def _translate(error_message_or_none: str) -> svh.SuccessOrValidationErrorOrHardError:
         if error_message_or_none is not None:
-            return svh.new_svh_validation_error__const(error_message_or_none)
+            return svh.new_svh_validation_error__str(error_message_or_none)
         return svh.new_svh_success()
 
 
@@ -206,7 +206,7 @@ class PreOrPostSdsSvhValidationForSuccessOrHardError:
     @staticmethod
     def _translate(error_message_or_none: str) -> sh.SuccessOrHardError:
         if error_message_or_none is not None:
-            return sh.new_sh_hard_error__const(error_message_or_none)
+            return sh.new_sh_hard_error__str(error_message_or_none)
         return sh.new_sh_success()
 
 

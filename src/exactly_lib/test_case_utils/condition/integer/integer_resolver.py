@@ -157,7 +157,7 @@ class _Validator(SvhPreSdsValidatorViaExceptions):
             err_msg = self._custom_integer_validator(resolved_value)
             if err_msg:
                 raise return_svh_via_exceptions.SvhValidationException(
-                    file_printables.of_constant_string(err_msg)
+                    file_printables.of_string(err_msg)
                 )
 
 

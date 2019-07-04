@@ -53,7 +53,7 @@ class TestVisitor(unittest.TestCase):
 
 class UnknownErrorDescriptionType(sut.ErrorDescription):
     def __init__(self):
-        super().__init__(file_printables.of_constant_string('unknown'))
+        super().__init__(file_printables.of_string('unknown'))
 
 
 if __name__ == '__main__':

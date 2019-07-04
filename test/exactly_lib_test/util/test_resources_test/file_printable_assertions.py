@@ -24,7 +24,7 @@ class TestMatches(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(case):
-                actual = file_printables.of_constant_string(case)
+                actual = file_printables.of_string(case)
                 # ACT & ASSERT #
                 assertion.apply_without_message(self, actual)
 
@@ -40,7 +40,7 @@ class TestMatches(unittest.TestCase):
         # ARRANGE #
         expected_str = 'the text'
         assertion = sut.matches(asrt.equals(expected_str))
-        actual = file_printables.of_constant_string(expected_str)
+        actual = file_printables.of_string(expected_str)
 
         # ACT & ASSERT #
         assertion.apply_without_message(self, actual)
@@ -48,7 +48,7 @@ class TestMatches(unittest.TestCase):
     def test_not_matches_explicit_assertion(self):
         # ARRANGE #
         assertion = sut.matches(asrt.equals('expected'))
-        actual = file_printables.of_constant_string('actual')
+        actual = file_printables.of_string('actual')
 
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -59,7 +59,7 @@ class TestEqualsString(unittest.TestCase):
         # ARRANGE #
         expected_str = 'the text'
         assertion = sut.equals_string(expected_str)
-        actual = file_printables.of_constant_string(expected_str)
+        actual = file_printables.of_string(expected_str)
 
         # ACT & ASSERT #
         assertion.apply_without_message(self, actual)
@@ -67,7 +67,7 @@ class TestEqualsString(unittest.TestCase):
     def test_not_equals_str(self):
         # ARRANGE #
         assertion = sut.equals_string('expected')
-        actual = file_printables.of_constant_string('actual')
+        actual = file_printables.of_string('actual')
 
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -77,8 +77,8 @@ class TestEquals(unittest.TestCase):
     def test_equals(self):
         # ARRANGE #
         expected_str = 'the text'
-        expected = file_printables.of_constant_string(expected_str)
-        actual = file_printables.of_constant_string(expected_str)
+        expected = file_printables.of_string(expected_str)
+        actual = file_printables.of_string(expected_str)
 
         assertion = sut.equals(expected)
 
@@ -88,8 +88,8 @@ class TestEquals(unittest.TestCase):
 
     def test_not_equals(self):
         # ARRANGE #
-        expected = file_printables.of_constant_string('expected')
-        actual = file_printables.of_constant_string('actual')
+        expected = file_printables.of_string('expected')
+        actual = file_printables.of_string('actual')
 
         assertion = sut.equals(expected)
 

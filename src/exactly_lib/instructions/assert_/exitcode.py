@@ -138,6 +138,6 @@ _MAIN_DESCRIPTION = """\
 {PASS} if, and only if, the {EXIT_CODE} satisfies {INTEGER_COMPARISON}.
 """
 
-_FAILED_TO_READ_CONTENTS_FROM__PRINTER = file_printables.of_constant_string(
+_FAILED_TO_READ_CONTENTS_FROM__PRINTER = file_printables.of_string(
     'Failed to read contents from '
 )

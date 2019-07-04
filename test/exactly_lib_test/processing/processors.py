@@ -257,7 +257,7 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
 
 def configuration_with_assert_instruction_that_fails(instruction_name: str) -> sut.Configuration:
     assert_instruction_setup = instr_setup(instr.assert_phase_instruction_that(
-        main=do_return(pfh.new_pfh_fail__const('fail error message')))
+        main=do_return(pfh.new_pfh_fail__str('fail error message')))
     )
 
     instruction_set = InstructionsSetup(
@@ -371,7 +371,7 @@ class InstructionWithFailingValidationFactory:
     """
 
     def __init__(self):
-        self.do_return_validation_error = do_return(svh.new_svh_validation_error__const('validation error message'))
+        self.do_return_validation_error = do_return(svh.new_svh_validation_error__str('validation error message'))
 
     def conf_instr_setup(self) -> SingleInstructionSetup:
         return instr_setup(instr.configuration_phase_instruction_that())

@@ -49,10 +49,10 @@ def new_svh_success() -> SuccessOrValidationErrorOrHardError:
     return __SVH_SUCCESS
 
 
-def new_svh_validation_error__const(failure_message: str) -> SuccessOrValidationErrorOrHardError:
+def new_svh_validation_error__str(failure_message: str) -> SuccessOrValidationErrorOrHardError:
     if failure_message is None:
         raise ValueError('A VALIDATION ERROR must have a failure message (that is not None)')
-    return SuccessOrValidationErrorOrHardError(False, file_printables.of_constant_string(failure_message))
+    return SuccessOrValidationErrorOrHardError(False, file_printables.of_string(failure_message))
 
 
 def new_svh_validation_error(failure_message: FilePrintable) -> SuccessOrValidationErrorOrHardError:
@@ -61,11 +61,11 @@ def new_svh_validation_error(failure_message: FilePrintable) -> SuccessOrValidat
     return SuccessOrValidationErrorOrHardError(False, failure_message)
 
 
-def new_maybe_svh_validation_error__const(failure_message: Optional[str]) -> SuccessOrValidationErrorOrHardError:
+def new_maybe_svh_validation_error__str(failure_message: Optional[str]) -> SuccessOrValidationErrorOrHardError:
     if failure_message is None:
         return new_svh_success()
     else:
-        return SuccessOrValidationErrorOrHardError(False, file_printables.of_constant_string(failure_message))
+        return SuccessOrValidationErrorOrHardError(False, file_printables.of_string(failure_message))
 
 
 def new_maybe_svh_validation_error(failure_message: Optional[FilePrintable]) -> SuccessOrValidationErrorOrHardError:
@@ -75,10 +75,10 @@ def new_maybe_svh_validation_error(failure_message: Optional[FilePrintable]) -> 
         return SuccessOrValidationErrorOrHardError(False, failure_message)
 
 
-def new_svh_hard_error__const(failure_message: str) -> SuccessOrValidationErrorOrHardError:
+def new_svh_hard_error__str(failure_message: str) -> SuccessOrValidationErrorOrHardError:
     if failure_message is None:
         raise ValueError('A HARD ERROR must have a failure message (that is not None)')
-    return SuccessOrValidationErrorOrHardError(True, file_printables.of_constant_string(failure_message))
+    return SuccessOrValidationErrorOrHardError(True, file_printables.of_string(failure_message))
 
 
 def new_svh_hard_error(failure_message: FilePrintable) -> SuccessOrValidationErrorOrHardError:

@@ -76,6 +76,6 @@ def _validate_reference(symbol_reference: su.SymbolReference,
                                                            referenced_resolver_container)
     if result is None:
         return None
-    return file_printables.of_constant_string(
+    return file_printables.of_string(
         restriction_failures.error_message(symbol_reference.name, symbols, result)
     )

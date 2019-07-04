@@ -107,9 +107,9 @@ class _Parser(ExecutableObjectParser):
                 return self._executable_file(source_file_resolver, source)
         except TokenSyntaxError as ex:
             raise ParseException(
-                svh.new_svh_validation_error__const(std_error_message_text_for_token_syntax_error_from_exception(ex)))
+                svh.new_svh_validation_error__str(std_error_message_text_for_token_syntax_error_from_exception(ex)))
         except SingleInstructionInvalidArgumentException as ex:
-            raise ParseException(svh.new_svh_validation_error__const(ex.error_message))
+            raise ParseException(svh.new_svh_validation_error__str(ex.error_message))
 
     @staticmethod
     def _executable_file(source_file: FileRefResolver,

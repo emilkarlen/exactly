@@ -30,6 +30,6 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
         mb_error_message = matcher.matches(file_to_check)
         if mb_error_message is not None:
             raise PfhFailException(
-                file_printables.of_constant_string(mb_error_message.resolve(err_msg_env_from_instr_env(environment)))
+                file_printables.of_string(mb_error_message.resolve(err_msg_env_from_instr_env(environment)))
             )
         return file_to_check

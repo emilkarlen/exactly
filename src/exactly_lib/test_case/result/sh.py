@@ -45,10 +45,10 @@ def new_sh_hard_error(failure_message: FilePrintable) -> SuccessOrHardError:
     return SuccessOrHardError(failure_message)
 
 
-def new_sh_hard_error__const(failure_message: str) -> SuccessOrHardError:
+def new_sh_hard_error__str(failure_message: str) -> SuccessOrHardError:
     if failure_message is None:
         raise ValueError('A HARD ERROR must have a failure message (that is not None)')
-    return SuccessOrHardError(file_printables.of_constant_string(failure_message))
+    return SuccessOrHardError(file_printables.of_string(failure_message))
 
 
 __SH_SUCCESS = SuccessOrHardError(None)

@@ -29,16 +29,16 @@ class TestIsPass(unittest.TestCase):
         # ARRANGE #
         cases = [
             NameAndValue('fail',
-                         pfh.new_pfh_fail(file_printables.of_constant_string('failure msg'))
+                         pfh.new_pfh_fail(file_printables.of_string('failure msg'))
                          ),
             NameAndValue('fail/const msg',
-                         pfh.new_pfh_fail__const('failure msg')
+                         pfh.new_pfh_fail__str('failure msg')
                          ),
             NameAndValue('hard error',
-                         pfh.new_pfh_hard_error(file_printables.of_constant_string('hard error msg'))
+                         pfh.new_pfh_hard_error(file_printables.of_string('hard error msg'))
                          ),
             NameAndValue('hard error/const msg',
-                         pfh.new_pfh_hard_error__const('hard error msg')
+                         pfh.new_pfh_hard_error__str('hard error msg')
                          ),
         ]
         assertion = sut.is_pass()
@@ -58,19 +58,19 @@ class TestStatus(unittest.TestCase):
                 ),
             NEA('fail',
                 sut.status_is(pfh.PassOrFailOrHardErrorEnum.FAIL),
-                pfh.new_pfh_fail(file_printables.of_constant_string('fail msg')),
+                pfh.new_pfh_fail(file_printables.of_string('fail msg')),
                 ),
             NEA('fail/const msg',
                 sut.status_is(pfh.PassOrFailOrHardErrorEnum.FAIL),
-                pfh.new_pfh_fail__const('fail msg'),
+                pfh.new_pfh_fail__str('fail msg'),
                 ),
             NEA('hard error',
                 sut.status_is(pfh.PassOrFailOrHardErrorEnum.HARD_ERROR),
-                pfh.new_pfh_hard_error(file_printables.of_constant_string('hard err msg')),
+                pfh.new_pfh_hard_error(file_printables.of_string('hard err msg')),
                 ),
             NEA('hard error/const msg',
                 sut.status_is(pfh.PassOrFailOrHardErrorEnum.HARD_ERROR),
-                pfh.new_pfh_hard_error__const('hard err msg'),
+                pfh.new_pfh_hard_error__str('hard err msg'),
                 ),
         ]
         for case in cases:
@@ -83,11 +83,11 @@ class TestStatus(unittest.TestCase):
         cases = [
             NEA('pass',
                 sut.status_is(pfh.PassOrFailOrHardErrorEnum.PASS),
-                pfh.new_pfh_fail__const('fail msg'),
+                pfh.new_pfh_fail__str('fail msg'),
                 ),
             NEA('fail',
                 sut.status_is(pfh.PassOrFailOrHardErrorEnum.FAIL),
-                pfh.new_pfh_hard_error__const('hard err msg'),
+                pfh.new_pfh_hard_error__str('hard err msg'),
                 ),
             NEA('hard error',
                 sut.status_is(pfh.PassOrFailOrHardErrorEnum.HARD_ERROR),
@@ -107,19 +107,19 @@ class TestFailureMessage(unittest.TestCase):
         cases = [
             NEA('fail',
                 sut.failure_message_is(asrt.equals(expected_err_msg)),
-                pfh.new_pfh_fail(file_printables.of_constant_string(expected_err_msg)),
+                pfh.new_pfh_fail(file_printables.of_string(expected_err_msg)),
                 ),
             NEA('fail/const msg',
                 sut.failure_message_is(asrt.equals(expected_err_msg)),
-                pfh.new_pfh_fail__const(expected_err_msg),
+                pfh.new_pfh_fail__str(expected_err_msg),
                 ),
             NEA('hard error',
                 sut.failure_message_is(asrt.equals(expected_err_msg)),
-                pfh.new_pfh_hard_error(file_printables.of_constant_string(expected_err_msg)),
+                pfh.new_pfh_hard_error(file_printables.of_string(expected_err_msg)),
                 ),
             NEA('hard error/const msg',
                 sut.failure_message_is(asrt.equals(expected_err_msg)),
-                pfh.new_pfh_hard_error__const(expected_err_msg),
+                pfh.new_pfh_hard_error__str(expected_err_msg),
                 ),
         ]
         for case in cases:
@@ -134,11 +134,11 @@ class TestFailureMessage(unittest.TestCase):
         cases = [
             NEA('fail',
                 sut.failure_message_is(asrt.equals(expected_err_msg)),
-                pfh.new_pfh_fail__const(actual_err_msg),
+                pfh.new_pfh_fail__str(actual_err_msg),
                 ),
             NEA('hard error',
                 sut.failure_message_is(asrt.equals(expected_err_msg)),
-                pfh.new_pfh_hard_error__const(actual_err_msg),
+                pfh.new_pfh_hard_error__str(actual_err_msg),
                 ),
         ]
         for case in cases:

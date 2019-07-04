@@ -77,4 +77,4 @@ class PreprocessorViaExternalProgram(Preprocessor):
                                                  None))
 
     def __error_message(self) -> FilePrintable:
-        return file_printables.of_constant_string('Error from preprocessing by: ' + str(self.external_program))
+        return file_printables.of_string('Error from preprocessing by: ' + str(self.external_program))

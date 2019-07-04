@@ -96,7 +96,7 @@ class FileExistenceAssertionPart(AssertionPart[ComparisonActualFileResolver, Com
         """
         failure_message = actual_file.file_check_failure(environment)
         if failure_message:
-            raise PfhFailException(file_printables.of_constant_string(failure_message))
+            raise PfhFailException(file_printables.of_string(failure_message))
 
         actual_path_value = actual_file.file_ref_resolver().resolve(environment.symbols)
         return ComparisonActualFile(actual_path_value.value_of_any_dependency(environment.home_and_sds),
@@ -128,6 +128,6 @@ class IsExistingRegularFileAssertionPart(AssertionPart[ComparisonActualFile, Com
         if err_msg_resolver:
             err_msg_env = err_msg_env_from_instr_env(environment)
             err_msg = err_msg_resolver.resolve(err_msg_env)
-            raise PfhHardErrorException(file_printables.of_constant_string(err_msg))
+            raise PfhHardErrorException(file_printables.of_string(err_msg))
 
         return actual_file

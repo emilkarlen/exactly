@@ -36,7 +36,7 @@ class ParserForSingleLineUsingStandardSyntaxSplitAccordingToShellSyntax(Executab
 def _parse_single_line(instructions: Sequence[ActPhaseInstruction]) -> str:
     non_empty_lines = all_source_code_lines(instructions)
     if not non_empty_lines:
-        raise ParseException(svh.new_svh_validation_error__const('No lines with source code found'))
+        raise ParseException(svh.new_svh_validation_error__str('No lines with source code found'))
     if len(non_empty_lines) > 1:
-        raise ParseException(svh.new_svh_validation_error__const('More than one line with source code found'))
+        raise ParseException(svh.new_svh_validation_error__str('More than one line with source code found'))
     return non_empty_lines[0]

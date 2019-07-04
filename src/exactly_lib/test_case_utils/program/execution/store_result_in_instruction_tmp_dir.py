@@ -61,7 +61,7 @@ def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
                                                                      result_path,
                                                                      program.transformation)
     if error_message is not None:
-        raise PfhHardErrorException(file_printables.of_constant_string(error_message))
+        raise PfhHardErrorException(file_printables.of_string(error_message))
 
     return ResultWithTransformation(result,
                                     result_path.name)

@@ -84,7 +84,7 @@ class ExecutorBase(SubProcessExecutor):
                 f.write(source_code)
             return sh.new_sh_success()
         except OSError as ex:
-            return sh.new_sh_hard_error__const(str(ex))
+            return sh.new_sh_hard_error__str(str(ex))
 
     def _source_file_path(self,
                           script_output_dir_path: pathlib.Path) -> pathlib.Path:

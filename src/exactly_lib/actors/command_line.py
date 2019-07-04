@@ -72,7 +72,7 @@ class _Parser(ExecutableObjectParser):
         if not striped_argument:
             msg = SHELL_COMMAND_MARKER + ': {COMMAND} string is missing.'.format(
                 COMMAND=texts.COMMAND)
-            raise ParseException(svh.new_svh_validation_error__const(msg))
+            raise ParseException(svh.new_svh_validation_error__str(msg))
         arg_resolver = parse_string.string_resolver_from_string(striped_argument)
         command_resolver = command_resolvers.for_shell(arg_resolver)
         return CommandConfiguration(command_resolver)
@@ -88,7 +88,7 @@ class _Parser(ExecutableObjectParser):
             executable_file = command_resolver.new_with_additional_argument_list(arguments)
             return CommandConfiguration(executable_file)
         except SingleInstructionInvalidArgumentException as ex:
-            raise ParseException(svh.new_svh_validation_error__const(ex.error_message))
+            raise ParseException(svh.new_svh_validation_error__str(ex.error_message))
 
 
 def _validator(environment: InstructionEnvironmentForPreSdsStep,

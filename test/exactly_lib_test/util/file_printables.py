@@ -25,7 +25,7 @@ class TestToStringUndoesFromString(unittest.TestCase):
         for expected in cases:
             with self.subTest(expected):
                 # ACT #
-                file_printable = sut.of_constant_string(expected)
+                file_printable = sut.of_string(expected)
                 actual = sut.print_to_string(file_printable)
                 # ASSERT #
                 self.assertEqual(expected, actual)
@@ -85,12 +85,12 @@ class TestComplex(unittest.TestCase):
                 ),
             NEA('singleton',
                 'single',
-                [sut.of_constant_string('single')]
+                [sut.of_string('single')]
                 ),
             NEA('multiple',
                 '1st2nd',
-                [sut.of_constant_string('1st'),
-                 sut.of_constant_string('2nd')]),
+                [sut.of_string('1st'),
+                 sut.of_string('2nd')]),
         ]
         for case in cases:
             with self.subTest(case.name):
@@ -108,12 +108,12 @@ class TestComplex(unittest.TestCase):
                 ),
             NEA('singleton',
                 'single' + os.linesep,
-                [sut.of_constant_string('single')]
+                [sut.of_string('single')]
                 ),
             NEA('multiple',
                 '1st2nd' + os.linesep,
-                [sut.of_constant_string('1st'),
-                 sut.of_constant_string('2nd')]),
+                [sut.of_string('1st'),
+                 sut.of_string('2nd')]),
         ]
         for case in cases:
             with self.subTest(case.name):
@@ -131,12 +131,12 @@ class TestComplex(unittest.TestCase):
                 ),
             NEA('singleton',
                 'single' + os.linesep,
-                [sut.of_constant_string('single')]
+                [sut.of_string('single')]
                 ),
             NEA('multiple',
                 '1st' + os.linesep + '2nd' + os.linesep,
-                [sut.of_constant_string('1st'),
-                 sut.of_constant_string('2nd')]),
+                [sut.of_string('1st'),
+                 sut.of_string('2nd')]),
         ]
         for case in cases:
             with self.subTest(case.name):
@@ -154,12 +154,12 @@ class TestComplex(unittest.TestCase):
                 ),
             NEA('singleton',
                 'single',
-                [sut.of_constant_string('single')]
+                [sut.of_string('single')]
                 ),
             NEA('multiple',
                 '1st' + os.linesep + '2nd',
-                [sut.of_constant_string('1st'),
-                 sut.of_constant_string('2nd')]),
+                [sut.of_string('1st'),
+                 sut.of_string('2nd')]),
         ]
         for case in cases:
             with self.subTest(case.name):

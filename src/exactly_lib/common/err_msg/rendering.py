@@ -18,4 +18,4 @@ def blocks_as_str(blocks: Blocks) -> str:
 
 
 def blocks_as_printable(blocks: Blocks) -> FilePrintable:
-    return file_printables.of_constant_string(blocks_as_str(blocks))
+    return file_printables.of_string(blocks_as_str(blocks))

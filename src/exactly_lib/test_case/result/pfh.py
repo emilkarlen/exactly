@@ -52,8 +52,8 @@ def new_pfh_fail(failure_message: FilePrintable) -> PassOrFailOrHardError:
                                  failure_message)
 
 
-def new_pfh_fail__const(failure_message: str) -> PassOrFailOrHardError:
-    return new_pfh_fail(file_printables.of_constant_string(failure_message))
+def new_pfh_fail__str(failure_message: str) -> PassOrFailOrHardError:
+    return new_pfh_fail(file_printables.of_string(failure_message))
 
 
 def new_pfh_fail_if_has_failure_message(failure_message: Optional[FilePrintable]) -> PassOrFailOrHardError:
@@ -64,11 +64,11 @@ def new_pfh_fail_if_has_failure_message(failure_message: Optional[FilePrintable]
     )
 
 
-def new_pfh_fail_if_has_failure_message__const(failure_message: Optional[str]) -> PassOrFailOrHardError:
+def new_pfh_fail_if_has_failure_message__str(failure_message: Optional[str]) -> PassOrFailOrHardError:
     return (
         new_pfh_pass()
         if failure_message is None
-        else new_pfh_fail(file_printables.of_constant_string(failure_message))
+        else new_pfh_fail(file_printables.of_string(failure_message))
     )
 
 
@@ -77,5 +77,5 @@ def new_pfh_hard_error(failure_message: FilePrintable) -> PassOrFailOrHardError:
                                  failure_message)
 
 
-def new_pfh_hard_error__const(failure_message: str) -> PassOrFailOrHardError:
-    return new_pfh_hard_error(file_printables.of_constant_string(failure_message))
+def new_pfh_hard_error__str(failure_message: str) -> PassOrFailOrHardError:
+    return new_pfh_hard_error(file_printables.of_string(failure_message))

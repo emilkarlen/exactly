@@ -54,9 +54,9 @@ DO_HARD_ERROR = 2
 
 def test_action(what_to_do: int, message: str):
     if what_to_do == DO_HARD_ERROR:
-        raise sut.SvhHardErrorException(file_printables.of_constant_string(message))
+        raise sut.SvhHardErrorException(file_printables.of_string(message))
     if what_to_do == DO_VALIDATION_ERROR:
-        raise sut.SvhValidationException(file_printables.of_constant_string(message))
+        raise sut.SvhValidationException(file_printables.of_string(message))
     if what_to_do != DO_SUCCESS:
         raise ValueError('unexpected what_to_do: ' + str(what_to_do))
 

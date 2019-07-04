@@ -182,7 +182,7 @@ def test_suite_definition_with_single_conf_instruction(name: str,
 
 
 ASSERT_PHASE_INSTRUCTION_THAT_FAILS_UNCONDITIONALLY = assert_phase_instruction_that(
-    main=do_return(pfh.new_pfh_fail__const('unconditional failure')))
+    main=do_return(pfh.new_pfh_fail__str('unconditional failure')))
 
 
 def assert_phase_instruction_that_pass_iff_stdout_is_success_indicator_string(expected: str) -> AssertPhaseInstruction:

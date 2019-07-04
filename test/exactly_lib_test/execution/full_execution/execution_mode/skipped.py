@@ -35,7 +35,7 @@ class Test(TestCaseBase):
     def test_execution_mode_skipped_but_failing_instruction_in_configuration_phase_before_setting_execution_mode(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
             .add(phase_identifier.CONFIGURATION,
-                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error__const('hard error msg')))) \
+                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error__str('hard error msg')))) \
             .add(phase_identifier.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(
                      TestCaseStatus.SKIP))
@@ -60,7 +60,7 @@ class Test(TestCaseBase):
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(
                      TestCaseStatus.SKIP)) \
             .add(phase_identifier.CONFIGURATION,
-                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error__const('hard error msg'))))
+                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error__str('hard error msg'))))
         self._check(
             Arrangement(test_case),
             Expectation(

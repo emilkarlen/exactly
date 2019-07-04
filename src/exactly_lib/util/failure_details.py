@@ -24,14 +24,14 @@ class FailureDetails:
     @staticmethod
     def new_constant_message(message: str,
                              exception: Optional[Exception] = None) -> 'FailureDetails':
-        return FailureDetails(file_printables.of_constant_string(message),
+        return FailureDetails(file_printables.of_string(message),
                               exception)
 
     @staticmethod
     def new_exception(exception: Exception,
                       message: Optional[str] = None) -> 'FailureDetails':
         return FailureDetails(None if message is None
-                              else file_printables.of_constant_string(message),
+                              else file_printables.of_string(message),
                               exception)
 
     @property

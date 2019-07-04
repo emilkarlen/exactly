@@ -20,13 +20,13 @@ def of_message(message: Optional[FilePrintable]) -> ErrorDescription:
 
 
 def of_constant_message(message: str) -> ErrorDescription:
-    return ErrorDescriptionOfMessage(file_printables.of_constant_string(message))
+    return ErrorDescriptionOfMessage(file_printables.of_string(message))
 
 
 def formatted_error_message_str(category: Name, message: FilePrintable) -> FilePrintable:
     return file_printables.of_sequence(
         [
-            file_printables.of_constant_string(category.singular.capitalize() + ': '),
+            file_printables.of_string(category.singular.capitalize() + ': '),
             message,
         ]
     )

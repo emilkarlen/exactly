@@ -360,7 +360,7 @@ class PartThatRaisesFailureExceptionIfArgumentIsEqualToOne(sut.AssertionPart[int
               custom_environment,
               arg: int):
         if arg == 1:
-            raise PfhFailException(file_printables.of_constant_string(self.ERROR_MESSAGE))
+            raise PfhFailException(file_printables.of_string(self.ERROR_MESSAGE))
         else:
             return arg + 1
 

@@ -151,7 +151,7 @@ def actor_for_setup(setup: ActPhaseSetup) -> Actor:
 class _ParseErrorHandler(exceptions.ParseErrorVisitor[None]):
     def visit_file_source_error(self, ex: exceptions.FileSourceError) -> None:
         error_info = ErrorInfo(
-            error_description.syntax_error_of_message(file_printables.of_constant_string(ex.message)),
+            error_description.syntax_error_of_message(file_printables.of_string(ex.message)),
             source_location_path_of_non_empty_location_path(ex.location_path),
             section_name=ex.maybe_section_name,
         )
@@ -159,7 +159,7 @@ class _ParseErrorHandler(exceptions.ParseErrorVisitor[None]):
 
     def visit_file_access_error(self, ex: exceptions.FileAccessError) -> None:
         error_info = ErrorInfo(
-            error_description.file_access_error_of_message(file_printables.of_constant_string(ex.message)),
+            error_description.file_access_error_of_message(file_printables.of_string(ex.message)),
             source_location_path_of_non_empty_location_path(ex.location_path),
             section_name=ex.maybe_section_name,
         )

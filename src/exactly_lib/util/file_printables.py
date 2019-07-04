@@ -8,7 +8,7 @@ def of_new_line() -> FilePrintable:
     return _NEW_LINE
 
 
-def of_constant_string(s: str) -> FilePrintable:
+def of_string(s: str) -> FilePrintable:
     return _FilePrintableOfConstantString(s)
 
 

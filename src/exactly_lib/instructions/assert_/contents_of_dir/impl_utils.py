@@ -44,7 +44,7 @@ class AssertPathIsExistingDirectory(AssertionPart[FilesSource, FilesSource]):
                                         expect_existing_dir),
             path_resolving_env)
         if failure_message is not None:
-            raise pfh_ex_method.PfhFailException(file_printables.of_constant_string(failure_message))
+            raise pfh_ex_method.PfhFailException(file_printables.of_string(failure_message))
         else:
             return files_source
 
@@ -74,7 +74,7 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
                                              model)
             if mb_error_message is not None:
                 raise PfhFailException(
-                    file_printables.of_constant_string(
+                    file_printables.of_string(
                         mb_error_message.resolve(err_msg_env_from_instr_env(environment)))
                 )
 
@@ -82,4 +82,4 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
         except HardErrorException as ex:
             err_msg_env = err_msg_env_from_instr_env(environment)
             err_msg = ex.error.resolve(err_msg_env)
-            raise PfhHardErrorException(file_printables.of_constant_string(err_msg))
+            raise PfhHardErrorException(file_printables.of_string(err_msg))

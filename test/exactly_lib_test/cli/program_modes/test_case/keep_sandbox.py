@@ -381,10 +381,10 @@ class TestPhasesInPartialExecution(unittest.TestCase):
             STEP__MAIN:
                 {
                     EXECUTION__FAIL:
-                        assert_phase_instruction_that(main=do_return(pfh.new_pfh_fail__const('fail msg'))),
+                        assert_phase_instruction_that(main=do_return(pfh.new_pfh_fail__str('fail msg'))),
 
                     EXECUTION__HARD_ERROR:
-                        assert_phase_instruction_that(main=do_return(pfh.new_pfh_hard_error__const('hard error msg'))),
+                        assert_phase_instruction_that(main=do_return(pfh.new_pfh_hard_error__str('hard error msg'))),
 
                     EXECUTION__IMPLEMENTATION_ERROR:
                         assert_phase_instruction_that(main_initial_action=DO_RAISES_EXCEPTION),
@@ -520,10 +520,10 @@ def first_line_should_be_exit_identifier(put: unittest.TestCase,
 
 DO_RAISES_EXCEPTION = do_raise(ValueError('implementation error msg'))
 
-SVH_VALIDATION_ERROR = do_return(svh.new_svh_validation_error__const('validation error msg'))
-SVH_HARD_ERROR = do_return(svh.new_svh_hard_error__const('hard error msg'))
+SVH_VALIDATION_ERROR = do_return(svh.new_svh_validation_error__str('validation error msg'))
+SVH_HARD_ERROR = do_return(svh.new_svh_hard_error__str('hard error msg'))
 
-SH_HARD_ERROR = do_return(sh.new_sh_hard_error__const('hard error msg'))
+SH_HARD_ERROR = do_return(sh.new_sh_hard_error__str('hard error msg'))
 
 
 def output_is_sds_which_should_be_preserved(sds_dir_name: str) -> ValueAssertion[str]:

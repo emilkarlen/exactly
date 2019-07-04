@@ -106,7 +106,7 @@ class Test(unittest.TestCase):
             FailingExecutor(
                 NameRecorder().new_function_that_records('s'),
                 PartialInstructionControlledFailureInfo(failure_status_of_executor,
-                                                        file_printables.of_constant_string('error message'))),
+                                                        file_printables.of_string('error message'))),
             element,
             element.instruction_info)
         self._check_failure_result(expected_status,

@@ -85,7 +85,7 @@ class TestValidation(unittest.TestCase):
 
                 operand_resolver_that(
                     validate_pre_sds=actions.do_raise(SvhValidationException(
-                        file_printables.of_constant_string('error in left op')
+                        file_printables.of_string('error in left op')
                     ))),
                 operand_resolver_that(),
             ),
@@ -96,7 +96,7 @@ class TestValidation(unittest.TestCase):
                 operand_resolver_that(),
                 operand_resolver_that(
                     validate_pre_sds=actions.do_raise(SvhValidationException(
-                        file_printables.of_constant_string('error in right op')
+                        file_printables.of_string('error in right op')
                     ))),
             ),
             (
@@ -105,7 +105,7 @@ class TestValidation(unittest.TestCase):
 
                 operand_resolver_that(
                     validate_pre_sds=actions.do_raise(SvhHardErrorException(
-                        file_printables.of_constant_string('error in left op')
+                        file_printables.of_string('error in left op')
                     ))),
                 operand_resolver_that(),
             ),
@@ -116,7 +116,7 @@ class TestValidation(unittest.TestCase):
                 operand_resolver_that(),
                 operand_resolver_that(
                     validate_pre_sds=actions.do_raise(SvhHardErrorException(
-                        file_printables.of_constant_string('error in right op')
+                        file_printables.of_string('error in right op')
                     ))),
             ),
         ]
@@ -145,7 +145,7 @@ class TestMain(unittest.TestCase):
 
                 operand_resolver_that(
                     resolve_return_value_action=actions.do_raise(
-                        PfhHardErrorException(file_printables.of_constant_string('error error in left op'))
+                        PfhHardErrorException(file_printables.of_string('error error in left op'))
                     )),
                 operand_resolver_that(),
             ),
@@ -156,7 +156,7 @@ class TestMain(unittest.TestCase):
                 operand_resolver_that(),
                 operand_resolver_that(
                     resolve_return_value_action=actions.do_raise(
-                        PfhHardErrorException(file_printables.of_constant_string('error error in right op')))
+                        PfhHardErrorException(file_printables.of_string('error error in right op')))
                 ),
             ),
         ]

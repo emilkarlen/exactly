@@ -52,7 +52,7 @@ class DiffErrorInfo(ErrorInfo):
         self.actual = actual
 
     def error_message_as_printable(self) -> FilePrintable:
-        return file_printables.of_constant_string(self.error_message())
+        return file_printables.of_string(self.error_message())
 
     def error_message(self) -> str:
         lines = []
