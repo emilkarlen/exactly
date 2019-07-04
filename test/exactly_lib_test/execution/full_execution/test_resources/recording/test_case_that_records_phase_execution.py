@@ -1,6 +1,5 @@
-import unittest
-
 import types
+import unittest
 
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.test_case import test_case_doc
@@ -13,7 +12,7 @@ from exactly_lib_test.execution.test_resources.execution_recording import \
     act_program_executor as step_recording_executors
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
-from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
+from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatRunsConstantActions
 from exactly_lib_test.test_case.actor.test_resources.test_actions import validate_action_that_returns, \
     execute_action_that_returns_exit_code, prepare_action_that_returns

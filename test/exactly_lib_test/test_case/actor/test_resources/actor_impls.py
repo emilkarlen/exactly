@@ -4,7 +4,7 @@ from exactly_lib.test_case.actor import ActionToCheck, Actor, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.test_case.actor.test_resources import test_actions
-from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
+from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatRunsConstantActions
 from exactly_lib_test.test_resources import actions
 

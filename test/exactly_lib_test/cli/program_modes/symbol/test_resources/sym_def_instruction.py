@@ -27,7 +27,7 @@ from exactly_lib_test.cli.program_modes.test_resources.main_program_execution im
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
 from exactly_lib_test.common.test_resources import instruction_setup
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instrs
-from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
+from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatRunsConstantActions
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
 from exactly_lib_test.test_resources.actions import do_return

@@ -1,12 +1,11 @@
-import unittest
-
 import pathlib
+import unittest
 from typing import Sequence
 
 from exactly_lib.test_case.actor import Actor, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
-from exactly_lib_test.actors.test_resources.act_source_and_executor import Configuration
+from exactly_lib_test.actors.test_resources.action_to_check import Configuration
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents

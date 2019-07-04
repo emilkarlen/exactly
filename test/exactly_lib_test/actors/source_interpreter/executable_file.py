@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 from contextlib import contextmanager
 
 from exactly_lib.actors.source_interpreter import executable_file as sut, python3
@@ -12,7 +11,7 @@ from exactly_lib.util.string import lines_content
 from exactly_lib_test.actors.source_interpreter import common_tests
 from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
-from exactly_lib_test.actors.test_resources.act_source_and_executor import \
+from exactly_lib_test.actors.test_resources.action_to_check import \
     Configuration, suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr

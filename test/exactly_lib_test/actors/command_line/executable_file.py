@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 from contextlib import contextmanager
 
 from exactly_lib.actors import command_line as sut
@@ -18,7 +17,7 @@ from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_file_rel_home_act as single_file_rel_home
 from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
-from exactly_lib_test.actors.test_resources.act_source_and_executor import Configuration, \
+from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
     suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.execution.test_resources import eh_assertions

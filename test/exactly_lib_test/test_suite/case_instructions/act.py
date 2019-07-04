@@ -1,5 +1,4 @@
 import unittest
-
 from typing import List, Sequence
 
 from exactly_lib.definitions.formatting import SectionName
@@ -13,7 +12,7 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo,
 from exactly_lib.test_case.actor import Actor, ActionToCheck
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.util.line_source import line_sequence_from_line, LineSequence
-from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
+from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatJustReturnsSuccess
 from exactly_lib_test.test_suite.case_instructions.test_resources import integration_test
 from exactly_lib_test.test_suite.case_instructions.test_resources.integration_test import \

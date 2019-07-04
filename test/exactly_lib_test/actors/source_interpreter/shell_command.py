@@ -1,13 +1,12 @@
+import shlex
 import sys
 import unittest
-
-import shlex
 from contextlib import contextmanager
 
 from exactly_lib.actors.source_interpreter import shell_command as sut
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib_test.actors.source_interpreter import common_tests
-from exactly_lib_test.actors.test_resources.act_source_and_executor import \
+from exactly_lib_test.actors.test_resources.action_to_check import \
     Configuration, suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.programs.python_program_execution import file_name_of_interpreter

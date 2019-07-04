@@ -1,7 +1,6 @@
+import pathlib
 import sys
 import unittest
-
-import pathlib
 
 from exactly_lib.actors import file_interpreter as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
@@ -17,7 +16,7 @@ from exactly_lib_test.actors.file_interpreter.configuration import TheConfigurat
 from exactly_lib_test.actors.test_resources import act_phase_execution
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_file_rel_home_act as single_file_rel_home
-from exactly_lib_test.actors.test_resources.act_source_and_executor import Configuration, \
+from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
     suite_for_execution
 from exactly_lib_test.actors.test_resources.test_validation_for_single_line_source import \
     TestCaseForConfigurationForValidation

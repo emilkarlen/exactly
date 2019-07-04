@@ -1,6 +1,5 @@
-import unittest
-
 import os
+import unittest
 from contextlib import contextmanager
 
 from exactly_lib.actors import command_line as sut
@@ -20,7 +19,7 @@ from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_line_source as single_line_source
 from exactly_lib_test.actors.test_resources.act_phase_execution import \
     check_execution, Arrangement, Expectation
-from exactly_lib_test.actors.test_resources.act_source_and_executor import Configuration, \
+from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
     suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references

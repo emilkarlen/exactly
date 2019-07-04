@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.std import StdFiles
-from exactly_lib_test.test_case.actor.test_resources.act_source_and_executors import \
+from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatRunsConstantActions
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
     ActorForConstantAtc
