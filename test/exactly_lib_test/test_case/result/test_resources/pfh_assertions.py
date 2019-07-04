@@ -35,6 +35,6 @@ def failure_message_is(assertion_on_error_message: ValueAssertion[str]
                        ) -> ValueAssertion[pfh.PassOrFailOrHardError]:
     return asrt.sub_component(
         'failure message',
-        pfh.PassOrFailOrHardError.failure_message_printable.fget,
+        pfh.PassOrFailOrHardError.failure_message.fget,
         asrt_file_printable.matches(assertion_on_error_message)
     )

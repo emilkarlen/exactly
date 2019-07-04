@@ -22,11 +22,6 @@ class PassOrFailOrHardError(tuple):
     def __new__(cls,
                 status: PassOrFailOrHardErrorEnum,
                 failure_message: Optional[FilePrintable]):
-        # DEBUG - begin
-        if failure_message is not None:
-            if not isinstance(failure_message, FilePrintable):
-                raise ValueError('Not a FilePrintable: ' + str(failure_message))
-        # DEBUG - end
         return tuple.__new__(cls, (status, failure_message,))
 
     @property
@@ -38,7 +33,7 @@ class PassOrFailOrHardError(tuple):
         return self.status is not PassOrFailOrHardErrorEnum.PASS
 
     @property
-    def failure_message_printable(self) -> Optional[FilePrintable]:
+    def failure_message(self) -> Optional[FilePrintable]:
         """
         :return None iff the object represents PASS.
         """

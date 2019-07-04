@@ -232,7 +232,7 @@ class _Assertion:
         if result.is_error:
             return pfh.PassOrFailOrHardError(
                 result.status,
-                self._prepend_path_description(result.failure_message_printable))
+                self._prepend_path_description(result.failure_message))
         else:
             return result
 
