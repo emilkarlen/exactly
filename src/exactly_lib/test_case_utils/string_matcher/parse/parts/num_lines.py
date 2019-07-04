@@ -5,7 +5,7 @@ from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils import return_pfh_via_exceptions
+from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
@@ -75,7 +75,7 @@ class NumLinesStringMatcher(StringMatcher):
 
         try:
             comparison_handler.execute(self._environment)
-        except return_pfh_via_exceptions.PfhException as ex:
+        except pfh_exception.PfhException as ex:
             return err_msg_resolvers.file_printable(ex.err_msg)
 
 

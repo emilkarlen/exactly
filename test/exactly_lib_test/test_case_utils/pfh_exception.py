@@ -13,18 +13,18 @@ def suite() -> unittest.TestSuite:
 class Test(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
-        error_message = 'should not be raised error'
+        error_message = 'error message'
         # ACT #
-        actual = sut.translate_pfh_exception_to_pfh(test_action, DO_SUCCESS, error_message)
+        actual = sut.translate_pfh_exception_to_pfh(test_action, DO_PASS, error_message)
         # ASSERT #
         expectation = asrt_pfh.is_pass()
         expectation.apply_without_message(self, actual)
 
     def test_fail_error(self):
         # ARRANGE #
-        error_message = 'validation error'
+        error_message = 'error message'
         # ACT #
-        actual = sut.translate_pfh_exception_to_pfh(test_action, DO_FAIL, error_message)
+        actual = sut.translate_pfh_exception_to_pfh(test_action, DO_FAIL_ERROR, error_message)
         # ASSERT #
         expectation = asrt_pfh.is_fail(asrt.equals(error_message))
         expectation.apply_without_message(self, actual)
@@ -41,13 +41,13 @@ class Test(unittest.TestCase):
     def test_raises_exception_when_called_with_wrong_arguments(self):
         # ACT #
         with self.assertRaises(Exception):
-            sut.translate_pfh_exception_to_pfh(test_action, DO_FAIL, 'error message',
+            sut.translate_pfh_exception_to_pfh(test_action, DO_FAIL_ERROR, 'error message',
                                                'unexpected argument')
 
 
-DO_SUCCESS = 0
+DO_PASS = 0
 
-DO_FAIL = 1
+DO_FAIL_ERROR = 1
 
 DO_HARD_ERROR = 2
 
@@ -55,9 +55,9 @@ DO_HARD_ERROR = 2
 def test_action(what_to_do: int, message: str):
     if what_to_do == DO_HARD_ERROR:
         raise sut.PfhHardErrorException(file_printables.of_string(message))
-    if what_to_do == DO_FAIL:
+    if what_to_do == DO_FAIL_ERROR:
         raise sut.PfhFailException(file_printables.of_string(message))
-    if what_to_do != DO_SUCCESS:
+    if what_to_do != DO_PASS:
         raise ValueError('unexpected what_to_do: ' + str(what_to_do))
 
 

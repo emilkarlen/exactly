@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils import return_svh_via_exceptions as sut
+from exactly_lib.test_case_utils import svh_exception as sut
 from exactly_lib.util import file_printables
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

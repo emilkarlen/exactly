@@ -13,7 +13,7 @@ from exactly_lib.section_document.element_parsers.instruction_parsers import \
 from exactly_lib.section_document.element_parsers.token_stream_parser import new_token_parser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
-from exactly_lib.test_case_utils import negation_of_predicate, return_pfh_via_exceptions
+from exactly_lib.test_case_utils import negation_of_predicate, pfh_exception
 from exactly_lib.test_case_utils.condition import comparison_structures, instruction
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
     parse_integer_comparison_operator_and_rhs
@@ -102,11 +102,11 @@ class ExitCodeResolver(comparison_structures.OperandResolver[int]):
                     'file': rel_path,
                 }
             )
-            raise return_pfh_via_exceptions.PfhHardErrorException(err_msg)
+            raise pfh_exception.PfhHardErrorException(err_msg)
         try:
             contents = f.read()
         except IOError:
-            raise return_pfh_via_exceptions.PfhHardErrorException(
+            raise pfh_exception.PfhHardErrorException(
                 file_printables.of_sequence([
                     _FAILED_TO_READ_CONTENTS_FROM__PRINTER,
                     file_printables.of_to_string(sds.result.exitcode_file),
@@ -124,7 +124,7 @@ class ExitCodeResolver(comparison_structures.OperandResolver[int]):
                     'file': sds.result.exitcode_file,
                     'contents': contents,
                 })
-            raise return_pfh_via_exceptions.PfhHardErrorException(msg)
+            raise pfh_exception.PfhHardErrorException(msg)
 
 
 def must_be_within_byte_range(actual: int) -> Optional[str]:

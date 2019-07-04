@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.test_case.result import pfh, svh
-from exactly_lib.test_case_utils.return_pfh_via_exceptions import translate_pfh_exception_to_pfh
+from exactly_lib.test_case_utils.pfh_exception import translate_pfh_exception_to_pfh
 
 A = TypeVar('A')
 B = TypeVar('B')

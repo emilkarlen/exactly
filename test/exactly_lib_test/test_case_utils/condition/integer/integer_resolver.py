@@ -5,7 +5,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition.integer import integer_resolver as sut
 from exactly_lib.test_case_utils.parse import parse_string
-from exactly_lib.test_case_utils.return_svh_via_exceptions import SvhValidationException
+from exactly_lib.test_case_utils.svh_exception import SvhValidationException
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references

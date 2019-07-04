@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.test_case_utils import file_properties
-from exactly_lib_test.test_case_utils import return_svh_via_exceptions
+from exactly_lib_test.test_case_utils import pfh_exception, svh_exception
 from exactly_lib_test.test_case_utils.condition import z_package_suite as condition
 from exactly_lib_test.test_case_utils.err_msg import z_package_suite as err_msg
 from exactly_lib_test.test_case_utils.expression import z_package_suite as expression
@@ -17,7 +17,8 @@ from exactly_lib_test.test_case_utils.string_transformers import z_package_suite
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(return_svh_via_exceptions.suite())
+    ret_val.addTest(pfh_exception.suite())
+    ret_val.addTest(svh_exception.suite())
     ret_val.addTest(err_msg.suite())
     ret_val.addTest(expression.suite())
     ret_val.addTest(condition.suite())

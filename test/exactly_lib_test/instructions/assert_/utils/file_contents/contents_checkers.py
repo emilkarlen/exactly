@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 from typing import Sequence
 
 import exactly_lib.type_system.error_message
@@ -9,7 +8,7 @@ from exactly_lib.symbol.logic.string_transformer import StringTransformerResolve
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.err_msg.property_description import property_descriptor_with_just_a_constant_name
-from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhHardErrorException
+from exactly_lib.test_case_utils.pfh_exception import PfhHardErrorException
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.error_message import PropertyDescriptor
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue

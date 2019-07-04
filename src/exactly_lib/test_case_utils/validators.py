@@ -4,7 +4,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
     PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case.result import svh
-from exactly_lib.test_case_utils import return_svh_via_exceptions
+from exactly_lib.test_case_utils import svh_exception
 from exactly_lib.util import file_printables
 
 
@@ -73,13 +73,13 @@ class PreOrPostSdsValidatorFromValidatorViaExceptions(PreOrPostSdsValidator):
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
         try:
             self._adapted.validate_pre_sds(environment)
-        except return_svh_via_exceptions.SvhException as ex:
+        except svh_exception.SvhException as ex:
             return file_printables.print_to_string(ex.err_msg)
 
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
         try:
             self._adapted.validate_post_setup(environment)
-        except return_svh_via_exceptions.SvhException as ex:
+        except svh_exception.SvhException as ex:
             return file_printables.print_to_string(ex.err_msg)
 
 
@@ -88,8 +88,8 @@ class SvhValidatorViaReturnValuesFromValidatorViaExceptions(SvhValidatorViaRetur
         self._adapted = adapted
 
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> svh.SuccessOrValidationErrorOrHardError:
-        return return_svh_via_exceptions.translate_svh_exception_to_svh(self._adapted.validate_pre_sds, environment)
+        return svh_exception.translate_svh_exception_to_svh(self._adapted.validate_pre_sds, environment)
 
     def validate_post_setup(self,
                             environment: PathResolvingEnvironmentPostSds) -> svh.SuccessOrValidationErrorOrHardError:
-        return return_svh_via_exceptions.translate_svh_exception_to_svh(self._adapted.validate_post_setup, environment)
+        return svh_exception.translate_svh_exception_to_svh(self._adapted.validate_post_setup, environment)

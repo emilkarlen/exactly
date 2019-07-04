@@ -7,7 +7,7 @@ from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhFailException
+from exactly_lib.test_case_utils.pfh_exception import PfhFailException
 from exactly_lib.util import file_printables
 
 

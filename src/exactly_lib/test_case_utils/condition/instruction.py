@@ -6,7 +6,7 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case.result import svh
-from exactly_lib.test_case_utils import return_pfh_via_exceptions, return_svh_via_exceptions
+from exactly_lib.test_case_utils import pfh_exception, svh_exception
 from exactly_lib.test_case_utils.condition.comparison_structures import ComparisonHandler
 
 
@@ -23,13 +23,13 @@ class Instruction(AssertPhaseInstruction):
     def validate_pre_sds(self,
                          environment: i.InstructionEnvironmentForPreSdsStep
                          ) -> svh.SuccessOrValidationErrorOrHardError:
-        return return_svh_via_exceptions.translate_svh_exception_to_svh(
+        return svh_exception.translate_svh_exception_to_svh(
             self.comparison_setup.validate_pre_sds,
             environment.path_resolving_environment)
 
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return return_pfh_via_exceptions.translate_pfh_exception_to_pfh(
+        return pfh_exception.translate_pfh_exception_to_pfh(
             self.comparison_setup.execute,
             environment.path_resolving_environment_pre_or_post_sds)

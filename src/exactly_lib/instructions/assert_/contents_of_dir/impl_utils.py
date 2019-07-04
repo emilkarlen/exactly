@@ -7,10 +7,10 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, Environ
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_utils import file_properties, return_pfh_via_exceptions as pfh_ex_method
+from exactly_lib.test_case_utils import file_properties, pfh_exception as pfh_ex_method
 from exactly_lib.test_case_utils import file_ref_check
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
-from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
+from exactly_lib.test_case_utils.pfh_exception import PfhFailException, PfhHardErrorException
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util import file_printables
 

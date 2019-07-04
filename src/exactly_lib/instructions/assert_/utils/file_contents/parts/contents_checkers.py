@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_system_element_matcher import \
     FileSystemElementReference, FileSystemElementPropertiesMatcher
-from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
+from exactly_lib.test_case_utils.pfh_exception import PfhFailException, PfhHardErrorException
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck

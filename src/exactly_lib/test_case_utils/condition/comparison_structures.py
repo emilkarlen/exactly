@@ -7,7 +7,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils import return_pfh_via_exceptions
+from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.err_msg import diff_msg
@@ -210,7 +210,7 @@ class _ComparisonExecutor(Generic[T]):
 
     def _raise_fail_exception(self):
         err_msg = self.failure_reporter.unexpected_value_message()
-        raise return_pfh_via_exceptions.PfhFailException(file_printables.of_string(err_msg))
+        raise pfh_exception.PfhFailException(file_printables.of_string(err_msg))
 
     def _get_err_msg_resolver(self) -> ErrorMessageResolver:
         return self.failure_reporter.err_msg_resolver

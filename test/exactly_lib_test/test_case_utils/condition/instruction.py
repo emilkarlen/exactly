@@ -6,8 +6,8 @@ from exactly_lib.test_case_utils.condition import comparators, instruction as su
 from exactly_lib.test_case_utils.condition.comparison_structures import ComparisonHandler, OperandResolver
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
-from exactly_lib.test_case_utils.return_pfh_via_exceptions import PfhHardErrorException
-from exactly_lib.test_case_utils.return_svh_via_exceptions import SvhValidationException, SvhHardErrorException
+from exactly_lib.test_case_utils.pfh_exception import PfhHardErrorException
+from exactly_lib.test_case_utils.svh_exception import SvhValidationException, SvhHardErrorException
 from exactly_lib.util import file_printables
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, \
