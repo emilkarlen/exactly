@@ -1,2 +1,6 @@
 [suites]
 
+empty
+equals
+num-lines
+line-matches
