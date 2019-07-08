@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Sequence
+from typing import Sequence, TypeVar, Generic
 
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, ErrorMessageResolver
 from exactly_lib.type_system.trace import trace
@@ -11,22 +11,28 @@ class DetailRenderer(ABC):
         pass
 
 
-class NodeRenderer(ABC):
-    def render(self, environment: ErrorMessageResolvingEnvironment) -> Node:
+NODE_DATA = TypeVar('NODE_DATA')
+
+
+class NodeRenderer(Generic[NODE_DATA], ABC):
+    def render(self, environment: ErrorMessageResolvingEnvironment) -> Node[NODE_DATA]:
         pass
 
 
-class NodeRendererFromParts(NodeRenderer):
+class NodeRendererFromParts(Generic[NODE_DATA], NodeRenderer):
     def __init__(self,
                  header: str,
+                 data: NODE_DATA,
                  details: Sequence[DetailRenderer],
-                 children: Sequence[NodeRenderer]):
+                 children: Sequence[NodeRenderer[NODE_DATA]]):
         self._header = header
+        self._data = data
         self._details = details
         self._children = children
 
-    def render(self, environment: ErrorMessageResolvingEnvironment) -> Node:
+    def render(self, environment: ErrorMessageResolvingEnvironment) -> Node[NODE_DATA]:
         return Node(self._header,
+                    self._data,
                     [d.render(environment) for d in self._details],
                     [c.render(environment) for c in self._children],
                     )
@@ -53,7 +59,7 @@ class MatchingResult:
 
     def __init__(self,
                  value: bool,
-                 trace: NodeRenderer):
+                 trace: NodeRenderer[bool]):
         self._value = value
         self._trace = trace
 
@@ -62,5 +68,5 @@ class MatchingResult:
         return self._value
 
     @property
-    def trace(self) -> NodeRenderer:
+    def trace(self) -> NodeRenderer[bool]:
         return self._trace

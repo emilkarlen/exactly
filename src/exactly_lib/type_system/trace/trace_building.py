@@ -9,11 +9,6 @@ class TraceBuilder:
         self._header = header
         self._details = []
         self._children = []
-        self._result_value = None
-
-    def with_result_value(self, result_value: bool) -> 'TraceBuilder':
-        self._result_value = result_value
-        return self
 
     @property
     def details(self) -> List[DetailRenderer]:
@@ -33,15 +28,21 @@ class TraceBuilder:
 
     def build_result(self, value: bool) -> MatchingResult:
         return MatchingResult(value,
-                              self.with_result_value(value).build()
+                              self.build_bool(value)
                               )
 
-    def build(self) -> NodeRenderer:
-        # TODO Generate DetailRenderer from _result, if not None.
-        # if self._result is not None:
-        #   self._details.insert(0,ConstDetailRenderer(ResultDetail(self._result))
+    def build_bool(self, data: bool) -> NodeRenderer[bool]:
         return NodeRendererFromParts(
             self._header,
+            data,
+            self._details,
+            self._children,
+        )
+
+    def build_none(self) -> NodeRenderer[None]:
+        return NodeRendererFromParts(
+            self._header,
+            None,
             self._details,
             self._children,
         )

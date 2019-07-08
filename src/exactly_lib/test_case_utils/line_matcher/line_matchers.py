@@ -54,7 +54,7 @@ class LineMatcherRegex(LineMatcher):
     def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
         return self._new_tb() \
             .append_detail(self._regex_detail_renderer) \
-            .build(self.matches(line))
+            .build_result(self.matches(line))
 
     def matches(self, line: LineMatcherLine) -> bool:
         return bool(self._compiled_regular_expression.search(line[1]))
