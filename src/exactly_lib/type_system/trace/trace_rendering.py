@@ -52,21 +52,3 @@ class DetailRendererOfConstant(DetailRenderer):
 
     def render(self, environment: ErrorMessageResolvingEnvironment) -> Detail:
         return self._detail
-
-
-class MatchingResult:
-    """The result of applying a matcher."""
-
-    def __init__(self,
-                 value: bool,
-                 trace: NodeRenderer[bool]):
-        self._value = value
-        self._trace = trace
-
-    @property
-    def value(self) -> bool:
-        return self._value
-
-    @property
-    def trace(self) -> NodeRenderer[bool]:
-        return self._trace

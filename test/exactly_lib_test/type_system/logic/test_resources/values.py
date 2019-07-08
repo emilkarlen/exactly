@@ -2,8 +2,8 @@ from typing import Iterable, Callable
 
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
-from exactly_lib.type_system.trace.trace_rendering import MatchingResult
 
 
 class FakeStringTransformer(StringTransformer):

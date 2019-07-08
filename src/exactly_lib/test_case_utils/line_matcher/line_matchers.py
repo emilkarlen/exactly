@@ -3,9 +3,9 @@ from typing import Sequence
 from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.trace import trace
 from exactly_lib.type_system.trace import trace_rendering
-from exactly_lib.type_system.trace.trace_rendering import MatchingResult
 
 
 class LineMatcherConstant(LineMatcher):

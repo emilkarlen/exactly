@@ -1,9 +1,8 @@
 import unittest
 
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
-from exactly_lib.type_system.logic.matcher_base_class import Matcher, MatcherWTrace
+from exactly_lib.type_system.logic.matcher_base_class import Matcher, MatcherWTrace, MatchingResult
 from exactly_lib.type_system.trace.trace import Node
-from exactly_lib.type_system.trace.trace_rendering import MatchingResult
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA

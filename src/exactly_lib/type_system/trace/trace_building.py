@@ -1,7 +1,7 @@
 from typing import List
 
-from exactly_lib.type_system.trace.trace_rendering import NodeRenderer, DetailRenderer, NodeRendererFromParts, \
-    MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.trace.trace_rendering import NodeRenderer, DetailRenderer, NodeRendererFromParts
 
 
 class TraceBuilder:
