@@ -1,11 +1,16 @@
 import unittest
+from typing import List, Tuple
 
+from exactly_lib.definitions import expression
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import Matcher, MatcherWTrace, MatchingResult
 from exactly_lib.type_system.trace.trace import Node
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.test_utils import NEA
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_system.trace.test_resources import trace_assertions as asrt_trace
+from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
 
 
 class MatcherThatRegistersModelArgument(Matcher):
@@ -46,7 +51,12 @@ class MatcherWTraceThatRegistersModelArgument(MatcherWTrace):
 
 
 class MatcherConfiguration:
-    def matcher_with_constant_result(self, result: bool) -> Matcher:
+    def matcher_with_constant_result(self,
+                                     name: str,
+                                     result: bool) -> Matcher:
+        """
+        :param name: The name of the matcher in the trace
+        """
         raise NotImplementedError('abstract method')
 
     def irrelevant_model(self):
@@ -57,9 +67,29 @@ class MatcherConfiguration:
         raise NotImplementedError('abstract method')
 
 
+MatcherNameAndResult = Tuple[str, bool]
+
+
+class Case:
+    def __init__(self,
+                 name: str,
+                 expected_result: bool,
+                 constructor_argument,
+                 expected_trace: ValueAssertion[Node[bool]]
+                 ):
+        self.name = name
+        self.expected_result = expected_result
+        self.constructor_argument = constructor_argument
+        self.expected_trace = expected_trace
+
+
 class TestCaseBase(unittest.TestCase):
     @property
     def configuration(self) -> MatcherConfiguration:
+        raise NotImplementedError('abstract method')
+
+    @property
+    def trace_operator_name(self) -> str:
         raise NotImplementedError('abstract method')
 
     def new_combinator_to_check(self, constructor_argument) -> Matcher:
@@ -73,7 +103,8 @@ class TestCaseBase(unittest.TestCase):
     def _check(self,
                case_name: str,
                constructor_argument,
-               expected_result: bool):
+               expected_result: bool,
+               expected_trace: ValueAssertion[Node[bool]] = asrt.anything_goes()):
         # ARRANGE #
 
         conf = self.configuration
@@ -94,84 +125,136 @@ class TestCaseBase(unittest.TestCase):
         if isinstance(matcher_to_check, MatcherWTrace):
             with self.subTest(case_name=case_name,
                               type='matcher w trace'):
+                expectation = asrt_matching_result.matches(
+                    asrt.equals(expected_result),
+                    trace=asrt_trace_rendering.matches_node_renderer(
+                        expected_trace
+                    )
+                )
                 # ACT #
                 actual_result = matcher_to_check.matches_w_trace(model)
                 # ASSERT #
-                self.assertIsInstance(actual_result, MatchingResult,
-                                      'result object type')
-                self.assertEqual(expected_result,
-                                 actual_result.value,
-                                 'result')
-                self.assertIsInstance(matcher_to_check.name,
-                                      str,
-                                      'name')
-                trace = actual_result.trace.render(_ARBITRARY_ERR_MSG_RESOLVING_ENV)
+                expectation.apply_without_message(self,
+                                                  actual_result)
 
-                self.assertIsInstance(trace,
-                                      Node,
-                                      'type of rendered trace')
+    def _check_case(self, case: Case):
+        self._check(case.name,
+                    case.constructor_argument,
+                    case.expected_result,
+                    case.expected_trace)
+
+    def _multi_case(self,
+                    name: str,
+                    expected_result: bool,
+                    child_matchers: List[MatcherNameAndResult],
+                    trace_child_nodes: List[MatcherNameAndResult],
+                    ) -> Case:
+        return Case(name,
+                    expected_result,
+                    [self.configuration.matcher_with_constant_result(child_name,
+                                                                     child_result)
+                     for child_name, child_result in child_matchers
+                     ],
+                    self._trace(expected_result, trace_child_nodes)
+                    )
+
+    def _single_case(self,
+                     name: str,
+                     expected_result: bool,
+                     child_matcher: MatcherNameAndResult,
+                     trace_child_node: MatcherNameAndResult,
+                     ) -> Case:
+        return Case(name,
+                    expected_result,
+                    self.configuration.matcher_with_constant_result(child_matcher[0],
+                                                                    child_matcher[1]),
+                    self._trace(expected_result, [trace_child_node])
+                    )
+
+    def _trace(self,
+               expected_result: bool,
+               child_nodes: List[MatcherNameAndResult],
+               ) -> ValueAssertion[Node[bool]]:
+        return asrt_trace.matches_node(
+            header=asrt.equals(self.trace_operator_name),
+            data=asrt.equals(expected_result),
+            details=asrt.is_empty_sequence,
+            children=asrt.matches_sequence([
+                asrt_trace.matches_node(
+                    header=asrt.equals(child_name),
+                    data=asrt.equals(child_result),
+                    details=asrt.is_empty_sequence,
+                    children=asrt.is_empty_sequence,
+                )
+                for child_name, child_result in child_nodes
+            ])
+        )
 
 
 class TestAndBase(TestCaseBase):
+    @property
+    def trace_operator_name(self) -> str:
+        return expression.AND_OPERATOR_NAME
+
     def test_empty_list_of_matchers_SHOULD_evaluate_to_True(self):
-        self._check('',
-                    [],
-                    True)
+        self._check_case(
+            self._multi_case('empty',
+                             True,
+                             child_matchers=[],
+                             trace_child_nodes=[]))
 
     def test_single_matcher_SHOULD_evaluate_to_value_of_the_single_matcher(self):
         cases = [
-            NEA('false',
-                False,
-                [self.configuration.matcher_with_constant_result(False)],
-                ),
-            NEA('true',
-                True,
-                [self.configuration.matcher_with_constant_result(True)]
-                ),
+            self._multi_case('false',
+                             False,
+                             child_matchers=child_1_to_n([False]),
+                             trace_child_nodes=child_1_to_n([False]),
+                             ),
+            self._multi_case('true',
+                             True,
+                             child_matchers=child_1_to_n([True]),
+                             trace_child_nodes=child_1_to_n([True]),
+                             ),
         ]
         for case in cases:
-            self._check(case.name,
-                        case.actual,
-                        case.expected)
+            self._check_case(case)
 
     def test_more_than_one_matcher_SHOULD_evaluate_to_True_WHEN_all_matchers_evaluate_to_True(self):
         cases = [
-            NameAndValue('two matchers',
-                         [self.configuration.matcher_with_constant_result(True),
-                          self.configuration.matcher_with_constant_result(True)],
-                         ),
-            NameAndValue('three matchers',
-                         [self.configuration.matcher_with_constant_result(True),
-                          self.configuration.matcher_with_constant_result(True),
-                          self.configuration.matcher_with_constant_result(True)],
-                         ),
+            self._multi_case('two matchers',
+                             True,
+                             child_matchers=child_1_to_n([True, True]),
+                             trace_child_nodes=child_1_to_n([True, True]),
+                             ),
+            self._multi_case('three matchers',
+                             True,
+                             child_matchers=child_1_to_n([True, True, True]),
+                             trace_child_nodes=child_1_to_n([True, True, True]),
+                             ),
         ]
         for case in cases:
-            anded_matchers = case.value
-            self._check(case.name,
-                        anded_matchers,
-                        True)
+            self._check_case(case)
 
     def test_more_than_one_matcher_SHOULD_evaluate_to_False_WHEN_any_matcher_evaluates_to_False(self):
         cases = [
-            NameAndValue('two matchers/first is false',
-                         [self.configuration.matcher_with_constant_result(False),
-                          self.configuration.matcher_with_constant_result(True)],
-                         ),
-            NameAndValue('two matchers/second is false',
-                         [self.configuration.matcher_with_constant_result(True),
-                          self.configuration.matcher_with_constant_result(False)],
-                         ),
-            NameAndValue('three matchers',
-                         [self.configuration.matcher_with_constant_result(True),
-                          self.configuration.matcher_with_constant_result(False),
-                          self.configuration.matcher_with_constant_result(True)],
-                         ),
+            self._multi_case('two matchers/first is false',
+                             False,
+                             child_matchers=child_1_to_n([False, True]),
+                             trace_child_nodes=child_1_to_n([False]),
+                             ),
+            self._multi_case('two matchers/second is false',
+                             False,
+                             child_matchers=child_1_to_n([True, False]),
+                             trace_child_nodes=child_1_to_n([True, False]),
+                             ),
+            self._multi_case('three matchers',
+                             False,
+                             child_matchers=child_1_to_n([True, False, True]),
+                             trace_child_nodes=child_1_to_n([True, False]),
+                             ),
         ]
         for case in cases:
-            self._check(case.name,
-                        case.value,
-                        False)
+            self._check_case(case)
 
     def test_model_argument_SHOULD_be_given_as_argument_to_every_sub_matcher(self):
         # ARRANGE #
@@ -197,64 +280,66 @@ class TestAndBase(TestCaseBase):
 
 
 class TestOrBase(TestCaseBase):
+    @property
+    def trace_operator_name(self) -> str:
+        return expression.OR_OPERATOR_NAME
+
     def test_empty_list_of_matchers_SHOULD_evaluate_to_False(self):
-        self._check('',
-                    [],
-                    False)
+        self._check_case(
+            self._multi_case(
+                'empty',
+                False,
+                child_matchers=[],
+                trace_child_nodes=[])
+        )
 
     def test_single_matcher_SHOULD_evaluate_to_value_of_the_single_matcher(self):
         cases = [
-            NameAndValue('false',
-                         (
-                             [self.configuration.matcher_with_constant_result(False)],
+            self._multi_case('false',
                              False,
-                         )),
-            NameAndValue('true',
-                         (
-                             [self.configuration.matcher_with_constant_result(True)],
+                             child_matchers=child_1_to_n([False]),
+                             trace_child_nodes=child_1_to_n([False]),
+                             ),
+            self._multi_case('true',
                              True,
-                         )),
+                             child_matchers=child_1_to_n([True]),
+                             trace_child_nodes=child_1_to_n([True]),
+                             ),
         ]
         for case in cases:
-            ored_matchers, expected_result = case.value
-            self._check(case.name,
-                        ored_matchers,
-                        expected_result)
+            self._check_case(case)
 
     def test_more_than_one_matcher_SHOULD_evaluate_to_True_WHEN_any_matchers_evaluate_to_True(self):
         cases = [
-            NameAndValue('two matchers',
-                         [self.configuration.matcher_with_constant_result(False),
-                          self.configuration.matcher_with_constant_result(True)],
-                         ),
-            NameAndValue('three matchers',
-                         [self.configuration.matcher_with_constant_result(False),
-                          self.configuration.matcher_with_constant_result(True),
-                          self.configuration.matcher_with_constant_result(False)],
-                         ),
+            self._multi_case('two matchers',
+                             True,
+                             child_matchers=child_1_to_n([False, True]),
+                             trace_child_nodes=child_1_to_n([False, True]),
+                             ),
+            self._multi_case('three matchers',
+                             True,
+                             child_matchers=child_1_to_n([False, True, False]),
+                             trace_child_nodes=child_1_to_n([False, True]),
+                             ),
         ]
         for case in cases:
-            ored_matchers = case.value
-            self._check(case.name,
-                        ored_matchers,
-                        True)
+            self._check_case(case)
 
     def test_more_than_one_matcher_SHOULD_evaluate_to_False_WHEN_all_matcher_evaluates_to_False(self):
         cases = [
-            NameAndValue('two matchers',
-                         [self.configuration.matcher_with_constant_result(False),
-                          self.configuration.matcher_with_constant_result(False)],
-                         ),
-            NameAndValue('three matchers',
-                         [self.configuration.matcher_with_constant_result(False),
-                          self.configuration.matcher_with_constant_result(False),
-                          self.configuration.matcher_with_constant_result(False)],
-                         ),
+            self._multi_case('two matchers',
+                             False,
+                             child_matchers=child_1_to_n([False, False]),
+                             trace_child_nodes=child_1_to_n([False, False]),
+                             ),
+            self._multi_case('three matchers',
+                             False,
+                             child_matchers=child_1_to_n([False, False, False]),
+                             trace_child_nodes=child_1_to_n([False, False, False]),
+                             ),
         ]
         for case in cases:
-            self._check(case.name,
-                        case.value,
-                        False)
+            self._check_case(case)
 
     def test_model_argument_SHOULD_be_given_as_argument_to_every_sub_matcher(self):
         # ARRANGE #
@@ -280,24 +365,25 @@ class TestOrBase(TestCaseBase):
 
 
 class TestNotBase(TestCaseBase):
-    def runTest(self):
+    @property
+    def trace_operator_name(self) -> str:
+        return expression.NOT_OPERATOR_NAME
+
+    def test_result_SHOULD_be_negation_of_child_matcher(self):
         cases = [
-            NameAndValue('negate to make negated matcher match',
-                         (
-                             self.configuration.matcher_with_constant_result(False),
-                             True,
-                         )),
-            NameAndValue('negate to make negated matcher not match',
-                         (
-                             self.configuration.matcher_with_constant_result(True),
-                             False,
-                         )),
+            self._single_case('child gives false',
+                              True,
+                              child_matcher=('child_false', False),
+                              trace_child_node=('child_false', False),
+                              ),
+            self._single_case('child gives true',
+                              False,
+                              child_matcher=('child_true', True),
+                              trace_child_node=('child_true', True),
+                              ),
         ]
         for case in cases:
-            matcher_to_negate, expected_result = case.value
-            self._check(case.name,
-                        matcher_to_negate,
-                        expected_result)
+            self._check_case(case)
 
     def test_model_argument_SHOULD_be_given_as_argument_to_every_sub_matcher(self):
         # ARRANGE #
@@ -322,3 +408,12 @@ _ARBITRARY_ERR_MSG_RESOLVING_ENV = ErrorMessageResolvingEnvironment(
     fake_tcds(),
     None,
 )
+
+
+def child_1_to_n(child_results: List[bool]) -> List[MatcherNameAndResult]:
+    """Gives unique names to children: child1, child2, ..."""
+    return [
+        ('child' + str(n),
+         result)
+        for n, result in enumerate(child_results, start=1)
+    ]

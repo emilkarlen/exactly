@@ -107,7 +107,7 @@ class LineMatcherNot(LineMatcher):
         return self._matcher
 
     def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
-        result = self._matcher.matches3(line)
+        result = self._matcher.matches_w_trace(line)
 
         return self._new_tb() \
             .append_child(result.trace) \

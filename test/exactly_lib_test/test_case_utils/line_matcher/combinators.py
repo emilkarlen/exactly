@@ -12,12 +12,26 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+class ConstantMatcherWithCustomName(sut.LineMatcherConstant):
+    """Matcher with constant result."""
+
+    def __init__(self, name: str, result: bool):
+        super().__init__(result)
+        self._name = name
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+
 class LineMatcherConfiguration(matcher_combinators_check.MatcherConfiguration):
     def irrelevant_model(self):
         return 69, 'irrelevant line model'
 
-    def matcher_with_constant_result(self, result: bool):
-        return sut.LineMatcherConstant(result)
+    def matcher_with_constant_result(self,
+                                     name: str,
+                                     result: bool):
+        return ConstantMatcherWithCustomName(name, result)
 
     def matcher_that_registers_model_argument_and_returns_constant(self, result: bool
                                                                    ) -> matcher_combinators_check.MatcherThatRegistersModelArgument:

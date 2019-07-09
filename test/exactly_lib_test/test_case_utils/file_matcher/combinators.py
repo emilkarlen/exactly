@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
@@ -20,7 +19,9 @@ class FileMatcherConfiguration(matcher_combinators_check.MatcherConfiguration):
     def irrelevant_model(self) -> FileMatcherModel:
         return model.with_dir_space_that_must_not_be_used(pathlib.Path('irrelevant path'))
 
-    def matcher_with_constant_result(self, result: bool):
+    def matcher_with_constant_result(self,
+                                     name: str,
+                                     result: bool):
         return sut.FileMatcherConstant(result)
 
     def matcher_that_registers_model_argument_and_returns_constant(
