@@ -20,6 +20,9 @@ class FilePrinter:
         """
         self.file = file
 
+    def flush(self):
+        self.file.flush()
+
     def write(self, s: str, flush: bool = False):
         self.file.write(s)
         if flush:
@@ -29,8 +32,18 @@ class FilePrinter:
         self.file.write(indent + line)
         self.file.write(os.linesep)
 
+    def set_color(self, color: ForegroundColor):
+        pass
+
+    def unset_color(self):
+        pass
+
     def write_colored_line(self, line: str, color: Optional[ForegroundColor]):
+        if color is not None:
+            self.set_color(color)
         self.file.write(line)
+        if color is not None:
+            self.unset_color()
         self.file.write(os.linesep)
 
     def write_empty_line(self):
@@ -55,10 +68,11 @@ class FilePrintable(ABC):
 
 
 class FilePrinterWithAnsiColor(FilePrinter):
-    def write_colored_line(self, line: str, color: Optional[ForegroundColor]):
-        s = ansi.ansi_escape(color, line) if color else line
-        self.file.write(s)
-        self.file.write(os.linesep)
+    def set_color(self, color: ForegroundColor):
+        self.file.write(ansi.set_color(color))
+
+    def unset_color(self):
+        self.file.write(ansi.unset_color())
 
 
 def file_printer_with_color_if_terminal(file_object) -> FilePrinter:

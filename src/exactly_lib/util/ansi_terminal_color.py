@@ -17,6 +17,14 @@ def ansi_escape(foreground: ForegroundColor, s: str) -> str:
     return '\033[1;' + str(int(foreground)) + 'm' + s + '\033[1;m'
 
 
+def set_color(foreground: ForegroundColor) -> str:
+    return '\033[1;' + str(int(foreground)) + 'm'
+
+
+def unset_color() -> str:
+    return '\033[1;m'
+
+
 def is_file_object_with_color(file_object) -> bool:
     try:
         os.ttyname(file_object.fileno())
