@@ -8,8 +8,8 @@ from exactly_lib.test_case import exception_detection
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
+from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util import file_printables
-from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.process_execution import executable_factories
 from exactly_lib.util.process_execution.command import Command
 from exactly_lib.util.process_execution.executable_factory import ExecutableFactory

@@ -20,9 +20,9 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, construct_at
-from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.file_utils import resolved_path_name
 
 

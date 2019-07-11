@@ -1,8 +1,8 @@
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.failure_info import PhaseFailureInfo
 from exactly_lib.execution.full_execution.result import FullExeResultStatus, FullExeResult
+from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.util.failure_details import FailureDetails
 
 DUMMY_SDS = SandboxDirectoryStructure('test-root-dir')
 

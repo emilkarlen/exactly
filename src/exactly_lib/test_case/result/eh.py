@@ -1,6 +1,6 @@
 from typing import Optional
 
-from exactly_lib.util.failure_details import FailureDetails
+from exactly_lib.test_case.result.failure_details import FailureDetails
 
 
 class ExitCodeOrHardError(tuple):

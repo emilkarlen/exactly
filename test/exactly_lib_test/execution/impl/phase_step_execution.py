@@ -18,8 +18,8 @@ from exactly_lib_test.execution.test_resources.phase_step_execution import Recor
 from exactly_lib_test.section_document.test_resources.elements import new_comment_element, new_instruction_element
 from exactly_lib_test.section_document.test_resources.source_location_assertions import \
     equals_single_line_source_location_path
+from exactly_lib_test.test_case.result.test_resources import failure_details_assertions as asrt_failure_details
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.util.test_resources import failure_details_assertions as asrt_failure_details
 
 
 def suite() -> unittest.TestSuite:

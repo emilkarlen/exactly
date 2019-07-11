@@ -5,8 +5,8 @@ from exactly_lib.execution.partial_execution.result import PartialExeResultStatu
 from exactly_lib.section_document.model import SectionContentElement, InstructionInfo
 from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case.phases.common import TestCaseInstruction
-from exactly_lib.util import failure_details
-from exactly_lib.util.failure_details import FailureDetails
+from exactly_lib.test_case.result import failure_details
+from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util.file_printer import FilePrintable
 
 

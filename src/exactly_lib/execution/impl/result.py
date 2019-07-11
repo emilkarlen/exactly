@@ -3,7 +3,7 @@ from typing import Callable, Optional
 from exactly_lib.execution.failure_info import FailureInfo
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.section_document.source_location import SourceLocationPath
-from exactly_lib.util.failure_details import FailureDetails
+from exactly_lib.test_case.result.failure_details import FailureDetails
 
 
 class Failure(tuple):

@@ -10,8 +10,8 @@ from exactly_lib.test_case.actor import ActionToCheck, AtcOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import StdinConfiguration
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_hard_error
+from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import stdin_contents_file
-from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.file_utils import open_and_make_read_only_on_close, write_new_text_file
 from exactly_lib.util.std import StdFiles, StdOutputFiles
 

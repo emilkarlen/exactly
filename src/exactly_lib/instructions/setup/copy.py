@@ -22,13 +22,13 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
+from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
 from exactly_lib.util import file_printables
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 

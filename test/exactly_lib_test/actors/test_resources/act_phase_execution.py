@@ -1,7 +1,6 @@
-import unittest
-
 import os
 import pathlib
+import unittest
 
 from exactly_lib.execution import phase_step
 from exactly_lib.test_case import phase_identifier
@@ -12,7 +11,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
-from exactly_lib.util.failure_details import FailureDetails
+from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util.std import StdFiles
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.execution.test_resources import eh_assertions
