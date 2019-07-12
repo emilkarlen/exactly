@@ -2,8 +2,8 @@ from typing import Sequence
 
 from exactly_lib.util.simple_textstruct.render import printables as ps
 from exactly_lib.util.simple_textstruct.render.printer import Printable, Printer
-from exactly_lib.util.simple_textstruct.structure import LineObject, BlockProperties, MajorBlock, MinorBlock, \
-    LineObjectVisitor, PreFormattedStringLineObject, Document
+from exactly_lib.util.simple_textstruct.structure import ElementProperties, MajorBlock, MinorBlock, \
+    LineObjectVisitor, PreFormattedStringLineObject, Document, LineObject, LineElement
 
 _NEW_LINE_PRINTABLE = ps.NewLinePrintable()
 
@@ -26,9 +26,11 @@ class LayoutSettings:
     def __init__(self,
                  major_block: BlockSettings,
                  minor_block: BlockSettings,
+                 line_element_indent: str,
                  ):
         self.major_block = major_block
         self.minor_block = minor_block
+        self.line_element_indent = line_element_indent
 
 
 class PrintablesFactory:
@@ -59,25 +61,30 @@ class PrintablesFactory:
             ]
         )
 
-    def major_block(self,
-                    block: MajorBlock) -> Printable:
+    def major_block(self, block: MajorBlock) -> Printable:
         contents = ps.SequencePrintable([self.minor_block(minor_block)
                                          for minor_block in block.parts])
-        return self._block(block.properties,
-                           self.settings.major_block,
-                           contents
-                           )
+        return self._element(block.properties,
+                             self.settings.major_block.indent,
+                             contents
+                             )
 
-    def minor_block(self,
-                    block: MinorBlock) -> Printable:
+    def minor_block(self, block: MinorBlock) -> Printable:
         contents = ps.SequencePrintable([
-            _LineObjectPrintable(self.line_object_handler, line_object)
-            for line_object in block.parts
+            self.line_element(line_element)
+            for line_element in block.parts
         ])
-        return self._block(block.properties,
-                           self.settings.minor_block,
-                           contents
-                           )
+        return self._element(block.properties,
+                             self.settings.minor_block.indent,
+                             contents
+                             )
+
+    def line_element(self, line_element: LineElement) -> Printable:
+        return self._element(
+            line_element.properties,
+            self.settings.line_element_indent,
+            _LineObjectPrintable(self.line_object_handler, line_element.line_object),
+        )
 
     @staticmethod
     def _blocks(settings: BlockSettings,
@@ -88,12 +95,12 @@ class PrintablesFactory:
         )
 
     @staticmethod
-    def _block(properties: BlockProperties,
-               settings: BlockSettings,
-               contents: Printable) -> Printable:
+    def _element(properties: ElementProperties,
+                 indent_delta: str,
+                 contents: Printable) -> Printable:
         ret_val = contents
         if properties.indented:
-            ret_val = ps.IncreasedIndentPrintable(settings.indent,
+            ret_val = ps.IncreasedIndentPrintable(indent_delta,
                                                   ret_val)
 
         if properties.color is not None:
@@ -109,7 +116,7 @@ class _LineObjectHandler(LineObjectVisitor[Printer, None]):
 
     def visit_pre_formatted(self, env: Printer, x: PreFormattedStringLineObject) -> None:
         env.write_indented(x.string)
-        if not x.is_new_line_ended:
+        if not x.string_is_line_ended:
             env.new_line()
 
 

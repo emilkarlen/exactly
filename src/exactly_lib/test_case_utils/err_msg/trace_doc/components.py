@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Sequence
 
-from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineObject
+from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement
 
 
 class MajorBlockRenderer(ABC):
@@ -25,10 +25,10 @@ class MinorBlocksRenderer(ABC):
 
 
 class LineObjectRenderer(ABC):
-    def render(self) -> LineObject:
+    def render(self) -> LineElement:
         pass
 
 
 class LineObjectsRenderer(ABC):
-    def render(self) -> Sequence[LineObject]:
+    def render(self) -> Sequence[LineElement]:
         pass

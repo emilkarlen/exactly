@@ -4,7 +4,7 @@ from exactly_lib.test_case.result.trace_doc import TraceDocRender
 from exactly_lib.test_case_utils.err_msg.trace_doc.components import MajorBlocksRenderer, MajorBlockRenderer, \
     MinorBlocksRenderer, MinorBlockRenderer, LineObjectRenderer
 from exactly_lib.util.simple_textstruct import structure
-from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, Document, BlockProperties
+from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, Document, ElementProperties
 
 
 def doc_of_single_major_block(block: MajorBlockRenderer) -> TraceDocRender:
@@ -48,34 +48,34 @@ class MajorBlocksFromSequence(MajorBlocksRenderer):
 class MajorBlockFromSequence(MajorBlockRenderer):
     def __init__(self,
                  blocks: Sequence[MinorBlockRenderer],
-                 properties: BlockProperties = structure.PLAIN_BLOCK_PROPERTIES):
+                 properties: ElementProperties = structure.PLAIN_ELEMENT_PROPERTIES):
         self._properties = properties
         self._blocks = blocks
 
     def render(self) -> MajorBlock:
         return MajorBlock(
-            self._properties,
             [
                 block.render()
                 for block in self._blocks
             ],
+            self._properties,
         )
 
 
 class MinorBlockFromSequence(MinorBlockRenderer):
     def __init__(self,
                  line_objects: Sequence[LineObjectRenderer],
-                 properties: BlockProperties = structure.PLAIN_BLOCK_PROPERTIES):
+                 properties: ElementProperties = structure.PLAIN_ELEMENT_PROPERTIES):
         self._properties = properties
         self._line_objects = line_objects
 
     def render(self) -> MinorBlock:
         return MinorBlock(
-            self._properties,
             [
                 line_object.render()
                 for line_object in self._line_objects
             ],
+            self._properties,
         )
 
 
