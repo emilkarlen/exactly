@@ -29,7 +29,8 @@ class FilePrinter:
             self.file.flush()
 
     def write_line(self, line: str, indent: str = ''):
-        self.file.write(indent + line)
+        self.file.write(indent)
+        self.file.write(line)
         self.file.write(os.linesep)
 
     def set_color(self, color: ForegroundColor):
@@ -55,7 +56,8 @@ class FilePrinter:
 
     def write_lines(self, lines: Sequence[str], indent: str = ''):
         for line in lines:
-            self.write_line(indent + line)
+            self.write_line(indent)
+            self.write_line(line)
 
 
 class FilePrintable(ABC):
