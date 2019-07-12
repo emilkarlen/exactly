@@ -1,8 +1,8 @@
 from typing import Sequence
 
-from exactly_lib.test_case.result.trace_doc import TraceDocRender
-from exactly_lib.test_case_utils.err_msg.trace_doc.components import MajorBlocksRenderer, MajorBlockRenderer, \
+from exactly_lib.common.report_rendering.components import MajorBlocksRenderer, MajorBlockRenderer, \
     MinorBlocksRenderer, MinorBlockRenderer, LineObjectRenderer
+from exactly_lib.test_case.result.trace_doc import TraceDocRender
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, Document, ElementProperties
 
