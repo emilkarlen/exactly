@@ -82,6 +82,10 @@ class MajorBlock:
         return self._parts
 
 
-class MajorBlocksRenderer(ABC):
-    def render(self) -> Sequence[MajorBlock]:
-        pass
+class Document:
+    def __init__(self, blocks: Sequence[MajorBlock]):
+        self._blocks = blocks
+
+    @property
+    def blocks(self) -> Sequence[MajorBlock]:
+        return self._blocks

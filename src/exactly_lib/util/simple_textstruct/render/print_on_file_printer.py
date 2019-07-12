@@ -3,7 +3,7 @@ from typing import Sequence
 from exactly_lib.util.simple_textstruct.render import printables as ps
 from exactly_lib.util.simple_textstruct.render.printer import Printable, Printer
 from exactly_lib.util.simple_textstruct.structure import LineObject, BlockProperties, MajorBlock, MinorBlock, \
-    LineObjectVisitor, PreFormattedStringLineObject
+    LineObjectVisitor, PreFormattedStringLineObject, Document
 
 _NEW_LINE_PRINTABLE = ps.NewLinePrintable()
 
@@ -36,28 +36,8 @@ class PrintablesFactory:
         self.settings = settings
         self.line_object_handler = _LineObjectHandler(self)
 
-    @staticmethod
-    def _blocks(settings: BlockSettings,
-                parts: Sequence[Printable]) -> Printable:
-        return ps.InterspersedSequencePrintable(
-            settings.separator,
-            parts
-        )
-
-    @staticmethod
-    def _block(properties: BlockProperties,
-               settings: BlockSettings,
-               contents: Printable) -> Printable:
-        ret_val = contents
-        if properties.indented:
-            ret_val = ps.IncreasedIndentPrintable(settings.indent,
-                                                  ret_val)
-
-        if properties.color is not None:
-            ret_val = ps.ColoredPrintable(properties.color,
-                                          ret_val)
-
-        return ret_val
+    def document(self, document: Document):
+        return self.major_blocks(document.blocks)
 
     def major_blocks(self,
                      blocks: Sequence[MajorBlock]) -> Printable:
@@ -98,6 +78,29 @@ class PrintablesFactory:
                            self.settings.minor_block,
                            contents
                            )
+
+    @staticmethod
+    def _blocks(settings: BlockSettings,
+                parts: Sequence[Printable]) -> Printable:
+        return ps.InterspersedSequencePrintable(
+            settings.separator,
+            parts
+        )
+
+    @staticmethod
+    def _block(properties: BlockProperties,
+               settings: BlockSettings,
+               contents: Printable) -> Printable:
+        ret_val = contents
+        if properties.indented:
+            ret_val = ps.IncreasedIndentPrintable(settings.indent,
+                                                  ret_val)
+
+        if properties.color is not None:
+            ret_val = ps.ColoredPrintable(properties.color,
+                                          ret_val)
+
+        return ret_val
 
 
 class _LineObjectHandler(LineObjectVisitor[Printer, None]):
