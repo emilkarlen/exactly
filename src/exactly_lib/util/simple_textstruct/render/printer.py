@@ -42,6 +42,9 @@ class Printer:
         self.file_printer.write(self.settings.indent)
         self.file_printer.write(s)
 
+    def write_non_indented(self, s: str):
+        self.file_printer.write(s)
+
     def new_line(self):
         self.file_printer.write_empty_line()
 

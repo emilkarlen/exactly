@@ -3,7 +3,8 @@ from typing import Sequence
 from exactly_lib.util.simple_textstruct.render import printables as ps
 from exactly_lib.util.simple_textstruct.render.printer import Printable, Printer
 from exactly_lib.util.simple_textstruct.structure import ElementProperties, MajorBlock, MinorBlock, \
-    LineObjectVisitor, PreFormattedStringLineObject, Document, LineObject, LineElement
+    LineObjectVisitor, PreFormattedStringLineObject, Document, LineObject, LineElement, StringLineObject, \
+    StringLinesObject
 
 _NEW_LINE_PRINTABLE = ps.NewLinePrintable()
 
@@ -115,8 +116,18 @@ class _LineObjectHandler(LineObjectVisitor[Printer, None]):
         self._factory = factory
 
     def visit_pre_formatted(self, env: Printer, x: PreFormattedStringLineObject) -> None:
+        env.write_non_indented(x.string)
+        if not x.string_is_line_ended:
+            env.new_line()
+
+    def visit_string(self, env: Printer, x: StringLineObject) -> None:
         env.write_indented(x.string)
         if not x.string_is_line_ended:
+            env.new_line()
+
+    def visit_string_lines(self, env: Printer, x: StringLinesObject) -> None:
+        for s in x.strings:
+            env.write_indented(s)
             env.new_line()
 
 

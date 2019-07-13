@@ -61,6 +61,8 @@ class LineElement(Element):
 
 
 class PreFormattedStringLineObject(LineObject):
+    """A string that does not use the layout settings when printed."""
+
     def __init__(self,
                  string: str,
                  string_is_line_ended: bool
@@ -80,8 +82,50 @@ class PreFormattedStringLineObject(LineObject):
         return self._string
 
 
+class StringLineObject(LineObject):
+    """A string that does use the layout settings when printed."""
+
+    def __init__(self,
+                 string: str,
+                 string_is_line_ended: bool
+                 ):
+        self._string = string
+        self._string_is_line_ended = string_is_line_ended
+
+    def accept(self, visitor: 'LineObjectVisitor[ENV, RET]', env: ENV) -> RET:
+        return visitor.visit_string(env, self)
+
+    @property
+    def string_is_line_ended(self) -> bool:
+        return self._string_is_line_ended
+
+    @property
+    def string(self) -> str:
+        return self._string
+
+
+class StringLinesObject(LineObject):
+    """A sequence of strings that should be output as a sequence of lines."""
+
+    def __init__(self, strings: Sequence[str]):
+        self._strings = strings
+
+    def accept(self, visitor: 'LineObjectVisitor[ENV, RET]', env: ENV) -> RET:
+        return visitor.visit_string(env, self)
+
+    @property
+    def strings(self) -> Sequence[str]:
+        return self._strings
+
+
 class LineObjectVisitor(Generic[ENV, RET], ABC):
     def visit_pre_formatted(self, env: ENV, x: PreFormattedStringLineObject) -> RET:
+        pass
+
+    def visit_string(self, env: ENV, x: StringLineObject) -> RET:
+        pass
+
+    def visit_string_lines(self, env: ENV, x: StringLinesObject) -> RET:
         pass
 
 

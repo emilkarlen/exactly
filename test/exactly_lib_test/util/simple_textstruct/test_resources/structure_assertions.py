@@ -2,7 +2,7 @@ from typing import Sequence, Optional
 
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, Document, \
-    ElementProperties, LineObject
+    ElementProperties, LineObject, PreFormattedStringLineObject, StringLineObject, StringLinesObject
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -82,3 +82,54 @@ def matches_line_element(line_objects: ValueAssertion[LineObject],
             properties,
         ),
     ])
+
+
+def is_pre_formatted_string(string: ValueAssertion[str] = asrt.anything_goes(),
+                            string_is_line_ended: ValueAssertion[bool] = asrt.anything_goes()
+                            ) -> ValueAssertion[LineObject]:
+    return asrt.is_instance_with_many(
+        PreFormattedStringLineObject,
+        [
+            asrt.sub_component('string',
+                               PreFormattedStringLineObject.string.fget,
+                               asrt.is_instance_with(str, string)
+                               ),
+            asrt.sub_component('string_is_line_ended',
+                               PreFormattedStringLineObject.string_is_line_ended.fget,
+                               asrt.is_instance_with(bool, string_is_line_ended)
+                               ),
+        ],
+    )
+
+
+def is_string(string: ValueAssertion[str] = asrt.anything_goes(),
+              string_is_line_ended: ValueAssertion[bool] = asrt.anything_goes()
+              ) -> ValueAssertion[LineObject]:
+    return asrt.is_instance_with_many(
+        StringLineObject,
+        [
+            asrt.sub_component('string',
+                               StringLineObject.string.fget,
+                               asrt.is_instance_with(str, string)
+                               ),
+            asrt.sub_component('string_is_line_ended',
+                               StringLineObject.string_is_line_ended.fget,
+                               asrt.is_instance_with(bool, string_is_line_ended)
+                               ),
+        ],
+    )
+
+
+def is_string_lines(strings: ValueAssertion[Sequence[str]] = asrt.anything_goes(),
+                    ) -> ValueAssertion[LineObject]:
+    return asrt.is_instance_with_many(
+        StringLinesObject,
+        [
+            asrt.sub_component('strings',
+                               StringLinesObject.strings.fget,
+                               asrt.and_([
+                                   asrt.is_sequence_of(asrt.is_instance(str)),
+                                   strings
+                               ])),
+        ],
+    )
