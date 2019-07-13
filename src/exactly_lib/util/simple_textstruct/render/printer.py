@@ -28,6 +28,11 @@ class Printer:
         self.settings = settings
         self.file_printer = file_printer
 
+    @staticmethod
+    def new(file_printer: FilePrinter) -> 'Printer':
+        return Printer(PrintSettings('', None),
+                       file_printer)
+
     def new_with_increased_indent(self, increase: str) -> 'Printer':
         """Gives a new printer with modified settings"""
         return Printer(self.settings.new_with_increased_indent(increase),

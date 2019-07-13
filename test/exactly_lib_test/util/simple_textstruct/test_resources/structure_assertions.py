@@ -23,6 +23,13 @@ def matches_element_properties(
                                       ])
 
 
+def equals_element_properties(expected: ElementProperties) -> ValueAssertion[ElementProperties]:
+    return matches_element_properties(
+        indented=asrt.equals(expected.indented),
+        color=asrt.equals(expected.color)
+    )
+
+
 def matches_document(major_blocks: ValueAssertion[Sequence[MajorBlock]]) -> ValueAssertion[Document]:
     return asrt.is_instance_with(Document,
                                  asrt.sub_component(
@@ -67,14 +74,14 @@ def matches_minor_block(line_elements: ValueAssertion[Sequence[LineElement]],
     ])
 
 
-def matches_line_element(line_objects: ValueAssertion[LineObject],
+def matches_line_element(line_object: ValueAssertion[LineObject],
                          properties: ValueAssertion[ElementProperties] = matches_element_properties()
                          ) -> ValueAssertion[LineElement]:
     return asrt.is_instance_with_many(LineElement, [
         asrt.sub_component(
             'line object',
             LineElement.line_object.fget,
-            line_objects
+            line_object
         ),
         asrt.sub_component(
             'properties',

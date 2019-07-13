@@ -57,3 +57,6 @@ class ColoredPrintable(Printable):
 class NewLinePrintable(Printable):
     def print_on(self, printer: Printer):
         printer.new_line()
+
+
+NEW_LINE_PRINTABLE = NewLinePrintable()

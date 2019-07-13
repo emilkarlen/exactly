@@ -6,13 +6,6 @@ from exactly_lib.util.simple_textstruct.structure import ElementProperties, Majo
     LineObjectVisitor, PreFormattedStringLineObject, Document, LineObject, LineElement, StringLineObject, \
     StringLinesObject
 
-_NEW_LINE_PRINTABLE = ps.NewLinePrintable()
-
-_MAJOR_BLOCK_SEPARATOR_PRINTABLE = ps.SequencePrintable([_NEW_LINE_PRINTABLE,
-                                                         _NEW_LINE_PRINTABLE])
-
-_MINOR_BLOCK_SEPARATOR_PRINTABLE = _NEW_LINE_PRINTABLE
-
 
 class BlockSettings:
     def __init__(self,
@@ -39,11 +32,10 @@ class PrintablesFactory:
         self.settings = settings
         self.line_object_handler = _LineObjectHandler(self)
 
-    def document(self, document: Document):
+    def document(self, document: Document) -> Printable:
         return self.major_blocks(document.blocks)
 
-    def major_blocks(self,
-                     blocks: Sequence[MajorBlock]) -> Printable:
+    def major_blocks(self, blocks: Sequence[MajorBlock]) -> Printable:
         return self._blocks(
             self.settings.major_block,
             [
@@ -52,8 +44,7 @@ class PrintablesFactory:
             ]
         )
 
-    def minor_blocks(self,
-                     blocks: Sequence[MinorBlock]) -> Printable:
+    def minor_blocks(self, blocks: Sequence[MinorBlock]) -> Printable:
         return self._blocks(
             self.settings.minor_block,
             [
@@ -63,11 +54,9 @@ class PrintablesFactory:
         )
 
     def major_block(self, block: MajorBlock) -> Printable:
-        contents = ps.SequencePrintable([self.minor_block(minor_block)
-                                         for minor_block in block.parts])
         return self._element(block.properties,
                              self.settings.major_block.indent,
-                             contents
+                             self.minor_blocks(block.parts)
                              )
 
     def minor_block(self, block: MinorBlock) -> Printable:

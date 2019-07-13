@@ -111,7 +111,7 @@ class StringLinesObject(LineObject):
         self._strings = strings
 
     def accept(self, visitor: 'LineObjectVisitor[ENV, RET]', env: ENV) -> RET:
-        return visitor.visit_string(env, self)
+        return visitor.visit_string_lines(env, self)
 
     @property
     def strings(self) -> Sequence[str]:
