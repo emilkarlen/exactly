@@ -29,6 +29,12 @@ def error_message_for_full_result(the_full_result: FullExeResult) -> str:
     return output_file.getvalue()
 
 
+def error_message_for_error_info(error_info: ErrorInfo) -> str:
+    output_file = io.StringIO()
+    print_error_info(FilePrinter(output_file), error_info)
+    return output_file.getvalue()
+
+
 def print_error_message_for_full_result(printer: FilePrinter, the_full_result: FullExeResult):
     main_blocks_renderer = FullExeResultRenderer(the_full_result)
 
