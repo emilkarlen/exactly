@@ -97,6 +97,10 @@ class PrintablesFactory:
             ret_val = ps.ColoredPrintable(properties.color,
                                           ret_val)
 
+        if properties.font_style is not None:
+            ret_val = ps.FontStyledPrintable(properties.font_style,
+                                             ret_val)
+
         return ret_val
 
 

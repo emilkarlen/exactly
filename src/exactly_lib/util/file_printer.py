@@ -3,7 +3,7 @@ from abc import ABC
 from typing import Optional, Sequence
 
 from exactly_lib.util import ansi_terminal_color as ansi
-from exactly_lib.util.ansi_terminal_color import ForegroundColor
+from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
 
 
 class FilePrinter:
@@ -37,6 +37,12 @@ class FilePrinter:
         pass
 
     def unset_color(self):
+        pass
+
+    def set_font_style(self, style: FontStyle):
+        pass
+
+    def unset_font_style(self):
         pass
 
     def write_colored_line(self, line: str, color: Optional[ForegroundColor]):
@@ -75,6 +81,12 @@ class FilePrinterWithAnsiColor(FilePrinter):
 
     def unset_color(self):
         self.file.write(ansi.unset_color())
+
+    def set_font_style(self, style: FontStyle):
+        self.file.write(ansi.set_font_style(style))
+
+    def unset_font_style(self):
+        self.file.write(ansi.unset_font_style())
 
 
 def file_printer_with_color_if_terminal(file_object) -> FilePrinter:

@@ -13,6 +13,11 @@ class ForegroundColor(IntEnum):
     WHITE = 37
 
 
+class FontStyle(IntEnum):
+    BOLD = 1
+    UNDERLINE = 4
+
+
 def ansi_escape(foreground: ForegroundColor, s: str) -> str:
     return '\033[1;' + str(int(foreground)) + 'm' + s + '\033[1;m'
 
@@ -21,8 +26,16 @@ def set_color(foreground: ForegroundColor) -> str:
     return '\033[1;' + str(int(foreground)) + 'm'
 
 
+def set_font_style(style: FontStyle) -> str:
+    return '\033[1;' + str(int(style)) + 'm'
+
+
 def unset_color() -> str:
     return '\033[1;m'
+
+
+def unset_font_style() -> str:
+    return '\033[1;0m'
 
 
 def is_file_object_with_color(file_object) -> bool:

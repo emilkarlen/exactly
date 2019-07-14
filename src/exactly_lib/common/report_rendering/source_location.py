@@ -4,11 +4,12 @@ from typing import Sequence, Tuple, List, Optional
 
 from exactly_lib.common.report_rendering.components import SequenceRenderer
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationPath
+from exactly_lib.util.ansi_terminal_color import FontStyle
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.structure import StringLinesObject, LineElement, MinorBlock, StringLineObject
 
 SOURCE_LINES_ELEMENT_PROPERTIES = structure.ElementProperties(True, None)
-SOURCE_LINES_BLOCK_PROPERTIES = structure.ElementProperties(False, None)
+SOURCE_LINES_BLOCK_PROPERTIES = structure.ElementProperties(False, None, FontStyle.BOLD)
 
 
 def line_number(n: int) -> str:

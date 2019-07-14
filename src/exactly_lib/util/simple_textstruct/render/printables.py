@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.util.ansi_terminal_color import ForegroundColor
+from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
 from exactly_lib.util.simple_textstruct.render.print_on_file_printer import Printable
 from exactly_lib.util.simple_textstruct.render.printer import Printer
 
@@ -52,6 +52,20 @@ class ColoredPrintable(Printable):
         colored_printer.set_color()
         self._printable.print_on(colored_printer)
         printer.set_color()
+
+
+class FontStyledPrintable(Printable):
+    def __init__(self,
+                 style: FontStyle,
+                 printable: Printable):
+        self._style = style
+        self._printable = printable
+
+    def print_on(self, printer: Printer):
+        styled_printer = printer.new_with_font_style(self._style)
+        styled_printer.set_font_style()
+        self._printable.print_on(styled_printer)
+        printer.set_font_style()
 
 
 class NewLinePrintable(Printable):

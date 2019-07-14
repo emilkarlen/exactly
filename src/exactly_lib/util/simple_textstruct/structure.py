@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import TypeVar, Sequence, Optional, Generic
 
-from exactly_lib.util.ansi_terminal_color import ForegroundColor
+from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
 
 RET = TypeVar('RET')
 ENV = TypeVar('ENV')
@@ -10,9 +10,11 @@ ENV = TypeVar('ENV')
 class ElementProperties:
     def __init__(self,
                  indented: bool,
-                 color: Optional[ForegroundColor]):
-        self._color = color
+                 color: Optional[ForegroundColor],
+                 font_style: Optional[FontStyle] = None):
         self._indented = indented
+        self._color = color
+        self._font_style = font_style
 
     @property
     def indented(self) -> bool:
@@ -21,6 +23,10 @@ class ElementProperties:
     @property
     def color(self) -> Optional[ForegroundColor]:
         return self._color
+
+    @property
+    def font_style(self) -> Optional[FontStyle]:
+        return self._font_style
 
 
 PLAIN_ELEMENT_PROPERTIES = ElementProperties(False, None)
