@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Sequence, Tuple, List, Optional
 
 from exactly_lib.common.report_rendering.components import SequenceRenderer
+from exactly_lib.common.report_rendering.trace_doc import Renderer
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationPath
 from exactly_lib.util.ansi_terminal_color import FontStyle
 from exactly_lib.util.simple_textstruct import structure
@@ -55,6 +56,14 @@ class SourceLocationPathRenderer(SequenceRenderer[MinorBlock]):
 def source_lines_element(lines: Sequence[str]) -> LineElement:
     return LineElement(StringLinesObject(lines),
                        SOURCE_LINES_ELEMENT_PROPERTIES)
+
+
+class SourceLinesBlockRenderer(Renderer[MinorBlock]):
+    def __init__(self, lines: Sequence[str]):
+        self._lines = lines
+
+    def render(self) -> MinorBlock:
+        return source_lines_block(self._lines)
 
 
 def source_lines_block(lines: Sequence[str]) -> MinorBlock:

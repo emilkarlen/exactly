@@ -7,7 +7,7 @@ from exactly_lib.common.report_rendering import combinators as comb
 from exactly_lib.common.report_rendering import print
 from exactly_lib.common.report_rendering.combinators import PrependFirstMinorBlock
 from exactly_lib.common.report_rendering.components import SequenceRenderer, MajorBlocksRenderer
-from exactly_lib.common.report_rendering.source_location import SourceLocationPathRenderer
+from exactly_lib.common.report_rendering.source_location import SourceLocationPathRenderer, SourceLinesBlockRenderer
 from exactly_lib.common.report_rendering.trace_doc import Renderer
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.formatting import SectionName
@@ -54,26 +54,37 @@ def print_major_blocks(blocks_renderer: Renderer[Sequence[MajorBlock]],
                          printer)
 
 
-def error_message_for_error_info(error_info: ErrorInfo) -> str:
-    output_file = io.StringIO()
-    print_error_info(FilePrinter(output_file), error_info)
-    return output_file.getvalue()
-
-
 def location_blocks_renderer(source_location: Optional[SourceLocationPath],
                              section_name: Optional[str],
                              description: Optional[str]) -> Renderer[Sequence[MajorBlock]]:
+    return comb.ASequence([
+        comb.MajorBlockFromMinorBlocks(
+            location_minor_blocks_renderer(source_location,
+                                           section_name,
+                                           description)
+        )
+    ])
+
+
+def location_minor_blocks_renderer(source_location: Optional[SourceLocationPath],
+                                   section_name: Optional[str],
+                                   description: Optional[str]) -> Renderer[Sequence[MinorBlock]]:
     minor_blocks_renderer = _location_path_and_source_blocks(source_location)
     if section_name is not None:
         minor_blocks_renderer = PrependFirstMinorBlock(_InSectionNameRenderer(section_name),
                                                        minor_blocks_renderer)
-    minor_blocks_renderer = comb.Concatenation([
+    return comb.Concatenation([
         minor_blocks_renderer,
         _OptionalDescriptionRenderer(description),
     ])
 
+
+def source_lines_in_section_block_renderer(section_name: str,
+                                           source_lines: Sequence[str],
+                                           ) -> Renderer[Sequence[MinorBlock]]:
     return comb.ASequence([
-        comb.MajorBlockFromMinorBlocks(minor_blocks_renderer)
+        comb.MinorBlockFromLineElements(_InSectionNameRenderer(section_name)),
+        SourceLinesBlockRenderer(source_lines),
     ])
 
 

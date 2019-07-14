@@ -170,6 +170,20 @@ class MajorBlockFromSequence(MajorBlockRenderer):
         )
 
 
+class MinorBlockFromLineElements(MinorBlockRenderer):
+    def __init__(self,
+                 contents: Renderer[Sequence[LineElement]],
+                 properties: ElementProperties = structure.PLAIN_ELEMENT_PROPERTIES):
+        self._properties = properties
+        self._contents = contents
+
+    def render(self) -> MinorBlock:
+        return MinorBlock(
+            self._contents.render(),
+            self._properties,
+        )
+
+
 class MinorBlockFromSequence(MinorBlockRenderer):
     def __init__(self,
                  line_elements: Sequence[LineElementRenderer],

@@ -290,7 +290,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
         ]
 
         expected_output_lines = list(itertools.chain.from_iterable(
-            intersperse_list([''],
+            intersperse_list(['', ''],
                              list(map(output.Reference.output_lines,
                                       expected_reference_outputs)))
         )
