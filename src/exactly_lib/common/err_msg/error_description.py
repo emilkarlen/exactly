@@ -1,6 +1,7 @@
 from typing import Optional
 
-from exactly_lib.common.report_rendering import combinators as comb
+from exactly_lib.common.report_rendering import renderer_combinators as comb
+from exactly_lib.common.report_rendering import renderers as rend
 from exactly_lib.common.report_rendering.components import MinorBlockRenderer
 from exactly_lib.common.report_rendering.trace_doc import TraceRenderer
 from exactly_lib.definitions import misc_texts
@@ -25,32 +26,34 @@ def of_message(message: Optional[TraceRenderer]) -> ErrorDescription:
 
 def of_constant_message(message: str) -> ErrorDescription:
     return ErrorDescriptionOfMessage(
-        comb.ASequence([
-            comb.MajorBlockFromSequence([
-                minor_block_of_pre_formatted_str(message),
-            ])
-        ])
+        comb.SingletonSequenceR(
+            rend.MajorBlockR(
+                comb.SingletonSequenceR(
+                    minor_block_of_pre_formatted_str(message)
+                ))
+        )
     )
 
 
 def trace_renderer_of_constant_minor_block(block: MinorBlock) -> TraceRenderer:
-    return comb.ASequence([
-        comb.MajorBlockFromSequence([
-            comb.Constant(block),
-        ])
-    ])
+    return comb.SingletonSequenceR(
+        rend.MajorBlockR(
+            comb.SingletonSequenceR(
+                comb.ConstantR(block),
+            ))
+    )
 
 
 def minor_block_of_pre_formatted_str(message: str,
                                      string_is_line_ended: bool = False
                                      ) -> MinorBlockRenderer:
-    return comb.MinorBlockFromSequence([
-        comb.Constant(struct.LineElement(struct.PreFormattedStringLineObject(message,
-                                                                             string_is_line_ended)))
-    ])
-
-
-# file_printables.of_string(message)
+    return rend.MinorBlockR(
+        comb.SingletonSequenceR(
+            rend.LineElementR(
+                comb.ConstantR(
+                    struct.PreFormattedStringLineObject(message,
+                                                        string_is_line_ended))
+            )))
 
 
 def formatted_error_message_str(category: Name, message: str) -> MinorBlock:

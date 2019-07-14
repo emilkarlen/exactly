@@ -3,7 +3,7 @@ from typing import Sequence
 from exactly_lib.common import result_reporting2 as reporting
 from exactly_lib.common.err_msg import error_description
 from exactly_lib.common.exit_value import ExitValue
-from exactly_lib.common.report_rendering import combinators as comb
+from exactly_lib.common.report_rendering import renderer_combinators as comb
 from exactly_lib.common.report_rendering.trace_doc import TraceRenderer, Renderer
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document import exceptions as sec_doc_exceptions
@@ -42,7 +42,7 @@ def _suite_parse_error_renderer(ex: SuiteParseError) -> Renderer[Sequence[MajorB
                                            None),
         _error_message_lines__parse_error(ex),
     ]
-    return comb.Concatenation(blocks_renderers)
+    return comb.ConcatenationR(blocks_renderers)
 
 
 def _suite_read_error_renderer(ex: SuiteReadError) -> Renderer[Sequence[MajorBlock]]:
@@ -52,7 +52,7 @@ def _suite_read_error_renderer(ex: SuiteReadError) -> Renderer[Sequence[MajorBlo
                                            None),
         _error_message_lines__read_error(ex),
     ]
-    return comb.Concatenation(blocks_renderers)
+    return comb.ConcatenationR(blocks_renderers)
 
 
 def _error_message_lines__parse_error(ex: SuiteParseError) -> Renderer[Sequence[MajorBlock]]:

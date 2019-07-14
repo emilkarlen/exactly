@@ -6,7 +6,8 @@ from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import Symbol
 from exactly_lib.common import result_reporting
 from exactly_lib.common import result_reporting2
 from exactly_lib.common.err_msg.definitions import Blocks
-from exactly_lib.common.report_rendering import combinators as comb
+from exactly_lib.common.report_rendering import renderer_combinators as comb
+from exactly_lib.common.report_rendering import renderers as rend
 from exactly_lib.common.report_rendering.trace_doc import Renderer
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.section_document.source_location import SourceLocationInfo, SourceLocationPath
@@ -80,19 +81,19 @@ class ReportGenerator:
 
 class _DefinitionPresenter(_Presenter):
     def present2(self) -> Renderer[Sequence[MajorBlock]]:
-        major_block = comb.MajorBlockFromMinorBlocks(
-            comb.Concatenation([
-                comb.ASequence([self._single_line_info_minor_block()]),
+        major_block = rend.MajorBlockR(
+            comb.ConcatenationR([
+                comb.SingletonSequenceR(self._single_line_info_minor_block()),
                 result_reporting2.location_minor_blocks_renderer(
                     self._get_source_location_path(self.definition.definition.resolver_container.source_location),
                     self.phase.section_name,
                     None,
                 )])
         )
-        return comb.ASequence([major_block])
+        return comb.SingletonSequenceR(major_block)
 
     def _single_line_info_minor_block(self) -> Renderer[MinorBlock]:
-        return comb.Constant(
+        return comb.ConstantR(
             MinorBlock([struct.LineElement(struct.StringLineObject(self._single_line_info_str()))])
         )
 
@@ -103,7 +104,7 @@ class _DefinitionPresenter(_Presenter):
 
 class _ReferencesPresenter(_Presenter):
     def present2(self) -> Renderer[Sequence[MajorBlock]]:
-        return comb.Concatenation([
+        return comb.ConcatenationR([
             self._blocks_renderer(reference)
             for reference in self.definition.references
         ])
@@ -119,15 +120,15 @@ class _ReferencesPresenter(_Presenter):
                 None,
             )
         elif source_info.source_lines is not None:
-            return comb.ASequence([
-                comb.MajorBlockFromMinorBlocks(
+            return comb.SingletonSequenceR(
+                rend.MajorBlockR(
                     result_reporting2.source_lines_in_section_block_renderer(
                         reference.phase().section_name,
                         source_info.source_lines,
                     ))
-            ])
+            )
         else:
-            return comb.ASequence([])
+            return comb.SequenceR([])
 
     @staticmethod
     def _location_and_source_blocks(reference: ContextAnd[SymbolReference]) -> Tuple[Blocks, Blocks]:

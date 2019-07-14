@@ -3,9 +3,9 @@ import pathlib
 from typing import Optional, List, Sequence
 
 from exactly_lib.common.err_msg.definitions import Blocks, Block
-from exactly_lib.common.report_rendering import combinators as comb
 from exactly_lib.common.report_rendering import print
-from exactly_lib.common.report_rendering.combinators import PrependFirstMinorBlock
+from exactly_lib.common.report_rendering import renderer_combinators as comb
+from exactly_lib.common.report_rendering import renderers as rend
 from exactly_lib.common.report_rendering.components import SequenceRenderer, MajorBlocksRenderer
 from exactly_lib.common.report_rendering.source_location import SourceLocationPathRenderer, SourceLinesBlockRenderer
 from exactly_lib.common.report_rendering.trace_doc import Renderer
@@ -48,7 +48,7 @@ def print_error_info(printer: FilePrinter, error_info: ErrorInfo):
 
 def print_major_blocks(blocks_renderer: Renderer[Sequence[MajorBlock]],
                        printer: FilePrinter):
-    document_renderer = comb.DocumentFromMainBlocks(blocks_renderer)
+    document_renderer = rend.DocumentR(blocks_renderer)
 
     print.print_document(document_renderer.render(),
                          printer)
@@ -57,13 +57,13 @@ def print_major_blocks(blocks_renderer: Renderer[Sequence[MajorBlock]],
 def location_blocks_renderer(source_location: Optional[SourceLocationPath],
                              section_name: Optional[str],
                              description: Optional[str]) -> Renderer[Sequence[MajorBlock]]:
-    return comb.ASequence([
-        comb.MajorBlockFromMinorBlocks(
+    return comb.SingletonSequenceR(
+        rend.MajorBlockR(
             location_minor_blocks_renderer(source_location,
                                            section_name,
                                            description)
         )
-    ])
+    )
 
 
 def location_minor_blocks_renderer(source_location: Optional[SourceLocationPath],
@@ -71,9 +71,9 @@ def location_minor_blocks_renderer(source_location: Optional[SourceLocationPath]
                                    description: Optional[str]) -> Renderer[Sequence[MinorBlock]]:
     minor_blocks_renderer = _location_path_and_source_blocks(source_location)
     if section_name is not None:
-        minor_blocks_renderer = PrependFirstMinorBlock(_InSectionNameRenderer(section_name),
-                                                       minor_blocks_renderer)
-    return comb.Concatenation([
+        minor_blocks_renderer = comb.PrependFirstMinorBlockR(_InSectionNameRenderer(section_name),
+                                                             minor_blocks_renderer)
+    return comb.ConcatenationR([
         minor_blocks_renderer,
         _OptionalDescriptionRenderer(description),
     ])
@@ -82,15 +82,15 @@ def location_minor_blocks_renderer(source_location: Optional[SourceLocationPath]
 def source_lines_in_section_block_renderer(section_name: str,
                                            source_lines: Sequence[str],
                                            ) -> Renderer[Sequence[MinorBlock]]:
-    return comb.ASequence([
-        comb.MinorBlockFromLineElements(_InSectionNameRenderer(section_name)),
+    return comb.SequenceR([
+        rend.MinorBlockR(_InSectionNameRenderer(section_name)),
         SourceLinesBlockRenderer(source_lines),
     ])
 
 
 def _location_path_and_source_blocks(source_location: Optional[SourceLocationPath]) -> Renderer[Sequence[MinorBlock]]:
     if source_location is None:
-        return comb.ASequence([])
+        return comb.SequenceR([])
     else:
         referrer_location = pathlib.Path('.')
         return SourceLocationPathRenderer(referrer_location,
@@ -109,7 +109,7 @@ class ErrorInfoRenderer(MajorBlocksRenderer):
             ErrorDescriptionRenderer(self._error_info.description),
         ]
 
-        return comb.Concatenation(renderers).render()
+        return comb.ConcatenationR(renderers).render()
 
 
 class FullExeResultRenderer(MajorBlocksRenderer):
@@ -118,7 +118,7 @@ class FullExeResultRenderer(MajorBlocksRenderer):
 
     def render(self) -> Sequence[MajorBlock]:
         if not self._result.is_failure:
-            return comb.ASequence([]).render()
+            return []
         else:
             return self._rendition_for_failure()
 
