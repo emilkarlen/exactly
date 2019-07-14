@@ -1,48 +1,80 @@
-from typing import Optional, TypeVar, Generic
+from typing import Optional
 
+from exactly_lib.common.report_rendering import combinators as comb
+from exactly_lib.common.report_rendering.components import MinorBlockRenderer
+from exactly_lib.common.report_rendering.trace_doc import TraceRenderer
 from exactly_lib.definitions import misc_texts
-from exactly_lib.util import file_printables
 from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.name import Name
+from exactly_lib.util.simple_textstruct import structure as struct
+from exactly_lib.util.simple_textstruct.structure import MinorBlock
 
 
 class ErrorDescription:
-    def __init__(self, message: Optional[FilePrintable]):
+    def __init__(self, message: Optional[TraceRenderer]):
         self.__message = message
 
     @property
-    def message(self) -> Optional[FilePrintable]:
+    def message(self) -> Optional[TraceRenderer]:
         return self.__message
 
 
-def of_message(message: Optional[FilePrintable]) -> ErrorDescription:
+def of_message(message: Optional[TraceRenderer]) -> ErrorDescription:
     return ErrorDescriptionOfMessage(message)
 
 
 def of_constant_message(message: str) -> ErrorDescription:
-    return ErrorDescriptionOfMessage(file_printables.of_string(message))
+    return ErrorDescriptionOfMessage(
+        comb.ASequence([
+            comb.MajorBlockFromSequence([
+                minor_block_of_pre_formatted_str(message),
+            ])
+        ])
+    )
 
 
-def formatted_error_message_str(category: Name, message: FilePrintable) -> FilePrintable:
-    return file_printables.of_sequence(
+def trace_renderer_of_constant_minor_block(block: MinorBlock) -> TraceRenderer:
+    return comb.ASequence([
+        comb.MajorBlockFromSequence([
+            comb.Constant(block),
+        ])
+    ])
+
+
+def minor_block_of_pre_formatted_str(message: str,
+                                     string_is_line_ended: bool = False
+                                     ) -> MinorBlockRenderer:
+    return comb.MinorBlockFromSequence([
+        comb.Constant(struct.LineElement(struct.PreFormattedStringLineObject(message,
+                                                                             string_is_line_ended)))
+    ])
+
+
+# file_printables.of_string(message)
+
+
+def formatted_error_message_str(category: Name, message: str) -> MinorBlock:
+    return MinorBlock(
         [
-            file_printables.of_string(category.singular.capitalize() + ': '),
-            message,
+            struct.LineElement(struct.StringLineObject(category.singular.capitalize() + ': ')),
+            struct.LineElement(struct.PreFormattedStringLineObject(message, False)),
         ]
     )
 
 
-def syntax_error_message(message: FilePrintable) -> FilePrintable:
+def syntax_error_message(message: str) -> MinorBlock:
     return formatted_error_message_str(misc_texts.SYNTAX_ERROR_NAME, message)
 
 
-def file_access_error_message(message: FilePrintable) -> FilePrintable:
+def file_access_error_message(message: str) -> MinorBlock:
     return formatted_error_message_str(misc_texts.FILE_ACCESS_ERROR_NAME,
                                        message)
 
 
 def syntax_error_of_message(message: FilePrintable) -> ErrorDescription:
-    return ErrorDescriptionOfMessage(syntax_error_message(message))
+    return ErrorDescriptionOfMessage(
+        trace_renderer_of_constant_minor_block(syntax_error_message(message))
+    )
 
 
 def file_access_error_of_message(message: FilePrintable) -> ErrorDescription:
@@ -63,14 +95,14 @@ def of_external_process_error(exit_code: int,
 
 
 class ErrorDescriptionOfMessage(ErrorDescription):
-    def __init__(self, message: FilePrintable):
+    def __init__(self, message: TraceRenderer):
         super().__init__(message)
 
 
 class ErrorDescriptionOfException(ErrorDescription):
     def __init__(self,
                  exception: Exception,
-                 message: Optional[FilePrintable] = None):
+                 message: Optional[TraceRenderer] = None):
         super().__init__(message)
         self.__exception = exception
 
@@ -97,7 +129,7 @@ class ExternalProcessError(tuple):
 class ErrorDescriptionOfExternalProcessError(ErrorDescription):
     def __init__(self,
                  external_process_error: ExternalProcessError,
-                 message: Optional[FilePrintable] = None):
+                 message: Optional[TraceRenderer] = None):
         super().__init__(message)
         self.__external_process_error = external_process_error
 
@@ -106,11 +138,8 @@ class ErrorDescriptionOfExternalProcessError(ErrorDescription):
         return self.__external_process_error
 
 
-RET = TypeVar('RET')
-
-
-class ErrorDescriptionVisitor(Generic[RET]):
-    def visit(self, error_description: ErrorDescription) -> RET:
+class ErrorDescriptionVisitor:
+    def visit(self, error_description: ErrorDescription):
         """
         :return: Return value from _visit... method
         """
@@ -123,11 +152,11 @@ class ErrorDescriptionVisitor(Generic[RET]):
         else:
             raise TypeError('Unknown {}: {}'.format(ErrorDescription, str(error_description)))
 
-    def _visit_message(self, error_description: ErrorDescriptionOfMessage) -> RET:
+    def _visit_message(self, error_description: ErrorDescriptionOfMessage):
         raise NotImplementedError()
 
-    def _visit_exception(self, error_description: ErrorDescriptionOfException) -> RET:
+    def _visit_exception(self, error_description: ErrorDescriptionOfException):
         raise NotImplementedError()
 
-    def _visit_external_process_error(self, error_description: ErrorDescriptionOfExternalProcessError) -> RET:
+    def _visit_external_process_error(self, error_description: ErrorDescriptionOfExternalProcessError):
         raise NotImplementedError()

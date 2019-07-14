@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from typing import Sequence, Tuple, List, Optional
 
+from exactly_lib.common.report_rendering.components import SequenceRenderer
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationPath
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.structure import StringLinesObject, LineElement, MinorBlock, StringLineObject
@@ -17,18 +18,37 @@ def line_number(n: int) -> str:
 def source_location_path(referrer_location: Path,
                          source_location: SourceLocationPath) -> List[MinorBlock]:
     location = source_location.location
+    source = location.source
+    final_source_line_number = (
+        None
+        if source is None
+        else source.first_line_number
+    )
+
     ret_val = [
         _files_and_source_path_leading_to_final_source(
             referrer_location,
             source_location.file_inclusion_chain,
-            location.source.first_line_number,
+            final_source_line_number,
             location.file_path_rel_referrer,
         )
     ]
-    if source_location.location.source is not None:
-        ret_val.append(source_lines_block(location.source.lines))
+    if source is not None:
+        ret_val.append(source_lines_block(source.lines))
 
     return ret_val
+
+
+class SourceLocationPathRenderer(SequenceRenderer[MinorBlock]):
+    def __init__(self,
+                 referrer_location: Path,
+                 source_location: SourceLocationPath):
+        self._source_location = source_location
+        self._referrer_location = referrer_location
+
+    def render(self) -> Sequence[MinorBlock]:
+        return source_location_path(self._referrer_location,
+                                    self._source_location)
 
 
 def source_lines_element(lines: Sequence[str]) -> LineElement:

@@ -2,7 +2,6 @@ import datetime
 import pathlib
 from typing import Callable, List
 
-from exactly_lib.common.result_reporting import output_location
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing
 from exactly_lib.section_document.source_location import source_location_path_of
@@ -65,14 +64,11 @@ class Processor:
     def _print_error_message(ex: SuiteReadError,
                              output: StdOutputFiles,
                              ):
-        from exactly_lib.test_suite.error_reporting import error_message_lines
+        from exactly_lib.test_suite import error_reporting2 as err_reporting
 
         printer = file_printer_with_color_if_terminal(output.err)
-        output_location(printer,
-                        ex.source_location,
-                        ex.maybe_section_name,
-                        None)
-        error_message_lines(ex).print_on(printer)
+
+        err_reporting.print_suite_read_error(ex, printer)
 
 
 class SuitesExecutor:

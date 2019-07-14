@@ -87,7 +87,7 @@ class StringLineObject(LineObject):
 
     def __init__(self,
                  string: str,
-                 string_is_line_ended: bool
+                 string_is_line_ended: bool = False
                  ):
         self._string = string
         self._string_is_line_ended = string_is_line_ended
@@ -133,6 +133,11 @@ class MinorBlock(Element):
     def __init__(self,
                  parts: Sequence[LineElement],
                  properties: ElementProperties = PLAIN_ELEMENT_PROPERTIES):
+        if not isinstance(parts, Sequence):
+            raise ValueError('not a sequence: ' + str(parts))
+        for part in parts:
+            if not isinstance(part, LineElement):
+                raise ValueError('not a LineElement: ' + str(part))
         super().__init__(properties)
         self._parts = parts
 
@@ -146,6 +151,12 @@ class MajorBlock(Element):
                  parts: Sequence[MinorBlock],
                  properties: ElementProperties = PLAIN_ELEMENT_PROPERTIES,
                  ):
+        if not isinstance(parts, Sequence):
+            raise ValueError('not a sequence: ' + str(parts))
+        for part in parts:
+            if not isinstance(part, MinorBlock):
+                raise ValueError('not a MinorBlock: ' + str(part))
+
         super().__init__(properties)
         self._parts = parts
 
@@ -161,3 +172,12 @@ class Document:
     @property
     def blocks(self) -> Sequence[MajorBlock]:
         return self._blocks
+
+
+def minor_block_from_lines(lines: Sequence[LineObject],
+                           block_properties: ElementProperties = PLAIN_ELEMENT_PROPERTIES) -> MinorBlock:
+    return MinorBlock([
+        LineElement(line_object)
+        for line_object in lines
+    ],
+        block_properties)

@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Sequence, Generic
+from typing import Sequence, Generic, TypeVar
 
 from exactly_lib.common.report_rendering.components import MajorBlockRenderer, MinorBlockRenderer, LineObjectRenderer, \
     SequenceRenderer, ELEMENT, Renderer, LineElementRenderer
@@ -9,7 +9,7 @@ from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock,
     LineElement
 
 
-class TraceDocRender(ABC):
+class TraceDocRender(Renderer[Document], ABC):
     """Functionality to render itself as a :class:Document"""
 
     def render(self) -> Document:
@@ -30,6 +30,17 @@ def doc_of_line_objects(line_elements: Sequence[LineElementRenderer]) -> TraceDo
 
 def doc_of_single_line_object(line_elements: Sequence[LineElementRenderer]) -> TraceDocRender:
     return doc_of_single_minor_block(MinorBlockFromSequence(line_elements))
+
+
+T = TypeVar('T')
+
+
+class Constant(Generic[T], Renderer[T]):
+    def __init__(self, element: T):
+        self._element = element
+
+    def render(self) -> T:
+        return self._element
 
 
 class Concatenation(Generic[ELEMENT], SequenceRenderer[ELEMENT]):
@@ -61,6 +72,39 @@ class ASequence(Generic[ELEMENT], SequenceRenderer[ELEMENT]):
         ]
 
 
+class PrependFirstMinorBlock(SequenceRenderer[MinorBlock]):
+    def __init__(self,
+                 to_prepend: Renderer[Sequence[LineElement]],
+                 to_prepend_to: Renderer[Sequence[MinorBlock]],
+                 properties_if_to_prepend_to_is_empty: ElementProperties =
+                 structure.PLAIN_ELEMENT_PROPERTIES,
+                 ):
+        self.to_prepend = to_prepend
+        self.to_prepend_to = to_prepend_to
+        self.properties_if_to_prepend_to_is_empty = properties_if_to_prepend_to_is_empty
+
+    def render(self) -> Sequence[MinorBlock]:
+        to_prepend = self.to_prepend.render()
+        to_prepend_to = self.to_prepend_to.render()
+
+        if len(to_prepend) == 0:
+            return to_prepend_to
+        else:
+            if len(to_prepend_to) == 0:
+                return [
+                    MinorBlock(to_prepend, self.properties_if_to_prepend_to_is_empty)
+                ]
+            else:
+                to_prepend_to_list = list(to_prepend_to)
+                original_first_block = to_prepend_to_list[0]
+                line_elements = list(to_prepend)
+                line_elements += original_first_block.parts
+                to_prepend_to_list[0] = MinorBlock(line_elements,
+                                                   original_first_block.properties)
+
+                return to_prepend_to_list
+
+
 class DocumentFromSequence(TraceDocRender):
     def __init__(self, blocks: Sequence[MajorBlockRenderer]):
         self._blocks = blocks
@@ -72,12 +116,41 @@ class DocumentFromSequence(TraceDocRender):
         ])
 
 
+class DocumentFromMainBlocks(TraceDocRender):
+    def __init__(self, blocks: Renderer[Sequence[MajorBlock]]):
+        self._blocks = blocks
+
+    def render(self) -> Document:
+        return Document(self._blocks.render())
+
+
+class DocumentFromConcatenation(TraceDocRender):
+    def __init__(self, blocks: Sequence[Renderer[Sequence[MajorBlock]]]):
+        self._blocks_renderer = Concatenation(blocks)
+
+    def render(self) -> Document:
+        return Document(self._blocks_renderer.render())
+
+
 class DocumentFromTrace(TraceDocRender):
     def __init__(self, trace: TraceRenderer):
         self._trace = trace
 
     def render(self) -> Document:
         return Document(self._trace.render())
+
+
+class MajorBlockFromMinorBlocks(MajorBlockRenderer):
+    def __init__(self,
+                 contents: Renderer[Sequence[MinorBlock]],
+                 properties: ElementProperties = structure.PLAIN_ELEMENT_PROPERTIES):
+        self._properties = properties
+        self._contents = contents
+
+    def render(self) -> MajorBlock:
+        return MajorBlock(self._contents.render(),
+                          self._properties,
+                          )
 
 
 class MajorBlockFromSequence(MajorBlockRenderer):

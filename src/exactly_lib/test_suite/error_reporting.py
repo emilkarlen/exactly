@@ -1,32 +1,16 @@
 from typing import List
 
 from exactly_lib.common.exit_value import ExitValue
-from exactly_lib.common.result_reporting import output_location
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document import exceptions as sec_doc_exceptions
 from exactly_lib.test_case import error_description
 from exactly_lib.test_suite.file_reading import exception as suite_exception
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError, SuiteReadError, SuiteReadErrorVisitor
 from exactly_lib.util import file_printables
-from exactly_lib.util.file_printer import FilePrinter, FilePrintable
+from exactly_lib.util.file_printer import FilePrintable
 
 
-def report_suite_parse_error(ex: SuiteParseError,
-                             stdout_printer: FilePrinter,
-                             stderr_printer: FilePrinter,
-                             ) -> int:
-    exit_value = _GetParseErrorExitValue().visit(ex.document_parser_exception)
-    stdout_printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
-    stdout_printer.file.flush()
-    output_location(stderr_printer,
-                    ex.source_location,
-                    ex.maybe_section_name,
-                    None)
-    error_message_lines__parse_error(ex).print_on(stderr_printer)
-    return exit_value.exit_code
-
-
-def error_message_lines__parse_error(ex: SuiteParseError) -> FilePrintable:
+def _error_message_lines__parse_error(ex: SuiteParseError) -> FilePrintable:
     return file_printables.of_newline_ended_items(
         _GetParseErrorErrorMessageLinesRenderer().visit(ex.document_parser_exception)
     )
@@ -54,7 +38,7 @@ class _GetParseErrorErrorMessageLinesRenderer(sec_doc_exceptions.ParseErrorVisit
 
 class _GetErrorMessageLinesRenderer(SuiteReadErrorVisitor[FilePrintable]):
     def visit_parse_error(self, ex: suite_exception.SuiteParseError) -> FilePrintable:
-        return error_message_lines__parse_error(ex)
+        return _error_message_lines__parse_error(ex)
 
     def visit_double_inclusion_error(self, ex: suite_exception.SuiteDoubleInclusion) -> FilePrintable:
         return file_printables.of_newline_ended_items(

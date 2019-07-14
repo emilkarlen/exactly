@@ -1,7 +1,7 @@
 from typing import Optional
 
 from exactly_lib.common.exit_value import ExitValue
-from exactly_lib.common.result_reporting import print_error_message_for_full_result, print_error_info
+from exactly_lib.common.result_reporting2 import print_error_message_for_full_result, print_error_info
 from exactly_lib.execution.full_execution.result import FullExeResultStatus, FullExeResult
 from exactly_lib.processing import test_case_processing, exit_values
 from exactly_lib.processing.standalone.settings import ReportingOption
@@ -67,10 +67,10 @@ class ResultReporter:
 
 class TestSuiteParseErrorReporter(ResultReporter):
     def report(self, ex: SuiteParseError) -> int:
-        from exactly_lib.test_suite.error_reporting import report_suite_parse_error
-        return report_suite_parse_error(ex,
-                                        self._out_printer,
-                                        self._err_printer)
+        from exactly_lib.test_suite import error_reporting2
+        return error_reporting2.report_suite_parse_error(ex,
+                                                         self._out_printer,
+                                                         self._err_printer)
 
 
 class TestCaseResultReporter(ResultReporter):

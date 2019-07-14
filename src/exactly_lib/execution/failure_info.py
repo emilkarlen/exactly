@@ -1,3 +1,5 @@
+from typing import TypeVar, Generic
+
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case.result.failure_details import FailureDetails
@@ -59,9 +61,12 @@ class PhaseFailureInfo(FailureInfo):
         super().__init__(phase_step, failure_details, None)
 
 
-class FailureInfoVisitor:
+RET = TypeVar('RET')
+
+
+class FailureInfoVisitor(Generic[RET]):
     def visit(self,
-              failure_info: FailureInfo):
+              failure_info: FailureInfo) -> RET:
         if isinstance(failure_info, InstructionFailureInfo):
             return self._visit_instruction_failure(failure_info)
         elif isinstance(failure_info, PhaseFailureInfo):
@@ -70,9 +75,9 @@ class FailureInfoVisitor:
             raise TypeError('Unknown FailureInfo: {}'.format(type(failure_info)))
 
     def _visit_instruction_failure(self,
-                                   failure_info: InstructionFailureInfo):
+                                   failure_info: InstructionFailureInfo) -> RET:
         raise NotImplementedError('abstract method')
 
     def _visit_phase_failure(self,
-                             failure_info: PhaseFailureInfo):
+                             failure_info: PhaseFailureInfo) -> RET:
         raise NotImplementedError('abstract method')
