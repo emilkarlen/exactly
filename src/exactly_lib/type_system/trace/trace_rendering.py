@@ -19,7 +19,7 @@ class NodeRenderer(Generic[NODE_DATA], ABC):
         pass
 
 
-class NodeRendererFromParts(Generic[NODE_DATA], NodeRenderer):
+class NodeRendererFromParts(Generic[NODE_DATA], NodeRenderer[NODE_DATA]):
     def __init__(self,
                  header: str,
                  data: NODE_DATA,
