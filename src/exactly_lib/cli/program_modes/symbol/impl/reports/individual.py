@@ -1,11 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Tuple, Sequence
+from typing import Optional, Sequence
 
 from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo, ContextAnd
-from exactly_lib.common import result_reporting
 from exactly_lib.common import result_reporting2
-from exactly_lib.common.err_msg.definitions import Blocks
 from exactly_lib.common.report_rendering import renderer_combinators as comb
 from exactly_lib.common.report_rendering import renderers as rend
 from exactly_lib.common.report_rendering.trace_doc import Renderer
@@ -129,14 +127,3 @@ class _ReferencesPresenter(_Presenter):
             )
         else:
             return comb.SequenceR([])
-
-    @staticmethod
-    def _location_and_source_blocks(reference: ContextAnd[SymbolReference]) -> Tuple[Blocks, Blocks]:
-        source_info = reference.source_info()
-        if source_info.source_location_info is not None:
-            return result_reporting.location_path_and_source_blocks(
-                source_info.source_location_info.source_location_path)
-        elif source_info.source_lines is not None:
-            return [], result_reporting.source_lines_blocks(source_info.source_lines)
-        else:
-            return [], []
