@@ -228,18 +228,5 @@ class _OptionalDescriptionRenderer(SequenceRenderer[MinorBlock]):
             ]
 
 
-def _section_name_block(section_name: str) -> Block:
-    return ['In ' + SectionName(section_name).syntax]
-
-
-def _description_blocks(description: Optional[str]) -> Blocks:
-    if description:
-        return [
-            [_description_str(description)],
-        ]
-    else:
-        return []
-
-
 def _description_str(description: str) -> str:
     return 'Described as "{}"'.format(description)
