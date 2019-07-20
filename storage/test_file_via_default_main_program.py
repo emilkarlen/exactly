@@ -1,6 +1,5 @@
-import unittest
-
 import os
+import unittest
 
 from exactly_lib.default.default_main_program_setup import default_main_program, default_output
 
@@ -18,6 +17,11 @@ SUITE_FILE = SRC_DIR + 'instruction-error-of-case-instruction-in-suite.suite'
 EMPTY_CASE = SRC_DIR + 'empty.case'
 
 ARGS = [TEST_CASE_FILE
+        ]
+
+ARGS = [
+    '--act',
+    '/Users/emil/vcs/exactly/0/err-msg-tests/symbols/validation/ref-to-undef-symbol.case',
         ]
 
 
