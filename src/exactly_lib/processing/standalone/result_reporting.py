@@ -67,10 +67,10 @@ class ResultReporter:
 
 class TestSuiteParseErrorReporter(ResultReporter):
     def report(self, ex: SuiteParseError) -> int:
-        from exactly_lib.test_suite import error_reporting2
-        return error_reporting2.report_suite_parse_error(ex,
-                                                         self._out_printer,
-                                                         self._err_printer)
+        from exactly_lib.test_suite import error_reporting
+        return error_reporting.report_suite_parse_error(ex,
+                                                        self._out_printer,
+                                                        self._err_printer)
 
 
 class TestCaseResultReporter(ResultReporter):

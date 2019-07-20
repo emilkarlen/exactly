@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 from typing import Optional
 
 from exactly_lib.execution import phase_step
