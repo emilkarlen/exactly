@@ -3,7 +3,7 @@ from typing import Optional, Sequence
 
 from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo, ContextAnd
-from exactly_lib.common import result_reporting2
+from exactly_lib.common import result_reporting
 from exactly_lib.common.report_rendering import renderer_combinators as comb
 from exactly_lib.common.report_rendering import renderers as rend
 from exactly_lib.common.report_rendering.trace_doc import Renderer
@@ -52,8 +52,8 @@ class ReportGenerator:
         if mb_definition is None:
             return self._not_found()
         else:
-            result_reporting2.print_major_blocks(self._presenter(mb_definition).present2(),
-                                                 self._completion_reporter.out_printer)
+            result_reporting.print_major_blocks(self._presenter(mb_definition).present2(),
+                                                self._completion_reporter.out_printer)
 
         return self._completion_reporter.report_success()
 
@@ -82,7 +82,7 @@ class _DefinitionPresenter(_Presenter):
         major_block = rend.MajorBlockR(
             comb.ConcatenationR([
                 comb.SingletonSequenceR(self._single_line_info_minor_block()),
-                result_reporting2.location_minor_blocks_renderer(
+                result_reporting.location_minor_blocks_renderer(
                     self._get_source_location_path(self.definition.definition.resolver_container.source_location),
                     self.phase.section_name,
                     None,
@@ -112,7 +112,7 @@ class _ReferencesPresenter(_Presenter):
         source_info = reference.source_info()
         source_location_info = source_info.source_location_info
         if source_location_info is not None:
-            return result_reporting2.location_blocks_renderer(
+            return result_reporting.location_blocks_renderer(
                 source_location_info.source_location_path,
                 reference.phase().section_name,
                 None,
@@ -120,7 +120,7 @@ class _ReferencesPresenter(_Presenter):
         elif source_info.source_lines is not None:
             return comb.SingletonSequenceR(
                 rend.MajorBlockR(
-                    result_reporting2.source_lines_in_section_block_renderer(
+                    result_reporting.source_lines_in_section_block_renderer(
                         reference.phase().section_name,
                         source_info.source_lines,
                     ))

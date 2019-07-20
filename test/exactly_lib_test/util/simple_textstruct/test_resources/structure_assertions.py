@@ -2,7 +2,8 @@ from typing import Sequence, Optional
 
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, Document, \
-    ElementProperties, LineObject, PreFormattedStringLineObject, StringLineObject, StringLinesObject
+    ElementProperties, LineObject, PreFormattedStringLineObject, StringLineObject, StringLinesObject, \
+    PLAIN_ELEMENT_PROPERTIES
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -57,6 +58,14 @@ def matches_major_block(minor_blocks: ValueAssertion[Sequence[MinorBlock]],
     ])
 
 
+def matches_major_block__w_plain_properties(minor_blocks: ValueAssertion[Sequence[MinorBlock]],
+                                            ) -> ValueAssertion[MajorBlock]:
+    return matches_major_block(
+        minor_blocks=minor_blocks,
+        properties=equals_element_properties(PLAIN_ELEMENT_PROPERTIES),
+    )
+
+
 def matches_minor_block(line_elements: ValueAssertion[Sequence[LineElement]],
                         properties: ValueAssertion[ElementProperties] = matches_element_properties()
                         ) -> ValueAssertion[MinorBlock]:
@@ -74,6 +83,14 @@ def matches_minor_block(line_elements: ValueAssertion[Sequence[LineElement]],
     ])
 
 
+def matches_minor_block__w_plain_properties(line_elements: ValueAssertion[Sequence[LineElement]],
+                                            ) -> ValueAssertion[MinorBlock]:
+    return matches_minor_block(
+        line_elements=line_elements,
+        properties=equals_element_properties(PLAIN_ELEMENT_PROPERTIES),
+    )
+
+
 def matches_line_element(line_object: ValueAssertion[LineObject],
                          properties: ValueAssertion[ElementProperties] = matches_element_properties()
                          ) -> ValueAssertion[LineElement]:
@@ -89,6 +106,14 @@ def matches_line_element(line_object: ValueAssertion[LineObject],
             properties,
         ),
     ])
+
+
+def matches_line_element__w_plain_properties(line_object: ValueAssertion[LineObject]
+                                             ) -> ValueAssertion[LineElement]:
+    return matches_line_element(
+        line_object=line_object,
+        properties=equals_element_properties(PLAIN_ELEMENT_PROPERTIES)
+    )
 
 
 def is_pre_formatted_string(string: ValueAssertion[str] = asrt.anything_goes(),
@@ -124,6 +149,14 @@ def is_string(string: ValueAssertion[str] = asrt.anything_goes(),
                                asrt.is_instance_with(bool, string_is_line_ended)
                                ),
         ],
+    )
+
+
+def is_string__not_line_ended(string: ValueAssertion[str] = asrt.anything_goes(),
+                              ) -> ValueAssertion[LineObject]:
+    return is_string(
+        string,
+        string_is_line_ended=asrt.equals(False),
     )
 
 

@@ -7,7 +7,7 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 
 from exactly_lib.common.exit_value import ExitValue
-from exactly_lib.common.result_reporting2 import error_message_for_full_result, error_message_for_error_info
+from exactly_lib.common.result_reporting import error_message_for_full_result, error_message_for_error_info
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.test_case_processing import Result, AccessErrorType
 from exactly_lib.test_suite import processing

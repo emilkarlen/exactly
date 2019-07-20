@@ -1,7 +1,7 @@
 from typing import Optional
 
+from exactly_lib.common import result_reporting as reporting
 from exactly_lib.common.exit_value import ExitValue
-from exactly_lib.common.result_reporting2 import print_error_message_for_full_result, print_error_info
 from exactly_lib.execution.full_execution.result import FullExeResultStatus, FullExeResult
 from exactly_lib.processing import test_case_processing, exit_values
 from exactly_lib.processing.standalone.settings import ReportingOption
@@ -52,7 +52,7 @@ class _FullExecutionHandler:
 
     def _default_non_complete_execution(self, result: FullExeResult) -> int:
         self._out_printer.write_line(result.status.name)
-        print_error_message_for_full_result(self._err_printer, result)
+        reporting.print_error_message_for_full_result(self._err_printer, result)
         return self.exit_value.exit_code
 
 
@@ -97,7 +97,7 @@ class TestCaseResultReporter(ResultReporter):
                                   exit_value: ExitValue,
                                   error_info: ErrorInfo) -> int:
         self._out_printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
-        print_error_info(self._err_printer, error_info)
+        reporting.print_error_info(self._err_printer, error_info)
         return exit_value.exit_code
 
 
@@ -110,7 +110,7 @@ class _ResultReporterForNormalOutput(TestCaseResultReporter):
                               result: FullExeResult) -> int:
         self._out_printer.write_colored_line(result.status.name,
                                              exit_value.color)
-        print_error_message_for_full_result(self._err_printer, result)
+        reporting.print_error_message_for_full_result(self._err_printer, result)
         return exit_value.exit_code
 
 
@@ -125,7 +125,7 @@ class _ResultReporterForPreserveAndPrintSandboxDir(TestCaseResultReporter):
             self._out_printer.write_line(str(result.sds.root_dir))
 
         self._err_printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
-        print_error_message_for_full_result(self._err_printer, result)
+        reporting.print_error_message_for_full_result(self._err_printer, result)
 
         return exit_value.exit_code
 
@@ -133,7 +133,7 @@ class _ResultReporterForPreserveAndPrintSandboxDir(TestCaseResultReporter):
                                   exit_value: ExitValue,
                                   error_info: ErrorInfo) -> int:
         self._err_printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
-        print_error_info(self._err_printer, error_info)
+        reporting.print_error_info(self._err_printer, error_info)
         return exit_value.exit_code
 
 
@@ -143,7 +143,7 @@ class _FullExecutionHandlerForActPhaseOutput(_FullExecutionHandler):
 
     def _default_non_complete_execution(self, result: FullExeResult) -> int:
         self._err_printer.write_colored_line(self.exit_value.exit_identifier, self.exit_value.color)
-        print_error_message_for_full_result(self._err_printer, result)
+        reporting.print_error_message_for_full_result(self._err_printer, result)
         return self.exit_value.exit_code
 
 
@@ -167,7 +167,7 @@ class _ResultReporterForActPhaseOutput(TestCaseResultReporter):
                                   exit_value: ExitValue,
                                   error_info: ErrorInfo) -> int:
         self._err_printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
-        print_error_info(self._err_printer, error_info)
+        reporting.print_error_info(self._err_printer, error_info)
         return exit_value.exit_code
 
 

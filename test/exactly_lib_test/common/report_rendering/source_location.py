@@ -6,6 +6,8 @@ from typing import Optional, Sequence, List
 import exactly_lib.common.err_msg.definitions
 from exactly_lib.common.err_msg.definitions import Block
 from exactly_lib.common.report_rendering import source_location as sut
+from exactly_lib.common.report_rendering.source_location import SOURCE_LINES_ELEMENT_PROPERTIES, \
+    SOURCE_LINES_BLOCK_PROPERTIES
 from exactly_lib.section_document.source_location import SourceLocationPath, SourceLocation
 from exactly_lib.util.file_printer import FilePrinter
 from exactly_lib.util.line_source import single_line_sequence
@@ -15,6 +17,9 @@ from exactly_lib.util.simple_textstruct.render.print_on_file_printer import Layo
 from exactly_lib.util.simple_textstruct.render.printer import Printer, Printable
 from exactly_lib.util.simple_textstruct.structure import LineElement, MinorBlock, ElementProperties, MajorBlock
 from exactly_lib_test.test_resources.test_utils import NIE
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct
 
 
 def suite() -> unittest.TestSuite:
@@ -401,8 +406,26 @@ class TestSourceLocationPath(unittest.TestCase):
                 self.assertEqual(expected_str, actual_output)
 
 
+def matches_source_code_minor_block(source_code: Sequence[str]) -> ValueAssertion[MinorBlock]:
+    return asrt_struct.matches_minor_block(
+        line_elements=asrt.matches_sequence([
+            asrt_struct.matches_line_element(
+                line_object=asrt_struct.is_string_lines(
+                    strings=asrt.equals(source_code),
+                ),
+                properties=asrt_struct.equals_element_properties(SOURCE_LINES_ELEMENT_PROPERTIES),
+            )
+        ]),
+        properties=asrt_struct.equals_element_properties(SOURCE_LINES_BLOCK_PROPERTIES)
+    )
+
+
+def expected_file_reference_line(file: Path, line_number: int) -> str:
+    return str(file) + ', line ' + str(line_number)
+
+
 def expected_file_reference_lines(file: Path, line_number: int) -> List[str]:
-    return [str(file) + ', line ' + str(line_number)]
+    return [expected_file_reference_line(file, line_number)]
 
 
 def expected_source_line_lines(lines: Sequence[str]) -> List[str]:

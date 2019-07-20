@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.common import result_reporting2 as reporting
+from exactly_lib.common import result_reporting as reporting
 from exactly_lib.common.err_msg import error_description
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.common.report_rendering import renderer_combinators as comb
