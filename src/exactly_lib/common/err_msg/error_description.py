@@ -1,6 +1,6 @@
 from typing import Optional
 
-from exactly_lib.common.report_rendering.trace_doc import TraceRenderer
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import misc_texts
 from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.name import Name
@@ -11,15 +11,15 @@ from exactly_lib.util.simple_textstruct.structure import MinorBlock
 
 
 class ErrorDescription:
-    def __init__(self, message: Optional[TraceRenderer]):
+    def __init__(self, message: Optional[TextRenderer]):
         self.__message = message
 
     @property
-    def message(self) -> Optional[TraceRenderer]:
+    def message(self) -> Optional[TextRenderer]:
         return self.__message
 
 
-def of_message(message: Optional[TraceRenderer]) -> ErrorDescription:
+def of_message(message: Optional[TextRenderer]) -> ErrorDescription:
     return ErrorDescriptionOfMessage(message)
 
 
@@ -34,7 +34,7 @@ def of_constant_message(message: str) -> ErrorDescription:
     )
 
 
-def trace_renderer_of_constant_minor_block(block: MinorBlock) -> TraceRenderer:
+def trace_renderer_of_constant_minor_block(block: MinorBlock) -> TextRenderer:
     return comb.SingletonSequenceR(
         rend.MajorBlockR(
             comb.SingletonSequenceR(
@@ -97,14 +97,14 @@ def of_external_process_error(exit_code: int,
 
 
 class ErrorDescriptionOfMessage(ErrorDescription):
-    def __init__(self, message: TraceRenderer):
+    def __init__(self, message: TextRenderer):
         super().__init__(message)
 
 
 class ErrorDescriptionOfException(ErrorDescription):
     def __init__(self,
                  exception: Exception,
-                 message: Optional[TraceRenderer] = None):
+                 message: Optional[TextRenderer] = None):
         super().__init__(message)
         self.__exception = exception
 
@@ -131,7 +131,7 @@ class ExternalProcessError(tuple):
 class ErrorDescriptionOfExternalProcessError(ErrorDescription):
     def __init__(self,
                  external_process_error: ExternalProcessError,
-                 message: Optional[TraceRenderer] = None):
+                 message: Optional[TextRenderer] = None):
         super().__init__(message)
         self.__external_process_error = external_process_error
 

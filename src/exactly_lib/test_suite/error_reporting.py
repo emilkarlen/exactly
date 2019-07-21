@@ -3,7 +3,7 @@ from typing import Sequence
 from exactly_lib.common import result_reporting as reporting
 from exactly_lib.common.err_msg import error_description
 from exactly_lib.common.exit_value import ExitValue
-from exactly_lib.common.report_rendering.trace_doc import TraceRenderer
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document import exceptions as sec_doc_exceptions
 from exactly_lib.test_suite.file_reading import exception as suite_exception
@@ -72,30 +72,30 @@ class _GetParseErrorExitValue(sec_doc_exceptions.ParseErrorVisitor[ExitValue]):
         return exit_values.NO_EXECUTION__FILE_ACCESS_ERROR
 
 
-class _GetParseErrorErrorMessageLinesRenderer(sec_doc_exceptions.ParseErrorVisitor[TraceRenderer]):
-    def visit_file_source_error(self, ex: sec_doc_exceptions.FileSourceError) -> TraceRenderer:
+class _GetParseErrorErrorMessageLinesRenderer(sec_doc_exceptions.ParseErrorVisitor[TextRenderer]):
+    def visit_file_source_error(self, ex: sec_doc_exceptions.FileSourceError) -> TextRenderer:
         return error_description.trace_renderer_of_constant_minor_block(
             error_description.syntax_error_message(ex.message)
         )
 
-    def visit_file_access_error(self, ex: sec_doc_exceptions.FileAccessError) -> TraceRenderer:
+    def visit_file_access_error(self, ex: sec_doc_exceptions.FileAccessError) -> TextRenderer:
         return error_description.trace_renderer_of_constant_minor_block(
             error_description.file_access_error_message(ex.message)
         )
 
 
-class _GetReadErrorMessageLinesRenderer(SuiteReadErrorVisitor[TraceRenderer]):
-    def visit_parse_error(self, ex: suite_exception.SuiteParseError) -> TraceRenderer:
+class _GetReadErrorMessageLinesRenderer(SuiteReadErrorVisitor[TextRenderer]):
+    def visit_parse_error(self, ex: suite_exception.SuiteParseError) -> TextRenderer:
         return _GetParseErrorErrorMessageLinesRenderer().visit(ex.document_parser_exception)
 
-    def visit_double_inclusion_error(self, ex: suite_exception.SuiteDoubleInclusion) -> TraceRenderer:
+    def visit_double_inclusion_error(self, ex: suite_exception.SuiteDoubleInclusion) -> TextRenderer:
         return error_description.trace_renderer_of_constant_minor_block(
             minor_block_from_lines([
                 StringLineObject('The suite has already been included.'),
             ])
         )
 
-    def visit_file_reference_error(self, ex: suite_exception.SuiteFileReferenceError) -> TraceRenderer:
+    def visit_file_reference_error(self, ex: suite_exception.SuiteFileReferenceError) -> TextRenderer:
         return error_description.trace_renderer_of_constant_minor_block(
             minor_block_from_lines([
                 StringLineObject(ex.error_message_header + ':'),
