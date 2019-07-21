@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 from typing import Sequence, Tuple, List, Optional
 
-from exactly_lib.common.report_rendering.components import SequenceRenderer
-from exactly_lib.common.report_rendering.trace_doc import Renderer
+from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationPath
 from exactly_lib.util.ansi_terminal_color import FontStyle
 from exactly_lib.util.simple_textstruct import structure

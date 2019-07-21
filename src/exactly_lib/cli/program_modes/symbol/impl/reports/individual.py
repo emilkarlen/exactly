@@ -4,13 +4,12 @@ from typing import Optional, Sequence
 from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo, ContextAnd
 from exactly_lib.common import result_reporting
-from exactly_lib.common.report_rendering import renderer_combinators as comb
-from exactly_lib.common.report_rendering import renderers as rend
-from exactly_lib.common.report_rendering.trace_doc import Renderer
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.section_document.source_location import SourceLocationInfo, SourceLocationPath
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.util.simple_textstruct import structure as struct
+from exactly_lib.util.simple_textstruct.rendering import component_renderers as rend, renderer_combinators as comb
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock
 from exactly_lib.util.string import inside_parens
 

@@ -1,14 +1,6 @@
-from abc import ABC
-from typing import Sequence, TypeVar, Generic
+from typing import Sequence
 
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
-
-T = TypeVar('T')
-
-
-class Renderer(Generic[T], ABC):
-    def render(self) -> T:
-        pass
-
 
 TraceRenderer = Renderer[Sequence[MajorBlock]]

@@ -2,13 +2,8 @@ import io
 import pathlib
 from typing import Optional, List, Sequence
 
-from exactly_lib.common.err_msg.definitions import Blocks, Block
 from exactly_lib.common.report_rendering import print
-from exactly_lib.common.report_rendering import renderer_combinators as comb
-from exactly_lib.common.report_rendering import renderers as rend
-from exactly_lib.common.report_rendering.components import SequenceRenderer, MajorBlocksRenderer
 from exactly_lib.common.report_rendering.source_location import SourceLocationPathRenderer, SourceLinesBlockRenderer
-from exactly_lib.common.report_rendering.trace_doc import Renderer
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.execution.failure_info import InstructionFailureInfo, PhaseFailureInfo, FailureInfoVisitor
@@ -19,6 +14,9 @@ from exactly_lib.test_case import error_description
 from exactly_lib.util.file_printables import print_to_string
 from exactly_lib.util.file_printer import FilePrinter
 from exactly_lib.util.simple_textstruct import structure as struct
+from exactly_lib.util.simple_textstruct.rendering import component_renderers as rend, renderer_combinators as comb
+from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer, MajorBlocksRenderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, StringLineObject, \
     PreFormattedStringLineObject
 

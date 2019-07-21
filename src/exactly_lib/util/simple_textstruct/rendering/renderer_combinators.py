@@ -1,7 +1,8 @@
 from typing import Sequence, Generic, TypeVar
 
-from exactly_lib.common.report_rendering.components import SequenceRenderer, \
-    ELEMENT, Renderer
+from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer, \
+    ELEMENT
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, ElementProperties, \
     LineElement

@@ -1,21 +1,14 @@
-from abc import ABC
 from typing import Sequence
 
-from exactly_lib.common.report_rendering.components import MajorBlockRenderer, MinorBlockRenderer, Renderer, \
-    LineElementRenderer
 from exactly_lib.util.simple_textstruct import structure
+from exactly_lib.util.simple_textstruct.rendering.components import MajorBlockRenderer, MinorBlockRenderer, \
+    LineElementRenderer, DocumentRenderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, Document, ElementProperties, \
     LineElement, LineObject
 
 
-class TraceDocRender(Renderer[Document], ABC):
-    """Functionality to render itself as a :class:Document"""
-
-    def render(self) -> Document:
-        pass
-
-
-class DocumentR(TraceDocRender):
+class DocumentR(DocumentRenderer):
     def __init__(self, contents: Renderer[Sequence[MajorBlock]]):
         self._contents = contents
 

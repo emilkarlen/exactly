@@ -1,13 +1,12 @@
 from typing import Optional
 
-from exactly_lib.common.report_rendering import renderer_combinators as comb
-from exactly_lib.common.report_rendering import renderers as rend
-from exactly_lib.common.report_rendering.components import MinorBlockRenderer
 from exactly_lib.common.report_rendering.trace_doc import TraceRenderer
 from exactly_lib.definitions import misc_texts
 from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.name import Name
 from exactly_lib.util.simple_textstruct import structure as struct
+from exactly_lib.util.simple_textstruct.rendering import component_renderers as rend, renderer_combinators as comb
+from exactly_lib.util.simple_textstruct.rendering.components import MinorBlockRenderer
 from exactly_lib.util.simple_textstruct.structure import MinorBlock
 
 

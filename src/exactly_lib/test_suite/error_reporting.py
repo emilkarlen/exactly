@@ -3,13 +3,14 @@ from typing import Sequence
 from exactly_lib.common import result_reporting as reporting
 from exactly_lib.common.err_msg import error_description
 from exactly_lib.common.exit_value import ExitValue
-from exactly_lib.common.report_rendering import renderer_combinators as comb
-from exactly_lib.common.report_rendering.trace_doc import TraceRenderer, Renderer
+from exactly_lib.common.report_rendering.trace_doc import TraceRenderer
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document import exceptions as sec_doc_exceptions
 from exactly_lib.test_suite.file_reading import exception as suite_exception
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError, SuiteReadError, SuiteReadErrorVisitor
 from exactly_lib.util.file_printer import FilePrinter
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as comb
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, minor_block_from_lines, StringLineObject, \
     PreFormattedStringLineObject
 

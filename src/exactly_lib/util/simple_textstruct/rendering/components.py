@@ -1,14 +1,19 @@
 from abc import ABC
 from typing import Sequence, TypeVar, Generic
 
-from exactly_lib.common.report_rendering.trace_doc import Renderer
-from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, LineObject
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, LineObject, Document
 
 ELEMENT = TypeVar('ELEMENT')
 
 
 class SequenceRenderer(Generic[ELEMENT], Renderer[Sequence[ELEMENT]], ABC):
     pass
+
+
+class DocumentRenderer(Renderer[Document], ABC):
+    def render(self) -> Document:
+        pass
 
 
 class MajorBlockRenderer(Renderer[MajorBlock], ABC):
