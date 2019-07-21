@@ -13,6 +13,14 @@ class PreFormattedString(LineObjectRenderer):
         return structure.PreFormattedStringLineObject(self._s, False)
 
 
+class StringLineObject(LineObjectRenderer):
+    def __init__(self, s: str):
+        self._s = s
+
+    def render(self) -> LineObject:
+        return structure.StringLineObject(self._s, False)
+
+
 class PreFormattedStringOfToString(LineObjectRenderer):
     def __init__(self, x: Any):
         self._x = x

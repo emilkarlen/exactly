@@ -2,7 +2,6 @@ import enum
 import unittest
 
 from exactly_lib.test_case import error_description as sut
-from exactly_lib.util import file_printables
 
 
 def suite() -> unittest.TestSuite:
@@ -53,7 +52,7 @@ class TestVisitor(unittest.TestCase):
 
 class UnknownErrorDescriptionType(sut.ErrorDescription):
     def __init__(self):
-        super().__init__(file_printables.of_string('unknown'))
+        super().__init__(None)
 
 
 if __name__ == '__main__':

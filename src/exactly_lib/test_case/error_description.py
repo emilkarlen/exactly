@@ -1,76 +1,83 @@
-from typing import Optional, TypeVar, Generic
+from typing import Optional, TypeVar, Generic, Sequence
 
+from exactly_lib.common.report_rendering.text_doc import MinorTextRenderer
 from exactly_lib.definitions import misc_texts
-from exactly_lib.util import file_printables
-from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.name import Name
+from exactly_lib.util.simple_textstruct.rendering import line_objects, blocks
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, \
+    component_renderers as comp_rend
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.structure import LineElement
 
 
 class ErrorDescription:
-    def __init__(self, message: Optional[FilePrintable]):
+    def __init__(self, message: Optional[MinorTextRenderer]):
         self.__message = message
 
     @property
-    def message(self) -> Optional[FilePrintable]:
+    def message(self) -> Optional[MinorTextRenderer]:
         return self.__message
 
 
-def of_message(message: Optional[FilePrintable]) -> ErrorDescription:
+def of_message(message: Optional[MinorTextRenderer]) -> ErrorDescription:
     return ErrorDescriptionOfMessage(message)
 
 
 def of_constant_message(message: str) -> ErrorDescription:
-    return ErrorDescriptionOfMessage(file_printables.of_string(message))
-
-
-def formatted_error_message_str(category: Name, message: FilePrintable) -> FilePrintable:
-    return file_printables.of_sequence(
-        [
-            file_printables.of_string(category.singular.capitalize() + ': '),
-            message,
-        ]
+    return ErrorDescriptionOfMessage(
+        blocks.MinorBlocksOfSingleLineObject(line_objects.PreFormattedString(message))
     )
 
 
-def syntax_error_message(message: FilePrintable) -> FilePrintable:
+def formatted_error_message_str(category: Name,
+                                message: Renderer[Sequence[LineElement]]) -> MinorTextRenderer:
+    return rend_comb.SequenceR([
+        blocks.MinorBlockOfSingleLineObject(
+            line_objects.StringLineObject(category.singular.capitalize()),
+        ),
+        comp_rend.MinorBlockR(message),
+    ])
+
+
+def syntax_error_message(message: Renderer[Sequence[LineElement]]) -> MinorTextRenderer:
     return formatted_error_message_str(misc_texts.SYNTAX_ERROR_NAME, message)
 
 
-def file_access_error_message(message: FilePrintable) -> FilePrintable:
+def file_access_error_message(message: Renderer[Sequence[LineElement]]) -> MinorTextRenderer:
     return formatted_error_message_str(misc_texts.FILE_ACCESS_ERROR_NAME,
                                        message)
 
 
-def syntax_error_of_message(message: FilePrintable) -> ErrorDescription:
+def syntax_error_of_message(message: Renderer[Sequence[LineElement]]) -> ErrorDescription:
     return ErrorDescriptionOfMessage(syntax_error_message(message))
 
 
-def file_access_error_of_message(message: FilePrintable) -> ErrorDescription:
+def file_access_error_of_message(message: Renderer[Sequence[LineElement]]) -> ErrorDescription:
     return ErrorDescriptionOfMessage(file_access_error_message(message))
 
 
 def of_exception(exception: Exception,
-                 message: Optional[FilePrintable] = None) -> ErrorDescription:
+                 message: Optional[MinorTextRenderer] = None) -> ErrorDescription:
     return ErrorDescriptionOfException(exception, message)
 
 
 def of_external_process_error(exit_code: int,
                               stderr_output: str,
-                              message: Optional[FilePrintable] = None) -> ErrorDescription:
+                              message: Optional[MinorTextRenderer] = None) -> ErrorDescription:
     return ErrorDescriptionOfExternalProcessError(ExternalProcessError(exit_code,
                                                                        stderr_output),
                                                   message)
 
 
 class ErrorDescriptionOfMessage(ErrorDescription):
-    def __init__(self, message: FilePrintable):
+    def __init__(self, message: MinorTextRenderer):
         super().__init__(message)
 
 
 class ErrorDescriptionOfException(ErrorDescription):
     def __init__(self,
                  exception: Exception,
-                 message: Optional[FilePrintable] = None):
+                 message: Optional[MinorTextRenderer] = None):
         super().__init__(message)
         self.__exception = exception
 
@@ -97,7 +104,7 @@ class ExternalProcessError(tuple):
 class ErrorDescriptionOfExternalProcessError(ErrorDescription):
     def __init__(self,
                  external_process_error: ExternalProcessError,
-                 message: Optional[FilePrintable] = None):
+                 message: Optional[MinorTextRenderer] = None):
         super().__init__(message)
         self.__external_process_error = external_process_error
 

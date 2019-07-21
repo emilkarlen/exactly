@@ -39,7 +39,7 @@ class FailureDetails:
         return self.__exception is None
 
     @property
-    def failure_message(self) -> FilePrintable:
+    def failure_message(self) -> Optional[FilePrintable]:
         return self.__failure_message
 
     @property

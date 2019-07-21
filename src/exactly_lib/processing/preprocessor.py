@@ -4,11 +4,12 @@ import tempfile
 from typing import List
 
 from exactly_lib import program_info
+from exactly_lib.common.report_rendering.text_doc import MinorTextRenderer
 from exactly_lib.processing.test_case_processing import Preprocessor, ProcessError, ErrorInfo
 from exactly_lib.section_document.source_location import source_location_path_of
 from exactly_lib.test_case import error_description
-from exactly_lib.util import file_printables
-from exactly_lib.util.file_printer import FilePrintable
+from exactly_lib.util.simple_textstruct import structure
+from exactly_lib.util.simple_textstruct.rendering import blocks, renderer_combinators as comb
 
 
 class IdentityPreprocessor(Preprocessor):
@@ -76,5 +77,9 @@ class PreprocessorViaExternalProgram(Preprocessor):
                          source_location_path_of(test_case_file_path,
                                                  None))
 
-    def __error_message(self) -> FilePrintable:
-        return file_printables.of_string('Error from preprocessing by: ' + str(self.external_program))
+    def __error_message(self) -> MinorTextRenderer:
+        return blocks.MinorBlocksOfSingleLineObject(
+            comb.ConstantR(structure.StringLineObject(
+                'Error from preprocessing by: ' + str(self.external_program))
+            )
+        )

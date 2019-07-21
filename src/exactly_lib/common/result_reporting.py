@@ -4,6 +4,7 @@ from typing import Optional, List, Sequence
 
 from exactly_lib.common.report_rendering import print
 from exactly_lib.common.report_rendering.source_location import SourceLocationPathRenderer, SourceLinesBlockRenderer
+from exactly_lib.common.report_rendering.text_docs import minor_text_renderer_of_file_printable__opt
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.execution.failure_info import InstructionFailureInfo, PhaseFailureInfo, FailureInfoVisitor
@@ -11,15 +12,15 @@ from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case import error_description
-from exactly_lib.util.file_printables import print_to_string
 from exactly_lib.util.file_printer import FilePrinter
 from exactly_lib.util.simple_textstruct import structure as struct
-from exactly_lib.util.simple_textstruct.rendering import blocks
-from exactly_lib.util.simple_textstruct.rendering import component_renderers as rend, renderer_combinators as comb
-from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer, MajorBlocksRenderer
+from exactly_lib.util.simple_textstruct.rendering import blocks, component_renderers as rend, \
+    renderer_combinators as comb
+from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer, MajorBlocksRenderer, \
+    LineObjectRenderer
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, StringLineObject, \
-    PreFormattedStringLineObject
+    PreFormattedStringLineObject, LineObject
 
 
 def error_message_for_full_result(the_full_result: FullExeResult) -> str:
@@ -128,10 +129,14 @@ class FullExeResultRenderer(MajorBlocksRenderer):
 
         failure_details = failure_info.failure_details
         if failure_details.is_only_failure_message:
-            ed = error_description.of_message(failure_details.failure_message)
+            ed = error_description.of_message(
+                minor_text_renderer_of_file_printable__opt(failure_details.failure_message)
+            )
         else:
-            ed = error_description.of_exception(failure_details.exception,
-                                                failure_details.failure_message)
+            ed = error_description.of_exception(
+                failure_details.exception,
+                minor_text_renderer_of_file_printable__opt(failure_details.failure_message)
+            )
 
         major_blocks += _ErrorDescriptionDisplayer().visit(ed)
 
@@ -182,13 +187,11 @@ class _ErrorDescriptionDisplayer(error_description.ErrorDescriptionVisitor[Seque
         return [MajorBlock(minor_blocks)]
 
     def _message_blocks(self, ed: error_description.ErrorDescription) -> List[MinorBlock]:
-        if ed.message is None:
-            return []
-        else:
-            message_as_str = print_to_string(ed.message)
-            return [
-                struct.minor_block_from_lines([struct.PreFormattedStringLineObject(message_as_str, False)])
-            ]
+        return (
+            []
+            if ed.message is None
+            else list(ed.message.render())
+        )
 
 
 class _SourceDisplayer(FailureInfoVisitor[Renderer[Sequence[MajorBlock]]]):
@@ -209,7 +212,7 @@ class _InSectionNameRenderer(SequenceRenderer[LineElement]):
 
     def render(self) -> Sequence[LineElement]:
         return [
-            LineElement(StringLineObject('In ' + SectionName(self._section_name).syntax))
+            LineElement(_InSectionHeaderRenderer(self._section_name).render())
         ]
 
 
@@ -226,6 +229,14 @@ class _OptionalDescriptionRenderer(SequenceRenderer[MinorBlock]):
                     LineElement(PreFormattedStringLineObject(_description_str(self._description), False))
                 ])
             ]
+
+
+class _InSectionHeaderRenderer(LineObjectRenderer):
+    def __init__(self, section_name: str):
+        self._section_name = section_name
+
+    def render(self) -> LineObject:
+        return StringLineObject('In ' + SectionName(self._section_name).syntax)
 
 
 def _description_str(description: str) -> str:
