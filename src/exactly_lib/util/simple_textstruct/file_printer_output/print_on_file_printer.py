@@ -1,7 +1,7 @@
 from typing import Sequence
 
-from exactly_lib.util.simple_textstruct.render import printables as ps
-from exactly_lib.util.simple_textstruct.render.printer import Printable, Printer
+from exactly_lib.util.simple_textstruct.file_printer_output import printables as ps
+from exactly_lib.util.simple_textstruct.file_printer_output.printer import Printable, Printer
 from exactly_lib.util.simple_textstruct.structure import ElementProperties, MajorBlock, MinorBlock, \
     LineObjectVisitor, PreFormattedStringLineObject, Document, LineObject, LineElement, StringLineObject, \
     StringLinesObject

@@ -1,8 +1,8 @@
 from exactly_lib.util.file_printer import FilePrinter
-from exactly_lib.util.simple_textstruct.render import printables as ps
-from exactly_lib.util.simple_textstruct.render.print_on_file_printer import LayoutSettings, BlockSettings, \
+from exactly_lib.util.simple_textstruct.file_printer_output import printables as ps
+from exactly_lib.util.simple_textstruct.file_printer_output.print_on_file_printer import LayoutSettings, BlockSettings, \
     PrintablesFactory
-from exactly_lib.util.simple_textstruct.render.printer import Printer
+from exactly_lib.util.simple_textstruct.file_printer_output.printer import Printer
 from exactly_lib.util.simple_textstruct.structure import Document
 
 INDENT = '  '

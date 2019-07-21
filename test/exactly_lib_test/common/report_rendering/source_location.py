@@ -11,10 +11,10 @@ from exactly_lib.common.report_rendering.source_location import SOURCE_LINES_ELE
 from exactly_lib.section_document.source_location import SourceLocationPath, SourceLocation
 from exactly_lib.util.file_printer import FilePrinter
 from exactly_lib.util.line_source import single_line_sequence
-from exactly_lib.util.simple_textstruct.render import printables as ps
-from exactly_lib.util.simple_textstruct.render.print_on_file_printer import LayoutSettings, BlockSettings, \
+from exactly_lib.util.simple_textstruct.file_printer_output import printables as ps
+from exactly_lib.util.simple_textstruct.file_printer_output.print_on_file_printer import LayoutSettings, BlockSettings, \
     PrintablesFactory
-from exactly_lib.util.simple_textstruct.render.printer import Printer, Printable
+from exactly_lib.util.simple_textstruct.file_printer_output.printer import Printer, Printable
 from exactly_lib.util.simple_textstruct.structure import LineElement, MinorBlock, ElementProperties, MajorBlock
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
