@@ -14,6 +14,7 @@ from exactly_lib.test_case import error_description
 from exactly_lib.util.file_printables import print_to_string
 from exactly_lib.util.file_printer import FilePrinter
 from exactly_lib.util.simple_textstruct import structure as struct
+from exactly_lib.util.simple_textstruct.rendering import blocks
 from exactly_lib.util.simple_textstruct.rendering import component_renderers as rend, renderer_combinators as comb
 from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer, MajorBlocksRenderer
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
@@ -69,8 +70,9 @@ def location_minor_blocks_renderer(source_location: Optional[SourceLocationPath]
                                    description: Optional[str]) -> Renderer[Sequence[MinorBlock]]:
     minor_blocks_renderer = _location_path_and_source_blocks(source_location)
     if section_name is not None:
-        minor_blocks_renderer = comb.PrependFirstMinorBlockR(_InSectionNameRenderer(section_name),
-                                                             minor_blocks_renderer)
+        minor_blocks_renderer = blocks.PrependFirstMinorBlockR(
+            _InSectionNameRenderer(section_name),
+            minor_blocks_renderer)
     return comb.ConcatenationR([
         minor_blocks_renderer,
         _OptionalDescriptionRenderer(description),
