@@ -3,8 +3,19 @@ from typing import Optional
 from exactly_lib.common.report_rendering.text_doc import TextRenderer, MinorTextRenderer
 from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.simple_textstruct import structure
-from exactly_lib.util.simple_textstruct.rendering import blocks
+from exactly_lib.util.simple_textstruct.rendering import blocks, renderer_combinators as comb, \
+    component_renderers as rend
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comp
+from exactly_lib.util.simple_textstruct.structure import MinorBlock
+
+
+def text_renderer_of_constant_minor_block(block: MinorBlock) -> TextRenderer:
+    return comb.SingletonSequenceR(
+        rend.MajorBlockR(
+            comb.SingletonSequenceR(
+                comb.ConstantR(block),
+            ))
+    )
 
 
 def text_renderer_of_file_printable(fp: FilePrintable,

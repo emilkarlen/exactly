@@ -13,6 +13,9 @@ from exactly_lib.util.simple_textstruct.structure import LineElement
 class ErrorDescription:
     def __init__(self, message: Optional[MinorTextRenderer]):
         self.__message = message
+        if message is not None:
+            if not isinstance(message, Renderer):
+                raise ValueError('not a Renderer: ' + str(message))
 
     @property
     def message(self) -> Optional[MinorTextRenderer]:
@@ -29,8 +32,8 @@ def of_constant_message(message: str) -> ErrorDescription:
     )
 
 
-def formatted_error_message_str(category: Name,
-                                message: Renderer[Sequence[LineElement]]) -> MinorTextRenderer:
+def _formatted_error_message_str(category: Name,
+                                 message: Renderer[Sequence[LineElement]]) -> MinorTextRenderer:
     return rend_comb.SequenceR([
         blocks.MinorBlockOfSingleLineObject(
             line_objects.StringLineObject(category.singular.capitalize()),
@@ -40,12 +43,12 @@ def formatted_error_message_str(category: Name,
 
 
 def syntax_error_message(message: Renderer[Sequence[LineElement]]) -> MinorTextRenderer:
-    return formatted_error_message_str(misc_texts.SYNTAX_ERROR_NAME, message)
+    return _formatted_error_message_str(misc_texts.SYNTAX_ERROR_NAME, message)
 
 
 def file_access_error_message(message: Renderer[Sequence[LineElement]]) -> MinorTextRenderer:
-    return formatted_error_message_str(misc_texts.FILE_ACCESS_ERROR_NAME,
-                                       message)
+    return _formatted_error_message_str(misc_texts.FILE_ACCESS_ERROR_NAME,
+                                        message)
 
 
 def syntax_error_of_message(message: Renderer[Sequence[LineElement]]) -> ErrorDescription:
