@@ -12,7 +12,10 @@ from exactly_lib_test.test_resources.programs import python_program_execution as
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestIdentityPreprocessor)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestIdentityPreprocessor),
+        unittest.makeSuite(TestPreprocessorViaExternalProgram),
+    ])
 
 
 class TestIdentityPreprocessor(unittest.TestCase):
