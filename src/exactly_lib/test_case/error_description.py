@@ -1,11 +1,8 @@
 from typing import Optional, TypeVar, Generic, Sequence
 
+from exactly_lib.common.err_msg.msg import minors
 from exactly_lib.common.report_rendering.text_doc import MinorTextRenderer
-from exactly_lib.definitions import misc_texts
-from exactly_lib.util.name import Name
 from exactly_lib.util.simple_textstruct.rendering import line_objects, blocks
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, \
-    component_renderers as comp_rend
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import LineElement
 
@@ -13,9 +10,6 @@ from exactly_lib.util.simple_textstruct.structure import LineElement
 class ErrorDescription:
     def __init__(self, message: Optional[MinorTextRenderer]):
         self.__message = message
-        if message is not None:
-            if not isinstance(message, Renderer):
-                raise ValueError('not a Renderer: ' + str(message))
 
     @property
     def message(self) -> Optional[MinorTextRenderer]:
@@ -32,31 +26,12 @@ def of_constant_message(message: str) -> ErrorDescription:
     )
 
 
-def _formatted_error_message_str(category: Name,
-                                 message: Renderer[Sequence[LineElement]]) -> MinorTextRenderer:
-    return rend_comb.SequenceR([
-        blocks.MinorBlockOfSingleLineObject(
-            line_objects.StringLineObject(category.singular.capitalize()),
-        ),
-        comp_rend.MinorBlockR(message),
-    ])
-
-
-def syntax_error_message(message: Renderer[Sequence[LineElement]]) -> MinorTextRenderer:
-    return _formatted_error_message_str(misc_texts.SYNTAX_ERROR_NAME, message)
-
-
-def file_access_error_message(message: Renderer[Sequence[LineElement]]) -> MinorTextRenderer:
-    return _formatted_error_message_str(misc_texts.FILE_ACCESS_ERROR_NAME,
-                                        message)
-
-
 def syntax_error_of_message(message: Renderer[Sequence[LineElement]]) -> ErrorDescription:
-    return ErrorDescriptionOfMessage(syntax_error_message(message))
+    return ErrorDescriptionOfMessage(minors.syntax_error_message(message))
 
 
 def file_access_error_of_message(message: Renderer[Sequence[LineElement]]) -> ErrorDescription:
-    return ErrorDescriptionOfMessage(file_access_error_message(message))
+    return ErrorDescriptionOfMessage(minors.file_access_error_message(message))
 
 
 def of_exception(exception: Exception,

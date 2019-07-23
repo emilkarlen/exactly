@@ -2,9 +2,9 @@ import io
 import pathlib
 from typing import Optional, List, Sequence
 
+from exactly_lib.common.err_msg.msg import minors
 from exactly_lib.common.report_rendering import print
 from exactly_lib.common.report_rendering.source_location import SourceLocationPathRenderer, SourceLinesBlockRenderer
-from exactly_lib.common.report_rendering.text_docs import minor_text_renderer_of_file_printable__opt
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.execution.failure_info import InstructionFailureInfo, PhaseFailureInfo, FailureInfoVisitor
@@ -130,12 +130,12 @@ class FullExeResultRenderer(MajorBlocksRenderer):
         failure_details = failure_info.failure_details
         if failure_details.is_only_failure_message:
             ed = error_description.of_message(
-                minor_text_renderer_of_file_printable__opt(failure_details.failure_message)
+                minors.of_file_printable__opt(failure_details.failure_message)
             )
         else:
             ed = error_description.of_exception(
                 failure_details.exception,
-                minor_text_renderer_of_file_printable__opt(failure_details.failure_message)
+                minors.of_file_printable__opt(failure_details.failure_message)
             )
 
         major_blocks += _ErrorDescriptionDisplayer().visit(ed)

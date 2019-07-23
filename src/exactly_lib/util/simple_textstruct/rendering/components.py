@@ -46,6 +46,6 @@ class LineObjectRenderer(Renderer[LineObject], ABC):
         pass
 
 
-class LineObjectsRenderer(SequenceRenderer[LineElement], ABC):
-    def render(self) -> Sequence[LineElement]:
+class LineObjectsRenderer(SequenceRenderer[LineObject], ABC):
+    def render(self) -> Sequence[LineObject]:
         pass
