@@ -1,9 +1,10 @@
 from typing import Sequence, Optional
 
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
+from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, Document, \
     ElementProperties, LineObject, PreFormattedStringLineObject, StringLineObject, StringLinesObject, \
-    PLAIN_ELEMENT_PROPERTIES
+    PLAIN_ELEMENT_PROPERTIES, FilePrintableLineObject
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -171,5 +172,25 @@ def is_string_lines(strings: ValueAssertion[Sequence[str]] = asrt.anything_goes(
                                    asrt.is_sequence_of(asrt.is_instance(str)),
                                    strings
                                ])),
+        ],
+    )
+
+
+def is_file_printable(file_printable: ValueAssertion[FilePrintable] = asrt.anything_goes(),
+                      is_line_ended: ValueAssertion[bool] = asrt.anything_goes(),
+                      ) -> ValueAssertion[LineObject]:
+    return asrt.is_instance_with_many(
+        FilePrintableLineObject,
+        [
+            asrt.sub_component('file_printable',
+                               FilePrintableLineObject.file_printable.fget,
+                               asrt.is_instance_with(FilePrintable,
+                                                     file_printable)
+                               ),
+            asrt.sub_component('is_line_ended',
+                               FilePrintableLineObject.is_line_ended.fget,
+                               asrt.is_instance_with(bool,
+                                                     is_line_ended)
+                               ),
         ],
     )

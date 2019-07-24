@@ -1,9 +1,10 @@
 import unittest
 
+from exactly_lib.util import file_printables
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.simple_textstruct.structure import LineElement, MinorBlock, LineObjectVisitor, ENV, RET, \
     LineObject, PLAIN_ELEMENT_PROPERTIES, ElementProperties, MajorBlock, PreFormattedStringLineObject, StringLineObject, \
-    StringLinesObject
+    StringLinesObject, FilePrintableLineObject
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -19,6 +20,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestIsPreFormattedString),
         unittest.makeSuite(TestIsString),
         unittest.makeSuite(TestIsStringLines),
+        unittest.makeSuite(TestIsFilePrintable),
     ])
 
 
@@ -434,6 +436,48 @@ class TestIsStringLines(unittest.TestCase):
                 sut.is_string_lines(asrt.matches_sequence([asrt.equals('expected')])),
                 actual=
                 StringLinesObject(['actual']),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assert_that_assertion_fails(case.expected, case.actual)
+
+
+class TestIsFilePrintable(unittest.TestCase):
+    def test_matches(self):
+        actual_fp = file_printables.of_new_line()
+        cases = [
+            NEA('is_line_ended',
+                expected=
+                sut.is_file_printable(is_line_ended=asrt.is_false),
+                actual=
+                FilePrintableLineObject(actual_fp, False)
+                ),
+            NEA('file_printable',
+                expected=
+                sut.is_file_printable(file_printable=asrt.is_(actual_fp)),
+                actual=
+                FilePrintableLineObject(actual_fp, True)
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                case.expected.apply_without_message(self, case.actual)
+
+    def test_not_matches(self):
+        actual_fp = file_printables.of_new_line()
+        cases = [
+            NEA('is_line_ended',
+                expected=
+                sut.is_file_printable(is_line_ended=asrt.is_false),
+                actual=
+                FilePrintableLineObject(actual_fp, True)
+                ),
+            NEA('file_printable',
+                expected=
+                sut.is_file_printable(file_printable=asrt.not_(asrt.is_(actual_fp))),
+                actual=
+                FilePrintableLineObject(actual_fp, True)
                 ),
         ]
         for case in cases:
