@@ -1,12 +1,13 @@
+import unittest
 from typing import Sequence, Optional
 
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, Document, \
     ElementProperties, LineObject, PreFormattedStringLineObject, StringLineObject, StringLinesObject, \
-    PLAIN_ELEMENT_PROPERTIES, FilePrintableLineObject
+    PLAIN_ELEMENT_PROPERTIES, FilePrintableLineObject, LineObjectVisitor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, T, MessageBuilder
 
 
 def matches_element_properties(
@@ -194,3 +195,55 @@ def is_file_printable(file_printable: ValueAssertion[FilePrintable] = asrt.anyth
                                ),
         ],
     )
+
+
+def is_any_line_object() -> ValueAssertion[LineObject]:
+    return _IS_ANY_LINE_OBJECT
+
+
+class _LineObjectChecker(LineObjectVisitor[unittest.TestCase, None]):
+    def visit_pre_formatted(self, put: unittest.TestCase, x: PreFormattedStringLineObject) -> None:
+        is_pre_formatted_string().apply_without_message(put, x)
+
+    def visit_string(self, put: unittest.TestCase, x: StringLineObject) -> None:
+        is_string().apply_without_message(put, x)
+
+    def visit_string_lines(self, put: unittest.TestCase, x: StringLinesObject) -> None:
+        is_string_lines().apply_without_message(put, x)
+
+    def visit_file_printable(self, put: unittest.TestCase, x: FilePrintableLineObject) -> None:
+        is_file_printable().apply_without_message(put, x)
+
+
+class _IsAnyLineObject(asrt.ValueAssertionBase[LineObject]):
+    _LINE_OBJECT_CHECKER = _LineObjectChecker()
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: T,
+               message_builder: MessageBuilder):
+        put.assertIsInstance(value,
+                             LineObject,
+                             message_builder.apply('object type'))
+        assert isinstance(value, LineObject)
+        self._is_known_sub_class(put, value, message_builder)
+
+        value.accept(self._LINE_OBJECT_CHECKER, put)
+
+    def _is_known_sub_class(self,
+                            put: unittest.TestCase,
+                            value: LineObject,
+                            message_builder: MessageBuilder):
+        if isinstance(value, PreFormattedStringLineObject):
+            return
+        if isinstance(value, StringLineObject):
+            return
+        if isinstance(value, StringLinesObject):
+            return
+        if isinstance(value, FilePrintableLineObject):
+            return
+        msg = 'Not a know sub class of {}: {}'.format(LineObject, value)
+        put.fail(message_builder.apply(msg))
+
+
+_IS_ANY_LINE_OBJECT = _IsAnyLineObject()

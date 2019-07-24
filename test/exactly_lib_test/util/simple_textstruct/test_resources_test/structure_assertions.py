@@ -5,6 +5,7 @@ from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.simple_textstruct.structure import LineElement, MinorBlock, LineObjectVisitor, ENV, RET, \
     LineObject, PLAIN_ELEMENT_PROPERTIES, ElementProperties, MajorBlock, PreFormattedStringLineObject, StringLineObject, \
     StringLinesObject, FilePrintableLineObject
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -21,6 +22,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestIsString),
         unittest.makeSuite(TestIsStringLines),
         unittest.makeSuite(TestIsFilePrintable),
+        unittest.makeSuite(TestAnyLineObject),
     ])
 
 
@@ -483,6 +485,32 @@ class TestIsFilePrintable(unittest.TestCase):
         for case in cases:
             with self.subTest(case.name):
                 assert_that_assertion_fails(case.expected, case.actual)
+
+
+class TestAnyLineObject(unittest.TestCase):
+    def test_matches(self):
+        cases = [
+            StringLineObject('s', False),
+            StringLinesObject(['a string']),
+            PreFormattedStringLineObject('pre-formatted', True),
+            FilePrintableLineObject(file_printables.of_new_line(), True),
+        ]
+        for line_object in cases:
+            with self.subTest(str(type(line_object))):
+                sut.is_any_line_object().apply_without_message(self, line_object)
+
+    def test_not_matches(self):
+        cases = [
+            NameAndValue('not a sub class of LineObject',
+                         'not a LineObject'
+                         ),
+            NameAndValue('Unknown sub class of LineObject',
+                         LineObjectForTest()
+                         ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assert_that_assertion_fails(sut.is_any_line_object(), case.value)
 
 
 class LineObjectForTest(LineObject):
