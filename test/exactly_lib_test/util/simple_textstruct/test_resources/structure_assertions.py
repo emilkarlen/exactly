@@ -50,7 +50,10 @@ def matches_major_block(minor_blocks: ValueAssertion[Sequence[MinorBlock]],
         asrt.sub_component(
             'minor blocks',
             MajorBlock.parts.fget,
-            minor_blocks
+            asrt.and_([
+                asrt.is_sequence_of(matches_minor_block(asrt.anything_goes())),
+                minor_blocks,
+            ]),
         ),
         asrt.sub_component(
             'properties',
@@ -75,7 +78,10 @@ def matches_minor_block(line_elements: ValueAssertion[Sequence[LineElement]],
         asrt.sub_component(
             'line elements',
             MinorBlock.parts.fget,
-            line_elements
+            asrt.and_([
+                asrt.is_sequence_of(matches_line_element(asrt.anything_goes())),
+                line_elements,
+            ]),
         ),
         asrt.sub_component(
             'properties',
@@ -100,7 +106,7 @@ def matches_line_element(line_object: ValueAssertion[LineObject],
         asrt.sub_component(
             'line object',
             LineElement.line_object.fget,
-            line_object
+            asrt.is_instance_with(LineObject, line_object),
         ),
         asrt.sub_component(
             'properties',

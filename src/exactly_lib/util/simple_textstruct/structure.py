@@ -169,11 +169,6 @@ class MinorBlock(Element):
     def __init__(self,
                  parts: Sequence[LineElement],
                  properties: ElementProperties = PLAIN_ELEMENT_PROPERTIES):
-        if not isinstance(parts, Sequence):
-            raise ValueError('not a sequence: ' + str(parts))
-        for part in parts:
-            if not isinstance(part, LineElement):
-                raise ValueError('not a LineElement: ' + str(part))
         super().__init__(properties)
         self._parts = parts
 
@@ -187,12 +182,6 @@ class MajorBlock(Element):
                  parts: Sequence[MinorBlock],
                  properties: ElementProperties = PLAIN_ELEMENT_PROPERTIES,
                  ):
-        if not isinstance(parts, Sequence):
-            raise ValueError('not a sequence: ' + str(parts))
-        for part in parts:
-            if not isinstance(part, MinorBlock):
-                raise ValueError('not a MinorBlock: ' + str(part))
-
         super().__init__(properties)
         self._parts = parts
 
