@@ -1,6 +1,5 @@
-import unittest
-
 import os
+import unittest
 from typing import TypeVar, Sequence, Callable, Any, Generic, Type, Sized, List, Dict, Set, Optional
 
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -166,7 +165,10 @@ def optional(present_value: ValueAssertion[T]) -> ValueAssertion[T]:
 
 
 def anything_goes() -> ValueAssertion[Any]:
-    return Constant(True)
+    return _CONST_TRUE
+
+
+_CONST_TRUE = Constant(True)
 
 
 class And(ValueAssertionBase[T]):
