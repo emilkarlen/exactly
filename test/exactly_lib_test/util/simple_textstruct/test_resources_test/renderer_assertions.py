@@ -2,8 +2,9 @@ import unittest
 
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, MajorBlock, LineElement, StringLineObject
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
+from exactly_lib_test.test_resources.test_utils import NIE
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as sut
 
 
@@ -18,69 +19,97 @@ def suite() -> unittest.TestSuite:
 class TestIsRendererOfMajorBlocks(unittest.TestCase):
     def test_matches(self):
         cases = [
-            NameAndValue('empty list of blocks',
-                         rend_comb.ConstantR([]),
-                         ),
-            NameAndValue('non-empty list of blocks',
-                         rend_comb.ConstantR([MajorBlock([])]),
-                         ),
+            NIE('default assertion/empty list of blocks',
+                input_value=rend_comb.ConstantR([]),
+                expected_value=sut.is_renderer_of_major_blocks(),
+                ),
+            NIE('default assertion/non-empty list of blocks',
+                input_value=rend_comb.ConstantR([MajorBlock([])]),
+                expected_value=sut.is_renderer_of_major_blocks(),
+                ),
+            NIE('custom assertion',
+                input_value=rend_comb.ConstantR([MajorBlock([])]),
+                expected_value=sut.is_renderer_of_major_blocks(asrt.len_equals(1)),
+                ),
         ]
         for case in cases:
             with self.subTest(case.name):
-                sut.is_renderer_of_major_blocks().apply_without_message(self, case.value)
+                case.expected_value.apply_without_message(self, case.input_value)
 
     def test_not_matches(self):
         cases = [
-            NameAndValue('not a renderer',
-                         MajorBlock([]),
-                         ),
-            NameAndValue('not a sequence',
-                         rend_comb.ConstantR(MajorBlock([])),
-                         ),
-            NameAndValue('not a major block',
-                         rend_comb.ConstantR([MinorBlock([])]),
-                         ),
-            NameAndValue('invalid contents of block',
-                         rend_comb.ConstantR([MajorBlock(['not a minor block'])]),
-                         ),
+            NIE('default assertion/not a renderer',
+                input_value=MajorBlock([]),
+                expected_value=sut.is_renderer_of_major_blocks(),
+                ),
+            NIE('default assertion/not a sequence',
+                input_value=rend_comb.ConstantR(MajorBlock([])),
+                expected_value=sut.is_renderer_of_major_blocks(),
+                ),
+            NIE('default assertion/not a major block',
+                input_value=rend_comb.ConstantR([MinorBlock([])]),
+                expected_value=sut.is_renderer_of_major_blocks(),
+                ),
+            NIE('default assertion/invalid contents of block',
+                input_value=rend_comb.ConstantR([MajorBlock(['not a minor block'])]),
+                expected_value=sut.is_renderer_of_major_blocks(),
+                ),
+            NIE('custom assertion/unexpected number of blocks',
+                input_value=rend_comb.ConstantR([]),
+                expected_value=sut.is_renderer_of_major_blocks(asrt.len_equals(1)),
+                ),
         ]
         for case in cases:
             with self.subTest(case.name):
-                assert_that_assertion_fails(sut.is_renderer_of_major_blocks(), case.value)
+                assert_that_assertion_fails(case.expected_value, case.input_value)
 
 
 class TestIsRendererOfMinorBlocks(unittest.TestCase):
     def test_matches(self):
         cases = [
-            NameAndValue('empty list of blocks',
-                         rend_comb.ConstantR([]),
-                         ),
-            NameAndValue('non-empty list of blocks',
-                         rend_comb.ConstantR([MinorBlock([])]),
-                         ),
+            NIE('default assertion/empty list of blocks',
+                input_value=rend_comb.ConstantR([]),
+                expected_value=sut.is_renderer_of_minor_blocks(),
+                ),
+            NIE('default assertion/non-empty list of blocks',
+                input_value=rend_comb.ConstantR([MinorBlock([])]),
+                expected_value=sut.is_renderer_of_minor_blocks(),
+                ),
+            NIE('custom assertion',
+                input_value=rend_comb.ConstantR([MinorBlock([])]),
+                expected_value=sut.is_renderer_of_minor_blocks(asrt.len_equals(1)),
+                ),
         ]
         for case in cases:
             with self.subTest(case.name):
-                sut.is_renderer_of_minor_blocks().apply_without_message(self, case.value)
+                case.expected_value.apply_without_message(self, case.input_value)
 
     def test_not_matches(self):
         cases = [
-            NameAndValue('not a renderer',
-                         MajorBlock([]),
-                         ),
-            NameAndValue('not a sequence',
-                         rend_comb.ConstantR(MajorBlock([])),
-                         ),
-            NameAndValue('not a minor block',
-                         rend_comb.ConstantR([MajorBlock([])]),
-                         ),
-            NameAndValue('invalid contents of block',
-                         rend_comb.ConstantR([MinorBlock(['not a minor block'])]),
-                         ),
+            NIE('default assertion/not a renderer',
+                input_value=MajorBlock([]),
+                expected_value=sut.is_renderer_of_minor_blocks(),
+                ),
+            NIE('default assertion/not a sequence',
+                input_value=rend_comb.ConstantR(MajorBlock([])),
+                expected_value=sut.is_renderer_of_minor_blocks(),
+                ),
+            NIE('default assertion/not a minor block',
+                input_value=rend_comb.ConstantR([MajorBlock([])]),
+                expected_value=sut.is_renderer_of_minor_blocks(),
+                ),
+            NIE('default assertion/invalid contents of block',
+                input_value=rend_comb.ConstantR([MinorBlock(['not a minor block'])]),
+                expected_value=sut.is_renderer_of_minor_blocks(),
+                ),
+            NIE('custom assertion/unexpected number of blocks',
+                input_value=rend_comb.ConstantR([]),
+                expected_value=sut.is_renderer_of_minor_blocks(asrt.len_equals(1)),
+                ),
         ]
         for case in cases:
             with self.subTest(case.name):
-                assert_that_assertion_fails(sut.is_renderer_of_minor_blocks(), case.value)
+                assert_that_assertion_fails(case.expected_value, case.input_value)
 
 
 class TestIsRendererOfLineElements(unittest.TestCase):
@@ -88,32 +117,46 @@ class TestIsRendererOfLineElements(unittest.TestCase):
 
     def test_matches(self):
         cases = [
-            NameAndValue('empty list of blocks',
-                         rend_comb.ConstantR([]),
-                         ),
-            NameAndValue('non-empty list of line elements',
-                         rend_comb.ConstantR([self._LINE_ELEMENT]),
-                         ),
+            NIE('default assertion/empty list of blocks',
+                input_value=rend_comb.ConstantR([]),
+                expected_value=sut.is_renderer_of_line_elements(),
+                ),
+            NIE('default assertion/non-empty list of line elements',
+                input_value=rend_comb.ConstantR([self._LINE_ELEMENT]),
+                expected_value=sut.is_renderer_of_line_elements(),
+                ),
+            NIE('custom assertion',
+                input_value=rend_comb.ConstantR([self._LINE_ELEMENT]),
+                expected_value=sut.is_renderer_of_line_elements(asrt.len_equals(1)),
+                ),
         ]
         for case in cases:
             with self.subTest(case.name):
-                sut.is_renderer_of_line_elements().apply_without_message(self, case.value)
+                case.expected_value.apply_without_message(self, case.input_value)
 
     def test_not_matches(self):
         cases = [
-            NameAndValue('not a renderer',
-                         self._LINE_ELEMENT,
-                         ),
-            NameAndValue('not a sequence',
-                         rend_comb.ConstantR(self._LINE_ELEMENT),
-                         ),
-            NameAndValue('not a line element',
-                         rend_comb.ConstantR([MajorBlock([])]),
-                         ),
-            NameAndValue('invalid contents of line element',
-                         rend_comb.ConstantR([LineElement(StringLineObject('string'), 'not properties')]),
-                         ),
+            NIE('default assertion/not a renderer',
+                input_value=self._LINE_ELEMENT,
+                expected_value=sut.is_renderer_of_line_elements(),
+                ),
+            NIE('default assertion/not a sequence',
+                input_value=rend_comb.ConstantR(self._LINE_ELEMENT),
+                expected_value=sut.is_renderer_of_line_elements(),
+                ),
+            NIE('default assertion/not a line element',
+                input_value=rend_comb.ConstantR([MajorBlock([])]),
+                expected_value=sut.is_renderer_of_line_elements(),
+                ),
+            NIE('default assertion/invalid contents of line element',
+                input_value=rend_comb.ConstantR([LineElement(StringLineObject('string'), 'not properties')]),
+                expected_value=sut.is_renderer_of_line_elements(),
+                ),
+            NIE('custom assertion/unexpected number of blocks',
+                input_value=rend_comb.ConstantR([]),
+                expected_value=sut.is_renderer_of_line_elements(asrt.len_equals(1)),
+                ),
         ]
         for case in cases:
             with self.subTest(case.name):
-                assert_that_assertion_fails(sut.is_renderer_of_line_elements(), case.value)
+                assert_that_assertion_fails(case.expected_value, case.input_value)
