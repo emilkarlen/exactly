@@ -16,6 +16,21 @@ class ErrorDescription:
         return self.__message
 
 
+class ExternalProcessError(tuple):
+    def __new__(cls,
+                exit_code: int,
+                stderr_output: str):
+        return tuple.__new__(cls, (exit_code, stderr_output))
+
+    @property
+    def exit_code(self) -> int:
+        return self[0]
+
+    @property
+    def stderr_output(self) -> str:
+        return self[1]
+
+
 def of_message(message: Optional[MinorTextRenderer]) -> ErrorDescription:
     return ErrorDescriptionOfMessage(message)
 
@@ -47,6 +62,12 @@ def of_external_process_error(exit_code: int,
                                                   message)
 
 
+def of_external_process_error2(process_error: ExternalProcessError,
+                               message: Optional[MinorTextRenderer] = None) -> ErrorDescription:
+    return ErrorDescriptionOfExternalProcessError(process_error,
+                                                  message)
+
+
 class ErrorDescriptionOfMessage(ErrorDescription):
     def __init__(self, message: MinorTextRenderer):
         super().__init__(message)
@@ -62,21 +83,6 @@ class ErrorDescriptionOfException(ErrorDescription):
     @property
     def exception(self) -> Exception:
         return self.__exception
-
-
-class ExternalProcessError(tuple):
-    def __new__(cls,
-                exit_code: int,
-                stderr_output: str):
-        return tuple.__new__(cls, (exit_code, stderr_output))
-
-    @property
-    def exit_code(self) -> int:
-        return self[0]
-
-    @property
-    def stderr_output(self) -> str:
-        return self[1]
 
 
 class ErrorDescriptionOfExternalProcessError(ErrorDescription):

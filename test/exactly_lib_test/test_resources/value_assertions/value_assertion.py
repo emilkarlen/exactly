@@ -525,6 +525,11 @@ def is_none_or_instance_with(expected_type: Type[T],
     return _IsNoneOrInstanceWith(expected_type, value_assertion)
 
 
+def is_none_or_instance_with__many(expected_type: Type[T],
+                                   assertions: Sequence[ValueAssertion[T]]) -> ValueAssertion[Any]:
+    return _IsNoneOrInstanceWith(expected_type, and_(assertions))
+
+
 def every_element(iterable_name: str,
                   element_assertion: ValueAssertion[T],
                   component_separator: str = COMPONENT_SEPARATOR) -> ValueAssertion[Sequence[T]]:
