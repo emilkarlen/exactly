@@ -98,7 +98,13 @@ class _AnyErrorDescriptionAssertion(asrt.ValueAssertionBase[ErrorDescription]):
 
         checker = _CheckAnyErrorDescription(put, message_builder)
 
-        checker.visit(value)
+        try:
+            checker.visit(value)
+        except TypeError:
+            put.fail('Not a known sub class of {}: {}'.format(
+                ErrorDescription,
+                value
+            ))
 
 
 class _CheckAnyErrorDescription(ErrorDescriptionVisitor[None]):

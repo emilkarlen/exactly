@@ -202,7 +202,7 @@ class TestIsAnyErrorDescription(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(case.name):
-                assert_that_assertion_fails(sut.is_any_error_description(), case.value)
+                assert_that_assertion_fails(sut2.is_any_line_object(), case.value)
 
 
 class ErrorDescriptionForTest(sut.ErrorDescription):
