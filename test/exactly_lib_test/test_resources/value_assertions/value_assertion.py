@@ -31,12 +31,12 @@ class MessageBuilder:
         return self.apply(COMPONENT_SEPARATOR + component_name)
 
     def for_sub_component(self, component_name: str,
-                          component_separator: str = COMPONENT_SEPARATOR):
+                          component_separator: str = COMPONENT_SEPARATOR) -> 'MessageBuilder':
         return sub_component_builder(component_name,
                                      self,
                                      component_separator)
 
-    def with_description(self, description: str):
+    def with_description(self, description: str) -> 'MessageBuilder':
         """
         Adds a description
         :param description: If empty on None, no description is added
@@ -507,9 +507,9 @@ def is_instance_with(expected_type: Type,
     return _IsInstanceWith(expected_type, value_assertion, description)
 
 
-def is_instance_with_many(expected_type: Type,
-                          value_assertions: List[ValueAssertion[T]],
-                          description: str = '') -> ValueAssertion[Any]:
+def is_instance_with__many(expected_type: Type,
+                           value_assertions: List[ValueAssertion[T]],
+                           description: str = '') -> ValueAssertion[Any]:
     return _IsInstanceWith(expected_type,
                            and_(value_assertions),
                            description)
@@ -523,6 +523,10 @@ def is_not_none_and_instance_with(expected_type: Type[T],
 def is_none_or_instance_with(expected_type: Type[T],
                              value_assertion: ValueAssertion[T]) -> ValueAssertion[Any]:
     return _IsNoneOrInstanceWith(expected_type, value_assertion)
+
+
+def is_none_or_instance(expected_type: Type[T]) -> ValueAssertion[Any]:
+    return _IsNoneOrInstanceWith(expected_type, anything_goes())
 
 
 def is_none_or_instance_with__many(expected_type: Type[T],

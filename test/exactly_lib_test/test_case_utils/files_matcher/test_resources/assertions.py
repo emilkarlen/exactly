@@ -20,7 +20,7 @@ def matches_files_matcher_resolver(references: ValueAssertion = asrt.is_empty_se
     def get_negation(value: FilesMatcherValue):
         return value.negation
 
-    resolved_value_assertion = asrt.is_instance_with_many(
+    resolved_value_assertion = asrt.is_instance_with__many(
         FilesMatcherValue,
         [
             asrt.sub_component('negation',

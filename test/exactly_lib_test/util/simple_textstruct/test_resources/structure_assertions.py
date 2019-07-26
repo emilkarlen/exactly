@@ -13,8 +13,8 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 def matches_element_properties(
         indented: ValueAssertion[bool] = asrt.anything_goes(),
         color: ValueAssertion[Optional[ForegroundColor]] = asrt.anything_goes()) -> ValueAssertion[ElementProperties]:
-    return asrt.is_instance_with_many(ElementProperties,
-                                      [
+    return asrt.is_instance_with__many(ElementProperties,
+                                       [
                                           asrt.sub_component('indented',
                                                              ElementProperties.indented.fget,
                                                              asrt.is_instance_with(bool, indented)
@@ -46,7 +46,7 @@ def matches_document(major_blocks: ValueAssertion[Sequence[MajorBlock]]) -> Valu
 def matches_major_block(minor_blocks: ValueAssertion[Sequence[MinorBlock]],
                         properties: ValueAssertion[ElementProperties] = matches_element_properties()
                         ) -> ValueAssertion[MajorBlock]:
-    return asrt.is_instance_with_many(MajorBlock, [
+    return asrt.is_instance_with__many(MajorBlock, [
         asrt.sub_component(
             'minor blocks',
             MajorBlock.parts.fget,
@@ -74,7 +74,7 @@ def matches_major_block__w_plain_properties(minor_blocks: ValueAssertion[Sequenc
 def matches_minor_block(line_elements: ValueAssertion[Sequence[LineElement]],
                         properties: ValueAssertion[ElementProperties] = matches_element_properties()
                         ) -> ValueAssertion[MinorBlock]:
-    return asrt.is_instance_with_many(MinorBlock, [
+    return asrt.is_instance_with__many(MinorBlock, [
         asrt.sub_component(
             'line elements',
             MinorBlock.parts.fget,
@@ -102,7 +102,7 @@ def matches_minor_block__w_plain_properties(line_elements: ValueAssertion[Sequen
 def matches_line_element(line_object: ValueAssertion[LineObject],
                          properties: ValueAssertion[ElementProperties] = matches_element_properties()
                          ) -> ValueAssertion[LineElement]:
-    return asrt.is_instance_with_many(LineElement, [
+    return asrt.is_instance_with__many(LineElement, [
         asrt.sub_component(
             'line object',
             LineElement.line_object.fget,
@@ -127,7 +127,7 @@ def matches_line_element__w_plain_properties(line_object: ValueAssertion[LineObj
 def is_pre_formatted_string(string: ValueAssertion[str] = asrt.anything_goes(),
                             string_is_line_ended: ValueAssertion[bool] = asrt.anything_goes()
                             ) -> ValueAssertion[LineObject]:
-    return asrt.is_instance_with_many(
+    return asrt.is_instance_with__many(
         PreFormattedStringLineObject,
         [
             asrt.sub_component('string',
@@ -145,7 +145,7 @@ def is_pre_formatted_string(string: ValueAssertion[str] = asrt.anything_goes(),
 def is_string(string: ValueAssertion[str] = asrt.anything_goes(),
               string_is_line_ended: ValueAssertion[bool] = asrt.anything_goes()
               ) -> ValueAssertion[LineObject]:
-    return asrt.is_instance_with_many(
+    return asrt.is_instance_with__many(
         StringLineObject,
         [
             asrt.sub_component('string',
@@ -170,7 +170,7 @@ def is_string__not_line_ended(string: ValueAssertion[str] = asrt.anything_goes()
 
 def is_string_lines(strings: ValueAssertion[Sequence[str]] = asrt.anything_goes(),
                     ) -> ValueAssertion[LineObject]:
-    return asrt.is_instance_with_many(
+    return asrt.is_instance_with__many(
         StringLinesObject,
         [
             asrt.sub_component('strings',
@@ -186,7 +186,7 @@ def is_string_lines(strings: ValueAssertion[Sequence[str]] = asrt.anything_goes(
 def is_file_printable(file_printable: ValueAssertion[FilePrintable] = asrt.anything_goes(),
                       is_line_ended: ValueAssertion[bool] = asrt.anything_goes(),
                       ) -> ValueAssertion[LineObject]:
-    return asrt.is_instance_with_many(
+    return asrt.is_instance_with__many(
         FilePrintableLineObject,
         [
             asrt.sub_component('file_printable',

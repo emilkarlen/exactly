@@ -26,7 +26,7 @@ def matches_string_matcher_resolver(primitive_value: ValueAssertion[StringMatche
     def resolve_primitive_value(value: StringMatcherValue):
         return value.value_of_any_dependency(tcds)
 
-    resolved_value_assertion = asrt.is_instance_with_many(
+    resolved_value_assertion = asrt.is_instance_with__many(
         StringMatcherValue,
         [
             asrt.sub_component('resolving dependencies',

@@ -8,8 +8,8 @@ from exactly_lib_test.type_system.trace.test_resources import trace_rendering_as
 def matches(value: ValueAssertion[bool] = asrt.is_instance(bool),
             trace: ValueAssertion[NodeRenderer[bool]] =
             asrt_trace_rendering.matches_node_renderer()) -> ValueAssertion[MatchingResult]:
-    return asrt.is_instance_with_many(MatchingResult,
-                                      [
+    return asrt.is_instance_with__many(MatchingResult,
+                                       [
                                           asrt.sub_component('value',
                                                              MatchingResult.value.fget,
                                                              asrt.is_instance_with(bool, value)

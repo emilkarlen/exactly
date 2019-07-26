@@ -16,7 +16,7 @@ def matches_suite_parse_error(
         source_location: ValueAssertion[Optional[SourceLocationPath]] = asrt.anything_goes(),
         document_parser_exception: ValueAssertion[ParseError] = asrt.anything_goes(),
 ) -> ValueAssertion[SuiteParseError]:
-    return asrt.is_instance_with_many(
+    return asrt.is_instance_with__many(
         SuiteParseError,
         [
             asrt.sub_component('suite_file',

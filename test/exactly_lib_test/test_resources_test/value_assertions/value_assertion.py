@@ -1,4 +1,6 @@
 import unittest
+from abc import ABC
+from typing import List, Any
 
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
@@ -15,6 +17,9 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestEquals))
     ret_val.addTest(unittest.makeSuite(TestConstant))
     ret_val.addTest(unittest.makeSuite(TestIsInstance))
+    ret_val.addTest(unittest.makeSuite(TestIsNoneOrInstance))
+    ret_val.addTest(unittest.makeSuite(TestIsNoneOrInstanceWith))
+    ret_val.addTest(unittest.makeSuite(TestIsNoneOrInstanceWithMany))
     ret_val.addTest(unittest.makeSuite(TestNot))
     ret_val.addTest(unittest.makeSuite(TestAnd))
     ret_val.addTest(unittest.makeSuite(TestOr))
@@ -31,6 +36,32 @@ class TestException(Exception):
         super().__init__(msg)
 
 
+class TestBase(unittest.TestCase, ABC):
+    def setUp(self):
+        self.put = test_case_with_failure_exception_set_to_test_exception()
+
+    def _check_false_cases(self, cases: List[NEA[sut.ValueAssertion, Any]]):
+        for case in cases:
+            with self.subTest(case.name,
+                              message_builder='sans message builder'):
+                with self.assertRaises(TestException):
+                    case.expected.apply(self.put, case.actual)
+            with self.subTest(case.name,
+                              message_builder='with message builder'):
+                with self.assertRaises(TestException):
+                    case.expected.apply(self.put, case.actual, sut.MessageBuilder('head'))
+
+    def _check_true_cases(self, cases: List[NEA[sut.ValueAssertion, Any]]):
+        for case in cases:
+            with self.subTest(case.name,
+                              message_builder='sans message builder'):
+                case.expected.apply(self.put, case.actual)
+            with self.subTest(case.name,
+                              message_builder='with message builder'):
+                case.expected.apply(self.put, case.actual,
+                                    sut.MessageBuilder('head'))
+
+
 class TestIsNone(unittest.TestCase):
     def setUp(self):
         self.put = test_case_with_failure_exception_set_to_test_exception()
@@ -43,6 +74,7 @@ class TestIsNone(unittest.TestCase):
     def test_not_none(self):
         with self.assertRaises(TestException):
             sut.ValueIsNone().apply(self.put, 'not none')
+        with self.assertRaises(TestException):
             sut.ValueIsNone().apply(self.put, 'not none',
                                     sut.MessageBuilder('head'))
 
@@ -121,6 +153,120 @@ class TestIsInstance(unittest.TestCase):
         sut.IsInstance(int).apply(self.put, 1)
         sut.IsInstance(int).apply(self.put, 1,
                                   sut.MessageBuilder('head'))
+
+
+class TestIsNoneOrInstance(TestBase):
+    def test_false(self):
+        cases = [
+            NEA('unexpected type/int',
+                expected=sut.is_none_or_instance(int),
+                actual='not an integer'
+                ),
+            NEA('unexpected type/str',
+                expected=sut.is_none_or_instance(str),
+                actual=['not a string']
+                ),
+        ]
+        self._check_false_cases(cases)
+
+    def test_true(self):
+        cases = [
+            NEA('none',
+                expected=sut.is_none_or_instance(int),
+                actual=None
+                ),
+            NEA('expected type/int',
+                expected=sut.is_none_or_instance(int),
+                actual=1
+                ),
+            NEA('expected type/str',
+                expected=sut.is_none_or_instance(str),
+                actual="a string"
+                ),
+        ]
+        self._check_true_cases(cases)
+
+
+class TestIsNoneOrInstanceWith(TestBase):
+    def test_false(self):
+        cases = [
+            NEA('not none/unexpected type',
+                expected=sut.is_none_or_instance_with(int, sut.equals("1")),
+                actual="1",
+                ),
+            NEA('not none/unexpected custom assertion',
+                expected=sut.is_none_or_instance_with(int, sut.equals(2)),
+                actual=1,
+                ),
+        ]
+        self._check_false_cases(cases)
+
+    def test_true(self):
+        cases = [
+            NEA('none',
+                expected=sut.is_none_or_instance_with(int, sut.equals(1)),
+                actual=None),
+            NEA('not none',
+                expected=sut.is_none_or_instance_with(int, sut.equals(1)),
+                actual=1),
+        ]
+        self._check_true_cases(cases)
+
+
+class TestIsNoneOrInstanceWithMany(TestBase):
+    def test_false(self):
+        cases = [
+            NEA('not none/unexpected type',
+                expected=sut.is_none_or_instance_with__many(int, []),
+                actual="1",
+                ),
+            NEA('not none/unexpected type',
+                expected=sut.is_none_or_instance_with__many(int, []),
+                actual=['not an integer'],
+                ),
+            NEA('not none/single failing custom assertion',
+                expected=sut.is_none_or_instance_with__many(int, [sut.equals(2)]),
+                actual=1,
+                ),
+            NEA('not none/multiple custom assertions, last fails',
+                expected=sut.is_none_or_instance_with__many(int,
+                                                            [sut.equals(1),
+                                                             sut.equals(2)]),
+                actual=1,
+                ),
+            NEA('not none/multiple custom assertions, non-last fails',
+                expected=sut.is_none_or_instance_with__many(int,
+                                                            [sut.equals(1),
+                                                             sut.equals(2),
+                                                             sut.equals(1)]),
+                actual=1,
+                ),
+        ]
+        self._check_false_cases(cases)
+
+    def test_true(self):
+        cases = [
+            NEA('none/no custom assertions',
+                expected=sut.is_none_or_instance_with__many(int,
+                                                            []),
+                actual=None),
+            NEA('none/failing custom assertions',
+                expected=sut.is_none_or_instance_with__many(int,
+                                                            [sut.equals(1)]),
+                actual=None),
+            NEA('not none/no custom assertions',
+                expected=sut.is_none_or_instance_with__many(int, []),
+                actual=1),
+            NEA('not none/single successful custom assertions',
+                expected=sut.is_none_or_instance_with__many(int, [sut.equals(1)]),
+                actual=1),
+            NEA('not none/multiple successful custom assertions',
+                expected=sut.is_none_or_instance_with__many(int, [sut.equals(1),
+                                                                  sut.is_instance(int),
+                                                                  sut.equals(1)]),
+                actual=1),
+        ]
+        self._check_true_cases(cases)
 
 
 class TestIs(unittest.TestCase):

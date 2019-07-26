@@ -65,8 +65,8 @@ def matches_instruction_with_parse_source_info(
         section_name: ValueAssertion[str] = asrt.anything_goes(),
         current_source_file: ValueAssertion[FileLocationInfo] = asrt.anything_goes(),
 ) -> ValueAssertion[model.Instruction]:
-    return asrt.is_instance_with_many(InstructionInSectionWithParseSourceInfo,
-                                      [
+    return asrt.is_instance_with__many(InstructionInSectionWithParseSourceInfo,
+                                       [
                                           asrt.sub_component('section_name',
                                                              InstructionInSectionWithParseSourceInfo.section_name.fget,
                                                              section_name),

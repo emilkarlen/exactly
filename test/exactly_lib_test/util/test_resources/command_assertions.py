@@ -13,8 +13,8 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 def equals_executable_file_command_driver(expected: CommandDriverForExecutableFile
                                           ) -> ValueAssertion[CommandDriver]:
-    return asrt.is_instance_with_many(CommandDriverForExecutableFile,
-                                      [
+    return asrt.is_instance_with__many(CommandDriverForExecutableFile,
+                                       [
                                           asrt.sub_component('executable_file',
                                                              CommandDriverForExecutableFile.executable_file.fget,
                                                              asrt.equals(expected.executable_file)
@@ -28,8 +28,8 @@ def equals_executable_file_command_driver(expected: CommandDriverForExecutableFi
 
 def equals_system_program_command_driver(expected: CommandDriverForSystemProgram
                                          ) -> ValueAssertion[CommandDriver]:
-    return asrt.is_instance_with_many(CommandDriverForSystemProgram,
-                                      [
+    return asrt.is_instance_with__many(CommandDriverForSystemProgram,
+                                       [
                                           asrt.sub_component('executable_file',
                                                              CommandDriverForSystemProgram.program.fget,
                                                              asrt.equals(expected.program)
@@ -42,8 +42,8 @@ def equals_system_program_command_driver(expected: CommandDriverForSystemProgram
 
 
 def equals_shell_command_driver(expected: CommandDriverForShell) -> ValueAssertion[CommandDriver]:
-    return asrt.is_instance_with_many(CommandDriverForShell,
-                                      [
+    return asrt.is_instance_with__many(CommandDriverForShell,
+                                       [
                                           asrt.sub_component('shell_command_line',
                                                              CommandDriverForShell.shell_command_line.fget,
                                                              asrt.equals(expected.shell_command_line)
@@ -57,7 +57,7 @@ def equals_shell_command_driver(expected: CommandDriverForShell) -> ValueAsserti
 
 def matches_command(driver: ValueAssertion[CommandDriver],
                     arguments: List[str]) -> ValueAssertion[Command]:
-    return asrt.is_instance_with_many(
+    return asrt.is_instance_with__many(
         Command,
         [
             asrt.sub_component('driver',

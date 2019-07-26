@@ -40,7 +40,7 @@ def matches_file_matcher_value(
     def get_validator(value: FileMatcherValue):
         return value.validator()
 
-    return asrt.is_instance_with_many(
+    return asrt.is_instance_with__many(
         FileMatcherValue,
         [
             asrt.sub_component_many(

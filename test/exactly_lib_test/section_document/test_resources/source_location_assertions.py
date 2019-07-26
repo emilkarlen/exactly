@@ -70,7 +70,7 @@ def matches_file_location_info(
         file_path_rel_referrer: ValueAssertion[Optional[pathlib.Path]] = asrt.anything_goes(),
         file_inclusion_chain: ValueAssertion[Sequence[SourceLocation]] = asrt.anything_goes(),
 ) -> ValueAssertion[FileLocationInfo]:
-    return asrt.is_instance_with_many(
+    return asrt.is_instance_with__many(
         FileLocationInfo,
         [
             asrt.sub_component('abs_path_of_dir_containing_first_file_path',
@@ -89,7 +89,7 @@ def matches_source_location_info(
         abs_path_of_dir_containing_first_file_path: ValueAssertion[pathlib.Path] = asrt.anything_goes(),
         source_location_path: ValueAssertion[SourceLocationPath] = asrt.anything_goes(),
 ) -> ValueAssertion[SourceLocationInfo]:
-    return asrt.is_instance_with_many(
+    return asrt.is_instance_with__many(
         SourceLocationInfo,
         [
             asrt.sub_component('abs_path_of_dir_containing_first_file_path',
