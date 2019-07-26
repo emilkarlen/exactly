@@ -1,10 +1,13 @@
 import unittest
 
-from exactly_lib_test.processing.test_resources_test import result_assertions
+from exactly_lib_test.processing.test_resources_test import result_assertions, test_case_processing_assertions
 
 
 def suite() -> unittest.TestSuite:
-    return result_assertions.suite()
+    return unittest.TestSuite([
+        result_assertions.suite(),
+        test_case_processing_assertions.suite(),
+    ])
 
 
 if __name__ == '__main__':
