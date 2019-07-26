@@ -1,9 +1,7 @@
-from typing import Sequence
+from typing import Sequence, List
 
-from exactly_lib.common.err_msg.msg import minors
-from exactly_lib.common.report_rendering.parts import error_description as err_descr_rend
-from exactly_lib.test_case import error_description
 from exactly_lib.test_case.result.failure_details import FailureDetails
+from exactly_lib.util.simple_textstruct import structure as struct
 from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 
@@ -13,15 +11,32 @@ class FailureDetailsRenderer(SequenceRenderer[MajorBlock]):
         self._failure_details = failure_details
 
     def render(self) -> Sequence[MajorBlock]:
-        failure_details = self._failure_details
-        if failure_details.is_only_failure_message:
-            ed = error_description.of_message(
-                minors.of_file_printable__opt(failure_details.failure_message)
-            )
-        else:
-            ed = error_description.of_exception(
-                failure_details.exception,
-                minors.of_file_printable__opt(failure_details.failure_message)
-            )
+        blocks = self._exception_blocks()
+        blocks += self._message_blocks()
 
-        return err_descr_rend.ErrorDescriptionRenderer(ed).render()
+        return blocks
+
+    def _message_blocks(self) -> List[MajorBlock]:
+        message_renderer = self._failure_details.failure_message__as_text_doc
+        return (
+            []
+            if message_renderer is None
+            else self._failure_details.failure_message__as_text_doc.render()
+        )
+
+    def _exception_blocks(self) -> List[MajorBlock]:
+        if not self._failure_details.has_exception:
+            return []
+
+        ex = self._failure_details.exception
+
+        return [
+            MajorBlock([
+                struct.minor_block_from_lines([
+                    struct.StringLineObject('Exception'),
+                ]),
+                struct.minor_block_from_lines([
+                    struct.PreFormattedStringLineObject(str(ex), False),
+                ]),
+            ])
+        ]

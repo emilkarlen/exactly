@@ -17,7 +17,7 @@ def _capitalize_singular(x: Name) -> str:
 
 def single_pre_formatted(s: str) -> MinorTextRenderer:
     return rend_comb.SingletonSequenceR(
-        blocks.MinorBlockR(line_elements.single_pre_formatted(s))
+        comp_rend.MinorBlockR(line_elements.single_pre_formatted(s))
     )
 
 

@@ -2,7 +2,6 @@ from typing import Sequence
 
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering import component_renderers as comp_rend
-from exactly_lib.util.simple_textstruct.rendering.component_renderers import MinorBlockR
 from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer, LineObjectRenderer
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.rendering.renderer_combinators import SingletonSequenceR
@@ -84,7 +83,7 @@ class MajorBlockOfSingleLineObject(Renderer[MajorBlock]):
     def render(self) -> MajorBlock:
         renderer = comp_rend.MajorBlockR(
             SingletonSequenceR(
-                MinorBlocksOfSingleLineObject(self._line_object_renderer)
+                MinorBlockOfSingleLineObject(self._line_object_renderer)
             )
         )
         return renderer.render()

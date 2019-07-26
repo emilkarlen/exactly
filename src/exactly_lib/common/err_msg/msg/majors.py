@@ -5,8 +5,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer, MinorText
 from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering import blocks, renderer_combinators as comb, \
-    component_renderers as rend
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comp
+    component_renderers as rend, renderer_combinators as rend_comp
 from exactly_lib.util.simple_textstruct.structure import MinorBlock
 
 

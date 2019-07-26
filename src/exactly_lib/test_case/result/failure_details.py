@@ -1,5 +1,7 @@
 from typing import Optional
 
+from exactly_lib.common.err_msg.msg import majors
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.util import file_printables
 from exactly_lib.util.file_printer import FilePrintable
 
@@ -41,6 +43,15 @@ class FailureDetails:
     @property
     def failure_message(self) -> Optional[FilePrintable]:
         return self.__failure_message
+
+    @property
+    def failure_message__as_text_doc(self) -> Optional[TextRenderer]:
+        return (
+            None
+            if self.__failure_message is None
+            else majors.single_file_printable(self.__failure_message)
+
+        )
 
     @property
     def has_exception(self) -> Exception:

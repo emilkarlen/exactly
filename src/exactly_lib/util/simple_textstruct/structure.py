@@ -201,8 +201,10 @@ class Document:
 
 def minor_block_from_lines(lines: Sequence[LineObject],
                            block_properties: ElementProperties = PLAIN_ELEMENT_PROPERTIES) -> MinorBlock:
-    return MinorBlock([
-        LineElement(line_object)
-        for line_object in lines
-    ],
-        block_properties)
+    return MinorBlock(
+        [
+            LineElement(line_object)
+            for line_object in lines
+        ],
+        block_properties
+    )
