@@ -21,7 +21,7 @@ from exactly_lib.util.line_source import Line, single_line_sequence
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instr
 from exactly_lib_test.processing.test_resources.instruction_set import directive_for_inclusion_of_file
-from exactly_lib_test.processing.test_resources.result_assertions import result_matches, \
+from exactly_lib_test.processing.test_resources.result_assertions import result_is_access_error, \
     result_for_executed_status_matches
 from exactly_lib_test.processing.test_resources.test_case_setup import \
     setup_with_null_act_phase_and_null_preprocessing, configuration_with_no_instructions_and_no_preprocessor
@@ -201,13 +201,11 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
                 NameAndValue('inclusion of non-existing file',
                              SourceAndStatus(
                                  failing_source_line=directive_for_inclusion_of_file('non-existing.src'),
-                                 expected_result_statuses=result_matches(Status.ACCESS_ERROR,
-                                                                         AccessErrorType.FILE_ACCESS_ERROR))),
+                                 expected_result_statuses=result_is_access_error(AccessErrorType.FILE_ACCESS_ERROR))),
                 NameAndValue('non-existing instruction',
                              SourceAndStatus(
                                  failing_source_line='non-existing-instruction',
-                                 expected_result_statuses=result_matches(Status.ACCESS_ERROR,
-                                                                         AccessErrorType.SYNTAX_ERROR))),
+                                 expected_result_statuses=result_is_access_error(AccessErrorType.SYNTAX_ERROR))),
             ])
 
     def test_instruction_with_implementation_error(self):
