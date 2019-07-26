@@ -10,7 +10,9 @@ from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
+from exactly_lib_test.processing.test_resources import test_case_processing_assertions as asrt_tc_proc
 from exactly_lib_test.test_case.test_resources import error_info
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -41,8 +43,13 @@ class TestAccessor(unittest.TestCase):
         with self.assertRaises(tcp.AccessorError) as cm:
             accessor.apply(TEST_CASE_REFERENCE)
         # ASSERT #
-        self.assertEqual(cm.exception.error,
-                         tcp.AccessErrorType.FILE_ACCESS_ERROR)
+        expectation = asrt_tc_proc.accessor_error_matches(
+            error=asrt.equals(tcp.AccessErrorType.FILE_ACCESS_ERROR)
+        )
+
+        expectation.apply_with_message(self,
+                                       cm.exception,
+                                       'exception data')
 
     def test_preprocessor_that_raises(self):
         # ARRANGE #
@@ -54,8 +61,13 @@ class TestAccessor(unittest.TestCase):
         with self.assertRaises(tcp.AccessorError) as cm:
             accessor.apply(TEST_CASE_REFERENCE)
         # ASSERT #
-        self.assertEqual(cm.exception.error,
-                         tcp.AccessErrorType.PRE_PROCESS_ERROR)
+        expectation = asrt_tc_proc.accessor_error_matches(
+            error=asrt.equals(tcp.AccessErrorType.PRE_PROCESS_ERROR)
+        )
+
+        expectation.apply_with_message(self,
+                                       cm.exception,
+                                       'exception data')
 
     def test_parser_that_raises(self):
         # ARRANGE #
@@ -67,8 +79,13 @@ class TestAccessor(unittest.TestCase):
         with self.assertRaises(tcp.AccessorError) as cm:
             accessor.apply(TEST_CASE_REFERENCE)
         # ASSERT #
-        self.assertEqual(cm.exception.error,
-                         tcp.AccessErrorType.SYNTAX_ERROR)
+        expectation = asrt_tc_proc.accessor_error_matches(
+            error=asrt.equals(tcp.AccessErrorType.SYNTAX_ERROR)
+        )
+
+        expectation.apply_with_message(self,
+                                       cm.exception,
+                                       'exception data')
 
     def test_parser_that_raises_AccessorError(self):
         # ARRANGE #
@@ -82,8 +99,13 @@ class TestAccessor(unittest.TestCase):
         with self.assertRaises(tcp.AccessorError) as cm:
             accessor.apply(TEST_CASE_REFERENCE)
         # ASSERT #
-        self.assertEqual(cm.exception.error,
-                         error_type)
+        expectation = asrt_tc_proc.accessor_error_matches(
+            error=asrt.equals(error_type)
+        )
+
+        expectation.apply_with_message(self,
+                                       cm.exception,
+                                       'exception data')
 
     def test_that_transformer_is_applied(self):
         # ARRANGE #
