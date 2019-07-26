@@ -1,13 +1,18 @@
 import os
+import pathlib
 from pathlib import Path
 from typing import Sequence, Tuple, List, Optional
 
-from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationPath
 from exactly_lib.util.ansi_terminal_color import FontStyle
 from exactly_lib.util.simple_textstruct import structure
-from exactly_lib.util.simple_textstruct.structure import StringLinesObject, LineElement, MinorBlock, StringLineObject
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as comb, component_renderers as rend, \
+    blocks
+from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer, LineObjectRenderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.structure import StringLinesObject, LineElement, MinorBlock, StringLineObject, \
+    MajorBlock, PreFormattedStringLineObject, LineObject
 
 SOURCE_LINES_ELEMENT_PROPERTIES = structure.ElementProperties(True, None)
 SOURCE_LINES_BLOCK_PROPERTIES = structure.ElementProperties(False, None, FontStyle.BOLD)
@@ -138,3 +143,84 @@ def _files_and_source_path_leading_to_final_source(referrer_location: Path,
         ]
 
     return MinorBlock(lines)
+
+
+def location_blocks_renderer(source_location: Optional[SourceLocationPath],
+                             section_name: Optional[str],
+                             description: Optional[str]) -> Renderer[Sequence[MajorBlock]]:
+    return comb.SingletonSequenceR(
+        rend.MajorBlockR(
+            location_minor_blocks_renderer(source_location,
+                                           section_name,
+                                           description)
+        )
+    )
+
+
+def location_minor_blocks_renderer(source_location: Optional[SourceLocationPath],
+                                   section_name: Optional[str],
+                                   description: Optional[str]) -> Renderer[Sequence[MinorBlock]]:
+    minor_blocks_renderer = _location_path_and_source_blocks(source_location)
+    if section_name is not None:
+        minor_blocks_renderer = blocks.PrependFirstMinorBlockR(
+            _InSectionNameRenderer(section_name),
+            minor_blocks_renderer)
+    return comb.ConcatenationR([
+        minor_blocks_renderer,
+        _OptionalDescriptionRenderer(description),
+    ])
+
+
+def _location_path_and_source_blocks(source_location: Optional[SourceLocationPath]) -> Renderer[Sequence[MinorBlock]]:
+    if source_location is None:
+        return comb.SequenceR([])
+    else:
+        referrer_location = pathlib.Path('.')
+        return SourceLocationPathRenderer(referrer_location,
+                                          source_location)
+
+
+def source_lines_in_section_block_renderer(section_name: str,
+                                           source_lines: Sequence[str],
+                                           ) -> Renderer[Sequence[MinorBlock]]:
+    return comb.SequenceR([
+        rend.MinorBlockR(_InSectionNameRenderer(section_name)),
+        SourceLinesBlockRenderer(source_lines),
+    ])
+
+
+class _InSectionNameRenderer(SequenceRenderer[LineElement]):
+    def __init__(self, section_name: str):
+        self._section_name = section_name
+
+    def render(self) -> Sequence[LineElement]:
+        return [
+            LineElement(_InSectionHeaderRenderer(self._section_name).render())
+        ]
+
+
+class _OptionalDescriptionRenderer(SequenceRenderer[MinorBlock]):
+    def __init__(self, description: Optional[str]):
+        self._description = description
+
+    def render(self) -> Sequence[MinorBlock]:
+        if self._description is None:
+            return []
+        else:
+            return [
+                MinorBlock([
+                    LineElement(PreFormattedStringLineObject(_description_str(self._description), False))
+                ])
+            ]
+
+
+class _InSectionHeaderRenderer(LineObjectRenderer):
+    def __init__(self, section_name: str):
+        self._section_name = section_name
+
+    def render(self) -> LineObject:
+        return StringLineObject('In ' + SectionName(self._section_name).syntax)
+
+
+def _description_str(description: str) -> str:
+    return 'Described as "{}"'.format(description)

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Sequence
 
+from exactly_lib.common.report_rendering.parts import source_location
 from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo, ContextAnd
 from exactly_lib.common import result_reporting
@@ -81,7 +82,7 @@ class _DefinitionPresenter(_Presenter):
         major_block = rend.MajorBlockR(
             comb.ConcatenationR([
                 comb.SingletonSequenceR(self._single_line_info_minor_block()),
-                result_reporting.location_minor_blocks_renderer(
+                source_location.location_minor_blocks_renderer(
                     self._get_source_location_path(self.definition.definition.resolver_container.source_location),
                     self.phase.section_name,
                     None,
@@ -111,7 +112,7 @@ class _ReferencesPresenter(_Presenter):
         source_info = reference.source_info()
         source_location_info = source_info.source_location_info
         if source_location_info is not None:
-            return result_reporting.location_blocks_renderer(
+            return source_location.location_blocks_renderer(
                 source_location_info.source_location_path,
                 reference.phase().section_name,
                 None,
@@ -119,7 +120,7 @@ class _ReferencesPresenter(_Presenter):
         elif source_info.source_lines is not None:
             return comb.SingletonSequenceR(
                 rend.MajorBlockR(
-                    result_reporting.source_lines_in_section_block_renderer(
+                    source_location.source_lines_in_section_block_renderer(
                         reference.phase().section_name,
                         source_info.source_lines,
                     ))

@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.common.report_rendering.parts import source_location
 from exactly_lib.common import result_reporting as reporting
 from exactly_lib.common.err_msg.msg import minors, domain_objects, majors
 from exactly_lib.common.exit_value import ExitValue
@@ -39,9 +40,9 @@ def print_suite_read_error(ex: SuiteReadError, printer: FilePrinter):
 
 def _suite_parse_error_renderer(ex: SuiteParseError) -> Renderer[Sequence[MajorBlock]]:
     blocks_renderers = [
-        reporting.location_blocks_renderer(ex.source_location,
-                                           ex.maybe_section_name,
-                                           None),
+        source_location.location_blocks_renderer(ex.source_location,
+                                                                                           ex.maybe_section_name,
+                                                                                           None),
         _error_message_blocks__parse_error(ex),
     ]
     return comb.ConcatenationR(blocks_renderers)
@@ -49,9 +50,9 @@ def _suite_parse_error_renderer(ex: SuiteParseError) -> Renderer[Sequence[MajorB
 
 def _suite_read_error_renderer(ex: SuiteReadError) -> Renderer[Sequence[MajorBlock]]:
     blocks_renderers = [
-        reporting.location_blocks_renderer(ex.source_location,
-                                           ex.maybe_section_name,
-                                           None),
+        source_location.location_blocks_renderer(ex.source_location,
+                                                                                           ex.maybe_section_name,
+                                                                                           None),
         _error_message_blocks__read_error(ex),
     ]
     return comb.ConcatenationR(blocks_renderers)

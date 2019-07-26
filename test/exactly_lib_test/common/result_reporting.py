@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.common import result_reporting as sut
+from exactly_lib.common.report_rendering.parts import source_location
 from exactly_lib.section_document.source_location import SourceLocationPath, SourceLocation
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.line_source import LineSequence
@@ -44,7 +44,7 @@ class TestOutputLocation(unittest.TestCase):
             with self.subTest(case.name,
                               blocks_renderer='minor blocks'):
                 # ACT #
-                actual_renderer = sut.location_minor_blocks_renderer(
+                actual_renderer = source_location.location_minor_blocks_renderer(
                     None,
                     case.input_value,
                     None)
@@ -56,7 +56,7 @@ class TestOutputLocation(unittest.TestCase):
             with self.subTest(case.name,
                               blocks_renderer='major blocks'):
                 # ACT #
-                actual_renderer = sut.location_blocks_renderer(
+                actual_renderer = source_location.location_blocks_renderer(
                     None,
                     case.input_value,
                     None)
@@ -101,7 +101,7 @@ class TestOutputLocation(unittest.TestCase):
 
         with self.subTest(blocks_rendering='minor blocks'):
             # ACT #
-            actual_renderer = sut.location_minor_blocks_renderer(
+            actual_renderer = source_location.location_minor_blocks_renderer(
                 input_value,
                 section_name,
                 None)
@@ -118,7 +118,7 @@ class TestOutputLocation(unittest.TestCase):
 
             ])
             # ACT #
-            actual_renderer = sut.location_blocks_renderer(
+            actual_renderer = source_location.location_blocks_renderer(
                 input_value,
                 section_name,
                 None)

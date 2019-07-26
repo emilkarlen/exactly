@@ -3,10 +3,9 @@ import unittest
 from pathlib import Path
 from typing import Optional, Sequence, List
 
-import exactly_lib.common.err_msg.definitions
-from exactly_lib.common.err_msg.definitions import Block
-from exactly_lib.common.report_rendering import source_location as sut
-from exactly_lib.common.report_rendering.source_location import SOURCE_LINES_ELEMENT_PROPERTIES, \
+from exactly_lib.common.err_msg.definitions import Block, Blocks
+from exactly_lib.common.report_rendering.parts import source_location as sut
+from exactly_lib.common.report_rendering.parts.source_location import SOURCE_LINES_ELEMENT_PROPERTIES, \
     SOURCE_LINES_BLOCK_PROPERTIES
 from exactly_lib.section_document.source_location import SourceLocationPath, SourceLocation
 from exactly_lib.util.file_printer import FilePrinter
@@ -234,7 +233,7 @@ class Arrangement:
 class TestSourceLocationPath(unittest.TestCase):
     def _check(self,
                arrangement: Arrangement,
-               expected: exactly_lib.common.err_msg.definitions.Blocks,
+               expected: Blocks,
                ):
         actual_blocks = sut.source_location_path(arrangement.referrer_location,
                                                  arrangement.source_location_path)
