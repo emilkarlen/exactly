@@ -4,7 +4,7 @@ from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering import component_renderers as comp_rend
 from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer, LineObjectRenderer
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
-from exactly_lib.util.simple_textstruct.rendering.renderer_combinators import SingletonSequenceR
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, LineElement, ElementProperties, MajorBlock
 
 
@@ -47,7 +47,7 @@ class MinorBlockOfSingleLineObject(Renderer[MinorBlock]):
 
     def render(self) -> MinorBlock:
         renderer = comp_rend.MinorBlockR(
-            SingletonSequenceR(
+            rend_comb.SingletonSequenceR(
                 comp_rend.LineElementR(self._line_object_renderer)
             )
         )
@@ -59,7 +59,7 @@ class MinorBlocksOfSingleLineObject(SequenceRenderer[MinorBlock]):
         self._line_object_renderer = line_object_renderer
 
     def render(self) -> Sequence[MinorBlock]:
-        renderer = SingletonSequenceR(
+        renderer = rend_comb.SingletonSequenceR(
             MinorBlockOfSingleLineObject(self._line_object_renderer)
         )
         return renderer.render()
@@ -70,7 +70,7 @@ class MinorBlocksOfLineElements(SequenceRenderer[MinorBlock]):
         self._line_elements_renderer = line_elements_renderer
 
     def render(self) -> Sequence[MinorBlock]:
-        renderer = SingletonSequenceR(
+        renderer = rend_comb.SingletonSequenceR(
             comp_rend.MinorBlockR(self._line_elements_renderer)
         )
         return renderer.render()
@@ -82,7 +82,7 @@ class MajorBlockOfSingleLineObject(Renderer[MajorBlock]):
 
     def render(self) -> MajorBlock:
         renderer = comp_rend.MajorBlockR(
-            SingletonSequenceR(
+            rend_comb.SingletonSequenceR(
                 MinorBlockOfSingleLineObject(self._line_object_renderer)
             )
         )
@@ -94,7 +94,7 @@ class MajorBlocksOfSingleLineObject(SequenceRenderer[MajorBlock]):
         self._line_object_renderer = line_object_renderer
 
     def render(self) -> Sequence[MajorBlock]:
-        renderer = SingletonSequenceR(
+        renderer = rend_comb.SingletonSequenceR(
             MajorBlockOfSingleLineObject(self._line_object_renderer)
         )
         return renderer.render()
@@ -105,7 +105,7 @@ class MajorBlocksOfLineElements(SequenceRenderer[MajorBlock]):
         self._line_elements_renderer = line_elements_renderer
 
     def render(self) -> Sequence[MajorBlock]:
-        renderer = SingletonSequenceR(
+        renderer = rend_comb.SingletonSequenceR(
             comp_rend.MajorBlockR(MinorBlocksOfLineElements(self._line_elements_renderer))
         )
         return renderer.render()
