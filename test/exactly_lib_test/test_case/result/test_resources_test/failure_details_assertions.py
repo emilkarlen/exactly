@@ -12,6 +12,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestIsFailureMessageMatching),
         unittest.makeSuite(TestIsFailureMessageOf),
         unittest.makeSuite(TestIsException),
+        unittest.makeSuite(TestIsExceptionMatching),
     ])
 
 
@@ -102,7 +103,7 @@ class TestIsException(unittest.TestCase):
         cases = [
             NEA('expected type of exception',
                 expected=
-                sut.is_exception(ValueError),
+                sut.is_exception_of_type(ValueError),
                 actual=
                 FailureDetails.new_exception(ValueError('an exception')),
                 ),
@@ -115,19 +116,60 @@ class TestIsException(unittest.TestCase):
         cases = [
             NEA('not a ' + str(FailureDetails),
                 expected=
-                sut.is_exception(ValueError),
+                sut.is_exception_of_type(ValueError),
                 actual=
                 'not a ' + str(FailureDetails),
                 ),
             NEA('unexpected type of exception',
                 expected=
-                sut.is_exception(ValueError),
+                sut.is_exception_of_type(ValueError),
                 actual=
                 FailureDetails.new_exception(NotImplementedError('an exception')),
                 ),
             NEA('exception is absent',
                 expected=
-                sut.is_exception(ValueError),
+                sut.is_exception_of_type(ValueError),
+                actual=
+                FailureDetails.new_constant_message('just a message'),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assert_that_assertion_fails(case.expected, case.actual)
+
+
+class TestIsExceptionMatching(unittest.TestCase):
+    def test_matches(self):
+        ex = ValueError('an exception')
+        cases = [
+            NEA('expected type of exception',
+                expected=
+                sut.matches_exception(asrt.is_(ex)),
+                actual=
+                FailureDetails.new_exception(ex),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                case.expected.apply_without_message(self, case.actual)
+
+    def test_not_matches(self):
+        cases = [
+            NEA('not a ' + str(FailureDetails),
+                expected=
+                sut.matches_exception(asrt.anything_goes()),
+                actual=
+                'not a ' + str(FailureDetails),
+                ),
+            NEA('unexpected type of exception',
+                expected=
+                sut.matches_exception(asrt.is_instance(ValueError)),
+                actual=
+                FailureDetails.new_exception(NotImplementedError('an exception')),
+                ),
+            NEA('exception is absent',
+                expected=
+                sut.matches_exception(asrt.is_not_none),
                 actual=
                 FailureDetails.new_constant_message('just a message'),
                 ),

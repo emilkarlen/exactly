@@ -74,7 +74,7 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure):
                            exception_class: Type[Exception]) -> ValueAssertion[FailureInfo]:
         return ExpectedFailureForInstructionFailure(phase_step,
                                                     source_line,
-                                                    asrt_failure_details.is_exception(exception_class))
+                                                    asrt_failure_details.is_exception_of_type(exception_class))
 
     def assertions_(self,
                     unittest_case: unittest.TestCase,
@@ -130,7 +130,7 @@ class ExpectedFailureForPhaseFailure(ExpectedFailure):
     def new_with_exception(phase_step: SimplePhaseStep,
                            exception_class) -> ValueAssertion[FailureInfo]:
         return ExpectedFailureForPhaseFailure(phase_step,
-                                              asrt_failure_details.is_exception(exception_class))
+                                              asrt_failure_details.is_exception_of_type(exception_class))
 
     def assertions_(self,
                     unittest_case: unittest.TestCase,

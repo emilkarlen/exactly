@@ -149,7 +149,7 @@ class Test(unittest.TestCase):
             instruction_executor,
             asrt_failure.is_present_with(PartialExeResultStatus.IMPLEMENTATION_ERROR,
                                          equals_single_line_source_location_path(Line(1, '1')),
-                                         asrt_failure_details.is_exception(TestException)),
+                                         asrt_failure_details.is_exception_of_type(TestException)),
             ['instruction header for source line number: 1',
              'instruction executor: The instruction'])
 
