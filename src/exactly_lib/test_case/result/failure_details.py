@@ -54,7 +54,7 @@ class FailureDetails:
         )
 
     @property
-    def has_exception(self) -> Exception:
+    def has_exception(self) -> bool:
         return self.__exception is not None
 
     @property
