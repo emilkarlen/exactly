@@ -18,7 +18,3 @@ class SingleLineObject(SequenceRenderer[LineElement]):
 
 def single_pre_formatted(s: str) -> Renderer[Sequence[LineElement]]:
     return SingleLineObject(line_objects.PreFormattedString(s))
-
-
-def of_pre_formatted(s: str) -> Renderer[LineElement]:
-    return SingleLineObject(line_objects.PreFormattedString(s))
