@@ -32,12 +32,33 @@ class _ExpectedFailureDetails(ValueAssertionBase[FailureDetails]):
                  exception_class_or_none: Optional[type]):
         self._error_message_or_none = error_message_or_none
         self._exception_class_or_none = exception_class_or_none
+        if self.error_message_or_none is None and self.exception_class_or_none is None:
+            raise ValueError('At least one assertion must be given')
 
     def _apply(self,
                put: unittest.TestCase,
-               value: FailureDetails,
+               value: Optional[FailureDetails],
                message_builder: MessageBuilder):
-        self.assertions(put, value, message_builder.apply(''))
+        put.assertIsNotNone(value,
+                            message_builder.apply('must not be none'))
+        put.assertIsInstance(value,
+                             FailureDetails,
+                             message_builder.apply('type of object'))
+
+        if self.error_message_or_none is not None:
+            err_msg = message_builder.for_sub_component('failure message')
+            put.assertIsNotNone(value.failure_message,
+                                err_msg)
+            assertion = asrt_file_printable.matches(self.error_message_or_none)
+            assertion.apply(put, value.failure_message, err_msg)
+
+        if self.exception_class_or_none is None:
+            put.assertIsNone(value.exception,
+                             message_builder.for_sub_component('exception'))
+        else:
+            put.assertIsInstance(value.exception,
+                                 self.exception_class_or_none,
+                                 message_builder.for_sub_component('exception'))
 
     @property
     def error_message_or_none(self) -> Optional[ValueAssertion[str]]:
@@ -46,30 +67,6 @@ class _ExpectedFailureDetails(ValueAssertionBase[FailureDetails]):
     @property
     def exception_class_or_none(self):
         return self._exception_class_or_none
-
-    def assertions(self,
-                   put: unittest.TestCase,
-                   actual: FailureDetails,
-                   message_header: str = None):
-        message_builder = asrt.new_message_builder(message_header)
-        if self.error_message_or_none is None and self.exception_class_or_none is None:
-            put.assertIsNone(actual,
-                             message_header)
-        else:
-            if self.error_message_or_none is not None:
-                err_msg = message_builder.for_sub_component('failure message')
-                put.assertIsNotNone(actual.failure_message,
-                                    err_msg)
-                assertion = asrt_file_printable.matches(self.error_message_or_none)
-                assertion.apply(put, actual.failure_message, err_msg)
-
-            if self.exception_class_or_none is None:
-                put.assertIsNone(actual.exception,
-                                 message_builder.for_sub_component('exception'))
-            else:
-                put.assertIsInstance(actual.exception,
-                                     self.exception_class_or_none,
-                                     message_builder.for_sub_component('exception'))
 
 
 class _EqualsFailureDetails(ValueAssertionBase[FailureDetails]):
