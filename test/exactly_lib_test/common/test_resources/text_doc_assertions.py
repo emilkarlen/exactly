@@ -1,8 +1,9 @@
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer, \
-    structure_assertions as asrt_struct
+from exactly_lib_test.util.simple_textstruct.test_resources import render_to_str
+from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
+from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct
 
 
 def is_single_pre_formatted_text(text: ValueAssertion[str]) -> ValueAssertion[TextRenderer]:
@@ -22,4 +23,11 @@ def is_single_pre_formatted_text(text: ValueAssertion[str]) -> ValueAssertion[Te
                 ])
             )
         ])
+    )
+
+
+def rendered_text_matches(text: ValueAssertion[str]) -> ValueAssertion[TextRenderer]:
+    return asrt_renderer.is_renderer_of_major_blocks(
+        asrt.on_transformed(render_to_str.print_major_blocks,
+                            text)
     )

@@ -48,8 +48,12 @@ def print_line_elements(line_element: Sequence[LineElement]) -> str:
 
 
 def print_minor_blocks(blocks: Sequence[MinorBlock]) -> str:
-    block = MajorBlock(blocks, NO_INDENT_NO_COLOR_PROPERTIES)
-    printable = PrintablesFactory(LAYOUT).major_block(block)
+    printable = PrintablesFactory(LAYOUT).minor_blocks(blocks)
+    return print_to_str(printable)
+
+
+def print_major_blocks(blocks: Sequence[MajorBlock]) -> str:
+    printable = PrintablesFactory(LAYOUT).major_blocks(blocks)
     return print_to_str(printable)
 
 
