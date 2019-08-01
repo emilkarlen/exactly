@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Optional
 
 from exactly_lib.cli.main_program import TestSuiteDefinition
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.definitions.test_suite.section_names import CONFIGURATION
@@ -17,7 +18,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
-from exactly_lib.util import file_printables
+from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
 from exactly_lib_test.execution.test_resources.instruction_test_resources import assert_phase_instruction_that
@@ -200,11 +201,13 @@ class AssertPhaseInstructionThatPassIffStdoutEqualsString(AssertPhaseInstruction
         if actual_contents == self.expected:
             return pfh.new_pfh_pass()
         else:
-            return pfh.new_pfh_fail(
-                file_printables.of_format_string_args(
-                    'Expected: {}\nActual  : {}',
-                    self.expected, actual_contents,
-                ))
+            return pfh.new_pfh_fail__td(
+                text_docs.single_pre_formatted_line_object(
+                    strings.FormatPositional('Expected: {}\nActual  : {}',
+                                             self.expected, actual_contents,
+                                             )
+                )
+            )
 
 
 def preprocessor_that_gives_constant(s: str) -> Preprocessor:

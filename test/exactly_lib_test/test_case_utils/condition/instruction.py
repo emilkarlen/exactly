@@ -188,7 +188,7 @@ class TestMain(unittest.TestCase):
             ),
             (
                 'expectation type is positive: fail WHEN comparison does not succeeds',
-                asrt_pfh.is_fail(ASSERT_ERROR_MESSAGE_IS_A_STRING),
+                asrt_pfh.is_fail__with_arbitrary_message(),
                 ExpectationType.POSITIVE,
                 1,
                 comparators.LT,
@@ -196,7 +196,7 @@ class TestMain(unittest.TestCase):
             ),
             (
                 'expectation type is negative: fail WHEN comparison succeeds',
-                asrt_pfh.is_fail(ASSERT_ERROR_MESSAGE_IS_A_STRING),
+                asrt_pfh.is_fail__with_arbitrary_message(),
                 ExpectationType.NEGATIVE,
                 1,
                 comparators.LT,
@@ -231,9 +231,6 @@ class TestMain(unittest.TestCase):
                 # ASSERT #
 
                 result_assertion.apply_without_message(self, actual)
-
-
-ASSERT_ERROR_MESSAGE_IS_A_STRING = asrt.is_instance(str)
 
 
 def cmp_setup(l_op: OperandResolver,

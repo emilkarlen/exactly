@@ -22,7 +22,7 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
         return sut.setup('instruction name')
 
     def expectation_for_non_zero_exitcode(self) -> Expectation:
-        return Expectation(main_result=pfh_assertions.is_fail())
+        return Expectation(main_result=pfh_assertions.is_fail__with_arbitrary_message())
 
     def expectation_for_zero_exitcode(self) -> Expectation:
         return Expectation()

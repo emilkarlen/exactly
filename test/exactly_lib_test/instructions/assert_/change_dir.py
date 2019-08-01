@@ -26,7 +26,7 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
                            symbol_usages=symbol_usages)
 
     def expect_target_is_not_a_directory(self):
-        return Expectation(main_result=pfh_assertions.is_hard_error())
+        return Expectation(main_result=pfh_assertions.is_hard_error__with_arbitrary_message())
 
 
 if __name__ == '__main__':

@@ -174,7 +174,7 @@ class TestMiscCases(TestCaseBase):
                 utils.single_line_source(),
                 sut.ArrangementPostAct(),
                 Expectation(
-                    main_result=pfh_assertions.is_fail()),
+                    main_result=pfh_assertions.is_fail__with_arbitrary_message()),
             )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):

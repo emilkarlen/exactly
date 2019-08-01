@@ -24,4 +24,4 @@ def return_success_or_hard_error(callable_block, *args, **kwargs) -> sh.SuccessO
         callable_block(*args, **kwargs)
         return sh.new_sh_success()
     except DetectedException as ex:
-        return sh.new_sh_hard_error(ex.failure_details.failure_message)
+        return sh.new_sh_hard_error__td(ex.failure_details.failure_message__as_text_doc)

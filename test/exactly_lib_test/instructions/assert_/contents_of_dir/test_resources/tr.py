@@ -144,7 +144,7 @@ class TestCommonFailureConditionsBase(TestWithAssertionVariantBase):
 
         self._checker.check_rel_opt_variants_with_same_result_for_every_expectation_type(
             instruction_argument_constructor,
-            asrt_pfh.is_fail(),
+            asrt_pfh.is_fail__with_arbitrary_message(),
             following_symbols_setup=self.assertion_variant)
 
     def test_fail_WHEN_file_does_exist_but_is_not_a_directory(self):
@@ -157,7 +157,7 @@ class TestCommonFailureConditionsBase(TestWithAssertionVariantBase):
 
         self._checker.check_rel_opt_variants_with_same_result_for_every_expectation_type(
             instruction_argument_constructor,
-            asrt_pfh.is_fail(),
+            asrt_pfh.is_fail__with_arbitrary_message(),
             contents_of_relativity_option_root=DirContents([empty_file(name_of_regular_file)]),
             following_symbols_setup=self.assertion_variant)
 
@@ -173,7 +173,7 @@ class TestCommonFailureConditionsBase(TestWithAssertionVariantBase):
 
         self._checker.check_rel_opt_variants_with_same_result_for_every_expectation_type(
             instruction_argument_constructor,
-            asrt_pfh.is_fail(),
+            asrt_pfh.is_fail__with_arbitrary_message(),
             contents_of_relativity_option_root=contents_of_relativity_option_root,
             following_symbols_setup=self.assertion_variant)
 

@@ -17,7 +17,7 @@ class FormatMap(StringConstructor):
 
 
 class FormatPositional(StringConstructor):
-    def __init__(self, format_str: str, args: tuple):
+    def __init__(self, format_str: str, *args):
         self._format_str = format_str
         self._args = args
 

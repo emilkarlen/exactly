@@ -21,7 +21,7 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
 
     def expect_failure_to_create_dir(self,
                                      symbol_usages: ValueAssertion = asrt.is_empty_sequence):
-        return Expectation(main_result=asrt_pfh.is_hard_error(),
+        return Expectation(main_result=asrt_pfh.is_hard_error__with_arbitrary_message(),
                            symbol_usages=symbol_usages)
 
 

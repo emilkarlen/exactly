@@ -76,7 +76,7 @@ class ActionToCheckExecutor:
                 return None
             else:
                 return failure_con(PartialExeResultStatus.HARD_ERROR,
-                                   FailureDetails.new_message(res.failure_message))
+                                   FailureDetails.new_message__td(res.failure_message__as_td))
 
         return action
 

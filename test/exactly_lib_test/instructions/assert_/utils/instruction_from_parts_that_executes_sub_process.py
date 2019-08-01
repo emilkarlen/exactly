@@ -30,7 +30,7 @@ class ConfigurationForTheAssertPhase(AssertConfigurationBase, test_impl.Configur
         return instruction_from_parts.Parser(parts_parser)
 
     def expectation_for_non_zero_exitcode(self) -> Expectation:
-        return Expectation(main_result=pfh_assertions.is_fail())
+        return Expectation(main_result=pfh_assertions.is_fail__with_arbitrary_message())
 
     def expectation_for_zero_exitcode(self) -> Expectation:
         return Expectation(main_result=pfh_assertions.is_pass())
@@ -40,7 +40,7 @@ class ConfigurationForTheAssertPhase(AssertConfigurationBase, test_impl.Configur
         return Expectation(validation_post_sds=svh_assertions.is_validation_error(assertion_on_error_message))
 
     def expect_hard_error_in_main(self) -> Expectation:
-        return Expectation(main_result=pfh_assertions.is_hard_error())
+        return Expectation(main_result=pfh_assertions.is_hard_error__with_arbitrary_message())
 
 
 if __name__ == '__main__':

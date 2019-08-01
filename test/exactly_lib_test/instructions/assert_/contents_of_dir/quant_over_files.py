@@ -238,7 +238,7 @@ class TestHardErrorWhenAFileThatIsNotARegularFileIsTested(unittest.TestCase):
                                 ),
                                 expectation=
                                 Expectation(
-                                    main_result=asrt_pfh.is_hard_error()
+                                    main_result=asrt_pfh.is_hard_error__with_arbitrary_message()
                                 )
                             )
 

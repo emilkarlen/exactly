@@ -140,10 +140,10 @@ def expectation_type_config__non_is_success(expectation_type_of_test_case: Expec
 _MAIN_RESULT_ASSERTION_FOR_PFH = {
     ExpectationType.POSITIVE: {
         PassOrFail.PASS: asrt_pfh.is_pass(),
-        PassOrFail.FAIL: asrt_pfh.is_fail(),
+        PassOrFail.FAIL: asrt_pfh.is_fail__with_arbitrary_message(),
     },
     ExpectationType.NEGATIVE: {
-        PassOrFail.PASS: asrt_pfh.is_fail(),
+        PassOrFail.PASS: asrt_pfh.is_fail__with_arbitrary_message(),
         PassOrFail.FAIL: asrt_pfh.is_pass(),
     },
 }

@@ -119,7 +119,7 @@ class TestArgumentWithSymbolReferences(TestBase):
                                                                 pfh_assertions.is_pass()),
                                                                ('fail',
                                                                 case.actual_value_for_fail,
-                                                                pfh_assertions.is_fail())]:
+                                                                pfh_assertions.is_fail__with_arbitrary_message())]:
                 with self.subTest(name=case.name, sub_name=sub_name):
                     self._run(
                         remaining_source(case.argument,
@@ -212,7 +212,7 @@ def string_symbol_references_of(symbol_name_and_value_list: list) -> list:
 
 
 _IS_PASS = is_pass()
-_IS_FAIL = Expectation(main_result=pfh_assertions.is_fail())
+_IS_FAIL = Expectation(main_result=pfh_assertions.is_fail__with_arbitrary_message())
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

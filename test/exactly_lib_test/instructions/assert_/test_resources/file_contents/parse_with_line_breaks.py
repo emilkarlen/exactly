@@ -72,7 +72,7 @@ class TestLineBreaksWithEmptyActualFile(TestWithConfigurationBase):
                  source_assertion=
                  asrt_source.source_is_at_end,
                  main_result_assertion=
-                 pfh_assertions.is_fail(),
+                 pfh_assertions.is_fail__with_arbitrary_message(),
                  ),
         ]
         for case in cases:
