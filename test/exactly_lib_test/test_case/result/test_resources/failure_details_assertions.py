@@ -6,7 +6,6 @@ from exactly_lib_test.common.test_resources import text_docs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
 
 
 def is_failure_message_of(msg: str) -> ValueAssertion[FailureDetails]:
@@ -55,10 +54,6 @@ class _ExpectedFailureDetails(ValueAssertionBase[FailureDetails]):
             message_comp_builder = message_builder.for_sub_component('failure message')
             put.assertIsNotNone(value.failure_message,
                                 message_comp_builder)
-            assertion = asrt_file_printable.matches(self._error_message_or_none)
-            assertion.apply(put,
-                            value.failure_message,
-                            message_comp_builder.for_sub_component('file-printable'))
 
             text_docs.is_single_pre_formatted_text(self._error_message_or_none).apply(
                 put,
