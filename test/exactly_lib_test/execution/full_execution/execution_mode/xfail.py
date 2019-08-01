@@ -40,7 +40,7 @@ class Test(TestCaseBase):
                             FullExeResultStatus.XFAIL,
                             asrt_result.has_sds(),
                             asrt_result.has_action_to_check_outcome_with_exit_code(11),
-                            ExpectedFailureForInstructionFailure.new_with_message(
+                            ExpectedFailureForInstructionFailure.new_with_message__w_new_line(
                                 phase_step.ASSERT__MAIN,
                                 test_case.the_extra(phase_identifier.ASSERT)[0].source,
                                 'fail message'),
@@ -121,7 +121,7 @@ class Test(TestCaseBase):
                     FullExeResultStatus.HARD_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
-                    ExpectedFailureForInstructionFailure.new_with_message(
+                    ExpectedFailureForInstructionFailure.new_with_message__w_new_line(
                         phase_step.CONFIGURATION__MAIN,
                         test_case.the_extra(phase_identifier.CONFIGURATION)[1].source,
                         'hard error msg'),

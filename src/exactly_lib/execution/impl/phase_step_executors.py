@@ -20,21 +20,23 @@ def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidation
     if res.is_success:
         return None
     elif res.is_validation_error:
-        return PartialInstructionControlledFailureInfo.of_file_printable(
+        return PartialInstructionControlledFailureInfo.of_text_doc(
             PartialControlledFailureEnum.VALIDATION_ERROR,
-            res.failure_message)
+            res.failure_message__td)
     else:
-        return PartialInstructionControlledFailureInfo.of_file_printable(
+        return PartialInstructionControlledFailureInfo.of_text_doc(
             PartialControlledFailureEnum.HARD_ERROR,
-            res.failure_message)
+            res.failure_message__td)
 
 
 def _from_success_or_hard_error(res: sh.SuccessOrHardError) -> PartialInstructionControlledFailureInfo:
-    return None \
-        if res.is_success \
-        else PartialInstructionControlledFailureInfo.of_file_printable(
-        PartialControlledFailureEnum.HARD_ERROR,
-        res.failure_message)
+    return (
+        None
+        if res.is_success
+        else PartialInstructionControlledFailureInfo.of_text_doc(
+            PartialControlledFailureEnum.HARD_ERROR,
+            res.failure_message__as_td)
+    )
 
 
 def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> Optional[
@@ -42,9 +44,9 @@ def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> Optional
     if res.status is pfh.PassOrFailOrHardErrorEnum.PASS:
         return None
     else:
-        return PartialInstructionControlledFailureInfo.of_file_printable(
+        return PartialInstructionControlledFailureInfo.of_text_doc(
             PartialControlledFailureEnum(res.status.value),
-            res.failure_message)
+            res.failure_message__td)
 
 
 class ConfigurationMainExecutor(ControlledInstructionExecutor):

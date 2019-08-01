@@ -53,6 +53,16 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure):
                                                     asrt_failure_details.is_failure_message_of(error_message))
 
     @staticmethod
+    def new_with_message__w_new_line(phase_step: SimplePhaseStep,
+                                     source: line_source.LineSequence,
+                                     error_message: str) -> ValueAssertion[FailureInfo]:
+        return ExpectedFailureForInstructionFailure(
+            phase_step,
+            source,
+            asrt_failure_details.is_failure_message_of(error_message + '\n')
+        )
+
+    @staticmethod
     def new_with_message_assertion(phase_step: SimplePhaseStep,
                                    source_line: line_source.LineSequence,
                                    error_message: ValueAssertion[str]) -> ValueAssertion[FailureInfo]:
