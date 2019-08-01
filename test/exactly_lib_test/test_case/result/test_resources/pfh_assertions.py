@@ -1,5 +1,5 @@
 from exactly_lib.test_case.result import pfh
-from exactly_lib_test.common.test_resources import text_docs
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
@@ -51,7 +51,7 @@ def failure_message_is(assertion_on_error_message: ValueAssertion[str]
     return asrt.sub_component(
         'failure message',
         pfh.PassOrFailOrHardError.failure_message__td.fget,
-        text_docs.is_single_pre_formatted_text(assertion_on_error_message)
+        asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
     )
 
 

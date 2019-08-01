@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.common.report_rendering.text_docs import single_pre_formatted_line_object
 from exactly_lib.test_case.result import sh
-from exactly_lib_test.common.test_resources import text_docs
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.result.test_resources import sh_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
@@ -83,7 +83,7 @@ class TestIsHardErrorAsTd(unittest.TestCase):
                 sh.new_sh_hard_error__str(the_error_message),
                 ),
             NEA('assertion on error message',
-                text_docs.is_single_pre_formatted_text(asrt.equals(the_error_message)),
+                asrt_text_doc.is_single_pre_formatted_text(asrt.equals(the_error_message)),
                 sh.new_sh_hard_error__str(the_error_message),
                 ),
         ]
@@ -103,7 +103,7 @@ class TestIsHardErrorAsTd(unittest.TestCase):
                 sh.new_sh_hard_error__td(the_error_message),
                 ),
             NEA('assertion on error message',
-                text_docs.is_single_pre_formatted_text(asrt.equals(message_str)),
+                asrt_text_doc.is_single_pre_formatted_text(asrt.equals(message_str)),
                 sh.new_sh_hard_error__td(the_error_message),
                 ),
         ]
@@ -122,7 +122,7 @@ class TestIsHardErrorAsTd(unittest.TestCase):
                 sh.new_sh_success(),
                 ),
             NEA('assertion on error message fails',
-                text_docs.is_single_pre_formatted_text(
+                asrt_text_doc.is_single_pre_formatted_text(
                     asrt.equals(the_error_message + ' - part of message not in actual')
                 ),
                 sh.new_sh_hard_error__str(the_error_message),
@@ -144,7 +144,7 @@ class TestIsHardErrorAsTd(unittest.TestCase):
                 sh.new_sh_success(),
                 ),
             NEA('assertion on error message fails',
-                text_docs.is_single_pre_formatted_text(
+                asrt_text_doc.is_single_pre_formatted_text(
                     asrt.equals(message_str + ' - part of message not in actual')
                 ),
                 sh.new_sh_hard_error__td(the_error_message),

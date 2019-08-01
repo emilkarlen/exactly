@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case.result import svh
 from exactly_lib.util import file_printables
-from exactly_lib_test.common.test_resources import text_docs
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -32,7 +32,7 @@ def status_is_not_success(expected_status: svh.SuccessOrValidationErrorOrHardErr
                 asrt.sub_component(
                     'text-doc',
                     svh.SuccessOrValidationErrorOrHardError.failure_message__td.fget,
-                    text_docs.is_single_pre_formatted_text(assertion_on_error_message)
+                    asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
                 ),
             ])
         )
