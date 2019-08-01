@@ -1,4 +1,3 @@
-import io
 import unittest
 from pathlib import Path
 from typing import Optional, Sequence, List
@@ -8,17 +7,14 @@ from exactly_lib.common.report_rendering.parts import source_location as sut
 from exactly_lib.common.report_rendering.parts.source_location import SOURCE_LINES_ELEMENT_PROPERTIES, \
     SOURCE_LINES_BLOCK_PROPERTIES
 from exactly_lib.section_document.source_location import SourceLocationPath, SourceLocation
-from exactly_lib.util.file_printer import FilePrinter
 from exactly_lib.util.line_source import single_line_sequence
-from exactly_lib.util.simple_textstruct.file_printer_output import printables as ps
-from exactly_lib.util.simple_textstruct.file_printer_output.print_on_file_printer import LayoutSettings, BlockSettings, \
-    PrintablesFactory
-from exactly_lib.util.simple_textstruct.file_printer_output.printer import Printer, Printable
-from exactly_lib.util.simple_textstruct.structure import LineElement, MinorBlock, ElementProperties, MajorBlock
+from exactly_lib.util.simple_textstruct.structure import MinorBlock
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct
+from exactly_lib_test.util.simple_textstruct.test_resources.render_to_str import lines_str, blocks_str, LAYOUT, \
+    print_line_element, print_line_elements, print_minor_blocks
 
 
 def suite() -> unittest.TestSuite:
@@ -434,20 +430,6 @@ def expected_source_line_lines(lines: Sequence[str]) -> List[str]:
     ]
 
 
-def lines_str(x: Sequence[str]) -> str:
-    if len(x) == 0:
-        return ''
-    else:
-        return '\n'.join(x) + '\n'
-
-
-def blocks_str(blocks: Sequence[Sequence[str]]) -> str:
-    return MINOR_BLOCKS_SEPARATOR.join([
-        lines_str(block)
-        for block in blocks
-    ])
-
-
 class FilePathCase:
     def __init__(self,
                  referrer_location: Path,
@@ -503,45 +485,3 @@ class SourceLocationPathInput:
 referrer_location={}
 source_location_path={}""".format(self.referrer_location,
                                   self.source_location_path)
-
-
-SINGLE_INDENT = ' '
-MINOR_BLOCKS_SEPARATOR = '\n'
-LAYOUT = LayoutSettings(
-    major_block=BlockSettings(SINGLE_INDENT + SINGLE_INDENT + SINGLE_INDENT,
-                              ps.SequencePrintable([ps.NEW_LINE_PRINTABLE,
-                                                    ps.NEW_LINE_PRINTABLE])
-                              ),
-    minor_block=BlockSettings(SINGLE_INDENT + SINGLE_INDENT,
-                              ps.NEW_LINE_PRINTABLE),
-    line_element_indent=SINGLE_INDENT,
-)
-
-
-def print_line_element(line_element: LineElement) -> str:
-    printable = PrintablesFactory(LAYOUT).line_element(line_element)
-    return print_to_str(printable)
-
-
-def print_line_elements(line_element: Sequence[LineElement]) -> str:
-    block = MinorBlock(line_element, NO_INDENT_NO_COLOR_PROPERTIES)
-    printable = PrintablesFactory(LAYOUT).minor_block(block)
-    return print_to_str(printable)
-
-
-def print_minor_blocks(blocks: Sequence[MinorBlock]) -> str:
-    block = MajorBlock(blocks, NO_INDENT_NO_COLOR_PROPERTIES)
-    printable = PrintablesFactory(LAYOUT).major_block(block)
-    return print_to_str(printable)
-
-
-def print_to_str(printable: Printable) -> str:
-    output_file = io.StringIO()
-    printer = Printer.new(FilePrinter(output_file))
-
-    printable.print_on(printer)
-
-    return output_file.getvalue()
-
-
-NO_INDENT_NO_COLOR_PROPERTIES = ElementProperties(False, None)
