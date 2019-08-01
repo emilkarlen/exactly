@@ -2,6 +2,7 @@ import unittest
 from typing import Optional, Type
 
 from exactly_lib.test_case.result.failure_details import FailureDetails
+from exactly_lib_test.common.test_resources import text_docs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -51,11 +52,19 @@ class _ExpectedFailureDetails(ValueAssertionBase[FailureDetails]):
                              message_builder.apply('type of object'))
 
         if self._error_message_or_none is not None:
-            err_msg = message_builder.for_sub_component('failure message')
+            message_comp_builder = message_builder.for_sub_component('failure message')
             put.assertIsNotNone(value.failure_message,
-                                err_msg)
+                                message_comp_builder)
             assertion = asrt_file_printable.matches(self._error_message_or_none)
-            assertion.apply(put, value.failure_message, err_msg)
+            assertion.apply(put,
+                            value.failure_message,
+                            message_comp_builder.for_sub_component('file-printable'))
+
+            text_docs.is_single_pre_formatted_text(self._error_message_or_none).apply(
+                put,
+                value.failure_message__as_text_doc,
+                message_comp_builder.for_sub_component('text-doc')
+            )
 
         self._exception_or_none.apply(put,
                                       value.exception,

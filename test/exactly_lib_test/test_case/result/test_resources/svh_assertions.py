@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.test_case.result import svh
 from exactly_lib.util import file_printables
+from exactly_lib_test.common.test_resources import text_docs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -20,9 +21,21 @@ def status_is_not_success(expected_status: svh.SuccessOrValidationErrorOrHardErr
                           ) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
     return asrt.And([
         status_is(expected_status),
-        asrt.sub_component('error message',
-                           svh.SuccessOrValidationErrorOrHardError.failure_message.fget,
-                           asrt_file_printable.matches(assertion_on_error_message))
+        asrt.with_sub_component_message(
+            'error message',
+            asrt.and_([
+                asrt.sub_component(
+                    'file-printable',
+                    svh.SuccessOrValidationErrorOrHardError.failure_message.fget,
+                    asrt_file_printable.matches(assertion_on_error_message)
+                ),
+                asrt.sub_component(
+                    'text-doc',
+                    svh.SuccessOrValidationErrorOrHardError.failure_message__td.fget,
+                    text_docs.is_single_pre_formatted_text(assertion_on_error_message)
+                ),
+            ])
+        )
     ])
 
 

@@ -112,8 +112,10 @@ class Test(unittest.TestCase):
         result = execute_element(
             FailingExecutor(
                 NameRecorder().new_function_that_records('s'),
-                PartialInstructionControlledFailureInfo(failure_status_of_executor,
-                                                        file_printables.of_string('error message'))),
+                PartialInstructionControlledFailureInfo.of_file_printable(
+                    failure_status_of_executor,
+                    file_printables.of_string('error message'))
+            ),
             element,
             element.instruction_info)
         # ASSERT #

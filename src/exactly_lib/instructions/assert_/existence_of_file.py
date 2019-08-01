@@ -230,7 +230,7 @@ class _Assertion:
     def apply(self) -> pfh.PassOrFailOrHardError:
         result = self._apply()
         if result.is_error:
-            return pfh.PassOrFailOrHardError(
+            return pfh.new_pfh_non_pass(
                 result.status,
                 self._prepend_path_description(result.failure_message))
         else:

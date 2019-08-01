@@ -1,3 +1,5 @@
+from typing import Optional
+
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.test_case.os_services import OsServices
@@ -18,26 +20,31 @@ def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidation
     if res.is_success:
         return None
     elif res.is_validation_error:
-        return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.VALIDATION_ERROR,
-                                                       res.failure_message)
+        return PartialInstructionControlledFailureInfo.of_file_printable(
+            PartialControlledFailureEnum.VALIDATION_ERROR,
+            res.failure_message)
     else:
-        return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.HARD_ERROR,
-                                                       res.failure_message)
+        return PartialInstructionControlledFailureInfo.of_file_printable(
+            PartialControlledFailureEnum.HARD_ERROR,
+            res.failure_message)
 
 
 def _from_success_or_hard_error(res: sh.SuccessOrHardError) -> PartialInstructionControlledFailureInfo:
     return None \
         if res.is_success \
-        else PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.HARD_ERROR,
-                                                     res.failure_message)
+        else PartialInstructionControlledFailureInfo.of_file_printable(
+        PartialControlledFailureEnum.HARD_ERROR,
+        res.failure_message)
 
 
-def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> PartialInstructionControlledFailureInfo:
+def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> Optional[
+    PartialInstructionControlledFailureInfo]:
     if res.status is pfh.PassOrFailOrHardErrorEnum.PASS:
         return None
     else:
-        return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum(res.status.value),
-                                                       res.failure_message)
+        return PartialInstructionControlledFailureInfo.of_file_printable(
+            PartialControlledFailureEnum(res.status.value),
+            res.failure_message)
 
 
 class ConfigurationMainExecutor(ControlledInstructionExecutor):

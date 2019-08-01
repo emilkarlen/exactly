@@ -1,4 +1,5 @@
 from exactly_lib.test_case.result import pfh
+from exactly_lib_test.common.test_resources import text_docs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
@@ -33,8 +34,18 @@ def is_hard_error(assertion_on_error_message: ValueAssertion[str] = asrt.is_inst
 
 def failure_message_is(assertion_on_error_message: ValueAssertion[str]
                        ) -> ValueAssertion[pfh.PassOrFailOrHardError]:
-    return asrt.sub_component(
+    return asrt.with_sub_component_message(
         'failure message',
-        pfh.PassOrFailOrHardError.failure_message.fget,
-        asrt_file_printable.matches(assertion_on_error_message)
+        asrt.and_([
+            asrt.sub_component(
+                'text-doc',
+                pfh.PassOrFailOrHardError.failure_message__td.fget,
+                text_docs.is_single_pre_formatted_text(assertion_on_error_message)
+            ),
+            asrt.sub_component(
+                'file-printer',
+                pfh.PassOrFailOrHardError.failure_message.fget,
+                asrt_file_printable.matches(assertion_on_error_message)
+            ),
+        ])
     )

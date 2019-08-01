@@ -409,6 +409,12 @@ def with_transformed_message(message_builder_transformer: Callable[[MessageBuild
     return _WithTransformedMessage(message_builder_transformer, value_assertion)
 
 
+def with_sub_component_message(component_name: str,
+                               value_assertion: ValueAssertion[T]) -> ValueAssertion[T]:
+    return _WithTransformedMessage(lambda mb: mb.for_sub_component(component_name),
+                                   value_assertion)
+
+
 def append_to_message(s: str) -> Callable[[MessageBuilder], MessageBuilder]:
     def ret_val(message_builder: MessageBuilder) -> MessageBuilder:
         return message_builder.for_sub_component(s, component_separator='')

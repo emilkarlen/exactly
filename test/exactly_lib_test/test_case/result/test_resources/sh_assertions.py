@@ -1,6 +1,7 @@
 import unittest
 from typing import Any
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.result import sh
 from exactly_lib.util import file_printables
 from exactly_lib.util.file_printer import FilePrintable
@@ -39,6 +40,19 @@ def is_hard_error(assertion_on_error_message: ValueAssertion[FilePrintable] = as
                                        'Status is expected to be hard-error')),
         asrt.sub_component('failure_message',
                            sh.SuccessOrHardError.failure_message.fget,
+                           assertion_on_error_message)
+    ]))
+
+
+def is_hard_error__td(assertion_on_error_message: ValueAssertion[TextRenderer] = asrt_file_printable.matches()
+                  ) -> ValueAssertion[sh.SuccessOrHardError]:
+    return is_sh_and(asrt.And([
+        asrt.sub_component('is_hard_error',
+                           sh.SuccessOrHardError.is_hard_error.fget,
+                           asrt.equals(True,
+                                       'Status is expected to be hard-error')),
+        asrt.sub_component('failure_message',
+                           sh.SuccessOrHardError.failure_message__as_td.fget,
                            assertion_on_error_message)
     ]))
 

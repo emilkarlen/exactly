@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.section_document.model import SectionContentElement, InstructionInfo
 from exactly_lib.section_document.source_location import SourceLocationPath
@@ -8,6 +9,7 @@ from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result import failure_details
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util.file_printer import FilePrintable
+from exactly_lib.common.report_rendering import text_docs
 
 
 class PartialControlledFailureEnum(Enum):
@@ -28,9 +30,26 @@ class PartialInstructionControlledFailureInfo(tuple):
 
     def __new__(cls,
                 status: PartialControlledFailureEnum,
-                error_message: FilePrintable):
+                error_message: FilePrintable,
+                error_message__td: TextRenderer):
         return tuple.__new__(cls, (status,
-                                   error_message))
+                                   error_message,
+                                   error_message__td))
+
+    @staticmethod
+    def of_file_printable(status: PartialControlledFailureEnum,
+                          error_message: FilePrintable) -> 'PartialInstructionControlledFailureInfo':
+        return PartialInstructionControlledFailureInfo(status,
+                                                       error_message,
+                                                       text_docs.single_pre_formatted_line_object__from_fp(error_message),
+                                                       )
+
+    @staticmethod
+    def of_text_doc(status: PartialControlledFailureEnum,
+                    error_message: TextRenderer) -> 'PartialInstructionControlledFailureInfo':
+        return PartialInstructionControlledFailureInfo(status,
+                                                       text_docs.as_file_printable(error_message),
+                                                       error_message)
 
     @property
     def status(self) -> PartialControlledFailureEnum:
@@ -39,6 +58,10 @@ class PartialInstructionControlledFailureInfo(tuple):
     @property
     def error_message(self) -> FilePrintable:
         return self[1]
+
+    @property
+    def error_message__text_doc(self) -> TextRenderer:
+        return self[2]
 
 
 class ControlledInstructionExecutor:
