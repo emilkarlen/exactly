@@ -23,6 +23,7 @@ from exactly_lib.test_case_utils.program.command import command_resolvers
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 from exactly_lib.util.string import lines_content
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
@@ -111,7 +112,7 @@ class TestResultIsValidationErrorWhenPreSdsValidationFails(TestCaseBase):
             source4(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
             execution_setup_parser,
             self.conf.arrangement(),
-            self.conf.expect_failing_validation_pre_sds(asrt.Equals('validation error message')))
+            self.conf.expect_failing_validation_pre_sds(asrt.equals('validation error message')))
 
 
 class TestResultIsValidationErrorWhenPostSetupValidationFails(TestCaseBase):
@@ -250,7 +251,10 @@ class TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessag
             source,
             program_parser,
             self.conf.arrangement(),
-            self.conf.expect_failure_of_main(asrt_str.contains('output on stderr')))
+            self.conf.expect_failure_of_main(asrt_text_doc.rendered_text_matches(
+                asrt_str.contains('output on stderr')
+            ))
+        )
 
 
 class _InstructionLogDirContainsOutFiles(ValueAssertionBase[SandboxDirectoryStructure]):

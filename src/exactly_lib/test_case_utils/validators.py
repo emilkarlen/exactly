@@ -6,7 +6,7 @@ from exactly_lib.test_case.result import svh
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils import svh_exception
 from exactly_lib.util import file_printables
-
+from exactly_lib.common.report_rendering import print
 
 class SvhValidatorViaReturnValues:
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds
@@ -74,13 +74,13 @@ class PreOrPostSdsValidatorFromValidatorViaExceptions(PreOrPostSdsValidator):
         try:
             self._adapted.validate_pre_sds(environment)
         except svh_exception.SvhException as ex:
-            return file_printables.print_to_string(ex.err_msg)
+            return print.print_to_str(ex.err_msg.render())
 
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
         try:
             self._adapted.validate_post_setup(environment)
         except svh_exception.SvhException as ex:
-            return file_printables.print_to_string(ex.err_msg)
+            return print.print_to_str(ex.err_msg.render())
 
 
 class SvhValidatorViaReturnValuesFromValidatorViaExceptions(SvhValidatorViaReturnValues):

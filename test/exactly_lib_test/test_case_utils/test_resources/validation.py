@@ -1,10 +1,12 @@
 from typing import Optional, Sequence
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.result import svh
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
 ValidationResultAssertion = ValueAssertion[Optional[str]]
 
@@ -136,12 +138,12 @@ def failing_validation_cases__svh() -> Sequence[NEA[ValidationExpectationSvh, Va
     err_msg_post_sds = 'validation err msg/post sds'
     return [
         NEA('validation fails/pre sds',
-            pre_sds_validation_fails__svh(asrt.equals(err_msg_pre_sds)),
+            pre_sds_validation_fails__svh(asrt_text_doc.is_single_pre_formatted_text_that_equals(err_msg_pre_sds)),
             ValidationActual.fails_pre_sds(err_msg_pre_sds),
             ),
 
         NEA('validation fails/post sds',
-            post_sds_validation_fails__svh(asrt.equals(err_msg_post_sds)),
+            post_sds_validation_fails__svh(asrt_text_doc.is_single_pre_formatted_text_that_equals(err_msg_post_sds)),
             ValidationActual.fails_post_sds(err_msg_post_sds),
             ),
     ]
@@ -154,7 +156,7 @@ def all_validations_passes__svh() -> ValidationExpectationSvh:
     )
 
 
-def pre_sds_validation_fails__svh(error_message: ValueAssertion[str] = asrt.is_instance(str)
+def pre_sds_validation_fails__svh(error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
                                   ) -> ValidationExpectationSvh:
     return ValidationExpectationSvh(
         pre_sds=asrt_svh.is_validation_error(error_message),
@@ -162,7 +164,7 @@ def pre_sds_validation_fails__svh(error_message: ValueAssertion[str] = asrt.is_i
     )
 
 
-def post_sds_validation_fails__svh(error_message: ValueAssertion[str] = asrt.is_instance(str)
+def post_sds_validation_fails__svh(error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
                                    ) -> ValidationExpectationSvh:
     return ValidationExpectationSvh(
         pre_sds=asrt_svh.is_success(),

@@ -51,6 +51,7 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
 
 def suite() -> unittest.TestSuite:
@@ -216,7 +217,9 @@ class HardErrorInFileMatcherTest(unittest.TestCase):
                 )
             ),
             instruction_check.expectation(
-                main_result=pfh_assertions.is_hard_error(asrt_str.contains(error_message)),
+                main_result=pfh_assertions.is_hard_error(
+                    asrt_text_doc.rendered_text_matches(asrt_str.contains(error_message))
+                ),
                 symbol_usages=asrt.matches_sequence([
                     asrt_file_matcher.is_file_matcher_reference_to__ref(file_matcher_that_raises_hard_error.name)
                 ])

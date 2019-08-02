@@ -1,10 +1,12 @@
 import unittest
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_environ
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.instructions.setup.test_resources import instruction_check as ic
@@ -16,7 +18,6 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
     HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
 
 
 class SetupConfigurationBase(ConfigurationBase):
@@ -38,18 +39,27 @@ class SetupConfigurationBase(ConfigurationBase):
                               symbol_usages=symbol_usages)
 
     def expect_failure_of_main(self,
-                               assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
+                               assertion_on_error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
+                               ):
         return ic.Expectation(
-            main_result=asrt_sh.is_hard_error(asrt_file_printable.matches(assertion_on_error_message))
+            main_result=asrt_sh.is_hard_error(assertion_on_error_message)
         )
 
     def expect_failing_validation_pre_sds(self,
                                           assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
-        return ic.Expectation(pre_validation_result=svh_assertions.is_validation_error())
+        return ic.Expectation(
+            pre_validation_result=svh_assertions.is_validation_error(
+                asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
+            )
+        )
 
     def expect_failing_validation_post_setup(self,
                                              assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
-        return ic.Expectation(post_validation_result=svh_assertions.is_validation_error())
+        return ic.Expectation(
+            post_validation_result=svh_assertions.is_validation_error(
+                asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
+            )
+        )
 
     def arrangement(self,
                     pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),

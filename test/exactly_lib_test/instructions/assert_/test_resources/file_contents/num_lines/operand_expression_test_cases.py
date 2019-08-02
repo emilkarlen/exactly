@@ -141,5 +141,5 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
                     self.configuration.arrangement_for_contents(
                         actual_file_contents),
                     expectation=
-                    Expectation(validation_pre_sds=asrt_svh.is_validation_error(asrt.anything_goes()))
+                    Expectation(validation_pre_sds=asrt_svh.is_validation_error())
                 )

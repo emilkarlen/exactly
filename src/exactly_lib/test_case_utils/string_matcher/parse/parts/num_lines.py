@@ -76,7 +76,7 @@ class NumLinesStringMatcher(StringMatcher):
         try:
             comparison_handler.execute(self._environment)
         except pfh_exception.PfhException as ex:
-            return err_msg_resolvers.file_printable(ex.err_msg)
+            return err_msg_resolvers.text_doc(ex.err_msg)
 
 
 class NumLinesResolver(comparison_structures.OperandResolver[int]):

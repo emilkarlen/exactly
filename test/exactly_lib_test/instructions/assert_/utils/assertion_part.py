@@ -1,6 +1,7 @@
 import unittest
 from typing import Sequence, Any
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.instructions.assert_.utils import assertion_part as sut
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -8,9 +9,9 @@ from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.validation.pre_or_post_validation import ConstantSuccessValidator
-from exactly_lib.test_case_utils.pfh_exception import PfhFailException
+from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util import file_printables
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh, svh_assertions as asrt_svh
@@ -18,7 +19,6 @@ from exactly_lib_test.test_case.test_resources.instruction_environment import fa
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidatorThat
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
 
 
 def suite() -> unittest.TestSuite:
@@ -55,7 +55,9 @@ class TestAssertionPart(unittest.TestCase):
                                                                  1)
         # ASSERT #
         assertion = asrt_pfh.is_fail(
-            asrt.equals(PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE))
+            asrt_text_doc.is_single_pre_formatted_text(
+                asrt.equals(PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE))
+        )
         assertion.apply_without_message(self, actual)
 
 
@@ -104,13 +106,15 @@ class TestSequence(unittest.TestCase):
 
     def test_WHEN_a_failing_assertion_part_SHOULD_stop_execution_and_report_the_failure(self):
         # ARRANGE #
-        assertion_part = sut.SequenceOfCooperativeAssertionParts([SuccessfulPartThatReturnsConstructorArgPlusOne(),
-                                                                  PartThatRaisesFailureExceptionIfArgumentIsEqualToOne(),
-                                                                  SuccessfulPartThatReturnsConstructorArgPlusOne()])
+        assertion_part = sut.SequenceOfCooperativeAssertionParts([
+            SuccessfulPartThatReturnsConstructorArgPlusOne(),
+            PartThatRaisesFailureExceptionIfArgumentIsEqualToOne(),
+            SuccessfulPartThatReturnsConstructorArgPlusOne(),
+        ])
         # ACT & ASSERT #
-        with self.assertRaises(PfhFailException) as cm:
+        with self.assertRaises(pfh_exception.PfhFailException) as cm:
             assertion_part.check(self.environment, self.the_os_services, 'custom env', 0)
-        assertion = asrt_file_printable.equals_string(
+        assertion = asrt_text_doc.is_single_pre_formatted_text_that_equals(
             PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE
         )
         assertion.apply_with_message(
@@ -235,7 +239,11 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         # ACT #
         actual = instruction.main(self.environment, self.the_os_services)
         # ASSERT #
-        assertion = asrt_pfh.is_fail(asrt.equals(PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE))
+        assertion = asrt_pfh.is_fail(
+            asrt_text_doc.is_single_pre_formatted_text(
+                asrt.equals(PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE)
+            )
+        )
         assertion.apply_without_message(self, actual)
 
     def test_return_pfh_pass_WHEN_no_exception_is_raised(self):
@@ -260,7 +268,9 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         actual = instruction.main(self.environment, self.the_os_services)
         # ASSERT #
         assertion = asrt_pfh.is_fail(
-            asrt.equals(PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE))
+            asrt_text_doc.is_single_pre_formatted_text(
+                asrt.equals(PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE))
+        )
         assertion.apply_without_message(self, actual)
 
     def test_WHEN_no_validator_is_given_THEN_validation_SHOULD_succeed(self):
@@ -310,7 +320,9 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         # ACT #
         actual = instruction.validate_pre_sds(self.environment)
         # ASSERT #
-        assertion = asrt_svh.is_validation_error(asrt.equals(the_error_message))
+        assertion = asrt_svh.is_validation_error(
+            asrt_text_doc.is_single_pre_formatted_text_that_equals(the_error_message)
+        )
         assertion.apply_without_message(self, actual)
 
     def test_WHEN_given_validator_fails_post_setup_THEN_validation_SHOULD_fail_post_setup(self):
@@ -328,7 +340,9 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         asrt_svh.is_success().apply_with_message(self, pre_sds_result,
                                                  'pre sds validation should succeed')
 
-        assertion = asrt_svh.is_validation_error(asrt.equals(the_error_message))
+        assertion = asrt_svh.is_validation_error(
+            asrt_text_doc.is_single_pre_formatted_text_that_equals(the_error_message)
+        )
         assertion.apply_with_message(self, post_sds_result,
                                      'post setup validation should fail')
 
@@ -360,7 +374,7 @@ class PartThatRaisesFailureExceptionIfArgumentIsEqualToOne(sut.AssertionPart[int
               custom_environment,
               arg: int):
         if arg == 1:
-            raise PfhFailException(file_printables.of_string(self.ERROR_MESSAGE))
+            raise pfh_exception.PfhFailException(text_docs.single_pre_formatted_line_object(self.ERROR_MESSAGE))
         else:
             return arg + 1
 

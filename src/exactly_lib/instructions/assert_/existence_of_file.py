@@ -25,7 +25,7 @@ from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case.validation import pre_or_post_value_validation
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate
-from exactly_lib.test_case_utils.err_msg.path_description import PathValuePartConstructor
+from exactly_lib.test_case_utils.err_msg2 import path_description
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.file_matcher import resolvers  as fm_resolvers
@@ -36,10 +36,11 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
 from exactly_lib.type_system import error_message
 from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic import hard_error
-from exactly_lib.util import file_printables
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.rendering.renderer_combinators import PrependR
+from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
@@ -230,9 +231,11 @@ class _Assertion:
     def apply(self) -> pfh.PassOrFailOrHardError:
         result = self._apply()
         if result.is_error:
-            return pfh.new_pfh_non_pass(
+            return pfh.new_pfh_non_pass__td(
                 result.status,
-                self._prepend_path_description(result.failure_message))
+                PrependR(self._path_renderer(),
+                         result.failure_message__td)
+            )
         else:
             return result
 
@@ -242,18 +245,14 @@ class _Assertion:
         else:
             return self._assert_with_file_matcher()
 
-    def _prepend_path_description(self, msg: FilePrintable) -> FilePrintable:
-        err_msg_env = ErrorMessageResolvingEnvironment(
-            self.environment.home_and_sds,
-            self.environment.symbols
-        )
-        path_lines = PathValuePartConstructor(self.file_ref_resolver).lines(err_msg_env)
-
-        return file_printables.of_sequence(
-            [
-                file_printables.of_string(_ERROR_MESSAGE_HEADER + '\n'.join(path_lines) + '\n\n'),
-                msg,
-            ]
+    def _path_renderer(self) -> Renderer[MajorBlock]:
+        return path_description.path_value_major_block_renderer(
+            ErrorMessageResolvingEnvironment(
+                self.environment.home_and_sds,
+                self.environment.symbols
+            ),
+            self.file_ref_resolver,
+            _ERROR_MESSAGE_HEADER,
         )
 
     def _assert_without_file_matcher(self) -> pfh.PassOrFailOrHardError:
@@ -323,9 +322,7 @@ class _Assertion:
         return msg_resolver.resolve(env)
 
 
-_ERROR_MESSAGE_HEADER = """\
-Failure for path:
-"""
+_ERROR_MESSAGE_HEADER = 'Failure for path:'
 
 _FILE_EXISTS_BUT_INVALID_PROPERTIES_ERR_MSG_HEADER = """\
 File exists, but:

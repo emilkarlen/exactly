@@ -7,13 +7,12 @@ from exactly_lib.test_case_utils.condition.integer import integer_resolver as su
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.svh_exception import SvhValidationException
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources import instruction_environment
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds, fake_sds
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
 
 
 def suite() -> unittest.TestSuite:
@@ -186,7 +185,7 @@ class TestValidationPreSds(unittest.TestCase):
                     with self.assertRaises(SvhValidationException) as cm:
                         resolver_to_check.validate_pre_sds(the_instruction_environment.path_resolving_environment)
 
-                    asrt_file_printable.matches().apply_without_message(self, cm.exception.err_msg)
+                    asrt_text_doc.is_any_text().apply_without_message(self, cm.exception.err_msg)
 
     def test_validation_SHOULD_fail_WHEN_custom_validator_fails(self):
 
@@ -205,7 +204,8 @@ class TestValidationPreSds(unittest.TestCase):
         with self.assertRaises(SvhValidationException) as cm:
             resolver_to_check.validate_pre_sds(the_instruction_environment.path_resolving_environment)
 
-        err_msg_expectation = asrt_file_printable.matches(asrt.equals(error_message_from_custom_validator))
+        err_msg_expectation = asrt_text_doc.is_single_pre_formatted_text_that_equals(
+            error_message_from_custom_validator)
         err_msg_expectation.apply_without_message(self, cm.exception.err_msg)
 
     def test_validation_SHOULD_succeed_WHEN_value_is_an_integer_and_custom_validator_succeeds(self):

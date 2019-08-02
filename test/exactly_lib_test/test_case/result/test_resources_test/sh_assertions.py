@@ -7,7 +7,6 @@ from exactly_lib_test.test_case.result.test_resources import sh_assertions as su
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
 
 
 def suite() -> unittest.TestSuite:
@@ -38,40 +37,42 @@ class TestIsHardError(unittest.TestCase):
     def test_pass(self):
         the_error_message = 'error message'
         cases = [
-            ('no assertion on error message',
-             sh.new_sh_hard_error__str(the_error_message),
-             asrt_file_printable.matches(asrt.anything_goes()),
-             ),
-            ('assertion on error message',
-             sh.new_sh_hard_error__str(the_error_message),
-             asrt_file_printable.equals_string(the_error_message),
-             ),
+            NEA('no assertion on error message contents',
+                asrt.anything_goes(),
+                sh.new_sh_hard_error__str(the_error_message),
+                ),
+            NEA('assertion on error message',
+                asrt_text_doc.is_single_pre_formatted_text_that_equals(the_error_message),
+                sh.new_sh_hard_error__str(the_error_message),
+                ),
         ]
-        for name, actual, assertion_on_error_message in cases:
-            with self.subTest(name=name):
+        for case in cases:
+            with self.subTest(case.name):
                 # ARRANGE #
-                assertion = sut.is_hard_error(assertion_on_error_message)
+                assertion = sut.is_hard_error(case.expected)
                 # ACT #
-                assertion.apply_without_message(self, actual)
+                assertion.apply_without_message(self, case.actual)
 
     def test_fail(self):
         the_error_message = 'error message'
         cases = [
-            ('is success',
-             sh.new_sh_success(),
-             asrt_file_printable.matches(asrt.anything_goes()),
-             ),
-            ('assertion on error message fails',
-             sh.new_sh_hard_error__str(the_error_message),
-             asrt_file_printable.equals_string(the_error_message + ' - part of message not in actual'),
-             ),
+            NEA('is success',
+                asrt.anything_goes(),
+                sh.new_sh_success(),
+                ),
+            NEA('assertion on error message fails',
+                asrt_text_doc.is_single_pre_formatted_text_that_equals(
+                    the_error_message + ' - part of message not in actual'
+                ),
+                sh.new_sh_hard_error__str(the_error_message),
+                ),
         ]
-        for name, actual, assertion_on_error_message in cases:
-            with self.subTest(name=name):
+        for case in cases:
+            with self.subTest(case.name):
                 # ARRANGE #
-                assertion = sut.is_hard_error(assertion_on_error_message)
+                assertion = sut.is_hard_error(case.expected)
                 # ACT #
-                assert_that_assertion_fails(assertion, actual)
+                assert_that_assertion_fails(assertion, case.actual)
 
 
 class TestIsHardErrorAsTd(unittest.TestCase):
@@ -83,14 +84,14 @@ class TestIsHardErrorAsTd(unittest.TestCase):
                 sh.new_sh_hard_error__str(the_error_message),
                 ),
             NEA('assertion on error message',
-                asrt_text_doc.is_single_pre_formatted_text(asrt.equals(the_error_message)),
+                asrt_text_doc.is_single_pre_formatted_text_that_equals(the_error_message),
                 sh.new_sh_hard_error__str(the_error_message),
                 ),
         ]
         for case in cases:
             with self.subTest(case.name):
                 # ARRANGE #
-                assertion = sut.is_hard_error__td(case.expected)
+                assertion = sut.is_hard_error(case.expected)
                 # ACT #
                 assertion.apply_without_message(self, case.actual)
 
@@ -103,14 +104,14 @@ class TestIsHardErrorAsTd(unittest.TestCase):
                 sh.new_sh_hard_error__td(the_error_message),
                 ),
             NEA('assertion on error message',
-                asrt_text_doc.is_single_pre_formatted_text(asrt.equals(message_str)),
+                asrt_text_doc.is_single_pre_formatted_text_that_equals(message_str),
                 sh.new_sh_hard_error__td(the_error_message),
                 ),
         ]
         for case in cases:
             with self.subTest(case.name):
                 # ARRANGE #
-                assertion = sut.is_hard_error__td(case.expected)
+                assertion = sut.is_hard_error(case.expected)
                 # ACT #
                 assertion.apply_without_message(self, case.actual)
 
@@ -122,8 +123,8 @@ class TestIsHardErrorAsTd(unittest.TestCase):
                 sh.new_sh_success(),
                 ),
             NEA('assertion on error message fails',
-                asrt_text_doc.is_single_pre_formatted_text(
-                    asrt.equals(the_error_message + ' - part of message not in actual')
+                asrt_text_doc.is_single_pre_formatted_text_that_equals(
+                    the_error_message + ' - part of message not in actual'
                 ),
                 sh.new_sh_hard_error__str(the_error_message),
                 ),
@@ -131,7 +132,7 @@ class TestIsHardErrorAsTd(unittest.TestCase):
         for case in cases:
             with self.subTest(case.name):
                 # ARRANGE #
-                assertion = sut.is_hard_error__td(case.expected)
+                assertion = sut.is_hard_error(case.expected)
                 # ACT #
                 assert_that_assertion_fails(assertion, case.actual)
 
@@ -144,8 +145,8 @@ class TestIsHardErrorAsTd(unittest.TestCase):
                 sh.new_sh_success(),
                 ),
             NEA('assertion on error message fails',
-                asrt_text_doc.is_single_pre_formatted_text(
-                    asrt.equals(message_str + ' - part of message not in actual')
+                asrt_text_doc.is_single_pre_formatted_text_that_equals(
+                    message_str + ' - part of message not in actual'
                 ),
                 sh.new_sh_hard_error__td(the_error_message),
                 ),
@@ -153,6 +154,6 @@ class TestIsHardErrorAsTd(unittest.TestCase):
         for case in cases:
             with self.subTest(case.name):
                 # ARRANGE #
-                assertion = sut.is_hard_error__td(case.expected)
+                assertion = sut.is_hard_error(case.expected)
                 # ACT #
                 assert_that_assertion_fails(assertion, case.actual)

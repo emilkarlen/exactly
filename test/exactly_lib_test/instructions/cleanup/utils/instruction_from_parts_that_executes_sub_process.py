@@ -14,6 +14,7 @@ from exactly_lib_test.test_case.result.test_resources import sh_assertions as as
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
 
 def suite() -> unittest.TestSuite:
@@ -42,7 +43,11 @@ class ConfigurationForTheCleanupPhase(CleanupConfigurationBase, test_impl.Config
     def expect_failing_validation_post_setup(
             self,
             assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
-        return Expectation(main_result=asrt_sh.is_hard_error(asrt_file_printable.matches(assertion_on_error_message)))
+        return Expectation(
+            main_result=asrt_sh.is_hard_error(
+                asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
+            )
+        )
 
 
 if __name__ == '__main__':

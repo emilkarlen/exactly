@@ -1,10 +1,24 @@
 from abc import ABC
-from typing import Any, Mapping, Callable, TypeVar, Generic
+from typing import Any, Mapping, Callable, TypeVar, Generic, Sequence
 
 
 class StringConstructor(ABC):
     def __str__(self) -> str:
         pass
+
+
+class Concatenate(StringConstructor):
+    def __init__(self, elements: Sequence[Any]):
+        """
+        :param elements: List of elements that supports __str__
+        """
+        self._elements = elements
+
+    def __str__(self) -> str:
+        return ''.join([
+            str(x)
+            for x in self._elements
+        ])
 
 
 class FormatMap(StringConstructor):

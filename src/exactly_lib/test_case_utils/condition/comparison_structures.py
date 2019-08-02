@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Sequence, TypeVar, Generic, Set, Optional, Callable
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -15,7 +16,6 @@ from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_fro
 from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
     ErrorMessageResolver
-from exactly_lib.util import file_printables
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -210,7 +210,7 @@ class _ComparisonExecutor(Generic[T]):
 
     def _raise_fail_exception(self):
         err_msg = self.failure_reporter.unexpected_value_message()
-        raise pfh_exception.PfhFailException(file_printables.of_string(err_msg))
+        raise pfh_exception.PfhFailException(text_docs.single_pre_formatted_line_object(err_msg))
 
     def _get_err_msg_resolver(self) -> ErrorMessageResolver:
         return self.failure_reporter.err_msg_resolver

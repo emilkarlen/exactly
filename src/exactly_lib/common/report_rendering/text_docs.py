@@ -18,6 +18,15 @@ def single_pre_formatted_line_object(x: Any) -> TextRenderer:
     )
 
 
+def single_line(x: Any) -> TextRenderer:
+    """
+    :param x: __str__ gives the string
+    """
+    return blocks.MajorBlocksOfSingleLineObject(
+        line_objects.StringLineObject(x)
+    )
+
+
 def single_pre_formatted_line_object__from_fp(fp: FilePrintable) -> TextRenderer:
     return single_pre_formatted_line_object(file_printables.print_to_string(fp))
 

@@ -27,6 +27,35 @@ class ConcatenationR(Generic[ELEMENT], SequenceRenderer[ELEMENT]):
         return ret_val
 
 
+class PrependR(Generic[ELEMENT], SequenceRenderer[ELEMENT]):
+    def __init__(self,
+                 first: Renderer[ELEMENT],
+                 following: Renderer[Sequence[ELEMENT]]):
+        self._first = first
+        self._following = following
+
+    def render(self) -> Sequence[ELEMENT]:
+        ret_val = [self._first.render()]
+        ret_val += self._following.render()
+
+        return ret_val
+
+
+class AppendR(Generic[ELEMENT], SequenceRenderer[ELEMENT]):
+    def __init__(self,
+                 first: Renderer[Sequence[ELEMENT]],
+                 last: Renderer[ELEMENT],
+                 ):
+        self._first = first
+        self._last = last
+
+    def render(self) -> Sequence[ELEMENT]:
+        ret_val = list(self._first.render())
+        ret_val.append(self._last.render())
+
+        return ret_val
+
+
 class SequenceR(Generic[ELEMENT], SequenceRenderer[ELEMENT]):
     """
     Renders a sequence.

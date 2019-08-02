@@ -14,6 +14,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.result import pfh, sh
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
@@ -164,13 +165,14 @@ class TestFailureOfValidatePreSdsOfInstructionFromParser(TestCaseBase):
         parser = self.conf.instruction_parser_from_parts_parser(PartsParserThatGives(parts))
         source = remaining_source('ignored')
         # ACT & ASSERT #
-        self.conf.run_test_with_parser(self,
-                                       parser,
-                                       source,
-                                       self.conf.arrangement(),
-                                       self.conf.expect_failing_validation_pre_sds(
-                                           assertion_on_error_message=asrt.equals(the_error_message)
-                                       ))
+        self.conf.run_test_with_parser(
+            self,
+            parser,
+            source,
+            self.conf.arrangement(),
+            self.conf.expect_failing_validation_pre_sds(
+                assertion_on_error_message=asrt.equals(the_error_message)
+            ))
 
 
 class TestFailureOfValidatePostSetupOfInstructionFromParser(TestCaseBase):
@@ -203,13 +205,15 @@ class TestFailureOfMainOfInstructionFromParser(TestCaseBase):
         parser = self.conf.instruction_parser_from_parts_parser(PartsParserThatGives(parts))
         source = remaining_source('ignored')
         # ACT & ASSERT #
-        self.conf.run_test_with_parser(self,
-                                       parser,
-                                       source,
-                                       self.conf.arrangement(),
-                                       self.conf.expect_failure_of_main(
-                                           assertion_on_error_message=asrt.equals(the_error_message)
-                                       ))
+        self.conf.run_test_with_parser(
+            self,
+            parser,
+            source,
+            self.conf.arrangement(),
+            self.conf.expect_failure_of_main(
+                assertion_on_error_message=asrt_text_doc.is_single_pre_formatted_text_that_equals(the_error_message)
+            )
+        )
 
 
 def instruction_parts_that_records_execution_steps(recorder: list) -> instruction_parts.InstructionParts:

@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.test_case.result import pfh
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -108,19 +109,27 @@ class TestFailureMessage(unittest.TestCase):
         expected_err_msg = 'expected error message'
         cases = [
             NEA('fail',
-                sut.failure_message_is(asrt.equals(expected_err_msg)),
+                sut.failure_message_is(
+                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals(expected_err_msg))
+                ),
                 pfh.new_pfh_fail__td(text_docs.single_pre_formatted_line_object(expected_err_msg)),
                 ),
             NEA('fail/const msg',
-                sut.failure_message_is(asrt.equals(expected_err_msg)),
+                sut.failure_message_is(
+                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals(expected_err_msg))
+                ),
                 pfh.new_pfh_fail__str(expected_err_msg),
                 ),
             NEA('hard error',
-                sut.failure_message_is(asrt.equals(expected_err_msg)),
+                sut.failure_message_is(
+                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals(expected_err_msg))
+                ),
                 pfh.new_pfh_hard_error__td(text_docs.single_pre_formatted_line_object(expected_err_msg)),
                 ),
             NEA('hard error/const msg',
-                sut.failure_message_is(asrt.equals(expected_err_msg)),
+                sut.failure_message_is(
+                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals(expected_err_msg))
+                ),
                 pfh.new_pfh_hard_error__str(expected_err_msg),
                 ),
         ]
@@ -135,11 +144,15 @@ class TestFailureMessage(unittest.TestCase):
         actual_err_msg = 'actual error message'
         cases = [
             NEA('fail',
-                sut.failure_message_is(asrt.equals(expected_err_msg)),
+                sut.failure_message_is(
+                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals(expected_err_msg))
+                ),
                 pfh.new_pfh_fail__str(actual_err_msg),
                 ),
             NEA('hard error',
-                sut.failure_message_is(asrt.equals(expected_err_msg)),
+                sut.failure_message_is(
+                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals(expected_err_msg))
+                ),
                 pfh.new_pfh_hard_error__str(actual_err_msg),
                 ),
         ]

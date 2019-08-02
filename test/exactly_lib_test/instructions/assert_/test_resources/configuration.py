@@ -1,11 +1,13 @@
 import unittest
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.util.process_execution.execution_elements import with_environ
 from exactly_lib.util.process_execution.sub_process_execution import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import check, Expectation
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
@@ -43,20 +45,33 @@ class AssertConfigurationBase(ConfigurationBase):
             symbol_usages=symbol_usages)
 
     def expect_failure_of_main(self,
-                               assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
-        return Expectation(main_result=pfh_assertions.is_fail(assertion_on_error_message))
+                               assertion_on_error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
+                               ):
+        return Expectation(
+            main_result=pfh_assertions.is_fail(assertion_on_error_message)
+        )
 
     def expect_hard_error_of_main(self,
                                   assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
-        return Expectation(main_result=pfh_assertions.is_hard_error(assertion_on_error_message))
+        return Expectation(main_result=pfh_assertions.is_hard_error(
+            asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
+        ))
 
     def expect_failing_validation_pre_sds(self,
                                           assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
-        return Expectation(validation_pre_sds=svh_assertions.is_validation_error(assertion_on_error_message))
+        return Expectation(
+            validation_pre_sds=svh_assertions.is_validation_error(
+                asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
+            )
+        )
 
     def expect_failing_validation_post_setup(self,
                                              assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
-        return Expectation(validation_post_sds=svh_assertions.is_validation_error(assertion_on_error_message))
+        return Expectation(
+            validation_post_sds=svh_assertions.is_validation_error(
+                asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
+            )
+        )
 
     def arrangement(self,
                     pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),

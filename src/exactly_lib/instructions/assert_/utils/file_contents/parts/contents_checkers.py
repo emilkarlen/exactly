@@ -1,6 +1,7 @@
 import pathlib
 from typing import Sequence
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileResolver, \
     ComparisonActualFileConstructor
@@ -10,14 +11,13 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
 from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.file_system_element_matcher import \
     FileSystemElementReference, FileSystemElementPropertiesMatcher
-from exactly_lib.test_case_utils.pfh_exception import PfhFailException, PfhHardErrorException
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
-from exactly_lib.util import file_printables
 
 
 class ComparisonActualFile(tuple):
@@ -96,7 +96,7 @@ class FileExistenceAssertionPart(AssertionPart[ComparisonActualFileResolver, Com
         """
         failure_message = actual_file.file_check_failure(environment)
         if failure_message:
-            raise PfhFailException(file_printables.of_string(failure_message))
+            raise pfh_exception.PfhFailException(text_docs.single_pre_formatted_line_object(failure_message))
 
         actual_path_value = actual_file.file_ref_resolver().resolve(environment.symbols)
         return ComparisonActualFile(actual_path_value.value_of_any_dependency(environment.home_and_sds),
@@ -128,6 +128,6 @@ class IsExistingRegularFileAssertionPart(AssertionPart[ComparisonActualFile, Com
         if err_msg_resolver:
             err_msg_env = err_msg_env_from_instr_env(environment)
             err_msg = err_msg_resolver.resolve(err_msg_env)
-            raise PfhHardErrorException(file_printables.of_string(err_msg))
+            raise pfh_exception.PfhHardErrorException((text_docs.single_pre_formatted_line_object(err_msg)))
 
         return actual_file

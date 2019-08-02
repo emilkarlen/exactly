@@ -1,5 +1,7 @@
 from typing import Sequence, Optional, List
 
+from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorInfo
 from exactly_lib.type_system.error_message import PropertyDescription
@@ -53,6 +55,9 @@ class DiffErrorInfo(ErrorInfo):
 
     def error_message_as_printable(self) -> FilePrintable:
         return file_printables.of_string(self.error_message())
+
+    def error_message__as_td(self) -> TextRenderer:
+        return text_docs.single_pre_formatted_line_object(self.error_message())
 
     def error_message(self) -> str:
         lines = []

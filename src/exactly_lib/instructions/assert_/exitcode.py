@@ -5,6 +5,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args, \
     SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.processing import exit_values
@@ -19,8 +20,8 @@ from exactly_lib.test_case_utils.condition.integer.parse_integer_condition impor
     parse_integer_comparison_operator_and_rhs
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
-from exactly_lib.util import file_printables
 from exactly_lib.util.messages import expected_found
+from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 _OPERAND_DESCRIPTION = 'An integer in the interval [0, 255]'
@@ -95,35 +96,41 @@ class ExitCodeResolver(comparison_structures.OperandResolver[int]):
             f = sds.result.exitcode_file.open()
         except IOError:
             rel_path = sds.relative_to_sds_root(sds.result.exitcode_file)
-            err_msg = file_printables.of_format_string(
-                'Cannot read {exit_code} from file {file}',
-                {
-                    'exit_code': _PROPERTY_NAME,
-                    'file': rel_path,
-                }
+            err_msg = text_docs.single_line(
+                strings.FormatMap(
+                    'Cannot read {exit_code} from file {file}',
+                    {
+                        'exit_code': _PROPERTY_NAME,
+                        'file': rel_path,
+                    }
+                )
             )
             raise pfh_exception.PfhHardErrorException(err_msg)
         try:
             contents = f.read()
         except IOError:
             raise pfh_exception.PfhHardErrorException(
-                file_printables.of_sequence([
-                    _FAILED_TO_READ_CONTENTS_FROM__PRINTER,
-                    file_printables.of_to_string(sds.result.exitcode_file),
-                ]))
+                text_docs.single_line(
+                    strings.Concatenate([
+                        _FAILED_TO_READ_CONTENTS_FROM,
+                        sds.result.exitcode_file,
+                    ])
+                ))
         finally:
             f.close()
 
         try:
             return int(contents)
         except ValueError:
-            msg = file_printables.of_format_string(
-                'The contents of the file for {exit_code} ("{file}") is not an integer: "{contents}"',
-                {
-                    'exit_code': _PROPERTY_NAME,
-                    'file': sds.result.exitcode_file,
-                    'contents': contents,
-                })
+            msg = text_docs.single_line(
+                strings.FormatMap(
+                    'The contents of the file for {exit_code} ("{file}") is not an integer: "{contents}"',
+                    {
+                        'exit_code': _PROPERTY_NAME,
+                        'file': sds.result.exitcode_file,
+                        'contents': contents,
+                    })
+            )
             raise pfh_exception.PfhHardErrorException(msg)
 
 
@@ -138,6 +145,4 @@ _MAIN_DESCRIPTION = """\
 {PASS} if, and only if, the {EXIT_CODE} satisfies {INTEGER_COMPARISON}.
 """
 
-_FAILED_TO_READ_CONTENTS_FROM__PRINTER = file_printables.of_string(
-    'Failed to read contents from '
-)
+_FAILED_TO_READ_CONTENTS_FROM = 'Failed to read contents from '

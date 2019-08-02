@@ -9,13 +9,13 @@ from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.validation import pre_or_post_validation as ppv, pre_or_post_value_validation as ppvv
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.test_case_utils.line_matcher.model_construction import model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
-from exactly_lib.test_case_utils.pfh_exception import PfhFailException
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_from_references
@@ -150,8 +150,8 @@ class _StringMatcherBase(StringMatcher):
     def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         try:
             self._check(self._line_matcher, model)
-        except PfhFailException as ex:
-            return err_msg_resolvers.file_printable(ex.err_msg)
+        except pfh_exception.PfhFailException as ex:
+            return err_msg_resolvers.text_doc(ex.err_msg)
 
     def _check(self,
                line_matcher: LineMatcher,
@@ -167,7 +167,7 @@ class _StringMatcherBase(StringMatcher):
                                                      diff_msg.actual_with_single_line_value(
                                                          actual_single_line_value,
                                                          description_lines))
-        raise PfhFailException(failure_info.error_message_as_printable())
+        raise pfh_exception.PfhFailException(failure_info.error_message__as_td())
 
     def _report_fail_with_line(self,
                                checked_file_describer: FilePropertyDescriptorConstructor,
@@ -180,7 +180,7 @@ class _StringMatcherBase(StringMatcher):
                                                      diff_msg.actual_with_single_line_value(
                                                          single_line_actual_value,
                                                          [number__contents[1]]))
-        raise PfhFailException(failure_info.error_message_as_printable())
+        raise pfh_exception.PfhFailException(failure_info.error_message__as_td())
 
     def _diff_failure_info_resolver(self,
                                     checked_file_describer: FilePropertyDescriptorConstructor

@@ -6,6 +6,10 @@ from exactly_lib_test.util.simple_textstruct.test_resources import renderer_asse
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct
 
 
+def is_single_pre_formatted_text_that_equals(text: str) -> ValueAssertion[TextRenderer]:
+    return is_single_pre_formatted_text(asrt.equals(text))
+
+
 def is_single_pre_formatted_text(text: ValueAssertion[str]) -> ValueAssertion[TextRenderer]:
     return asrt_renderer.is_renderer_of_major_blocks(
         asrt.matches_sequence([
@@ -26,8 +30,15 @@ def is_single_pre_formatted_text(text: ValueAssertion[str]) -> ValueAssertion[Te
     )
 
 
+def is_any_text() -> ValueAssertion[TextRenderer]:
+    return _IS_ANY_TEXT
+
+
 def rendered_text_matches(text: ValueAssertion[str]) -> ValueAssertion[TextRenderer]:
     return asrt_renderer.is_renderer_of_major_blocks(
         asrt.on_transformed(render_to_str.print_major_blocks,
                             text)
     )
+
+
+_IS_ANY_TEXT = asrt_renderer.is_renderer_of_major_blocks()

@@ -14,7 +14,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.instructions.setup.test_resources import instruction_check as sut
 from exactly_lib_test.section_document.test_resources.parse_source import source4
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
-from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
+from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh, svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
@@ -193,7 +193,7 @@ class TestMiscCases(TestCaseBase):
                 utils.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                 single_line_source(),
                 sut.Arrangement(),
-                sut.Expectation(pre_validation_result=svh_assertions.is_hard_error())
+                sut.Expectation(pre_validation_result=asrt_svh.is_hard_error())
             )
 
     def test_fail_due_to_unexpected_result_from_main(self):
@@ -202,7 +202,7 @@ class TestMiscCases(TestCaseBase):
                 utils.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                 single_line_source(),
                 sut.Arrangement(),
-                sut.Expectation(main_result=sh_assertions.is_hard_error())
+                sut.Expectation(main_result=asrt_sh.is_hard_error())
             )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):
@@ -219,7 +219,7 @@ class TestMiscCases(TestCaseBase):
                 utils.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                 single_line_source(),
                 sut.Arrangement(),
-                sut.Expectation(post_validation_result=svh_assertions.is_hard_error())
+                sut.Expectation(post_validation_result=asrt_svh.is_hard_error())
             )
 
     def test_fail_due_to_side_effects_check(self):

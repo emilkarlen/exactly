@@ -1,12 +1,12 @@
 import unittest
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.result import svh
-from exactly_lib.util import file_printables
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
+from exactly_lib_test.util.simple_textstruct.test_resources import render_to_str
 
 
 def status_is(expected_status: svh.SuccessOrValidationErrorOrHardErrorEnum) -> ValueAssertion:
@@ -17,30 +17,38 @@ def status_is(expected_status: svh.SuccessOrValidationErrorOrHardErrorEnum) -> V
 
 
 def status_is_not_success(expected_status: svh.SuccessOrValidationErrorOrHardErrorEnum,
-                          assertion_on_error_message: ValueAssertion[str] = asrt.is_instance(str)
+                          error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
                           ) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
-    return asrt.And([
+    return asrt.and_([
         status_is(expected_status),
-        asrt.with_sub_component_message(
-            'error message',
-            asrt.and_([
-                asrt.sub_component(
-                    'file-printable',
-                    svh.SuccessOrValidationErrorOrHardError.failure_message.fget,
-                    asrt_file_printable.matches(assertion_on_error_message)
-                ),
-                asrt.sub_component(
-                    'text-doc',
-                    svh.SuccessOrValidationErrorOrHardError.failure_message__td.fget,
-                    asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
-                ),
-            ])
+        asrt.sub_component(
+            'failure_message',
+            svh.SuccessOrValidationErrorOrHardError.failure_message__td.fget,
+            error_message
         )
     ])
 
 
 def is_success() -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
     return _IsSuccess()
+
+
+def is_hard_error(assertion_on_error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
+                  ) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
+    return status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR,
+                                 assertion_on_error_message)
+
+
+def is_validation_error(assertion_on_error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
+                        ) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
+    return status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                                 assertion_on_error_message)
+
+
+def is_svh_and(assertion: ValueAssertion[svh.SuccessOrValidationErrorOrHardError]
+               ) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
+    return asrt.And([asrt.IsInstance(svh.SuccessOrValidationErrorOrHardError),
+                     assertion])
 
 
 class _IsSuccess(ValueAssertionBase):
@@ -57,31 +65,5 @@ class _IsSuccess(ValueAssertionBase):
                 'Expected: ' + svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS.name,
                 'Actual  : {st}: {msg}'.format(
                     st=value.status.name,
-                    msg=repr(file_printables.print_to_string(value.failure_message)))
+                    msg=repr(render_to_str.print_major_blocks(value.failure_message__td.render())))
             ]))
-
-
-def is_hard_error(assertion_on_error_message: ValueAssertion[str] = asrt.is_instance(str)
-                  ) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
-    return status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR,
-                                 assertion_on_error_message)
-
-
-def is_any_hard_error() -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
-    return is_hard_error(asrt.is_instance(str))
-
-
-def is_validation_error(assertion_on_error_message: ValueAssertion[str] = asrt.is_instance(str)
-                        ) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
-    return status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                                 assertion_on_error_message)
-
-
-def is_any_validation_error() -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
-    return is_validation_error(asrt.is_instance(str))
-
-
-def is_svh_and(assertion: ValueAssertion[svh.SuccessOrValidationErrorOrHardError]
-               ) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
-    return asrt.And([asrt.IsInstance(svh.SuccessOrValidationErrorOrHardError),
-                     assertion])

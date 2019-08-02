@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
+from exactly_lib.common.report_rendering import print
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util import file_printables
@@ -48,6 +50,14 @@ class OfFilePrintable(ErrorMessageResolver):
 
     def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
         return file_printables.print_to_string(self._printable)
+
+
+class OfTextDoc(ErrorMessageResolver):
+    def __init__(self, message: TextRenderer):
+        self._message = message
+
+    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+        return print.print_to_str(self._message.render())
 
 
 class PropertyDescription:

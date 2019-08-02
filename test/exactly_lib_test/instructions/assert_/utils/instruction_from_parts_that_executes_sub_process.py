@@ -13,6 +13,7 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
 
 def suite() -> unittest.TestSuite:
@@ -37,7 +38,11 @@ class ConfigurationForTheAssertPhase(AssertConfigurationBase, test_impl.Configur
 
     def expect_failing_validation_post_setup(self,
                                              assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
-        return Expectation(validation_post_sds=svh_assertions.is_validation_error(assertion_on_error_message))
+        return Expectation(
+            validation_post_sds=svh_assertions.is_validation_error(
+                asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
+            )
+        )
 
     def expect_hard_error_in_main(self) -> Expectation:
         return Expectation(main_result=pfh_assertions.is_hard_error__with_arbitrary_message())

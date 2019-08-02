@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import new_default, OsServices
@@ -16,6 +17,7 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
     HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
 
 class ConfigurationBase:
@@ -73,19 +75,23 @@ class ConfigurationBase:
         raise NotImplementedError()
 
     def expect_failure_of_main(self,
-                               assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
+                               assertion_on_error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
+                               ):
         """
         Expectation that the result should be HARD_ERROR for non-assertions and FAIL for assertions.
         """
         raise NotImplementedError()
 
     def expect_hard_error_of_main(self,
-                                  assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
+                                  assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()
+                                  ):
         """
         Expectation that the result should be HARD_ERROR,
         both for assert- and non-assert phase instructions.
         """
-        return self.expect_failure_of_main(assertion_on_error_message)
+        return self.expect_failure_of_main(
+            asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
+        )
 
     def expect_failing_validation_pre_sds(self,
                                           assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):

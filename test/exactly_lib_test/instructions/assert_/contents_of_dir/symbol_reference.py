@@ -5,6 +5,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.test_case_utils.files_matcher.impl.emptiness import emptiness_matcher
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import instruction_arguments as args
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import FilesMatcherArgumentsSetup
@@ -95,7 +96,9 @@ class TestReferencedMatcherShouldBeValidated(tr.TestCaseBaseForParser):
             NEA('pre sds validation',
                 expected=
                 Expectation(
-                    validation_pre_sds=asrt_svh.is_validation_error(asrt.equals(err_msg_from_validator)),
+                    validation_pre_sds=asrt_svh.is_validation_error(
+                        asrt_text_doc.is_single_pre_formatted_text_that_equals(err_msg_from_validator)
+                    ),
                     symbol_usages=expected_symbol_usages,
                 ),
                 actual=
@@ -104,7 +107,9 @@ class TestReferencedMatcherShouldBeValidated(tr.TestCaseBaseForParser):
             NEA('post sds validation',
                 expected=
                 Expectation(
-                    validation_post_sds=asrt_svh.is_validation_error(asrt.equals(err_msg_from_validator)),
+                    validation_post_sds=asrt_svh.is_validation_error(
+                        asrt_text_doc.is_single_pre_formatted_text_that_equals(err_msg_from_validator)
+                    ),
                     symbol_usages=expected_symbol_usages,
                 ),
                 actual=

@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart, \
     FileToCheck
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
@@ -7,8 +8,7 @@ from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_utils.pfh_exception import PfhFailException
-from exactly_lib.util import file_printables
+from exactly_lib.test_case_utils import pfh_exception
 
 
 class StringMatcherAssertionPart(FileContentsAssertionPart):
@@ -29,7 +29,9 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
         matcher = value.value_of_any_dependency(environment.home_and_sds)
         mb_error_message = matcher.matches(file_to_check)
         if mb_error_message is not None:
-            raise PfhFailException(
-                file_printables.of_string(mb_error_message.resolve(err_msg_env_from_instr_env(environment)))
+            raise pfh_exception.PfhFailException(
+                text_docs.single_pre_formatted_line_object(
+                    mb_error_message.resolve(err_msg_env_from_instr_env(environment))
+                )
             )
         return file_to_check

@@ -1,6 +1,8 @@
 from typing import Sequence
 
 from exactly_lib.util.simple_textstruct.rendering import line_objects
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, \
+    component_renderers as comp_rend
 from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import LineElement, LineObject
@@ -18,3 +20,10 @@ class SingleLineObject(SequenceRenderer[LineElement]):
 
 def single_pre_formatted(s: str) -> Renderer[Sequence[LineElement]]:
     return SingleLineObject(line_objects.PreFormattedString(s))
+
+
+def plain_sequence(line_renderers: Sequence[Renderer[LineObject]]) -> SequenceRenderer[LineElement]:
+    return rend_comb.SequenceR([
+        comp_rend.LineElementR(line_renderer)
+        for line_renderer in line_renderers
+    ])

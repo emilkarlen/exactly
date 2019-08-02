@@ -1,15 +1,16 @@
 import unittest
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.test_case import os_services
+from exactly_lib.test_case_utils import pfh_exception
+from exactly_lib.test_case_utils import svh_exception
 from exactly_lib.test_case_utils.condition import comparators, instruction as sut
 from exactly_lib.test_case_utils.condition.comparison_structures import ComparisonHandler, OperandResolver
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
-from exactly_lib.test_case_utils.pfh_exception import PfhHardErrorException
-from exactly_lib.test_case_utils.svh_exception import SvhValidationException, SvhHardErrorException
-from exactly_lib.util import file_printables
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, \
     symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh, svh_assertions as asrt_svh
@@ -81,43 +82,55 @@ class TestValidation(unittest.TestCase):
             ),
             (
                 'validation exception in left operand',
-                asrt_svh.is_validation_error(asrt.equals('error in left op')),
+                asrt_svh.is_validation_error(
+                    asrt_text_doc.is_single_pre_formatted_text_that_equals('error in left op')
+                ),
 
                 operand_resolver_that(
-                    validate_pre_sds=actions.do_raise(SvhValidationException(
-                        file_printables.of_string('error in left op')
-                    ))),
+                    validate_pre_sds=actions.do_raise(
+                        svh_exception.SvhValidationException(
+                            text_docs.single_pre_formatted_line_object('error in left op')
+                        ))),
                 operand_resolver_that(),
             ),
             (
                 'validation exception in right operand',
-                asrt_svh.is_validation_error(asrt.equals('error in right op')),
+                asrt_svh.is_validation_error(
+                    asrt_text_doc.is_single_pre_formatted_text_that_equals('error in right op')
+                ),
 
                 operand_resolver_that(),
                 operand_resolver_that(
-                    validate_pre_sds=actions.do_raise(SvhValidationException(
-                        file_printables.of_string('error in right op')
-                    ))),
+                    validate_pre_sds=actions.do_raise(
+                        svh_exception.SvhValidationException(
+                            text_docs.single_pre_formatted_line_object('error in right op')
+                        ))),
             ),
             (
                 'hard error exception in left operand',
-                asrt_svh.is_hard_error(asrt.equals('error in left op')),
+                asrt_svh.is_hard_error(
+                    asrt_text_doc.is_single_pre_formatted_text_that_equals('error in left op')
+                ),
 
                 operand_resolver_that(
-                    validate_pre_sds=actions.do_raise(SvhHardErrorException(
-                        file_printables.of_string('error in left op')
-                    ))),
+                    validate_pre_sds=actions.do_raise(
+                        svh_exception.SvhHardErrorException(
+                            text_docs.single_pre_formatted_line_object('error in left op')
+                        ))),
                 operand_resolver_that(),
             ),
             (
                 'hard error exception in right operand',
-                asrt_svh.is_hard_error(asrt.equals('error in right op')),
+                asrt_svh.is_hard_error(
+                    asrt_text_doc.is_single_pre_formatted_text_that_equals('error in right op')
+                ),
 
                 operand_resolver_that(),
                 operand_resolver_that(
-                    validate_pre_sds=actions.do_raise(SvhHardErrorException(
-                        file_printables.of_string('error in right op')
-                    ))),
+                    validate_pre_sds=actions.do_raise(
+                        svh_exception.SvhHardErrorException(
+                            text_docs.single_pre_formatted_line_object('error in right op')
+                        ))),
             ),
         ]
 
@@ -141,22 +154,30 @@ class TestMain(unittest.TestCase):
         cases = [
             (
                 'hard error exception in left operand',
-                asrt_pfh.is_hard_error(asrt.equals('error error in left op')),
+                asrt_pfh.is_hard_error(
+                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals('error error in left op'))
+                ),
 
                 operand_resolver_that(
                     resolve_return_value_action=actions.do_raise(
-                        PfhHardErrorException(file_printables.of_string('error error in left op'))
+                        pfh_exception.PfhHardErrorException(
+                            text_docs.single_pre_formatted_line_object('error error in left op')
+                        )
                     )),
                 operand_resolver_that(),
             ),
             (
                 'hard error exception in right operand',
-                asrt_pfh.is_hard_error(asrt.equals('error error in right op')),
+                asrt_pfh.is_hard_error(
+                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals('error error in right op'))
+                ),
 
                 operand_resolver_that(),
                 operand_resolver_that(
                     resolve_return_value_action=actions.do_raise(
-                        PfhHardErrorException(file_printables.of_string('error error in right op')))
+                        pfh_exception.PfhHardErrorException(
+                            text_docs.single_pre_formatted_line_object('error error in right op'))
+                    )
                 ),
             ),
         ]

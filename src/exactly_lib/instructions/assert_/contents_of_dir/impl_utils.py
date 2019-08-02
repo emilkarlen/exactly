@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
@@ -9,10 +10,9 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, pfh_exception as pfh_ex_method
 from exactly_lib.test_case_utils import file_ref_check
+from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
-from exactly_lib.test_case_utils.pfh_exception import PfhFailException, PfhHardErrorException
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.util import file_printables
 
 
 class FilesSource:
@@ -44,7 +44,9 @@ class AssertPathIsExistingDirectory(AssertionPart[FilesSource, FilesSource]):
                                         expect_existing_dir),
             path_resolving_env)
         if failure_message is not None:
-            raise pfh_ex_method.PfhFailException(file_printables.of_string(failure_message))
+            raise pfh_ex_method.PfhFailException(
+                text_docs.single_pre_formatted_line_object(failure_message)
+            )
         else:
             return files_source
 
@@ -73,13 +75,12 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
             mb_error_message = value.matches(env,
                                              model)
             if mb_error_message is not None:
-                raise PfhFailException(
-                    file_printables.of_string(
-                        mb_error_message.resolve(err_msg_env_from_instr_env(environment)))
+                raise pfh_ex_method.PfhFailException(
+                    env_dep_texts.of_old(mb_error_message).resolve(err_msg_env_from_instr_env(environment))
                 )
 
             return files_source
         except HardErrorException as ex:
             err_msg_env = err_msg_env_from_instr_env(environment)
-            err_msg = ex.error.resolve(err_msg_env)
-            raise PfhHardErrorException(file_printables.of_string(err_msg))
+            err_msg = env_dep_texts.of_old(ex.error).resolve(err_msg_env)
+            raise pfh_ex_method.PfhHardErrorException(err_msg)
