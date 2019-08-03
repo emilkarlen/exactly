@@ -2,6 +2,7 @@ import itertools
 from typing import Callable, List, Sequence, Optional
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYPE_INFO_DICT
@@ -21,7 +22,7 @@ from exactly_lib.test_case.actor import Actor, ActionToCheck, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.result import svh
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util import file_printables
+from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib_test.cli.program_modes.test_resources import main_program_execution
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import MainProgramConfig
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
@@ -161,10 +162,12 @@ class _ActorThatParsesReferences(Actor):
             if len(parts) == 2 and parts[0] == self._reference_instruction_name:
                 ret_val.append(parts[1])
             else:
-                err_msg = file_printables.of_format_string_args(
-                    'Invalid act phase instruction: {}\nExpecting: {}',
-                    line,
-                    self._reference_instruction_name)
+                err_msg = text_docs.single_pre_formatted_line_object(
+                    strings.FormatPositional(
+                        'Invalid act phase instruction: {}\nExpecting: {}',
+                        line,
+                        self._reference_instruction_name)
+                )
                 raise ParseException(svh.new_svh_validation_error(err_msg))
 
         return ret_val

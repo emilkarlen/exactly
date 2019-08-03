@@ -248,7 +248,7 @@ class _PartialExecutor:
                 self._atc_executor = actor.parse(instructions)
             except ParseException as ex:
                 return failure_con.apply(PartialExeResultStatus.VALIDATION_ERROR,
-                                         FailureDetails.new_message(ex.cause.failure_message__td))
+                                         FailureDetails.new_message(ex.cause.failure_message))
             return None
 
         return _execute_action_and_catch_implementation_exception(parse_action, failure_con)
@@ -276,7 +276,7 @@ class _PartialExecutor:
                 return None
             else:
                 return failure_con.apply(PartialExeResultStatus(res.status.value),
-                                         FailureDetails.new_message(res.failure_message__td))
+                                         FailureDetails.new_message(res.failure_message))
 
         return _execute_action_and_catch_implementation_exception(action, failure_con)
 

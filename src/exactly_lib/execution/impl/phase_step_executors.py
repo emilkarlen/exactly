@@ -22,11 +22,11 @@ def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidation
     elif res.is_validation_error:
         return PartialInstructionControlledFailureInfo.of_text_doc(
             PartialControlledFailureEnum.VALIDATION_ERROR,
-            res.failure_message__td)
+            res.failure_message)
     else:
         return PartialInstructionControlledFailureInfo.of_text_doc(
             PartialControlledFailureEnum.HARD_ERROR,
-            res.failure_message__td)
+            res.failure_message)
 
 
 def _from_success_or_hard_error(res: sh.SuccessOrHardError) -> PartialInstructionControlledFailureInfo:

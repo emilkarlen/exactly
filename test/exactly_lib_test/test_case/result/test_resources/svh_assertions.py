@@ -23,7 +23,7 @@ def status_is_not_success(expected_status: svh.SuccessOrValidationErrorOrHardErr
         status_is(expected_status),
         asrt.sub_component(
             'failure_message',
-            svh.SuccessOrValidationErrorOrHardError.failure_message__td.fget,
+            svh.SuccessOrValidationErrorOrHardError.failure_message.fget,
             error_message
         )
     ])
@@ -65,5 +65,5 @@ class _IsSuccess(ValueAssertionBase):
                 'Expected: ' + svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS.name,
                 'Actual  : {st}: {msg}'.format(
                     st=value.status.name,
-                    msg=repr(render_to_str.print_major_blocks(value.failure_message__td.render())))
+                    msg=repr(render_to_str.print_major_blocks(value.failure_message.render())))
             ]))

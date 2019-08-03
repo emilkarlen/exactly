@@ -1,9 +1,8 @@
 import unittest
 
 from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.result import svh
-from exactly_lib.util import file_printables
-from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -31,7 +30,7 @@ class TestIsSuccess(unittest.TestCase):
         # ARRANGE #
         cases = [
             NameAndValue('VALIDATION_ERROR',
-                         svh.new_svh_validation_error__td(
+                         svh.new_svh_validation_error(
                              text_docs.single_pre_formatted_line_object('failure msg')
                          )
                          ),
@@ -39,7 +38,7 @@ class TestIsSuccess(unittest.TestCase):
                          svh.new_svh_validation_error__str('failure msg')
                          ),
             NameAndValue('HARD_ERROR',
-                         svh.new_svh_hard_error__td(
+                         svh.new_svh_hard_error(
                              text_docs.single_pre_formatted_line_object('hard error msg')
                          )
                          ),
@@ -64,7 +63,7 @@ class TestStatusIs(unittest.TestCase):
                 ),
             NEA('VALIDATION_ERROR',
                 svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                svh.new_svh_validation_error__td(
+                svh.new_svh_validation_error(
                     text_docs.single_pre_formatted_line_object('validation msg')
                 ),
                 ),
@@ -74,7 +73,7 @@ class TestStatusIs(unittest.TestCase):
                 ),
             NEA('HARD_ERROR',
                 svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR,
-                svh.new_svh_hard_error__td(
+                svh.new_svh_hard_error(
                     text_docs.single_pre_formatted_line_object('hard err msg')
                 ),
                 ),
@@ -94,7 +93,7 @@ class TestStatusIs(unittest.TestCase):
         cases = [
             NEA('SUCCESS',
                 svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                svh.new_svh_validation_error__td(
+                svh.new_svh_validation_error(
                     text_docs.single_pre_formatted_line_object('fail msg')
                 ),
                 ),
@@ -104,7 +103,7 @@ class TestStatusIs(unittest.TestCase):
                 ),
             NEA('VALIDATION_ERROR',
                 svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                svh.new_svh_hard_error__td(
+                svh.new_svh_hard_error(
                     text_docs.single_pre_formatted_line_object('validation err msg')
                 ),
                 ),
@@ -205,5 +204,5 @@ class TestStatusIsNotSuccess(unittest.TestCase):
                 assert_that_assertion_fails(case.expected, case.actual)
 
 
-def _printable_of_str(s: str) -> FilePrintable:
-    return file_printables.of_string(s)
+def _printable_of_str(s: str) -> TextRenderer:
+    return text_docs.single_pre_formatted_line_object(s)
