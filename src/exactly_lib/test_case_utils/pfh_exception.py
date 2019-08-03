@@ -1,4 +1,3 @@
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.result import pfh
 
@@ -21,7 +20,6 @@ class PfhException(Exception):
     @property
     def pfh(self) -> pfh.PassOrFailOrHardError:
         return pfh.PassOrFailOrHardError(self._status,
-                                         text_docs.as_file_printable(self._err_msg),
                                          self._err_msg)
 
     @property

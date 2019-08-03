@@ -201,7 +201,7 @@ class AssertPhaseInstructionThatPassIffStdoutEqualsString(AssertPhaseInstruction
         if actual_contents == self.expected:
             return pfh.new_pfh_pass()
         else:
-            return pfh.new_pfh_fail__td(
+            return pfh.new_pfh_fail(
                 text_docs.single_pre_formatted_line_object(
                     strings.FormatPositional('Expected: {}\nActual  : {}',
                                              self.expected, actual_contents,

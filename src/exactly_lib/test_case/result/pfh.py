@@ -3,7 +3,6 @@ from typing import Optional
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.util.file_printer import FilePrintable
 
 
 class PassOrFailOrHardErrorEnum(Enum):
@@ -22,10 +21,9 @@ class PassOrFailOrHardError(tuple):
 
     def __new__(cls,
                 status: PassOrFailOrHardErrorEnum,
-                failure_message: Optional[FilePrintable],
-                failure_message_td: Optional[TextRenderer],
+                failure_message: Optional[TextRenderer],
                 ):
-        return tuple.__new__(cls, (status, failure_message, failure_message_td))
+        return tuple.__new__(cls, (status, failure_message))
 
     @property
     def status(self) -> PassOrFailOrHardErrorEnum:
@@ -36,21 +34,14 @@ class PassOrFailOrHardError(tuple):
         return self.status is not PassOrFailOrHardErrorEnum.PASS
 
     @property
-    def failure_message(self) -> Optional[FilePrintable]:
+    def failure_message__td(self) -> Optional[TextRenderer]:
         """
         :return None iff the object represents PASS.
         """
         return self[1]
 
-    @property
-    def failure_message__td(self) -> Optional[TextRenderer]:
-        """
-        :return None iff the object represents PASS.
-        """
-        return self[2]
 
-
-__PFH_PASS = PassOrFailOrHardError(PassOrFailOrHardErrorEnum.PASS, None, None)
+__PFH_PASS = PassOrFailOrHardError(PassOrFailOrHardErrorEnum.PASS, None)
 
 
 def new_pfh_pass() -> PassOrFailOrHardError:
@@ -58,54 +49,43 @@ def new_pfh_pass() -> PassOrFailOrHardError:
 
 
 def new_pfh_non_pass(status: PassOrFailOrHardErrorEnum,
-                     failure_message: FilePrintable) -> PassOrFailOrHardError:
+                     failure_message: TextRenderer) -> PassOrFailOrHardError:
     return PassOrFailOrHardError(status,
-                                 failure_message,
-                                 text_docs.single_pre_formatted_line_object__from_fp(failure_message),
-                                 )
-
-
-def new_pfh_non_pass__td(status: PassOrFailOrHardErrorEnum,
-                         failure_message: TextRenderer) -> PassOrFailOrHardError:
-    return PassOrFailOrHardError(status,
-                                 text_docs.as_file_printable(failure_message),
                                  failure_message,
                                  )
 
 
-def new_pfh_fail__td(failure_message: TextRenderer) -> PassOrFailOrHardError:
+def new_pfh_fail(failure_message: TextRenderer) -> PassOrFailOrHardError:
     return PassOrFailOrHardError(PassOrFailOrHardErrorEnum.FAIL,
-                                 text_docs.as_file_printable(failure_message),
                                  failure_message,
                                  )
 
 
 def new_pfh_fail__str(failure_message: str) -> PassOrFailOrHardError:
-    return new_pfh_fail__td(text_docs.single_pre_formatted_line_object(failure_message))
+    return new_pfh_fail(text_docs.single_pre_formatted_line_object(failure_message))
 
 
 def new_pfh_fail_if_has_failure_message__str(failure_message: Optional[str]) -> PassOrFailOrHardError:
     return (
         new_pfh_pass()
         if failure_message is None
-        else new_pfh_fail__td(text_docs.single_pre_formatted_line_object(failure_message))
+        else new_pfh_fail(text_docs.single_pre_formatted_line_object(failure_message))
     )
 
 
-def new_pfh_fail_if_has_failure_message__td(failure_message: Optional[TextRenderer]) -> PassOrFailOrHardError:
+def new_pfh_fail_if_has_failure_message(failure_message: Optional[TextRenderer]) -> PassOrFailOrHardError:
     return (
         new_pfh_pass()
         if failure_message is None
-        else new_pfh_fail__td(failure_message)
+        else new_pfh_fail(failure_message)
     )
 
 
-def new_pfh_hard_error__td(failure_message: TextRenderer) -> PassOrFailOrHardError:
+def new_pfh_hard_error(failure_message: TextRenderer) -> PassOrFailOrHardError:
     return PassOrFailOrHardError(PassOrFailOrHardErrorEnum.HARD_ERROR,
-                                 text_docs.as_file_printable(failure_message),
                                  failure_message,
                                  )
 
 
 def new_pfh_hard_error__str(failure_message: str) -> PassOrFailOrHardError:
-    return new_pfh_hard_error__td(text_docs.single_pre_formatted_line_object(failure_message))
+    return new_pfh_hard_error(text_docs.single_pre_formatted_line_object(failure_message))

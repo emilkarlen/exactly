@@ -4,6 +4,7 @@ from exactly_lib.common.help.abs_or_rel_path import abs_or_rel_path_of_existing
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions import formatting, instruction_arguments
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts
@@ -18,7 +19,7 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
-from exactly_lib.util import file_printables
+from exactly_lib.util.simple_textstruct.rendering import strings
 
 _RELATIVITY_ROOT = 'location of the current source file - the file that contains the instruction'
 
@@ -90,11 +91,21 @@ class _Instruction(ConfigurationPhaseInstruction):
     def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
         new_path = self._new_path()
         if not new_path.exists():
-            return sh.new_sh_hard_error(file_printables.of_format_string_args('Directory does not exist: {}',
-                                                                              new_path))
+            return sh.new_sh_hard_error(
+                text_docs.single_line(
+                    strings.FormatPositional(
+                        'Directory does not exist: {}',
+                        new_path)
+                )
+            )
         if not new_path.is_dir():
-            return sh.new_sh_hard_error(file_printables.of_format_string_args('Not a directory: {}',
-                                                                              new_path))
+            return sh.new_sh_hard_error(
+                text_docs.single_line(
+                    strings.FormatPositional(
+                        'Not a directory: {}',
+                        new_path)
+                )
+            )
         configuration_builder.set_hds_dir(self.dir_to_set, new_path.resolve())
         return sh.new_sh_success()
 

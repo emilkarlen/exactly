@@ -35,12 +35,12 @@ def _from_success_or_hard_error(res: sh.SuccessOrHardError) -> PartialInstructio
         if res.is_success
         else PartialInstructionControlledFailureInfo.of_text_doc(
             PartialControlledFailureEnum.HARD_ERROR,
-            res.failure_message__as_td)
+            res.failure_message)
     )
 
 
-def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> Optional[
-    PartialInstructionControlledFailureInfo]:
+def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError
+                                     ) -> Optional[PartialInstructionControlledFailureInfo]:
     if res.status is pfh.PassOrFailOrHardErrorEnum.PASS:
         return None
     else:

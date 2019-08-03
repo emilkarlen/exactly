@@ -101,11 +101,11 @@ class TestIsHardErrorAsTd(unittest.TestCase):
         cases = [
             NEA('no assertion on error message',
                 asrt.anything_goes(),
-                sh.new_sh_hard_error__td(the_error_message),
+                sh.new_sh_hard_error(the_error_message),
                 ),
             NEA('assertion on error message',
                 asrt_text_doc.is_single_pre_formatted_text_that_equals(message_str),
-                sh.new_sh_hard_error__td(the_error_message),
+                sh.new_sh_hard_error(the_error_message),
                 ),
         ]
         for case in cases:
@@ -148,7 +148,7 @@ class TestIsHardErrorAsTd(unittest.TestCase):
                 asrt_text_doc.is_single_pre_formatted_text_that_equals(
                     message_str + ' - part of message not in actual'
                 ),
-                sh.new_sh_hard_error__td(the_error_message),
+                sh.new_sh_hard_error(the_error_message),
                 ),
         ]
         for case in cases:

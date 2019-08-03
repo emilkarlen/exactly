@@ -235,7 +235,7 @@ class _Assertion:
     def apply(self) -> pfh.PassOrFailOrHardError:
         result = self._apply()
         if result.is_error:
-            return pfh.new_pfh_non_pass__td(
+            return pfh.new_pfh_non_pass(
                 result.status,
                 rend_comb.PrependR(self._path_renderer(),
                                    result.failure_message__td)
@@ -295,9 +295,9 @@ class _Assertion:
                     _FILE_EXISTS_BUT_INVALID_PROPERTIES_ERR_MSG_HEADER,
                     self._err_msg_for(failure_message_resolver)
                 )
-                return pfh.new_pfh_fail__td(err_msg)
+                return pfh.new_pfh_fail(err_msg)
         except hard_error.HardErrorException as ex:
-            return pfh.new_pfh_hard_error__td(self._err_msg_for__td(ex.error))
+            return pfh.new_pfh_hard_error(self._err_msg_for__td(ex.error))
 
     def _matches_file_matcher_for_expectation_type(self) -> Optional[ErrorMessageResolver]:
         resolver = self._file_matcher_for_expectation_type()
