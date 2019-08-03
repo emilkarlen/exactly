@@ -21,7 +21,7 @@ class FailureDetailsRenderer(SequenceRenderer[MajorBlock]):
         return (
             []
             if message_renderer is None
-            else self._failure_details.failure_message.render()
+            else message_renderer.render()
         )
 
     def _exception_blocks(self) -> List[MajorBlock]:
