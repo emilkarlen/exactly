@@ -43,7 +43,7 @@ class PartialInstructionControlledFailureInfo(tuple):
         return self[0]
 
     @property
-    def error_message__text_doc(self) -> TextRenderer:
+    def error_message(self) -> TextRenderer:
         return self[1]
 
 
@@ -117,7 +117,7 @@ def execute_element(executor: ControlledInstructionExecutor,
         return SingleInstructionExecutionFailure(
             PartialExeResultStatus(fail_info.status.value),
             element.source_location_info.source_location_path,
-            FailureDetails.new_message(fail_info.error_message__text_doc))
+            FailureDetails.new_message(fail_info.error_message))
     except Exception as ex:
         return SingleInstructionExecutionFailure(
             PartialExeResultStatus.IMPLEMENTATION_ERROR,
