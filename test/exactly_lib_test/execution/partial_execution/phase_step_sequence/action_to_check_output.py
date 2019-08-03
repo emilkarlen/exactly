@@ -188,7 +188,7 @@ class TestFailure(TestCaseBase):
                     PartialExeResultStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
-                    ExpectedFailureForInstructionFailure.new_with_message__w_new_line(
+                    ExpectedFailureForInstructionFailure.new_with_message(
                         phase_step.SETUP__MAIN,
                         test_case.the_extra(PartialPhase.SETUP)[0].source,
                         'hard error msg from setup'),
@@ -303,7 +303,7 @@ class TestFailure(TestCaseBase):
                     PartialExeResultStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(py_pgm_setup.exit_code),
-                    ExpectedFailureForInstructionFailure.new_with_message__w_new_line(
+                    ExpectedFailureForInstructionFailure.new_with_message(
                         phase_step.CLEANUP__MAIN,
                         test_case.the_extra(PartialPhase.CLEANUP)[0].source,
                         'hard error msg from CLEANUP'),

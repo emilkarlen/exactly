@@ -1,13 +1,13 @@
 import unittest
 from typing import Optional
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.execution.impl.phase_step_execution import execute_phase_prim
 from exactly_lib.execution.impl.result import Failure
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.section_document.model import SectionContents
-from exactly_lib.util.file_printables import of_string
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.execution.test_resources import failure_assertions as asrt_failure
 from exactly_lib_test.execution.test_resources.phase_step_execution import RecordingMedia, \
@@ -96,9 +96,9 @@ class Test(unittest.TestCase):
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
             any_instruction,
             recording_media.new_recorder_with_header('instruction executor'),
-            PartialInstructionControlledFailureInfo.of_file_printable(
+            PartialInstructionControlledFailureInfo.of_text_doc(
                 PartialControlledFailureEnum.FAIL,
-                of_string('fail message')
+                text_docs.single_pre_formatted_line_object('fail message')
             )
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
@@ -119,9 +119,9 @@ class Test(unittest.TestCase):
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
             any_instruction,
             recording_media.new_recorder_with_header('instruction executor'),
-            PartialInstructionControlledFailureInfo.of_file_printable(
+            PartialInstructionControlledFailureInfo.of_text_doc(
                 PartialControlledFailureEnum.HARD_ERROR,
-                of_string('hard error message')
+                text_docs.single_pre_formatted_line_object('hard error message')
             )
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
@@ -162,9 +162,9 @@ class Test(unittest.TestCase):
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
             instruction_with_name('First instruction'),
             recording_media.new_recorder_with_header('instruction executor'),
-            PartialInstructionControlledFailureInfo.of_file_printable(
+            PartialInstructionControlledFailureInfo.of_text_doc(
                 PartialControlledFailureEnum.FAIL,
-                of_string('fail message')
+                text_docs.single_pre_formatted_line_object('fail message')
             )
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
@@ -187,9 +187,9 @@ class Test(unittest.TestCase):
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
             instruction_with_name('Middle instruction'),
             recording_media.new_recorder_with_header('instruction executor'),
-            PartialInstructionControlledFailureInfo.of_file_printable(
+            PartialInstructionControlledFailureInfo.of_text_doc(
                 PartialControlledFailureEnum.FAIL,
-                of_string('fail message')
+                text_docs.single_pre_formatted_line_object('fail message')
             )
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
@@ -217,9 +217,9 @@ class Test(unittest.TestCase):
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
             instruction_with_name('Last instruction'),
             recording_media.new_recorder_with_header('instruction executor'),
-            PartialInstructionControlledFailureInfo.of_file_printable(
+            PartialInstructionControlledFailureInfo.of_text_doc(
                 PartialControlledFailureEnum.FAIL,
-                of_string('fail message')
+                text_docs.single_pre_formatted_line_object('fail message')
             )
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
@@ -245,9 +245,9 @@ class Test(unittest.TestCase):
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
             any_instruction,
             recording_media.new_recorder_with_header('instruction executor'),
-            PartialInstructionControlledFailureInfo.of_file_printable(
+            PartialInstructionControlledFailureInfo.of_text_doc(
                 PartialControlledFailureEnum.FAIL,
-                of_string('fail message')
+                text_docs.single_pre_formatted_line_object('fail message')
             )
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),

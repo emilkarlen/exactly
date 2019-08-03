@@ -9,6 +9,7 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeR
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
 from exactly_lib.test_case.phases.common import TestCaseInstruction
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
@@ -23,7 +24,6 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources.symbol_utils import element_reference
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class Configuration:
@@ -79,10 +79,10 @@ class TestValidationErrorDueToReferenceToUndefinedSymbol(TestCaseBase):
                     PartialExeResultStatus.VALIDATION_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
-                    ExpectedFailureForInstructionFailure.new_with_message_assertion(
+                    ExpectedFailureForInstructionFailure.new_with_message_assertion__td(
                         conf.step,
                         test_case.the_extra(conf.phase)[0].source,
-                        asrt.is_instance(str)),
+                        asrt_text_doc.is_any_text()),
                 ),
                 conf.expected_steps_before_failing_instruction,
             )
@@ -113,9 +113,9 @@ class TestValidationErrorDueToFailedReferenceRestrictions(TestCaseBase):
                     PartialExeResultStatus.VALIDATION_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
-                    ExpectedFailureForInstructionFailure.new_with_phase_and_message_assertion(
+                    ExpectedFailureForInstructionFailure.new_with_phase_and_message_assertion__td(
                         conf.step,
-                        asrt.equals(error_message_for_failed_restriction)),
+                        asrt_text_doc.is_single_pre_formatted_text_that_equals(error_message_for_failed_restriction)),
                 ),
                 conf.expected_steps_before_failing_instruction,
             )

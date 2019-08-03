@@ -53,7 +53,7 @@ class TestValidationError(TestCaseBase):
                     PartialExeResultStatus.VALIDATION_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
-                    ExpectedFailureForInstructionFailure.new_with_message__w_new_line(
+                    ExpectedFailureForInstructionFailure.new_with_message(
                         conf.step,
                         test_case.the_extra(conf.phase)[0].source,
                         'validation error message'),
@@ -77,7 +77,7 @@ class TestHardError(TestCaseBase):
                     PartialExeResultStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
-                    ExpectedFailureForInstructionFailure.new_with_message__w_new_line(
+                    ExpectedFailureForInstructionFailure.new_with_message(
                         conf.step,
                         test_case.the_extra(conf.phase)[0].source,
                         'Error message from hard error'),

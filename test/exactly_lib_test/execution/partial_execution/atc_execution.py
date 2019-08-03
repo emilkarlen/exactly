@@ -90,14 +90,13 @@ class TestExecutionSequence(unittest.TestCase):
 
     def test_WHEN_parse_raises_unknown_exception_THEN_execution_SHOULD_stop_with_result_of_implementation_error(self):
         # ARRANGE #
-        expected_cause = svh.new_svh_validation_error__str('failure message')
         atc_that_does_nothing = ActionToCheckThatRunsConstantActions()
         step_recorder = ListRecorder()
         recording_atc = ActionToCheckWrapperThatRecordsSteps(step_recorder,
                                                              atc_that_does_nothing)
         actor = ActorForConstantAtc(
             recording_atc,
-            parse_atc=do_raise(ValueError(expected_cause))
+            parse_atc=do_raise(ValueError('failure message'))
         )
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   actor=actor)

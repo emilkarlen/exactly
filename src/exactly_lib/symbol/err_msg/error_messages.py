@@ -4,6 +4,8 @@ from typing import Optional, List
 from exactly_lib.common.err_msg import rendering
 from exactly_lib.common.err_msg import source_location
 from exactly_lib.common.err_msg.definitions import Blocks, single_str_block
+from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import type_system
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol import symbol_usage as su
@@ -86,8 +88,8 @@ def _type_name_of(value_type: ValueType) -> str:
     return type_system.TYPE_INFO_DICT[value_type].identifier
 
 
-def duplicate_symbol_definition(already_defined_symbol: Optional[SourceLocationInfo],
-                                name: str) -> FilePrintable:
+def _duplicate_symbol_definition(already_defined_symbol: Optional[SourceLocationInfo],
+                                 name: str) -> Blocks:
     header_block = [
         'Symbol `{}\' has already been defined:'.format(name)
     ]
@@ -96,21 +98,41 @@ def duplicate_symbol_definition(already_defined_symbol: Optional[SourceLocationI
         if already_defined_symbol is None
         else _definition_source_blocks(already_defined_symbol)
     )
-    blocks = [header_block] + def_src_blocks
-
-    return rendering.blocks_as_printable(blocks)
+    return [header_block] + def_src_blocks
 
 
-def undefined_symbol(reference: su.SymbolReference) -> FilePrintable:
+def duplicate_symbol_definition(already_defined_symbol: Optional[SourceLocationInfo],
+                                name: str) -> FilePrintable:
+    return rendering.blocks_as_printable(
+        _duplicate_symbol_definition(already_defined_symbol,
+                                     name)
+    )
+
+
+def duplicate_symbol_definition__td(already_defined_symbol: Optional[SourceLocationInfo],
+                                    name: str) -> TextRenderer:
+    return text_docs.major_blocks_of_string_blocks(
+        _duplicate_symbol_definition(already_defined_symbol,
+                                     name)
+    )
+
+
+def _undefined_symbol(reference: su.SymbolReference) -> Blocks:
     from exactly_lib.definitions.formatting import InstructionName
     from exactly_lib.definitions.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
     def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
-    blocks = [
+    return [
         ['Symbol `{}\' is undefined.'.format(reference.name)],
         ['Define a symbol using the {} instruction.'.format(def_name_emphasised)],
     ]
 
-    return rendering.blocks_as_printable(blocks)
+
+def undefined_symbol(reference: su.SymbolReference) -> FilePrintable:
+    return rendering.blocks_as_printable(_undefined_symbol(reference))
+
+
+def undefined_symbol__td(reference: su.SymbolReference) -> TextRenderer:
+    return text_docs.major_blocks_of_string_blocks(_undefined_symbol(reference))
 
 
 def defined_at_line__err_msg_lines(definition_source: Optional[SourceLocationInfo]) -> List[str]:

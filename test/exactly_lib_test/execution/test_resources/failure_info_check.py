@@ -1,6 +1,7 @@
 import unittest
 from typing import Optional, Type
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution.failure_info import FailureInfo, InstructionFailureInfo, PhaseFailureInfo
 from exactly_lib.execution.phase_step import PhaseStep, SimplePhaseStep
 from exactly_lib.test_case.result.failure_details import FailureDetails
@@ -71,12 +72,28 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure):
                                                     asrt_failure_details.is_failure_message_matching(error_message))
 
     @staticmethod
+    def new_with_message_assertion__td(phase_step: SimplePhaseStep,
+                                       source_line: line_source.LineSequence,
+                                       error_message: ValueAssertion[TextRenderer]) -> ValueAssertion[FailureInfo]:
+        return ExpectedFailureForInstructionFailure(phase_step,
+                                                    source_line,
+                                                    asrt_failure_details.is_failure_message_matching__td(error_message))
+
+    @staticmethod
     def new_with_phase_and_message_assertion(phase_step: SimplePhaseStep,
                                              error_message: ValueAssertion[str]
                                              ) -> ValueAssertion[FailureInfo]:
         return ExpectedFailureForInstructionFailure(phase_step,
                                                     None,
                                                     asrt_failure_details.is_failure_message_matching(error_message))
+
+    @staticmethod
+    def new_with_phase_and_message_assertion__td(phase_step: SimplePhaseStep,
+                                                 error_message: ValueAssertion[TextRenderer]
+                                                 ) -> ValueAssertion[FailureInfo]:
+        return ExpectedFailureForInstructionFailure(phase_step,
+                                                    None,
+                                                    asrt_failure_details.is_failure_message_matching__td(error_message))
 
     @staticmethod
     def new_with_exception(phase_step: SimplePhaseStep,

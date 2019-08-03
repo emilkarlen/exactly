@@ -263,7 +263,7 @@ class _PartialExecutor:
                 return None
             else:
                 return failure_con.apply(PartialExeResultStatus(res.status.value),
-                                         FailureDetails.new_message(res.error_message))
+                                         FailureDetails.new_message__td(res.error_message__text_doc))
 
         return _execute_action_and_catch_implementation_exception(action, failure_con)
 

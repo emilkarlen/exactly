@@ -8,8 +8,6 @@ from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result import failure_details
 from exactly_lib.test_case.result.failure_details import FailureDetails
-from exactly_lib.util.file_printer import FilePrintable
-from exactly_lib.common.report_rendering import text_docs
 
 
 class PartialControlledFailureEnum(Enum):
@@ -30,25 +28,14 @@ class PartialInstructionControlledFailureInfo(tuple):
 
     def __new__(cls,
                 status: PartialControlledFailureEnum,
-                error_message: FilePrintable,
-                error_message__td: TextRenderer):
+                error_message: TextRenderer):
         return tuple.__new__(cls, (status,
-                                   error_message,
-                                   error_message__td))
-
-    @staticmethod
-    def of_file_printable(status: PartialControlledFailureEnum,
-                          error_message: FilePrintable) -> 'PartialInstructionControlledFailureInfo':
-        return PartialInstructionControlledFailureInfo(status,
-                                                       error_message,
-                                                       text_docs.single_pre_formatted_line_object__from_fp(error_message),
-                                                       )
+                                   error_message))
 
     @staticmethod
     def of_text_doc(status: PartialControlledFailureEnum,
                     error_message: TextRenderer) -> 'PartialInstructionControlledFailureInfo':
         return PartialInstructionControlledFailureInfo(status,
-                                                       text_docs.as_file_printable(error_message),
                                                        error_message)
 
     @property
@@ -56,12 +43,8 @@ class PartialInstructionControlledFailureInfo(tuple):
         return self[0]
 
     @property
-    def error_message(self) -> FilePrintable:
-        return self[1]
-
-    @property
     def error_message__text_doc(self) -> TextRenderer:
-        return self[2]
+        return self[1]
 
 
 class ControlledInstructionExecutor:
@@ -134,7 +117,7 @@ def execute_element(executor: ControlledInstructionExecutor,
         return SingleInstructionExecutionFailure(
             PartialExeResultStatus(fail_info.status.value),
             element.source_location_info.source_location_path,
-            FailureDetails.new_message(fail_info.error_message))
+            FailureDetails.new_message__td(fail_info.error_message__text_doc))
     except Exception as ex:
         return SingleInstructionExecutionFailure(
             PartialExeResultStatus.IMPLEMENTATION_ERROR,

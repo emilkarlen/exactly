@@ -71,7 +71,7 @@ class Test(TestCaseBase):
                     FullExeResultStatus.HARD_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
-                    ExpectedFailureForInstructionFailure.new_with_message__w_new_line(
+                    ExpectedFailureForInstructionFailure.new_with_message(
                         phase_step.CONFIGURATION__MAIN,
                         test_case_generator.the_extra(phase_identifier.CONFIGURATION)[
                             0].source,

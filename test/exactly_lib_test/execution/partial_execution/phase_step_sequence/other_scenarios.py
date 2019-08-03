@@ -36,7 +36,7 @@ class Test(TestCaseBase):
                     PartialExeResultStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
-                    ExpectedFailureForInstructionFailure.new_with_message__w_new_line(
+                    ExpectedFailureForInstructionFailure.new_with_message(
                         phase_step.SETUP__MAIN,
                         test_case.the_extra(PartialPhase.SETUP)[0].source,
                         'hard error msg from setup'),
@@ -91,7 +91,7 @@ class Test(TestCaseBase):
                     PartialExeResultStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(0),
-                    ExpectedFailureForInstructionFailure.new_with_message__w_new_line(
+                    ExpectedFailureForInstructionFailure.new_with_message(
                         phase_step.BEFORE_ASSERT__MAIN,
                         test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].source,
                         'hard error msg'),
@@ -175,7 +175,7 @@ class Test(TestCaseBase):
                     PartialExeResultStatus.FAIL,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(5),
-                    ExpectedFailureForInstructionFailure.new_with_message__w_new_line(
+                    ExpectedFailureForInstructionFailure.new_with_message(
                         phase_step.ASSERT__MAIN,
                         test_case.the_extra(PartialPhase.ASSERT)[0].source,
                         'fail msg from ASSERT'),
@@ -219,7 +219,7 @@ class Test(TestCaseBase):
                     PartialExeResultStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(72),
-                    ExpectedFailureForInstructionFailure.new_with_message__w_new_line(
+                    ExpectedFailureForInstructionFailure.new_with_message(
                         phase_step.ASSERT__MAIN,
                         test_case.the_extra(PartialPhase.ASSERT)[0].source,
                         'hard error msg from ASSERT'),
@@ -307,7 +307,7 @@ class Test(TestCaseBase):
                     PartialExeResultStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(3),
-                    ExpectedFailureForInstructionFailure.new_with_message__w_new_line(
+                    ExpectedFailureForInstructionFailure.new_with_message(
                         phase_step.CLEANUP__MAIN,
                         test_case.the_extra(PartialPhase.CLEANUP)[0].source,
                         'hard error msg from CLEANUP'),
