@@ -6,6 +6,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
     invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
@@ -27,8 +28,8 @@ from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
-from exactly_lib.util import file_printables
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
@@ -212,12 +213,14 @@ def _install_into_directory(os_services: OsServices,
     if target.exists():
         raise exception_detection.DetectedException(
             FailureDetails.new_message(
-                file_printables.of_format_string(
-                    '{dst} already exists: {target}',
-                    {
-                        'dst': instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
-                        'target': target,
-                    }))
+                text_docs.single_line(
+                    strings.FormatMap(
+                        '{dst} already exists: {target}',
+                        {
+                            'dst': instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
+                            'target': target,
+                        }))
+            )
         )
     src = str(src_file_path)
     dst = str(target)

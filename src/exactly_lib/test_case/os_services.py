@@ -3,17 +3,18 @@ import pathlib
 import shutil
 import subprocess
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.test_case import exception_detection
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
 from exactly_lib.test_case.result.failure_details import FailureDetails
-from exactly_lib.util import file_printables
 from exactly_lib.util.process_execution import executable_factories
 from exactly_lib.util.process_execution.command import Command
 from exactly_lib.util.process_execution.executable_factory import ExecutableFactory
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
+from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.std import StdFiles
 
 
@@ -90,11 +91,15 @@ class _Default(OsServices):
         except OSError as ex:
             raise exception_detection.DetectedException(
                 FailureDetails.new_message(
-                    file_printables.of_format_string('Failed to copy file {src} -> {dst}',
-                                                     {'src': src,
-                                                      'dst': dst
-                                                      }),
-                    ex))
+                    text_docs.single_line(
+                        strings.FormatMap(
+                            'Failed to copy file {src} -> {dst}',
+                            {'src': src,
+                             'dst': dst
+                             })
+                    ),
+                    ex)
+            )
 
     def copy_tree_preserve_as_much_as_possible__detect_ex(self, src: str, dst: str):
         try:
@@ -102,10 +107,13 @@ class _Default(OsServices):
         except OSError as ex:
             raise exception_detection.DetectedException(
                 FailureDetails.new_message(
-                    file_printables.of_format_string('Failed to copy tree {src} -> {dst}',
-                                                     {'src': src,
-                                                      'dst': dst}),
-                    ex))
+                    text_docs.single_line(
+                        strings.FormatMap('Failed to copy tree {src} -> {dst}',
+                                          {'src': src,
+                                           'dst': dst})
+                    ),
+                    ex
+                ))
 
     def executable_factory__detect_ex(self) -> ExecutableFactory:
         if self._platform_system_not_supported:
@@ -168,8 +176,10 @@ DEFAULT_ATC_OS_PROCESS_EXECUTOR = _atc_os_process_executor_for_current_system()
 def _raise_fail_to_make_dir_exception(path: pathlib.Path, ex: Exception):
     raise exception_detection.DetectedException(
         FailureDetails.new_message(
-            file_printables.of_format_string(
-                'Failed to make directory {path}',
-                {'path': path}
-            ),
-            ex))
+            text_docs.single_line(
+                strings.FormatMap(
+                    'Failed to make directory {path}',
+                    {'path': path}
+                )),
+            ex
+        ))

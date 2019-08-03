@@ -17,11 +17,11 @@ class FailureDetailsRenderer(SequenceRenderer[MajorBlock]):
         return blocks
 
     def _message_blocks(self) -> List[MajorBlock]:
-        message_renderer = self._failure_details.failure_message__as_text_doc
+        message_renderer = self._failure_details.failure_message
         return (
             []
             if message_renderer is None
-            else self._failure_details.failure_message__as_text_doc.render()
+            else self._failure_details.failure_message.render()
         )
 
     def _exception_blocks(self) -> List[MajorBlock]:

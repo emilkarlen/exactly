@@ -30,6 +30,7 @@
       <w>stderr</w>
       <w>stdin</w>
       <w>stdout</w>
+      <w>struct</w>
       <w>tcds</w>
       <w>testcase</w>
       <w>testsuite</w>

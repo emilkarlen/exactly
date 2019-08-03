@@ -63,7 +63,7 @@ class _ExpectedFailureDetails(ValueAssertionBase[FailureDetails]):
 
             asrt_text_doc.is_single_pre_formatted_text(self._error_message_or_none).apply(
                 put,
-                value.failure_message__as_text_doc,
+                value.failure_message,
                 message_comp_builder.for_sub_component('text-doc')
             )
 
@@ -98,7 +98,7 @@ class _ExpectedFailureDetailsTd(ValueAssertionBase[FailureDetails]):
 
             self._error_message_or_none.apply(
                 put,
-                value.failure_message__as_text_doc,
+                value.failure_message,
                 message_comp_builder.for_sub_component('text-doc')
             )
 
