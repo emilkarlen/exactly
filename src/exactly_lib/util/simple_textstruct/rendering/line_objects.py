@@ -6,14 +6,18 @@ from exactly_lib.util.simple_textstruct.structure import LineObject
 
 
 class PreFormattedString(LineObjectRenderer):
-    def __init__(self, x: Any):
+    def __init__(self,
+                 x: Any,
+                 string_is_line_ended: bool = False
+                 ):
         """
         :param x: str is accessed via __str__
         """
         self._x = x
+        self._string_is_line_ended = string_is_line_ended
 
     def render(self) -> LineObject:
-        return structure.PreFormattedStringLineObject(str(self._x), False)
+        return structure.PreFormattedStringLineObject(str(self._x), self._string_is_line_ended)
 
 
 class StringLineObject(LineObjectRenderer):

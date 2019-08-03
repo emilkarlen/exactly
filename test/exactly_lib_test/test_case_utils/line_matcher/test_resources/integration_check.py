@@ -1,5 +1,4 @@
 import unittest
-
 from typing import Optional, Sequence
 
 from exactly_lib.section_document.parse_source import ParseSource
@@ -11,6 +10,7 @@ from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironme
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcher, LineMatcherLine
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -198,6 +198,7 @@ class _Checker:
                 self.arrangement.symbols
             )
             err_msg = result.error.resolve(err_msg_env)
-            self.expectation.is_hard_error.apply_with_message(self.put, err_msg,
-                                                              'error message for hard error')
+            assertion_on_text_renderer = asrt_text_doc.is_single_pre_formatted_text(self.expectation.is_hard_error)
+            assertion_on_text_renderer.apply_with_message(self.put, err_msg,
+                                                          'error message for hard error')
             raise _CheckIsDoneException()

@@ -2,9 +2,9 @@ from typing import Sequence
 
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering import component_renderers as comp_rend
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
 from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer, LineObjectRenderer
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, LineElement, ElementProperties, MajorBlock
 
 
@@ -39,6 +39,36 @@ class PrependFirstMinorBlockR(SequenceRenderer[MinorBlock]):
                                                    original_first_block.properties)
 
                 return to_prepend_to_list
+
+
+class PrependFirstMinorBlockOfFirstMajorBlockR(SequenceRenderer[MajorBlock]):
+    def __init__(self,
+                 to_prepend: Renderer[Sequence[LineElement]],
+                 to_prepend_to: Renderer[Sequence[MajorBlock]],
+                 properties_if_to_prepend_to_is_empty: ElementProperties =
+                 structure.PLAIN_ELEMENT_PROPERTIES,
+                 ):
+        self.to_prepend = to_prepend
+        self.to_prepend_to = to_prepend_to
+        self.properties_if_to_prepend_to_is_empty = properties_if_to_prepend_to_is_empty
+
+    def render(self) -> Sequence[MajorBlock]:
+        to_prepend = self.to_prepend.render()
+        to_prepend_to = self.to_prepend_to.render()
+
+        if len(to_prepend_to) == 0:
+            return [
+                MajorBlock([MinorBlock(to_prepend, self.properties_if_to_prepend_to_is_empty)])
+            ]
+        else:
+            to_prepend_to_list = list(to_prepend_to)
+            to_prepend_to_list[0] = MajorBlock(
+                PrependFirstMinorBlockR(self.to_prepend,
+                                        rend_comb.ConstantR(to_prepend_to_list[0].parts),
+                                        self.properties_if_to_prepend_to_is_empty).render()
+            )
+
+            return to_prepend_to_list
 
 
 class MinorBlockOfSingleLineObject(Renderer[MinorBlock]):

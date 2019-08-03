@@ -82,5 +82,5 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
             return files_source
         except HardErrorException as ex:
             err_msg_env = err_msg_env_from_instr_env(environment)
-            err_msg = env_dep_texts.of_old(ex.error).resolve(err_msg_env)
+            err_msg = ex.error.resolve(err_msg_env)
             raise pfh_ex_method.PfhHardErrorException(err_msg)

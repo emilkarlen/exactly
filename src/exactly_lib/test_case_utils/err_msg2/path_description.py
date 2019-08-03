@@ -2,7 +2,7 @@ from typing import Sequence, Optional, Any
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case_utils.err_msg import path_description as old_path_description
-from exactly_lib.test_case_utils.err_msg2.env_dep_text import TextResolver
+from exactly_lib.test_case_utils.err_msg2.env_dep_text import RendererResolver
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering import \
@@ -13,7 +13,7 @@ from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import LineElement, MinorBlock, MajorBlock
 
 
-class PathValueLinesResolver(TextResolver[SequenceRenderer[LineElement]]):
+class PathValueLinesResolver(RendererResolver[SequenceRenderer[LineElement]]):
     def __init__(self,
                  path_resolver: FileRefResolver,
                  header_line: Optional[Any] = None,
@@ -27,7 +27,7 @@ class PathValueLinesResolver(TextResolver[SequenceRenderer[LineElement]]):
                                       self._header_line)
 
 
-class PathValueMinorBlockResolver(TextResolver[MinorBlock]):
+class PathValueMinorBlockResolver(RendererResolver[MinorBlock]):
     def __init__(self,
                  path_resolver: FileRefResolver,
                  header_line: Optional[Any] = None,
@@ -43,7 +43,7 @@ class PathValueMinorBlockResolver(TextResolver[MinorBlock]):
         )
 
 
-class PathValueMajorBlockResolver(TextResolver[MajorBlock]):
+class PathValueMajorBlockResolver(RendererResolver[MajorBlock]):
     def __init__(self,
                  path_resolver: FileRefResolver,
                  header_line: Optional[Any] = None,

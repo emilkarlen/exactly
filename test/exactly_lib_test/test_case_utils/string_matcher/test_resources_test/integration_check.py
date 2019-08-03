@@ -40,6 +40,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, em
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     sds_2_home_and_sds_assertion
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 
 
 def suite() -> unittest.TestSuite:
@@ -294,7 +295,7 @@ class _StringMatcherThatReportsHardError(StringMatcher):
         return 'unconditional HARD ERROR'
 
     def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        raise HardErrorException(ConstantErrorMessageResolver('unconditional hard error'))
+        raise HardErrorException(env_dep_texts.constant('unconditional hard error'))
 
 
 def parser_for_constant(resolved_value: StringMatcher = StringMatcherConstant(None),

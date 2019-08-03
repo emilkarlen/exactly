@@ -20,6 +20,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import 
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
 
 class TestCaseBase(unittest.TestCase):
@@ -190,8 +191,9 @@ class _Executor:
     def _check_hard_error(self, result: HardErrorException):
         if self.expectation.is_hard_error is not None:
             err_msg = result.error.resolve(self._err_msg_env)
-            self.expectation.is_hard_error.apply_with_message(self.put, err_msg,
-                                                              'error message for hard error')
+            assertion_on_text_renderer = asrt_text_doc.is_single_pre_formatted_text(self.expectation.is_hard_error)
+            assertion_on_text_renderer.apply_with_message(self.put, err_msg,
+                                                          'error message for hard error')
             raise _CheckIsDoneException()
         else:
             self.put.fail('Unexpected HARD_ERROR')

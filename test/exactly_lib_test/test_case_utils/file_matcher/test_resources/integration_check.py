@@ -1,6 +1,5 @@
-import unittest
-
 import os
+import unittest
 from typing import Optional, Tuple
 
 from exactly_lib.execution import phase_step
@@ -15,6 +14,7 @@ from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMes
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.test_resources import resolver_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
@@ -193,8 +193,9 @@ class Executor:
     def _check_hard_error(self, result: HardErrorException):
         if self.expectation.is_hard_error is not None:
             err_msg = result.error.resolve(self._err_msg_env)
-            self.expectation.is_hard_error.apply_with_message(self.put, err_msg,
-                                                              'error message for hard error')
+            assertion_on_text_renderer = asrt_text_doc.is_single_pre_formatted_text(self.expectation.is_hard_error)
+            assertion_on_text_renderer.apply_with_message(self.put, err_msg,
+                                                          'error message for hard error')
             raise _CheckIsDoneException()
         else:
             self.put.fail('Unexpected HARD_ERROR')

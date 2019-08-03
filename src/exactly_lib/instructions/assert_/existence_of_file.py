@@ -5,6 +5,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
     invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -25,7 +26,9 @@ from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case.validation import pre_or_post_value_validation
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate
+from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.err_msg2 import path_description
+from exactly_lib.test_case_utils.err_msg2.env_dep_text import TextResolver
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.file_matcher import resolvers  as fm_resolvers
@@ -38,8 +41,9 @@ from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMes
 from exactly_lib.type_system.logic import hard_error
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.simple_textstruct import structure as text_struct
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, blocks
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
-from exactly_lib.util.simple_textstruct.rendering.renderer_combinators import PrependR
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
@@ -233,8 +237,8 @@ class _Assertion:
         if result.is_error:
             return pfh.new_pfh_non_pass__td(
                 result.status,
-                PrependR(self._path_renderer(),
-                         result.failure_message__td)
+                rend_comb.PrependR(self._path_renderer(),
+                                   result.failure_message__td)
             )
         else:
             return result
@@ -287,11 +291,13 @@ class _Assertion:
             if failure_message_resolver is None:
                 return pfh.new_pfh_pass()
             else:
-                err_msg = (_FILE_EXISTS_BUT_INVALID_PROPERTIES_ERR_MSG_HEADER +
-                           self._err_msg_for(failure_message_resolver))
-                return pfh.new_pfh_fail__str(err_msg)
+                err_msg = blocks.PrependFirstMinorBlockOfFirstMajorBlockR(
+                    _FILE_EXISTS_BUT_INVALID_PROPERTIES_ERR_MSG_HEADER,
+                    self._err_msg_for(failure_message_resolver)
+                )
+                return pfh.new_pfh_fail__td(err_msg)
         except hard_error.HardErrorException as ex:
-            return pfh.new_pfh_hard_error__str(self._err_msg_for(ex.error))
+            return pfh.new_pfh_hard_error__td(self._err_msg_for__td(ex.error))
 
     def _matches_file_matcher_for_expectation_type(self) -> Optional[ErrorMessageResolver]:
         resolver = self._file_matcher_for_expectation_type()
@@ -316,7 +322,10 @@ class _Assertion:
     def _is_positive_check(self) -> bool:
         return self.expectation_type is ExpectationType.POSITIVE
 
-    def _err_msg_for(self, msg_resolver: ErrorMessageResolver) -> str:
+    def _err_msg_for(self, msg_resolver: ErrorMessageResolver) -> TextRenderer:
+        return self._err_msg_for__td(env_dep_texts.of_old(msg_resolver))
+
+    def _err_msg_for__td(self, msg_resolver: TextResolver) -> TextRenderer:
         env = error_message.ErrorMessageResolvingEnvironment(self.environment.home_and_sds,
                                                              self.environment.symbols)
         return msg_resolver.resolve(env)
@@ -324,9 +333,9 @@ class _Assertion:
 
 _ERROR_MESSAGE_HEADER = 'Failure for path:'
 
-_FILE_EXISTS_BUT_INVALID_PROPERTIES_ERR_MSG_HEADER = """\
-File exists, but:
-"""
+_FILE_EXISTS_BUT_INVALID_PROPERTIES_ERR_MSG_HEADER = rend_comb.SingletonSequenceR(
+    rend_comb.ConstantR(text_struct.LineElement(text_struct.StringLineObject('File exists, but:')))
+)
 
 _PROPERTIES_DESCRIPTION = """\
 Applies a {FILE_MATCHER} on {PATH}, if it exists.

@@ -14,8 +14,9 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
@@ -327,7 +328,9 @@ class _FilesMatcherValueThatReportsHardError(FilesMatcherValue):
     def matches(self,
                 environment: Environment,
                 files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        raise HardErrorException(ConstantErrorMessageResolver('unconditional hard error'))
+        raise HardErrorException(
+            env_dep_texts.constant('unconditional hard error')
+        )
 
 
 class _ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrPostSdsValidator):

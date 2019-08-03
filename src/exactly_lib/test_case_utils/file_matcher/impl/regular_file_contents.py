@@ -9,6 +9,7 @@ from exactly_lib.test_case.validation.pre_or_post_value_validators import ValueV
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.file_system_element_matcher import ErrorMessageResolverForFailingFileProperties2
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic import string_matcher
@@ -44,10 +45,11 @@ class RegularFileMatchesStringMatcher(FileMatcher):
                 actual_file_attributes.TYPE_ATTRIBUTE
             )
             raise HardErrorException(
-                ErrorMessageResolverForFailingFileProperties2(property_descriptor,
-                                                              failure_info_properties,
-                                                              self._expected_file_type)
-            )
+                env_dep_texts.of_old(
+                    ErrorMessageResolverForFailingFileProperties2(property_descriptor,
+                                                                  failure_info_properties,
+                                                                  self._expected_file_type)
+                ))
 
     @staticmethod
     def _string_matcher_model(model: FileMatcherModel) -> string_matcher.FileToCheck:

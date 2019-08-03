@@ -9,12 +9,14 @@ from exactly_lib.util.simple_textstruct.file_printer_output.print_on_file_printe
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
 
 
-def single_pre_formatted_line_object(x: Any) -> TextRenderer:
+def single_pre_formatted_line_object(x: Any,
+                                     is_line_ended: bool = False) -> TextRenderer:
     """
+    :param is_line_ended: Tells if the string str(x) ends with a new-line character.
     :param x: __str__ gives the string
     """
     return blocks.MajorBlocksOfSingleLineObject(
-        line_objects.PreFormattedString(x)
+        line_objects.PreFormattedString(x, is_line_ended)
     )
 
 

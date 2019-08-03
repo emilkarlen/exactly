@@ -1,10 +1,10 @@
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.test_case_utils.err_msg2.env_dep_text import TextResolver
 
 
 class HardErrorException(Exception):
-    def __init__(self, error: ErrorMessageResolver):
+    def __init__(self, error: TextResolver):
         self._error = error
 
     @property
-    def error(self) -> ErrorMessageResolver:
+    def error(self) -> TextResolver:
         return self._error
