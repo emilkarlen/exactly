@@ -1,5 +1,4 @@
 import unittest
-
 from typing import Optional
 
 from exactly_lib.section_document.parse_source import ParseSource
@@ -83,6 +82,8 @@ class TestLineBreaksWithEmptyActualFile(TestCaseBase):
                     model_construction.empty_model(),
                     self.configuration.arrangement_for_contents(
                         post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-                    Expectation(main_result=case.main_result_assertion,
-                                source=case.source_assertion),
+                    Expectation(
+                        main_result=case.main_result_assertion,
+                        source=case.source_assertion
+                    ),
                 )

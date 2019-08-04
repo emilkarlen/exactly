@@ -1,11 +1,13 @@
 import unittest
 from typing import Callable, Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds, PathResolvingEnvironment
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case_utils.test_resources.validation import Expectation, ValidationExpectation, \
     ValidationActual
 from exactly_lib_test.test_resources.actions import do_nothing
@@ -17,7 +19,7 @@ def check(put: unittest.TestCase,
           validator: PreOrPostSdsValidator,
           environment: PathResolvingEnvironmentPreOrPostSds,
           expectation: Expectation):
-    def _check(f: Callable[[PathResolvingEnvironment], str],
+    def _check(f: Callable[[PathResolvingEnvironment], Optional[TextRenderer]],
                message: str,
                expect_none: bool,
                arg):
@@ -45,28 +47,28 @@ def check(put: unittest.TestCase,
 class ValidatorThat(PreOrPostSdsValidator):
     def __init__(self,
                  pre_sds_action=do_nothing,
-                 pre_sds_return_value=None,
+                 pre_sds_return_value: Optional[TextRenderer] = None,
                  post_setup_action=do_nothing,
-                 post_setup_return_value=None,
+                 post_setup_return_value: Optional[TextRenderer] = None,
                  ):
         self.post_setup_return_value = post_setup_return_value
         self.pre_sds_return_value = pre_sds_return_value
         self.post_setup_action = post_setup_action
         self.pre_sds_action = pre_sds_action
 
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
         self.pre_sds_action(environment)
         return self.pre_sds_return_value
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
         self.post_setup_action(environment)
         return self.post_setup_return_value
 
 
 def constant_validator(result: ValidationActual) -> PreOrPostSdsValidator:
     return ValidatorThat(
-        pre_sds_return_value=result.pre_sds,
-        post_setup_return_value=result.post_sds,
+        pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test__optional(result.pre_sds),
+        post_setup_return_value=asrt_text_doc.new_single_string_text_for_test__optional(result.post_sds),
     )
 
 

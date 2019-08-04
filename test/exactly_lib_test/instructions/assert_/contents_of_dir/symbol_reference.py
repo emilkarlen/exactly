@@ -97,12 +97,14 @@ class TestReferencedMatcherShouldBeValidated(tr.TestCaseBaseForParser):
                 expected=
                 Expectation(
                     validation_pre_sds=asrt_svh.is_validation_error(
-                        asrt_text_doc.is_single_pre_formatted_text_that_equals(err_msg_from_validator)
+                        asrt_text_doc.is_string_for_test_that_equals(err_msg_from_validator)
                     ),
                     symbol_usages=expected_symbol_usages,
                 ),
                 actual=
-                ValidatorThat(pre_sds_return_value=err_msg_from_validator)
+                ValidatorThat(
+                    pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test(err_msg_from_validator)
+                )
                 ),
             NEA('post sds validation',
                 expected=
@@ -113,7 +115,9 @@ class TestReferencedMatcherShouldBeValidated(tr.TestCaseBaseForParser):
                     symbol_usages=expected_symbol_usages,
                 ),
                 actual=
-                ValidatorThat(post_setup_return_value=err_msg_from_validator)
+                ValidatorThat(
+                    post_setup_return_value=asrt_text_doc.new_single_string_text_for_test(err_msg_from_validator)
+                )
                 ),
         ]
         for case in cases:

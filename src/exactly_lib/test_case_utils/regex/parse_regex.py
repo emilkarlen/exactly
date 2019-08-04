@@ -1,6 +1,8 @@
 import re
 from typing import Sequence, Set, Pattern, Optional, Tuple
 
+from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document import parser_classes
@@ -18,6 +20,7 @@ from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexVa
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.symbol_table import SymbolTable
 
 IGNORE_CASE_OPTION_NAME = a.OptionName(long_name='ignore-case')
@@ -90,14 +93,14 @@ class _ValidatorWhichCreatesRegex(PreOrPostSdsValueValidator):
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self.string.resolving_dependencies()
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[str]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
         if self.pattern is None:
             if not self.string.resolving_dependencies():
                 return self._compile_and_set_pattern(self.string.value_when_no_dir_dependencies())
         else:
             return None
 
-    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[str]:
+    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
         if self.pattern is None:
             return self._compile_and_set_pattern(self.string.value_of_any_dependency(tcds))
         else:
@@ -113,7 +116,7 @@ class _ValidatorWhichCreatesRegex(PreOrPostSdsValueValidator):
             self._compile_and_set_pattern(self.string.value_of_any_dependency(tcds))
         return self.pattern
 
-    def _compile_and_set_pattern(self, regex_pattern: str) -> Optional[str]:
+    def _compile_and_set_pattern(self, regex_pattern: str) -> Optional[TextRenderer]:
         try:
             flags = 0
             if self._is_ignore_case:
@@ -121,8 +124,13 @@ class _ValidatorWhichCreatesRegex(PreOrPostSdsValueValidator):
             self.pattern = re.compile(regex_pattern, flags)
             return None
         except Exception as ex:
-            err_msg = "Invalid {}: '{}'".format(instruction_arguments.REG_EX.name, str(ex))
-            return err_msg
+            return text_docs.single_line(
+                strings.FormatPositional(
+                    "Invalid {}: '{}'",
+                    instruction_arguments.REG_EX.name,
+                    ex,
+                )
+            )
 
 
 class _RegexValue(RegexValue):

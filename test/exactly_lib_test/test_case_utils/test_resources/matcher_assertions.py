@@ -1,5 +1,6 @@
 from typing import Optional, Sequence
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -25,9 +26,9 @@ def is_hard_error() -> Optional[ValueAssertion[str]]:
 class Expectation:
     def __init__(
             self,
-            validation_post_sds: ValueAssertion[Optional[str]] = asrt.is_none,
+            validation_post_sds: ValueAssertion[Optional[TextRenderer]] = asrt.is_none,
 
-            validation_pre_sds: ValueAssertion[Optional[str]] = asrt.is_none,
+            validation_pre_sds: ValueAssertion[Optional[TextRenderer]] = asrt.is_none,
 
             main_result: Optional[ValueAssertion[Optional[str]]] = None,
             is_hard_error: Optional[ValueAssertion[str]] = None,

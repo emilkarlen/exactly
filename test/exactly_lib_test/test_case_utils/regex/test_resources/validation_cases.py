@@ -38,13 +38,13 @@ def failing_regex_validation_cases(symbol_in_regex_name: str = 'symbol_in_regex'
             '*',
             [],
             [],
-            validation.pre_sds_validation_fails(),
+            validation.pre_sds_validation_fails__w_any_msg(),
         ),
         RegexValidationCase(
             'failing validation/post sds',
             '*' + symbol_reference_syntax_for_name(post_sds_file_ref.name),
             [post_sds_file_ref],
             [is_reference_to_valid_regex_string_part(post_sds_file_ref.name)],
-            validation.post_sds_validation_fails(),
+            validation.post_sds_validation_fails__w_any_msg(),
         ),
     ]

@@ -15,6 +15,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_utils.regex.test_resources import assertions as sut
 from exactly_lib_test.test_case_utils.regex.test_resources.regex_values import RegexResolverConstantTestImpl
+from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails, \
     post_sds_validation_fails
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -220,7 +221,9 @@ class TestMatchesRegexResolver(unittest.TestCase):
 
         resolver_of_actual = RegexResolverConstantTestImpl(
             ARBITRARY_PATTERN,
-            value_validator=ConstantPreOrPostSdsValueValidator(pre_sds_result='expected failure'),
+            value_validator=ConstantPreOrPostSdsValueValidator(
+                pre_sds_result=asrt_validation.new_single_string_text_for_test('expected failure')
+            ),
         )
 
         assertion_to_check = sut.matches_regex_resolver(
@@ -237,7 +240,9 @@ class TestMatchesRegexResolver(unittest.TestCase):
 
         resolver_of_actual = RegexResolverConstantTestImpl(
             ARBITRARY_PATTERN,
-            value_validator=ConstantPreOrPostSdsValueValidator(post_sds_result='expected failure'),
+            value_validator=ConstantPreOrPostSdsValueValidator(
+                post_sds_result=asrt_validation.new_single_string_text_for_test('expected failure')
+            ),
         )
 
         assertion_to_check = sut.matches_regex_resolver(

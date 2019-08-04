@@ -4,6 +4,7 @@ Test of test-infrastructure: instruction_check.
 import unittest
 from typing import Sequence, Optional, List
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, FilesMatcherValue, Environment, \
@@ -334,10 +335,10 @@ class _FilesMatcherValueThatReportsHardError(FilesMatcherValue):
 
 
 class _ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrPostSdsValidator):
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
         return None
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
         utils.raise_test_error_if_cwd_is_not_test_root(environment.sds)
         return None
 
@@ -386,13 +387,13 @@ class ValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(PreOrPostSdsVali
         self._put = put
         self._expectation = expectation
 
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
         return self._apply(environment)
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
         return self._apply(environment)
 
-    def _apply(self, environment: PathResolvingEnvironment) -> Optional[str]:
+    def _apply(self, environment: PathResolvingEnvironment) -> Optional[TextRenderer]:
         self._expectation.apply_with_message(self._put, environment.symbols,
                                              'symbols given to validator')
 
@@ -400,10 +401,10 @@ class ValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(PreOrPostSdsVali
 
 
 class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrPostSdsValidator):
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
         return None
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
         utils.raise_test_error_if_cwd_is_not_test_root(environment.sds)
         return None
 

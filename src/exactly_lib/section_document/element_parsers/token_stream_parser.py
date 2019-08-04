@@ -224,7 +224,7 @@ class TokenParser:
         """
         actual_string = self.consume_mandatory_unquoted_string(expected_string, must_be_on_current_line)
         if actual_string != expected_string:
-            raise SingleInstructionInvalidArgumentException(expected_found.unexpected_lines(
+            raise SingleInstructionInvalidArgumentException(expected_found.unexpected_lines_str(
                 expected_string,
                 actual_string))
 

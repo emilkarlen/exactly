@@ -5,7 +5,10 @@ import stat
 import types
 from typing import Callable, Optional
 
+from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import actual_file_attributes
+from exactly_lib.util.simple_textstruct.rendering import strings
 
 
 class FileType(enum.Enum):
@@ -157,9 +160,14 @@ def negation_of(check: FilePropertiesCheck) -> FilePropertiesCheck:
 
 
 def render_failure(properties_with_neg: PropertiesWithNegation,
-                   file_path: pathlib.Path) -> str:
-    failing_property_str = render_failing_property(properties_with_neg)
-    return failing_property_str + ': ' + str(file_path)
+                   file_path: pathlib.Path) -> TextRenderer:
+    return text_docs.single_line(
+        strings.Concatenate([
+            render_failing_property(properties_with_neg),
+            ': ',
+            file_path,
+        ])
+    )
 
 
 def render_failing_property(properties_with_neg: PropertiesWithNegation) -> str:

@@ -13,9 +13,9 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
+from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import ExpectedValueResolver
@@ -166,10 +166,11 @@ class EqualityStringMatcher(StringMatcher):
 
     def _do_post_setup_validation(self) -> Optional[ErrorMessageResolver]:
         error_message = self._validator.validate_post_sds_if_applicable()
-        if error_message is None:
-            return None
-        else:
-            return err_msg_resolvers.constant(error_message)
+        return (
+            None
+            if error_message is None
+            else env_dep_texts.as_old(env_dep_texts.constant_renderer(error_message))
+        )
 
 
 def _validator_of_expected(expected_contents: StringOrFileRefResolver) -> PreOrPostSdsValidator:

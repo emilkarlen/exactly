@@ -79,6 +79,7 @@ class _ParseWithInvalidLineMatcher(_TestCaseBase):
 class _TestLineMatcherValidatorIsApplied(TestCaseBase):
     def runTest(self):
         failure_message = 'failure'
+        failing_validation_result = asrt_validation.new_single_string_text_for_test(failure_message)
         assert_failing_validation = asrt_validation.matches_validation_failure(asrt.equals(failure_message))
         line_matcher_symbol_name = 'line_matcher_with_failing_validation'
 
@@ -93,7 +94,9 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
                     validation_pre_sds=assert_failing_validation,
                     symbol_usages=asserted_symbol_references
                 ),
-                actual=ConstantPreOrPostSdsValueValidator(pre_sds_result=failure_message)
+                actual=ConstantPreOrPostSdsValueValidator(
+                    pre_sds_result=failing_validation_result
+                )
                 ),
             NEA('failure post sds',
                 expected=
@@ -101,7 +104,9 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
                     validation_post_sds=assert_failing_validation,
                     symbol_usages=asserted_symbol_references
                 ),
-                actual=ConstantPreOrPostSdsValueValidator(post_sds_result=failure_message)
+                actual=ConstantPreOrPostSdsValueValidator(
+                    post_sds_result=failing_validation_result
+                )
                 ),
         ]
         for case in validation_cases:

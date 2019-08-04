@@ -44,7 +44,9 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
                     model_construction.empty_model(),
                     self.configuration.arrangement_for_contents(
                         post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-                    Expectation(main_result=maybe_not.pass__if_positive__fail__if_negative),
+                    Expectation(
+                        main_result=maybe_not.pass__if_positive__fail__if_negative
+                    ),
                 )
 
 
@@ -60,7 +62,9 @@ class ActualFileIsNonEmpty(tc.TestWithNegationArgumentBase):
                     model_construction.model_of('contents that makes the file non-empty'),
                     self.configuration.arrangement_for_contents(
                         post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-                    Expectation(main_result=maybe_not.fail__if_positive__pass_if_negative),
+                    Expectation(
+                        main_result=maybe_not.fail__if_positive__pass_if_negative
+                    ),
                 )
 
 

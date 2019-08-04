@@ -3,6 +3,7 @@ import unittest
 import pathlib
 from typing import Optional, Sequence, Dict
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.instructions.multi_phase.utils.instruction_embryo import InstructionEmbryoParser, \
     InstructionEmbryo
@@ -188,7 +189,7 @@ class Executor:
     def _execute_validate_pre_sds(
             self,
             environment: InstructionEnvironmentForPreSdsStep,
-            instruction: InstructionEmbryo) -> str:
+            instruction: InstructionEmbryo) -> Optional[TextRenderer]:
         result = instruction.validator.validate_pre_sds_if_applicable(environment.path_resolving_environment)
         self.expectation.validation_pre_sds.apply_with_message(self.put, result,
                                                                'validation_pre_sds')
@@ -197,7 +198,7 @@ class Executor:
     def _execute_validate_post_setup(
             self,
             environment: InstructionEnvironmentForPostSdsStep,
-            instruction: InstructionEmbryo) -> str:
+            instruction: InstructionEmbryo) -> Optional[TextRenderer]:
         result = instruction.validator.validate_post_sds_if_applicable(environment.path_resolving_environment)
         self.expectation.validation_post_sds.apply_with_message(self.put, result,
                                                                 'validation_post_sds')

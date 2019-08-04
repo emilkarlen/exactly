@@ -109,7 +109,9 @@ class FullMatchSingleLineWoNewline(tc.TestWithNegationArgumentBase):
                                  maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
                         model_construction.model_of(actual_contents),
                         self.configuration.arrangement_for_contents(),
-                        Expectation(main_result=maybe_not.pass__if_positive__fail__if_negative),
+                        Expectation(
+                            main_result=maybe_not.pass__if_positive__fail__if_negative
+                        ),
                     )
 
 
@@ -125,7 +127,9 @@ class PartialMatchSingleLineWoNewline(tc.TestWithNegationArgumentBase):
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
                     model_construction.model_of(actual_contents),
                     self.configuration.arrangement_for_contents(),
-                    Expectation(main_result=maybe_not.pass__if_positive__fail__if_negative),
+                    Expectation(
+                        main_result=maybe_not.pass__if_positive__fail__if_negative
+                    ),
                 )
 
 
@@ -141,7 +145,9 @@ class FullMatchDoNotAcceptPartialMatchSingleLineWoNewline(tc.TestWithNegationArg
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
                     model_construction.model_of(actual_contents),
                     self.configuration.arrangement_for_contents(),
-                    Expectation(main_result=maybe_not.fail__if_positive__pass_if_negative),
+                    Expectation(
+                        main_result=maybe_not.fail__if_positive__pass_if_negative
+                    ),
                 )
 
 
@@ -158,7 +164,9 @@ class FullMatchSingleLineWNewline(tc.TestWithNegationArgumentBase):
                     argument_elements.as_arguments,
                     model_construction.model_of(actual_contents),
                     self.configuration.arrangement_for_contents(),
-                    Expectation(main_result=maybe_not.pass__if_positive__fail__if_negative),
+                    Expectation(
+                        main_result=maybe_not.pass__if_positive__fail__if_negative
+                    ),
                 )
 
 
@@ -180,7 +188,9 @@ class FullMatchTwoLinesWNewline(tc.TestWithNegationArgumentBase):
                         argument_elements.as_arguments,
                         model_construction.model_of(actual_contents),
                         self.configuration.arrangement_for_contents(),
-                        Expectation(main_result=maybe_not.pass__if_positive__fail__if_negative),
+                        Expectation(
+                            main_result=maybe_not.pass__if_positive__fail__if_negative
+                        ),
                     )
 
 
@@ -211,7 +221,9 @@ class PartialMatchAcceptsExtraLinesBeforeOrAfterMatchingLines(tc.TestWithNegatio
                         argument_elements.as_arguments,
                         model_construction.model_of(actual_contents),
                         self.configuration.arrangement_for_contents(),
-                        Expectation(main_result=maybe_not.pass__if_positive__fail__if_negative),
+                        Expectation(
+                            main_result=maybe_not.pass__if_positive__fail__if_negative
+                        ),
                     )
 
 
@@ -233,7 +245,9 @@ class FullMatchDoNotAcceptExtraLineAfterMatchingLines(tc.TestWithNegationArgumen
                     argument_elements.as_arguments,
                     model_construction.model_of(actual_contents),
                     self.configuration.arrangement_for_contents(),
-                    Expectation(main_result=maybe_not.fail__if_positive__pass_if_negative),
+                    Expectation(
+                        main_result=maybe_not.fail__if_positive__pass_if_negative
+                    ),
                 )
 
 

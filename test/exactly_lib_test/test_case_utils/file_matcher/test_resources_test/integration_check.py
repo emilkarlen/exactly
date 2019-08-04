@@ -5,6 +5,7 @@ import pathlib
 import unittest
 from typing import Sequence, Optional, List
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
@@ -303,10 +304,10 @@ class FileMatcherResolverThatAssertsThatSymbolsAreAsExpected(FileMatcherResolver
 
 
 class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrPostSdsValueValidator):
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[str]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
         return None
 
-    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[str]:
+    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
         utils.raise_test_error_if_cwd_is_not_test_root(tcds.sds)
         return None
 

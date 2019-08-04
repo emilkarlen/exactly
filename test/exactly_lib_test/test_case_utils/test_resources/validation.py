@@ -2,26 +2,29 @@ from typing import Optional, Sequence
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.result import svh
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
-ValidationResultAssertion = ValueAssertion[Optional[str]]
-
-
-def is_arbitrary_validation_failure() -> ValueAssertion[Optional[str]]:
-    return asrt.is_instance(str)
+ValidationResultAssertion = ValueAssertion[Optional[TextRenderer]]
 
 
-def is_validation_success() -> ValueAssertion[Optional[str]]:
+def is_arbitrary_validation_failure() -> ValidationResultAssertion:
+    return asrt.is_not_none_and(asrt_text_doc.is_any_text())
+
+
+def is_validation_success() -> ValidationResultAssertion:
     return asrt.is_none
 
 
-def matches_validation_failure(message: ValueAssertion[str]) -> ValueAssertion[Optional[str]]:
-    """Matcher on the resolved error message"""
-    return asrt.is_instance_with(str, message)
+def matches_validation_failure(message: ValueAssertion[str]) -> ValidationResultAssertion:
+    return asrt_text_doc.is_string_for_test(message)
+
+
+def new_single_string_text_for_test(text: str) -> TextRenderer:
+    return asrt_text_doc.new_single_string_text_for_test(text)
 
 
 class Expectation:
@@ -44,11 +47,11 @@ class ValidationActual:
         return ValidationActual(None, None)
 
     @staticmethod
-    def fails_pre_sds(err_msg: str = 'validation error/pre sds'):
+    def fails_pre_sds(err_msg: str = 'validation error/pre sds') -> 'ValidationActual':
         return ValidationActual(err_msg, None)
 
     @staticmethod
-    def fails_post_sds(err_msg: str = 'validation error/post sds'):
+    def fails_post_sds(err_msg: str = 'validation error/post sds') -> 'ValidationActual':
         return ValidationActual(None, err_msg)
 
 
@@ -100,10 +103,17 @@ def all_validations_passes() -> ValidationExpectation:
     )
 
 
+def pre_sds_validation_fails__w_any_msg() -> ValidationExpectation:
+    return ValidationExpectation(
+        pre_sds=asrt.is_not_none_and(asrt_text_doc.is_any_text()),
+        post_sds=asrt.is_none,
+    )
+
+
 def pre_sds_validation_fails(expected_err_msg: ValueAssertion[str] = asrt.anything_goes()
                              ) -> ValidationExpectation:
     return ValidationExpectation(
-        pre_sds=asrt.is_not_none_and(expected_err_msg),
+        pre_sds=asrt.is_not_none_and(asrt_text_doc.is_string_for_test(expected_err_msg)),
         post_sds=asrt.is_none,
     )
 
@@ -112,7 +122,14 @@ def post_sds_validation_fails(expected_err_msg: ValueAssertion[str] = asrt.anyth
                               ) -> ValidationExpectation:
     return ValidationExpectation(
         pre_sds=asrt.is_none,
-        post_sds=asrt.is_not_none_and(expected_err_msg),
+        post_sds=asrt.is_not_none_and(asrt_text_doc.is_string_for_test(expected_err_msg)),
+    )
+
+
+def post_sds_validation_fails__w_any_msg() -> ValidationExpectation:
+    return ValidationExpectation(
+        pre_sds=asrt.is_none,
+        post_sds=asrt.is_not_none_and(asrt_text_doc.is_any_text()),
     )
 
 
@@ -138,12 +155,12 @@ def failing_validation_cases__svh() -> Sequence[NEA[ValidationExpectationSvh, Va
     err_msg_post_sds = 'validation err msg/post sds'
     return [
         NEA('validation fails/pre sds',
-            pre_sds_validation_fails__svh(asrt_text_doc.is_single_pre_formatted_text_that_equals(err_msg_pre_sds)),
+            pre_sds_validation_fails__svh(asrt_text_doc.is_string_for_test_that_equals(err_msg_pre_sds)),
             ValidationActual.fails_pre_sds(err_msg_pre_sds),
             ),
 
         NEA('validation fails/post sds',
-            post_sds_validation_fails__svh(asrt_text_doc.is_single_pre_formatted_text_that_equals(err_msg_post_sds)),
+            post_sds_validation_fails__svh(asrt_text_doc.is_string_for_test_that_equals(err_msg_post_sds)),
             ValidationActual.fails_post_sds(err_msg_post_sds),
             ),
     ]

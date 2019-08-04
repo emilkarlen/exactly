@@ -196,13 +196,13 @@ class _Instruction(AssertPhaseInstruction):
                          ) -> svh.SuccessOrValidationErrorOrHardError:
         validator = self._validator(environment)
         maybe_err_msg = validator.validate_pre_sds_if_applicable(environment.hds)
-        return svh.new_maybe_svh_validation_error__str(maybe_err_msg)
+        return svh.new_maybe_svh_validation_error(maybe_err_msg)
 
     def validate_post_setup(self, environment: InstructionEnvironmentForPostSdsStep
                             ) -> svh.SuccessOrValidationErrorOrHardError:
         validator = self._validator(environment)
         maybe_err_msg = validator.validate_post_sds_if_applicable(environment.home_and_sds)
-        return svh.new_maybe_svh_validation_error__str(maybe_err_msg)
+        return svh.new_maybe_svh_validation_error(maybe_err_msg)
 
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,

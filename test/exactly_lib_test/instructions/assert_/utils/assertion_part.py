@@ -179,22 +179,26 @@ class TestSequence(unittest.TestCase):
         the_error_message = 'the error message'
         assertion_part_with_successful_validation = PartForValidation(ValidatorThat())
         assertion_part_with_unsuccessful_validation = PartForValidation(ValidatorThat(
-            pre_sds_return_value=the_error_message))
+            pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message))
+        )
         sequence_checker = sut.SequenceOfCooperativeAssertionParts([assertion_part_with_successful_validation,
                                                                     assertion_part_with_unsuccessful_validation])
         validation_environment = self.environment.path_resolving_environment_pre_or_post_sds
         # ACT #
         actual = sequence_checker.validator.validate_pre_sds_if_applicable(validation_environment)
         # ASSERT #
-        self.assertEqual(the_error_message,
-                         actual)
+        asrt_text_doc.is_string_for_test_that_equals(the_error_message).apply_without_message(
+            self,
+            actual,
+        )
 
     def test_WHEN_a_validator_fails_post_setup_THEN_validation_SHOULD_fail_post_setup(self):
         # ARRANGE #
         the_error_message = 'the error message'
         assertion_part_with_successful_validation = PartForValidation(ValidatorThat())
         assertion_part_with_unsuccessful_validation = PartForValidation(ValidatorThat(
-            post_setup_return_value=the_error_message))
+            post_setup_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message))
+        )
         sequence_checker = sut.SequenceOfCooperativeAssertionParts([assertion_part_with_successful_validation,
                                                                     assertion_part_with_unsuccessful_validation])
         validation_environment = self.environment.path_resolving_environment_pre_or_post_sds
@@ -204,9 +208,11 @@ class TestSequence(unittest.TestCase):
         # ASSERT #
         self.assertIsNone(pre_sds_result,
                           'pre sds validation should succeed')
-        self.assertEqual(the_error_message,
-                         post_sds_result,
-                         'post setup validation should fail')
+        asrt_text_doc.is_string_for_test_that_equals(the_error_message).apply_with_message(
+            self,
+            post_sds_result,
+            'post setup validation should fail',
+        )
 
 
 class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
@@ -313,7 +319,8 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         # ARRANGE #
         the_error_message = 'the error message'
         assertion_part = PartForValidation(ValidatorThat(
-            pre_sds_return_value=the_error_message))
+            pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message))
+        )
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
                                                                 'custom environment',
                                                                 lambda env: 'argument to assertion_part')
@@ -329,7 +336,8 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         # ARRANGE #
         the_error_message = 'the error message'
         assertion_part = PartForValidation(ValidatorThat(
-            post_setup_return_value=the_error_message))
+            post_setup_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message))
+        )
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
                                                                 'custom environment',
                                                                 lambda env: 'argument to assertion_part')

@@ -2,6 +2,7 @@ import random
 import unittest
 from typing import Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.multi_phase.utils import \
     instruction_from_parts_for_executing_program as spe_parts
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import \
@@ -105,7 +106,9 @@ class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
 class TestResultIsValidationErrorWhenPreSdsValidationFails(TestCaseBase):
     def runTest(self):
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            ConstantResultValidator(pre_sds='validation error message')
+            ConstantResultValidator(
+                pre_sds=asrt_text_doc.new_single_string_text_for_test('validation error message')
+            )
         )
         self.conf.run_sub_process_test(
             self,
@@ -118,7 +121,9 @@ class TestResultIsValidationErrorWhenPreSdsValidationFails(TestCaseBase):
 class TestResultIsValidationErrorWhenPostSetupValidationFails(TestCaseBase):
     def runTest(self):
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            ConstantResultValidator(post_setup='validation error message post setup')
+            ConstantResultValidator(
+                post_setup=asrt_text_doc.new_single_string_text_for_test('validation error message post setup')
+            )
         )
         self.conf.run_sub_process_test(
             self,
@@ -308,13 +313,13 @@ SCRIPT_THAT_EXISTS_WITH_STATUS_0 = 'import sys; sys.exit(0)'
 
 class ConstantResultValidator(pre_or_post_validation.PreOrPostSdsValidator):
     def __init__(self,
-                 pre_sds=None,
-                 post_setup=None):
+                 pre_sds: Optional[TextRenderer] = None,
+                 post_setup: Optional[TextRenderer] = None):
         self.pre_sds = pre_sds
         self.post_setup = post_setup
 
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
         return self.pre_sds
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
         return self.post_setup

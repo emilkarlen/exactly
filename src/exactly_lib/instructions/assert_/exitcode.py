@@ -6,6 +6,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
     SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.processing import exit_values
@@ -134,7 +135,7 @@ class ExitCodeResolver(comparison_structures.OperandResolver[int]):
             raise pfh_exception.PfhHardErrorException(msg)
 
 
-def must_be_within_byte_range(actual: int) -> Optional[str]:
+def must_be_within_byte_range(actual: int) -> Optional[TextRenderer]:
     if actual < 0 or actual > 255:
         return expected_found.unexpected_lines(_OPERAND_DESCRIPTION,
                                                str(actual))

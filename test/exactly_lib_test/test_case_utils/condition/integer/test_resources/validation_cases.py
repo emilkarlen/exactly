@@ -55,7 +55,7 @@ def failing_integer_validation_cases(symbol_in_integer_name: str = 'symbol_in_in
                               expr_str,
                               [],
                               [],
-                              validation.pre_sds_validation_fails(),
+                              validation.pre_sds_validation_fails__w_any_msg(),
                               )
         for expr_str in
         _PRE_SDS_VALIDATION_FAILURE__CONSTANT_STRINGS
@@ -66,13 +66,13 @@ def failing_integer_validation_cases(symbol_in_integer_name: str = 'symbol_in_in
                               symbol_reference_syntax_for_name(non_int_string_symbol.name),
                               [non_int_string_symbol],
                               [is_reference_to_symbol_in_expression(non_int_string_symbol.name)],
-                              validation.pre_sds_validation_fails(),
+                              validation.pre_sds_validation_fails__w_any_msg(),
                               ),
         IntegerValidationCase('failing validation/pre sds: non-iterable string ref',
                               'len({})'.format(symbol_reference_syntax_for_name(non_iterable_string_symbol.name)),
                               [non_iterable_string_symbol],
                               [is_reference_to_symbol_in_expression(non_iterable_string_symbol.name)],
-                              validation.pre_sds_validation_fails(),
+                              validation.pre_sds_validation_fails__w_any_msg(),
                               ),
     ]
 

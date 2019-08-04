@@ -1,6 +1,7 @@
 from typing import Sequence, Optional, Callable, Set
 
 from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironmentPostSds
@@ -15,10 +16,10 @@ from exactly_lib.test_case_utils.condition.comparison_structures import OperandR
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import NotAnIntegerException, python_evaluate
 from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.type_system.data.string_value import StringValue
-from exactly_lib.util import file_printables
 from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib.common.report_rendering import print
+
+CustomIntegerValidator = Callable[[int], Optional[TextRenderer]]
 
 
 class _IntResolver:
@@ -68,7 +69,7 @@ class _PrimitiveValueComputer:
 class IntegerValue(OperandValue[int]):
     def __init__(self,
                  int_expression: StringValue,
-                 custom_integer_validator: Optional[Callable[[int], Optional[str]]] = None):
+                 custom_integer_validator: Optional[CustomIntegerValidator] = None):
         self._primitive_value_computer = _PrimitiveValueComputer(int_expression)
         self._validator = _IntegerValueValidator(self._primitive_value_computer,
                                                  custom_integer_validator)
@@ -90,7 +91,7 @@ class IntegerResolver(OperandResolver[int]):
     def __init__(self,
                  property_name: str,
                  value_resolver: StringResolver,
-                 custom_integer_validator: Optional[Callable[[int], Optional[str]]] = None):
+                 custom_integer_validator: Optional[CustomIntegerValidator] = None):
         """
         :param property_name:
         :param value_resolver:
@@ -101,7 +102,7 @@ class IntegerResolver(OperandResolver[int]):
         self._value_resolver = value_resolver
         self._custom_integer_validator = custom_integer_validator
         self._int_resolver = _IntResolver(value_resolver)
-        self._validator = _Validator(self._int_resolver, custom_integer_validator)
+        self._validator = _ValidatorThatReportsViaExceptions(self._int_resolver, custom_integer_validator)
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -138,10 +139,10 @@ class IntegerResolver(OperandResolver[int]):
                             self._custom_integer_validator)
 
 
-class _Validator(SvhPreSdsValidatorViaExceptions):
+class _ValidatorThatReportsViaExceptions(SvhPreSdsValidatorViaExceptions):
     def __init__(self,
                  int_resolver: _IntResolver,
-                 custom_integer_validator: Optional[Callable[[int], Optional[str]]]):
+                 custom_integer_validator: Optional[CustomIntegerValidator]):
         self._int_resolver = int_resolver
         self._custom_integer_validator = custom_integer_validator
 
@@ -150,10 +151,12 @@ class _Validator(SvhPreSdsValidatorViaExceptions):
         try:
             resolved_value = self._int_resolver.resolve(environment)
         except NotAnIntegerException as ex:
-            msg = file_printables.of_format_string_args(
-                'Argument must be an integer: `{}\'',
-                ex.value_string)
-            raise svh_exception.SvhValidationException(text_docs.single_pre_formatted_line_object(msg))
+            msg = text_docs.single_pre_formatted_line_object(
+                strings.FormatPositional(
+                    'Argument must be an integer: `{}\'',
+                    ex.value_string)
+            )
+            raise svh_exception.SvhValidationException(msg)
 
         self._validate_custom(resolved_value)
 
@@ -161,29 +164,27 @@ class _Validator(SvhPreSdsValidatorViaExceptions):
         if self._custom_integer_validator:
             err_msg = self._custom_integer_validator(resolved_value)
             if err_msg:
-                raise svh_exception.SvhValidationException(
-                    text_docs.single_pre_formatted_line_object(err_msg)
-                )
+                raise svh_exception.SvhValidationException(err_msg)
 
 
 class _PreOrPostSdsValidator(PreOrPostSdsValidator):
     def __init__(self, adapted: SvhPreSdsValidatorViaExceptions):
         self._adapted = adapted
 
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
         try:
             self._adapted.validate_pre_sds(environment)
         except svh_exception.SvhException as ex:
-            return print.print_to_str(ex.err_msg.render())
+            return ex.err_msg
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
         return None
 
 
 class _IntegerValueValidator(PreOrPostSdsValueValidator):
     def __init__(self,
                  value_computer: _PrimitiveValueComputer,
-                 custom_validator: Optional[Callable[[int], Optional[str]]]):
+                 custom_validator: Optional[CustomIntegerValidator]):
         self._value_computer = value_computer
         self._custom_validator = (custom_validator
                                   if custom_validator is not None
@@ -191,22 +192,22 @@ class _IntegerValueValidator(PreOrPostSdsValueValidator):
                                   lambda x: None)
         self._has_dir_dependencies = bool(self._value_computer.resolving_dependencies())
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[str]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
         if not self._has_dir_dependencies:
             try:
                 x = self._value_computer.value_when_no_dir_dependencies()
                 return self._custom_validator(x)
             except NotAnIntegerException as ex:
-                return ex.value_string
+                return text_docs.single_line(ex.value_string)
 
         return None
 
-    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[str]:
+    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
         if self._has_dir_dependencies:
             try:
                 x = self._value_computer.value_of_any_dependency(tcds)
                 return self._custom_validator(x)
             except NotAnIntegerException as ex:
-                return ex.value_string
+                return text_docs.single_line(ex.value_string)
 
         return None

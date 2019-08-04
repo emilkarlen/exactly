@@ -4,6 +4,9 @@ class NotAnIntegerException(Exception):
 
 
 def python_evaluate(s: str) -> int:
+    """
+    :raises NotAnIntegerException
+    """
     try:
         val = eval(s)
         if isinstance(val, int):

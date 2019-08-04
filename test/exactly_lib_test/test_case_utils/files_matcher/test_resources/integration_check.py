@@ -3,6 +3,7 @@ import unittest
 import os
 from typing import Optional, Tuple
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
@@ -150,7 +151,7 @@ class _Executor:
 
     def _execute_validate_pre_sds(self,
                                   environment: PathResolvingEnvironmentPreSds,
-                                  resolver: FilesMatcherResolver) -> Optional[str]:
+                                  resolver: FilesMatcherResolver) -> Optional[TextRenderer]:
         result = resolver.validator().validate_pre_sds_if_applicable(environment)
         self.expectation.validation_pre_sds.apply_with_message(self.put, result,
                                                                'result of validate/pre sds')
@@ -158,7 +159,7 @@ class _Executor:
 
     def _execute_validate_post_setup(self,
                                      environment: PathResolvingEnvironmentPostSds,
-                                     resolver: FilesMatcherResolver) -> Optional[str]:
+                                     resolver: FilesMatcherResolver) -> Optional[TextRenderer]:
         result = resolver.validator().validate_post_sds_if_applicable(environment)
         self.expectation.validation_post_sds.apply_with_message(self.put, result,
                                                                 'result of validate/post setup')

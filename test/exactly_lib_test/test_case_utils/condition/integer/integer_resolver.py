@@ -1,5 +1,7 @@
 import unittest
+from typing import Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -11,7 +13,8 @@ from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_t
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources import instruction_environment
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds, fake_sds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds, fake_sds, fake_tcds
+from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.actions import do_return
 
 
@@ -125,7 +128,8 @@ class TestSymbolReferences(unittest.TestCase):
 
         resolver_to_check = sut.IntegerResolver(
             'the property to check',
-            string_resolvers.str_constant(str(1)))
+            string_resolvers.str_constant(str(1))
+        )
 
         # ACT #
 
@@ -145,7 +149,8 @@ class TestSymbolReferences(unittest.TestCase):
 
         resolver_to_check = sut.IntegerResolver(
             'the property to check',
-            the_string_resolver)
+            the_string_resolver
+        )
 
         # ACT #
 
@@ -181,11 +186,21 @@ class TestValidationPreSds(unittest.TestCase):
                     resolver_to_check = sut.IntegerResolver('the property to check',
                                                             string_resolvers.str_constant(resolved_value),
                                                             custom_validator)
-                    # ACT & ASSERT #
-                    with self.assertRaises(SvhValidationException) as cm:
-                        resolver_to_check.validate_pre_sds(the_instruction_environment.path_resolving_environment)
+                    with self.subTest(tested_obect='resolver'):
+                        # ACT & ASSERT #
+                        with self.assertRaises(SvhValidationException) as cm:
+                            resolver_to_check.validate_pre_sds(the_instruction_environment.path_resolving_environment)
 
-                    asrt_text_doc.is_any_text().apply_without_message(self, cm.exception.err_msg)
+                        asrt_text_doc.is_any_text().apply_without_message(self, cm.exception.err_msg)
+
+                    with self.subTest(tested_obect='value'):
+                        # ACT & ASSERT #
+                        value_to_check = resolver_to_check.resolve(the_instruction_environment.symbols)
+
+                        actual = value_to_check.validator().validate_pre_sds_if_applicable(
+                            the_instruction_environment.hds)
+
+                        asrt_text_doc.is_any_text().apply_without_message(self, actual)
 
     def test_validation_SHOULD_fail_WHEN_custom_validator_fails(self):
 
@@ -198,15 +213,31 @@ class TestValidationPreSds(unittest.TestCase):
         resolver_to_check = sut.IntegerResolver(
             'the property to check',
             string_resolvers.str_constant(str(resolved_value)),
-            CustomValidator(value_that_makes_the_validation_succeed=resolved_value + 1,
-                            error_message=error_message_from_custom_validator))
-        # ACT & ASSERT #
-        with self.assertRaises(SvhValidationException) as cm:
-            resolver_to_check.validate_pre_sds(the_instruction_environment.path_resolving_environment)
+            CustomValidator(
+                value_that_makes_the_validation_succeed=resolved_value + 1,
+                error_message=validation.new_single_string_text_for_test(error_message_from_custom_validator)
+            )
+        )
 
-        err_msg_expectation = asrt_text_doc.is_single_pre_formatted_text_that_equals(
-            error_message_from_custom_validator)
-        err_msg_expectation.apply_without_message(self, cm.exception.err_msg)
+        with self.subTest(tested_obect='resolver'):
+            # ACT & ASSERT #
+            with self.assertRaises(SvhValidationException) as cm:
+                resolver_to_check.validate_pre_sds(the_instruction_environment.path_resolving_environment)
+
+            err_msg_expectation = asrt_text_doc.is_string_for_test_that_equals(
+                error_message_from_custom_validator
+            )
+            err_msg_expectation.apply_without_message(self, cm.exception.err_msg)
+
+        with self.subTest(tested_obect='value'):
+            # ACT & ASSERT #
+            value_to_check = resolver_to_check.resolve(the_instruction_environment.symbols)
+            actual = value_to_check.validator().validate_pre_sds_if_applicable(the_instruction_environment.hds)
+
+            err_msg_expectation = asrt_text_doc.is_string_for_test_that_equals(
+                error_message_from_custom_validator
+            )
+            err_msg_expectation.apply_without_message(self, actual)
 
     def test_validation_SHOULD_succeed_WHEN_value_is_an_integer_and_custom_validator_succeeds(self):
 
@@ -222,27 +253,36 @@ class TestValidationPreSds(unittest.TestCase):
 
         custom_validator_cases = [
             None,
-            CustomValidator(value_that_makes_the_validation_succeed=resolved_value,
-                            error_message='error message from custom validator')
+            CustomValidator(
+                value_that_makes_the_validation_succeed=resolved_value,
+                error_message=validation.new_single_string_text_for_test('error message from custom validator')
+            )
         ]
         for value_string in resolved_string_value_cases:
             for custom_validator in custom_validator_cases:
                 resolver_to_check = sut.IntegerResolver(
                     'the property to check',
                     string_resolvers.str_constant(str(value_string)),
-                    custom_validator)
+                    custom_validator
+                )
                 with self.subTest(custom_validator_is_none=str(custom_validator is None),
                                   value_string=value_string):
-                    resolver_to_check.validate_pre_sds(the_instruction_environment.path_resolving_environment)
+                    with self.subTest(tested_obect='resolver'):
+                        resolver_to_check.validate_pre_sds(the_instruction_environment.path_resolving_environment)
+
+                    with self.subTest(tested_obect='value'):
+                        value_to_check = resolver_to_check.resolve(the_instruction_environment.symbols)
+                        value_to_check.validator().validate_pre_sds_if_applicable(the_instruction_environment.hds)
+                        value_to_check.validator().validate_post_sds_if_applicable(fake_tcds())
 
 
 class CustomValidator:
     def __init__(self, value_that_makes_the_validation_succeed: int,
-                 error_message: str):
+                 error_message: TextRenderer):
         self.error_message = error_message
         self.value_that_makes_the_validation_succeed = value_that_makes_the_validation_succeed
 
-    def __call__(self, value: int):
+    def __call__(self, value: int) -> Optional[TextRenderer]:
         if value != self.value_that_makes_the_validation_succeed:
             return self.error_message
 

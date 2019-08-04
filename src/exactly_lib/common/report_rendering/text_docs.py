@@ -5,6 +5,7 @@ from exactly_lib.common.report_rendering import print
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.util import file_printables
 from exactly_lib.util.file_printer import FilePrinter, FilePrintable
+from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.file_printer_output import printer as printer_
 from exactly_lib.util.simple_textstruct.file_printer_output.print_on_file_printer import PrintablesFactory
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
@@ -56,6 +57,25 @@ def major_block_of_string_blocks(contents: Blocks) -> Renderer[Sequence[MajorBlo
 def major_blocks_of_string_blocks(contents: Blocks) -> Renderer[Sequence[MajorBlock]]:
     return rend_comb.SingletonSequenceR(
         major_block_of_string_blocks(contents)
+    )
+
+
+def plain_line_elements_of_string_lines(lines: Sequence[str]) -> Renderer[Sequence[LineElement]]:
+    return rend_comb.ConstantR([
+        LineElement(text_struct.StringLineObject(line))
+        for line in lines
+    ])
+
+
+def major_blocks_of_string_lines(lines: Sequence[str]) -> Renderer[Sequence[MajorBlock]]:
+    return rend_comb.SingletonSequenceR(
+        comp_rend.MajorBlockR(
+            rend_comb.SingletonSequenceR(
+                comp_rend.MinorBlockR(
+                    plain_line_elements_of_string_lines(lines)
+                )
+            )
+        )
     )
 
 

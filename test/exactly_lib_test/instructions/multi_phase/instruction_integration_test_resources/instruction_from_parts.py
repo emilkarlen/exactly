@@ -160,7 +160,9 @@ class TestFailureOfValidatePreSdsOfInstructionFromParser(TestCaseBase):
         # ARRANGE #
         the_error_message = 'the error message'
         parts = instruction_parts.InstructionParts(
-            ValidatorThat(pre_sds_return_value=the_error_message),
+            ValidatorThat(
+                pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message)
+            ),
             MainStepExecutorThat())
         parser = self.conf.instruction_parser_from_parts_parser(PartsParserThatGives(parts))
         source = remaining_source('ignored')
@@ -180,7 +182,9 @@ class TestFailureOfValidatePostSetupOfInstructionFromParser(TestCaseBase):
         # ARRANGE #
         the_error_message = 'the error message'
         parts = instruction_parts.InstructionParts(
-            ValidatorThat(post_setup_return_value=the_error_message),
+            ValidatorThat(
+                post_setup_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message)
+            ),
             MainStepExecutorThat())
         parser = self.conf.instruction_parser_from_parts_parser(PartsParserThatGives(parts))
         source = remaining_source('ignored')

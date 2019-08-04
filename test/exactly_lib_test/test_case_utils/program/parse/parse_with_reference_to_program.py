@@ -1,5 +1,4 @@
 import unittest
-
 from typing import List, Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -154,7 +153,7 @@ class TestValidation(unittest.TestCase):
     def test_failing_validation_pre_sds(self):
         parser = sut.program_parser()
 
-        expected_validation = validation.pre_sds_validation_fails()
+        expected_validation = validation.pre_sds_validation_fails__w_any_msg()
 
         program_symbol_with_ref_to_non_exit_exe_file = NameAndValue(
             'PGM_WITH_REF_TO_EXE_FILE',
@@ -208,7 +207,7 @@ class TestValidation(unittest.TestCase):
     def test_failing_validation_post_sds(self):
         parser = sut.program_parser()
 
-        expected_validation = validation.post_sds_validation_fails()
+        expected_validation = validation.post_sds_validation_fails__w_any_msg()
 
         program_symbol_with_ref_to_non_exit_exe_file = NameAndValue(
             'PGM_WITH_REF_TO_EXE_FILE',

@@ -1,5 +1,4 @@
 import unittest
-
 from typing import List, Sequence, Pattern
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -25,8 +24,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, here_document
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.regex.test_resources.assertions import matches_regex_resolver
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes, \
-    pre_sds_validation_fails, post_sds_validation_fails
+from exactly_lib_test.test_case_utils.test_resources import validation
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
@@ -404,7 +403,7 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
                    Arrangement(),
                    source_cases,
                    ExpectationExceptPattern(
-                       validation=pre_sds_validation_fails(),
+                       validation=validation.pre_sds_validation_fails__w_any_msg(),
                    ),
                    option_cases,
                    )
@@ -441,7 +440,7 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
             references=asrt.matches_sequence([
                 is_reference_to_valid_regex_string_part(self.STAR_STRING_SYMBOL.name),
             ]),
-            validation=pre_sds_validation_fails(),
+            validation=validation.pre_sds_validation_fails__w_any_msg(),
         )
 
         # ACT & ASSERT #
@@ -484,7 +483,7 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
                 is_reference_to_valid_regex_string_part(self.STAR_STRING_SYMBOL.name),
                 is_reference_to_valid_regex_string_part(self.STAR_STRING_SYMBOL.name),
             ]),
-            validation=pre_sds_validation_fails(),
+            validation=validation.pre_sds_validation_fails__w_any_msg(),
         )
 
         # ACT & ASSERT #
@@ -509,7 +508,7 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
                 is_reference_to_valid_regex_string_part(self.STAR_STRING_SYMBOL.name),
                 is_reference_to_valid_regex_string_part(file_ref_symbol_name),
             ]),
-            validation=post_sds_validation_fails(),
+            validation=validation.post_sds_validation_fails__w_any_msg(),
             token_stream=assert_token_stream(is_null=asrt.is_true),
         )
 

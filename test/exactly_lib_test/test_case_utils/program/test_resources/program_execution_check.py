@@ -2,6 +2,7 @@ import pathlib
 import unittest
 from typing import Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
@@ -197,14 +198,14 @@ class Executor:
 
     def _execute_pre_validate(self,
                               environment: PathResolvingEnvironmentPreSds,
-                              program_resolver: ProgramResolver) -> Optional[str]:
+                              program_resolver: ProgramResolver) -> Optional[TextRenderer]:
         actual = program_resolver.validator.validate_pre_sds_if_applicable(environment)
         self.expectation.validation.pre_sds.apply_with_message(self.put, actual, 'validation-pre-sds')
         return actual
 
     def _execute_post_sds_validate(self,
                                    environment: PathResolvingEnvironmentPostSds,
-                                   program_resolver: ProgramResolver) -> Optional[str]:
+                                   program_resolver: ProgramResolver) -> Optional[TextRenderer]:
         actual = program_resolver.validator.validate_post_sds_if_applicable(environment)
         self.expectation.validation.post_sds.apply_with_message(self.put, actual, 'validation-post-sds')
         return actual

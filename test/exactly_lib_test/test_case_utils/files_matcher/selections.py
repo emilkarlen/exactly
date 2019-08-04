@@ -9,6 +9,7 @@ from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref, \
     FileMatcherResolverConstantValueTestImpl
@@ -93,7 +94,9 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
                     symbol_usages=expected_symbol_usages,
                 ),
                 actual=
-                ValidatorThat(pre_sds_return_value=err_msg_from_validator)
+                ValidatorThat(
+                    pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test(err_msg_from_validator)
+                )
                 ),
             NEA('post sds validation',
                 expected=
@@ -102,7 +105,9 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
                     symbol_usages=expected_symbol_usages,
                 ),
                 actual=
-                ValidatorThat(post_setup_return_value=err_msg_from_validator)
+                ValidatorThat(
+                    post_setup_return_value=asrt_text_doc.new_single_string_text_for_test(err_msg_from_validator)
+                )
                 ),
         ]
 

@@ -24,11 +24,11 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.relati
     TestWithRelativityOptionAndNegationBase
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
     TestWithNegationArgumentBase
-from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
-    failing_validation_cases
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
+    failing_validation_cases
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -168,8 +168,10 @@ class _ContentsEqualsAHereDocument(TestWithNegationArgumentBase):
             model_construction.model_of(lines_content(['expected content line'])),
             self.configuration.arrangement_for_contents(
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=maybe_not.pass__if_positive__fail__if_negative,
-                        source=asrt_source.is_at_end_of_line(3)),
+            Expectation(
+                main_result=maybe_not.pass__if_positive__fail__if_negative,
+                source=asrt_source.is_at_end_of_line(3)
+            ),
         )
 
 
@@ -185,7 +187,9 @@ class _ContentsEqualsAString(TestWithNegationArgumentBase):
             model_construction.model_of(expected_contents),
             self.configuration.arrangement_for_contents(
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=maybe_not.pass__if_positive__fail__if_negative),
+            Expectation(
+                main_result=maybe_not.pass__if_positive__fail__if_negative
+            ),
         )
 
 
@@ -210,11 +214,13 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithNegationArgumentB
                 symbols=SymbolTable({
                     symbol.name: data_symbol_utils.string_constant_container(symbol.value),
                 })),
-            Expectation(main_result=maybe_not.pass__if_positive__fail__if_negative,
-                        symbol_usages=equals_symbol_references([
-                            SymbolReference(symbol.name, is_any_data_type())
-                        ]),
-                        source=asrt_source.is_at_end_of_line(3)),
+            Expectation(
+                main_result=maybe_not.pass__if_positive__fail__if_negative,
+                symbol_usages=equals_symbol_references([
+                    SymbolReference(symbol.name, is_any_data_type())
+                ]),
+                source=asrt_source.is_at_end_of_line(3)
+            ),
         )
 
 
@@ -230,8 +236,10 @@ class _ContentsDoNotEqualAHereDocument(TestWithNegationArgumentBase):
             model_construction.model_of(lines_content(['actual contents that is not equal to expected contents'])),
             self.configuration.arrangement_for_contents(
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=maybe_not.fail__if_positive__pass_if_negative,
-                        source=asrt_source.is_at_end_of_line(3)),
+            Expectation(
+                main_result=maybe_not.fail__if_positive__pass_if_negative,
+                source=asrt_source.is_at_end_of_line(3)
+            ),
         )
 
 
@@ -302,5 +310,3 @@ class _StringTransformerShouldBeValidated(TestWithNegationArgumentBase):
                         symbol_references=case.value.symbol_context.references_assertion
                     ),
                 )
-
-

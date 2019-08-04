@@ -1,5 +1,6 @@
-from typing import Sequence, Callable
+from typing import Sequence, Callable, Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.multi_phase.utils.instruction_embryo import InstructionEmbryo
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
@@ -10,9 +11,9 @@ from exactly_lib_test.test_resources.actions import do_return, action_of, do_not
 
 
 def instruction_embryo_that(validate_pre_sds_initial_action=do_nothing,
-                            validate_pre_sds_return_value=None,
+                            validate_pre_sds_return_value: Optional[TextRenderer] = None,
                             validate_post_sds_initial_action=do_nothing,
-                            validate_post_sds_return_value=None,
+                            validate_post_sds_return_value: Optional[TextRenderer] = None,
                             main=do_return(None),
                             main_initial_action=None,
                             symbol_usages_initial_action=None,

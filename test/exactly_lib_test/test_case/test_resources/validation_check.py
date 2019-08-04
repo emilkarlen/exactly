@@ -1,11 +1,12 @@
 import unittest
-from typing import Optional
 
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
+from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationResultAssertion
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -22,8 +23,8 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 pre_sds: ValueAssertion[Optional[str]],
-                 post_sds: ValueAssertion[Optional[str]]):
+                 pre_sds: ValidationResultAssertion,
+                 post_sds: ValidationResultAssertion):
         self.pre_sds = pre_sds
         self.post_sds = post_sds
 
@@ -41,13 +42,13 @@ def fails_on(step: DirectoryStructurePartition) -> Expectation:
 
 
 def fails_pre_sds() -> Expectation:
-    return Expectation(asrt.is_instance(str),
+    return Expectation(asrt_validation.is_arbitrary_validation_failure(),
                        asrt.is_none)
 
 
 def fails_post_sds() -> Expectation:
     return Expectation(asrt.is_none,
-                       asrt.is_instance(str))
+                       asrt_validation.is_arbitrary_validation_failure())
 
 
 def assert_with_files(arrangement: Arrangement,

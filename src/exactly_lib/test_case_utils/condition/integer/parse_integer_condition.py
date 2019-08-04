@@ -1,5 +1,6 @@
-from typing import Callable, Optional
+from typing import Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.instruction_arguments import INTEGER_ARGUMENT
 from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
@@ -14,7 +15,7 @@ from exactly_lib.test_case_utils.condition.integer import integer_resolver
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import python_evaluate, NotAnIntegerException
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher, \
     IntegerMatcherFromComparisonOperator
-from exactly_lib.test_case_utils.condition.integer.integer_resolver import IntegerResolver
+from exactly_lib.test_case_utils.condition.integer.integer_resolver import IntegerResolver, CustomIntegerValidator
 from exactly_lib.test_case_utils.condition.parse import parse_comparison_operator
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.value_type import ValueType
@@ -24,7 +25,7 @@ from exactly_lib.util.parse.token import Token
 _NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'
 
 
-def validator_for_non_negative(actual: int) -> str:
+def validator_for_non_negative(actual: int) -> Optional[TextRenderer]:
     if actual < 0:
         return expected_found.unexpected_lines(_NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION,
                                                str(actual))
@@ -58,7 +59,7 @@ def parse_integer_matcher(parser: TokenParser,
 
 def parse_integer_comparison_operator_and_rhs(
         parser: TokenParser,
-        custom_integer_restriction: Callable[[int], str] = None,
+        custom_integer_restriction: Optional[CustomIntegerValidator] = None,
         property_name: str = 'expected value') -> IntegerComparisonOperatorAndRightOperand:
     my_parser = token_parser_with_additional_error_message_format_map(parser, {'INTEGER': INTEGER_ARGUMENT.name})
 
@@ -72,7 +73,7 @@ def parse_integer_comparison_operator_and_rhs(
 
 def integer_resolver_of(property_name: str,
                         value_token: Token,
-                        custom_integer_restriction: Optional[Callable[[int], Optional[str]]] = None
+                        custom_integer_restriction: Optional[CustomIntegerValidator] = None
                         ) -> integer_resolver.IntegerResolver:
     string_resolver = _string_resolver_of(value_token)
     return integer_resolver.IntegerResolver(property_name,
