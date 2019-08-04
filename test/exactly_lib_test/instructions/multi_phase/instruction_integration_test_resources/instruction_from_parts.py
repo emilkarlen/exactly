@@ -173,7 +173,7 @@ class TestFailureOfValidatePreSdsOfInstructionFromParser(TestCaseBase):
             source,
             self.conf.arrangement(),
             self.conf.expect_failing_validation_pre_sds(
-                assertion_on_error_message=asrt.equals(the_error_message)
+                error_message=asrt_text_doc.is_string_for_test_that_equals(the_error_message)
             ))
 
 
@@ -194,7 +194,7 @@ class TestFailureOfValidatePostSetupOfInstructionFromParser(TestCaseBase):
                                        source,
                                        self.conf.arrangement(),
                                        self.conf.expect_failing_validation_post_setup(
-                                           assertion_on_error_message=asrt.equals(the_error_message)
+                                           error_message=asrt_text_doc.is_string_for_test_that_equals(the_error_message)
                                        ))
 
 

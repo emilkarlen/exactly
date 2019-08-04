@@ -58,19 +58,15 @@ class AssertConfigurationBase(ConfigurationBase):
         ))
 
     def expect_failing_validation_pre_sds(self,
-                                          assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
+                                          error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()):
         return Expectation(
-            validation_pre_sds=svh_assertions.is_validation_error(
-                asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
-            )
+            validation_pre_sds=svh_assertions.is_validation_error(error_message)
         )
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
+                                             error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()):
         return Expectation(
-            validation_post_sds=svh_assertions.is_validation_error(
-                asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
-            )
+            validation_post_sds=svh_assertions.is_validation_error(error_message)
         )
 
     def arrangement(self,

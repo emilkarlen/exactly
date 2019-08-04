@@ -6,6 +6,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_environ
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.before_assert.test_resources import instruction_check as ic
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
@@ -17,8 +18,6 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
     HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
-from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
 
 class BeforeAssertConfigurationBase(ConfigurationBase):
@@ -47,19 +46,15 @@ class BeforeAssertConfigurationBase(ConfigurationBase):
         )
 
     def expect_failing_validation_pre_sds(self,
-                                          assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
+                                          error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()):
         return ic.Expectation(
-            validation_pre_sds=svh_assertions.is_validation_error(
-                asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
-            )
+            validation_pre_sds=svh_assertions.is_validation_error(error_message)
         )
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
+                                             error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()):
         return ic.Expectation(
-            validation_post_setup=svh_assertions.is_validation_error(
-                asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
-            )
+            validation_post_setup=svh_assertions.is_validation_error(error_message)
         )
 
     def arrangement(self,

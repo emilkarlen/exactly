@@ -38,6 +38,7 @@ from exactly_lib_test.test_case_utils.test_resources import arguments_building a
 from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt, \
     relativity_options as rel_opt_conf
+from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -504,7 +505,7 @@ class TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine(TestCaseBase):
             Expectation(validation_pre_sds=IS_VALIDATION_ERROR))
 
 
-IS_VALIDATION_ERROR = asrt.is_instance_with(str, asrt.casted_to_boolean_is(True))
+IS_VALIDATION_ERROR = validation.is_arbitrary_validation_failure()
 
 
 def relativity_options(symbol_name: str) -> list:

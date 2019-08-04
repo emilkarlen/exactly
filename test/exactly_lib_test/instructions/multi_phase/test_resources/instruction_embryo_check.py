@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 from typing import Optional, Sequence, Dict
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -16,7 +15,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.test_resources import validation as validation_utils
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, ValidationResultAssertion
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -32,8 +31,8 @@ class PostActionCheck:
 
 class Expectation:
     def __init__(self,
-                 validation_pre_sds: ValueAssertion[Optional[str]] = asrt.is_none,
-                 validation_post_sds: ValueAssertion[Optional[str]] = asrt.is_none,
+                 validation_pre_sds: ValidationResultAssertion = asrt.is_none,
+                 validation_post_sds: ValidationResultAssertion = asrt.is_none,
                  main_result: ValueAssertion = asrt.anything_goes(),
                  symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                  symbols_after_main: ValueAssertion[SymbolTable] = asrt.anything_goes(),

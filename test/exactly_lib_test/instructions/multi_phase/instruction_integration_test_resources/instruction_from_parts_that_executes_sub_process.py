@@ -115,7 +115,10 @@ class TestResultIsValidationErrorWhenPreSdsValidationFails(TestCaseBase):
             source4(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
             execution_setup_parser,
             self.conf.arrangement(),
-            self.conf.expect_failing_validation_pre_sds(asrt.equals('validation error message')))
+            self.conf.expect_failing_validation_pre_sds(
+                asrt_text_doc.is_string_for_test_that_equals('validation error message')
+            )
+        )
 
 
 class TestResultIsValidationErrorWhenPostSetupValidationFails(TestCaseBase):

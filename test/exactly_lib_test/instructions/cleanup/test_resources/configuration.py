@@ -46,17 +46,15 @@ class CleanupConfigurationBase(ConfigurationBase):
         )
 
     def expect_failing_validation_pre_sds(self,
-                                          assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
+                                          error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()):
         return Expectation(
-            validate_pre_sds_result=svh_assertions.is_validation_error(
-                asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
-            )
+            validate_pre_sds_result=svh_assertions.is_validation_error(error_message)
         )
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
+                                             error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()):
         return self.expect_failure_of_main(
-            assertion_on_error_message=asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
+            assertion_on_error_message=error_message
         )
 
     def arrangement(self,
