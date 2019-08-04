@@ -1,3 +1,6 @@
+from typing import Optional
+
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -6,8 +9,27 @@ from exactly_lib_test.util.simple_textstruct.test_resources import renderer_asse
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct
 
 
+def new_single_string_text_for_test(text: str) -> TextRenderer:
+    return text_docs.single_pre_formatted_line_object(text)
+
+
+def new_single_string_text_for_test__optional(text: Optional[str]) -> Optional[TextRenderer]:
+    return (None
+            if text is None
+            else text_docs.single_pre_formatted_line_object(text)
+            )
+
+
 def is_single_pre_formatted_text_that_equals(text: str) -> ValueAssertion[TextRenderer]:
     return is_single_pre_formatted_text(asrt.equals(text))
+
+
+def is_string_for_test(text: ValueAssertion[str]) -> ValueAssertion[TextRenderer]:
+    return is_single_pre_formatted_text(text)
+
+
+def is_string_for_test_that_equals(text: str) -> ValueAssertion[TextRenderer]:
+    return is_string_for_test(asrt.equals(text))
 
 
 def is_single_pre_formatted_text(text: ValueAssertion[str]) -> ValueAssertion[TextRenderer]:
