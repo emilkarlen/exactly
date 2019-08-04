@@ -40,8 +40,8 @@ def _validate_symbol_definition(symbol_table: SymbolTable,
             'Value in SymTbl must be ResolverContainer'
         return PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum.VALIDATION_ERROR,
-            error_messages.duplicate_symbol_definition__td(already_defined_resolver_container.source_location,
-                                                           definition.name))
+            error_messages.duplicate_symbol_definition(already_defined_resolver_container.source_location,
+                                                       definition.name))
     else:
         for referenced_value in definition.references:
             failure_info = validate_symbol_usage(referenced_value, symbol_table)
@@ -58,7 +58,7 @@ def _validate_symbol_reference(symbol_table: SymbolTable,
     if not symbol_table.contains(reference.name):
         return PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum.VALIDATION_ERROR,
-            error_messages.undefined_symbol__td(reference))
+            error_messages.undefined_symbol(reference))
     else:
         err_msg = _validate_reference(reference, symbol_table)
         if err_msg is not None:

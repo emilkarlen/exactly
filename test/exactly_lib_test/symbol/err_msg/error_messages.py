@@ -3,13 +3,11 @@ from pathlib import Path
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.err_msg import error_messages as sut
-from exactly_lib.util.file_printer import FilePrintable
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.section_document.test_resources.source_elements import \
     SOURCE_LOCATION_PATH_WITH_INCLUSIONS_AND_FILE_NAMES
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
 
 
 def suite() -> unittest.TestSuite:
@@ -18,6 +16,9 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestDuplicateDefinition),
         unittest.makeSuite(TestUndefinedSymbol),
     ])
+
+
+_IS_ANY_TEXT = asrt_text_doc.is_any_text()
 
 
 class TestDefinedAtLines(unittest.TestCase):
@@ -44,24 +45,20 @@ class TestDefinedAtLines(unittest.TestCase):
 class TestDuplicateDefinition(unittest.TestCase):
     def test_clash_with_builtin(self):
         actual = sut.duplicate_symbol_definition(None,
-                                                 'the_symbol_name')
-        _assert_is_file_printable().apply_without_message(self, actual)
+                                                     'the_symbol_name')
+        _IS_ANY_TEXT.apply_without_message(self, actual)
 
     def test_clash_with_user_defined(self):
         sli = SourceLocationInfo(Path.cwd(),
                                  SOURCE_LOCATION_PATH_WITH_INCLUSIONS_AND_FILE_NAMES)
         actual = sut.duplicate_symbol_definition(sli,
-                                                 'the_symbol_name')
+                                                     'the_symbol_name')
 
-        _assert_is_file_printable().apply_without_message(self, actual)
+        _IS_ANY_TEXT.apply_without_message(self, actual)
 
 
 class TestUndefinedSymbol(unittest.TestCase):
     def test(self):
         actual = sut.undefined_symbol(data_symbol_utils.symbol_reference('symbol_name'))
 
-        _assert_is_file_printable().apply_without_message(self, actual)
-
-
-def _assert_is_file_printable() -> ValueAssertion[FilePrintable]:
-    return asrt_file_printable.matches(asrt.anything_goes())
+        _IS_ANY_TEXT.apply_without_message(self, actual)

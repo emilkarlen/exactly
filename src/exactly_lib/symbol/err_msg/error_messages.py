@@ -10,19 +10,20 @@ from exactly_lib.definitions import type_system
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure
-from exactly_lib.symbol.err_msg.error_message_format import source_lines
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.file_printer import FilePrintable
-from exactly_lib.util.line_source import LineSequence
-
-_WHICH_IS_A_BUILTIN_SYMBOL = 'which is a builtin symbol'
-
-_IS_A_BUILTIN_SYMBOL = 'is a builtin symbol'
 
 
-def _is_a_builtin_symbol(symbol_name: str) -> str:
-    return symbol_name + ' ' + _IS_A_BUILTIN_SYMBOL
+def duplicate_symbol_definition(already_defined_symbol: Optional[SourceLocationInfo],
+                                name: str) -> TextRenderer:
+    return text_docs.major_blocks_of_string_blocks(
+        _duplicate_symbol_definition(already_defined_symbol,
+                                     name)
+    )
+
+
+def undefined_symbol(reference: su.SymbolReference) -> TextRenderer:
+    return text_docs.major_blocks_of_string_blocks(_undefined_symbol(reference))
 
 
 def invalid_type_msg(expected_value_types: List[ValueType],
@@ -35,19 +36,36 @@ def invalid_type_msg(expected_value_types: List[ValueType],
             str(actual)
         ))
     assert isinstance(actual, SymbolValueResolver)  # Type info for IDE
-    header_lines = invalid_type_header_lines(expected_value_types,
-                                             actual.value_type,
-                                             symbol_name,
-                                             container_of_actual)
-    how_to_fix_lines = invalid_type_how_to_fix_lines(expected_value_types)
+    header_lines = _invalid_type_header_lines(expected_value_types,
+                                              actual.value_type,
+                                              symbol_name,
+                                              container_of_actual)
+    how_to_fix_lines = _invalid_type_how_to_fix_lines(expected_value_types)
     return ValueRestrictionFailure('\n'.join(header_lines),
                                    how_to_fix='\n'.join(how_to_fix_lines))
 
 
-def invalid_type_header_lines(expected: List[ValueType],
-                              actual: ValueType,
-                              symbol_name: str,
-                              container: SymbolContainer) -> List[str]:
+def defined_at_line__err_msg_lines(definition_source: Optional[SourceLocationInfo]) -> List[str]:
+    if definition_source is None:
+        return [_WHICH_IS_A_BUILTIN_SYMBOL]
+    else:
+        blocks = [['defined at']] + _definition_source_blocks(definition_source)
+        return rendering.blocks_as_lines(blocks)
+
+
+_WHICH_IS_A_BUILTIN_SYMBOL = 'which is a builtin symbol'
+
+_IS_A_BUILTIN_SYMBOL = 'is a builtin symbol'
+
+
+def _is_a_builtin_symbol(symbol_name: str) -> str:
+    return symbol_name + ' ' + _IS_A_BUILTIN_SYMBOL
+
+
+def _invalid_type_header_lines(expected: List[ValueType],
+                               actual: ValueType,
+                               symbol_name: str,
+                               container: SymbolContainer) -> List[str]:
     def expected_type_str() -> str:
         if len(expected) == 1:
             return _type_name_of(expected[0])
@@ -66,7 +84,7 @@ def invalid_type_header_lines(expected: List[ValueType],
     return ret_val
 
 
-def invalid_type_how_to_fix_lines(expected_value_types: list) -> List[str]:
+def _invalid_type_how_to_fix_lines(expected_value_types: list) -> List[str]:
     from exactly_lib.definitions.test_case.instructions import define_symbol
     from exactly_lib.definitions.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
     from exactly_lib.definitions.formatting import InstructionName
@@ -101,22 +119,6 @@ def _duplicate_symbol_definition(already_defined_symbol: Optional[SourceLocation
     return [header_block] + def_src_blocks
 
 
-def duplicate_symbol_definition(already_defined_symbol: Optional[SourceLocationInfo],
-                                name: str) -> FilePrintable:
-    return rendering.blocks_as_printable(
-        _duplicate_symbol_definition(already_defined_symbol,
-                                     name)
-    )
-
-
-def duplicate_symbol_definition__td(already_defined_symbol: Optional[SourceLocationInfo],
-                                    name: str) -> TextRenderer:
-    return text_docs.major_blocks_of_string_blocks(
-        _duplicate_symbol_definition(already_defined_symbol,
-                                     name)
-    )
-
-
 def _undefined_symbol(reference: su.SymbolReference) -> Blocks:
     from exactly_lib.definitions.formatting import InstructionName
     from exactly_lib.definitions.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
@@ -125,22 +127,6 @@ def _undefined_symbol(reference: su.SymbolReference) -> Blocks:
         ['Symbol `{}\' is undefined.'.format(reference.name)],
         ['Define a symbol using the {} instruction.'.format(def_name_emphasised)],
     ]
-
-
-def undefined_symbol(reference: su.SymbolReference) -> FilePrintable:
-    return rendering.blocks_as_printable(_undefined_symbol(reference))
-
-
-def undefined_symbol__td(reference: su.SymbolReference) -> TextRenderer:
-    return text_docs.major_blocks_of_string_blocks(_undefined_symbol(reference))
-
-
-def defined_at_line__err_msg_lines(definition_source: Optional[SourceLocationInfo]) -> List[str]:
-    if definition_source is None:
-        return [_WHICH_IS_A_BUILTIN_SYMBOL]
-    else:
-        blocks = [['defined at']] + _definition_source_blocks(definition_source)
-        return rendering.blocks_as_lines(blocks)
 
 
 def _definition_source_blocks(definition_source: SourceLocationInfo) -> Blocks:
@@ -158,10 +144,3 @@ def _builtin_or_user_defined_source_blocks(definition_source: Optional[SourceLoc
         formatter = source_location.default_formatter()
         return formatter.source_location_path(Path('.'),
                                               definition_source.source_location_path)
-
-
-def source_line_of_symbol(definition_source: LineSequence) -> str:
-    if definition_source is None:
-        return _WHICH_IS_A_BUILTIN_SYMBOL
-    else:
-        return source_lines(definition_source)
