@@ -1,14 +1,17 @@
+from abc import ABC
+from typing import Optional
+
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.type_system import value_type
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class FailureInfo:
+class Failure(ABC):
     pass
 
 
-class ReferenceRestrictions:
+class ReferenceRestrictions(ABC):
     """
     Restrictions on a referenced symbol
     """
@@ -16,17 +19,17 @@ class ReferenceRestrictions:
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> FailureInfo:
+                        container: SymbolContainer) -> Optional[Failure]:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
         :param container: The container of the value that the restriction applies to
         :return: None if satisfied, otherwise an error message
         """
-        raise NotImplementedError('abstract method')
+        pass
 
 
-class InvalidTypeCategoryFailure(FailureInfo):
+class InvalidTypeCategoryFailure(Failure):
     def __init__(self,
                  expected: TypeCategory,
                  actual: TypeCategory):
@@ -34,7 +37,7 @@ class InvalidTypeCategoryFailure(FailureInfo):
         self.expected = expected
 
 
-class InvalidValueTypeFailure(FailureInfo):
+class InvalidValueTypeFailure(Failure):
     def __init__(self,
                  expected: ValueType,
                  actual: ValueType):
@@ -53,7 +56,7 @@ class TypeCategoryRestriction(ReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> FailureInfo:
+                        container: SymbolContainer) -> Optional[Failure]:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
@@ -82,7 +85,7 @@ class ValueTypeRestriction(ReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> FailureInfo:
+                        container: SymbolContainer) -> Optional[Failure]:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
@@ -104,7 +107,7 @@ class DataTypeReferenceRestrictions(ReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> FailureInfo:
+                        container: SymbolContainer) -> Optional[Failure]:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to

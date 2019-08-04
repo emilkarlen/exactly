@@ -5,14 +5,14 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeR
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.symbol.err_msg.error_messages import defined_at_line__err_msg_lines
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
-from exactly_lib.symbol.restriction import FailureInfo, \
+from exactly_lib.symbol.restriction import Failure, \
     DataTypeReferenceRestrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class FailureOfDirectReference(FailureInfo):
+class FailureOfDirectReference(Failure):
     def __init__(self, error: ValueRestrictionFailure):
         self._error = error
 
@@ -21,7 +21,7 @@ class FailureOfDirectReference(FailureInfo):
         return self._error
 
 
-class FailureOfIndirectReference(FailureInfo):
+class FailureOfIndirectReference(Failure):
     def __init__(self,
                  failing_symbol: str,
                  path_to_failing_symbol: List[str],
@@ -73,7 +73,7 @@ class ReferenceRestrictionsOnDirectAndIndirect(DataTypeReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> Optional[FailureInfo]:
+                        container: SymbolContainer) -> Optional[Failure]:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
@@ -149,7 +149,7 @@ class OrRestrictionPart(tuple):
 
 class OrReferenceRestrictions(DataTypeReferenceRestrictions):
     def __init__(self,
-                 or_restriction_parts: list,
+                 or_restriction_parts: Sequence[OrRestrictionPart],
                  sym_name_and_container_2_err_msg_if_no_matching_part:
                  Optional[Callable[[str, SymbolContainer], str]] = None
                  ):
@@ -158,20 +158,19 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
             sym_name_and_container_2_err_msg_if_no_matching_part
 
     @property
-    def parts(self) -> tuple:
+    def parts(self) -> Sequence[OrRestrictionPart]:
         return self._parts
 
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> FailureInfo:
+                        container: SymbolContainer) -> Optional[Failure]:
         resolver = container.resolver
         assert isinstance(resolver, SymbolValueResolver)  # Type info for IDE
         if resolver.type_category is not TypeCategory.DATA:
             return self._no_satisfied_restriction(symbol_name, resolver, container)
         assert isinstance(resolver, DataValueResolver)  # Type info for IDE
         for part in self._parts:
-            assert isinstance(part, OrRestrictionPart)  # Type info for IDE
             if part.selector == resolver.data_value_type:
                 return part.restriction.is_satisfied_by(symbol_table, symbol_name, container)
         return self._no_satisfied_restriction(symbol_name, resolver, container)

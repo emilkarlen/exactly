@@ -10,12 +10,12 @@ from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure
 from exactly_lib.symbol.err_msg import error_messages
 from exactly_lib.symbol.lookups import lookup_container
 from exactly_lib.symbol.resolver_structure import SymbolContainer
-from exactly_lib.symbol.restriction import FailureInfo, InvalidTypeCategoryFailure, InvalidValueTypeFailure
+from exactly_lib.symbol.restriction import Failure, InvalidTypeCategoryFailure, InvalidValueTypeFailure
 from exactly_lib.type_system.value_type import TYPE_CATEGORY_2_VALUE_TYPE_SEQUENCE
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def error_message(failing_symbol: str, symbols: SymbolTable, failure: FailureInfo) -> str:
+def error_message(failing_symbol: str, symbols: SymbolTable, failure: Failure) -> str:
     """
     Renders an error for presentation to the user
     """
@@ -28,7 +28,7 @@ def error_message(failing_symbol: str, symbols: SymbolTable, failure: FailureInf
     elif isinstance(failure, InvalidValueTypeFailure):
         return _of_invalid_value_type(failing_symbol, symbols, failure)
     else:
-        raise TypeError('Unknown type of {}: {}'.format(str(FailureInfo),
+        raise TypeError('Unknown type of {}: {}'.format(str(Failure),
                                                         str(failure)))
 
 
