@@ -22,6 +22,7 @@ from exactly_lib_test.instructions.multi_phase.new_file.test_resources.common_te
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils import \
     IS_FAILURE, IS_SUCCESS, AN_ALLOWED_DST_FILE_RELATIVITY
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.instructions.multi_phase.test_resources import instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import \
     TransformableContentsConstructor, output_from_program
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
@@ -59,6 +60,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.string_transformers import \
     MyToUppercaseTransformer
+from exactly_lib_test.test_case_utils.test_resources import validation
 
 
 def suite() -> unittest.TestSuite:
@@ -332,7 +334,7 @@ class TestFailingValidation(TestCaseBase):
         # ACT & ASSERT #
         self._check(complete_arguments.as_remaining_source,
                     ArrangementWithSds(),
-                    Expectation(validation_pre_sds=asrt.is_instance(str)))
+                    embryo_check.expectation(validation=validation.pre_sds_validation_fails__w_any_msg()))
 
     def test_validation_of_non_existing_file_post_sds_fails(self):
         # ARRANGE #
@@ -346,7 +348,7 @@ class TestFailingValidation(TestCaseBase):
         # ACT & ASSERT #
         self._check(complete_arguments.as_remaining_source,
                     ArrangementWithSds(),
-                    Expectation(validation_post_sds=asrt.is_instance(str)))
+                    embryo_check.expectation(validation=validation.post_sds_validation_fails__w_any_msg()))
 
 
 class TestFailingScenarios(TestCaseBase):

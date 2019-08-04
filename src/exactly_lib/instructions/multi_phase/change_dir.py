@@ -1,5 +1,5 @@
 import os
-from typing import Sequence, List
+from typing import Sequence, List, Optional
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
@@ -85,10 +85,10 @@ class InstructionEmbryo(embryo.InstructionEmbryo):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
-             os_services: OsServices):
+             os_services: OsServices) -> Optional[str]:
         return self.custom_main(environment.path_resolving_environment)
 
-    def custom_main(self, environment: PathResolvingEnvironmentPostSds) -> str:
+    def custom_main(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
         """
         :return: None iff success. Otherwise an error message.
         """

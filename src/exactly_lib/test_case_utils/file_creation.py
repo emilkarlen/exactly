@@ -1,10 +1,22 @@
 import pathlib
 from typing import Optional
 
+from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory
+
+
+def create_file__td(file_path: pathlib.Path,
+                    operation_on_open_file) -> Optional[TextRenderer]:
+    mb_err_msg = create_file(file_path, operation_on_open_file)
+    return (
+        None
+        if mb_err_msg is None
+        else text_docs.single_pre_formatted_line_object(mb_err_msg)
+    )
 
 
 def create_file(file_path: pathlib.Path,
@@ -52,3 +64,19 @@ def create_file_from_transformation_of_existing_file(src_path: pathlib.Path,
 
     return create_file(dst_path,
                        write_file)
+
+
+def create_file_from_transformation_of_existing_file__td(src_path: pathlib.Path,
+                                                         dst_path: pathlib.Path,
+                                                         transformer: StringTransformer) -> Optional[TextRenderer]:
+    """
+    :return: Error message in case of failure
+    """
+
+    def write_file(output_file):
+        with src_path.open() as in_file:
+            for line in transformer.transform(in_file):
+                output_file.write(line)
+
+    return create_file__td(dst_path,
+                           write_file)
