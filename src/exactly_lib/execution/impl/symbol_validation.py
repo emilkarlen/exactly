@@ -38,7 +38,7 @@ def _validate_symbol_definition(symbol_table: SymbolTable,
         already_defined_resolver_container = symbol_table.lookup(definition.name)
         assert isinstance(already_defined_resolver_container, SymbolContainer), \
             'Value in SymTbl must be ResolverContainer'
-        return PartialInstructionControlledFailureInfo.of_text_doc(
+        return PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum.VALIDATION_ERROR,
             error_messages.duplicate_symbol_definition__td(already_defined_resolver_container.source_location,
                                                            definition.name))
@@ -56,13 +56,13 @@ def _validate_symbol_reference(symbol_table: SymbolTable,
                                ) -> Optional[PartialInstructionControlledFailureInfo]:
     assert isinstance(reference, su.SymbolReference)
     if not symbol_table.contains(reference.name):
-        return PartialInstructionControlledFailureInfo.of_text_doc(
+        return PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum.VALIDATION_ERROR,
             error_messages.undefined_symbol__td(reference))
     else:
         err_msg = _validate_reference(reference, symbol_table)
         if err_msg is not None:
-            return PartialInstructionControlledFailureInfo.of_text_doc(
+            return PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.VALIDATION_ERROR,
                 err_msg
             )

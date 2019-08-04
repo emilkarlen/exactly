@@ -113,7 +113,7 @@ class Test(unittest.TestCase):
         result = execute_element(
             FailingExecutor(
                 NameRecorder().new_function_that_records('s'),
-                PartialInstructionControlledFailureInfo.of_text_doc(
+                PartialInstructionControlledFailureInfo(
                     failure_status_of_executor,
                     text_docs.single_pre_formatted_line_object('error message'))
             ),

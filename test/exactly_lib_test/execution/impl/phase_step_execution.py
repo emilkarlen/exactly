@@ -96,7 +96,7 @@ class Test(unittest.TestCase):
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
             any_instruction,
             recording_media.new_recorder_with_header('instruction executor'),
-            PartialInstructionControlledFailureInfo.of_text_doc(
+            PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.FAIL,
                 text_docs.single_pre_formatted_line_object('fail message')
             )
@@ -119,7 +119,7 @@ class Test(unittest.TestCase):
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
             any_instruction,
             recording_media.new_recorder_with_header('instruction executor'),
-            PartialInstructionControlledFailureInfo.of_text_doc(
+            PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.HARD_ERROR,
                 text_docs.single_pre_formatted_line_object('hard error message')
             )
@@ -162,7 +162,7 @@ class Test(unittest.TestCase):
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
             instruction_with_name('First instruction'),
             recording_media.new_recorder_with_header('instruction executor'),
-            PartialInstructionControlledFailureInfo.of_text_doc(
+            PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.FAIL,
                 text_docs.single_pre_formatted_line_object('fail message')
             )
@@ -187,7 +187,7 @@ class Test(unittest.TestCase):
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
             instruction_with_name('Middle instruction'),
             recording_media.new_recorder_with_header('instruction executor'),
-            PartialInstructionControlledFailureInfo.of_text_doc(
+            PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.FAIL,
                 text_docs.single_pre_formatted_line_object('fail message')
             )
@@ -217,7 +217,7 @@ class Test(unittest.TestCase):
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
             instruction_with_name('Last instruction'),
             recording_media.new_recorder_with_header('instruction executor'),
-            PartialInstructionControlledFailureInfo.of_text_doc(
+            PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.FAIL,
                 text_docs.single_pre_formatted_line_object('fail message')
             )
@@ -245,7 +245,7 @@ class Test(unittest.TestCase):
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
             any_instruction,
             recording_media.new_recorder_with_header('instruction executor'),
-            PartialInstructionControlledFailureInfo.of_text_doc(
+            PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.FAIL,
                 text_docs.single_pre_formatted_line_object('fail message')
             )

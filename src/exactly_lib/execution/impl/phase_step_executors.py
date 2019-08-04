@@ -20,11 +20,11 @@ def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidation
     if res.is_success:
         return None
     elif res.is_validation_error:
-        return PartialInstructionControlledFailureInfo.of_text_doc(
+        return PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum.VALIDATION_ERROR,
             res.failure_message)
     else:
-        return PartialInstructionControlledFailureInfo.of_text_doc(
+        return PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum.HARD_ERROR,
             res.failure_message)
 
@@ -33,7 +33,7 @@ def _from_success_or_hard_error(res: sh.SuccessOrHardError) -> PartialInstructio
     return (
         None
         if res.is_success
-        else PartialInstructionControlledFailureInfo.of_text_doc(
+        else PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum.HARD_ERROR,
             res.failure_message)
     )
@@ -44,7 +44,7 @@ def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError
     if res.status is pfh.PassOrFailOrHardErrorEnum.PASS:
         return None
     else:
-        return PartialInstructionControlledFailureInfo.of_text_doc(
+        return PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum(res.status.value),
             res.failure_message__td)
 

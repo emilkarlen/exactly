@@ -32,12 +32,6 @@ class PartialInstructionControlledFailureInfo(tuple):
         return tuple.__new__(cls, (status,
                                    error_message))
 
-    @staticmethod
-    def of_text_doc(status: PartialControlledFailureEnum,
-                    error_message: TextRenderer) -> 'PartialInstructionControlledFailureInfo':
-        return PartialInstructionControlledFailureInfo(status,
-                                                       error_message)
-
     @property
     def status(self) -> PartialControlledFailureEnum:
         return self[0]
