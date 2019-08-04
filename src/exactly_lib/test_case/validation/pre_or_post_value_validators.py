@@ -1,5 +1,6 @@
 from typing import Optional, Sequence, Iterable
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
@@ -17,11 +18,11 @@ class ValueValidatorFromResolverValidator(PreOrPostSdsValueValidator):
         self._symbols = symbols
         self._adapted = adapted
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[str]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
         environment = PathResolvingEnvironmentPreSds(hds, self._symbols)
         return self._adapted.validate_pre_sds_if_applicable(environment)
 
-    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[str]:
+    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
         environment = PathResolvingEnvironmentPostSds(tcds.sds, self._symbols)
         return self._adapted.validate_post_sds_if_applicable(environment)
 
@@ -40,14 +41,14 @@ class AndValidator(PreOrPostSdsValueValidator):
                  validators: Iterable[PreOrPostSdsValueValidator]):
         self.validators = validators
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[str]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
         for validator in self.validators:
             result = validator.validate_pre_sds_if_applicable(hds)
             if result is not None:
                 return result
         return None
 
-    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[str]:
+    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
         for validator in self.validators:
             result = validator.validate_post_sds_if_applicable(tcds)
             if result is not None:

@@ -1,5 +1,6 @@
 from typing import Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 
@@ -16,21 +17,21 @@ class PreOrPostSdsValueValidator:
     object is outside or inside the SDS.
     """
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[str]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
         """
         Validates the object if it is expected to exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
         raise NotImplementedError()
 
-    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[str]:
+    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
         """
         Validates the object if it is expected to NOT exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
         raise NotImplementedError()
 
-    def validate_pre_or_post_sds(self, tcds: HomeAndSds) -> Optional[str]:
+    def validate_pre_or_post_sds(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
         """
         Validates the object using either pre- or post- SDS.
         :return: Error message iff validation failed.
@@ -43,15 +44,15 @@ class PreOrPostSdsValueValidator:
 
 class ConstantPreOrPostSdsValueValidator(PreOrPostSdsValueValidator):
     def __init__(self,
-                 pre_sds_result: Optional[str] = None,
-                 post_sds_result: Optional[str] = None):
+                 pre_sds_result: Optional[TextRenderer] = None,
+                 post_sds_result: Optional[TextRenderer] = None):
         self._pre_sds_result = pre_sds_result
         self._post_sds_result = post_sds_result
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[str]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
         return self._pre_sds_result
 
-    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[str]:
+    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
         return self._post_sds_result
 
 
