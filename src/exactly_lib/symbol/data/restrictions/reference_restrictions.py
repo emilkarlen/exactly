@@ -1,4 +1,4 @@
-from typing import Callable, List
+from typing import Callable, List, Optional, Sequence
 
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction
@@ -7,6 +7,7 @@ from exactly_lib.symbol.err_msg.error_messages import defined_at_line__err_msg_l
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import FailureInfo, \
     DataTypeReferenceRestrictions
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -72,7 +73,7 @@ class ReferenceRestrictionsOnDirectAndIndirect(DataTypeReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> FailureInfo:
+                        container: SymbolContainer) -> Optional[FailureInfo]:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
@@ -107,13 +108,13 @@ class ReferenceRestrictionsOnDirectAndIndirect(DataTypeReferenceRestrictions):
 
     def check_indirect(self,
                        symbol_table: SymbolTable,
-                       references: list) -> FailureOfIndirectReference:
+                       references: Sequence[SymbolReference]) -> Optional[FailureOfIndirectReference]:
         return self._check_indirect(symbol_table, (), references)
 
     def _check_indirect(self,
                         symbol_table: SymbolTable,
                         path_to_referring_symbol: tuple,
-                        references: list) -> FailureOfIndirectReference:
+                        references: Sequence[SymbolReference]) -> Optional[FailureOfIndirectReference]:
         for reference in references:
             container = symbol_table.lookup(reference.name)
             result = self._indirect.is_satisfied_by(symbol_table, reference.name, container)
@@ -149,7 +150,9 @@ class OrRestrictionPart(tuple):
 class OrReferenceRestrictions(DataTypeReferenceRestrictions):
     def __init__(self,
                  or_restriction_parts: list,
-                 sym_name_and_container_2_err_msg_if_no_matching_part: Callable[[str, SymbolContainer], str] = None):
+                 sym_name_and_container_2_err_msg_if_no_matching_part:
+                 Optional[Callable[[str, SymbolContainer], str]] = None
+                 ):
         self._parts = tuple(or_restriction_parts)
         self._sym_name_and_container_2_err_msg_if_no_matching_part = \
             sym_name_and_container_2_err_msg_if_no_matching_part

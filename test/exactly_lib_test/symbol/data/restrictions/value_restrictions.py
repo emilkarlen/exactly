@@ -1,4 +1,5 @@
 import unittest
+from typing import Optional
 
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data import string_resolvers
@@ -219,5 +220,5 @@ class UnknownValueRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> ValueRestrictionFailure:
+                        container: SymbolContainer) -> Optional[ValueRestrictionFailure]:
         raise NotImplementedError('the method should never be called')

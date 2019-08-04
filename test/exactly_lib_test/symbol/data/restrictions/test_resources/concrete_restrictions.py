@@ -1,3 +1,5 @@
+from typing import Optional
+
 from exactly_lib.symbol import resolver_structure as vs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
@@ -10,7 +12,7 @@ class RestrictionThatCannotBeSatisfied(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: vs.SymbolTable,
                         symbol_name: str,
-                        container: vs.SymbolContainer) -> ValueRestrictionFailure:
+                        container: vs.SymbolContainer) -> Optional[ValueRestrictionFailure]:
         return ValueRestrictionFailure('unconditional error')
 
 

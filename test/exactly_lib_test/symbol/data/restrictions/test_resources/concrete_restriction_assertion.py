@@ -1,4 +1,5 @@
 import unittest
+from typing import Optional
 
 from exactly_lib.symbol.data.restrictions.reference_restrictions import DataTypeReferenceRestrictionsVisitor, \
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, FailureOfDirectReference, \
@@ -197,5 +198,5 @@ class ValueRestrictionWithConstantResult(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> ValueRestrictionFailure:
+                        container: SymbolContainer) -> Optional[ValueRestrictionFailure]:
         return self.result

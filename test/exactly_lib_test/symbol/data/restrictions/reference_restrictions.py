@@ -2,7 +2,7 @@ import unittest
 from collections import Counter
 
 import types
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.definitions import type_system
 from exactly_lib.definitions.type_system import DATA_TYPE_2_VALUE_TYPE
@@ -533,13 +533,13 @@ def restriction_with_constant_failure(error_message: str) -> vr.ValueRestriction
 
 
 class RestrictionWithConstantResult(vr.ValueRestriction):
-    def __init__(self, result):
+    def __init__(self, result: Optional[ValueRestrictionFailure]):
         self.result = result
 
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: sut.SymbolContainer) -> str:
+                        value: sut.SymbolContainer) -> Optional[ValueRestrictionFailure]:
         return self.result
 
 
@@ -547,7 +547,7 @@ class ValueRestrictionThatRaisesErrorIfApplied(vr.ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: sut.SymbolContainer) -> str:
+                        value: sut.SymbolContainer) -> Optional[ValueRestrictionFailure]:
         raise NotImplementedError('It is an error if this method is called')
 
 
@@ -559,7 +559,7 @@ class RestrictionThatRegistersProcessedSymbols(vr.ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: sut.SymbolContainer) -> ValueRestrictionFailure:
+                        value: sut.SymbolContainer) -> Optional[ValueRestrictionFailure]:
         self.visited.update([symbol_name])
         error_message = self.resolver_container_2_result__fun(value)
         return ValueRestrictionFailure(error_message) if error_message else None
