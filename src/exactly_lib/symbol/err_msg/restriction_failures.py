@@ -6,7 +6,7 @@ from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureOfDirectReference, \
     FailureOfIndirectReference
-from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure
+from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
 from exactly_lib.symbol.err_msg import error_messages
 from exactly_lib.symbol.lookups import lookup_container
 from exactly_lib.symbol.resolver_structure import SymbolContainer
@@ -67,7 +67,7 @@ class ErrorMessage(Renderer[Sequence[MajorBlock]]):
 
 
 class ErrorMessageForDirectReference(Renderer[Sequence[MajorBlock]]):
-    def __init__(self, error: ValueRestrictionFailure):
+    def __init__(self, error: ErrorMessageWithFixTip):
         self._error = error
 
     def render(self) -> Sequence[MajorBlock]:
@@ -130,7 +130,7 @@ def _path_to_failing_symbol__tr(failing_symbol: str,
                                 symbols))
 
 
-def _render_vrf(vrf: ValueRestrictionFailure) -> Sequence[MajorBlock]:
+def _render_vrf(vrf: ErrorMessageWithFixTip) -> Sequence[MajorBlock]:
     ret_val = list(vrf.message.render())
     if vrf.how_to_fix is not None:
         ret_val += vrf.how_to_fix.render()

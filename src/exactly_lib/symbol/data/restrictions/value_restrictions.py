@@ -4,7 +4,7 @@ from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions import type_system
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions import error_messages
-from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
+from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
 from exactly_lib.symbol.err_msg import error_messages as err_msg_for_any_type
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
@@ -21,7 +21,7 @@ class AnyDataTypeRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> Optional[ValueRestrictionFailure]:
+                        container: SymbolContainer) -> Optional[ErrorMessageWithFixTip]:
         if container.resolver.type_category is not TypeCategory.DATA:
             return err_msg_for_any_type.invalid_type_msg(
                 [type_system.DATA_TYPE_2_VALUE_TYPE[symbol_type]
@@ -39,7 +39,7 @@ class StringRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> Optional[ValueRestrictionFailure]:
+                        container: SymbolContainer) -> Optional[ErrorMessageWithFixTip]:
         if container.resolver.value_type is not ValueType.STRING:
             return err_msg_for_any_type.invalid_type_msg([ValueType.STRING], symbol_name, container)
         return None
@@ -56,7 +56,7 @@ class FileRefRelativityRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> Optional[ValueRestrictionFailure]:
+                        container: SymbolContainer) -> Optional[ErrorMessageWithFixTip]:
         resolver = container.resolver
         if not isinstance(resolver, FileRefResolver):
             return err_msg_for_any_type.invalid_type_msg([ValueType.PATH], symbol_name, container)
@@ -69,7 +69,7 @@ class FileRefRelativityRestriction(ValueRestriction):
             msg = error_messages.unsatisfied_path_relativity(symbol_name, container,
                                                              self._accepted,
                                                              actual_relativity)
-            return ValueRestrictionFailure(text_docs.single_pre_formatted_line_object(msg))
+            return ErrorMessageWithFixTip(text_docs.single_pre_formatted_line_object(msg))
 
     @property
     def accepted(self) -> PathRelativityVariants:

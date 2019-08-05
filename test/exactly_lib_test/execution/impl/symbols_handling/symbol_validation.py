@@ -10,7 +10,7 @@ from exactly_lib.symbol.data import file_ref_resolvers, path_part_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.data.value_restriction import ValueRestriction, ValueRestrictionFailure
+from exactly_lib.symbol.data.value_restriction import ValueRestriction, ErrorMessageWithFixTip
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util import line_source
@@ -200,7 +200,7 @@ class RestrictionThatIsAlwaysSatisfied(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: rs.SymbolTable,
                         symbol_name: str,
-                        container: rs.SymbolContainer) -> Optional[ValueRestrictionFailure]:
+                        container: rs.SymbolContainer) -> Optional[ErrorMessageWithFixTip]:
         return None
 
 

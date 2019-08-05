@@ -5,7 +5,7 @@ from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class ValueRestrictionFailure(tuple):
+class ErrorMessageWithFixTip(tuple):
     def __new__(cls,
                 message: TextRenderer,
                 how_to_fix: Optional[TextRenderer] = None):
@@ -43,12 +43,12 @@ class ValueRestriction:
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> Optional[ValueRestrictionFailure]:
+                        container: SymbolContainer) -> Optional[ErrorMessageWithFixTip]:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
         :param container: The container of the value that the restriction applies to
-        :rtype ValueRestrictionFailure
+        :rtype ErrorMessageWithFixTip
         :return: None if satisfied
         """
         raise NotImplementedError()

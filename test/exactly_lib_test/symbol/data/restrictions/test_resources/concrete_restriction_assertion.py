@@ -8,7 +8,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import DataType
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, \
     StringRestriction, \
     FileRefRelativityRestriction, ValueRestrictionVisitor
-from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
+from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions, ReferenceRestrictions, Failure
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
@@ -38,15 +38,15 @@ def equals_value_restriction(expected: ValueRestriction) -> ValueAssertion:
     return _EqualsValueRestriction(expected)
 
 
-def is_value_failure(message: ValueAssertion[TextRenderer]) -> ValueAssertion[ValueRestrictionFailure]:
+def is_value_failure(message: ValueAssertion[TextRenderer]) -> ValueAssertion[ErrorMessageWithFixTip]:
     return asrt.is_instance_with(
-        ValueRestrictionFailure,
+        ErrorMessageWithFixTip,
         asrt.and_([
             asrt.sub_component('message',
-                               ValueRestrictionFailure.message.fget,
+                               ErrorMessageWithFixTip.message.fget,
                                message),
             asrt.sub_component('how_to_fix',
-                               ValueRestrictionFailure.how_to_fix.fget,
+                               ErrorMessageWithFixTip.how_to_fix.fget,
                                asrt.is_none_or_instance_with(Renderer, asrt_text_doc.is_any_text())),
         ])
     )
@@ -192,17 +192,17 @@ def value_restriction_that_is_unconditionally_satisfied() -> ValueRestriction:
 
 
 def value_restriction_that_is_unconditionally_unsatisfied(msg: str = 'error message') -> ValueRestriction:
-    return ValueRestrictionWithConstantResult(ValueRestrictionFailure(
+    return ValueRestrictionWithConstantResult(ErrorMessageWithFixTip(
         asrt_text_doc.new_single_string_text_for_test(msg))
     )
 
 
 class ValueRestrictionWithConstantResult(ValueRestriction):
-    def __init__(self, result: ValueRestrictionFailure):
+    def __init__(self, result: ErrorMessageWithFixTip):
         self.result = result
 
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> Optional[ValueRestrictionFailure]:
+                        container: SymbolContainer) -> Optional[ErrorMessageWithFixTip]:
         return self.result

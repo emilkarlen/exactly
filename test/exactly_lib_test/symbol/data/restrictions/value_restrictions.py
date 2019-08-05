@@ -5,7 +5,7 @@ from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr
-from exactly_lib.symbol.data.value_restriction import ValueRestriction, ValueRestrictionFailure
+from exactly_lib.symbol.data.value_restriction import ValueRestriction, ErrorMessageWithFixTip
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.type_system.data.list_value import ListValue
@@ -220,5 +220,5 @@ class UnknownValueRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: SymbolContainer) -> Optional[ValueRestrictionFailure]:
+                        container: SymbolContainer) -> Optional[ErrorMessageWithFixTip]:
         raise NotImplementedError('the method should never be called')

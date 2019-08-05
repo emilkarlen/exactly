@@ -7,7 +7,7 @@ from exactly_lib.definitions import type_system
 from exactly_lib.definitions.type_system import DATA_TYPE_2_VALUE_TYPE
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr, reference_restrictions as sut
-from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
+from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import ReferenceRestrictions
@@ -535,19 +535,19 @@ def unconditionally_satisfied_value_restriction() -> vr.ValueRestriction:
 
 
 def restriction_with_constant_failure(error_message: str) -> vr.ValueRestriction:
-    return RestrictionWithConstantResult(ValueRestrictionFailure(
+    return RestrictionWithConstantResult(ErrorMessageWithFixTip(
         asrt_text_doc.new_single_string_text_for_test(error_message))
     )
 
 
 class RestrictionWithConstantResult(vr.ValueRestriction):
-    def __init__(self, result: Optional[ValueRestrictionFailure]):
+    def __init__(self, result: Optional[ErrorMessageWithFixTip]):
         self.result = result
 
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: sut.SymbolContainer) -> Optional[ValueRestrictionFailure]:
+                        value: sut.SymbolContainer) -> Optional[ErrorMessageWithFixTip]:
         return self.result
 
 
@@ -555,7 +555,7 @@ class ValueRestrictionThatRaisesErrorIfApplied(vr.ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: sut.SymbolContainer) -> Optional[ValueRestrictionFailure]:
+                        value: sut.SymbolContainer) -> Optional[ErrorMessageWithFixTip]:
         raise NotImplementedError('It is an error if this method is called')
 
 
@@ -567,11 +567,11 @@ class RestrictionThatRegistersProcessedSymbols(vr.ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: sut.SymbolContainer) -> Optional[ValueRestrictionFailure]:
+                        value: sut.SymbolContainer) -> Optional[ErrorMessageWithFixTip]:
         self.visited.update([symbol_name])
         error_message = self.resolver_container_2_result__fun(value)
         return (
-            ValueRestrictionFailure(asrt_text_doc.new_single_string_text_for_test(error_message))
+            ErrorMessageWithFixTip(asrt_text_doc.new_single_string_text_for_test(error_message))
             if error_message
             else None)
 

@@ -3,7 +3,7 @@ from typing import Callable, List, Optional, Sequence
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction
-from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
+from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
 from exactly_lib.symbol.err_msg.error_messages import defined_at_line__err_msg_lines
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import Failure, \
@@ -14,11 +14,11 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 class FailureOfDirectReference(Failure):
-    def __init__(self, error: ValueRestrictionFailure):
+    def __init__(self, error: ErrorMessageWithFixTip):
         self._error = error
 
     @property
-    def error(self) -> ValueRestrictionFailure:
+    def error(self) -> ErrorMessageWithFixTip:
         return self._error
 
 
@@ -26,7 +26,7 @@ class FailureOfIndirectReference(Failure):
     def __init__(self,
                  failing_symbol: str,
                  path_to_failing_symbol: List[str],
-                 error: ValueRestrictionFailure,
+                 error: ErrorMessageWithFixTip,
                  meaning_of_failure: str = ''):
         self._failing_symbol = failing_symbol
         self._path_to_failing_symbol = path_to_failing_symbol
@@ -48,7 +48,7 @@ class FailureOfIndirectReference(Failure):
         return self._path_to_failing_symbol
 
     @property
-    def error(self) -> ValueRestrictionFailure:
+    def error(self) -> ErrorMessageWithFixTip:
         return self._error
 
     @property
@@ -184,7 +184,7 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
             msg = self._sym_name_and_container_2_err_msg_if_no_matching_part(symbol_name, value)
         else:
             msg = self._default_error_message(symbol_name, value, resolver)
-        return FailureOfDirectReference(ValueRestrictionFailure(text_docs.single_pre_formatted_line_object(msg)))
+        return FailureOfDirectReference(ErrorMessageWithFixTip(text_docs.single_pre_formatted_line_object(msg)))
 
     def _default_error_message(self,
                                symbol_name: str,

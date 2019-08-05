@@ -3,7 +3,7 @@ from typing import Optional
 
 from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureOfIndirectReference, \
     FailureOfDirectReference
-from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure
+from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
 from exactly_lib.symbol.err_msg import restriction_failures as sut
 from exactly_lib.symbol.restriction import InvalidTypeCategoryFailure, InvalidValueTypeFailure
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
@@ -47,7 +47,7 @@ class TestErrorMessage(unittest.TestCase):
         # ACT #
         actual = sut.ErrorMessage(self.string_sym_def_1.name,
                                   self.symbol_table,
-                                  FailureOfDirectReference(_new_vrf('the message',
+                                  FailureOfDirectReference(_new_em('the message',
                                                                     'the how to fix')))
         # ASSERT #
         asrt_text_doc.assert_is_valid_text_renderer(self, actual)
@@ -58,15 +58,15 @@ class TestErrorMessage(unittest.TestCase):
                                   self.symbol_table,
                                   FailureOfIndirectReference(self.string_sym_def_1.name,
                                                              [self.string_sym_def_2.name],
-                                                             _new_vrf('the message',
+                                                             _new_em('the message',
                                                                       'the how to fix')))
         # ASSERT #
         asrt_text_doc.assert_is_valid_text_renderer(self, actual)
 
 
-def _new_vrf(message: str,
-             how_to_fix: Optional[str] = None) -> ValueRestrictionFailure:
-    return ValueRestrictionFailure(
+def _new_em(message: str,
+            how_to_fix: Optional[str] = None) -> ErrorMessageWithFixTip:
+    return ErrorMessageWithFixTip(
         asrt_text_doc.new_single_string_text_for_test(message),
         (
             None
