@@ -6,6 +6,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.symbol.restriction import ReferenceRestrictions
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
 
 class RestrictionThatCannotBeSatisfied(ValueRestriction):
@@ -13,7 +14,9 @@ class RestrictionThatCannotBeSatisfied(ValueRestriction):
                         symbol_table: vs.SymbolTable,
                         symbol_name: str,
                         container: vs.SymbolContainer) -> Optional[ValueRestrictionFailure]:
-        return ValueRestrictionFailure('unconditional error')
+        return ValueRestrictionFailure(
+            asrt_text_doc.new_single_string_text_for_test('unconditional error')
+        )
 
 
 def unconditionally_satisfied_reference_restrictions() -> ReferenceRestrictions:

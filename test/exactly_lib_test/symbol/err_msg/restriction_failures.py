@@ -1,4 +1,5 @@
 import unittest
+from typing import Optional
 
 from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureOfIndirectReference, \
     FailureOfDirectReference
@@ -6,13 +7,12 @@ from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure
 from exactly_lib.symbol.err_msg import restriction_failures as sut
 from exactly_lib.symbol.restriction import InvalidTypeCategoryFailure, InvalidValueTypeFailure
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestErrorMessage),
-    ])
+    return unittest.makeSuite(TestErrorMessage)
 
 
 class TestErrorMessage(unittest.TestCase):
@@ -27,38 +27,50 @@ class TestErrorMessage(unittest.TestCase):
 
     def test_invalid_type_category(self):
         # ACT #
-        actual = sut.error_message(self.string_sym_def_1.name,
-                                   self.symbol_table,
-                                   InvalidTypeCategoryFailure(TypeCategory.LOGIC,
-                                                              TypeCategory.DATA))
+        actual = sut.ErrorMessage(self.string_sym_def_1.name,
+                                  self.symbol_table,
+                                  InvalidTypeCategoryFailure(TypeCategory.LOGIC,
+                                                             TypeCategory.DATA))
         # ASSERT #
-        self.assertIsInstance(actual, str)
+        asrt_text_doc.assert_is_valid_text_renderer(self, actual)
 
     def test_invalid_type(self):
         # ACT #
-        actual = sut.error_message(self.string_sym_def_1.name,
-                                   self.symbol_table,
-                                   InvalidValueTypeFailure(ValueType.PATH,
-                                                           ValueType.STRING))
+        actual = sut.ErrorMessage(self.string_sym_def_1.name,
+                                  self.symbol_table,
+                                  InvalidValueTypeFailure(ValueType.PATH,
+                                                          ValueType.STRING))
         # ASSERT #
-        self.assertIsInstance(actual, str)
+        asrt_text_doc.assert_is_valid_text_renderer(self, actual)
 
     def test_direct_reference(self):
         # ACT #
-        actual = sut.error_message(self.string_sym_def_1.name,
-                                   self.symbol_table,
-                                   FailureOfDirectReference(ValueRestrictionFailure('the message',
-                                                                                    'the how to fix')))
+        actual = sut.ErrorMessage(self.string_sym_def_1.name,
+                                  self.symbol_table,
+                                  FailureOfDirectReference(_new_vrf('the message',
+                                                                    'the how to fix')))
         # ASSERT #
-        self.assertIsInstance(actual, str)
+        asrt_text_doc.assert_is_valid_text_renderer(self, actual)
 
     def test_indirect_reference(self):
         # ACT #
-        actual = sut.error_message(self.string_sym_def_1.name,
-                                   self.symbol_table,
-                                   FailureOfIndirectReference(self.string_sym_def_1.name,
-                                                              [self.string_sym_def_2.name],
-                                                              ValueRestrictionFailure('the message',
-                                                                                      'the how to fix')))
+        actual = sut.ErrorMessage(self.string_sym_def_1.name,
+                                  self.symbol_table,
+                                  FailureOfIndirectReference(self.string_sym_def_1.name,
+                                                             [self.string_sym_def_2.name],
+                                                             _new_vrf('the message',
+                                                                      'the how to fix')))
         # ASSERT #
-        self.assertIsInstance(actual, str)
+        asrt_text_doc.assert_is_valid_text_renderer(self, actual)
+
+
+def _new_vrf(message: str,
+             how_to_fix: Optional[str] = None) -> ValueRestrictionFailure:
+    return ValueRestrictionFailure(
+        asrt_text_doc.new_single_string_text_for_test(message),
+        (
+            None
+            if how_to_fix is None
+            else asrt_text_doc.new_single_string_text_for_test(how_to_fix)
+        )
+    )

@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional, List, Sequence
 
 from exactly_lib.common.err_msg import rendering
 from exactly_lib.common.err_msg import source_location
@@ -41,8 +41,10 @@ def invalid_type_msg(expected_value_types: List[ValueType],
                                               symbol_name,
                                               container_of_actual)
     how_to_fix_lines = _invalid_type_how_to_fix_lines(expected_value_types)
-    return ValueRestrictionFailure('\n'.join(header_lines),
-                                   how_to_fix='\n'.join(how_to_fix_lines))
+    return ValueRestrictionFailure(
+        text_docs.single_pre_formatted_line_object('\n'.join(header_lines)),
+        how_to_fix=text_docs.single_pre_formatted_line_object('\n'.join(how_to_fix_lines))
+    )
 
 
 def defined_at_line__err_msg_lines(definition_source: Optional[SourceLocationInfo]) -> List[str]:
@@ -99,7 +101,14 @@ def _invalid_type_how_to_fix_lines(expected_value_types: list) -> List[str]:
 
     def_instruction_syntax_table = define_symbol.def_syntax_table(expected_value_types)
 
-    return header + render_paragraph_item(def_instruction_syntax_table)
+    return header + _indent_lines('  ', render_paragraph_item(def_instruction_syntax_table))
+
+
+def _indent_lines(indent: str, lines: Sequence[str]) -> List[str]:
+    return [
+        indent + line
+        for line in lines
+    ]
 
 
 def _type_name_of(value_type: ValueType) -> str:

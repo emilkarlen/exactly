@@ -1,5 +1,6 @@
 from typing import Optional
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions import type_system
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions import error_messages
@@ -68,7 +69,7 @@ class FileRefRelativityRestriction(ValueRestriction):
             msg = error_messages.unsatisfied_path_relativity(symbol_name, container,
                                                              self._accepted,
                                                              actual_relativity)
-            return ValueRestrictionFailure(msg)
+            return ValueRestrictionFailure(text_docs.single_pre_formatted_line_object(msg))
 
     @property
     def accepted(self) -> PathRelativityVariants:

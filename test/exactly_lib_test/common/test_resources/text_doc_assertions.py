@@ -1,3 +1,4 @@
+import unittest
 from typing import Optional
 
 from exactly_lib.common.report_rendering import text_docs
@@ -54,6 +55,11 @@ def is_single_pre_formatted_text(text: ValueAssertion[str]) -> ValueAssertion[Te
 
 def is_any_text() -> ValueAssertion[TextRenderer]:
     return _IS_ANY_TEXT
+
+
+def assert_is_valid_text_renderer(put: unittest.TestCase,
+                                  actual):
+    is_any_text().apply_without_message(put, actual)
 
 
 def rendered_text_matches(text: ValueAssertion[str]) -> ValueAssertion[TextRenderer]:

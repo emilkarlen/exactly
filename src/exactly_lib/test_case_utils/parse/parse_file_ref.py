@@ -3,6 +3,7 @@ import pathlib
 import types
 from typing import Sequence, Optional, Callable, Union
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -23,7 +24,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
 from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.err_msg.error_messages import invalid_type_msg
-from exactly_lib.symbol.err_msg.restriction_failures import error_message_for_direct_reference
+from exactly_lib.symbol.err_msg.restriction_failures import ErrorMessageForDirectReference
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
@@ -38,6 +39,7 @@ from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.parse.token import TokenType, Token
+from exactly_lib.util.simple_textstruct.file_printer_output import to_string
 from exactly_lib.util.symbol_table import SymbolTable
 
 ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}
@@ -281,7 +283,8 @@ def _extract_parts_that_can_act_as_file_ref_and_suffix(string_fragments: list,
     return file_ref_or_string_symbol, path_part_resolver
 
 
-def path_or_string_reference_restrictions(accepted_relativity_variants: PathRelativityVariants):
+def path_or_string_reference_restrictions(
+        accepted_relativity_variants: PathRelativityVariants) -> OrReferenceRestrictions:
     return OrReferenceRestrictions([
         OrRestrictionPart(
             DataValueType.PATH,
@@ -290,7 +293,8 @@ def path_or_string_reference_restrictions(accepted_relativity_variants: PathRela
             DataValueType.STRING,
             PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
     ],
-        type_must_be_either_path_or_string__err_msg_generator)
+        type_must_be_either_path_or_string__err_msg_generator__str
+    )
 
 
 def path_relativity_restriction(accepted_relativity_variants: PathRelativityVariants):
@@ -364,8 +368,17 @@ PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
 
 
 def type_must_be_either_path_or_string__err_msg_generator(name_of_failing_symbol: str,
-                                                          container_of_illegal_symbol: SymbolContainer) -> str:
+                                                          container_of_illegal_symbol: SymbolContainer) -> TextRenderer:
     value_restriction_failure = invalid_type_msg([ValueType.PATH, ValueType.STRING],
                                                  name_of_failing_symbol,
                                                  container_of_illegal_symbol)
-    return error_message_for_direct_reference(value_restriction_failure)
+    return ErrorMessageForDirectReference(value_restriction_failure)
+
+
+def type_must_be_either_path_or_string__err_msg_generator__str(name_of_failing_symbol: str,
+                                                               container_of_illegal_symbol: SymbolContainer) -> str:
+    renderer = type_must_be_either_path_or_string__err_msg_generator(
+        name_of_failing_symbol,
+        container_of_illegal_symbol
+    )
+    return to_string.major_blocks(renderer.render())

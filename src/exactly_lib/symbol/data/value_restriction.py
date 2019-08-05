@@ -1,27 +1,34 @@
 from typing import Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
 class ValueRestrictionFailure(tuple):
     def __new__(cls,
-                message: str,
-                how_to_fix: str = ''):
+                message: TextRenderer,
+                how_to_fix: Optional[TextRenderer] = None):
         return tuple.__new__(cls, (message, how_to_fix))
 
     @property
-    def message(self) -> str:
+    def message(self) -> TextRenderer:
         return self[0]
 
     @property
-    def how_to_fix(self) -> str:
+    def how_to_fix(self) -> Optional[TextRenderer]:
         return self[1]
 
     def __str__(self) -> str:
-        return '%s{message=%s, how_to_fix=%s}' % (type(self),
-                                                  self.message,
-                                                  self.how_to_fix)
+        from exactly_lib.util.simple_textstruct.file_printer_output import to_string
+        return '%s{message=%s, how_to_fix=%s}' % (
+            type(self),
+            to_string.major_blocks(self.message.render()),
+            (''
+             if self.how_to_fix is None
+             else to_string.major_blocks(self.how_to_fix.render())
+             )
+        )
 
 
 class ValueRestriction:

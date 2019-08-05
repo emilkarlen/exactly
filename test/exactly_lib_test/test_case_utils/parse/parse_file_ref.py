@@ -31,6 +31,7 @@ from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream, \
     assert_token_string_is
@@ -1438,8 +1439,7 @@ class TestTypeMustBeEitherPathOrStringErrMsgGenerator(unittest.TestCase):
                 actual = sut.type_must_be_either_path_or_string__err_msg_generator('failing_symbol',
                                                                                    resolver_container)
                 # ASSERT #
-                self.assertIsInstance(actual, str,
-                                      'error message must be a ' + str(str))
+                asrt_text_doc.assert_is_valid_text_renderer(self, actual)
 
 
 def _remaining_source(ts: TokenStream) -> str:

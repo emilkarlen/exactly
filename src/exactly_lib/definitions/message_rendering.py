@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.util.textformat.rendering.text import section, paragraph_item
 from exactly_lib.util.textformat.rendering.text import text
 from exactly_lib.util.textformat.rendering.text.lists import list_formats_with
@@ -6,14 +8,14 @@ from exactly_lib.util.textformat.structure import structures as docs, core
 
 
 def render_single_text_cell_table_to_lines(str_or_text_cell_rows,
-                                           indent: str = '') -> list:
+                                           indent: str = '') -> List[str]:
     return [indent + table_row
             for table_row in
             paragraph_formatter().format_table(docs.single_text_cell_table(str_or_text_cell_rows))
             ]
 
 
-def render_paragraph_item(p: core.ParagraphItem) -> list:
+def render_paragraph_item(p: core.ParagraphItem) -> List[str]:
     return paragraph_formatter().format_paragraph_item(p)
 
 

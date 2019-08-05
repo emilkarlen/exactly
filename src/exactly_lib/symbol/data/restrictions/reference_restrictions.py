@@ -1,5 +1,6 @@
 from typing import Callable, List, Optional, Sequence
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
@@ -183,7 +184,7 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
             msg = self._sym_name_and_container_2_err_msg_if_no_matching_part(symbol_name, value)
         else:
             msg = self._default_error_message(symbol_name, value, resolver)
-        return FailureOfDirectReference(ValueRestrictionFailure(msg))
+        return FailureOfDirectReference(ValueRestrictionFailure(text_docs.single_pre_formatted_line_object(msg)))
 
     def _default_error_message(self,
                                symbol_name: str,

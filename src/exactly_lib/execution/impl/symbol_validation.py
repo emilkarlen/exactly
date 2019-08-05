@@ -1,6 +1,5 @@
 from typing import Sequence, Optional
 
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution.impl.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
@@ -78,7 +77,6 @@ def _validate_reference(symbol_reference: su.SymbolReference,
                                                            referenced_resolver_container)
     if result is None:
         return None
-    return text_docs.single_pre_formatted_line_object(
-        restriction_failures.error_message(symbol_reference.name, symbols, result),
-        True
-    )
+    return restriction_failures.ErrorMessage(symbol_reference.name,
+                                             symbols,
+                                             result)

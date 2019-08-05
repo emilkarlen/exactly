@@ -1,6 +1,7 @@
 import unittest
-from typing import Optional
+from typing import Optional, Sequence
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.data.restrictions.reference_restrictions import DataTypeReferenceRestrictionsVisitor, \
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, FailureOfDirectReference, \
     FailureOfIndirectReference, OrRestrictionPart, is_any_data_type
@@ -9,8 +10,10 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeR
     FileRefRelativityRestriction, ValueRestrictionVisitor
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer
-from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions, ReferenceRestrictions
+from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions, ReferenceRestrictions, Failure
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.data.test_resources.path_relativity import equals_path_relativity_variants
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
@@ -35,21 +38,22 @@ def equals_value_restriction(expected: ValueRestriction) -> ValueAssertion:
     return _EqualsValueRestriction(expected)
 
 
-def is_value_failure(message: ValueAssertion) -> ValueAssertion:
+def is_value_failure(message: ValueAssertion[TextRenderer]) -> ValueAssertion[ValueRestrictionFailure]:
     return asrt.is_instance_with(
         ValueRestrictionFailure,
         asrt.and_([
             asrt.sub_component('message',
                                ValueRestrictionFailure.message.fget,
                                message),
-            asrt.sub_component('message',
+            asrt.sub_component('how_to_fix',
                                ValueRestrictionFailure.how_to_fix.fget,
-                               asrt.is_instance(str)),
+                               asrt.is_none_or_instance_with(Renderer, asrt_text_doc.is_any_text())),
         ])
     )
 
 
-def is_failure_of_direct_reference(message: ValueAssertion = asrt.is_instance(str)) -> ValueAssertion:
+def is_failure_of_direct_reference(message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
+                                   ) -> ValueAssertion[Failure]:
     return asrt.is_instance_with(
         FailureOfDirectReference,
         asrt.sub_component('error',
@@ -58,9 +62,9 @@ def is_failure_of_direct_reference(message: ValueAssertion = asrt.is_instance(st
 
 
 def is_failure_of_indirect_reference(
-        failing_symbol: ValueAssertion = asrt.is_instance(str),
-        path_to_failing_symbol: ValueAssertion = asrt.is_instance(list),
-        error_message: ValueAssertion = asrt.is_instance(str),
+        failing_symbol: ValueAssertion[str] = asrt.is_instance(str),
+        path_to_failing_symbol: ValueAssertion[Sequence[str]] = asrt.is_instance(list),
+        error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text(),
         meaning_of_failure: ValueAssertion = asrt.is_instance(str)) -> ValueAssertion:
     return asrt.is_instance_with(FailureOfIndirectReference,
                                  asrt.and_([
@@ -188,7 +192,9 @@ def value_restriction_that_is_unconditionally_satisfied() -> ValueRestriction:
 
 
 def value_restriction_that_is_unconditionally_unsatisfied(msg: str = 'error message') -> ValueRestriction:
-    return ValueRestrictionWithConstantResult(ValueRestrictionFailure(msg))
+    return ValueRestrictionWithConstantResult(ValueRestrictionFailure(
+        asrt_text_doc.new_single_string_text_for_test(msg))
+    )
 
 
 class ValueRestrictionWithConstantResult(ValueRestriction):

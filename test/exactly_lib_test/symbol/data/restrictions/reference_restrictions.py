@@ -1,8 +1,7 @@
+import types
 import unittest
 from collections import Counter
-
-import types
-from typing import Sequence, Optional
+from typing import Sequence, Optional, Callable
 
 from exactly_lib.definitions import type_system
 from exactly_lib.definitions.type_system import DATA_TYPE_2_VALUE_TYPE
@@ -15,6 +14,7 @@ from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.value_type import DataValueType, ValueType, LogicValueType
 from exactly_lib.util.symbol_table import SymbolTable, Entry
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_satisfied, is_failure_of_direct_reference, \
     is_failure_of_indirect_reference, value_restriction_that_is_unconditionally_unsatisfied
@@ -98,7 +98,9 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
 
     def test_unsatisfied_restriction(self):
         error_message = 'error message'
-        expected_result = is_failure_of_direct_reference(message=asrt.equals(error_message))
+        expected_result = is_failure_of_direct_reference(
+            message=asrt_text_doc.is_string_for_test_that_equals(error_message)
+        )
         restriction_on_direct = restriction_with_constant_failure(error_message)
         self._check_direct_with_satisfied_variants_for_restriction_on_every_node(restriction_on_direct,
                                                                                  expected_result)
@@ -227,10 +229,12 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         # ACT #
         actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
         # ASSERT #
-        result_assertion = is_failure_of_indirect_reference(failing_symbol=asrt.equals(level_1a_symbol.key),
-                                                            path_to_failing_symbol=asrt.equals([]),
-                                                            error_message=asrt.equals(result_that_indicates_error),
-                                                            meaning_of_failure=asrt.equals('meaning of failure'))
+        result_assertion = is_failure_of_indirect_reference(
+            failing_symbol=asrt.equals(level_1a_symbol.key),
+            path_to_failing_symbol=asrt.equals([]),
+            error_message=asrt_text_doc.is_string_for_test_that_equals(result_that_indicates_error),
+            meaning_of_failure=asrt.equals('meaning of failure')
+        )
         result_assertion.apply_with_message(self, actual_result, 'result of processing')
         actual_processed_symbols = dict(restriction_that_registers_processed_symbols.visited.items())
         expected_processed_symbol = {
@@ -435,8 +439,10 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                 ('no restriction parts / custom error message generator',
                  sut.OrReferenceRestrictions([], value_type_error_message_function),
                  is_failure_of_direct_reference(
-                     message=asrt.equals(mk_err_msg(referencing_symbol.key,
-                                                    DATA_TYPE_2_VALUE_TYPE[value_type_of_referencing_symbol])),
+                     message=asrt_text_doc.is_string_for_test_that_equals(
+                         mk_err_msg(referencing_symbol.key,
+                                    DATA_TYPE_2_VALUE_TYPE[value_type_of_referencing_symbol])
+                     ),
                  )
                  ),
                 ('single direct: unsatisfied selector',
@@ -529,7 +535,9 @@ def unconditionally_satisfied_value_restriction() -> vr.ValueRestriction:
 
 
 def restriction_with_constant_failure(error_message: str) -> vr.ValueRestriction:
-    return RestrictionWithConstantResult(ValueRestrictionFailure(error_message))
+    return RestrictionWithConstantResult(ValueRestrictionFailure(
+        asrt_text_doc.new_single_string_text_for_test(error_message))
+    )
 
 
 class RestrictionWithConstantResult(vr.ValueRestriction):
@@ -552,7 +560,7 @@ class ValueRestrictionThatRaisesErrorIfApplied(vr.ValueRestriction):
 
 
 class RestrictionThatRegistersProcessedSymbols(vr.ValueRestriction):
-    def __init__(self, resolver_container_2_result__fun: types.FunctionType):
+    def __init__(self, resolver_container_2_result__fun: Callable[[sut.SymbolContainer], str]):
         self.resolver_container_2_result__fun = resolver_container_2_result__fun
         self.visited = Counter()
 
@@ -562,7 +570,10 @@ class RestrictionThatRegistersProcessedSymbols(vr.ValueRestriction):
                         value: sut.SymbolContainer) -> Optional[ValueRestrictionFailure]:
         self.visited.update([symbol_name])
         error_message = self.resolver_container_2_result__fun(value)
-        return ValueRestrictionFailure(error_message) if error_message else None
+        return (
+            ValueRestrictionFailure(asrt_text_doc.new_single_string_text_for_test(error_message))
+            if error_message
+            else None)
 
 
 class DataValueResolverForTest(DataValueResolver):
