@@ -3,6 +3,7 @@ import unittest
 from collections import Counter
 from typing import Sequence, Optional, Callable
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import type_system
 from exactly_lib.definitions.type_system import DATA_TYPE_2_VALUE_TYPE
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
@@ -21,6 +22,8 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer
@@ -368,27 +371,29 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
 class TestOrReferenceRestrictions(unittest.TestCase):
     def test_satisfied(self):
         cases = [
-            ('single satisfied string-selector restriction, unconditionally satisfied part',
-             sut.OrReferenceRestrictions([
-                 sut.OrRestrictionPart(DataValueType.STRING,
-                                       sut.ReferenceRestrictionsOnDirectAndIndirect(
-                                           direct=value_restriction_that_is_unconditionally_satisfied()))
-             ])
-             ),
-            ('multiple unconditionally satisfied restrictions',
-             sut.OrReferenceRestrictions([
-                 sut.OrRestrictionPart(DataValueType.STRING,
-                                       sut.ReferenceRestrictionsOnDirectAndIndirect(
-                                           direct=value_restriction_that_is_unconditionally_satisfied())),
-                 sut.OrRestrictionPart(DataValueType.STRING,
-                                       sut.ReferenceRestrictionsOnDirectAndIndirect(
-                                           direct=value_restriction_that_is_unconditionally_satisfied()))
-             ])
-             ),
+            NameAndValue(
+                'single satisfied string-selector restriction, unconditionally satisfied part',
+                sut.OrReferenceRestrictions([
+                    sut.OrRestrictionPart(DataValueType.STRING,
+                                          sut.ReferenceRestrictionsOnDirectAndIndirect(
+                                              direct=value_restriction_that_is_unconditionally_satisfied()))
+                ])
+            ),
+            NameAndValue(
+                'multiple unconditionally satisfied restrictions',
+                sut.OrReferenceRestrictions([
+                    sut.OrRestrictionPart(DataValueType.STRING,
+                                          sut.ReferenceRestrictionsOnDirectAndIndirect(
+                                              direct=value_restriction_that_is_unconditionally_satisfied())),
+                    sut.OrRestrictionPart(DataValueType.STRING,
+                                          sut.ReferenceRestrictionsOnDirectAndIndirect(
+                                              direct=value_restriction_that_is_unconditionally_satisfied()))
+                ])
+            ),
         ]
-        for case_name, restrictions in cases:
-            with self.subTest(msg=case_name):
-                actual = restrictions.is_satisfied_by(*self._symbol_setup_with_indirectly_referenced_symbol())
+        for case in cases:
+            with self.subTest(msg=case.name):
+                actual = case.value.is_satisfied_by(*self._symbol_setup_with_indirectly_referenced_symbol())
                 self.assertIsNone(actual)
 
     def test_unsatisfied(self):
@@ -398,10 +403,10 @@ class TestOrReferenceRestrictions(unittest.TestCase):
             return symbol_name + ': ' + 'Value type of tested symbol is ' + str(value_type)
 
         def value_type_error_message_function(symbol_name: str,
-                                              container: SymbolContainer) -> str:
+                                              container: SymbolContainer) -> TextRenderer:
             v = container.resolver
             assert isinstance(v, SymbolValueResolver)  # Type info for IDE
-            return mk_err_msg(symbol_name, v.value_type)
+            return asrt_text_doc.new_single_string_text_for_test(mk_err_msg(symbol_name, v.value_type))
 
         referenced_symbol_cases = [
             ('data symbol',
@@ -430,86 +435,86 @@ class TestOrReferenceRestrictions(unittest.TestCase):
             symbol_table_entries = [referencing_symbol, referenced_symbol]
 
             symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
-
             cases = [
-                ('no restriction parts / default error message generator',
-                 sut.OrReferenceRestrictions([]),
-                 is_failure_of_direct_reference(),
-                 ),
-                ('no restriction parts / custom error message generator',
-                 sut.OrReferenceRestrictions([], value_type_error_message_function),
-                 is_failure_of_direct_reference(
-                     message=asrt_text_doc.is_string_for_test_that_equals(
-                         mk_err_msg(referencing_symbol.key,
-                                    DATA_TYPE_2_VALUE_TYPE[value_type_of_referencing_symbol])
-                     ),
-                 )
-                 ),
-                ('single direct: unsatisfied selector',
-                 sut.OrReferenceRestrictions([
-                     sut.OrRestrictionPart(value_type_other_than_referencing_symbol,
-                                           sut.ReferenceRestrictionsOnDirectAndIndirect(
-                                               direct=value_restriction_that_is_unconditionally_satisfied())),
-                 ]),
-                 is_failure_of_direct_reference(),
-                 ),
-                ('single direct: satisfied selector, unsatisfied part-restriction',
-                 sut.OrReferenceRestrictions([
-                     sut.OrRestrictionPart(value_type_of_referencing_symbol,
-                                           sut.ReferenceRestrictionsOnDirectAndIndirect(
-                                               direct=value_restriction_that_is_unconditionally_unsatisfied())),
-                 ]),
-                 is_failure_of_direct_reference(),
-                 ),
-                ('multiple direct: unconditionally unsatisfied selectors',
-                 sut.OrReferenceRestrictions([
-                     sut.OrRestrictionPart(
-                         value_type_other_than_referencing_symbol,
-                         sut.ReferenceRestrictionsOnDirectAndIndirect(
-                             direct=value_restriction_that_is_unconditionally_unsatisfied())),
-                     sut.OrRestrictionPart(
-                         value_type_other_than_referencing_symbol,
-                         sut.ReferenceRestrictionsOnDirectAndIndirect(
-                             direct=value_restriction_that_is_unconditionally_unsatisfied()))
-                 ]),
-                 is_failure_of_direct_reference(),
-                 ),
-                ('multiple direct: unconditionally satisfied selectors, unconditionally satisfied restrictions',
-                 sut.OrReferenceRestrictions([
-                     sut.OrRestrictionPart(
-                         value_type_of_referencing_symbol,
-                         sut.ReferenceRestrictionsOnDirectAndIndirect(
-                             direct=value_restriction_that_is_unconditionally_unsatisfied())),
-                     sut.OrRestrictionPart(
-                         value_type_of_referencing_symbol,
-                         sut.ReferenceRestrictionsOnDirectAndIndirect(
-                             direct=value_restriction_that_is_unconditionally_unsatisfied()))
-                 ]),
-                 is_failure_of_direct_reference(),
-                 ),
-                ('first: selector=satisfied, direct=satisfied, indirect=unsatisfied. second:satisfied ',
-                 sut.OrReferenceRestrictions([
-                     sut.OrRestrictionPart(
-                         value_type_of_referencing_symbol,
-                         sut.ReferenceRestrictionsOnDirectAndIndirect(
-                             direct=value_restriction_that_is_unconditionally_satisfied(),
-                             indirect=value_restriction_that_is_unconditionally_unsatisfied())),
-                     sut.OrRestrictionPart(
-                         value_type_of_referencing_symbol,
-                         sut.ReferenceRestrictionsOnDirectAndIndirect(
-                             direct=value_restriction_that_is_unconditionally_satisfied())),
-                 ]),
-                 is_failure_of_indirect_reference(failing_symbol=asrt.equals(referenced_symbol.key),
-                                                  path_to_failing_symbol=asrt.equals([])),
-                 ),
+                NEA('no restriction parts / default error message generator',
+                    is_failure_of_direct_reference(),
+                    sut.OrReferenceRestrictions([]),
+                    ),
+                NEA('no restriction parts / custom error message generator',
+                    is_failure_of_direct_reference(
+                        message=asrt_text_doc.is_string_for_test_that_equals(
+                            mk_err_msg(referencing_symbol.key,
+                                       DATA_TYPE_2_VALUE_TYPE[value_type_of_referencing_symbol])
+                        ),
+                    ),
+                    sut.OrReferenceRestrictions([], value_type_error_message_function),
+                    ),
+                NEA('single direct: unsatisfied selector',
+                    is_failure_of_direct_reference(),
+                    sut.OrReferenceRestrictions([
+                        sut.OrRestrictionPart(value_type_other_than_referencing_symbol,
+                                              sut.ReferenceRestrictionsOnDirectAndIndirect(
+                                                  direct=value_restriction_that_is_unconditionally_satisfied())),
+                    ]),
+                    ),
+                NEA('single direct: satisfied selector, unsatisfied part-restriction',
+                    is_failure_of_direct_reference(),
+                    sut.OrReferenceRestrictions([
+                        sut.OrRestrictionPart(value_type_of_referencing_symbol,
+                                              sut.ReferenceRestrictionsOnDirectAndIndirect(
+                                                  direct=value_restriction_that_is_unconditionally_unsatisfied())),
+                    ]),
+                    ),
+                NEA('multiple direct: unconditionally unsatisfied selectors',
+                    is_failure_of_direct_reference(),
+                    sut.OrReferenceRestrictions([
+                        sut.OrRestrictionPart(
+                            value_type_other_than_referencing_symbol,
+                            sut.ReferenceRestrictionsOnDirectAndIndirect(
+                                direct=value_restriction_that_is_unconditionally_unsatisfied())),
+                        sut.OrRestrictionPart(
+                            value_type_other_than_referencing_symbol,
+                            sut.ReferenceRestrictionsOnDirectAndIndirect(
+                                direct=value_restriction_that_is_unconditionally_unsatisfied()))
+                    ]),
+                    ),
+                NEA('multiple direct: unconditionally satisfied selectors, unconditionally satisfied restrictions',
+                    is_failure_of_direct_reference(),
+                    sut.OrReferenceRestrictions([
+                        sut.OrRestrictionPart(
+                            value_type_of_referencing_symbol,
+                            sut.ReferenceRestrictionsOnDirectAndIndirect(
+                                direct=value_restriction_that_is_unconditionally_unsatisfied())),
+                        sut.OrRestrictionPart(
+                            value_type_of_referencing_symbol,
+                            sut.ReferenceRestrictionsOnDirectAndIndirect(
+                                direct=value_restriction_that_is_unconditionally_unsatisfied()))
+                    ]),
+                    ),
+                NEA('first: selector=satisfied, direct=satisfied, indirect=unsatisfied. second:satisfied ',
+                    is_failure_of_indirect_reference(failing_symbol=asrt.equals(referenced_symbol.key),
+                                                     path_to_failing_symbol=asrt.equals([])),
+                    sut.OrReferenceRestrictions([
+                        sut.OrRestrictionPart(
+                            value_type_of_referencing_symbol,
+                            sut.ReferenceRestrictionsOnDirectAndIndirect(
+                                direct=value_restriction_that_is_unconditionally_satisfied(),
+                                indirect=value_restriction_that_is_unconditionally_unsatisfied())),
+                        sut.OrRestrictionPart(
+                            value_type_of_referencing_symbol,
+                            sut.ReferenceRestrictionsOnDirectAndIndirect(
+                                direct=value_restriction_that_is_unconditionally_satisfied())),
+                    ]),
+                    ),
             ]
-            for case_name, restrictions, result_assertion in cases:
+
+            for case in cases:
                 with self.subTest(referenced_symbol_case_name=referenced_symbol_case_name,
-                                  msg=case_name):
-                    actual = restrictions.is_satisfied_by(symbol_table,
-                                                          referencing_symbol.key,
-                                                          referencing_symbol.value)
-                    result_assertion.apply_with_message(self, actual, 'return value')
+                                  msg=case.name):
+                    actual = case.actual.is_satisfied_by(symbol_table,
+                                                         referencing_symbol.key,
+                                                         referencing_symbol.value)
+                    case.expected.apply_with_message(self, actual, 'return value')
 
     @staticmethod
     def _symbol_setup_with_indirectly_referenced_symbol():

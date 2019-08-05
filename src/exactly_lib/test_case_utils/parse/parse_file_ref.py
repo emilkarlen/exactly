@@ -39,7 +39,6 @@ from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.parse.token import TokenType, Token
-from exactly_lib.util.simple_textstruct.file_printer_output import to_string
 from exactly_lib.util.symbol_table import SymbolTable
 
 ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}
@@ -293,7 +292,7 @@ def path_or_string_reference_restrictions(
             DataValueType.STRING,
             PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
     ],
-        type_must_be_either_path_or_string__err_msg_generator__str
+        type_must_be_either_path_or_string__err_msg_generator
     )
 
 
@@ -373,12 +372,3 @@ def type_must_be_either_path_or_string__err_msg_generator(name_of_failing_symbol
                                                  name_of_failing_symbol,
                                                  container_of_illegal_symbol)
     return ErrorMessageForDirectReference(value_restriction_failure)
-
-
-def type_must_be_either_path_or_string__err_msg_generator__str(name_of_failing_symbol: str,
-                                                               container_of_illegal_symbol: SymbolContainer) -> str:
-    renderer = type_must_be_either_path_or_string__err_msg_generator(
-        name_of_failing_symbol,
-        container_of_illegal_symbol
-    )
-    return to_string.major_blocks(renderer.render())
