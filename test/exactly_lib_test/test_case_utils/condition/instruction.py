@@ -89,7 +89,7 @@ class TestValidation(unittest.TestCase):
                 operand_resolver_that(
                     validate_pre_sds=actions.do_raise(
                         svh_exception.SvhValidationException(
-                            text_docs.single_pre_formatted_line_object('error in left op')
+                            asrt_text_doc.new_single_string_text_for_test('error in left op')
                         ))),
                 operand_resolver_that(),
             ),
@@ -103,7 +103,7 @@ class TestValidation(unittest.TestCase):
                 operand_resolver_that(
                     validate_pre_sds=actions.do_raise(
                         svh_exception.SvhValidationException(
-                            text_docs.single_pre_formatted_line_object('error in right op')
+                            asrt_text_doc.new_single_string_text_for_test('error in right op')
                         ))),
             ),
             (
@@ -115,7 +115,7 @@ class TestValidation(unittest.TestCase):
                 operand_resolver_that(
                     validate_pre_sds=actions.do_raise(
                         svh_exception.SvhHardErrorException(
-                            text_docs.single_pre_formatted_line_object('error in left op')
+                            asrt_text_doc.new_single_string_text_for_test('error in left op')
                         ))),
                 operand_resolver_that(),
             ),
@@ -129,7 +129,7 @@ class TestValidation(unittest.TestCase):
                 operand_resolver_that(
                     validate_pre_sds=actions.do_raise(
                         svh_exception.SvhHardErrorException(
-                            text_docs.single_pre_formatted_line_object('error in right op')
+                            asrt_text_doc.new_single_string_text_for_test('error in right op')
                         ))),
             ),
         ]
@@ -155,13 +155,13 @@ class TestMain(unittest.TestCase):
             (
                 'hard error exception in left operand',
                 asrt_pfh.is_hard_error(
-                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals('error error in left op'))
+                    asrt_text_doc.is_string_for_test_that_equals('error error in left op')
                 ),
 
                 operand_resolver_that(
                     resolve_return_value_action=actions.do_raise(
                         pfh_exception.PfhHardErrorException(
-                            text_docs.single_pre_formatted_line_object('error error in left op')
+                            asrt_text_doc.new_single_string_text_for_test('error error in left op')
                         )
                     )),
                 operand_resolver_that(),
@@ -169,14 +169,14 @@ class TestMain(unittest.TestCase):
             (
                 'hard error exception in right operand',
                 asrt_pfh.is_hard_error(
-                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals('error error in right op'))
+                    asrt_text_doc.is_string_for_test_that_equals('error error in right op')
                 ),
 
                 operand_resolver_that(),
                 operand_resolver_that(
                     resolve_return_value_action=actions.do_raise(
                         pfh_exception.PfhHardErrorException(
-                            text_docs.single_pre_formatted_line_object('error error in right op'))
+                            asrt_text_doc.new_single_string_text_for_test('error error in right op'))
                     )
                 ),
             ),

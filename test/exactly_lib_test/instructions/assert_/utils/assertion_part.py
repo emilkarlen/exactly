@@ -382,7 +382,7 @@ class PartThatRaisesFailureExceptionIfArgumentIsEqualToOne(sut.AssertionPart[int
               custom_environment,
               arg: int):
         if arg == 1:
-            raise pfh_exception.PfhFailException(text_docs.single_pre_formatted_line_object(self.ERROR_MESSAGE))
+            raise pfh_exception.PfhFailException(asrt_text_doc.new_single_string_text_for_test(self.ERROR_MESSAGE))
         else:
             return arg + 1
 

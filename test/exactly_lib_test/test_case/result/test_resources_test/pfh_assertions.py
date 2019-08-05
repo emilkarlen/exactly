@@ -32,13 +32,13 @@ class TestIsPass(unittest.TestCase):
         # ARRANGE #
         cases = [
             NameAndValue('fail',
-                         pfh.new_pfh_fail(text_docs.single_pre_formatted_line_object('failure msg'))
+                         pfh.new_pfh_fail(asrt_text_doc.new_single_string_text_for_test('failure msg'))
                          ),
             NameAndValue('fail/const msg',
                          pfh.new_pfh_fail__str('failure msg')
                          ),
             NameAndValue('hard error',
-                         pfh.new_pfh_hard_error(text_docs.single_pre_formatted_line_object('hard error msg'))
+                         pfh.new_pfh_hard_error(asrt_text_doc.new_single_string_text_for_test('hard error msg'))
                          ),
             NameAndValue('hard error/const msg',
                          pfh.new_pfh_hard_error__str('hard error msg')
@@ -61,7 +61,7 @@ class TestStatus(unittest.TestCase):
                 ),
             NEA('fail',
                 sut.status_is(pfh.PassOrFailOrHardErrorEnum.FAIL),
-                pfh.new_pfh_fail(text_docs.single_pre_formatted_line_object('fail msg')),
+                pfh.new_pfh_fail(asrt_text_doc.new_single_string_text_for_test('fail msg')),
                 ),
             NEA('fail/const msg',
                 sut.status_is(pfh.PassOrFailOrHardErrorEnum.FAIL),
@@ -69,7 +69,7 @@ class TestStatus(unittest.TestCase):
                 ),
             NEA('hard error',
                 sut.status_is(pfh.PassOrFailOrHardErrorEnum.HARD_ERROR),
-                pfh.new_pfh_hard_error(text_docs.single_pre_formatted_line_object('hard err msg')),
+                pfh.new_pfh_hard_error(asrt_text_doc.new_single_string_text_for_test('hard err msg')),
                 ),
             NEA('hard error/const msg',
                 sut.status_is(pfh.PassOrFailOrHardErrorEnum.HARD_ERROR),
@@ -112,7 +112,7 @@ class TestFailureMessage(unittest.TestCase):
                 sut.failure_message_is(
                     asrt_text_doc.is_single_pre_formatted_text(asrt.equals(expected_err_msg))
                 ),
-                pfh.new_pfh_fail(text_docs.single_pre_formatted_line_object(expected_err_msg)),
+                pfh.new_pfh_fail(asrt_text_doc.new_single_string_text_for_test(expected_err_msg)),
                 ),
             NEA('fail/const msg',
                 sut.failure_message_is(
@@ -124,7 +124,7 @@ class TestFailureMessage(unittest.TestCase):
                 sut.failure_message_is(
                     asrt_text_doc.is_single_pre_formatted_text(asrt.equals(expected_err_msg))
                 ),
-                pfh.new_pfh_hard_error(text_docs.single_pre_formatted_line_object(expected_err_msg)),
+                pfh.new_pfh_hard_error(asrt_text_doc.new_single_string_text_for_test(expected_err_msg)),
                 ),
             NEA('hard error/const msg',
                 sut.failure_message_is(
@@ -169,7 +169,7 @@ class TestIsFailWithArbitraryMessage(unittest.TestCase):
         expected_err_msg = 'expected error message'
         cases = [
             NameAndValue('fail',
-                         pfh.new_pfh_fail(text_docs.single_pre_formatted_line_object(expected_err_msg)),
+                         pfh.new_pfh_fail(asrt_text_doc.new_single_string_text_for_test(expected_err_msg)),
                          ),
             NameAndValue('fail/const msg',
                          pfh.new_pfh_fail__str(expected_err_msg),
@@ -204,7 +204,7 @@ class TestIsHardErrorWithArbitraryMessage(unittest.TestCase):
         expected_err_msg = 'expected error message'
         cases = [
             NameAndValue('hard error',
-                         pfh.new_pfh_hard_error(text_docs.single_pre_formatted_line_object(expected_err_msg)),
+                         pfh.new_pfh_hard_error(asrt_text_doc.new_single_string_text_for_test(expected_err_msg)),
                          ),
             NameAndValue('hard error/const msg',
                          pfh.new_pfh_hard_error__str(expected_err_msg),

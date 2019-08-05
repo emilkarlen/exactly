@@ -20,6 +20,7 @@ from exactly_lib_test.section_document.test_resources.source_location_assertions
     equals_single_line_source_location_path
 from exactly_lib_test.test_case.result.test_resources import failure_details_assertions as asrt_failure_details
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
 
 def suite() -> unittest.TestSuite:
@@ -98,7 +99,7 @@ class Test(unittest.TestCase):
             recording_media.new_recorder_with_header('instruction executor'),
             PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.FAIL,
-                text_docs.single_pre_formatted_line_object('fail message')
+                asrt_text_doc.new_single_string_text_for_test('fail message')
             )
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
@@ -121,7 +122,7 @@ class Test(unittest.TestCase):
             recording_media.new_recorder_with_header('instruction executor'),
             PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.HARD_ERROR,
-                text_docs.single_pre_formatted_line_object('hard error message')
+                asrt_text_doc.new_single_string_text_for_test('hard error message')
             )
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
@@ -164,7 +165,7 @@ class Test(unittest.TestCase):
             recording_media.new_recorder_with_header('instruction executor'),
             PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.FAIL,
-                text_docs.single_pre_formatted_line_object('fail message')
+                asrt_text_doc.new_single_string_text_for_test('fail message')
             )
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
@@ -189,7 +190,7 @@ class Test(unittest.TestCase):
             recording_media.new_recorder_with_header('instruction executor'),
             PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.FAIL,
-                text_docs.single_pre_formatted_line_object('fail message')
+                asrt_text_doc.new_single_string_text_for_test('fail message')
             )
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
@@ -219,7 +220,7 @@ class Test(unittest.TestCase):
             recording_media.new_recorder_with_header('instruction executor'),
             PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.FAIL,
-                text_docs.single_pre_formatted_line_object('fail message')
+                asrt_text_doc.new_single_string_text_for_test('fail message')
             )
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
@@ -247,7 +248,7 @@ class Test(unittest.TestCase):
             recording_media.new_recorder_with_header('instruction executor'),
             PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.FAIL,
-                text_docs.single_pre_formatted_line_object('fail message')
+                asrt_text_doc.new_single_string_text_for_test('fail message')
             )
         )
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),

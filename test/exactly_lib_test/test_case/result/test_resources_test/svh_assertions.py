@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.result import svh
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
@@ -31,7 +30,7 @@ class TestIsSuccess(unittest.TestCase):
         cases = [
             NameAndValue('VALIDATION_ERROR',
                          svh.new_svh_validation_error(
-                             text_docs.single_pre_formatted_line_object('failure msg')
+                             asrt_text_doc.new_single_string_text_for_test('failure msg')
                          )
                          ),
             NameAndValue('VALIDATION_ERROR/const msg',
@@ -39,7 +38,7 @@ class TestIsSuccess(unittest.TestCase):
                          ),
             NameAndValue('HARD_ERROR',
                          svh.new_svh_hard_error(
-                             text_docs.single_pre_formatted_line_object('hard error msg')
+                             asrt_text_doc.new_single_string_text_for_test('hard error msg')
                          )
                          ),
             NameAndValue('HARD_ERROR/const msg',
@@ -64,7 +63,7 @@ class TestStatusIs(unittest.TestCase):
             NEA('VALIDATION_ERROR',
                 svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                 svh.new_svh_validation_error(
-                    text_docs.single_pre_formatted_line_object('validation msg')
+                    asrt_text_doc.new_single_string_text_for_test('validation msg')
                 ),
                 ),
             NEA('VALIDATION_ERROR/const msg',
@@ -74,7 +73,7 @@ class TestStatusIs(unittest.TestCase):
             NEA('HARD_ERROR',
                 svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR,
                 svh.new_svh_hard_error(
-                    text_docs.single_pre_formatted_line_object('hard err msg')
+                    asrt_text_doc.new_single_string_text_for_test('hard err msg')
                 ),
                 ),
             NEA('HARD_ERROR/const msg',
@@ -94,7 +93,7 @@ class TestStatusIs(unittest.TestCase):
             NEA('SUCCESS',
                 svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                 svh.new_svh_validation_error(
-                    text_docs.single_pre_formatted_line_object('fail msg')
+                    asrt_text_doc.new_single_string_text_for_test('fail msg')
                 ),
                 ),
             NEA('SUCCESS/const msg',
@@ -104,7 +103,7 @@ class TestStatusIs(unittest.TestCase):
             NEA('VALIDATION_ERROR',
                 svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                 svh.new_svh_hard_error(
-                    text_docs.single_pre_formatted_line_object('validation err msg')
+                    asrt_text_doc.new_single_string_text_for_test('validation err msg')
                 ),
                 ),
             NEA('VALIDATION_ERROR/const msg',
@@ -170,7 +169,7 @@ class TestStatusIsNotSuccess(unittest.TestCase):
                     svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                     asrt_text_doc.is_single_pre_formatted_text_that_equals(expected_err_msg)
                 ),
-                svh.new_svh_validation_error(_printable_of_str(actual_err_msg)),
+                svh.new_svh_validation_error(_renderer_of_str(actual_err_msg)),
                 ),
             NEA('VALIDATION - VALIDATION/non-matching error message/const msg',
                 sut.status_is_not_success(
@@ -188,7 +187,7 @@ class TestStatusIsNotSuccess(unittest.TestCase):
                     svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR,
                     asrt_text_doc.is_single_pre_formatted_text_that_equals(expected_err_msg)
                 ),
-                svh.new_svh_hard_error(_printable_of_str(actual_err_msg)),
+                svh.new_svh_hard_error(_renderer_of_str(actual_err_msg)),
                 ),
             NEA('HARD_ERROR - HARD_ERROR/non-matching error message/const msg',
                 sut.status_is_not_success(
@@ -204,5 +203,5 @@ class TestStatusIsNotSuccess(unittest.TestCase):
                 assert_that_assertion_fails(case.expected, case.actual)
 
 
-def _printable_of_str(s: str) -> TextRenderer:
-    return text_docs.single_pre_formatted_line_object(s)
+def _renderer_of_str(s: str) -> TextRenderer:
+    return asrt_text_doc.new_single_string_text_for_test(s)

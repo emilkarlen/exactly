@@ -2,7 +2,6 @@ import pathlib
 import types
 import unittest
 
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.execution.impl.single_instruction_executor import execute_element, \
     ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum, SingleInstructionExecutionFailure
@@ -13,6 +12,7 @@ from exactly_lib.section_document.source_location import FileLocationInfo
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util import line_source
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.section_document.test_resources.elements import new_ls_from_line
 from exactly_lib_test.test_case.result.test_resources import failure_details_assertions as asrt_failure_details
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -115,7 +115,7 @@ class Test(unittest.TestCase):
                 NameRecorder().new_function_that_records('s'),
                 PartialInstructionControlledFailureInfo(
                     failure_status_of_executor,
-                    text_docs.single_pre_formatted_line_object('error message'))
+                    asrt_text_doc.new_single_string_text_for_test('error message'))
             ),
             element,
             element.instruction_info)

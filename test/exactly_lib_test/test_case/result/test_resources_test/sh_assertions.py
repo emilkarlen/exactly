@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib.common.report_rendering.text_docs import single_pre_formatted_line_object
 from exactly_lib.test_case.result import sh
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.result.test_resources import sh_assertions as sut
@@ -97,7 +96,7 @@ class TestIsHardErrorAsTd(unittest.TestCase):
 
     def test_pass__value_from_td(self):
         message_str = 'error message'
-        the_error_message = single_pre_formatted_line_object(message_str)
+        the_error_message = asrt_text_doc.new_single_string_text_for_test(message_str)
         cases = [
             NEA('no assertion on error message',
                 asrt.anything_goes(),
@@ -138,7 +137,7 @@ class TestIsHardErrorAsTd(unittest.TestCase):
 
     def test_fail__value_from_td(self):
         message_str = 'error message'
-        the_error_message = single_pre_formatted_line_object(message_str)
+        the_error_message = asrt_text_doc.new_single_string_text_for_test(message_str)
         cases = [
             NEA('is success',
                 asrt.anything_goes(),

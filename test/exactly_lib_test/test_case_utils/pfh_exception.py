@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.test_case_utils import pfh_exception as sut
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
@@ -59,9 +58,9 @@ DO_HARD_ERROR = 2
 
 def test_action(what_to_do: int, message: str):
     if what_to_do == DO_HARD_ERROR:
-        raise sut.PfhHardErrorException(text_docs.single_pre_formatted_line_object(message))
+        raise sut.PfhHardErrorException(asrt_text_doc.new_single_string_text_for_test(message))
     if what_to_do == DO_FAIL_ERROR:
-        raise sut.PfhFailException(text_docs.single_pre_formatted_line_object(message))
+        raise sut.PfhFailException(asrt_text_doc.new_single_string_text_for_test(message))
     if what_to_do != DO_PASS:
         raise ValueError('unexpected what_to_do: ' + str(what_to_do))
 

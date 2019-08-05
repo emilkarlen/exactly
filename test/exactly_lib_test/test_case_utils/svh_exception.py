@@ -58,9 +58,9 @@ DO_HARD_ERROR = 2
 
 def test_action(what_to_do: int, message: str):
     if what_to_do == DO_HARD_ERROR:
-        raise sut.SvhHardErrorException(text_docs.single_pre_formatted_line_object(message))
+        raise sut.SvhHardErrorException(asrt_text_doc.new_single_string_text_for_test(message))
     if what_to_do == DO_VALIDATION_ERROR:
-        raise sut.SvhValidationException(text_docs.single_pre_formatted_line_object(message))
+        raise sut.SvhValidationException(asrt_text_doc.new_single_string_text_for_test(message))
     if what_to_do != DO_SUCCESS:
         raise ValueError('unexpected what_to_do: ' + str(what_to_do))
 
