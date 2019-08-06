@@ -278,7 +278,7 @@ class _Assertion:
             self.environment.path_resolving_environment_pre_or_post_sds)
 
         if failure_message_of_existence:
-            return (pfh.new_pfh_fail__str(failure_message_of_existence)
+            return (pfh.new_pfh_fail(failure_message_of_existence)
                     if self._is_positive_check()
                     else pfh.new_pfh_pass()
                     )

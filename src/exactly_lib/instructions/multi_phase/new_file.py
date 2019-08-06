@@ -14,7 +14,7 @@ from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
-    MainStepResultTranslatorForErrorMessageStringResultAsHardError
+    MainStepResultTranslatorForTextRendererAsHardError
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.file_maker import FileMaker
@@ -41,7 +41,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 def parts_parser(instruction_name: str,
                  phase_is_after_act: bool) -> InstructionPartsParser:
     return PartsParserFromEmbryoParser(EmbryoParser(instruction_name, phase_is_after_act),
-                                       MainStepResultTranslatorForErrorMessageStringResultAsHardError())
+                                       MainStepResultTranslatorForTextRendererAsHardError())
 
 
 RUN_PROGRAM_TOKEN = instruction_names.RUN_INSTRUCTION_NAME

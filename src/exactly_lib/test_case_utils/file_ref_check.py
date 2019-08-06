@@ -67,8 +67,8 @@ def post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
 
 
 def pre_or_post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
-                                            environment: PathResolvingEnvironmentPreOrPostSds) -> Optional[
-    TextRenderer]:
+                                            environment: PathResolvingEnvironmentPreOrPostSds
+                                            ) -> Optional[TextRenderer]:
     validation_result = file_ref_check.pre_or_post_sds_condition_result(environment)
     if not validation_result.is_success:
         fr = file_ref_check.file_ref_resolver.resolve(environment.symbols)
