@@ -269,7 +269,7 @@ class _Assertion:
                          check),
             self.environment.path_resolving_environment_pre_or_post_sds)
 
-        return pfh.new_pfh_fail_if_has_failure_message__str(failure_message)
+        return pfh.new_pfh_fail_if_has_failure_message(failure_message)
 
     def _assert_with_file_matcher(self) -> pfh.PassOrFailOrHardError:
         failure_message_of_existence = pre_or_post_sds_failure_message_or_none(

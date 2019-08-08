@@ -65,14 +65,6 @@ def new_pfh_fail__str(failure_message: str) -> PassOrFailOrHardError:
     return new_pfh_fail(text_docs.single_pre_formatted_line_object(failure_message))
 
 
-def new_pfh_fail_if_has_failure_message__str(failure_message: Optional[str]) -> PassOrFailOrHardError:
-    return (
-        new_pfh_pass()
-        if failure_message is None
-        else new_pfh_fail(text_docs.single_pre_formatted_line_object(failure_message))
-    )
-
-
 def new_pfh_fail_if_has_failure_message(failure_message: Optional[TextRenderer]) -> PassOrFailOrHardError:
     return (
         new_pfh_pass()
