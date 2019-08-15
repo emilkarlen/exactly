@@ -34,7 +34,7 @@ class PassOrFailOrHardError(tuple):
         return self.status is not PassOrFailOrHardErrorEnum.PASS
 
     @property
-    def failure_message__td(self) -> Optional[TextRenderer]:
+    def failure_message(self) -> Optional[TextRenderer]:
         """
         :return None iff the object represents PASS.
         """

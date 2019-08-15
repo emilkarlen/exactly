@@ -46,7 +46,7 @@ def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError
     else:
         return PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum(res.status.value),
-            res.failure_message__td)
+            res.failure_message)
 
 
 class ConfigurationMainExecutor(ControlledInstructionExecutor):

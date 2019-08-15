@@ -243,7 +243,7 @@ class _Assertion:
             return pfh.new_pfh_non_pass(
                 result.status,
                 rend_comb.PrependR(self._path_renderer(),
-                                   result.failure_message__td)
+                                   result.failure_message)
             )
         else:
             return result

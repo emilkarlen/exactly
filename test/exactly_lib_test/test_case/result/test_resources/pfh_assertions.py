@@ -44,7 +44,7 @@ def failure_message_is(assertion_on_error_message: ValueAssertion[TextRenderer]
                        ) -> ValueAssertion[pfh.PassOrFailOrHardError]:
     return asrt.sub_component(
         'failure message',
-        pfh.PassOrFailOrHardError.failure_message__td.fget,
+        pfh.PassOrFailOrHardError.failure_message.fget,
         assertion_on_error_message
     )
 
@@ -52,6 +52,6 @@ def failure_message_is(assertion_on_error_message: ValueAssertion[TextRenderer]
 def failure_message_is_present_and_valid() -> ValueAssertion[pfh.PassOrFailOrHardError]:
     return asrt.sub_component(
         'failure message',
-        pfh.PassOrFailOrHardError.failure_message__td.fget,
+        pfh.PassOrFailOrHardError.failure_message.fget,
         asrt.is_not_none_and(asrt_renderer.is_renderer_of_major_blocks())
     )
