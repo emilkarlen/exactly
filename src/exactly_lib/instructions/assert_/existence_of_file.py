@@ -27,17 +27,18 @@ from exactly_lib.test_case.validation import pre_or_post_value_validation
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate
 from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
-from exactly_lib.test_case_utils.err_msg2 import path_description
 from exactly_lib.test_case_utils.err_msg2.env_dep_text import TextResolver
+from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
+from exactly_lib.test_case_utils.err_msg2.path_impl import path_formatting
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.file_matcher import resolvers  as fm_resolvers
-from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
+from exactly_lib.test_case_utils.file_properties import render_failure__wo_file_name
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.type_system import error_message
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic import hard_error
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
@@ -232,6 +233,10 @@ class _Assertion:
         self.file_ref_resolver = file_ref_resolver
         self.file_matcher = file_matcher
 
+        self.described_path = described_path_resolvers.of(self.file_ref_resolver) \
+            .resolve(self.environment.symbols) \
+            .value_of_any_dependency(self.environment.home_and_sds)
+
     def apply(self) -> pfh.PassOrFailOrHardError:
         result = self._apply()
         if result.is_error:
@@ -250,35 +255,27 @@ class _Assertion:
             return self._assert_with_file_matcher()
 
     def _path_renderer(self) -> Renderer[MajorBlock]:
-        return path_description.path_value_major_block_renderer(
-            ErrorMessageResolvingEnvironment(
-                self.environment.home_and_sds,
-                self.environment.symbols
-            ),
-            self.file_ref_resolver,
-            _ERROR_MESSAGE_HEADER,
-        )
+        return path_formatting.path_value_major_block_renderer(self.described_path.describer,
+                                                               _ERROR_MESSAGE_HEADER)
 
     def _assert_without_file_matcher(self) -> pfh.PassOrFailOrHardError:
         check = _FILE_EXISTENCE_CHECK
         if self.expectation_type is ExpectationType.NEGATIVE:
             check = file_properties.negation_of(check)
 
-        failure_message = pre_or_post_sds_failure_message_or_none(
-            FileRefCheck(self.file_ref_resolver,
-                         check),
-            self.environment.path_resolving_environment_pre_or_post_sds)
+        result = check.apply(self.described_path.primitive)
 
-        return pfh.new_pfh_fail_if_has_failure_message(failure_message)
+        return (
+            pfh.new_pfh_pass()
+            if result.is_success
+            else pfh.new_pfh_fail(render_failure__wo_file_name(result.cause))
+        )
 
     def _assert_with_file_matcher(self) -> pfh.PassOrFailOrHardError:
-        failure_message_of_existence = pre_or_post_sds_failure_message_or_none(
-            FileRefCheck(self.file_ref_resolver,
-                         _FILE_EXISTENCE_CHECK),
-            self.environment.path_resolving_environment_pre_or_post_sds)
+        result_of_existence = _FILE_EXISTENCE_CHECK.apply(self.described_path.primitive)
 
-        if failure_message_of_existence:
-            return (pfh.new_pfh_fail(failure_message_of_existence)
+        if not result_of_existence.is_success:
+            return (pfh.new_pfh_fail(render_failure__wo_file_name(result_of_existence.cause))
                     if self._is_positive_check()
                     else pfh.new_pfh_pass()
                     )
@@ -303,13 +300,10 @@ class _Assertion:
         resolver = self._file_matcher_for_expectation_type()
 
         fm = resolver.resolve(self.environment.symbols).value_of_any_dependency(self.environment.home_and_sds)
-        existing_file_path = self.file_ref_resolver \
-            .resolve(self.environment.symbols) \
-            .value_of_any_dependency(self.environment.home_and_sds)
 
         model = file_matcher_models.FileMatcherModelForPrimitivePath(
             self.environment.phase_logging.space_for_instruction(),
-            existing_file_path)
+            self.described_path.primitive)
 
         return fm.matches2(model)
 

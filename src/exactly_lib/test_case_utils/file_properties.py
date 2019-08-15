@@ -170,6 +170,14 @@ def render_failure(properties_with_neg: PropertiesWithNegation,
     )
 
 
+def render_failure__wo_file_name(properties_with_neg: PropertiesWithNegation) -> TextRenderer:
+    return text_docs.single_line(
+        strings.Concatenate([
+            render_failing_property(properties_with_neg),
+        ])
+    )
+
+
 def render_failing_property(properties_with_neg: PropertiesWithNegation) -> str:
     is_follow_symlinks = properties_with_neg.properties.is_follow_symlinks
     sym_links = 'symbolic links followed' if is_follow_symlinks else 'symbolic links not followed'
