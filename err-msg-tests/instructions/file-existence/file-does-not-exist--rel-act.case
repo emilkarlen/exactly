@@ -1,0 +1,4 @@
+[assert]
+
+
+exists -rel-act non-existing-file
