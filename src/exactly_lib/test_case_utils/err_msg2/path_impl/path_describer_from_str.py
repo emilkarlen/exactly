@@ -43,7 +43,7 @@ class PathDescriberForPrimitiveFromStr(PathDescriberForPrimitive):
 
     @property
     def resolver(self) -> Renderer[LineElement]:
-        return self._value.resolver()
+        return self._value.resolver
 
     @property
     def value(self) -> Renderer[LineElement]:

@@ -1,4 +1,4 @@
-import pathlib
+from pathlib import Path
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -25,9 +25,9 @@ class PathDescriberHandlerForResolverWStrRenderer(PathDescriberHandlerForResolve
     def describer(self) -> PathDescriberForResolver:
         return _from_str.PathDescriberForResolverFromStr(PathResolverShouldNotBeUsed(self._path_resolver))
 
-    def resolve(self, symbols: SymbolTable) -> 'PathDescriberHandlerForValue':
+    def resolve(self, resolved_value: FileRef, symbols: SymbolTable) -> PathDescriberHandlerForValue:
         return PathDescriberHandlerForValueWStrRenderer(
-            self._path_resolver.resolve(symbols),
+            resolved_value,
             self.describer,
         )
 
@@ -47,28 +47,28 @@ class PathDescriberHandlerForValueWStrRenderer(PathDescriberHandlerForValue):
     def describer(self) -> PathDescriberForValue:
         return self._describer
 
-    def value_when_no_dir_dependencies(self) -> 'PathDescriberForPrimitive':
+    def value_when_no_dir_dependencies(self, primitive: Path) -> PathDescriberForPrimitive:
         return _from_str.PathDescriberForPrimitiveFromStr(
             self.describer,
-            path_primitive_str_renderers.WithoutDependencies(self._path_value)
+            path_primitive_str_renderers.Constant(primitive)
         )
 
-    def value_pre_sds(self, hds: HomeDirectoryStructure) -> 'PathDescriberForPrimitive':
+    def value_pre_sds(self, primitive: Path, hds: HomeDirectoryStructure) -> PathDescriberForPrimitive:
         return _from_str.PathDescriberForPrimitiveFromStr(
             self.describer,
-            path_primitive_str_renderers.DependentOnHds(self._path_value, hds)
+            path_primitive_str_renderers.Constant(primitive)
         )
 
-    def value_post_sds(self, tcds: HomeAndSds) -> 'PathDescriberForPrimitive':
+    def value_post_sds(self, primitive: Path, tcds: HomeAndSds) -> PathDescriberForPrimitive:
         return _from_str.PathDescriberForPrimitiveFromStr(
             self._value_describer_post_sds(tcds),
-            path_primitive_str_renderers.DependentOnSds(self._path_value, tcds.sds)
+            path_primitive_str_renderers.Constant(primitive)
         )
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> 'PathDescriberForPrimitive':
+    def value_of_any_dependency(self, primitive: Path, tcds: HomeAndSds) -> PathDescriberForPrimitive:
         return _from_str.PathDescriberForPrimitiveFromStr(
             self._value_describer_post_sds(tcds),
-            path_primitive_str_renderers.DependentOnAnything(self._path_value, tcds)
+            path_primitive_str_renderers.Constant(primitive)
         )
 
     def _value_describer_post_sds(self, tcds: HomeAndSds) -> PathDescriberForValue:
@@ -86,7 +86,7 @@ class PathDescriberHandlerForValueWStrRenderer(PathDescriberHandlerForValue):
         relativity_type = self._relativity_type
 
         if relativity_type is RelOptionType.REL_CWD:
-            self._cwd = pathlib.Path().cwd()
+            self._cwd = Path().cwd()
             return path_value_str_renderers.PathValueRelJustCwd(path_value,
                                                                 self._cwd)
 

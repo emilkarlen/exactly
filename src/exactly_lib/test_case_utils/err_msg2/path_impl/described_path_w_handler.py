@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -18,7 +19,7 @@ class PathDescriberHandlerForResolver(ABC):
         pass
 
     @abstractmethod
-    def resolve(self, symbols: SymbolTable) -> 'PathDescriberHandlerForValue':
+    def resolve(self, resolved_value: FileRef, symbols: SymbolTable) -> 'PathDescriberHandlerForValue':
         pass
 
 
@@ -29,19 +30,19 @@ class PathDescriberHandlerForValue(ABC):
         pass
 
     @abstractmethod
-    def value_when_no_dir_dependencies(self) -> 'PathDescriberForPrimitive':
+    def value_when_no_dir_dependencies(self, primitive: Path) -> 'PathDescriberForPrimitive':
         pass
 
     @abstractmethod
-    def value_pre_sds(self, hds: HomeDirectoryStructure) -> 'PathDescriberForPrimitive':
+    def value_pre_sds(self, primitive: Path, hds: HomeDirectoryStructure) -> 'PathDescriberForPrimitive':
         pass
 
     @abstractmethod
-    def value_post_sds(self, tcds: HomeAndSds) -> 'PathDescriberForPrimitive':
+    def value_post_sds(self, primitive: Path, tcds: HomeAndSds) -> 'PathDescriberForPrimitive':
         pass
 
     @abstractmethod
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> 'PathDescriberForPrimitive':
+    def value_of_any_dependency(self, primitive: Path, tcds: HomeAndSds) -> 'PathDescriberForPrimitive':
         pass
 
 
@@ -62,27 +63,31 @@ class DescribedPathValueWHandler(DescribedPathValue):
         return self._describer_handler.describer
 
     def value_when_no_dir_dependencies(self) -> DescribedPathPrimitive:
+        primitive = self._path_value.value_when_no_dir_dependencies()
         return DescribedPathPrimitive(
-            self._path_value.value_when_no_dir_dependencies(),
-            self._describer_handler.value_when_no_dir_dependencies(),
+            primitive,
+            self._describer_handler.value_when_no_dir_dependencies(primitive),
         )
 
     def value_pre_sds(self, hds: HomeDirectoryStructure) -> DescribedPathPrimitive:
+        primitive = self._path_value.value_pre_sds(hds)
         return DescribedPathPrimitive(
-            self._path_value.value_pre_sds(hds),
-            self._describer_handler.value_pre_sds(hds),
+            primitive,
+            self._describer_handler.value_pre_sds(primitive, hds),
         )
 
     def value_post_sds(self, tcds: HomeAndSds) -> DescribedPathPrimitive:
+        primitive = self._path_value.value_post_sds(tcds.sds)
         return DescribedPathPrimitive(
-            self._path_value.value_post_sds(tcds.sds),
-            self._describer_handler.value_post_sds(tcds),
+            primitive,
+            self._describer_handler.value_post_sds(primitive, tcds),
         )
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> DescribedPathPrimitive:
+        primitive = self._path_value.value_of_any_dependency(tcds)
         return DescribedPathPrimitive(
-            self._path_value.value_of_any_dependency(tcds),
-            self._describer_handler.value_of_any_dependency(tcds),
+            primitive,
+            self._describer_handler.value_of_any_dependency(primitive, tcds),
         )
 
 
@@ -102,7 +107,8 @@ class DescribedPathResolverWHandler(DescribedPathResolver):
         return self._describer_handler.describer
 
     def resolve(self, symbols: SymbolTable) -> DescribedPathValue:
+        value = self._path.resolve(symbols)
         return DescribedPathValueWHandler(
-            self._path.resolve(symbols),
-            self._describer_handler.resolve(symbols),
+            value,
+            self._describer_handler.resolve(value, symbols),
         )
