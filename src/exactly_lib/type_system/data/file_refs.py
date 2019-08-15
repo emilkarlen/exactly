@@ -153,7 +153,7 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
 
     def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         suffix = self.path_suffix_path()
-        root = relative_path_options.REL_HOME_OPTIONS_MAP[self._rel_option].root_resolver.from_home(hds)
+        root = relative_path_options.REL_HDS_OPTIONS_MAP[self._rel_option].root_resolver.from_home(hds)
         return root / suffix
 
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:

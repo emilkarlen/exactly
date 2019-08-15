@@ -1,5 +1,5 @@
 import enum
-from typing import Set
+from typing import Set, Optional
 
 
 class RelOptionType(enum.Enum):
@@ -111,7 +111,7 @@ class SpecificPathRelativity:
     The relativity, or non-relativity, of a path.
     """
 
-    def __init__(self, relative: RelOptionType):
+    def __init__(self, relative: Optional[RelOptionType]):
         """
         :param relative: None if should denote that path is absolute
         """
@@ -126,7 +126,7 @@ class SpecificPathRelativity:
         return self._relative is None
 
     @property
-    def relativity_type(self) -> RelOptionType:
+    def relativity_type(self) -> Optional[RelOptionType]:
         """
         :rtype None: If this object denotes that the path is absolute
         """

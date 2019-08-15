@@ -131,7 +131,7 @@ REL_HOME_CASE_INFO = RelHomeOptionInfo(file_ref_texts.EXACTLY_DIR__REL_HOME_CASE
                                        cp.HOME_CASE_DIRECTORY_CONF_PARAM_INFO,
                                        file_ref_texts.RELATIVITY_DESCRIPTION_HOME_CASE)
 
-REL_HOME_OPTIONS_MAP = {
+REL_HDS_OPTIONS_MAP = {
     RelHomeOptionType.REL_HOME_CASE: REL_HOME_CASE_INFO,
     RelHomeOptionType.REL_HOME_ACT: REL_HOME_ACT_INFO,
 }
@@ -155,9 +155,9 @@ REL_NON_HOME_OPTIONS_MAP = {
 }
 
 REL_OPTIONS_MAP = {
-    RelOptionType.REL_HOME_CASE: REL_HOME_OPTIONS_MAP[RelHomeOptionType.REL_HOME_CASE],
+    RelOptionType.REL_HOME_CASE: REL_HDS_OPTIONS_MAP[RelHomeOptionType.REL_HOME_CASE],
 
-    RelOptionType.REL_HOME_ACT: REL_HOME_OPTIONS_MAP[RelHomeOptionType.REL_HOME_ACT],
+    RelOptionType.REL_HOME_ACT: REL_HDS_OPTIONS_MAP[RelHomeOptionType.REL_HOME_ACT],
 
     RelOptionType.REL_CWD: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_CWD],
 

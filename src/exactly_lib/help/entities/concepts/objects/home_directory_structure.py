@@ -99,7 +99,7 @@ class _HdsConcept(ConceptDocumentation):
                     docs.text_cell(value_str_or_text),
                     ]
 
-        from exactly_lib.test_case_file_structure.relative_path_options import REL_HOME_OPTIONS_MAP
+        from exactly_lib.test_case_file_structure.relative_path_options import REL_HDS_OPTIONS_MAP
         properties_table = docs.first_column_is_header_table(
             [
                 prop_row('Default value',
@@ -109,9 +109,9 @@ class _HdsConcept(ConceptDocumentation):
                 prop_row('Set by instruction',
                          instruction_name_text(x.instruction_name)),
                 prop_row('Variable name',
-                         REL_HOME_OPTIONS_MAP[x.relativity_option_type].directory_variable_name_text),
+                         REL_HDS_OPTIONS_MAP[x.relativity_option_type].directory_variable_name_text),
                 prop_row('Relativity option',
-                         REL_HOME_OPTIONS_MAP[x.relativity_option_type].option_name_text),
+                         REL_HDS_OPTIONS_MAP[x.relativity_option_type].option_name_text),
             ]
         )
 

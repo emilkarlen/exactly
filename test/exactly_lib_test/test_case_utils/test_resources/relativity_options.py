@@ -273,7 +273,7 @@ class RelativityOptionConfigurationRelHome(RelativityOptionConfigurationForRelOp
                          cli_option,
                          symbols_configuration)
         self._relativity_hds = relativity
-        self._resolver_hds = relative_path_options.REL_HOME_OPTIONS_MAP[relativity].root_resolver
+        self._resolver_hds = relative_path_options.REL_HDS_OPTIONS_MAP[relativity].root_resolver
 
     @property
     def directory_structure_partition(self) -> DirectoryStructurePartition:

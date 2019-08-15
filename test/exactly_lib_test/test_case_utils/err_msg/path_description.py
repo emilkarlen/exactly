@@ -38,7 +38,7 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                     actual = sut.path_value_with_relativity_name_prefix(path_value, home_and_sds,
                                                                         pathlib.Path.cwd())
                     # ASSERT #
-                    expected = _expected_str(rpo.REL_HOME_OPTIONS_MAP[rel_home_option].directory_variable_name,
+                    expected = _expected_str(rpo.REL_HDS_OPTIONS_MAP[rel_home_option].directory_variable_name,
                                              path_suffix)
                     self.assertEqual(expected, actual)
 
@@ -76,7 +76,7 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
 
                 # rel home
                 for rel_home_opt in rpo.RelHomeOptionType:
-                    rel_home_option_info = rpo.REL_HOME_OPTIONS_MAP[rel_home_opt]
+                    rel_home_option_info = rpo.REL_HDS_OPTIONS_MAP[rel_home_opt]
                     self._check_cwd_for_single_rel_option_type(rel_home_option_info,
                                                                rel_home_option_info.directory_variable_name,
                                                                path_suffix,
@@ -156,7 +156,7 @@ class TestPathValueWithRelativityNamePrefixStr(unittest.TestCase):
                     # ACT #
                     actual = sut.path_value_with_relativity_name_prefix_str(path, tcds)
                     # ASSERT #
-                    expected = _expected_str(rpo.REL_HOME_OPTIONS_MAP[rel_home_option].directory_variable_name,
+                    expected = _expected_str(rpo.REL_HDS_OPTIONS_MAP[rel_home_option].directory_variable_name,
                                              path_suffix)
                     self.assertEqual(expected, actual)
 

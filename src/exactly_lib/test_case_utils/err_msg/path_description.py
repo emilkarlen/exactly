@@ -50,19 +50,19 @@ def lines_for_path_value(path_value: FileRef, tcds: HomeAndSds) -> List[str]:
 
 
 def path_value_with_relativity_name_prefix(path_value: FileRef,
-                                           home_and_sds: HomeAndSds,
+                                           tcds: HomeAndSds,
                                            cwd: pathlib.Path) -> str:
     def with_prefix(prefix: str) -> str:
         return str(pathlib.PurePosixPath(prefix, path_value.path_suffix().value()))
 
-    def rel_home(relativity: rpo.RelHomeOptionType) -> str:
-        return with_prefix(rpo.REL_HOME_OPTIONS_MAP[relativity].directory_variable_name)
+    def rel_hds(relativity: rpo.RelHomeOptionType) -> str:
+        return with_prefix(rpo.REL_HDS_OPTIONS_MAP[relativity].directory_variable_name)
 
     def rel_sds(relativity: pr.RelSdsOptionType) -> str:
         return with_prefix(rpo.REL_SDS_OPTIONS_MAP[relativity].directory_variable_name)
 
     def absolute() -> str:
-        return str(path_value.value_of_any_dependency(home_and_sds))
+        return str(path_value.value_when_no_dir_dependencies())
 
     def rel_cwd() -> str:
         def value_if_cwd_is_relative_root_dir(rel_root_dir_path: pathlib.Path,
@@ -75,25 +75,25 @@ def path_value_with_relativity_name_prefix(path_value: FileRef,
         for rel_sds_option_info in rpo.REL_SDS_OPTIONS_MAP.values():
             try:
                 return value_if_cwd_is_relative_root_dir(
-                    rel_sds_option_info.root_resolver.from_home_and_sds(home_and_sds),
+                    rel_sds_option_info.root_resolver.from_home_and_sds(tcds),
                     rel_sds_option_info.directory_variable_name)
             except ValueError:
                 continue
 
-        for rel_home_option_info in rpo.REL_HOME_OPTIONS_MAP.values():
+        for rel_home_option_info in rpo.REL_HDS_OPTIONS_MAP.values():
             try:
                 return value_if_cwd_is_relative_root_dir(
-                    rel_home_option_info.root_resolver.from_home_and_sds(home_and_sds),
+                    rel_home_option_info.root_resolver.from_home_and_sds(tcds),
                     rel_home_option_info.directory_variable_name)
             except ValueError:
                 continue
 
         try:
             return value_if_cwd_is_relative_root_dir(
-                home_and_sds.sds.root_dir,
+                tcds.sds.root_dir,
                 EXACTLY_SANDBOX_ROOT_DIR_NAME)
         except ValueError:
-            return str(path_value.value_of_any_dependency(home_and_sds))
+            return str(path_value.value_of_any_dependency(tcds))
 
     relativity = path_value.relativity()
 
@@ -107,13 +107,13 @@ def path_value_with_relativity_name_prefix(path_value: FileRef,
 
     rel_home_opt = pr.rel_home_from_rel_any(relativity_type)
     if rel_home_opt is not None:
-        return rel_home(rel_home_opt)
+        return rel_hds(rel_home_opt)
 
     rel_sds_opt = pr.rel_sds_from_rel_any(relativity_type)
     if rel_sds_opt is not None:
         return rel_sds(rel_sds_opt)
 
-    path_lib_path = path_value.value_of_any_dependency(home_and_sds)
+    path_lib_path = path_value.value_of_any_dependency(tcds)
     err_msg = 'Unknown relativity: {}\nOf path {}'.format(str(relativity_type),
                                                           str(path_lib_path))
     raise ValueError(err_msg)
@@ -127,7 +127,7 @@ def path_value_with_relativity_name_prefix_str(path: pathlib.Path, tcds: HomeAnd
         for ro in RelHomeOptionType:
             try:
                 suffix = path.relative_to(hds.get(ro))
-                return pathlib.Path(rpo.REL_HOME_OPTIONS_MAP[ro].directory_variable_name / suffix)
+                return pathlib.Path(rpo.REL_HDS_OPTIONS_MAP[ro].directory_variable_name / suffix)
             except ValueError:
                 pass
         raise ValueError()

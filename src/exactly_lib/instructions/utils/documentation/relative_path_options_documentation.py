@@ -9,7 +9,7 @@ from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import concepts as ci, syntax_elements
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
     RelSdsOptionType, RelHomeOptionType
-from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP, REL_HOME_OPTIONS_MAP, \
+from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP, REL_HDS_OPTIONS_MAP, \
     REL_CWD_INFO, REL_OPTIONS_MAP
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
@@ -215,7 +215,7 @@ def _rel_sds(rel: RelSdsOptionType,
 
 def _rel_hds(rel: RelHomeOptionType,
              description: str) -> _RelOptionTypeInfo:
-    ri = REL_HOME_OPTIONS_MAP[rel]
+    ri = REL_HDS_OPTIONS_MAP[rel]
 
     return _RelOptionTypeInfo(ri.option_name,
                               formatting.concept_(ri.conf_param_info),

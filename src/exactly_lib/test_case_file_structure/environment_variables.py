@@ -5,8 +5,8 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
-ENV_VAR_HOME_CASE = rpo.REL_HOME_OPTIONS_MAP[rpo.RelHomeOptionType.REL_HOME_CASE].directory_variable_name
-ENV_VAR_HOME_ACT = rpo.REL_HOME_OPTIONS_MAP[rpo.RelHomeOptionType.REL_HOME_ACT].directory_variable_name
+ENV_VAR_HOME_CASE = rpo.REL_HDS_OPTIONS_MAP[rpo.RelHomeOptionType.REL_HOME_CASE].directory_variable_name
+ENV_VAR_HOME_ACT = rpo.REL_HDS_OPTIONS_MAP[rpo.RelHomeOptionType.REL_HOME_ACT].directory_variable_name
 
 ENV_VAR_ACT = rpo.REL_SDS_OPTIONS_MAP[rpo.RelSdsOptionType.REL_ACT].directory_variable_name
 ENV_VAR_TMP = rpo.REL_SDS_OPTIONS_MAP[rpo.RelSdsOptionType.REL_TMP].directory_variable_name

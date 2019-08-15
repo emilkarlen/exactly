@@ -25,7 +25,7 @@ class TestHomeRelativityResolver(unittest.TestCase):
             (sut.RelHomeOptionType.REL_HOME_ACT, dir_fun.hds_2_home_act_dir),
         ]
         for rel_option_type, expected_root_path_resolver in cases:
-            resolver = sut.REL_HOME_OPTIONS_MAP[rel_option_type].root_resolver
+            resolver = sut.REL_HDS_OPTIONS_MAP[rel_option_type].root_resolver
             with self.subTest(msg=str(rel_option_type)):
                 self.helper.check(resolver,
                                   rel_option_type,
@@ -37,7 +37,7 @@ class TestHomeRelativityResolver(unittest.TestCase):
             sut.RelHomeOptionType.REL_HOME_ACT,
         }
         self.assertEqual(expected,
-                         sut.REL_HOME_OPTIONS_MAP.keys())
+                         sut.REL_HDS_OPTIONS_MAP.keys())
 
 
 class TestSdsRelativityResolver(unittest.TestCase):
