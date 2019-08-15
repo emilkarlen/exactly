@@ -1,12 +1,13 @@
 import os
+import pathlib
 import unittest
 
 from exactly_lib.default.default_main_program_setup import default_main_program, default_output
 
-CWD = '/Users/emil/vcs/exactly/0/examples/intro/home-directories'
 SRC_DIR = '/Users/emil/vcs/exactly/0/err_msg_tests/symbols/validation/illegal-type/'
 
-TEST_CASE_FILE = '/Users/emil/vcs/exactly/0/err_msg_tests/instructions/dir-contents/file-quant/all/hard-error--one-file-is-a-directory.case'
+TEST_CASE_FILE = '/Users/emil/vcs/exactly/0/err-msg-tests/instructions/file-existence/file-does-not-exist.case'
+CWD = str(pathlib.Path(TEST_CASE_FILE).parent)
 
 # TEST_CASE_FILE = SRC_DIR + 'instruction-error-in-stand-alone-case.case'
 
@@ -19,7 +20,7 @@ EMPTY_CASE = SRC_DIR + 'empty.case'
 ARGS = [TEST_CASE_FILE
         ]
 
-ARGS = [
+_ARGS = [
     '--act',
     '/Users/emil/vcs/exactly/0/err-msg-tests/symbols/validation/ref-to-undef-symbol.case',
         ]
