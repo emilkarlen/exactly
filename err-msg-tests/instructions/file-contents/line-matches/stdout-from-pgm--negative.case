@@ -1,0 +1,4 @@
+[assert]
+
+stdout -from $ echo "the actual line"
+             ! any line : matches 'actual'
