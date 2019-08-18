@@ -189,11 +189,10 @@ def render_failing_property(properties_with_neg: PropertiesWithNegation) -> str:
             negation=negation,
             sym_links=sym_links)
     else:
-        return os.linesep.join(['File is {negation}a {file_type} ({sym_links})'.format(
+        return 'File is {negation}a {file_type} ({sym_links})'.format(
             negation=negation,
             file_type=TYPE_INFO[properties.type_of_existing_file].description,
-            sym_links=sym_links)])
-
+            sym_links=sym_links)
 
 def render_property(properties: Properties) -> str:
     is_follow_symlinks = properties.is_follow_symlinks
