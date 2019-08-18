@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
@@ -44,9 +43,7 @@ class AssertPathIsExistingDirectory(AssertionPart[FilesSource, FilesSource]):
                                         expect_existing_dir),
             path_resolving_env)
         if failure_message is not None:
-            raise pfh_ex_method.PfhFailException(
-                text_docs.single_pre_formatted_line_object(failure_message)
-            )
+            raise pfh_ex_method.PfhFailException(failure_message)
         else:
             return files_source
 

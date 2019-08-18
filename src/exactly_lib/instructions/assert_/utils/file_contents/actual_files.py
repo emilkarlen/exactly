@@ -1,6 +1,7 @@
 import pathlib
 from typing import Sequence, Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.actual_file_attributes import PLAIN_FILE_OBJECT_NAME, OUTPUT_FROM_PROGRAM_OBJECT_NAME
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
@@ -28,7 +29,7 @@ class ComparisonActualFileResolver:
     def object_name(self) -> str:
         raise NotImplementedError('abstract method')
 
-    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[str]:
+    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[TextRenderer]:
         """
         :return: None iff there is no failure.
         """
@@ -97,7 +98,7 @@ class ActComparisonActualFileForFileRef(ComparisonActualFileResolverConstantWith
     def file_ref_resolver(self) -> FileRefResolver:
         return self._file_ref_resolver
 
-    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[str]:
+    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[TextRenderer]:
         return pre_or_post_sds_failure_message_or_none(FileRefCheck(self._file_ref_resolver,
                                                                     must_exist_as(FileType.REGULAR)),
                                                        environment.path_resolving_environment_pre_or_post_sds)
@@ -117,7 +118,7 @@ class ComparisonActualFileResolverForProgramOutput(ComparisonActualFileResolver)
     def object_name(self) -> str:
         return OUTPUT_FROM_PROGRAM_OBJECT_NAME
 
-    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[str]:
+    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[TextRenderer]:
         return None
 
     def file_ref_resolver(self) -> FileRefResolver:

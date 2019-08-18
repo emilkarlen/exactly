@@ -96,7 +96,7 @@ class FileExistenceAssertionPart(AssertionPart[ComparisonActualFileResolver, Com
         """
         failure_message = actual_file.file_check_failure(environment)
         if failure_message:
-            raise pfh_exception.PfhFailException(text_docs.single_pre_formatted_line_object(failure_message))
+            raise pfh_exception.PfhFailException(failure_message)
 
         actual_path_value = actual_file.file_ref_resolver().resolve(environment.symbols)
         return ComparisonActualFile(actual_path_value.value_of_any_dependency(environment.home_and_sds),
