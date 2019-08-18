@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+from exactly_lib.definitions import file_ref
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForResolver, PathDescriberForValue, \
     PathDescriberForPrimitive
 from exactly_lib.type_system.data.file_ref import FileRef
@@ -55,6 +57,10 @@ class DescribedPathValue(ABC):
     def value_post_sds(self, tcds: HomeAndSds) -> DescribedPathPrimitive:
         pass
 
+    def value_post_sds__wo_hds(self, sds: SandboxDirectoryStructure) -> DescribedPathPrimitive:
+        return self.value_post_sds(HomeAndSds(_DUMMY_HDS,
+                                              sds))
+
     @abstractmethod
     def value_of_any_dependency(self, tcds: HomeAndSds) -> DescribedPathPrimitive:
         pass
@@ -79,3 +85,9 @@ class DescribedPathResolver(ABC):
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> DescribedPathValue:
         pass
+
+
+_DUMMY_HDS = HomeDirectoryStructure(
+    Path(file_ref.EXACTLY_DIR__REL_HOME_CASE),
+    Path(file_ref.EXACTLY_DIR__REL_HOME_ACT),
+)
