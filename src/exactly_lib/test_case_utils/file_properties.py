@@ -3,12 +3,17 @@ import os
 import pathlib
 import stat
 import types
-from typing import Callable, Optional
+from typing import Callable, Optional, Sequence
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import actual_file_attributes
+from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive
+from exactly_lib.test_case_utils.err_msg2.path_impl import path_formatting
+from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering import strings
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.structure import MinorBlock, MajorBlock
 
 
 class FileType(enum.Enum):
@@ -178,6 +183,38 @@ def render_failure__wo_file_name(properties_with_neg: PropertiesWithNegation) ->
     )
 
 
+class CauseHeaderMinorBlockRenderer(Renderer[MinorBlock]):
+    def __init__(self, cause: PropertiesWithNegation):
+        self._cause = cause
+
+    def render(self) -> MinorBlock:
+        return MinorBlock([
+            text_struct.LineElement(
+                text_struct.StringLineObject(
+                    render_failing_property(self._cause)
+                )
+            )
+        ])
+
+
+class FailureRenderer(Renderer[Sequence[MajorBlock]]):
+    def __init__(self,
+                 cause: PropertiesWithNegation,
+                 path: PathDescriberForPrimitive,
+                 ):
+        self._cause = cause
+        self._path = path
+
+    def render(self) -> Sequence[MajorBlock]:
+        minor_blocks_renderer = path_formatting.HeaderAndPathValueMinorBlocks(
+            CauseHeaderMinorBlockRenderer(self._cause),
+            self._path,
+        )
+        return [
+            MajorBlock(minor_blocks_renderer.render())
+        ]
+
+
 def render_failing_property(properties_with_neg: PropertiesWithNegation) -> str:
     is_follow_symlinks = properties_with_neg.properties.is_follow_symlinks
     sym_links = 'symbolic links followed' if is_follow_symlinks else 'symbolic links not followed'
@@ -193,6 +230,7 @@ def render_failing_property(properties_with_neg: PropertiesWithNegation) -> str:
             negation=negation,
             file_type=TYPE_INFO[properties.type_of_existing_file].description,
             sym_links=sym_links)
+
 
 def render_property(properties: Properties) -> str:
     is_follow_symlinks = properties.is_follow_symlinks

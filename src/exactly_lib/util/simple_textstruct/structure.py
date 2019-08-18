@@ -32,6 +32,8 @@ class ElementProperties:
 
 PLAIN_ELEMENT_PROPERTIES = ElementProperties(False, None)
 
+INDENTED_ELEMENT_PROPERTIES = ElementProperties(True, None)
+
 
 class Element(ABC):
     def __init__(self, properties: ElementProperties):
