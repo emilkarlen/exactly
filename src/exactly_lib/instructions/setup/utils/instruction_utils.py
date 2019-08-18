@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
@@ -7,7 +9,7 @@ from exactly_lib.test_case_utils.file_ref_check import FileRefCheck, pre_sds_val
 
 class InstructionWithFileRefsBase(SetupPhaseInstruction):
     def __init__(self,
-                 file_ref_check_list_tuple: tuple):
+                 file_ref_check_list_tuple: Sequence[FileRefCheck]):
         """
         :param file_ref_check_list_tuple: [FileRefCheck] Sequence of files to be validates
         """
