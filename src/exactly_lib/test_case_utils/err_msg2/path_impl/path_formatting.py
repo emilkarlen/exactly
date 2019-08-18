@@ -21,7 +21,7 @@ class PathValueLines(SequenceRenderer[LineElement]):
         self._header_line = header_line
 
     def render(self) -> Sequence[LineElement]:
-        ret_val = [self._path.value.render()]
+        ret_val = [LineElement(text_struct.StringLineObject(self._path.value.render()))]
         if self._header_line is not None:
             header = LineElement(text_struct.StringLineObject(self._header_line))
             ret_val.insert(0, header)
