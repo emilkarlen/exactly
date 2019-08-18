@@ -1,0 +1,5 @@
+[setup]
+
+def path HERE = -rel-here .
+
+file dst-file = -file -rel HERE src-file-in-home.txt
