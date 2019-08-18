@@ -4,6 +4,7 @@ from exactly_lib.common.help import syntax_contents_structure
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts, syntax_elements, types
@@ -101,7 +102,7 @@ class ActComparisonActualFileForStdFile(actual_files.ComparisonActualFileResolve
     def object_name(self) -> str:
         return process_output_files.PROC_OUTPUT_FILE_NAMES[self.checked_file]
 
-    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[str]:
+    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[TextRenderer]:
         return None
 
     def file_ref_resolver(self) -> FileRefResolver:
