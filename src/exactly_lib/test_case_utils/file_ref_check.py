@@ -1,4 +1,3 @@
-import pathlib
 from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -6,6 +5,7 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.result import svh
+from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
 from exactly_lib.test_case_utils.file_properties import FilePropertiesCheck, CheckResult
 from exactly_lib.test_case_utils.file_properties import render_failure
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
@@ -36,11 +36,11 @@ class FileRefCheckValidator(FileRefValidatorBase):
         super().__init__(file_ref_check.file_ref_resolver)
         self.file_ref_check = file_ref_check
 
-    def _validate_path(self, file_path: pathlib.Path) -> Optional[TextRenderer]:
-        result = self.file_ref_check.file_properties.apply(file_path)
+    def _validate_path(self, path: DescribedPathPrimitive) -> Optional[TextRenderer]:
+        result = self.file_ref_check.file_properties.apply(path.primitive)
         if not result.is_success:
             return render_failure(result.cause,
-                                  file_path)
+                                  path.primitive)
         return None
 
 
