@@ -3,7 +3,6 @@ from typing import Optional
 
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 
@@ -46,26 +45,6 @@ class FileMatcherType(FileMatcher):
 
     def matches(self, model: FileMatcherModel) -> bool:
         return self._path_predicate(model.path)
-
-
-class FileTypeErrorMessageResolver(ErrorMessageResolver):
-    def __init__(self,
-                 path: pathlib.Path,
-                 actual_file_type: Optional[file_properties.FileType],
-                 ):
-        self._actual_file_type = actual_file_type
-        self._path = path
-
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
-        actual_type_description = (
-            'unknown'
-            if self._actual_file_type is None
-            else self._actual_file_type.name
-        )
-        return '\n\n'.join([
-            path_description.path_value_with_relativity_name_prefix_str(self._path, environment.tcds),
-            'Actual file type is ' + actual_type_description
-        ])
 
 
 class _FileTypeErrorMessageResolver(ErrorMessageResolver):

@@ -6,7 +6,6 @@ from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.type_system import error_message
 from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment, \
     ConstantErrorMessageResolver
-from exactly_lib.util.file_printer import FilePrintable
 
 
 def itemized_list(items: Sequence[ErrorMessageResolver],
@@ -32,10 +31,6 @@ def of_function(resolver: Callable[[ErrorMessageResolvingEnvironment], str]) -> 
 
 def constant(msg: str) -> ErrorMessageResolver:
     return ConstantErrorMessageResolver(msg)
-
-
-def file_printable(printable: FilePrintable) -> ErrorMessageResolver:
-    return error_message.OfFilePrintable(printable)
 
 
 def text_doc(message: TextRenderer) -> ErrorMessageResolver:
