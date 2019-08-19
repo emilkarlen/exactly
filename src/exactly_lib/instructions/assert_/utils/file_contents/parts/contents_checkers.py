@@ -12,6 +12,8 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils import pfh_exception
+from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
+from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
 from exactly_lib.test_case_utils.file_system_element_matcher import \
     FileSystemElementReference, FileSystemElementPropertiesMatcher
 from exactly_lib.type_system.data.file_ref import FileRef
@@ -22,22 +24,26 @@ from exactly_lib.type_system.logic.string_transformer import IdentityStringTrans
 
 class ComparisonActualFile(tuple):
     def __new__(cls,
-                actual_file_path: pathlib.Path,
+                actual_path: DescribedPathPrimitive,
                 actual_file: FileRef,
                 checked_file_describer: FilePropertyDescriptorConstructor,
                 ):
-        return tuple.__new__(cls, (actual_file_path, checked_file_describer, actual_file))
+        return tuple.__new__(cls, (checked_file_describer, actual_file, actual_path))
 
     @property
     def actual_file_path(self) -> pathlib.Path:
-        return self[0]
+        return self.actual_path.primitive
 
     @property
     def checked_file_describer(self) -> FilePropertyDescriptorConstructor:
-        return self[1]
+        return self[0]
 
     @property
     def actual_file(self) -> FileRef:
+        return self[1]
+
+    @property
+    def actual_path(self) -> DescribedPathPrimitive:
         return self[2]
 
 
@@ -99,7 +105,11 @@ class FileExistenceAssertionPart(AssertionPart[ComparisonActualFileResolver, Com
             raise pfh_exception.PfhFailException(failure_message)
 
         actual_path_value = actual_file.file_ref_resolver().resolve(environment.symbols)
-        return ComparisonActualFile(actual_path_value.value_of_any_dependency(environment.home_and_sds),
+
+        actual_path = described_path_resolvers.of(actual_file.file_ref_resolver()) \
+            .resolve(environment.symbols) \
+            .value_of_any_dependency(environment.home_and_sds)
+        return ComparisonActualFile(actual_path,
                                     actual_path_value,
                                     actual_file.property_descriptor_constructor)
 

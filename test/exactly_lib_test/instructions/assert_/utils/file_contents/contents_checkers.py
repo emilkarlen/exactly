@@ -4,16 +4,20 @@ from typing import Sequence
 
 import exactly_lib.type_system.error_message
 from exactly_lib.instructions.assert_.utils.file_contents.parts import contents_checkers as sut
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.err_msg.property_description import property_descriptor_with_just_a_constant_name
+from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
 from exactly_lib.test_case_utils.pfh_exception import PfhHardErrorException
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.error_message import PropertyDescriptor
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
-from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.test_case_utils.err_msg.test_resources import described_path
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 
@@ -35,10 +39,15 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
 
         with tmp_dir(DirContents([existing_regular_file])) as path_of_existing_directory:
             path_of_existing_regular_file = path_of_existing_directory / existing_regular_file.name
-            model = sut.ComparisonActualFile(path_of_existing_regular_file,
-                                             file_refs.absolute_path(path_of_existing_regular_file),
-                                             FilePropertyDescriptorConstructorTestImpl(), )
-
+            path_value = file_refs.absolute_path(path_of_existing_regular_file)
+            path_resolver = file_ref_resolvers.constant(path_value)
+            described_path = described_path_resolvers.of(path_resolver) \
+                .resolve(empty_symbol_table()) \
+                .value_of_any_dependency(fake_tcds())
+            model = sut.ComparisonActualFile(described_path,
+                                             path_value,
+                                             FilePropertyDescriptorConstructorTestImpl()
+                                             )
             # ACT #
 
             actual = assertion_part.check(self.environment, self.the_os_services,
@@ -54,10 +63,11 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
         # ACT & ASSERT #
         with self.assertRaises(PfhHardErrorException):
             file_name = 'a file that does not exist'
+            path = pathlib.Path(file_name)
             assertion_part.check(self.environment, self.the_os_services,
                                  'custom environment',
                                  sut.ComparisonActualFile(
-                                     pathlib.Path(file_name),
+                                     described_path.new_primitive(path),
                                      file_refs.rel_cwd(file_refs.constant_path_part(file_name)),
                                      FilePropertyDescriptorConstructorTestImpl(),
                                  ))
@@ -71,7 +81,7 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
                 assertion_part.check(self.environment, self.the_os_services,
                                      'custom environment',
                                      sut.ComparisonActualFile(
-                                         path_of_existing_directory,
+                                         described_path.new_primitive(path_of_existing_directory),
                                          file_refs.absolute_file_name(str(path_of_existing_directory)),
                                          FilePropertyDescriptorConstructorTestImpl(),
                                      )
