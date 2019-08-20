@@ -207,7 +207,7 @@ class _ModelsFactory:
 
     def file_system_element_reference(self, file_element: FileModel) -> FileSystemElementReference:
         return FileSystemElementReference(
-            file_ref_resolvers.constant(file_element.relative_to_root_dir_as_path_value),
+            file_ref_resolvers.constant(file_element.path_as_value),
             file_element.path
         )
 
@@ -239,7 +239,7 @@ class _ErrorReportingHelper:
                                 file_element: FileModel) -> ErrorMessageResolver:
         def resolve(environment: ErrorMessageResolvingEnvironment) -> str:
             failing_file_description_lines = path_description.lines_for_path_value(
-                file_element.relative_to_root_dir_as_path_value,
+                file_element.path_as_value,
                 environment.tcds,
             )
             actual_info = diff_msg.ActualInfo(single_line_value, failing_file_description_lines)
@@ -272,7 +272,7 @@ class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConst
 
     def construct_for_contents_attribute(self,
                                          contents_attribute: str) -> PropertyDescriptor:
-        path_resolver = file_ref_resolvers.constant(self._path.relative_to_root_dir_as_path_value)
+        path_resolver = file_ref_resolvers.constant(self._path.path_as_value)
         return path_description.path_value_description(
             property_description.file_property_name(contents_attribute,
                                                     actual_file_attributes.PLAIN_FILE_OBJECT_NAME),

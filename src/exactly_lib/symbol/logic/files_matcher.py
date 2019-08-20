@@ -37,12 +37,12 @@ class FileModel(ABC):
 
     @property
     @abstractmethod
-    def relative_to_root_dir(self) -> pathlib.Path:
+    def path_as_value(self) -> FileRef:
         pass
 
     @property
     @abstractmethod
-    def relative_to_root_dir_as_path_value(self) -> FileRef:
+    def relative_to_root_dir(self) -> pathlib.Path:
         pass
 
 

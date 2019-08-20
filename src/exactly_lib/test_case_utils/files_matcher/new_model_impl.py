@@ -35,7 +35,7 @@ class FileModelForDir(FileModel):
         return self.path.relative_to(self._root_dir_path)
 
     @property
-    def relative_to_root_dir_as_path_value(self) -> FileRef:
+    def path_as_value(self) -> FileRef:
         return StackedFileRef(self._root_dir_path_value,
                               file_refs.constant_path_part(str(self.relative_to_root_dir)))
 
