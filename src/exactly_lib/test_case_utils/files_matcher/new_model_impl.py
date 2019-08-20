@@ -1,3 +1,4 @@
+import os
 import pathlib
 from typing import Iterator, Optional
 
@@ -8,7 +9,6 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher, file_matchers
-from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForPrimitivePath
 from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherAndValue, MATCH_EVERY_FILE_VALUE
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
@@ -19,10 +19,12 @@ from exactly_lib.util.file_utils import TmpDirFileSpace
 
 class FileModelForDir(FileModel):
     def __init__(self,
-                 path: pathlib.Path,
+                 file_name: str,
                  root_dir_path: pathlib.Path,
                  root_dir_path_value: FileRef):
-        self._path = path
+        self._file_name = file_name
+        self._relative_to_root_dir = pathlib.Path(file_name)
+        self._path = root_dir_path / file_name
         self._root_dir_path = root_dir_path
         self._root_dir_path_value = root_dir_path_value
 
@@ -32,12 +34,12 @@ class FileModelForDir(FileModel):
 
     @property
     def relative_to_root_dir(self) -> pathlib.Path:
-        return self.path.relative_to(self._root_dir_path)
+        return self._relative_to_root_dir
 
     @property
     def path_as_value(self) -> FileRef:
         return StackedFileRef(self._root_dir_path_value,
-                              file_refs.constant_path_part(str(self.relative_to_root_dir)))
+                              file_refs.constant_path_part(self._file_name))
 
 
 class FilesMatcherModelForDir(FilesMatcherModel):
@@ -76,27 +78,23 @@ class FilesMatcherModelForDir(FilesMatcherModel):
         return ErrorMessageInfoForDir(self._dir_path_resolver,
                                       file_selector)
 
-    @property
-    def dir_path_resolver(self) -> FileRefResolver:
-        return self._dir_path_resolver
-
     def files(self) -> Iterator[FileModel]:
         dir_path_to_check_value = self._dir_path_resolver.resolve(self._environment.symbols)
         dir_path_to_check = dir_path_to_check_value.value_of_any_dependency(self._environment.home_and_sds)
 
-        def mk_model(path: pathlib.Path) -> FileModel:
-            return FileModelForDir(path, dir_path_to_check, dir_path_to_check_value)
+        def mk_model(file_name: str) -> FileModel:
+            return FileModelForDir(file_name, dir_path_to_check, dir_path_to_check_value)
 
         assert isinstance(dir_path_to_check, pathlib.Path), 'Resolved value should be a path'
 
-        file_paths = dir_path_to_check.iterdir()
-
-        if self._files_selection is not None:
-            file_matcher_model = FileMatcherModelForPrimitivePath(self._tmp_file_space, dir_path_to_check)
+        if self._files_selection is None:
+            return map(mk_model, os.listdir(str(dir_path_to_check)))
+        else:
             file_matcher = self._files_selection.value_of_any_dependency(self._environment.home_and_sds)
-            file_paths = file_matchers.matching_files_in_dir(file_matcher, file_matcher_model)
-
-        return map(mk_model, file_paths)
+            file_names = file_matchers.matching_files_in_dir(file_matcher,
+                                                             self._tmp_file_space,
+                                                             dir_path_to_check)
+            return map(mk_model, file_names)
 
 
 class ErrorMessageInfoForDir(ErrorMessageInfo):

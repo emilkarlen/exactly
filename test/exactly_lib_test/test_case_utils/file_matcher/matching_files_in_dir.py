@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
@@ -27,10 +26,11 @@ class TestMatchingFilesInDir(unittest.TestCase):
         ])
         with single_dir_setup(dir_contents) as setup:
             # ACT #
-            actual_matching_file_paths = sut.matching_files_in_dir(matcher,
-                                                                   setup.model_with_action_dir_as_path_to_match())
+            actual_matching_file_base_names_iter = sut.matching_files_in_dir(matcher,
+                                                                             setup.tmp_file_space,
+                                                                             setup.action_dir_path)
             # ASSERT #
-            actual_matching_file_base_names = set(map(pathlib.Path.name.fget, actual_matching_file_paths))
+            actual_matching_file_base_names = set(actual_matching_file_base_names_iter)
             self.assertEqual(expected_matching_file_base_names,
                              actual_matching_file_base_names)
 
