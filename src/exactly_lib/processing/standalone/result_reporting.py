@@ -56,6 +56,7 @@ class TestCaseResultReporter(ResultReporter):
                                 result: FullExeResult) -> int:
         self._exit_identifier_printer().write_colored_line(exit_value.exit_identifier,
                                                            exit_value.color)
+        self._exit_identifier_printer().flush()
         reporting.print_error_message_for_full_result(self._err_printer, result)
         return exit_value.exit_code
 
