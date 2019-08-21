@@ -3,7 +3,6 @@ from typing import Sequence
 
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver, PathPartResolver
-from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.data.visitor import DataValueResolverVisitor
@@ -60,7 +59,7 @@ class _DataValueSymbol2FileRefResolverVisitor(DataValueResolverVisitor):
         if not suffix_str:
             return file_ref
         suffix_str = suffix_str.lstrip('/')
-        return StackedFileRef(file_ref, file_refs.constant_path_part(suffix_str))
+        return file_refs.stacked(file_ref, file_refs.constant_path_part(suffix_str))
 
     def _visit_string(self, value: StringResolver) -> FileRef:
         sv = value.resolve(self.symbols)

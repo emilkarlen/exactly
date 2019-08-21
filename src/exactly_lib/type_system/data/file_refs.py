@@ -7,6 +7,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
     SPECIFIC_ABSOLUTE_RELATIVITY, DirectoryStructurePartition, rel_any_from_rel_home
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import concrete_path_parts
+from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.file_ref_base import FileRefWithPathSuffixBase, \
     FileRefWithPathSuffixAndIsNotAbsoluteBase
@@ -83,6 +84,10 @@ def rel_tmp_user(path_suffix: PathPart) -> FileRef:
 
 def rel_result(path_suffix: PathPart) -> FileRef:
     return of_rel_root(relativity_root.resolver_for_result, path_suffix)
+
+
+def stacked(base_file_ref: FileRef, path_suffix: PathPart) -> FileRef:
+    return _StackedFileRef(base_file_ref, path_suffix)
 
 
 class _FileRefWithConstantLocationBase(FileRefWithPathSuffixAndIsNotAbsoluteBase):
@@ -162,3 +167,46 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
 
     def _relativity(self) -> RelOptionType:
         return rel_any_from_rel_home(self._rel_option)
+
+
+class _StackedFileRef(FileRef):
+    def __init__(self, base_file_ref: FileRef, path_suffix: PathPart):
+        self._stacked_path_suffix = path_suffix
+        self._combined_path_suffix = self._combine(base_file_ref.path_suffix(), path_suffix)
+        self.base_file_ref = base_file_ref
+
+    def relativity(self) -> SpecificPathRelativity:
+        return self.base_file_ref.relativity()
+
+    def path_suffix(self) -> PathPart:
+        return self._combined_path_suffix
+
+    def path_suffix_str(self) -> str:
+        return self._combined_path_suffix.value()
+
+    def path_suffix_path(self) -> pathlib.Path:
+        return pathlib.Path(self.path_suffix_str())
+
+    def _stacked_path_suffix_path(self) -> pathlib.Path:
+        return pathlib.Path(self._stacked_path_suffix.value())
+
+    def has_dir_dependency(self) -> bool:
+        return self.base_file_ref.has_dir_dependency()
+
+    def value_when_no_dir_dependencies(self) -> pathlib.Path:
+        return self.base_file_ref.value_when_no_dir_dependencies() / self._stacked_path_suffix_path()
+
+    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+        return self.base_file_ref.value_pre_sds(hds) / self._stacked_path_suffix_path()
+
+    def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return self.base_file_ref.value_post_sds(sds) / self._stacked_path_suffix_path()
+
+    @staticmethod
+    def _combine(first: PathPart, second: PathPart) -> PathPart:
+        if isinstance(first, PathPartAsNothing):
+            return second
+        if isinstance(second, PathPartAsNothing):
+            return first
+        p = pathlib.Path(first.value()) / pathlib.Path(second.value())
+        return constant_path_part(str(p))

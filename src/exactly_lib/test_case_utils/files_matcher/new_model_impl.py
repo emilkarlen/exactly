@@ -3,7 +3,6 @@ import pathlib
 from typing import Iterator, Optional
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.logic.files_matcher import ErrorMessageInfo, FileModel, FilesMatcherModel
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.err_msg import path_description
@@ -38,8 +37,8 @@ class FileModelForDir(FileModel):
 
     @property
     def path_as_value(self) -> FileRef:
-        return StackedFileRef(self._root_dir_path_value,
-                              file_refs.constant_path_part(self._file_name))
+        return file_refs.stacked(self._root_dir_path_value,
+                                 file_refs.constant_path_part(self._file_name))
 
 
 class FilesMatcherModelForDir(FilesMatcherModel):

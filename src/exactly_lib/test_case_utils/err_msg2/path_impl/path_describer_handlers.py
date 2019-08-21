@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Optional, List
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.data.file_ref_resolver_impls import file_ref_with_symbol
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, DirectoryStructurePartition
@@ -16,6 +15,7 @@ from exactly_lib.test_case_utils.err_msg2.path_impl import path_resolver_str_ren
 from exactly_lib.test_case_utils.err_msg2.path_impl.described_path_w_handler import PathDescriberHandlerForValue, \
     PathDescriberHandlerForResolver, PathDescriberHandlerForPrimitive
 from exactly_lib.type_system.data import concrete_path_parts
+from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.symbol_table import SymbolTable
@@ -70,6 +70,7 @@ class PathManipulationFunctionalityForFixedValue(PathDescriberForValue, ABC):
     supported by primitive value handlers
     (child, parent).
     """
+
     def __init__(self,
                  resolver_describer: _ResolverDescriber,
                  value: FileRef,
@@ -89,7 +90,7 @@ class PathManipulationFunctionalityForFixedValue(PathDescriberForValue, ABC):
         pass
 
     def _child_value(self, child_path_component: str) -> FileRef:
-        return file_ref_with_symbol.StackedFileRef(
+        return file_refs.stacked(
             self._value,
             concrete_path_parts.PathPartAsFixedPath(child_path_component),
         )

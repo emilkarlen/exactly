@@ -1,6 +1,5 @@
 import sys
 import unittest
-
 from typing import Sequence, List
 
 from exactly_lib.definitions import file_ref as file_ref_texts
@@ -10,7 +9,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
@@ -208,8 +206,8 @@ class TestParseWithSymbols(unittest.TestCase):
                  ),
                  expectation=
                  ExpectationOnExeFile(
-                     file_resolver_value=StackedFileRef(file_symbol.value,
-                                                        file_refs.constant_path_part(string_symbol.value)),
+                     file_resolver_value=file_refs.stacked(file_symbol.value,
+                                                           file_refs.constant_path_part(string_symbol.value)),
                      expected_symbol_references_of_file=[reference_of_relativity_symbol,
                                                          reference_of_path_string_symbol_as_path_component],
                      argument_resolver_value=empty_list_value(),
