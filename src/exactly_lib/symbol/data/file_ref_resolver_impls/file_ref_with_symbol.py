@@ -27,7 +27,7 @@ class FileRefResolverRelSymbol(FileRefResolver):
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return [self.symbol_reference_of_path] + self.path_suffix.references
+        return [self.symbol_reference_of_path] + list(self.path_suffix.references)
 
 
 class StackedFileRef(FileRef):
