@@ -3,7 +3,6 @@ from typing import Sequence, Optional, Iterator
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     Environment, FileModel, FilesMatcherModel, FilesMatcherValue
@@ -12,6 +11,7 @@ from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
+from exactly_lib.test_case_utils.err_msg2.path_impl import path_formatting
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForFileWithDescriptor
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
@@ -230,9 +230,8 @@ class _ErrorReportingHelper:
                                 single_line_value: str,
                                 file_element: FileModel) -> ErrorMessageResolver:
         def resolve(environment: ErrorMessageResolvingEnvironment) -> str:
-            failing_file_description_lines = path_description.lines_for_path_value(
-                file_element.path_as_value,
-                environment.tcds,
+            failing_file_description_lines = path_formatting.path_strings(
+                file_element.path__described.describer,
             )
             actual_info = diff_msg.ActualInfo(single_line_value, failing_file_description_lines)
             return self._diff_failure_info_for_dir().resolve(environment,
@@ -260,12 +259,11 @@ class _ErrorReportingHelper:
 
 class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConstructor):
     def __init__(self, file_in_dir: FileModel):
-        self._path = file_in_dir
+        self._file_in_dir = file_in_dir
 
     def construct_for_contents_attribute(self,
                                          contents_attribute: str) -> PropertyDescriptor:
-        path_resolver = file_ref_resolvers.constant(self._path.path_as_value)
-        return path_description.path_value_description(
+        return path_description.path_value_description__from_described(
             property_description.file_property_name(contents_attribute,
                                                     actual_file_attributes.PLAIN_FILE_OBJECT_NAME),
-            path_resolver)
+            self._file_in_dir.path__described.describer)
