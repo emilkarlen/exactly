@@ -8,6 +8,7 @@ path-presentation
 source-file-info
 symbols
 types
+act
 
 # suites
 # ^ Cannot be included here
