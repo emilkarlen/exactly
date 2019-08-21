@@ -13,8 +13,6 @@ from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForFileWithDescriptor
-from exactly_lib.test_case_utils.file_system_element_matcher import \
-    FileSystemElementReference
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
 from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
@@ -204,12 +202,6 @@ class _ModelsFactory:
         return FileMatcherModelForFileWithDescriptor(self._tmp_file_space,
                                                      file_element.path,
                                                      _FilePropertyDescriptorConstructorForFileInDir(file_element))
-
-    def file_system_element_reference(self, file_element: FileModel) -> FileSystemElementReference:
-        return FileSystemElementReference(
-            file_ref_resolvers.constant(file_element.path_as_value),
-            file_element.path
-        )
 
 
 class _ErrorReportingHelper:
