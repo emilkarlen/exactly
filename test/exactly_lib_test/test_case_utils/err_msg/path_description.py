@@ -35,8 +35,9 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                                   path_suffix=path_suffix.value()):
                     path_value = file_refs.rel_home(rel_home_option, path_suffix)
                     # ACT #
-                    actual = sut.path_value_with_relativity_name_prefix(path_value, home_and_sds,
-                                                                        pathlib.Path.cwd())
+                    actual = sut.path_value_with_relativity_name_prefix(path_value,
+                                                                        home_and_sds,
+                                                                        None)
                     # ASSERT #
                     expected = _expected_str(rpo.REL_HDS_OPTIONS_MAP[rel_home_option].directory_variable_name,
                                              path_suffix)
@@ -51,8 +52,9 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                                   path_suffix=path_suffix.value()):
                     path_value = file_refs.rel_sandbox(rel_sds_option, path_suffix)
                     # ACT #
-                    actual = sut.path_value_with_relativity_name_prefix(path_value, home_and_sds,
-                                                                        pathlib.Path.cwd())
+                    actual = sut.path_value_with_relativity_name_prefix(path_value,
+                                                                        home_and_sds,
+                                                                        None)
                     # ASSERT #
                     expected = _expected_str(rpo.REL_SDS_OPTIONS_MAP[rel_sds_option].directory_variable_name,
                                              path_suffix)
@@ -63,8 +65,9 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
         absolute_path = str(pathlib.Path.cwd().resolve())
         path_value = file_refs.absolute_file_name(absolute_path)
         # ACT #
-        actual = sut.path_value_with_relativity_name_prefix(path_value, home_and_sds,
-                                                            pathlib.Path.cwd())
+        actual = sut.path_value_with_relativity_name_prefix(path_value,
+                                                            home_and_sds,
+                                                            None)
         # ASSERT #
         self.assertEqual(absolute_path, actual)
 
@@ -126,7 +129,8 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                           expected_relativity_dir_name=str(expected_relativity_dir_name)):
             cwd = expected_rel_option_info.root_resolver.from_home_and_sds(home_and_sds).resolve()
             # ACT #
-            actual = sut.path_value_with_relativity_name_prefix(path_value_to_check, home_and_sds,
+            actual = sut.path_value_with_relativity_name_prefix(path_value_to_check,
+                                                                home_and_sds,
                                                                 cwd)
             # ASSERT #
             expected = _expected_str(expected_relativity_dir_name, expected_path_suffix)

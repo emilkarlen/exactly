@@ -56,7 +56,7 @@ class PathValueAbsolute(Renderer[str]):
         return path_description.path_value_with_relativity_name_prefix(
             self._path_value,
             self._tcds,
-            pathlib.Path(),
+            None,
         )
 
 

@@ -1,5 +1,5 @@
 import pathlib
-from typing import List
+from typing import List, Optional
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
@@ -79,7 +79,7 @@ def path_value_with_relativity_name_prefix__rel_tcds_dir(path_value: FileRef) ->
 
 def path_value_with_relativity_name_prefix(path_value: FileRef,
                                            tcds: HomeAndSds,
-                                           cwd: pathlib.Path) -> str:
+                                           cwd: Optional[pathlib.Path]) -> str:
     def absolute() -> str:
         return str(path_value.value_when_no_dir_dependencies())
 
