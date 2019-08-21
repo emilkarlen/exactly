@@ -7,6 +7,7 @@ from exactly_lib.symbol.logic.files_matcher import ErrorMessageInfo, FileModel, 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
+from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher, file_matchers
 from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherAndValue, MATCH_EVERY_FILE_VALUE
 from exactly_lib.type_system.data import file_refs
@@ -78,8 +79,10 @@ class FilesMatcherModelForDir(FilesMatcherModel):
                                       file_selector)
 
     def files(self) -> Iterator[FileModel]:
-        dir_path_to_check_value = self._dir_path_resolver.resolve(self._environment.symbols)
-        dir_path_to_check = dir_path_to_check_value.value_of_any_dependency(self._environment.home_and_sds)
+        environment = self._environment
+        described_value = described_path_resolvers.of(self._dir_path_resolver).resolve(environment.symbols)
+        dir_path_to_check_value = described_value.value
+        dir_path_to_check = described_value.value_of_any_dependency(environment.home_and_sds).primitive
 
         def mk_model(file_name: str) -> FileModel:
             return FileModelForDir(file_name, dir_path_to_check, dir_path_to_check_value)
@@ -89,7 +92,7 @@ class FilesMatcherModelForDir(FilesMatcherModel):
         if self._files_selection is None:
             return map(mk_model, os.listdir(str(dir_path_to_check)))
         else:
-            file_matcher = self._files_selection.value_of_any_dependency(self._environment.home_and_sds)
+            file_matcher = self._files_selection.value_of_any_dependency(environment.home_and_sds)
             file_names = file_matchers.matching_files_in_dir(file_matcher,
                                                              self._tmp_file_space,
                                                              dir_path_to_check)

@@ -6,7 +6,6 @@ from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileResolver, \
     ComparisonActualFileConstructor
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
-from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
@@ -15,7 +14,7 @@ from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
 from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
 from exactly_lib.test_case_utils.file_system_element_matcher import \
-    FileSystemElementReference, FileSystemElementPropertiesMatcher
+    FileSystemElementPropertiesMatcher
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
@@ -131,9 +130,7 @@ class IsExistingRegularFileAssertionPart(AssertionPart[ComparisonActualFile, Com
               custom_environment,
               actual_file: ComparisonActualFile,
               ) -> ComparisonActualFile:
-        element_ref = FileSystemElementReference(file_ref_resolvers.constant(actual_file.actual_file),
-                                                 actual_file.actual_file_path)
-        err_msg_resolver = self._file_prop_check.matches(element_ref)
+        err_msg_resolver = self._file_prop_check.matches(actual_file.actual_path)
 
         if err_msg_resolver:
             err_msg_env = err_msg_env_from_instr_env(environment)
