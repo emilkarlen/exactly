@@ -5,7 +5,7 @@ Import qualified!
 """
 
 from exactly_lib.symbol.data.file_ref_resolver import PathPartResolver
-from exactly_lib.symbol.data.file_ref_resolver_impls import path_part_resolver_impls as _impl
+from exactly_lib.symbol.data.file_ref_resolver_impls import path_part_resolvers as _impl
 from exactly_lib.symbol.data.string_resolver import StringResolver
 
 
