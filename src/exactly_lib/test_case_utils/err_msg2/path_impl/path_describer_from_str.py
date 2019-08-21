@@ -19,7 +19,7 @@ class PathDescriberForResolverFromStr(PathDescriberForResolver):
 
 class PathDescriberForValueFromStr(PathDescriberForValue):
     def __init__(self,
-                 resolver: PathDescriberForResolver,
+                 resolver: Renderer[str],
                  value: Renderer[str],
                  relativity: Callable[[], Optional[DirectoryStructurePartition]]
                  ):
@@ -29,7 +29,7 @@ class PathDescriberForValueFromStr(PathDescriberForValue):
 
     @property
     def resolver(self) -> Renderer[str]:
-        return self._resolver.resolver
+        return self._resolver
 
     @property
     def value(self) -> Renderer[str]:

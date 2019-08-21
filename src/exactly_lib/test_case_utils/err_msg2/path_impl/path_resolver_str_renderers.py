@@ -2,6 +2,10 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 
 
+def new_std(path_resolver: FileRefResolver) -> Renderer[str]:
+    return PathResolverShouldNotBeUsed(path_resolver)
+
+
 class PathResolverShouldNotBeUsed(Renderer[str]):
     def __init__(self, path_resolver: FileRefResolver):
         self._path_resolver = path_resolver
