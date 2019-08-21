@@ -45,7 +45,6 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
                 .resolve(empty_symbol_table()) \
                 .value_of_any_dependency(fake_tcds())
             model = sut.ComparisonActualFile(described_path,
-                                             path_value,
                                              FilePropertyDescriptorConstructorTestImpl()
                                              )
             # ACT #
@@ -62,13 +61,11 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
         assertion_part = sut.IsExistingRegularFileAssertionPart()
         # ACT & ASSERT #
         with self.assertRaises(PfhHardErrorException):
-            file_name = 'a file that does not exist'
-            path = pathlib.Path(file_name)
+            path = pathlib.Path('a file that does not exist')
             assertion_part.check(self.environment, self.the_os_services,
                                  'custom environment',
                                  sut.ComparisonActualFile(
                                      described_path.new_primitive(path),
-                                     file_refs.rel_cwd(file_refs.constant_path_part(file_name)),
                                      FilePropertyDescriptorConstructorTestImpl(),
                                  ))
 
@@ -82,7 +79,6 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
                                      'custom environment',
                                      sut.ComparisonActualFile(
                                          described_path.new_primitive(path_of_existing_directory),
-                                         file_refs.absolute_file_name(str(path_of_existing_directory)),
                                          FilePropertyDescriptorConstructorTestImpl(),
                                      )
                                      )

@@ -1,4 +1,3 @@
-import pathlib
 from typing import Sequence
 
 from exactly_lib.common.report_rendering import text_docs
@@ -15,7 +14,6 @@ from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPri
 from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
 from exactly_lib.test_case_utils.file_system_element_matcher import \
     FileSystemElementPropertiesMatcher
-from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
@@ -24,26 +22,17 @@ from exactly_lib.type_system.logic.string_transformer import IdentityStringTrans
 class ComparisonActualFile(tuple):
     def __new__(cls,
                 actual_path: DescribedPathPrimitive,
-                actual_file: FileRef,
                 checked_file_describer: FilePropertyDescriptorConstructor,
                 ):
-        return tuple.__new__(cls, (checked_file_describer, actual_file, actual_path))
-
-    @property
-    def actual_file_path(self) -> pathlib.Path:
-        return self.actual_path.primitive
+        return tuple.__new__(cls, (checked_file_describer, actual_path))
 
     @property
     def checked_file_describer(self) -> FilePropertyDescriptorConstructor:
         return self[0]
 
     @property
-    def actual_file(self) -> FileRef:
+    def path(self) -> DescribedPathPrimitive:
         return self[1]
-
-    @property
-    def actual_path(self) -> DescribedPathPrimitive:
-        return self[2]
 
 
 class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor, ComparisonActualFileResolver]):
@@ -72,7 +61,7 @@ class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, File
               custom_environment,
               file_to_transform: ComparisonActualFile,
               ) -> FileToCheck:
-        actual_file_path = file_to_transform.actual_file_path
+        actual_file_path = file_to_transform.path.primitive
 
         return FileToCheck(actual_file_path,
                            file_to_transform.checked_file_describer,
@@ -103,13 +92,10 @@ class FileExistenceAssertionPart(AssertionPart[ComparisonActualFileResolver, Com
         if failure_message:
             raise pfh_exception.PfhFailException(failure_message)
 
-        actual_path_value = actual_file.file_ref_resolver().resolve(environment.symbols)
-
         actual_path = described_path_resolvers.of(actual_file.file_ref_resolver()) \
             .resolve(environment.symbols) \
             .value_of_any_dependency(environment.home_and_sds)
         return ComparisonActualFile(actual_path,
-                                    actual_path_value,
                                     actual_file.property_descriptor_constructor)
 
 
@@ -130,7 +116,7 @@ class IsExistingRegularFileAssertionPart(AssertionPart[ComparisonActualFile, Com
               custom_environment,
               actual_file: ComparisonActualFile,
               ) -> ComparisonActualFile:
-        err_msg_resolver = self._file_prop_check.matches(actual_file.actual_path)
+        err_msg_resolver = self._file_prop_check.matches(actual_file.path)
 
         if err_msg_resolver:
             err_msg_env = err_msg_env_from_instr_env(environment)
