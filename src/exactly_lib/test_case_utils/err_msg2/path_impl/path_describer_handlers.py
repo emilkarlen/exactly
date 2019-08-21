@@ -18,7 +18,7 @@ from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class PathDescriberHandlerForResolverWStrRenderer(PathDescriberHandlerForResolver):
+class PathDescriberHandlerForResolverWithResolver(PathDescriberHandlerForResolver):
     def __init__(self, path_resolver: FileRefResolver):
         self._path_resolver = path_resolver
 
@@ -27,13 +27,13 @@ class PathDescriberHandlerForResolverWStrRenderer(PathDescriberHandlerForResolve
         return _from_str.PathDescriberForResolverFromStr(PathResolverShouldNotBeUsed(self._path_resolver))
 
     def resolve(self, resolved_value: FileRef, symbols: SymbolTable) -> PathDescriberHandlerForValue:
-        return PathDescriberHandlerForValueWStrRenderer(
+        return PathDescriberHandlerForValueWithValue(
             resolved_value,
             self.describer,
         )
 
 
-class PathDescriberHandlerForValueWStrRenderer(PathDescriberHandlerForValue):
+class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
     def __init__(self,
                  path_value: FileRef,
                  resolver_describer: PathDescriberForResolver):
