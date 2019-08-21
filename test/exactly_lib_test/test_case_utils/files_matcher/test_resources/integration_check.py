@@ -1,6 +1,5 @@
-import unittest
-
 import os
+import unittest
 from typing import Optional, Tuple
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -11,17 +10,18 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, FilesMa
     FilesMatcherModel
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import Model
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
-from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
 
 class TestCaseBase(unittest.TestCase):
@@ -209,8 +209,10 @@ class _Executor:
             ),
             FilesMatcherModelForDir(
                 tmp_file_space,
-                self.model.dir_path_resolver,
-                environment,
+                described_path_resolvers.of(self.model.dir_path_resolver)
+                    .resolve(environment.symbols)
+                    .value_of_any_dependency(environment.home_and_sds),
+                environment.home_and_sds,
                 self.model.files_selection,
             ),
         )
