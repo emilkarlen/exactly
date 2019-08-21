@@ -12,21 +12,16 @@ from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class DescribedPathPrimitive:
-    def __init__(self,
-                 path: Path,
-                 describer: PathDescriberForPrimitive,
-                 ):
-        self._path = path
-        self._describer = describer
-
+class DescribedPathPrimitive(ABC):
     @property
+    @abstractmethod
     def primitive(self) -> Path:
-        return self._path
+        pass
 
     @property
+    @abstractmethod
     def describer(self) -> PathDescriberForPrimitive:
-        return self._describer
+        pass
 
 
 class DescribedPathValue(ABC):

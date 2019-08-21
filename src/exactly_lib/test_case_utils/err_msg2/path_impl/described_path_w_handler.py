@@ -46,6 +46,23 @@ class PathDescriberHandlerForValue(ABC):
         pass
 
 
+class DescribedPathPrimitiveImpl(DescribedPathPrimitive):
+    def __init__(self,
+                 path: Path,
+                 describer: PathDescriberForPrimitive,
+                 ):
+        self._path = path
+        self._describer = describer
+
+    @property
+    def primitive(self) -> Path:
+        return self._path
+
+    @property
+    def describer(self) -> PathDescriberForPrimitive:
+        return self._describer
+
+
 class DescribedPathValueWHandler(DescribedPathValue):
     def __init__(self,
                  path_value: FileRef,
@@ -64,28 +81,28 @@ class DescribedPathValueWHandler(DescribedPathValue):
 
     def value_when_no_dir_dependencies(self) -> DescribedPathPrimitive:
         primitive = self._path_value.value_when_no_dir_dependencies()
-        return DescribedPathPrimitive(
+        return DescribedPathPrimitiveImpl(
             primitive,
             self._describer_handler.value_when_no_dir_dependencies(primitive),
         )
 
     def value_pre_sds(self, hds: HomeDirectoryStructure) -> DescribedPathPrimitive:
         primitive = self._path_value.value_pre_sds(hds)
-        return DescribedPathPrimitive(
+        return DescribedPathPrimitiveImpl(
             primitive,
             self._describer_handler.value_pre_sds(primitive, hds),
         )
 
     def value_post_sds(self, tcds: HomeAndSds) -> DescribedPathPrimitive:
         primitive = self._path_value.value_post_sds(tcds.sds)
-        return DescribedPathPrimitive(
+        return DescribedPathPrimitiveImpl(
             primitive,
             self._describer_handler.value_post_sds(primitive, tcds),
         )
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> DescribedPathPrimitive:
         primitive = self._path_value.value_of_any_dependency(tcds)
-        return DescribedPathPrimitive(
+        return DescribedPathPrimitiveImpl(
             primitive,
             self._describer_handler.value_of_any_dependency(primitive, tcds),
         )
