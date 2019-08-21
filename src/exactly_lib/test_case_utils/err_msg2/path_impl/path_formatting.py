@@ -1,4 +1,4 @@
-from typing import Optional, Any, Sequence
+from typing import Optional, Any, Sequence, List
 
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive
@@ -45,6 +45,21 @@ class PathValueMinorBlock(Renderer[MinorBlock]):
         )
 
 
+def path_renderers(path: PathDescriberForPrimitive) -> List[Renderer[str]]:
+    return (
+        [path.value, path.primitive]
+        if path.resolving_dependency is DirectoryStructurePartition.HOME
+        else [path.value]
+    )
+
+
+def path_strings(path: PathDescriberForPrimitive) -> List[str]:
+    return [
+        r.render()
+        for r in path_renderers(path)
+    ]
+
+
 class PathValueMinorBlock2(Renderer[MinorBlock]):
     def __init__(self,
                  path: PathDescriberForPrimitive,
@@ -56,17 +71,9 @@ class PathValueMinorBlock2(Renderer[MinorBlock]):
             text_struct.LineElement(
                 text_struct.StringLineObject(line.render())
             )
-            for line in self._lines()
+            for line in path_renderers(self._path)
         ],
             text_struct.INDENTED_ELEMENT_PROPERTIES,
-        )
-
-    def _lines(self) -> Sequence[Renderer[str]]:
-        p = self._path
-        return (
-            [p.value, p.primitive]
-            if p.resolving_dependency is DirectoryStructurePartition.HOME
-            else [p.value]
         )
 
 
