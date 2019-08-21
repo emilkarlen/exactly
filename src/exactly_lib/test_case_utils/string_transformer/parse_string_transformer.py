@@ -1,5 +1,3 @@
-from typing import List
-
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.section_document.element_parsers import token_stream_parser
@@ -8,12 +6,10 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic import string_transformers
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.string_transformer import resolvers
 from exactly_lib.test_case_utils.string_transformer.impl import select, replace
 from exactly_lib.test_case_utils.string_transformer.impl.replace import REPLACE_REPLACEMENT_ARGUMENT
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -29,17 +25,6 @@ SEQUENCE_OPERATOR_NAME = '|'
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
 STRING_TRANSFORMER_ARGUMENT = a.Named(types.STRING_TRANSFORMER_TYPE_INFO.syntax_element_name)
-
-
-class StringTransformerDescriptor(ErrorMessagePartConstructor):
-    def __init__(self, resolver: StringTransformerResolver):
-        self.resolver = resolver
-
-    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
-        transformer = self.resolver.resolve(environment.symbols)
-        # FIXME
-        line = types.STRING_TRANSFORMER_TYPE_INFO.syntax_element_name + ' : (FIXME) ' + str(transformer)
-        return [line]
 
 
 def parser() -> Parser[StringTransformerResolver]:
