@@ -12,14 +12,10 @@ from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class PathDescriberHandlerForResolver(ABC):
+class PathDescriberHandlerForPrimitive(ABC):
     @property
     @abstractmethod
-    def describer(self) -> PathDescriberForResolver:
-        pass
-
-    @abstractmethod
-    def resolve(self, resolved_value: FileRef, symbols: SymbolTable) -> 'PathDescriberHandlerForValue':
+    def describer(self) -> PathDescriberForPrimitive:
         pass
 
 
@@ -30,29 +26,40 @@ class PathDescriberHandlerForValue(ABC):
         pass
 
     @abstractmethod
-    def value_when_no_dir_dependencies(self, primitive: Path) -> 'PathDescriberForPrimitive':
+    def value_when_no_dir_dependencies(self, primitive: Path) -> PathDescriberHandlerForPrimitive:
         pass
 
     @abstractmethod
-    def value_pre_sds(self, primitive: Path, hds: HomeDirectoryStructure) -> 'PathDescriberForPrimitive':
+    def value_pre_sds(self, primitive: Path, hds: HomeDirectoryStructure) -> PathDescriberHandlerForPrimitive:
         pass
 
     @abstractmethod
-    def value_post_sds(self, primitive: Path, tcds: HomeAndSds) -> 'PathDescriberForPrimitive':
+    def value_post_sds(self, primitive: Path, tcds: HomeAndSds) -> PathDescriberHandlerForPrimitive:
         pass
 
     @abstractmethod
-    def value_of_any_dependency(self, primitive: Path, tcds: HomeAndSds) -> 'PathDescriberForPrimitive':
+    def value_of_any_dependency(self, primitive: Path, tcds: HomeAndSds) -> PathDescriberHandlerForPrimitive:
         pass
 
 
-class DescribedPathPrimitiveImpl(DescribedPathPrimitive):
+class PathDescriberHandlerForResolver(ABC):
+    @property
+    @abstractmethod
+    def describer(self) -> PathDescriberForResolver:
+        pass
+
+    @abstractmethod
+    def resolve(self, resolved_value: FileRef, symbols: SymbolTable) -> PathDescriberHandlerForValue:
+        pass
+
+
+class DescribedPathPrimitiveWHandler(DescribedPathPrimitive):
     def __init__(self,
                  path: Path,
-                 describer: PathDescriberForPrimitive,
+                 describer_handler: PathDescriberHandlerForPrimitive,
                  ):
         self._path = path
-        self._describer = describer
+        self._describer_handler = describer_handler
 
     @property
     def primitive(self) -> Path:
@@ -60,7 +67,7 @@ class DescribedPathPrimitiveImpl(DescribedPathPrimitive):
 
     @property
     def describer(self) -> PathDescriberForPrimitive:
-        return self._describer
+        return self._describer_handler.describer
 
 
 class DescribedPathValueWHandler(DescribedPathValue):
@@ -81,28 +88,28 @@ class DescribedPathValueWHandler(DescribedPathValue):
 
     def value_when_no_dir_dependencies(self) -> DescribedPathPrimitive:
         primitive = self._path_value.value_when_no_dir_dependencies()
-        return DescribedPathPrimitiveImpl(
+        return DescribedPathPrimitiveWHandler(
             primitive,
             self._describer_handler.value_when_no_dir_dependencies(primitive),
         )
 
     def value_pre_sds(self, hds: HomeDirectoryStructure) -> DescribedPathPrimitive:
         primitive = self._path_value.value_pre_sds(hds)
-        return DescribedPathPrimitiveImpl(
+        return DescribedPathPrimitiveWHandler(
             primitive,
             self._describer_handler.value_pre_sds(primitive, hds),
         )
 
     def value_post_sds(self, tcds: HomeAndSds) -> DescribedPathPrimitive:
         primitive = self._path_value.value_post_sds(tcds.sds)
-        return DescribedPathPrimitiveImpl(
+        return DescribedPathPrimitiveWHandler(
             primitive,
             self._describer_handler.value_post_sds(primitive, tcds),
         )
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> DescribedPathPrimitive:
         primitive = self._path_value.value_of_any_dependency(tcds)
-        return DescribedPathPrimitiveImpl(
+        return DescribedPathPrimitiveWHandler(
             primitive,
             self._describer_handler.value_of_any_dependency(primitive, tcds),
         )

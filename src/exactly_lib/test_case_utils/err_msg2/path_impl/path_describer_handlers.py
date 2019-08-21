@@ -11,7 +11,7 @@ from exactly_lib.test_case_utils.err_msg2.path_impl import path_describer_from_s
 from exactly_lib.test_case_utils.err_msg2.path_impl import \
     path_primitive_str_renderers, path_value_str_renderers
 from exactly_lib.test_case_utils.err_msg2.path_impl.described_path_w_handler import PathDescriberHandlerForValue, \
-    PathDescriberHandlerForResolver
+    PathDescriberHandlerForResolver, PathDescriberHandlerForPrimitive
 from exactly_lib.test_case_utils.err_msg2.path_impl.path_resolver_str_renderers import PathResolverShouldNotBeUsed
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
@@ -19,7 +19,9 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 class PathDescriberHandlerForResolverWithResolver(PathDescriberHandlerForResolver):
-    def __init__(self, path_resolver: FileRefResolver):
+    def __init__(self,
+                 path_resolver: FileRefResolver,
+                 ):
         self._path_resolver = path_resolver
 
     @property
@@ -36,7 +38,8 @@ class PathDescriberHandlerForResolverWithResolver(PathDescriberHandlerForResolve
 class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
     def __init__(self,
                  path_value: FileRef,
-                 resolver_describer: PathDescriberForResolver):
+                 resolver_describer: PathDescriberForResolver,
+                 ):
         self._cwd = None
         self._path_value = path_value
         self._relativity_type = path_value.relativity().relativity_type
@@ -49,28 +52,28 @@ class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
     def describer(self) -> PathDescriberForValue:
         return self._describer
 
-    def value_when_no_dir_dependencies(self, primitive: Path) -> PathDescriberForPrimitive:
-        return _from_str.PathDescriberForPrimitiveFromStr(
-            self.describer,
-            path_primitive_str_renderers.Constant(primitive)
+    def value_when_no_dir_dependencies(self, primitive: Path) -> PathDescriberHandlerForPrimitive:
+        return PathDescriberHandlerForPrimitiveWithPrimitive(
+            primitive,
+            self._describer,
         )
 
-    def value_pre_sds(self, primitive: Path, hds: HomeDirectoryStructure) -> PathDescriberForPrimitive:
-        return _from_str.PathDescriberForPrimitiveFromStr(
-            self.describer,
-            path_primitive_str_renderers.Constant(primitive)
+    def value_pre_sds(self, primitive: Path, hds: HomeDirectoryStructure) -> PathDescriberHandlerForPrimitive:
+        return PathDescriberHandlerForPrimitiveWithPrimitive(
+            primitive,
+            self._describer,
         )
 
-    def value_post_sds(self, primitive: Path, tcds: HomeAndSds) -> PathDescriberForPrimitive:
-        return _from_str.PathDescriberForPrimitiveFromStr(
+    def value_post_sds(self, primitive: Path, tcds: HomeAndSds) -> PathDescriberHandlerForPrimitive:
+        return PathDescriberHandlerForPrimitiveWithPrimitive(
+            primitive,
             self._value_describer_post_sds(tcds),
-            path_primitive_str_renderers.Constant(primitive)
         )
 
-    def value_of_any_dependency(self, primitive: Path, tcds: HomeAndSds) -> PathDescriberForPrimitive:
-        return _from_str.PathDescriberForPrimitiveFromStr(
+    def value_of_any_dependency(self, primitive: Path, tcds: HomeAndSds) -> PathDescriberHandlerForPrimitive:
+        return PathDescriberHandlerForPrimitiveWithPrimitive(
+            primitive,
             self._value_describer_post_sds(tcds),
-            path_primitive_str_renderers.Constant(primitive)
         )
 
     def _resolving_dependency(self) -> Optional[DirectoryStructurePartition]:
@@ -100,3 +103,19 @@ class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
             return path_value_str_renderers.PathValuePlainAbsolute(path_value)
 
         return path_value_str_renderers.PathValueRelTcdsDir(path_value)
+
+
+class PathDescriberHandlerForPrimitiveWithPrimitive(PathDescriberHandlerForPrimitive):
+    def __init__(self,
+                 primitive: Path,
+                 value_describer: PathDescriberForValue,
+                 ):
+        self._primitive = primitive
+        self._value_describer = value_describer
+
+    @property
+    def describer(self) -> PathDescriberForPrimitive:
+        return _from_str.PathDescriberForPrimitiveFromStr(
+            self._value_describer,
+            path_primitive_str_renderers.Constant(self._primitive)
+        )
