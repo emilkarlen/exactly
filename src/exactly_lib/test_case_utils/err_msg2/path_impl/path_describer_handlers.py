@@ -1,8 +1,9 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver_impls import file_ref_with_symbol
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, DirectoryStructurePartition
@@ -14,9 +15,31 @@ from exactly_lib.test_case_utils.err_msg2.path_impl import \
 from exactly_lib.test_case_utils.err_msg2.path_impl import path_resolver_str_renderers
 from exactly_lib.test_case_utils.err_msg2.path_impl.described_path_w_handler import PathDescriberHandlerForValue, \
     PathDescriberHandlerForResolver, PathDescriberHandlerForPrimitive
+from exactly_lib.type_system.data import concrete_path_parts
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.symbol_table import SymbolTable
+
+
+class _ResolverDescriber(Renderer[str]):
+    """Handles description of a resolver, together with func for computing children etc."""
+
+    def __init__(self,
+                 path_resolver: FileRefResolver,
+                 suffixes: List[str],
+                 ):
+        self.path_resolver = path_resolver
+        self.suffixes = suffixes
+
+    def render(self) -> str:
+        resolver_str = path_resolver_str_renderers.new_std(self.path_resolver).render()
+        return '/'.join([resolver_str] + self.suffixes)
+
+    def child(self, child_path_component: str) -> '_ResolverDescriber':
+        return _ResolverDescriber(
+            self.path_resolver,
+            self.suffixes + [child_path_component]
+        )
 
 
 class PathDescriberHandlerForResolverWithResolver(PathDescriberHandlerForResolver):
@@ -28,22 +51,30 @@ class PathDescriberHandlerForResolverWithResolver(PathDescriberHandlerForResolve
     @property
     def describer(self) -> PathDescriberForResolver:
         return _from_str.PathDescriberForResolverFromStr(
-            path_resolver_str_renderers.new_std(self._path_resolver)
+            _ResolverDescriber(self._path_resolver, [])
         )
 
     def resolve(self, resolved_value: FileRef, symbols: SymbolTable) -> PathDescriberHandlerForValue:
         return PathDescriberHandlerForValueWithValue(
-            self._path_resolver,
+            _ResolverDescriber(self._path_resolver, []),
             resolved_value,
         )
 
 
 class PathManipulationFunctionalityForFixedValue(PathDescriberForValue, ABC):
+    """
+    A resolver + value that has been fixed by symbols and TCDS.
+
+    Used by objects representing a primitive value.
+    Acts as a helper for functionality of the path manipulations
+    supported by primitive value handlers
+    (child, parent).
+    """
     def __init__(self,
-                 resolver: FileRefResolver,
+                 resolver_describer: _ResolverDescriber,
                  value: FileRef,
                  ):
-        self._resolver = resolver
+        self._resolver_describer = resolver_describer
         self._value = value
 
     def resolving_dependency(self) -> Optional[DirectoryStructurePartition]:
@@ -51,16 +82,29 @@ class PathManipulationFunctionalityForFixedValue(PathDescriberForValue, ABC):
 
     @property
     def resolver(self) -> Renderer[str]:
-        return path_resolver_str_renderers.new_std(self._resolver)
+        return self._resolver_describer
+
+    @abstractmethod
+    def child(self, child_path_component: str) -> 'PathManipulationFunctionalityForFixedValue':
+        pass
+
+    def _child_value(self, child_path_component: str) -> FileRef:
+        return file_ref_with_symbol.StackedFileRef(
+            self._value,
+            concrete_path_parts.PathPartAsFixedPath(child_path_component),
+        )
+
+    def _child_resolver(self, child_path_component: str) -> _ResolverDescriber:
+        return self._resolver_describer.child(child_path_component)
 
 
 class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
     def __init__(self,
-                 path_resolver: FileRefResolver,
+                 resolver_describer: _ResolverDescriber,
                  path_value: FileRef,
                  ):
         self._cwd = None
-        self._path_resolver = path_resolver
+        self._resolver_describer = resolver_describer
         self._path_value = path_value
         self._relativity_type = path_value.relativity().relativity_type
         if self._relativity_type is RelOptionType.REL_CWD:
@@ -69,7 +113,7 @@ class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
     @property
     def describer(self) -> PathDescriberForValue:
         return _from_str.PathDescriberForValueFromStr(
-            path_resolver_str_renderers.new_std(self._path_resolver),
+            self._resolver_describer,
             self._value_renderer_before_fixation(),
             self._resolving_dependency,
         )
@@ -78,7 +122,7 @@ class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
         return PathDescriberHandlerForPrimitiveWithPrimitive(
             primitive,
             PathManipulationFunctionalityForFixedValueForNotRelCwd(
-                self._path_resolver,
+                self._resolver_describer,
                 self._path_value,
             ),
         )
@@ -87,7 +131,7 @@ class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
         return PathDescriberHandlerForPrimitiveWithPrimitive(
             primitive,
             PathManipulationFunctionalityForFixedValueForNotRelCwd(
-                self._path_resolver,
+                self._resolver_describer,
                 self._path_value,
             ),
         )
@@ -110,14 +154,14 @@ class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
     def _fixation(self, tcds: HomeAndSds) -> PathManipulationFunctionalityForFixedValue:
         if self._relativity_type is RelOptionType.REL_CWD:
             return PathManipulationFunctionalityForFixedValueForRelCwd(
-                self._path_resolver,
+                self._resolver_describer,
                 self._path_value,
                 tcds,
                 self._cwd,
             )
         else:
             return PathManipulationFunctionalityForFixedValueForNotRelCwd(
-                self._path_resolver,
+                self._resolver_describer,
                 self._path_value,
             )
 
@@ -136,10 +180,10 @@ class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
 
 class PathManipulationFunctionalityForFixedValueForNotRelCwd(PathManipulationFunctionalityForFixedValue):
     def __init__(self,
-                 resolver: FileRefResolver,
+                 resolver_describer: _ResolverDescriber,
                  value: FileRef,
                  ):
-        super().__init__(resolver, value)
+        super().__init__(resolver_describer, value)
 
     @property
     def value(self) -> Renderer[str]:
@@ -152,15 +196,21 @@ class PathManipulationFunctionalityForFixedValueForNotRelCwd(PathManipulationFun
             path_value_str_renderers.PathValueRelTcdsDir(value)
         )
 
+    def child(self, child_path_component: str) -> PathManipulationFunctionalityForFixedValue:
+        return PathManipulationFunctionalityForFixedValueForNotRelCwd(
+            self._child_resolver(child_path_component),
+            self._child_value(child_path_component),
+        )
+
 
 class PathManipulationFunctionalityForFixedValueForRelCwd(PathManipulationFunctionalityForFixedValue):
     def __init__(self,
-                 resolver: FileRefResolver,
+                 resolver_describer: _ResolverDescriber,
                  value: FileRef,
                  tcds: HomeAndSds,
                  cwd: Path,
                  ):
-        super().__init__(resolver, value)
+        super().__init__(resolver_describer, value)
         self._tcds = tcds
         self._cwd = cwd
 
@@ -169,6 +219,14 @@ class PathManipulationFunctionalityForFixedValueForRelCwd(PathManipulationFuncti
         return path_value_str_renderers.PathValueRelCwd(self._value,
                                                         self._cwd,
                                                         self._tcds)
+
+    def child(self, child_path_component: str) -> PathManipulationFunctionalityForFixedValue:
+        return PathManipulationFunctionalityForFixedValueForRelCwd(
+            self._child_resolver(child_path_component),
+            self._child_value(child_path_component),
+            self._tcds,
+            self._cwd,
+        )
 
 
 class PathDescriberHandlerForPrimitiveWithPrimitive(PathDescriberHandlerForPrimitive):
@@ -184,4 +242,10 @@ class PathDescriberHandlerForPrimitiveWithPrimitive(PathDescriberHandlerForPrimi
         return _from_str.PathDescriberForPrimitiveFromStr(
             self._fixed_value,
             path_primitive_str_renderers.Constant(self._primitive)
+        )
+
+    def child(self, child_path: Path, child_path_component: str) -> PathDescriberHandlerForPrimitive:
+        return PathDescriberHandlerForPrimitiveWithPrimitive(
+            child_path,
+            self._fixed_value.child(child_path_component),
         )

@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Optional
 
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
@@ -35,3 +36,8 @@ class PathDescriberHandlerForPrimitiveTestImpl(PathDescriberHandlerForPrimitive)
     @property
     def describer(self) -> PathDescriberForPrimitive:
         return PathDescriberForPrimitiveTestImpl(self._rendition)
+
+    def child(self, child_path: Path, child_path_component: str) -> PathDescriberHandlerForPrimitive:
+        return PathDescriberHandlerForPrimitiveTestImpl(
+            str(child_path)
+        )

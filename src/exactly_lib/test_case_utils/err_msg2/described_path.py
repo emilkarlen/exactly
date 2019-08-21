@@ -23,6 +23,10 @@ class DescribedPathPrimitive(ABC):
     def describer(self) -> PathDescriberForPrimitive:
         pass
 
+    @abstractmethod
+    def child(self, child_path_component: str) -> 'DescribedPathPrimitive':
+        pass
+
 
 class DescribedPathValue(ABC):
     """
