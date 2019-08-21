@@ -307,7 +307,7 @@ class _FilesMatcherValueThatAssertsModelsIsExpected(FilesMatcherValue):
         self.put.assertIsInstance(environment, Environment, 'environment')
         self.put.assertIsInstance(files_source, FilesMatcherModelForDir, 'files_source')
         assert isinstance(files_source, FilesMatcherModelForDir)
-        actual = list(map(lambda fm: fm.path, files_source.files()))
+        actual = list(map(lambda fm: fm.path.primitive, files_source.files()))
         actual.sort()
 
         expected_model_dir = self.relativity.population_dir(environment.path_resolving_environment.home_and_sds)

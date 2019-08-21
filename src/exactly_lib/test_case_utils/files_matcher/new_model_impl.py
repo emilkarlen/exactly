@@ -19,19 +19,13 @@ from exactly_lib.util.file_utils import TmpDirFileSpace
 class FileModelForDir(FileModel):
     def __init__(self,
                  file_name: str,
-                 root_dir_path: DescribedPathPrimitive):
-        self._file_name = file_name
+                 root_dir: DescribedPathPrimitive):
         self._relative_to_root_dir = pathlib.Path(file_name)
-        self._described_path = root_dir_path.child(file_name)
-        self._root_dir_path = root_dir_path
+        self._path = root_dir.child(file_name)
 
     @property
-    def path(self) -> pathlib.Path:
-        return self._described_path.primitive
-
-    @property
-    def path__described(self) -> DescribedPathPrimitive:
-        return self._described_path
+    def path(self) -> DescribedPathPrimitive:
+        return self._path
 
     @property
     def relative_to_root_dir(self) -> pathlib.Path:

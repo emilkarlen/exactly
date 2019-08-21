@@ -32,12 +32,7 @@ class ErrorMessageInfo(ABC):
 class FileModel(ABC):
     @property
     @abstractmethod
-    def path(self) -> pathlib.Path:
-        pass
-
-    @property
-    @abstractmethod
-    def path__described(self) -> DescribedPathPrimitive:
+    def path(self) -> DescribedPathPrimitive:
         pass
 
     @property

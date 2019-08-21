@@ -192,7 +192,7 @@ class _ModelsFactory:
         self._destination_file_path_getter = DestinationFilePathGetter()
 
     def file_to_check(self, file_element: FileModel) -> FileToCheck:
-        return FileToCheck(file_element.path,
+        return FileToCheck(file_element.path.primitive,
                            _FilePropertyDescriptorConstructorForFileInDir(file_element),
                            self._tmp_file_space,
                            self._id_trans,
@@ -200,7 +200,7 @@ class _ModelsFactory:
 
     def file_matcher_model(self, file_element: FileModel) -> FileMatcherModel:
         return FileMatcherModelForFileWithDescriptor(self._tmp_file_space,
-                                                     file_element.path,
+                                                     file_element.path.primitive,
                                                      _FilePropertyDescriptorConstructorForFileInDir(file_element))
 
 
@@ -231,7 +231,7 @@ class _ErrorReportingHelper:
                                 file_element: FileModel) -> ErrorMessageResolver:
         def resolve(environment: ErrorMessageResolvingEnvironment) -> str:
             failing_file_description_lines = path_formatting.path_strings(
-                file_element.path__described.describer,
+                file_element.path.describer,
             )
             actual_info = diff_msg.ActualInfo(single_line_value, failing_file_description_lines)
             return self._diff_failure_info_for_dir().resolve(environment,
@@ -266,4 +266,4 @@ class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConst
         return path_description.path_value_description__from_described(
             property_description.file_property_name(contents_attribute,
                                                     actual_file_attributes.PLAIN_FILE_OBJECT_NAME),
-            self._file_in_dir.path__described.describer)
+            self._file_in_dir.path.describer)
