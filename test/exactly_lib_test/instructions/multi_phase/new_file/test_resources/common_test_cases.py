@@ -13,7 +13,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
-from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_home
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, Dir
@@ -36,7 +36,7 @@ class TestCaseBase(unittest.TestCase):
 
 class InvalidDestinationFileTestCasesData:
     def __init__(self,
-                 file_contents_cases: Sequence[NameAndValue[Arguments]],
+                 file_contents_cases: Sequence[NameAndValue[ArgumentElements]],
                  symbols: SymbolTable,
                  pre_existing_files: HomeOrSdsPopulator = home_and_sds_populators.empty(),
                  ):
@@ -68,12 +68,8 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
 
             for file_contents_case in cases_data.file_contents_cases:
                 optional_arguments_elements = file_contents_case.value
-                assert isinstance(optional_arguments_elements, ArgumentElements)  # Type info for IDE
                 optional_arguments = optional_arguments_elements.as_arguments
 
-                for l in optional_arguments.lines:
-                    if l.find('exactly_lib_test') != -1:
-                        print(str(optional_arguments.lines))
                 with self.subTest(file_contents_variant=file_contents_case.name,
                                   first_line_argments=optional_arguments.first_line,
                                   dst_file_variant=rel_opt_conf.option_argument):
@@ -109,7 +105,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
             ]),
         )
 
-    def test_file_WHEN_dst_file_is_existing_dir(self):
+    def test_fail_WHEN_dst_file_is_existing_dir(self):
         dst_file_name = 'dst-dir'
         self._check_cases_for_dst_file_setup(
             dst_file_name,
@@ -118,7 +114,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
             ]),
         )
 
-    def test_file_WHEN_dst_file_is_existing_broken_symlink(self):
+    def test_fail_WHEN_dst_file_is_existing_broken_symlink(self):
         dst_file_name = 'dst-file'
         self._check_cases_for_dst_file_setup(
             dst_file_name,

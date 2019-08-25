@@ -33,14 +33,14 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestFailingParseWithNoContents),
+        unittest.makeSuite(TestFailingParse),
         unittest.makeSuite(TestSuccessfulScenariosWithNoContents),
         unittest.makeSuite(TestParserConsumptionOfSource),
         unittest.makeSuite(TestCommonFailingScenariosDueToInvalidDestinationFile),
     ])
 
 
-class TestFailingParseWithNoContents(unittest.TestCase):
+class TestFailingParse(unittest.TestCase):
     def test_path_is_mandatory__without_option(self):
         arguments = ''
         with self.assertRaises(SingleInstructionInvalidArgumentException):
