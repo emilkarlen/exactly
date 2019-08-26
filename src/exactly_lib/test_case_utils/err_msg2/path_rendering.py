@@ -1,16 +1,42 @@
+from abc import ABC, abstractmethod
 from typing import Optional, Any, Sequence, List
 
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive
+from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive, PathDescriberForValue
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement
 
 
-def path_value_major_block_renderer(path: PathDescriberForPrimitive,
-                                    header_line: Optional[Any] = None) -> Renderer[MajorBlock]:
-    return PathValueMajorBlock(path, header_line)
+class PathRepresentationsRenderers(ABC):
+    """Gives renderers for each path representation that should be displayed"""
+
+    @abstractmethod
+    def renders(self) -> List[Renderer[str]]:
+        pass
+
+
+class PathRepresentationsRenderersForValue(PathRepresentationsRenderers):
+    def __init__(self, path: PathDescriberForValue):
+        self._path = path
+
+    def renders(self) -> List[Renderer[str]]:
+        return [self._path.value]
+
+
+class PathRepresentationsRenderersForPrimitive(PathRepresentationsRenderers):
+    def __init__(self, path: PathDescriberForPrimitive):
+        self._path = path
+
+    def renders(self) -> List[Renderer[str]]:
+        p = self._path
+        return (
+            [p.value, p.primitive]
+            if p.resolving_dependency is DirectoryStructurePartition.HOME
+            else
+            [p.value]
+        )
 
 
 class PathValueLines(SequenceRenderer[LineElement]):
@@ -60,9 +86,9 @@ def path_strings(path: PathDescriberForPrimitive) -> List[str]:
     ]
 
 
-class PathValueMinorBlock2(Renderer[MinorBlock]):
+class PathMinorBlock(Renderer[MinorBlock]):
     def __init__(self,
-                 path: PathDescriberForPrimitive,
+                 path: PathRepresentationsRenderers,
                  ):
         self._path = path
 
@@ -71,33 +97,16 @@ class PathValueMinorBlock2(Renderer[MinorBlock]):
             text_struct.LineElement(
                 text_struct.StringLineObject(line.render())
             )
-            for line in path_renderers(self._path)
+            for line in self._path.renders()
         ],
             text_struct.INDENTED_ELEMENT_PROPERTIES,
         )
 
 
-class PathValueMajorBlock(Renderer[MajorBlock]):
-    def __init__(self,
-                 path: PathDescriberForPrimitive,
-                 header_line: Optional[Any] = None
-                 ):
-        self._path = path
-        self._header_line = header_line
-
-    def render(self) -> MajorBlock:
-        return MajorBlock([
-            PathValueMinorBlock(self._path,
-                                self._header_line).render()
-
-        ]
-        )
-
-
-class HeaderAndPathValueMinorBlocks(Renderer[Sequence[MinorBlock]]):
+class HeaderAndPathMinorBlocks(Renderer[Sequence[MinorBlock]]):
     def __init__(self,
                  header: Renderer[MinorBlock],
-                 path: PathDescriberForPrimitive,
+                 path: PathRepresentationsRenderers,
                  ):
         self._header = header
         self._path = path
@@ -105,20 +114,20 @@ class HeaderAndPathValueMinorBlocks(Renderer[Sequence[MinorBlock]]):
     def render(self) -> Sequence[MinorBlock]:
         return [
             self._header.render(),
-            PathValueMinorBlock2(self._path).render(),
+            PathMinorBlock(self._path).render(),
         ]
 
 
-class HeaderAndPathValueMajorBlock(Renderer[MajorBlock]):
+class HeaderAndPathMajorBlock(Renderer[MajorBlock]):
     def __init__(self,
                  header: Renderer[MinorBlock],
-                 path: PathDescriberForPrimitive,
+                 path: PathRepresentationsRenderers,
                  ):
         self._header = header
         self._path = path
 
     def render(self) -> MajorBlock:
         return MajorBlock(
-            HeaderAndPathValueMinorBlocks(self._header,
-                                          self._path).render()
+            HeaderAndPathMinorBlocks(self._header,
+                                     self._path).render()
         )

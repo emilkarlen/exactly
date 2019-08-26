@@ -206,9 +206,9 @@ class FailureRenderer(Renderer[Sequence[MajorBlock]]):
         self._path = path
 
     def render(self) -> Sequence[MajorBlock]:
-        minor_blocks_renderer = path_rendering.HeaderAndPathValueMinorBlocks(
+        minor_blocks_renderer = path_rendering.HeaderAndPathMinorBlocks(
             CauseHeaderMinorBlockRenderer(self._cause),
-            self._path,
+            path_rendering.PathRepresentationsRenderersForPrimitive(self._path),
         )
         return [
             MajorBlock(minor_blocks_renderer.render())
