@@ -1,5 +1,0 @@
-[setup]
-
-def path P = @[EXACTLY_TMP]@
-
-file @[P]@

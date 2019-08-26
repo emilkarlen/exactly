@@ -53,7 +53,7 @@ def create_file__dp(path: DescribedPathPrimitive,
     def error(header: str) -> TextRenderer:
         return path_rendering.HeaderAndPathMajorBlocks(
             SimpleHeaderMinorBlockRenderer(header),
-            path_rendering.PathRepresentationsRenderersForValue(path.describer)
+            path_rendering.PathRepresentationsRenderersForPrimitive(path.describer)
         )
 
     file_path = path.primitive
@@ -112,4 +112,20 @@ def create_file_from_transformation_of_existing_file__td(src_path: pathlib.Path,
                 output_file.write(line)
 
     return create_file__td(dst_path,
+                           write_file)
+
+
+def create_file_from_transformation_of_existing_file__dp(src_path: pathlib.Path,
+                                                         dst_path: DescribedPathPrimitive,
+                                                         transformer: StringTransformer) -> Optional[TextRenderer]:
+    """
+    :return: Error message in case of failure
+    """
+
+    def write_file(output_file):
+        with src_path.open() as in_file:
+            for line in transformer.transform(in_file):
+                output_file.write(line)
+
+    return create_file__dp(dst_path,
                            write_file)

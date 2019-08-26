@@ -67,7 +67,7 @@ def ensure_path_exists_as_a_directory__dp(path: DescribedPathPrimitive) -> Optio
     def error(header: str) -> TextRenderer:
         return path_rendering.HeaderAndPathMajorBlocks(
             SimpleHeaderMinorBlockRenderer(header),
-            path_rendering.PathRepresentationsRenderersForValue(path.describer)
+            path_rendering.PathRepresentationsRenderersForPrimitive(path.describer)
         )
 
     try:

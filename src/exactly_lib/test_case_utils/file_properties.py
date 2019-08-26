@@ -206,13 +206,11 @@ class FailureRenderer(Renderer[Sequence[MajorBlock]]):
         self._path = path
 
     def render(self) -> Sequence[MajorBlock]:
-        minor_blocks_renderer = path_rendering.HeaderAndPathMinorBlocks(
+        renderer = path_rendering.HeaderAndPathMajorBlocks(
             CauseHeaderMinorBlockRenderer(self._cause),
             path_rendering.PathRepresentationsRenderersForPrimitive(self._path),
         )
-        return [
-            MajorBlock(minor_blocks_renderer.render())
-        ]
+        return renderer.render()
 
 
 def render_failing_property(properties_with_neg: PropertiesWithNegation) -> str:

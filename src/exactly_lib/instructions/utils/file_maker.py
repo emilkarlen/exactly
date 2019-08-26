@@ -15,7 +15,7 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
     ValidationStep
 from exactly_lib.test_case_utils import file_ref_check, file_properties, file_creation
 from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
-from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file__td
+from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file__dp
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.process_execution.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
     execute_and_read_stderr_if_non_zero_exitcode, result_for_non_success_or_non_zero_exit_code
@@ -60,7 +60,7 @@ class FileMakerForConstantContents(FileMaker):
         contents_str = self._contents.resolve_value_of_any_dependency(
             environment.path_resolving_environment_pre_or_post_sds)
 
-        return create_file__dp(dst_path, contents_str)
+        return _create_file(dst_path, contents_str)
 
     @property
     def symbol_references(self) -> Sequence[SymbolReference]:
@@ -98,8 +98,8 @@ class FileMakerForContentsFromProgram(FileMaker):
             return text_docs.single_pre_formatted_line_object(err_msg)
 
         path_of_output = storage_dir / result_and_std_err.result.file_names.name_of(self._output_channel)
-        return create_file_from_transformation_of_existing_file__td(path_of_output,
-                                                                    dst_path.primitive,
+        return create_file_from_transformation_of_existing_file__dp(path_of_output,
+                                                                    dst_path,
                                                                     program.transformation)
 
     @property
@@ -156,13 +156,13 @@ class FileMakerForContentsFromExistingFile(FileMaker):
             .value_of_any_dependency(path_resolving_env.home_and_sds)
         src_path = self._src_path.resolve_value_of_any_dependency(path_resolving_env)
 
-        return create_file_from_transformation_of_existing_file__td(src_path,
-                                                                    dst_path.primitive,
+        return create_file_from_transformation_of_existing_file__dp(src_path,
+                                                                    dst_path,
                                                                     transformer)
 
 
-def create_file__dp(path_to_create: DescribedPathPrimitive,
-                    contents_str: str) -> Optional[TextRenderer]:
+def _create_file(path_to_create: DescribedPathPrimitive,
+                 contents_str: str) -> Optional[TextRenderer]:
     """
     :return: None iff success. Otherwise an error message.
     """
