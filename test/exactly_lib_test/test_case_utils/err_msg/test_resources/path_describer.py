@@ -41,3 +41,8 @@ class PathDescriberHandlerForPrimitiveTestImpl(PathDescriberHandlerForPrimitive)
         return PathDescriberHandlerForPrimitiveTestImpl(
             str(child_path)
         )
+
+    def parent(self, parent_path: Path) -> PathDescriberHandlerForPrimitive:
+        return PathDescriberHandlerForPrimitiveTestImpl(
+            str(parent_path)
+        )

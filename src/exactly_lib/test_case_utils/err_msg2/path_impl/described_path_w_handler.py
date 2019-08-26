@@ -24,6 +24,10 @@ class PathDescriberHandlerForPrimitive(ABC):
               child_path_component: str) -> 'PathDescriberHandlerForPrimitive':
         pass
 
+    @abstractmethod
+    def parent(self, parent_path: Path) -> 'PathDescriberHandlerForPrimitive':
+        pass
+
 
 class PathDescriberHandlerForValue(ABC):
     @property
@@ -84,6 +88,13 @@ class DescribedPathPrimitiveWHandler(DescribedPathPrimitive):
         return DescribedPathPrimitiveWHandler(
             child_path,
             self._describer_handler.child(child_path, child_path_component)
+        )
+
+    def parent(self) -> DescribedPathPrimitive:
+        parent_path = self._path.parent
+        return DescribedPathPrimitiveWHandler(
+            parent_path,
+            self._describer_handler.parent(parent_path)
         )
 
 

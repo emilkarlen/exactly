@@ -1,3 +1,5 @@
+import os.path
+import pathlib
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Optional, List
@@ -5,7 +7,9 @@ from typing import Optional, List
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, DirectoryStructurePartition
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, DirectoryStructurePartition, \
+    SpecificPathRelativity
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForValue, PathDescriberForPrimitive, \
     PathDescriberForResolver
 from exactly_lib.test_case_utils.err_msg2.path_impl import path_describer_from_str as _from_str
@@ -17,6 +21,7 @@ from exactly_lib.test_case_utils.err_msg2.path_impl.described_path_w_handler imp
 from exactly_lib.type_system.data import concrete_path_parts
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
+from exactly_lib.type_system.data.path_part import PathPart
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -39,6 +44,12 @@ class _ResolverDescriber(Renderer[str]):
         return _ResolverDescriber(
             self.path_resolver,
             self.suffixes + [child_path_component]
+        )
+
+    def parent(self) -> '_ResolverDescriber':
+        return _ResolverDescriber(
+            self.path_resolver,
+            self.suffixes + ['..']
         )
 
 
@@ -98,14 +109,24 @@ class PathManipulationFunctionalityForFixedValue(PathDescriberForValue, ABC):
     def child(self, child_path_component: str) -> 'PathManipulationFunctionalityForFixedValue':
         pass
 
+    @abstractmethod
+    def parent(self) -> 'PathManipulationFunctionalityForFixedValue':
+        pass
+
     def _child_value(self, child_path_component: str) -> FileRef:
         return file_refs.stacked(
             self._value,
             concrete_path_parts.PathPartAsFixedPath(child_path_component),
         )
 
+    def _parent_value(self) -> FileRef:
+        return _ParentFileRef(self._value)
+
     def _child_resolver(self, child_path_component: str) -> _ResolverDescriber:
         return self._resolver_describer.child(child_path_component)
+
+    def _parent_resolver(self) -> _ResolverDescriber:
+        return self._resolver_describer.parent()
 
 
 class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
@@ -218,6 +239,12 @@ class PathManipulationFunctionalityForFixedValueForNotRelCwd(PathManipulationFun
             self._child_value(child_path_component),
         )
 
+    def parent(self) -> PathManipulationFunctionalityForFixedValue:
+        return PathManipulationFunctionalityForFixedValueForNotRelCwd(
+            self._parent_resolver(),
+            self._parent_value(),
+        )
+
 
 class PathManipulationFunctionalityForFixedValueForRelCwd(PathManipulationFunctionalityForFixedValue):
     def __init__(self,
@@ -244,6 +271,14 @@ class PathManipulationFunctionalityForFixedValueForRelCwd(PathManipulationFuncti
             self._cwd,
         )
 
+    def parent(self) -> PathManipulationFunctionalityForFixedValue:
+        return PathManipulationFunctionalityForFixedValueForRelCwd(
+            self._parent_resolver(),
+            self._parent_value(),
+            self._tcds,
+            self._cwd,
+        )
+
 
 class PathDescriberHandlerForPrimitiveWithPrimitive(PathDescriberHandlerForPrimitive):
     def __init__(self,
@@ -265,3 +300,60 @@ class PathDescriberHandlerForPrimitiveWithPrimitive(PathDescriberHandlerForPrimi
             child_path,
             self._fixed_value.child(child_path_component),
         )
+
+    def parent(self, parent_path: Path) -> PathDescriberHandlerForPrimitive:
+        return PathDescriberHandlerForPrimitiveWithPrimitive(
+            parent_path,
+            self._fixed_value.parent(),
+        )
+
+
+class _ParentFileRef(FileRef):
+    def __init__(self, original: FileRef):
+        self._original = original
+        self._value = None
+
+    def path_suffix(self) -> PathPart:
+        return self._get_value().path_suffix()
+
+    def path_suffix_str(self) -> str:
+        return self._get_value().path_suffix_str()
+
+    def path_suffix_path(self) -> pathlib.Path:
+        return self._get_value().path_suffix_path()
+
+    def relativity(self) -> SpecificPathRelativity:
+        return self._get_value().relativity()
+
+    def value_when_no_dir_dependencies(self) -> pathlib.Path:
+        return self._get_value().value_when_no_dir_dependencies()
+
+    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+        return self._get_value().value_pre_sds(hds)
+
+    def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return self._get_value().value_post_sds(sds)
+
+    def _get_value(self) -> FileRef:
+        if self._value is None:
+            value = self._value
+            path_suffix = self._parent_path_suffix(value.path_suffix().value())
+            relativity = value.relativity()
+            self._value = (
+                file_refs.absolute_part(path_suffix)
+                if relativity.is_absolute
+                else
+                file_refs.of_rel_option(relativity.relativity_type,
+                                        path_suffix)
+            )
+
+        return self._value
+
+    @staticmethod
+    def _parent_path_suffix(path_suffix: str) -> PathPart:
+        if path_suffix == '':
+            return file_refs.constant_path_part('..')
+
+        (head, tail) = os.path.split(path_suffix)
+
+        return file_refs.constant_path_part(head)

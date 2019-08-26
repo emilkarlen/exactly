@@ -46,6 +46,10 @@ def absolute_path(abs_path: pathlib.Path) -> FileRef:
     return absolute_file_name(str(abs_path))
 
 
+def absolute_part(abs_path: PathPart) -> FileRef:
+    return _FileRefAbsolute(abs_path)
+
+
 def rel_abs_path(abs_path_root: pathlib.Path,
                  path_suffix: PathPart) -> FileRef:
     return absolute_file_name(str(abs_path_root / path_suffix.value()))

@@ -27,6 +27,11 @@ class DescribedPathPrimitive(ABC):
     def child(self, child_path_component: str) -> 'DescribedPathPrimitive':
         pass
 
+    @abstractmethod
+    def parent(self) -> 'DescribedPathPrimitive':
+        """Gives a path with the last component removed"""
+        pass
+
 
 class DescribedPathValue(ABC):
     """
