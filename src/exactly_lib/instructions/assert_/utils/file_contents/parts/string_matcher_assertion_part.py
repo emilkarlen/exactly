@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart, \
     FileToCheck
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
@@ -30,8 +29,6 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
         mb_error_message = matcher.matches(file_to_check)
         if mb_error_message is not None:
             raise pfh_exception.PfhFailException(
-                text_docs.single_pre_formatted_line_object(
-                    mb_error_message.resolve(err_msg_env_from_instr_env(environment))
-                )
+                mb_error_message.resolve__tr(err_msg_env_from_instr_env(environment))
             )
         return file_to_check

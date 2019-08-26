@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileResolver, \
     ComparisonActualFileConstructor
@@ -120,7 +119,6 @@ class IsExistingRegularFileAssertionPart(AssertionPart[ComparisonActualFile, Com
 
         if err_msg_resolver:
             err_msg_env = err_msg_env_from_instr_env(environment)
-            err_msg = err_msg_resolver.resolve(err_msg_env)
-            raise pfh_exception.PfhHardErrorException((text_docs.single_pre_formatted_line_object(err_msg)))
+            raise pfh_exception.PfhHardErrorException(err_msg_resolver.resolve__tr(err_msg_env))
 
         return actual_file

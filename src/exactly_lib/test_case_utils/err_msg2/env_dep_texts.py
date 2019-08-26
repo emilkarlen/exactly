@@ -47,8 +47,7 @@ class _ResolverFromOldResolver(RendererResolver[Sequence[MajorBlock]]):
         self._old = old
 
     def resolve(self, environment: ErrorMessageResolvingEnvironment) -> Renderer[Sequence[MajorBlock]]:
-        return text_docs.single_pre_formatted_line_object(self._old.resolve(environment),
-                                                          True)
+        return self._old.resolve__tr(environment)
 
 
 class _ConstantPreFormatted(RendererResolver[Sequence[MajorBlock]]):

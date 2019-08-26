@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 
 from exactly_lib.common.report_rendering import print
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -32,6 +33,9 @@ class ErrorMessageResolver(ABC):
     @abstractmethod
     def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
         pass
+
+    def resolve__tr(self, environment: ErrorMessageResolvingEnvironment) -> TextRenderer:
+        return text_docs.single_pre_formatted_line_object(self.resolve(environment))
 
 
 class ConstantErrorMessageResolver(ErrorMessageResolver):
