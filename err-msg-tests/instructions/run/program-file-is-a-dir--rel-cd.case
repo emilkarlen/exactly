@@ -1,0 +1,6 @@
+[setup]
+
+dir a-dir
+
+run -rel-cd a-dir
+

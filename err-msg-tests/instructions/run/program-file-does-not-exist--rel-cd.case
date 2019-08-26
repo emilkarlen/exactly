@@ -1,0 +1,3 @@
+[setup]
+
+run -rel-cd non-existing-program

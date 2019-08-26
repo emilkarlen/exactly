@@ -1,0 +1,3 @@
+[cleanup]
+
+run -rel-act non-existing-program
