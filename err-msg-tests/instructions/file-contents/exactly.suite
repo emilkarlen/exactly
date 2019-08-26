@@ -1,5 +1,6 @@
 [suites]
 
+actual-file
 empty
 equals
 num-lines

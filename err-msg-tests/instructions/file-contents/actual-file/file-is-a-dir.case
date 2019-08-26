@@ -1,0 +1,10 @@
+[setup]
+
+
+dir checked-file
+
+
+[assert]
+
+
+contents checked-file empty
