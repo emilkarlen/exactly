@@ -4,6 +4,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, \
     invokation_variant_from_args, InvokationVariant
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
@@ -11,9 +12,8 @@ from exactly_lib.definitions.cross_ref import name_and_cross_ref
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo as embryo
+from exactly_lib.instructions.multi_phase.utils import instruction_part_utils
 from exactly_lib.instructions.multi_phase.utils.assert_phase_info import IsAHelperIfInAssertPhase
-from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
-    MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
@@ -21,6 +21,8 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
+from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
+from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
 from exactly_lib.util.textformat.structure import structures as docs
@@ -70,25 +72,35 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
-             os_services: OsServices) -> Optional[str]:
+             os_services: OsServices) -> Optional[TextRenderer]:
         return self.custom_main(environment.path_resolving_environment)
 
-    def custom_main(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
+    def custom_main(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
         """
         :return: None iff success. Otherwise an error message.
         """
-        dir_path = self.dir_path_resolver.resolve(environment.symbols).value_post_sds(environment.sds)
+        described_path = (described_path_resolvers.of(self.dir_path_resolver)
+                          .resolve__with_cwd_as_cd(environment.symbols)
+                          .value_post_sds__wo_hds(environment.sds))
+
+        def error(header: str) -> TextRenderer:
+            return path_err_msgs.line_header__primitive(
+                header,
+                described_path.describer,
+            )
+
+        path = described_path.primitive
         try:
-            if dir_path.is_dir():
+            if path.is_dir():
                 return None
         except NotADirectoryError:
-            return 'Part of PATH exists, but is not a directory: %s' % str(dir_path)
+            return error('Part of PATH exists, but is not a directory')
         try:
-            dir_path.mkdir(parents=True)
+            path.mkdir(parents=True)
         except FileExistsError:
-            return 'PATH exists, but is not a directory: {}'.format(dir_path)
+            return error('PATH exists, but is not a directory')
         except NotADirectoryError:
-            return 'Clash with existing file: {}'.format(dir_path)
+            return error('Clash with existing file')
         return None
 
 
@@ -101,8 +113,10 @@ class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
         return TheInstructionEmbryo(target_file_ref)
 
 
-PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
-                                           MainStepResultTranslatorForErrorMessageStringResultAsHardError())
+PARTS_PARSER = instruction_part_utils.PartsParserFromEmbryoParser(
+    EmbryoParser(),
+    instruction_part_utils.MainStepResultTranslatorForTextRendererAsHardError(),
+)
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 

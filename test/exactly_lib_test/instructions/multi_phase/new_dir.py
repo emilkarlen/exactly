@@ -25,6 +25,7 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_test 
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources.path_part_assertions import equals_path_part_string
+from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
 
 
 def suite() -> unittest.TestSuite:
@@ -111,7 +112,7 @@ def is_success() -> ValueAssertion:
 
 
 def is_failure() -> ValueAssertion:
-    return asrt.ValueIsNotNone()
+    return asrt_renderer.is_renderer_of_major_blocks()
 
 
 class TestWithRelativityOptionBase(TestCaseForCheckOfArgumentBase):

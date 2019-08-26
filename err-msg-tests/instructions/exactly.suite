@@ -2,6 +2,7 @@
 
 change-dir
 create-file
+create-dir
 dir-contents
 file-contents
 file-existence

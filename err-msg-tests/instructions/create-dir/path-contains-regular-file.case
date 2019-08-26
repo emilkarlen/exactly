@@ -1,0 +1,5 @@
+[setup]
+
+file existing-regular-file
+
+dir existing-regular-file/a-dir
