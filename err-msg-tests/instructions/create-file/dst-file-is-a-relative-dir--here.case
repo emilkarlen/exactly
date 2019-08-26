@@ -1,0 +1,5 @@
+[setup]
+
+def path P = -rel-cd .
+
+file @[P]@
