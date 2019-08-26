@@ -59,7 +59,7 @@ class ExecutorThatStoresResultInFilesInDir:
                 executable: Executable) -> Result:
 
         def _err_msg(exception: Exception) -> str:
-            return 'Error executing process:\n' + str(exception)
+            return 'Error executing process:\n\n' + str(exception)
 
         file_utils.ensure_directory_exists_as_a_directory__impl_error(storage_dir)
         with open(str(storage_dir / process_output_files.STDOUT_FILE_NAME), 'w') as f_stdout:

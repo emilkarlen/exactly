@@ -10,7 +10,7 @@ class SimpleHeaderMinorBlockRenderer(Renderer[MinorBlock]):
         self._single_line_to_str = single_line_to_str
 
     def render(self) -> MinorBlock:
-        header = LineElement(text_struct.StringLineObject(self._single_line_to_str))
+        header = LineElement(text_struct.StringLineObject(str(self._single_line_to_str)))
         return MinorBlock(
             [header],
         )

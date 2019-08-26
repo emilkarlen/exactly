@@ -103,33 +103,56 @@ class PathMinorBlock(Renderer[MinorBlock]):
         )
 
 
+class ExplanationMinorBlock(Renderer[MinorBlock]):
+    def __init__(self,
+                 explanation: Renderer[Sequence[LineElement]],
+                 ):
+        self._explanation = explanation
+
+    def render(self) -> MinorBlock:
+        return MinorBlock(
+            self._explanation.render(),
+            text_struct.INDENTED_ELEMENT_PROPERTIES,
+        )
+
+
 class HeaderAndPathMinorBlocks(Renderer[Sequence[MinorBlock]]):
     def __init__(self,
                  header: Renderer[MinorBlock],
                  path: PathRepresentationsRenderers,
+                 explanation: Optional[Renderer[Sequence[LineElement]]] = None,
                  ):
         self._header = header
         self._path = path
+        self._explanation = explanation
 
     def render(self) -> Sequence[MinorBlock]:
-        return [
+        ret_val = [
             self._header.render(),
             PathMinorBlock(self._path).render(),
         ]
+        if self._explanation is not None:
+            ret_val.append(ExplanationMinorBlock(self._explanation).render())
+
+        return ret_val
 
 
 class HeaderAndPathMajorBlock(Renderer[MajorBlock]):
     def __init__(self,
                  header: Renderer[MinorBlock],
                  path: PathRepresentationsRenderers,
+                 explanation: Optional[Renderer[Sequence[LineElement]]] = None,
                  ):
         self._header = header
         self._path = path
+        self._explanation = explanation
 
     def render(self) -> MajorBlock:
+        minor_blocks_renderer = HeaderAndPathMinorBlocks(self._header,
+                                                         self._path,
+                                                         self._explanation)
         return MajorBlock(
-            HeaderAndPathMinorBlocks(self._header,
-                                     self._path).render()
+            minor_blocks_renderer.render()
         )
 
 
@@ -137,11 +160,16 @@ class HeaderAndPathMajorBlocks(SequenceRenderer[MajorBlock]):
     def __init__(self,
                  header: Renderer[MinorBlock],
                  path: PathRepresentationsRenderers,
+                 explanation: Optional[Renderer[Sequence[LineElement]]] = None,
                  ):
         self._header = header
         self._path = path
+        self._explanation = explanation
 
     def render(self) -> Sequence[MajorBlock]:
+        major_block_renderer = HeaderAndPathMajorBlock(self._header,
+                                                       self._path,
+                                                       self._explanation)
         return [
-            HeaderAndPathMajorBlock(self._header, self._path).render()
+            major_block_renderer.render()
         ]
