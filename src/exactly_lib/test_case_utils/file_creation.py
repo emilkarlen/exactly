@@ -1,26 +1,13 @@
 import pathlib
 from typing import Optional, Any, Callable
 
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
 from exactly_lib.test_case_utils.err_msg2.header_rendering import SimpleHeaderMinorBlockRenderer
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, \
-    ensure_parent_path_does_exist_and_is_a_directory__dp
-
-
-def create_file__td(file_path: pathlib.Path,
-                    operation_on_open_file: Callable[[Any], None]) -> Optional[TextRenderer]:
-    mb_err_msg = create_file(file_path, operation_on_open_file)
-    return (
-        None
-        if mb_err_msg is None
-        else text_docs.single_pre_formatted_line_object(mb_err_msg)
-    )
+    ensure_directory_exists
 
 
 def create_file(file_path: pathlib.Path,
@@ -73,16 +60,6 @@ def create_file__dp(path: DescribedPathPrimitive,
     return None
 
 
-def resolve_and_create_file(path_resolver: FileRefResolver,
-                            environment: PathResolvingEnvironmentPreOrPostSds,
-                            operation_on_open_file: Callable[[Any], None]) -> Optional[str]:
-    """
-    :return: None iff success. Otherwise an error message.
-    """
-    return create_file(path_resolver.resolve(environment.symbols).value_post_sds(environment.sds),
-                       operation_on_open_file)
-
-
 def create_file_from_transformation_of_existing_file(src_path: pathlib.Path,
                                                      dst_path: pathlib.Path,
                                                      transformer: StringTransformer) -> Optional[str]:
@@ -99,22 +76,6 @@ def create_file_from_transformation_of_existing_file(src_path: pathlib.Path,
                        write_file)
 
 
-def create_file_from_transformation_of_existing_file__td(src_path: pathlib.Path,
-                                                         dst_path: pathlib.Path,
-                                                         transformer: StringTransformer) -> Optional[TextRenderer]:
-    """
-    :return: Error message in case of failure
-    """
-
-    def write_file(output_file):
-        with src_path.open() as in_file:
-            for line in transformer.transform(in_file):
-                output_file.write(line)
-
-    return create_file__td(dst_path,
-                           write_file)
-
-
 def create_file_from_transformation_of_existing_file__dp(src_path: pathlib.Path,
                                                          dst_path: DescribedPathPrimitive,
                                                          transformer: StringTransformer) -> Optional[TextRenderer]:
@@ -129,3 +90,30 @@ def create_file_from_transformation_of_existing_file__dp(src_path: pathlib.Path,
 
     return create_file__dp(dst_path,
                            write_file)
+
+
+def ensure_path_exists_as_a_directory__dp(path: DescribedPathPrimitive) -> Optional[TextRenderer]:
+    """
+    :return: Failure message if cannot ensure, otherwise None.
+    """
+
+    def error(header: str) -> TextRenderer:
+        return path_rendering.HeaderAndPathMajorBlocks(
+            SimpleHeaderMinorBlockRenderer(header),
+            path_rendering.PathRepresentationsRenderersForValue(path.describer)
+        )
+
+    try:
+        return ensure_directory_exists(path.primitive)
+    except NotADirectoryError:
+        return error('Not a directory')
+    except FileExistsError:
+        return error('Part of path exists, but perhaps one in-the-middle-component is not a directory')
+
+
+def ensure_parent_path_does_exist_and_is_a_directory__dp(dst_path: DescribedPathPrimitive
+                                                         ) -> Optional[TextRenderer]:
+    """
+    :return: Failure message if cannot ensure, otherwise None.
+    """
+    return ensure_path_exists_as_a_directory__dp(dst_path.parent())
