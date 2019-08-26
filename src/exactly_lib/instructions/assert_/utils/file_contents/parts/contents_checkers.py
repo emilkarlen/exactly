@@ -93,7 +93,7 @@ class FileExistenceAssertionPart(AssertionPart[ComparisonActualFileResolver, Com
             raise pfh_exception.PfhFailException(failure_message)
 
         actual_path = described_path_resolvers.of(actual_file.file_ref_resolver()) \
-            .resolve(environment.symbols) \
+            .resolve__with_cwd_as_cd(environment.symbols) \
             .value_of_any_dependency(environment.home_and_sds)
         return ComparisonActualFile(actual_path,
                                     actual_file.property_descriptor_constructor)

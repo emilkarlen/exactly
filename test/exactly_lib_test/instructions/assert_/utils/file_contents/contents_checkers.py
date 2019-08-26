@@ -42,7 +42,7 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
             path_value = file_refs.absolute_path(path_of_existing_regular_file)
             path_resolver = file_ref_resolvers.constant(path_value)
             described_path = described_path_resolvers.of(path_resolver) \
-                .resolve(empty_symbol_table()) \
+                .resolve__with_cwd_as_cd(empty_symbol_table()) \
                 .value_of_any_dependency(fake_tcds())
             model = sut.ComparisonActualFile(described_path,
                                              FilePropertyDescriptorConstructorTestImpl()

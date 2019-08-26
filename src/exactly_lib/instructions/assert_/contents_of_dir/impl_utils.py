@@ -68,7 +68,7 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
         model = FilesMatcherModelForDir(
             environment.phase_logging.space_for_instruction(),
             described_path_resolvers.of(files_source.path_of_dir)
-                .resolve(environment.symbols)
+                .resolve__with_cwd_as_cd(environment.symbols)
                 .value_of_any_dependency(environment.home_and_sds),
             environment.home_and_sds,
         )

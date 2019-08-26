@@ -236,7 +236,7 @@ class _Assertion:
         self.file_matcher = file_matcher
 
         self.described_path = described_path_resolvers.of(self.file_ref_resolver) \
-            .resolve(self.environment.symbols) \
+            .resolve__with_cwd_as_cd(self.environment.symbols) \
             .value_of_any_dependency(self.environment.home_and_sds)
 
     def apply(self) -> pfh.PassOrFailOrHardError:

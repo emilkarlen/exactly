@@ -65,7 +65,7 @@ class PathDescriberHandlerForResolverWithResolver(PathDescriberHandlerForResolve
             _ResolverDescriber(self._path_resolver, [])
         )
 
-    def resolve(self, resolved_value: FileRef, symbols: SymbolTable) -> PathDescriberHandlerForValue:
+    def resolve__with_cwd_as_cd(self, resolved_value: FileRef, symbols: SymbolTable) -> PathDescriberHandlerForValue:
         return PathDescriberHandlerForValueWithValue(
             _ResolverDescriber(self._path_resolver, []),
             resolved_value,

@@ -59,7 +59,7 @@ class PathDescriberHandlerForResolver(ABC):
         pass
 
     @abstractmethod
-    def resolve(self, resolved_value: FileRef, symbols: SymbolTable) -> PathDescriberHandlerForValue:
+    def resolve__with_cwd_as_cd(self, resolved_value: FileRef, symbols: SymbolTable) -> PathDescriberHandlerForValue:
         pass
 
     @abstractmethod
@@ -158,11 +158,11 @@ class DescribedPathResolverWHandler(DescribedPathResolver):
     def describer(self) -> PathDescriberForResolver:
         return self._describer_handler.describer
 
-    def resolve(self, symbols: SymbolTable) -> DescribedPathValue:
+    def resolve__with_cwd_as_cd(self, symbols: SymbolTable) -> DescribedPathValue:
         value = self._path.resolve(symbols)
         return DescribedPathValueWHandler(
             value,
-            self._describer_handler.resolve(value, symbols),
+            self._describer_handler.resolve__with_cwd_as_cd(value, symbols),
         )
 
     def resolve__with_unknown_cd(self, symbols: SymbolTable) -> DescribedPathValue:

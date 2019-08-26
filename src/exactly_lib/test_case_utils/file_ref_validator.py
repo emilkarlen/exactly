@@ -26,7 +26,7 @@ class FileRefValidatorBase(PreOrPostSdsValidator):
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
         described_path_value = described_path_resolvers.of(self._file_ref_resolver) \
-            .resolve(environment.symbols)
+            .resolve__with_cwd_as_cd(environment.symbols)
 
         if described_path_value.value.exists_pre_sds():
             return self._validate_path(described_path_value.value_pre_sds(environment.hds))
@@ -34,7 +34,7 @@ class FileRefValidatorBase(PreOrPostSdsValidator):
 
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
         described_path_value = described_path_resolvers.of(self._file_ref_resolver) \
-            .resolve(environment.symbols)
+            .resolve__with_cwd_as_cd(environment.symbols)
 
         if not described_path_value.value.exists_pre_sds():
             return self._validate_path(described_path_value.value_post_sds__wo_hds(environment.sds))

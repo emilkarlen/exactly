@@ -36,7 +36,7 @@ class FileRefCheckValidator(FileRefValidatorBase):
 def pre_sds_failure_message_or_none(file_ref_check: FileRefCheck,
                                     environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
     described_path = described_path_resolvers.of(file_ref_check.file_ref_resolver) \
-        .resolve(environment.symbols) \
+        .resolve__with_cwd_as_cd(environment.symbols) \
         .value_pre_sds(environment.hds)
 
     return _failure_message_or_none(file_ref_check.file_properties,
@@ -46,7 +46,7 @@ def pre_sds_failure_message_or_none(file_ref_check: FileRefCheck,
 def post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
                                      environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
     described_path = described_path_resolvers.of(file_ref_check.file_ref_resolver) \
-        .resolve(environment.symbols) \
+        .resolve__with_cwd_as_cd(environment.symbols) \
         .value_post_sds__wo_hds(environment.sds)
 
     return _failure_message_or_none(file_ref_check.file_properties,
@@ -57,7 +57,7 @@ def pre_or_post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
                                             environment: PathResolvingEnvironmentPreOrPostSds
                                             ) -> Optional[TextRenderer]:
     described_path = described_path_resolvers.of(file_ref_check.file_ref_resolver) \
-        .resolve(environment.symbols) \
+        .resolve__with_cwd_as_cd(environment.symbols) \
         .value_of_any_dependency(environment.home_and_sds)
 
     return _failure_message_or_none(file_ref_check.file_properties,

@@ -87,7 +87,7 @@ class DescribedPathResolver(ABC):
         pass
 
     @abstractmethod
-    def resolve(self, symbols: SymbolTable) -> DescribedPathValue:
+    def resolve__with_cwd_as_cd(self, symbols: SymbolTable) -> DescribedPathValue:
         pass
 
     @abstractmethod
