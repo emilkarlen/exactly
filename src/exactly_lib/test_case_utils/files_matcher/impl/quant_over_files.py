@@ -11,7 +11,7 @@ from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.err_msg2.path_impl import path_formatting
+from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForFileWithDescriptor
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
@@ -230,7 +230,7 @@ class _ErrorReportingHelper:
                                 single_line_value: str,
                                 file_element: FileModel) -> ErrorMessageResolver:
         def resolve(environment: ErrorMessageResolvingEnvironment) -> str:
-            failing_file_description_lines = path_formatting.path_strings(
+            failing_file_description_lines = path_rendering.path_strings(
                 file_element.path.describer,
             )
             actual_info = diff_msg.ActualInfo(single_line_value, failing_file_description_lines)

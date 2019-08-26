@@ -8,8 +8,8 @@ from typing import Callable, Optional, Sequence
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import actual_file_attributes
+from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive
-from exactly_lib.test_case_utils.err_msg2.path_impl import path_formatting
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
@@ -206,7 +206,7 @@ class FailureRenderer(Renderer[Sequence[MajorBlock]]):
         self._path = path
 
     def render(self) -> Sequence[MajorBlock]:
-        minor_blocks_renderer = path_formatting.HeaderAndPathValueMinorBlocks(
+        minor_blocks_renderer = path_rendering.HeaderAndPathValueMinorBlocks(
             CauseHeaderMinorBlockRenderer(self._cause),
             self._path,
         )

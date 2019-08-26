@@ -26,10 +26,9 @@ from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case.validation import pre_or_post_value_validation
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate
-from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
+from exactly_lib.test_case_utils.err_msg2 import env_dep_texts, path_rendering
 from exactly_lib.test_case_utils.err_msg2.env_dep_text import TextResolver
 from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
-from exactly_lib.test_case_utils.err_msg2.path_impl import path_formatting
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.file_matcher import resolvers  as fm_resolvers
@@ -255,8 +254,8 @@ class _Assertion:
             return self._assert_with_file_matcher()
 
     def _path_renderer(self) -> Renderer[MajorBlock]:
-        return path_formatting.path_value_major_block_renderer(self.described_path.describer,
-                                                               _ERROR_MESSAGE_HEADER)
+        return path_rendering.path_value_major_block_renderer(self.described_path.describer,
+                                                              _ERROR_MESSAGE_HEADER)
 
     def _assert_without_file_matcher(self) -> pfh.PassOrFailOrHardError:
         check = _FILE_EXISTENCE_CHECK
