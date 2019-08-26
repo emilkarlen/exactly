@@ -133,7 +133,7 @@ class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo):
         self._phase_is_after_act = phase_is_after_act
         self._instruction_name = instruction_name
 
-    def _parse(self, source: ParseSource) -> embryo.InstructionEmbryo:
+    def _parse(self, source: ParseSource) -> TheInstructionEmbryo:
         first_line_number = source.current_line_number
         with from_parse_source(source,
                                consume_last_line_if_is_at_eol_after_parse=True) as parser:

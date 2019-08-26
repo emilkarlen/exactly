@@ -1,5 +1,5 @@
 import pathlib
-from typing import Optional
+from typing import Optional, Any, Callable
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -10,7 +10,7 @@ from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_i
 
 
 def create_file__td(file_path: pathlib.Path,
-                    operation_on_open_file) -> Optional[TextRenderer]:
+                    operation_on_open_file: Callable[[Any], None]) -> Optional[TextRenderer]:
     mb_err_msg = create_file(file_path, operation_on_open_file)
     return (
         None
@@ -20,7 +20,7 @@ def create_file__td(file_path: pathlib.Path,
 
 
 def create_file(file_path: pathlib.Path,
-                operation_on_open_file) -> Optional[str]:
+                operation_on_open_file: Callable[[Any], None]) -> Optional[str]:
     """
     :return: None iff success. Otherwise an error message.
     """
@@ -42,7 +42,7 @@ def create_file(file_path: pathlib.Path,
 
 def resolve_and_create_file(path_resolver: FileRefResolver,
                             environment: PathResolvingEnvironmentPreOrPostSds,
-                            operation_on_open_file) -> Optional[str]:
+                            operation_on_open_file: Callable[[Any], None]) -> Optional[str]:
     """
     :return: None iff success. Otherwise an error message.
     """
