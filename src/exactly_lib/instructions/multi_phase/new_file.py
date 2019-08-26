@@ -35,8 +35,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionSourceInfo
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.err_msg2 import path_rendering
-from exactly_lib.test_case_utils.err_msg2.header_rendering import SimpleHeaderMinorBlockRenderer
+from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
 from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
@@ -165,16 +164,16 @@ class _DstFileNameValidator(PreOrPostSdsValidator):
 
         suffix_value = suffix.value()
         if suffix_value == '' or suffix_path.name == '':
-            return path_rendering.HeaderAndPathMajorBlocks(
-                SimpleHeaderMinorBlockRenderer(_PATH_IS_DIR),
-                path_rendering.PathRepresentationsRenderersForValue(path_value__d.describer)
+            return path_err_msgs.line_header__value(
+                _PATH_IS_DIR,
+                path_value__d.describer
             )
 
         (head, tail) = os.path.split(suffix_value)
         if tail in _RELATIVE_DIR_NAMES:
-            return path_rendering.HeaderAndPathMajorBlocks(
-                SimpleHeaderMinorBlockRenderer(_PATH_IS_RELATIVE_DIR),
-                path_rendering.PathRepresentationsRenderersForValue(path_value__d.describer)
+            return path_err_msgs.line_header__value(
+                _PATH_IS_RELATIVE_DIR,
+                path_value__d.describer,
             )
 
         return None

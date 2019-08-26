@@ -2,9 +2,8 @@ import pathlib
 from typing import Optional, Any, Callable
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.test_case_utils.err_msg2 import path_rendering
+from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
 from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
-from exactly_lib.test_case_utils.err_msg2.header_rendering import SimpleHeaderMinorBlockRenderer
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, \
     ensure_directory_exists
@@ -38,9 +37,9 @@ def create_file__dp(path: DescribedPathPrimitive,
     """
 
     def error(header: str) -> TextRenderer:
-        return path_rendering.HeaderAndPathMajorBlocks(
-            SimpleHeaderMinorBlockRenderer(header),
-            path_rendering.PathRepresentationsRenderersForPrimitive(path.describer)
+        return path_err_msgs.line_header__primitive(
+            header,
+            path.describer,
         )
 
     file_path = path.primitive
@@ -98,9 +97,9 @@ def ensure_path_exists_as_a_directory__dp(path: DescribedPathPrimitive) -> Optio
     """
 
     def error(header: str) -> TextRenderer:
-        return path_rendering.HeaderAndPathMajorBlocks(
-            SimpleHeaderMinorBlockRenderer(header),
-            path_rendering.PathRepresentationsRenderersForValue(path.describer)
+        return path_err_msgs.line_header__primitive(
+            header,
+            path.describer,
         )
 
     try:
