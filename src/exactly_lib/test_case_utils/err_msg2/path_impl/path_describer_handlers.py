@@ -78,6 +78,7 @@ class PathManipulationFunctionalityForFixedValue(PathDescriberForValue, ABC):
         self._resolver_describer = resolver_describer
         self._value = value
 
+    @property
     def resolving_dependency(self) -> Optional[DirectoryStructurePartition]:
         return self._value.resolving_dependency()
 
