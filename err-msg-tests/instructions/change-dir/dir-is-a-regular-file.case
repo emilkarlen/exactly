@@ -1,0 +1,5 @@
+[setup]
+
+file regular-file
+
+cd regular-file

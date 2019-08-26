@@ -1,5 +1,6 @@
 [suites]
 
+change-dir
 create-file
 dir-contents
 file-contents

@@ -19,8 +19,9 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_populator impo
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test, sds_env_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueIsNotNone
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueIsNone
+from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
 
 
 def suite() -> unittest.TestSuite:
@@ -196,7 +197,7 @@ def is_success() -> ValueAssertion:
 
 
 def is_failure() -> ValueAssertion:
-    return ValueIsNotNone()
+    return asrt_renderer.is_renderer_of_major_blocks()
 
 
 class ChangeDirTo(sds_env_utils.SdsAction):

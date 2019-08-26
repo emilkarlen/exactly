@@ -5,14 +5,14 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
     invokation_variant_from_args
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, syntax_elements
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo as embryo
+from exactly_lib.instructions.multi_phase.utils import instruction_part_utils
 from exactly_lib.instructions.multi_phase.utils.assert_phase_info import IsAHelperIfInAssertPhase
-from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
-    MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
@@ -22,6 +22,8 @@ from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
+from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
@@ -85,21 +87,30 @@ class InstructionEmbryo(embryo.InstructionEmbryo):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
-             os_services: OsServices) -> Optional[str]:
+             os_services: OsServices) -> Optional[TextRenderer]:
         return self.custom_main(environment.path_resolving_environment)
 
-    def custom_main(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
+    def custom_main(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
         """
         :return: None iff success. Otherwise an error message.
         """
-        dir_path_ref = self.destination.resolve(environment.symbols)
-        dir_path = dir_path_ref.value_post_sds(environment.sds)
+
+        path = (described_path_resolvers.of(self.destination)
+                .resolve__with_cwd_as_cd(environment.symbols)
+                .value_post_sds__wo_hds(environment.sds))
+
+        def error(header: str) -> TextRenderer:
+            return path_err_msgs.line_header__primitive(
+                header,
+                path.describer,
+            )
+
         try:
-            os.chdir(str(dir_path))
+            os.chdir(str(path.primitive))
         except FileNotFoundError:
-            return 'Directory does not exist: {}'.format(dir_path_ref)
+            return error('Directory does not exist')
         except NotADirectoryError:
-            return 'Not a directory: {}'.format(dir_path_ref)
+            return error('Not a directory')
         return None
 
 
@@ -117,8 +128,10 @@ class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
 
 
 def parts_parser(is_after_act_phase: bool) -> InstructionPartsParser:
-    return PartsParserFromEmbryoParser(EmbryoParser(is_after_act_phase),
-                                       MainStepResultTranslatorForErrorMessageStringResultAsHardError())
+    return instruction_part_utils.PartsParserFromEmbryoParser(
+        EmbryoParser(is_after_act_phase),
+        instruction_part_utils.MainStepResultTranslatorForTextRendererAsHardError()
+    )
 
 
 _DIR_ARGUMENT = instruction_arguments.PATH_ARGUMENT

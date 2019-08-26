@@ -9,7 +9,6 @@ from exactly_lib_test.test_resources.test_of_test_resources_util import assert_t
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
-from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as sut2
 
 
 def suite() -> unittest.TestSuite:
