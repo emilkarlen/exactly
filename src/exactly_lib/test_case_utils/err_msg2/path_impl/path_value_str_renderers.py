@@ -44,6 +44,16 @@ class PathValueRelJustCwd(Renderer[str]):
         return str(self._cwd / self._path_value.path_suffix_path())
 
 
+class PathValueRelUnknownCwd(Renderer[str]):
+    def __init__(self,
+                 path_value: FileRef,
+                 ):
+        self._path_value = path_value
+
+    def render(self) -> str:
+        return str(_CURRENT_DIRECTORY / self._path_value.path_suffix_path())
+
+
 class PathValueAbsolute(Renderer[str]):
     def __init__(self,
                  path_value: FileRef,
@@ -73,3 +83,6 @@ class PathValuePlainAbsolute(Renderer[str]):
 class _PathStrRendererForNotImplemented(Renderer[str]):
     def render(self) -> str:
         raise NotImplementedError('must not be used')
+
+
+_CURRENT_DIRECTORY = pathlib.Path('<CURRENT-DIRECTORY>')

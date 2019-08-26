@@ -131,3 +131,17 @@ class HeaderAndPathMajorBlock(Renderer[MajorBlock]):
             HeaderAndPathMinorBlocks(self._header,
                                      self._path).render()
         )
+
+
+class HeaderAndPathMajorBlocks(SequenceRenderer[MajorBlock]):
+    def __init__(self,
+                 header: Renderer[MinorBlock],
+                 path: PathRepresentationsRenderers,
+                 ):
+        self._header = header
+        self._path = path
+
+    def render(self) -> Sequence[MajorBlock]:
+        return [
+            HeaderAndPathMajorBlock(self._header, self._path).render()
+        ]

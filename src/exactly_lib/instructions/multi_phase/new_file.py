@@ -1,3 +1,4 @@
+import os.path
 from typing import Sequence, List, Optional
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
@@ -26,11 +27,17 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import fro
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
+    PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
     InstructionSourceInfo
+from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.err_msg2 import path_rendering
+from exactly_lib.test_case_utils.err_msg2.header_rendering import SimpleHeaderMinorBlockRenderer
+from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -96,6 +103,10 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
                  path_to_create: FileRefResolver,
                  file_maker: FileMaker):
         self._path_to_create = path_to_create
+        self._validator = pre_or_post_validation.all_of([
+            _DstFileNameValidator(path_to_create),
+            file_maker.validator,
+        ])
         self._file_maker = file_maker
 
     @property
@@ -104,7 +115,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
-        return self._file_maker.validator
+        return self._validator
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
@@ -141,6 +152,42 @@ class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo):
             return TheInstructionEmbryo(path_to_create, file_maker)
 
 
+class _DstFileNameValidator(PreOrPostSdsValidator):
+    def __init__(self, path_to_create: FileRefResolver):
+        self._path_to_create = path_to_create
+
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
+        path_value__d = described_path_resolvers.of(self._path_to_create).resolve__with_unknown_cd(environment.symbols)
+        path_value = path_value__d.value
+        suffix = path_value.path_suffix()
+        suffix_path = path_value.path_suffix_path()
+
+        suffix_value = suffix.value()
+        if suffix_value == '' or suffix_path.name == '':
+            return path_rendering.HeaderAndPathMajorBlocks(
+                SimpleHeaderMinorBlockRenderer(_PATH_IS_DIR),
+                path_rendering.PathRepresentationsRenderersForValue(path_value__d.describer)
+            )
+
+        (head, tail) = os.path.split(suffix_value)
+        if tail in _RELATIVE_DIR_NAMES:
+            return path_rendering.HeaderAndPathMajorBlocks(
+                SimpleHeaderMinorBlockRenderer(_PATH_IS_RELATIVE_DIR),
+                path_rendering.PathRepresentationsRenderersForValue(path_value__d.describer)
+            )
+
+        return None
+
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
+        return None
+
+
 _DST_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
 REL_OPT_ARG_CONF = argument_configuration_for_file_creation(_DST_PATH_ARGUMENT.name)
+
+_PATH_IS_DIR = 'Path to create must not be an existing directory'
+
+_PATH_IS_RELATIVE_DIR = 'Path to create must not be a relative directory'
+
+_RELATIVE_DIR_NAMES = {'.', '..'}

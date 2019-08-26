@@ -58,6 +58,14 @@ class PathDescriberHandlerForResolverWithResolver(PathDescriberHandlerForResolve
         return PathDescriberHandlerForValueWithValue(
             _ResolverDescriber(self._path_resolver, []),
             resolved_value,
+            True,
+        )
+
+    def resolve__with_unknown_cd(self, resolved_value: FileRef, symbols: SymbolTable) -> PathDescriberHandlerForValue:
+        return PathDescriberHandlerForValueWithValue(
+            _ResolverDescriber(self._path_resolver, []),
+            resolved_value,
+            False,
         )
 
 
@@ -104,12 +112,13 @@ class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
     def __init__(self,
                  resolver_describer: _ResolverDescriber,
                  path_value: FileRef,
+                 cd_is_current_dir: bool,
                  ):
         self._cwd = None
         self._resolver_describer = resolver_describer
         self._path_value = path_value
         self._relativity_type = path_value.relativity().relativity_type
-        if self._relativity_type is RelOptionType.REL_CWD:
+        if self._relativity_type is RelOptionType.REL_CWD and cd_is_current_dir:
             self._cwd = Path().cwd()
 
     @property
@@ -171,8 +180,13 @@ class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
         relativity_type = self._relativity_type
 
         if relativity_type is RelOptionType.REL_CWD:
-            return path_value_str_renderers.PathValueRelJustCwd(self._path_value,
-                                                                self._cwd)
+            return (
+                path_value_str_renderers.PathValueRelUnknownCwd(self._path_value)
+                if self._cwd is None
+                else
+                path_value_str_renderers.PathValueRelJustCwd(self._path_value,
+                                                             self._cwd)
+            )
 
         if relativity_type is None:
             return path_value_str_renderers.PathValuePlainAbsolute(self._path_value)

@@ -85,6 +85,10 @@ class DescribedPathResolver(ABC):
     def resolve(self, symbols: SymbolTable) -> DescribedPathValue:
         pass
 
+    @abstractmethod
+    def resolve__with_unknown_cd(self, symbols: SymbolTable) -> DescribedPathValue:
+        pass
+
 
 _DUMMY_HDS = HomeDirectoryStructure(
     Path(file_ref.EXACTLY_DIR__REL_HOME_CASE),
