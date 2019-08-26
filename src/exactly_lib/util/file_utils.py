@@ -4,8 +4,12 @@ import tempfile
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from stat import S_IREAD, S_IRGRP, S_IROTH
-from typing import List
+from typing import List, Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.test_case_utils.err_msg2 import path_rendering
+from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
+from exactly_lib.test_case_utils.err_msg2.header_rendering import SimpleHeaderMinorBlockRenderer
 from exactly_lib.util import exception
 
 
@@ -55,6 +59,25 @@ def ensure_directory_exists_as_a_directory(dir_path: pathlib.Path) -> str:
         return 'Part of path exists, but perhaps one in-the-middle-component is not a directory: %s' % str(dir_path)
 
 
+def ensure_path_exists_as_a_directory__dp(path: DescribedPathPrimitive) -> Optional[TextRenderer]:
+    """
+    :return: Failure message if cannot ensure, otherwise None.
+    """
+
+    def error(header: str) -> TextRenderer:
+        return path_rendering.HeaderAndPathMajorBlocks(
+            SimpleHeaderMinorBlockRenderer(header),
+            path_rendering.PathRepresentationsRenderersForValue(path.describer)
+        )
+
+    try:
+        return ensure_directory_exists(path.primitive)
+    except NotADirectoryError:
+        return error('Not a directory')
+    except FileExistsError:
+        return error('Part of path exists, but perhaps one in-the-middle-component is not a directory')
+
+
 def ensure_parent_directory_does_exist(dst_file_path: pathlib.Path):
     ensure_directory_exists(dst_file_path.parent)
 
@@ -64,6 +87,14 @@ def ensure_parent_directory_does_exist_and_is_a_directory(dst_file_path: pathlib
     :return: Failure message if cannot ensure, otherwise None.
     """
     return ensure_directory_exists_as_a_directory(dst_file_path.parent)
+
+
+def ensure_parent_path_does_exist_and_is_a_directory__dp(dst_path: DescribedPathPrimitive
+                                                         ) -> Optional[TextRenderer]:
+    """
+    :return: Failure message if cannot ensure, otherwise None.
+    """
+    return ensure_path_exists_as_a_directory__dp(dst_path.parent())
 
 
 def lines_of(file_path: pathlib.Path) -> List[str]:

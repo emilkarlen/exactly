@@ -1,4 +1,3 @@
-import pathlib
 from typing import Sequence, Optional
 
 from exactly_lib.common.report_rendering import text_docs
@@ -15,6 +14,7 @@ from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator, \
     ValidationStep
 from exactly_lib.test_case_utils import file_ref_check, file_properties, file_creation
+from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
 from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file__td
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.process_execution.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
@@ -39,10 +39,10 @@ class FileMaker:
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
-             dst_file: pathlib.Path,
+             dst_file: DescribedPathPrimitive,
              ) -> Optional[TextRenderer]:
         """
-        :param dst_file: The path of a (probably!) non-existing file
+        :param dst_file: The path to create - fails if already exists etc
         :return: Error message, in case of error, else None
         """
         raise NotImplementedError('abstract method')
@@ -55,12 +55,12 @@ class FileMakerForConstantContents(FileMaker):
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
-             dst_path: pathlib.Path,
+             dst_path: DescribedPathPrimitive,
              ) -> Optional[TextRenderer]:
         contents_str = self._contents.resolve_value_of_any_dependency(
             environment.path_resolving_environment_pre_or_post_sds)
 
-        return create_file(dst_path, contents_str)
+        return create_file__dp(dst_path, contents_str)
 
     @property
     def symbol_references(self) -> Sequence[SymbolReference]:
@@ -79,7 +79,7 @@ class FileMakerForContentsFromProgram(FileMaker):
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
-             dst_path: pathlib.Path,
+             dst_path: DescribedPathPrimitive,
              ) -> Optional[TextRenderer]:
         executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
@@ -99,7 +99,7 @@ class FileMakerForContentsFromProgram(FileMaker):
 
         path_of_output = storage_dir / result_and_std_err.result.file_names.name_of(self._output_channel)
         return create_file_from_transformation_of_existing_file__td(path_of_output,
-                                                                    dst_path,
+                                                                    dst_path.primitive,
                                                                     program.transformation)
 
     @property
@@ -144,7 +144,7 @@ class FileMakerForContentsFromExistingFile(FileMaker):
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
-             dst_path: pathlib.Path,
+             dst_path: DescribedPathPrimitive,
              ) -> Optional[TextRenderer]:
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         src_validation_res = self._src_file_validator.validate_post_sds_if_applicable(path_resolving_env)
@@ -157,12 +157,12 @@ class FileMakerForContentsFromExistingFile(FileMaker):
         src_path = self._src_path.resolve_value_of_any_dependency(path_resolving_env)
 
         return create_file_from_transformation_of_existing_file__td(src_path,
-                                                                    dst_path,
+                                                                    dst_path.primitive,
                                                                     transformer)
 
 
-def create_file(path_to_create: pathlib.Path,
-                contents_str: str) -> Optional[TextRenderer]:
+def create_file__dp(path_to_create: DescribedPathPrimitive,
+                    contents_str: str) -> Optional[TextRenderer]:
     """
     :return: None iff success. Otherwise an error message.
     """
@@ -170,5 +170,5 @@ def create_file(path_to_create: pathlib.Path,
     def write_file(f):
         f.write(contents_str)
 
-    return file_creation.create_file__td(path_to_create,
+    return file_creation.create_file__dp(path_to_create,
                                          write_file)

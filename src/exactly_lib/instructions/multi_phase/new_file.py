@@ -121,9 +121,10 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
              os_services: OsServices) -> Optional[TextRenderer]:
-        path_to_create = self._path_to_create.resolve_value_of_any_dependency(
-            environment.path_resolving_environment_pre_or_post_sds)
-        return self._file_maker.make(environment, os_services, path_to_create)
+        described_path = described_path_resolvers.of(self._path_to_create) \
+            .resolve__with_cwd_as_cd(environment.symbols) \
+            .value_of_any_dependency(environment.home_and_sds)
+        return self._file_maker.make(environment, os_services, described_path)
 
 
 class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo):
