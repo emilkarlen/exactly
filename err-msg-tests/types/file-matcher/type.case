@@ -1,0 +1,11 @@
+[setup]
+
+
+file existing-regular-file
+
+
+[assert]
+
+
+exists existing-regular-file : type dir
+

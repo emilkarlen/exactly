@@ -1,3 +1,4 @@
 [suites]
 
 string-matcher
+file-matcher
