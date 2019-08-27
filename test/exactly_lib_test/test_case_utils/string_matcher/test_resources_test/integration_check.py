@@ -383,7 +383,7 @@ class StringMatcherThatAssertsModelsIsExpected(StringMatcherTestImplBase):
 
     def _assert_original_file_is_existing_regular_file_with_expected_contents(self, model: FileToCheck):
         checker = FileChecker(self.put, 'original file')
-        checker.assert_is_plain_file_with_contents(model.original_file_path,
+        checker.assert_is_plain_file_with_contents(model.original_file_path.primitive,
                                                    self.expected_model_string_contents)
 
     def _assert_transformer_is_identity_transformer(self, model: FileToCheck):

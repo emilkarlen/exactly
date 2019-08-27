@@ -6,6 +6,7 @@ from typing import Set, Optional
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
@@ -39,24 +40,24 @@ class FileToCheck:
     """
 
     def __init__(self,
-                 original_file_path: pathlib.Path,
+                 original_file_path: DescribedPathPrimitive,
                  checked_file_describer: FilePropertyDescriptorConstructor,
                  tmp_file_space: TmpDirFileSpace,
                  string_transformer: StringTransformer,
-                 destination_file_path_getter: DestinationFilePathGetter):
+                 tmp_file_for_transformed_getter: DestinationFilePathGetter):
         self._original_file_path = original_file_path
         self._checked_file_describer = checked_file_describer
         self._tmp_file_space = tmp_file_space
         self._transformed_file_path = None
         self._string_transformer = string_transformer
-        self._destination_file_path_getter = destination_file_path_getter
+        self._tmp_file_for_transformed_getter = tmp_file_for_transformed_getter
 
-    def with_transformation(self, string_transformer: StringTransformer):
+    def with_transformation(self, string_transformer: StringTransformer) -> 'FileToCheck':
         return FileToCheck(self._original_file_path,
                            self._checked_file_describer,
                            self._tmp_file_space,
                            string_transformer,
-                           self._destination_file_path_getter)
+                           self._tmp_file_for_transformed_getter)
 
     @property
     def string_transformer(self) -> StringTransformer:
@@ -71,7 +72,7 @@ class FileToCheck:
         return self._checked_file_describer
 
     @property
-    def original_file_path(self) -> pathlib.Path:
+    def original_file_path(self) -> DescribedPathPrimitive:
         return self._original_file_path
 
     def transformed_file_path(self) -> pathlib.Path:
@@ -81,10 +82,10 @@ class FileToCheck:
         if self._transformed_file_path is not None:
             return self._transformed_file_path
         if self._string_transformer.is_identity_transformer:
-            self._transformed_file_path = self._original_file_path
+            self._transformed_file_path = self._original_file_path.primitive
             return self._transformed_file_path
-        self._transformed_file_path = self._destination_file_path_getter.get(self._tmp_file_space,
-                                                                             self._original_file_path)
+        self._transformed_file_path = self._tmp_file_for_transformed_getter.get(self._tmp_file_space,
+                                                                                self._original_file_path.primitive)
         ensure_parent_directory_does_exist(self._transformed_file_path)
         self._write_transformed_contents()
         return self._transformed_file_path
@@ -99,7 +100,7 @@ class FileToCheck:
         it might be better to store the result in a file,
         using transformed_file_path.
         """
-        with self._original_file_path.open() as f:
+        with self._original_file_path.primitive.open() as f:
             if self._string_transformer.is_identity_transformer:
                 yield f
             else:

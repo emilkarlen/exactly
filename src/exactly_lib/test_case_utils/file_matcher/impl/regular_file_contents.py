@@ -54,7 +54,7 @@ class RegularFileMatchesStringMatcher(FileMatcher):
     @staticmethod
     def _string_matcher_model(model: FileMatcherModel) -> string_matcher.FileToCheck:
         return string_matcher.FileToCheck(
-            model.path.primitive,
+            model.path,
             model.file_descriptor,
             model.tmp_file_space,
             string_transformer.IdentityStringTransformer(),

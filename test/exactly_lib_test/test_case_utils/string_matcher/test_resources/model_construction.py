@@ -1,11 +1,11 @@
-import pathlib
-
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.err_msg import property_description
+from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, PropertyDescriptor
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, DestinationFilePathGetter
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
+from exactly_lib_test.test_case_utils.err_msg.test_resources import described_path
 
 
 class ModelBuilder:
@@ -52,13 +52,13 @@ class ModelConstructor:
             DestinationFilePathGetter(),
         )
 
-    def _create_original_file(self, file_space: TmpDirFileSpace) -> pathlib.Path:
+    def _create_original_file(self, file_space: TmpDirFileSpace) -> DescribedPathPrimitive:
         original_file_path = file_space.new_path()
 
         with original_file_path.open(mode='w') as f:
             f.write(self.model_builder.original_file_contents)
 
-        return original_file_path
+        return described_path.new_primitive(original_file_path)
 
 
 class _FilePropertyDescriptorConstructorForTestImpl(FilePropertyDescriptorConstructor):

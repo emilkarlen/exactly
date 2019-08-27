@@ -1,5 +1,4 @@
 import unittest
-
 from typing import Callable
 
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
@@ -19,6 +18,7 @@ from exactly_lib_test.instructions.assert_.utils.file_contents.contents_checkers
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
     destination_file_path_getter_that_gives_seq_of_unique_paths
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
+from exactly_lib_test.test_case_utils.err_msg.test_resources import described_path
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, pfh_expectation_type_config
 from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing
@@ -61,7 +61,7 @@ class TestCaseBase(unittest.TestCase):
                     for expectation_type in ExpectationType:
                         with self.subTest(case=case.name,
                                           expectation_type=expectation_type):
-                            ftc = FileToCheck(actual_file_path,
+                            ftc = FileToCheck(described_path.new_primitive(actual_file_path),
                                               checked_file_describer,
                                               environment.phase_logging.space_for_instruction(),
                                               IdentityStringTransformer(),
@@ -96,7 +96,7 @@ class TestCaseBase(unittest.TestCase):
                     for matcher_name, matcher in matchers:
                         with self.subTest(expectation_type=expectation_type,
                                           matcher_name=matcher_name):
-                            ftc = FileToCheck(actual_file_path,
+                            ftc = FileToCheck(described_path.new_primitive(actual_file_path),
                                               checked_file_describer,
                                               environment.phase_logging.space_for_instruction(),
                                               IdentityStringTransformer(),

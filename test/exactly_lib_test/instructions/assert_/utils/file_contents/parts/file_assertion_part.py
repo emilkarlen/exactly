@@ -7,6 +7,7 @@ from exactly_lib_test.instructions.assert_.utils.file_contents.contents_checkers
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
     destination_file_path_getter_that_gives_seq_of_unique_paths
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
+from exactly_lib_test.test_case_utils.err_msg.test_resources import described_path
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.contents_transformation import \
     ToUppercaseStringTransformer
 from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing
@@ -68,7 +69,7 @@ class Test(unittest.TestCase):
                     for trans_name, lines_trans, corresponding_expected_trans in line_trans_cases:
                         with self.subTest(case=case.name,
                                           trans=trans_name):
-                            ftc = FileToCheck(actual_file_path,
+                            ftc = FileToCheck(described_path.new_primitive(actual_file_path),
                                               checked_file_describer,
                                               environment.phase_logging.space_for_instruction(),
                                               lines_trans,
