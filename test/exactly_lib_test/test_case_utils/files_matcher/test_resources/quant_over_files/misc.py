@@ -10,4 +10,4 @@ class FileMatcherThatMatchesAnyFileWhosNameStartsWith(FileMatcher):
         self._prefix_of_name_for_match = prefix_of_name_for_match
 
     def matches(self, model: FileMatcherModel) -> bool:
-        return model.path.name.startswith(self._prefix_of_name_for_match)
+        return model.path.primitive.name.startswith(self._prefix_of_name_for_match)

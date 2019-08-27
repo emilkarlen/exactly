@@ -200,7 +200,7 @@ class _ModelsFactory:
 
     def file_matcher_model(self, file_element: FileModel) -> FileMatcherModel:
         return FileMatcherModelForFileWithDescriptor(self._tmp_file_space,
-                                                     file_element.path.primitive,
+                                                     file_element.path,
                                                      _FilePropertyDescriptorConstructorForFileInDir(file_element))
 
 

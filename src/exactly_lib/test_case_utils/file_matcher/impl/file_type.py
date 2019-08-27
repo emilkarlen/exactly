@@ -26,11 +26,12 @@ class FileMatcherType(FileMatcher):
         return 'type is ' + file_properties.TYPE_INFO[self._file_type].description
 
     def matches2(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
+        path = model.path.primitive
         try:
-            stat_result = self._stat_method(model.path)
+            stat_result = self._stat_method(path)
         except OSError as ex:
             return err_msg_resolvers.sequence_of_parts([
-                err_msg_resolvers.of_path(model.path),
+                err_msg_resolvers.of_path(path),
                 err_msg_resolvers.constant(str(ex))
             ])
 
@@ -39,12 +40,12 @@ class FileMatcherType(FileMatcher):
             return None
         else:
             return err_msg_resolvers.sequence_of_parts([
-                err_msg_resolvers.of_path(model.path),
+                err_msg_resolvers.of_path(path),
                 _FileTypeErrorMessageResolver(file_type)
             ])
 
     def matches(self, model: FileMatcherModel) -> bool:
-        return self._path_predicate(model.path)
+        return self._path_predicate(model.path.primitive)
 
 
 class _FileTypeErrorMessageResolver(ErrorMessageResolver):

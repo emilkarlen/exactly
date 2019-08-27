@@ -262,7 +262,7 @@ def file_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> FileMatc
 
 class FileMatcherTestImplBase(FileMatcher):
     def matches(self, model: FileMatcherModel) -> bool:
-        self._matches_side_effects(model.path)
+        self._matches_side_effects(model.path.primitive)
         return True
 
     def _matches_side_effects(self, model: pathlib.Path):

@@ -39,7 +39,7 @@ class RegularFileMatchesStringMatcher(FileMatcher):
         return self._string_matcher.matches(model)
 
     def _hard_error_if_not_regular_file(self, model: FileMatcherModel):
-        failure_info_properties = self._is_regular_file_check.resolve_failure_info(model.path)
+        failure_info_properties = self._is_regular_file_check.resolve_failure_info(model.path.primitive)
         if failure_info_properties:
             property_descriptor = model.file_descriptor.construct_for_contents_attribute(
                 actual_file_attributes.TYPE_ATTRIBUTE
@@ -54,7 +54,7 @@ class RegularFileMatchesStringMatcher(FileMatcher):
     @staticmethod
     def _string_matcher_model(model: FileMatcherModel) -> string_matcher.FileToCheck:
         return string_matcher.FileToCheck(
-            model.path,
+            model.path.primitive,
             model.file_descriptor,
             model.tmp_file_space,
             string_transformer.IdentityStringTransformer(),

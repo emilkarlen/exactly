@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForPrimitivePath
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.util.file_utils import resolved_path, TmpDirFileSpace, TmpDirFileSpaceAsDirCreatedOnDemand
+from exactly_lib_test.test_case_utils.err_msg.test_resources import described_path
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents, Dir
 
 
@@ -13,7 +14,7 @@ class SingleDirSetup:
                  action_dir_path: pathlib.Path,
                  tmp_file_space: TmpDirFileSpace,
                  ):
-        self.action_dir_path = action_dir_path
+        self.action_dir_path = described_path.new_primitive(action_dir_path)
         self.tmp_file_space = tmp_file_space
 
     def model_with_action_dir_as_path_to_match(self) -> FileMatcherModel:
@@ -22,7 +23,7 @@ class SingleDirSetup:
 
     def model_with_file_in_action_dir_as_path_to_match(self, file_name: str) -> FileMatcherModel:
         return FileMatcherModelForPrimitivePath(self.tmp_file_space,
-                                                self.action_dir_path / file_name)
+                                                self.action_dir_path.child(file_name))
 
 
 @contextmanager

@@ -79,7 +79,7 @@ class FilesMatcherModelForDir(FilesMatcherModel):
             file_matcher = self._files_selection.value_of_any_dependency(environment)
             file_names = file_matchers.matching_files_in_dir(file_matcher,
                                                              self._tmp_file_space,
-                                                             self._dir_path.primitive)
+                                                             self._dir_path)
             return map(mk_model, file_names)
 
 

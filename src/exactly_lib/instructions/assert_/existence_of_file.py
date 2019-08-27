@@ -307,7 +307,7 @@ class _Assertion:
 
         model = file_matcher_models.FileMatcherModelForPrimitivePath(
             self.environment.phase_logging.space_for_instruction(),
-            self.described_path.primitive)
+            self.described_path)
 
         return fm.matches2(model)
 

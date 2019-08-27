@@ -54,7 +54,7 @@ class BaseNameMatcher(sut.FileMatcher):
         self.base_name_that_matches = base_name_that_matches
 
     def matches(self, model: FileMatcherModel) -> bool:
-        return model.path.name == self.base_name_that_matches
+        return model.path.primitive.name == self.base_name_that_matches
 
     @property
     def option_description(self) -> str:
