@@ -6,9 +6,9 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver, \
-    FilePropertyDescriptorConstructor
+from exactly_lib.type_system.error_message import ErrorMessageResolver, FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib.util.file_utils import TmpDirFileSpace
 
@@ -43,7 +43,7 @@ class FileMatcher(Matcher[FileMatcherModel]):
         if self.matches(model):
             return None
         else:
-            return ConstantErrorMessageResolver('Failure of: ' + self.option_description)
+            return err_msg_resolvers.constant('Failure of: ' + self.option_description)
 
     def matches(self, model: FileMatcherModel) -> bool:
         raise NotImplementedError('abstract method')

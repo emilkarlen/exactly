@@ -1,18 +1,17 @@
 import unittest
-
 from typing import Iterable, Optional
 
+from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl, \
     is_reference_to_string_matcher
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl, \
     is_reference_to_string_transformer
-from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_resolvers
+from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_resolvers
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration as tc
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
@@ -118,7 +117,7 @@ class EqualsMatcher(StringMatcher):
             return None
         else:
             err_msg = 'not eq to "{}": "{}"'.format(self.expected, actual)
-            return ConstantErrorMessageResolver(err_msg)
+            return err_msg_resolvers.constant(err_msg)
 
     @staticmethod
     def _as_single_string(model: FileToCheck) -> str:

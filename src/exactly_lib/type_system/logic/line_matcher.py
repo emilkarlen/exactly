@@ -6,7 +6,8 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
+from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult
 from exactly_lib.type_system.trace import trace_rendering
 from exactly_lib.type_system.trace.trace_building import TraceBuilder
@@ -47,7 +48,7 @@ class LineMatcher(MatcherWTrace[LineMatcherLine]):
         if self.matches(line):
             return None
         else:
-            return ConstantErrorMessageResolver('Lines does not match')
+            return err_msg_resolvers.constant('Lines does not match')
 
     def matches(self, line: LineMatcherLine) -> bool:
         """

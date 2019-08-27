@@ -1,11 +1,11 @@
-import pathlib
 from typing import Sequence, Callable
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.test_case_utils.err_msg import path_description
+from exactly_lib.test_case_utils.err_msg2 import path_rendering
+from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system import error_message
 from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment, \
-    ConstantErrorMessageResolver
+    ConstantErrorMessageResolver, ErrorMessageResolverOfFixed, ErrorMessageFixedResolver
 
 
 def itemized_list(items: Sequence[ErrorMessageResolver],
@@ -30,23 +30,15 @@ def of_function(resolver: Callable[[ErrorMessageResolvingEnvironment], str]) -> 
 
 
 def constant(msg: str) -> ErrorMessageResolver:
-    return ConstantErrorMessageResolver(msg)
+    return ErrorMessageResolverOfFixed(ConstantErrorMessageResolver(msg))
 
 
 def text_doc(message: TextRenderer) -> ErrorMessageResolver:
-    return error_message.OfTextDoc(message)
+    return ErrorMessageResolverOfFixed(error_message.OfTextDoc(message))
 
 
-def of_path(path: pathlib.Path) -> ErrorMessageResolver:
-    return ErrorMessageResolverOfPath(path)
-
-
-class ErrorMessageResolverOfPath(ErrorMessageResolver):
-    def __init__(self, path: pathlib.Path):
-        self._path = path
-
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
-        return path_description.path_value_with_relativity_name_prefix_str(self._path, environment.tcds)
+def of_path(path: PathDescriberForPrimitive) -> ErrorMessageResolver:
+    return ErrorMessageResolverOfFixed(ErrorMessageResolverOfPath(path))
 
 
 class ErrorMessageResolverList(ErrorMessageResolver):
@@ -66,6 +58,14 @@ class ErrorMessageResolverList(ErrorMessageResolver):
             for part in self._items
         ]
         return self._separator.join(parts_output)
+
+
+class ErrorMessageResolverOfPath(ErrorMessageFixedResolver):
+    def __init__(self, path: PathDescriberForPrimitive):
+        self._path = path
+
+    def message(self) -> str:
+        return '\n'.join(path_rendering.path_strings(self._path))
 
 
 class ErrorMessageResolverParts(ErrorMessageResolver):

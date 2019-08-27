@@ -31,7 +31,7 @@ class FileMatcherType(FileMatcher):
             stat_result = self._stat_method(path)
         except OSError as ex:
             return err_msg_resolvers.sequence_of_parts([
-                err_msg_resolvers.of_path(path),
+                err_msg_resolvers.of_path(model.path.describer),
                 err_msg_resolvers.constant(str(ex))
             ])
 
@@ -40,7 +40,7 @@ class FileMatcherType(FileMatcher):
             return None
         else:
             return err_msg_resolvers.sequence_of_parts([
-                err_msg_resolvers.of_path(path),
+                err_msg_resolvers.of_path(model.path.describer),
                 _FileTypeErrorMessageResolver(file_type)
             ])
 

@@ -6,7 +6,8 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, Environ
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
+from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -30,7 +31,7 @@ class FilesMatcherValueTestImpl(FilesMatcherValue):
         if self._resolved_value:
             return None
         else:
-            return ConstantErrorMessageResolver('test impl with constant ' + str(self._resolved_value))
+            return err_msg_resolvers.constant('test impl with constant ' + str(self._resolved_value))
 
 
 class FilesMatcherResolverConstantTestImpl(FilesMatcherResolver):
