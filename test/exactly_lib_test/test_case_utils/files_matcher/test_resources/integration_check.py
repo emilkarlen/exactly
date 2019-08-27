@@ -212,7 +212,6 @@ class _Executor:
                 described_path_resolvers.of(self.model.dir_path_resolver)
                     .resolve__with_cwd_as_cd(environment.symbols)
                     .value_of_any_dependency(environment.home_and_sds),
-                environment.home_and_sds,
                 self.model.files_selection,
             ),
         )

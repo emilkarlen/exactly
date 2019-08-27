@@ -70,7 +70,6 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
             described_path_resolvers.of(files_source.path_of_dir)
                 .resolve__with_cwd_as_cd(environment.symbols)
                 .value_of_any_dependency(environment.home_and_sds),
-            environment.home_and_sds,
         )
         value = self._files_matcher.resolve(environment.symbols)
         try:

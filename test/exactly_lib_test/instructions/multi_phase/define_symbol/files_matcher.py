@@ -269,7 +269,6 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
             described_path_resolvers.of(rel_opt_conf.file_ref_resolver_for_root_dir())
                 .resolve__with_cwd_as_cd(environment.symbols)
                 .value_of_any_dependency(environment.home_and_sds),
-            environment.home_and_sds,
         )
 
     def _populate_root_dir(self,

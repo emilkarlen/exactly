@@ -5,8 +5,7 @@ from exactly_lib.test_case.validation import pre_or_post_value_validators
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherNot, FileMatcherAnd, FileMatcherOr, \
-    MATCH_EVERY_FILE
+from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherNot, FileMatcherAnd, FileMatcherOr
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher
 
 
@@ -96,6 +95,3 @@ class FileMatcherValueFromParts(FileMatcherValue):
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> FileMatcher:
         return self._matcher(home_and_sds)
-
-
-MATCH_EVERY_FILE_VALUE = FileMatcherValueFromPrimitiveValue(MATCH_EVERY_FILE)

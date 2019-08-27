@@ -8,8 +8,8 @@ from exactly_lib.test_case_file_structure import relative_path_options as rpo
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType, RelSdsOptionType, RelOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SDS_SUB_DIRECTORIES
-from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
+from exactly_lib.test_case_utils.err_msg import property_description, error_info
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor, ErrorMessagePartFixConstructor
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.data.file_ref import FileRef
@@ -29,11 +29,11 @@ class PathValuePartConstructor(ErrorMessagePartConstructor):
         return lines_for_path_value(path_value, environment.tcds)
 
 
-class PathValuePartConstructorOfPathDescriber(ErrorMessagePartConstructor):
+class PathValuePartConstructorOfPathDescriber(ErrorMessagePartFixConstructor):
     def __init__(self, path: PathDescriberForPrimitive):
         self.path = path
 
-    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
+    def lines(self) -> List[str]:
         return path_rendering.path_strings(self.path)
 
 
@@ -184,5 +184,5 @@ def path_value_description__from_described(property_name: str,
                                            path: PathDescriberForPrimitive) -> PropertyDescriptor:
     return property_description.PropertyDescriptorWithConstantPropertyName(
         property_name,
-        PathValuePartConstructorOfPathDescriber(path),
+        error_info.ErrorMessagePartConstructorOfFixed(PathValuePartConstructorOfPathDescriber(path)),
     )

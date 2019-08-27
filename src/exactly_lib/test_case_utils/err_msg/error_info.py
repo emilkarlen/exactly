@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import List, Sequence
 
 from exactly_lib.test_case.result import pfh
@@ -43,24 +44,43 @@ class ErrorMessagePartConstructor:
         raise NotImplementedError('abstract method')
 
 
+class ErrorMessagePartFixConstructor(ABC):
+    """Constructs lines that are a part of an error message."""
+
+    @abstractmethod
+    def lines(self) -> List[str]:
+        """
+        :return: empty list if there is nothing to say
+        """
+        raise NotImplementedError('abstract method')
+
+
+class ErrorMessagePartConstructorOfFixed(ErrorMessagePartConstructor):
+    def __init__(self, fixed: ErrorMessagePartFixConstructor):
+        self._fixed = fixed
+
+    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
+        return self._fixed.lines()
+
+
 class NoErrorMessagePartConstructor(ErrorMessagePartConstructor):
     def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
         return []
 
 
-class MultipleErrorMessagePartConstructor(ErrorMessagePartConstructor):
+class MultipleErrorMessagePartFixConstructor(ErrorMessagePartFixConstructor):
     def __init__(self,
                  separator_lines: List[str],
-                 constructors: Sequence[ErrorMessagePartConstructor]):
+                 constructors: Sequence[ErrorMessagePartFixConstructor]):
         self.separator_lines = tuple(separator_lines)
         self.constructors = tuple(constructors)
 
-    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
+    def lines(self) -> List[str]:
 
         ret_val = []
 
         for constructor in self.constructors:
-            lines = constructor.lines(environment)
+            lines = constructor.lines()
             if lines:
                 if ret_val:
                     ret_val.extend(self.separator_lines)

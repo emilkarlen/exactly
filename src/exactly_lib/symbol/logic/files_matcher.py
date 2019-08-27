@@ -7,7 +7,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.error_message import ErrorMessageResolver, PropertyDescriptor
-from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
+from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
@@ -52,11 +52,9 @@ class FilesMatcherModel(ABC):
         pass
 
     @abstractmethod
-    def sub_set(self, selector: FileMatcherValue):
+    def sub_set(self, selector: FileMatcher) -> 'FilesMatcherModel':
         """
         :return a new object that represents a sub set of this object.
-
-        :rtype FilesMatcherModel
         """
         pass
 

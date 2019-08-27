@@ -15,7 +15,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartFixConstructor
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import file_matchers
@@ -26,8 +26,7 @@ from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherT
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
-from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
+from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -48,13 +47,12 @@ REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
                            syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name)
 
 
-class FileSelectionDescriptor(ErrorMessagePartConstructor):
-    def __init__(self, matcher_value: FileMatcherValue):
-        self.matcher_value = matcher_value
+class FileSelectionDescriptor(ErrorMessagePartFixConstructor):
+    def __init__(self, matcher: FileMatcher):
+        self.matcher = matcher
 
-    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
-        matcher = self.matcher_value.value_of_any_dependency(environment.tcds)
-        line = SELECTION.name.capitalize() + ' : ' + matcher.option_description
+    def lines(self) -> List[str]:
+        line = SELECTION.name.capitalize() + ' : ' + self.matcher.option_description
         return [line]
 
 

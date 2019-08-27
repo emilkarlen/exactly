@@ -37,8 +37,11 @@ class _SubSetSelectorMatcherValue(FilesMatcherValue):
     def matches(self,
                 environment: Environment,
                 files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        return self._matcher_on_selection.matches(environment,
-                                                  files_source.sub_set(self._selector))
+        return self._matcher_on_selection.matches(
+            environment,
+            files_source.sub_set(
+                self._selector.value_of_any_dependency(environment.path_resolving_environment.home_and_sds)),
+        )
 
 
 class _SubSetSelectorMatcher(FilesMatcherResolver):
@@ -74,5 +77,7 @@ class _SubSetSelectorMatcher(FilesMatcherResolver):
                 files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         selector = self._selector.resolve(environment.symbols)
         matcher_on_selection = self.resolve(environment.symbols)
-        return matcher_on_selection.matches(environment,
-                                            files_source.sub_set(selector))
+        return matcher_on_selection.matches(
+            environment,
+            files_source.sub_set(selector.value_of_any_dependency(environment.path_resolving_environment.home_and_sds)),
+        )
