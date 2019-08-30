@@ -3,7 +3,7 @@ from typing import Optional
 
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageFixedResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 
 
@@ -30,29 +30,31 @@ class FileMatcherType(FileMatcher):
         try:
             stat_result = self._stat_method(path)
         except OSError as ex:
-            return err_msg_resolvers.sequence_of_parts([
-                err_msg_resolvers.of_path(model.path.describer),
-                err_msg_resolvers.constant(str(ex))
-            ])
+            return err_msg_resolvers.resolver_of_fixed(
+                err_msg_resolvers.sequence_of_parts__fixed([
+                    err_msg_resolvers.of_path__fixed(model.path.describer),
+                    err_msg_resolvers.constant__fixed(str(ex))
+                ]))
 
         file_type = file_properties.lookup_file_type(stat_result)
         if file_type is self._file_type:
             return None
         else:
-            return err_msg_resolvers.sequence_of_parts([
-                err_msg_resolvers.of_path(model.path.describer),
-                _FileTypeErrorMessageResolver(file_type)
-            ])
+            return err_msg_resolvers.resolver_of_fixed(
+                err_msg_resolvers.sequence_of_parts__fixed([
+                    err_msg_resolvers.of_path__fixed(model.path.describer),
+                    _FileTypeErrorMessageResolver(file_type)
+                ]))
 
     def matches(self, model: FileMatcherModel) -> bool:
         return self._path_predicate(model.path.primitive)
 
 
-class _FileTypeErrorMessageResolver(ErrorMessageResolver):
+class _FileTypeErrorMessageResolver(ErrorMessageFixedResolver):
     def __init__(self, actual_file_type: Optional[file_properties.FileType]):
         self._actual_file_type = actual_file_type
 
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+    def message(self) -> str:
         actual_type_description = (
             'unknown'
             if self._actual_file_type is None
