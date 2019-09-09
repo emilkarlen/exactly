@@ -445,9 +445,9 @@ def is_set_of(element_assertion: ValueAssertion[T]) -> ValueAssertion[Set[T]]:
                             every_element('', element_assertion, component_separator=''))
 
 
-class _IsInstanceWith(ValueAssertionBase[Any]):
+class _IsInstanceWith(Generic[T], ValueAssertionBase[Any]):
     def __init__(self,
-                 expected_type: Type,
+                 expected_type: Type[T],
                  value_assertion: ValueAssertion[T],
                  description: str):
         self.expected_type = expected_type
@@ -466,7 +466,7 @@ class _IsInstanceWith(ValueAssertionBase[Any]):
         self.value_assertion.apply(put, value, message_builder)
 
 
-class _IsNotNoneAndInstanceWith(ValueAssertionBase[Any]):
+class _IsNotNoneAndInstanceWith(Generic[T], ValueAssertionBase[Any]):
     def __init__(self,
                  expected_type: Type[T],
                  value_assertion: ValueAssertion[T]):
@@ -483,7 +483,7 @@ class _IsNotNoneAndInstanceWith(ValueAssertionBase[Any]):
         self.value_assertion.apply(put, value, message_builder)
 
 
-class _IsNoneOrInstanceWith(ValueAssertionBase[Any]):
+class _IsNoneOrInstanceWith(Generic[T], ValueAssertionBase[Any]):
     def __init__(self,
                  expected_type: Type[T],
                  value_assertion: ValueAssertion[T]):
@@ -501,13 +501,13 @@ class _IsNoneOrInstanceWith(ValueAssertionBase[Any]):
         self.value_assertion.apply(put, value, message_builder)
 
 
-def is_instance_with(expected_type: Type,
+def is_instance_with(expected_type: Type[T],
                      value_assertion: ValueAssertion[T],
                      description: str = '') -> ValueAssertion[Any]:
     return _IsInstanceWith(expected_type, value_assertion, description)
 
 
-def is_instance_with__many(expected_type: Type,
+def is_instance_with__many(expected_type: Type[T],
                            value_assertions: List[ValueAssertion[T]],
                            description: str = '') -> ValueAssertion[Any]:
     return _IsInstanceWith(expected_type,

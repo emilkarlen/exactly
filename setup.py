@@ -36,6 +36,7 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.5.2',
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Topic :: Software Development :: Testing',
         'Topic :: System :: Systems Administration',
