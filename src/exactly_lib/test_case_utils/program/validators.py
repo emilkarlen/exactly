@@ -6,7 +6,7 @@ from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
 from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
 from exactly_lib.util.simple_textstruct import structure as text_struct
-from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import LineElement
 
 
@@ -40,7 +40,7 @@ class _ModeExplanationRenderer(SequenceRenderer[LineElement]):
     def __init__(self, st_mode):
         self._st_mode = st_mode
 
-    def render(self) -> Sequence[LineElement]:
+    def render_sequence(self) -> Sequence[LineElement]:
         return [
             LineElement(text_struct.StringLineObject(
                 'Mode is ' + stat.filemode(self._st_mode))

@@ -27,7 +27,7 @@ class TestMatchesMessage(unittest.TestCase):
                 expected=
                 sut.matches_message(),
                 actual=
-                err_descr.of_message(rend_comb.ConstantR([])),
+                err_descr.of_message(rend_comb.ConstantSequenceR([])),
                 ),
             NEA('custom',
                 expected=
@@ -35,7 +35,7 @@ class TestMatchesMessage(unittest.TestCase):
                     asrt_renderer.is_renderer_of_minor_blocks(asrt.len_equals(0))
                 ),
                 actual=
-                err_descr.of_message(rend_comb.ConstantR([])),
+                err_descr.of_message(rend_comb.ConstantSequenceR([])),
                 ),
         ]
         for case in cases:
@@ -56,7 +56,7 @@ class TestMatchesMessage(unittest.TestCase):
                     message=asrt_renderer.is_renderer_of_minor_blocks(asrt.len_equals(1))
                 ),
                 actual=
-                err_descr.of_message(rend_comb.ConstantR([])),
+                err_descr.of_message(rend_comb.ConstantSequenceR([])),
                 ),
         ]
         for case in cases:
@@ -80,7 +80,7 @@ class TestMatchesException(unittest.TestCase):
                 ),
                 actual=
                 err_descr.of_exception(ValueError('an exception'),
-                                       message=rend_comb.ConstantR([])),
+                                       message=rend_comb.ConstantSequenceR([])),
                 ),
         ]
         for case in cases:
@@ -93,7 +93,7 @@ class TestMatchesException(unittest.TestCase):
                 expected=
                 sut.matches_exception(),
                 actual=
-                err_descr.of_message(rend_comb.ConstantR([])),
+                err_descr.of_message(rend_comb.ConstantSequenceR([])),
                 ),
             NEA('custom/message',
                 expected=
@@ -102,7 +102,7 @@ class TestMatchesException(unittest.TestCase):
                 ),
                 actual=
                 err_descr.of_exception(ValueError('an exception'),
-                                       message=rend_comb.ConstantR([])),
+                                       message=rend_comb.ConstantSequenceR([])),
                 ),
             NEA('custom/exception',
                 expected=
@@ -136,7 +136,7 @@ class TestMatchesExternalProcessError(unittest.TestCase):
                 ),
                 actual=
                 err_descr.of_external_process_error2(self._EPR,
-                                                     message=rend_comb.ConstantR([])),
+                                                     message=rend_comb.ConstantSequenceR([])),
                 ),
         ]
         for case in cases:
@@ -149,7 +149,7 @@ class TestMatchesExternalProcessError(unittest.TestCase):
                 expected=
                 sut.matches_external_process(),
                 actual=
-                err_descr.of_message(rend_comb.ConstantR([])),
+                err_descr.of_message(rend_comb.ConstantSequenceR([])),
                 ),
             NEA('custom/message',
                 expected=
@@ -158,7 +158,7 @@ class TestMatchesExternalProcessError(unittest.TestCase):
                 ),
                 actual=
                 err_descr.of_external_process_error2(self._EPR,
-                                                     message=rend_comb.ConstantR([])),
+                                                     message=rend_comb.ConstantSequenceR([])),
                 ),
             NEA('custom/external-process-error',
                 expected=
@@ -171,7 +171,7 @@ class TestMatchesExternalProcessError(unittest.TestCase):
                 ),
                 actual=
                 err_descr.of_external_process_error2(self._EPR,
-                                                     message=rend_comb.ConstantR([])),
+                                                     message=rend_comb.ConstantSequenceR([])),
                 ),
         ]
         for case in cases:
@@ -182,7 +182,7 @@ class TestMatchesExternalProcessError(unittest.TestCase):
 class TestIsAnyErrorDescription(unittest.TestCase):
     def test_matches(self):
         cases = [
-            err_descr.of_message(rend_comb.ConstantR([])),
+            err_descr.of_message(rend_comb.ConstantSequenceR([])),
             err_descr.of_exception(ValueError('an exception')),
             err_descr.of_external_process_error2(ExternalProcessError(1, 'output on stderr')),
         ]

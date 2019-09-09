@@ -23,7 +23,7 @@ class ErrorMessageWithFixTip(tuple):
         from exactly_lib.util.simple_textstruct.file_printer_output import to_string
         return '%s{message=%s, how_to_fix=%s}' % (
             type(self),
-            to_string.major_blocks(self.message.render()),
+            to_string.major_blocks(self.message.render_sequence()),
             (''
              if self.how_to_fix is None
              else to_string.major_blocks(self.how_to_fix.render())

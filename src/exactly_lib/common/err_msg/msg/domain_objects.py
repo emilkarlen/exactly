@@ -1,9 +1,8 @@
 import pathlib
-from typing import Sequence
 
 from exactly_lib.util.simple_textstruct.rendering import line_objects, component_renderers as comp_rend, \
     renderer_combinators as rend_comb
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import LineElement
 
 
@@ -13,5 +12,5 @@ def of_path(path: pathlib.Path) -> Renderer[LineElement]:
     )
 
 
-def single_path(path: pathlib.Path) -> Renderer[Sequence[LineElement]]:
+def single_path(path: pathlib.Path) -> SequenceRenderer[LineElement]:
     return rend_comb.SingletonSequenceR(of_path(path))

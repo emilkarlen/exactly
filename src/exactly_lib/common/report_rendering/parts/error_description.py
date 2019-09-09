@@ -11,7 +11,7 @@ class ErrorDescriptionRenderer(MajorBlocksRenderer):
     def __init__(self, description: error_description.ErrorDescription):
         self._description = description
 
-    def render(self) -> Sequence[MajorBlock]:
+    def render_sequence(self) -> Sequence[MajorBlock]:
         return _ErrorDescriptionDisplayer().visit(self._description)
 
 
@@ -55,5 +55,5 @@ class _ErrorDescriptionDisplayer(error_description.ErrorDescriptionVisitor[Seque
         return (
             []
             if ed.message is None
-            else list(ed.message.render())
+            else list(ed.message.render_sequence())
         )

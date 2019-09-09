@@ -44,5 +44,5 @@ class _IsSuccess(ValueAssertionBase[sh.SuccessOrHardError]):
             from exactly_lib.util.simple_textstruct.file_printer_output import to_string
             put.fail('\n'.join([
                 'Expected: success',
-                'Actual  : hard_error: ' + to_string.major_blocks(value.failure_message.render())
+                'Actual  : hard_error: ' + to_string.major_blocks(value.failure_message.render_sequence())
             ]))

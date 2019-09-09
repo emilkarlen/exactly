@@ -4,8 +4,7 @@ from typing import Optional, Any, Sequence, List
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive, PathDescriberForValue
 from exactly_lib.util.simple_textstruct import structure as text_struct
-from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement
 
 
@@ -47,7 +46,7 @@ class PathValueLines(SequenceRenderer[LineElement]):
         self._path = path
         self._header_line = header_line
 
-    def render(self) -> Sequence[LineElement]:
+    def render_sequence(self) -> Sequence[LineElement]:
         ret_val = [LineElement(text_struct.StringLineObject(self._path.value.render()))]
         if self._header_line is not None:
             header = LineElement(text_struct.StringLineObject(self._header_line))
@@ -67,7 +66,7 @@ class PathValueMinorBlock(Renderer[MinorBlock]):
     def render(self) -> MinorBlock:
         return MinorBlock(
             PathValueLines(self._path,
-                           self._header_line).render()
+                           self._header_line).render_sequence()
         )
 
 
@@ -105,28 +104,28 @@ class PathMinorBlock(Renderer[MinorBlock]):
 
 class ExplanationMinorBlock(Renderer[MinorBlock]):
     def __init__(self,
-                 explanation: Renderer[Sequence[LineElement]],
+                 explanation: SequenceRenderer[LineElement],
                  ):
         self._explanation = explanation
 
     def render(self) -> MinorBlock:
         return MinorBlock(
-            self._explanation.render(),
+            self._explanation.render_sequence(),
             text_struct.INDENTED_ELEMENT_PROPERTIES,
         )
 
 
-class HeaderAndPathMinorBlocks(Renderer[Sequence[MinorBlock]]):
+class HeaderAndPathMinorBlocks(SequenceRenderer[MinorBlock]):
     def __init__(self,
                  header: Renderer[MinorBlock],
                  path: PathRepresentationsRenderers,
-                 explanation: Optional[Renderer[Sequence[LineElement]]] = None,
+                 explanation: Optional[SequenceRenderer[LineElement]] = None,
                  ):
         self._header = header
         self._path = path
         self._explanation = explanation
 
-    def render(self) -> Sequence[MinorBlock]:
+    def render_sequence(self) -> Sequence[MinorBlock]:
         ret_val = [
             self._header.render(),
             PathMinorBlock(self._path).render(),
@@ -141,7 +140,7 @@ class HeaderAndPathMajorBlock(Renderer[MajorBlock]):
     def __init__(self,
                  header: Renderer[MinorBlock],
                  path: PathRepresentationsRenderers,
-                 explanation: Optional[Renderer[Sequence[LineElement]]] = None,
+                 explanation: Optional[SequenceRenderer[LineElement]] = None,
                  ):
         self._header = header
         self._path = path
@@ -152,7 +151,7 @@ class HeaderAndPathMajorBlock(Renderer[MajorBlock]):
                                                          self._path,
                                                          self._explanation)
         return MajorBlock(
-            minor_blocks_renderer.render()
+            minor_blocks_renderer.render_sequence()
         )
 
 
@@ -160,13 +159,13 @@ class HeaderAndPathMajorBlocks(SequenceRenderer[MajorBlock]):
     def __init__(self,
                  header: Renderer[MinorBlock],
                  path: PathRepresentationsRenderers,
-                 explanation: Optional[Renderer[Sequence[LineElement]]] = None,
+                 explanation: Optional[SequenceRenderer[LineElement]] = None,
                  ):
         self._header = header
         self._path = path
         self._explanation = explanation
 
-    def render(self) -> Sequence[MajorBlock]:
+    def render_sequence(self) -> Sequence[MajorBlock]:
         major_block_renderer = HeaderAndPathMajorBlock(self._header,
                                                        self._path,
                                                        self._explanation)

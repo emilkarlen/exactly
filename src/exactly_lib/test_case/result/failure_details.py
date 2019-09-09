@@ -59,7 +59,7 @@ class FailureDetails:
         components = []
 
         if self.__failure_message is not None:
-            components += ['message=' + to_string.major_blocks(self.__failure_message.render())]
+            components += ['message=' + to_string.major_blocks(self.__failure_message.render_sequence())]
 
         if self.__exception is not None:
             components += ['exception=' + str(self.__exception)]

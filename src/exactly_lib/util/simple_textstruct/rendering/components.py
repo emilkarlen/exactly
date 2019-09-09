@@ -1,14 +1,10 @@
 from abc import ABC
-from typing import Sequence, TypeVar, Generic
+from typing import TypeVar
 
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, LineObject, Document
 
 ELEMENT = TypeVar('ELEMENT')
-
-
-class SequenceRenderer(Generic[ELEMENT], Renderer[Sequence[ELEMENT]], ABC):
-    pass
 
 
 class DocumentRenderer(Renderer[Document], ABC):
@@ -17,35 +13,28 @@ class DocumentRenderer(Renderer[Document], ABC):
 
 
 class MajorBlockRenderer(Renderer[MajorBlock], ABC):
-    def render(self) -> MajorBlock:
-        pass
+    pass
 
 
 class MajorBlocksRenderer(SequenceRenderer[MajorBlock], ABC):
-    def render(self) -> Sequence[MajorBlock]:
-        pass
+    pass
 
 
 class MinorBlockRenderer(Renderer[MinorBlock], ABC):
-    def render(self) -> MinorBlock:
-        pass
+    pass
 
 
 class MinorBlocksRenderer(SequenceRenderer[MinorBlock], ABC):
-    def render(self) -> Sequence[MinorBlock]:
-        pass
+    pass
 
 
 class LineElementRenderer(Renderer[LineElement], ABC):
-    def render(self) -> LineElement:
-        pass
+    pass
 
 
 class LineObjectRenderer(Renderer[LineObject], ABC):
-    def render(self) -> LineObject:
-        pass
+    pass
 
 
 class LineObjectsRenderer(SequenceRenderer[LineObject], ABC):
-    def render(self) -> Sequence[LineObject]:
-        pass
+    pass

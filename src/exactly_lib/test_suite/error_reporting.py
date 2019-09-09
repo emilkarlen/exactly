@@ -1,9 +1,7 @@
-from typing import Sequence
-
-from exactly_lib.common.report_rendering.parts import source_location
 from exactly_lib.common import result_reporting as reporting
 from exactly_lib.common.err_msg.msg import minors, domain_objects, majors
 from exactly_lib.common.exit_value import ExitValue
+from exactly_lib.common.report_rendering.parts import source_location
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document import exceptions as sec_doc_exceptions
@@ -11,7 +9,7 @@ from exactly_lib.test_suite.file_reading import exception as suite_exception
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError, SuiteReadError, SuiteReadErrorVisitor
 from exactly_lib.util.file_printer import FilePrinter
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as comb, line_elements
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 
 _SUITE_FILE_INCLUSION_CYCLE = 'The suite has already been included.'
@@ -38,31 +36,31 @@ def print_suite_read_error(ex: SuiteReadError, printer: FilePrinter):
     reporting.print_major_blocks(blocks_renderer, printer)
 
 
-def _suite_parse_error_renderer(ex: SuiteParseError) -> Renderer[Sequence[MajorBlock]]:
+def _suite_parse_error_renderer(ex: SuiteParseError) -> SequenceRenderer[MajorBlock]:
     blocks_renderers = [
         source_location.location_blocks_renderer(ex.source_location,
-                                                                                           ex.maybe_section_name,
-                                                                                           None),
+                                                 ex.maybe_section_name,
+                                                 None),
         _error_message_blocks__parse_error(ex),
     ]
     return comb.ConcatenationR(blocks_renderers)
 
 
-def _suite_read_error_renderer(ex: SuiteReadError) -> Renderer[Sequence[MajorBlock]]:
+def _suite_read_error_renderer(ex: SuiteReadError) -> SequenceRenderer[MajorBlock]:
     blocks_renderers = [
         source_location.location_blocks_renderer(ex.source_location,
-                                                                                           ex.maybe_section_name,
-                                                                                           None),
+                                                 ex.maybe_section_name,
+                                                 None),
         _error_message_blocks__read_error(ex),
     ]
     return comb.ConcatenationR(blocks_renderers)
 
 
-def _error_message_blocks__parse_error(ex: SuiteParseError) -> Renderer[Sequence[MajorBlock]]:
+def _error_message_blocks__parse_error(ex: SuiteParseError) -> SequenceRenderer[MajorBlock]:
     return _GetParseErrorErrorMessageLinesRenderer().visit(ex.document_parser_exception)
 
 
-def _error_message_blocks__read_error(ex: SuiteReadError) -> Renderer[Sequence[MajorBlock]]:
+def _error_message_blocks__read_error(ex: SuiteReadError) -> SequenceRenderer[MajorBlock]:
     return _GetReadErrorMessageLinesRenderer().visit(ex)
 
 

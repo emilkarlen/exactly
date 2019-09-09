@@ -77,11 +77,11 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
                                              model)
             if mb_error_message is not None:
                 raise pfh_ex_method.PfhFailException(
-                    env_dep_texts.of_old(mb_error_message).resolve(err_msg_env_from_instr_env(environment))
+                    env_dep_texts.of_old(mb_error_message).resolve_sequence(err_msg_env_from_instr_env(environment))
                 )
 
             return files_source
         except HardErrorException as ex:
             err_msg_env = err_msg_env_from_instr_env(environment)
-            err_msg = ex.error.resolve(err_msg_env)
+            err_msg = ex.error.resolve_sequence(err_msg_env)
             raise pfh_ex_method.PfhHardErrorException(err_msg)

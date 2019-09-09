@@ -2,7 +2,7 @@ from typing import Sequence, List
 
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util.simple_textstruct import structure as struct
-from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 
 
@@ -10,7 +10,7 @@ class FailureDetailsRenderer(SequenceRenderer[MajorBlock]):
     def __init__(self, failure_details: FailureDetails):
         self._failure_details = failure_details
 
-    def render(self) -> Sequence[MajorBlock]:
+    def render_sequence(self) -> Sequence[MajorBlock]:
         blocks = self._exception_blocks()
         blocks += self._message_blocks()
 
@@ -21,7 +21,7 @@ class FailureDetailsRenderer(SequenceRenderer[MajorBlock]):
         return (
             []
             if message_renderer is None
-            else message_renderer.render()
+            else message_renderer.render_sequence()
         )
 
     def _exception_blocks(self) -> List[MajorBlock]:

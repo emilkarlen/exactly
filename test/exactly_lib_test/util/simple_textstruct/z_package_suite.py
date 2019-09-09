@@ -9,3 +9,7 @@ def suite() -> unittest.TestSuite:
         structure.suite(),
         test_resources_test.suite(),
     ])
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

@@ -11,7 +11,7 @@ class ErrorInfoRenderer(MajorBlocksRenderer):
     def __init__(self, error_info: ErrorInfo):
         self._error_info = error_info
 
-    def render(self) -> Sequence[MajorBlock]:
+    def render_sequence(self) -> Sequence[MajorBlock]:
         renderers = [
             source_location.location_blocks_renderer(
                 self._error_info.source_location_path,
@@ -21,4 +21,4 @@ class ErrorInfoRenderer(MajorBlocksRenderer):
             error_description.ErrorDescriptionRenderer(self._error_info.description),
         ]
 
-        return comb.ConcatenationR(renderers).render()
+        return comb.ConcatenationR(renderers).render_sequence()

@@ -68,7 +68,7 @@ class OfTextDoc(ErrorMessageFixedResolver):
         self._message = message
 
     def message(self) -> str:
-        return print.print_to_str(self._message.render())
+        return print.print_to_str(self._message.render_sequence())
 
 
 class PropertyDescription:

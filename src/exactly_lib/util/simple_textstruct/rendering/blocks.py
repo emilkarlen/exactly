@@ -3,15 +3,15 @@ from typing import Sequence
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering import component_renderers as comp_rend
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
-from exactly_lib.util.simple_textstruct.rendering.components import SequenceRenderer, LineObjectRenderer
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.rendering.components import LineObjectRenderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, LineElement, ElementProperties, MajorBlock
 
 
 class PrependFirstMinorBlockR(SequenceRenderer[MinorBlock]):
     def __init__(self,
-                 to_prepend: Renderer[Sequence[LineElement]],
-                 to_prepend_to: Renderer[Sequence[MinorBlock]],
+                 to_prepend: SequenceRenderer[LineElement],
+                 to_prepend_to: SequenceRenderer[MinorBlock],
                  properties_if_to_prepend_to_is_empty: ElementProperties =
                  structure.PLAIN_ELEMENT_PROPERTIES,
                  ):
@@ -19,9 +19,9 @@ class PrependFirstMinorBlockR(SequenceRenderer[MinorBlock]):
         self.to_prepend_to = to_prepend_to
         self.properties_if_to_prepend_to_is_empty = properties_if_to_prepend_to_is_empty
 
-    def render(self) -> Sequence[MinorBlock]:
-        to_prepend = self.to_prepend.render()
-        to_prepend_to = self.to_prepend_to.render()
+    def render_sequence(self) -> Sequence[MinorBlock]:
+        to_prepend = self.to_prepend.render_sequence()
+        to_prepend_to = self.to_prepend_to.render_sequence()
 
         if len(to_prepend) == 0:
             return to_prepend_to
@@ -43,8 +43,8 @@ class PrependFirstMinorBlockR(SequenceRenderer[MinorBlock]):
 
 class PrependFirstMinorBlockOfFirstMajorBlockR(SequenceRenderer[MajorBlock]):
     def __init__(self,
-                 to_prepend: Renderer[Sequence[LineElement]],
-                 to_prepend_to: Renderer[Sequence[MajorBlock]],
+                 to_prepend: SequenceRenderer[LineElement],
+                 to_prepend_to: SequenceRenderer[MajorBlock],
                  properties_if_to_prepend_to_is_empty: ElementProperties =
                  structure.PLAIN_ELEMENT_PROPERTIES,
                  ):
@@ -52,9 +52,9 @@ class PrependFirstMinorBlockOfFirstMajorBlockR(SequenceRenderer[MajorBlock]):
         self.to_prepend_to = to_prepend_to
         self.properties_if_to_prepend_to_is_empty = properties_if_to_prepend_to_is_empty
 
-    def render(self) -> Sequence[MajorBlock]:
-        to_prepend = self.to_prepend.render()
-        to_prepend_to = self.to_prepend_to.render()
+    def render_sequence(self) -> Sequence[MajorBlock]:
+        to_prepend = self.to_prepend.render_sequence()
+        to_prepend_to = self.to_prepend_to.render_sequence()
 
         if len(to_prepend_to) == 0:
             return [
@@ -64,8 +64,8 @@ class PrependFirstMinorBlockOfFirstMajorBlockR(SequenceRenderer[MajorBlock]):
             to_prepend_to_list = list(to_prepend_to)
             to_prepend_to_list[0] = MajorBlock(
                 PrependFirstMinorBlockR(self.to_prepend,
-                                        rend_comb.ConstantR(to_prepend_to_list[0].parts),
-                                        self.properties_if_to_prepend_to_is_empty).render()
+                                        rend_comb.ConstantSequenceR(to_prepend_to_list[0].parts),
+                                        self.properties_if_to_prepend_to_is_empty).render_sequence()
             )
 
             return to_prepend_to_list
@@ -88,18 +88,18 @@ class MinorBlocksOfSingleLineObject(SequenceRenderer[MinorBlock]):
     def __init__(self, line_object_renderer: LineObjectRenderer):
         self._line_object_renderer = line_object_renderer
 
-    def render(self) -> Sequence[MinorBlock]:
+    def render_sequence(self) -> Sequence[MinorBlock]:
         renderer = rend_comb.SingletonSequenceR(
             MinorBlockOfSingleLineObject(self._line_object_renderer)
         )
-        return renderer.render()
+        return renderer.render_sequence()
 
 
 class MinorBlocksOfLineElements(SequenceRenderer[MinorBlock]):
-    def __init__(self, line_elements_renderer: Renderer[Sequence[LineElement]]):
+    def __init__(self, line_elements_renderer: SequenceRenderer[LineElement]):
         self._line_elements_renderer = line_elements_renderer
 
-    def render(self) -> Sequence[MinorBlock]:
+    def render_sequence(self) -> Sequence[MinorBlock]:
         renderer = rend_comb.SingletonSequenceR(
             comp_rend.MinorBlockR(self._line_elements_renderer)
         )
@@ -123,18 +123,18 @@ class MajorBlocksOfSingleLineObject(SequenceRenderer[MajorBlock]):
     def __init__(self, line_object_renderer: LineObjectRenderer):
         self._line_object_renderer = line_object_renderer
 
-    def render(self) -> Sequence[MajorBlock]:
+    def render_sequence(self) -> Sequence[MajorBlock]:
         renderer = rend_comb.SingletonSequenceR(
             MajorBlockOfSingleLineObject(self._line_object_renderer)
         )
-        return renderer.render()
+        return renderer.render_sequence()
 
 
 class MajorBlocksOfLineElements(SequenceRenderer[MajorBlock]):
-    def __init__(self, line_elements_renderer: Renderer[Sequence[LineElement]]):
+    def __init__(self, line_elements_renderer: SequenceRenderer[LineElement]):
         self._line_elements_renderer = line_elements_renderer
 
-    def render(self) -> Sequence[MajorBlock]:
+    def render_sequence(self) -> Sequence[MajorBlock]:
         renderer = rend_comb.SingletonSequenceR(
             comp_rend.MajorBlockR(MinorBlocksOfLineElements(self._line_elements_renderer))
         )

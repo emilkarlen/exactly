@@ -12,7 +12,7 @@ file file-in-repo = "A file in the repo"
 
 $ git add file-in-repo
 
-$ git commit -m 'commit of file already in repo'
+$ git commit -m "commit of file already in repo"
 
 
 ## Install the commit hook to test.

@@ -5,7 +5,7 @@ from exactly_lib.common.report_rendering.text_doc import MinorTextRenderer
 from exactly_lib.test_case import error_description as err_descr
 from exactly_lib.test_case.error_description import ErrorDescription, ExternalProcessError, ErrorDescriptionVisitor, \
     ErrorDescriptionOfExternalProcessError, ErrorDescriptionOfException, ErrorDescriptionOfMessage
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder
 from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
@@ -36,7 +36,7 @@ def matches_exception(exception: ValueAssertion[Exception] = asrt.anything_goes(
                 'message',
                 err_descr.ErrorDescriptionOfException.message.fget,
                 [
-                    asrt.is_none_or_instance_with(Renderer, asrt_renderer.is_renderer_of_major_blocks()),
+                    asrt.is_none_or_instance_with(SequenceRenderer, asrt_renderer.is_renderer_of_major_blocks()),
                     message,
                 ],
             ),
@@ -62,7 +62,7 @@ def matches_external_process(external_process_error: ValueAssertion[ExternalProc
                 'message',
                 err_descr.ErrorDescriptionOfExternalProcessError.message.fget,
                 [
-                    asrt.is_none_or_instance_with(Renderer, asrt_renderer.is_renderer_of_major_blocks()),
+                    asrt.is_none_or_instance_with(SequenceRenderer, asrt_renderer.is_renderer_of_major_blocks()),
                     message,
                 ],
             ),

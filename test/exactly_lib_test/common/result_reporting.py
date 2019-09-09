@@ -48,7 +48,7 @@ class TestOutputLocation(unittest.TestCase):
                     None,
                     case.input_value,
                     None)
-                actual = actual_renderer.render()
+                actual = actual_renderer.render_sequence()
                 # ASSERT #
                 case.expected_value.apply_without_message(self,
                                                           actual)
@@ -60,7 +60,7 @@ class TestOutputLocation(unittest.TestCase):
                     None,
                     case.input_value,
                     None)
-                actual = actual_renderer.render()
+                actual = actual_renderer.render_sequence()
                 # ASSERT #
                 expected = asrt.matches_sequence([
                     asrt_struct.matches_major_block__w_plain_properties(
@@ -105,7 +105,7 @@ class TestOutputLocation(unittest.TestCase):
                 input_value,
                 section_name,
                 None)
-            actual = actual_renderer.render()
+            actual = actual_renderer.render_sequence()
             # ASSERT #
             minor_blocks_expectation.apply_without_message(self,
                                                            actual)
@@ -122,7 +122,7 @@ class TestOutputLocation(unittest.TestCase):
                 input_value,
                 section_name,
                 None)
-            actual = actual_renderer.render()
+            actual = actual_renderer.render_sequence()
             # ASSERT #
             expected_major_blocks.apply_without_message(self,
                                                         actual)

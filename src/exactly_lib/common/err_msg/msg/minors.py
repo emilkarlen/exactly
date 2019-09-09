@@ -1,4 +1,4 @@
-from typing import Sequence, Any, Optional
+from typing import Any, Optional
 
 from exactly_lib.common.report_rendering.text_doc import MinorTextRenderer
 from exactly_lib.definitions import misc_texts
@@ -7,7 +7,7 @@ from exactly_lib.util.name import Name
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, blocks, line_objects, \
     component_renderers as comp_rend, strings, line_elements, renderer_combinators as rend_comp
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import LineElement
 
 
@@ -22,7 +22,7 @@ def single_pre_formatted(s: str) -> MinorTextRenderer:
 
 
 def header_and_message(single_line_header: Any,
-                       message: Renderer[Sequence[LineElement]]) -> MinorTextRenderer:
+                       message: SequenceRenderer[LineElement]) -> MinorTextRenderer:
     return rend_comb.SequenceR([
         blocks.MinorBlockOfSingleLineObject(
             line_objects.StringLineObject(single_line_header),
@@ -32,16 +32,16 @@ def header_and_message(single_line_header: Any,
 
 
 def category_error_message(category: Name,
-                           message: Renderer[Sequence[LineElement]]) -> MinorTextRenderer:
+                           message: SequenceRenderer[LineElement]) -> MinorTextRenderer:
     return header_and_message(strings.Transformed(category, _capitalize_singular),
                               message)
 
 
-def syntax_error_message(message: Renderer[Sequence[LineElement]]) -> MinorTextRenderer:
+def syntax_error_message(message: SequenceRenderer[LineElement]) -> MinorTextRenderer:
     return category_error_message(misc_texts.SYNTAX_ERROR_NAME, message)
 
 
-def file_access_error_message(message: Renderer[Sequence[LineElement]]) -> MinorTextRenderer:
+def file_access_error_message(message: SequenceRenderer[LineElement]) -> MinorTextRenderer:
     return category_error_message(misc_texts.FILE_ACCESS_ERROR_NAME,
                                   message)
 

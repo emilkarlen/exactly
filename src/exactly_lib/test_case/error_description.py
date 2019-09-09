@@ -1,9 +1,9 @@
-from typing import Optional, TypeVar, Generic, Sequence
+from typing import Optional, TypeVar, Generic
 
 from exactly_lib.common.err_msg.msg import minors
 from exactly_lib.common.report_rendering.text_doc import MinorTextRenderer
 from exactly_lib.util.simple_textstruct.rendering import line_objects, blocks
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import LineElement
 
 
@@ -41,11 +41,11 @@ def of_constant_message(message: str) -> ErrorDescription:
     )
 
 
-def syntax_error_of_message(message: Renderer[Sequence[LineElement]]) -> ErrorDescription:
+def syntax_error_of_message(message: SequenceRenderer[LineElement]) -> ErrorDescription:
     return ErrorDescriptionOfMessage(minors.syntax_error_message(message))
 
 
-def file_access_error_of_message(message: Renderer[Sequence[LineElement]]) -> ErrorDescription:
+def file_access_error_of_message(message: SequenceRenderer[LineElement]) -> ErrorDescription:
     return ErrorDescriptionOfMessage(minors.file_access_error_message(message))
 
 

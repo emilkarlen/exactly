@@ -65,5 +65,5 @@ class _IsSuccess(ValueAssertionBase):
                 'Expected: ' + svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS.name,
                 'Actual  : {st}: {msg}'.format(
                     st=value.status.name,
-                    msg=repr(render_to_str.print_major_blocks(value.failure_message.render())))
+                    msg=repr(render_to_str.print_major_blocks(value.failure_message.render_sequence())))
             ]))

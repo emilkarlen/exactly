@@ -16,7 +16,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-_ERROR_DESCRIPTION_OF_EMPTY_MESSAGE = error_description.of_message(rend_comb.ConstantR([]))
+_ERROR_DESCRIPTION_OF_EMPTY_MESSAGE = error_description.of_message(rend_comb.ConstantSequenceR([]))
 
 _ARBITRARY_FILE_REF = sut.TestCaseFileReference(
     pathlib.Path('the path'),
@@ -70,7 +70,7 @@ class TestEqualsTestCaseReference(unittest.TestCase):
 
 
 class TestAccessorErrorMatches(unittest.TestCase):
-    _ERROR_INFO_WITH_DESCRIPTION = sut.ErrorInfo(error_description.of_message(rend_comb.ConstantR([])))
+    _ERROR_INFO_WITH_DESCRIPTION = sut.ErrorInfo(error_description.of_message(rend_comb.ConstantSequenceR([])))
 
     def test_matches(self):
         accessor_error = sut.AccessorError(

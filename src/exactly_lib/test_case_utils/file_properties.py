@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering import strings
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, MajorBlock
 
 
@@ -197,7 +197,7 @@ class CauseHeaderMinorBlockRenderer(Renderer[MinorBlock]):
         ])
 
 
-class FailureRenderer(Renderer[Sequence[MajorBlock]]):
+class FailureRenderer(SequenceRenderer[MajorBlock]):
     def __init__(self,
                  cause: PropertiesWithNegation,
                  path: PathDescriberForPrimitive,
@@ -205,12 +205,12 @@ class FailureRenderer(Renderer[Sequence[MajorBlock]]):
         self._cause = cause
         self._path = path
 
-    def render(self) -> Sequence[MajorBlock]:
+    def render_sequence(self) -> Sequence[MajorBlock]:
         renderer = path_rendering.HeaderAndPathMajorBlocks(
             CauseHeaderMinorBlockRenderer(self._cause),
             path_rendering.PathRepresentationsRenderersForPrimitive(self._path),
         )
-        return renderer.render()
+        return renderer.render_sequence()
 
 
 def render_failing_property(properties_with_neg: PropertiesWithNegation) -> str:

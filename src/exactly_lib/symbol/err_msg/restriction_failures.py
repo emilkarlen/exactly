@@ -13,12 +13,12 @@ from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.restriction import Failure, InvalidTypeCategoryFailure, InvalidValueTypeFailure
 from exactly_lib.type_system.value_type import TYPE_CATEGORY_2_VALUE_TYPE_SEQUENCE
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators, blocks, line_objects
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class ErrorMessage(Renderer[Sequence[MajorBlock]]):
+class ErrorMessage(SequenceRenderer[MajorBlock]):
     def __init__(self,
                  failing_symbol: str,
                  symbols: SymbolTable,
@@ -27,10 +27,10 @@ class ErrorMessage(Renderer[Sequence[MajorBlock]]):
         self._symbols = symbols
         self._failure = failure
 
-    def render(self) -> Sequence[MajorBlock]:
+    def render_sequence(self) -> Sequence[MajorBlock]:
         failure = self._failure
         if isinstance(failure, FailureOfDirectReference):
-            return ErrorMessageForDirectReference(failure.error).render()
+            return ErrorMessageForDirectReference(failure.error).render_sequence()
         elif isinstance(failure, FailureOfIndirectReference):
             return self._of_indirect(failure)
         elif isinstance(failure, InvalidTypeCategoryFailure):
@@ -44,7 +44,7 @@ class ErrorMessage(Renderer[Sequence[MajorBlock]]):
     def _of_indirect(self, failure: FailureOfIndirectReference) -> Sequence[MajorBlock]:
         return _of_indirect(self._failing_symbol,
                             self._symbols,
-                            failure).render()
+                            failure).render_sequence()
 
     def _of_invalid_type_category(self, failure: InvalidTypeCategoryFailure) -> Sequence[MajorBlock]:
         value_restriction_failure = error_messages.invalid_type_msg(
@@ -66,11 +66,11 @@ class ErrorMessage(Renderer[Sequence[MajorBlock]]):
         return _render_vrf(value_restriction_failure)
 
 
-class ErrorMessageForDirectReference(Renderer[Sequence[MajorBlock]]):
+class ErrorMessageForDirectReference(SequenceRenderer[MajorBlock]):
     def __init__(self, error: ErrorMessageWithFixTip):
         self._error = error
 
-    def render(self) -> Sequence[MajorBlock]:
+    def render_sequence(self) -> Sequence[MajorBlock]:
         return _render_vrf(self._error)
 
 
@@ -131,8 +131,8 @@ def _path_to_failing_symbol__tr(failing_symbol: str,
 
 
 def _render_vrf(vrf: ErrorMessageWithFixTip) -> Sequence[MajorBlock]:
-    ret_val = list(vrf.message.render())
+    ret_val = list(vrf.message.render_sequence())
     if vrf.how_to_fix is not None:
-        ret_val += vrf.how_to_fix.render()
+        ret_val += vrf.how_to_fix.render_sequence()
 
     return ret_val

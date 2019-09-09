@@ -25,7 +25,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-_ERROR_DESCRIPTION_OF_EMPTY_MESSAGE = error_description.of_message(rend_comb.ConstantR([]))
+_ERROR_DESCRIPTION_OF_EMPTY_MESSAGE = error_description.of_message(rend_comb.ConstantSequenceR([]))
 
 
 class TestErrorInfoMatches(unittest.TestCase):
