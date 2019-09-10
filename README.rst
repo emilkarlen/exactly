@@ -403,7 +403,7 @@ The following tests a git commit hook (`prepare-commit-msg`)::
 
     $ git add file-in-repo
 
-    $ git commit -m 'commit of file already in repo'
+    $ git commit -m "commit of file already in repo"
 
 
     ## Install the commit hook to test.

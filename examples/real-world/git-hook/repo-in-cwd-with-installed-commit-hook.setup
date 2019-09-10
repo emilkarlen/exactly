@@ -4,7 +4,7 @@ file file-in-repo
 
 $ git add file-in-repo
 
-$ git commit -m 'commit of file already in repo'
+$ git commit -m "commit of file already in repo"
 
 
 copy prepare-commit-msg .git/hooks
