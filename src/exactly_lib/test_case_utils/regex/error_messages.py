@@ -1,7 +1,6 @@
 import difflib
-from typing import List
-
 import pathlib
+from typing import List
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
