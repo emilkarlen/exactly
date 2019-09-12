@@ -1,4 +1,5 @@
 import pathlib
+from abc import ABC, abstractmethod
 from typing import Sequence, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -20,34 +21,38 @@ from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.error_message import PropertyDescriptor, FilePropertyDescriptorConstructor
 
 
-class ComparisonActualFileResolver:
+class ComparisonActualFileResolver(ABC):
     @property
     def property_descriptor_constructor(self) -> FilePropertyDescriptorConstructor:
         return _ActualFilePropertyDescriptorConstructorForComparisonFile(self.file_ref_resolver(),
                                                                          self.object_name())
 
+    @abstractmethod
     def object_name(self) -> str:
-        raise NotImplementedError('abstract method')
+        pass
 
+    @abstractmethod
     def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[TextRenderer]:
         """
         :return: None iff there is no failure.
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def file_ref_resolver(self) -> FileRefResolver:
-        raise NotImplementedError('abstract method')
+        pass
 
 
-class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndValidation):
+class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndValidation, ABC):
+    @abstractmethod
     def construct(self,
                   source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices) -> ComparisonActualFileResolver:
-        raise NotImplementedError('abstract method')
+        pass
 
 
-class ComparisonActualFileResolverConstantWithReferences(ComparisonActualFileResolver):
+class ResolverConstantWithReferences(ComparisonActualFileResolver, ABC):
     def __init__(self, references: Sequence[SymbolReference]):
         self._references = references
 
@@ -56,8 +61,8 @@ class ComparisonActualFileResolverConstantWithReferences(ComparisonActualFileRes
         return self._references
 
 
-class ComparisonActualFileConstructorForConstant(ComparisonActualFileConstructor):
-    def __init__(self, constructed_value: ComparisonActualFileResolverConstantWithReferences):
+class ConstructorForConstant(ComparisonActualFileConstructor):
+    def __init__(self, constructed_value: ResolverConstantWithReferences):
         self._constructed_value = constructed_value
 
     def construct(self,
@@ -75,19 +80,7 @@ class ComparisonActualFileConstructorForConstant(ComparisonActualFileConstructor
         return self._constructed_value.references
 
 
-class _ActualFilePropertyDescriptorConstructorForComparisonFile(FilePropertyDescriptorConstructor):
-    def __init__(self,
-                 file_ref: FileRefResolver,
-                 object_name: str):
-        self._file_ref = file_ref
-        self._object_name = object_name
-
-    def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
-        return path_value_description(file_property_name(contents_attribute, self._object_name),
-                                      self._file_ref)
-
-
-class ActComparisonActualFileForFileRef(ComparisonActualFileResolverConstantWithReferences):
+class ResolverForFileRef(ResolverConstantWithReferences):
     def __init__(self, file_ref_resolver: FileRefResolver):
         super().__init__(file_ref_resolver.references)
         self._file_ref_resolver = file_ref_resolver
@@ -104,7 +97,7 @@ class ActComparisonActualFileForFileRef(ComparisonActualFileResolverConstantWith
                                                        environment.path_resolving_environment_pre_or_post_sds)
 
 
-class ComparisonActualFileResolverForProgramOutput(ComparisonActualFileResolver):
+class ResolverForProgramOutput(ComparisonActualFileResolver):
     def __init__(self, file_with_program_output: pathlib.Path):
         self._file_with_program_output = file_with_program_output
         if not file_with_program_output.is_absolute():
@@ -123,3 +116,15 @@ class ComparisonActualFileResolverForProgramOutput(ComparisonActualFileResolver)
 
     def file_ref_resolver(self) -> FileRefResolver:
         return file_ref_resolvers.constant(file_refs.absolute_path(self._file_with_program_output))
+
+
+class _ActualFilePropertyDescriptorConstructorForComparisonFile(FilePropertyDescriptorConstructor):
+    def __init__(self,
+                 file_ref: FileRefResolver,
+                 object_name: str):
+        self._file_ref = file_ref
+        self._object_name = object_name
+
+    def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
+        return path_value_description(file_property_name(contents_attribute, self._object_name),
+                                      self._file_ref)

@@ -80,8 +80,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
 class Parser(ComparisonActualFileParser):
     def __init__(self, checked_file: process_output_files.ProcOutputFile):
         self._checked_file = checked_file
-        self._default = actual_files.ComparisonActualFileConstructorForConstant(
-            ActComparisonActualFileForStdFile(checked_file))
+        self._default = actual_files.ConstructorForConstant(
+            ComparisonActualFileResolverForStdFile(checked_file))
 
     def parse_from_token_parser(self, parser: TokenParser) -> ComparisonActualFileConstructor:
         def _parse_program(_parser: TokenParser) -> ComparisonActualFileConstructor:
@@ -93,7 +93,7 @@ class Parser(ComparisonActualFileParser):
                                                          OUTPUT_FROM_PROGRAM_OPTION_NAME)
 
 
-class ActComparisonActualFileForStdFile(actual_files.ComparisonActualFileResolverConstantWithReferences):
+class ComparisonActualFileResolverForStdFile(actual_files.ResolverConstantWithReferences):
     def __init__(self, checked_file: process_output_files.ProcOutputFile):
         super().__init__(())
         self.checked_file = checked_file
@@ -127,7 +127,7 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
                                                                           source_info,
                                                                           self._checked_output,
                                                                           program)
-        return actual_files.ComparisonActualFileResolverForProgramOutput(result.path_of_file_with_transformed_contents)
+        return actual_files.ResolverForProgramOutput(result.path_of_file_with_transformed_contents)
 
     @property
     def validator(self) -> PreOrPostSdsValidator:

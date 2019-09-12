@@ -9,7 +9,7 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ActComparisonActualFileForFileRef, \
+from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ResolverForFileRef, \
     ComparisonActualFileConstructor
 from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
 from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
@@ -76,7 +76,7 @@ class _ActualFileParser(ComparisonActualFileParser):
             'Missing {actual_file} argument'.format(actual_file=ACTUAL_PATH_ARGUMENT.name))
         file_ref = parse_file_ref.parse_file_ref_from_token_parser(ACTUAL_RELATIVITY_CONFIGURATION,
                                                                    parser)
-        return actual_files.ComparisonActualFileConstructorForConstant(ActComparisonActualFileForFileRef(file_ref))
+        return actual_files.ConstructorForConstant(ResolverForFileRef(file_ref))
 
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
