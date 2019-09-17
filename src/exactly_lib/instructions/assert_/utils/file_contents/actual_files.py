@@ -9,9 +9,9 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.err_msg.path_description import path_value_description
-from exactly_lib.test_case_utils.err_msg.property_description import file_property_name
+from exactly_lib.test_case_utils.err_msg import path_description, property_description
 from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
+from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive
 from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
 from exactly_lib.type_system.error_message import PropertyDescriptor, FilePropertyDescriptorConstructor
 
@@ -72,12 +72,13 @@ class ConstructorForPath(ComparisonActualFileConstructor):
                   source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices) -> ComparisonActualFile:
+        described_path = described_path_resolvers.of(self._path) \
+            .resolve__with_cwd_as_cd(environment.symbols) \
+            .value_of_any_dependency(environment.home_and_sds)
         return ComparisonActualFile(
-            described_path_resolvers.of(self._path)
-                .resolve__with_cwd_as_cd(environment.symbols)
-                .value_of_any_dependency(environment.home_and_sds),
+            described_path,
             ActualFilePropertyDescriptorConstructorForComparisonFile(
-                self._path,
+                described_path.describer,
                 self._object_name),
             self._file_access_needs_to_be_verified,
         )
@@ -93,11 +94,13 @@ class ConstructorForPath(ComparisonActualFileConstructor):
 
 class ActualFilePropertyDescriptorConstructorForComparisonFile(FilePropertyDescriptorConstructor):
     def __init__(self,
-                 file_ref: FileRefResolver,
+                 file_ref: PathDescriberForPrimitive,
                  object_name: str):
         self._file_ref = file_ref
         self._object_name = object_name
 
     def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
-        return path_value_description(file_property_name(contents_attribute, self._object_name),
-                                      self._file_ref)
+        return path_description.path_value_description__from_described(
+            property_description.file_property_name(contents_attribute, self._object_name),
+            self._file_ref
+        )

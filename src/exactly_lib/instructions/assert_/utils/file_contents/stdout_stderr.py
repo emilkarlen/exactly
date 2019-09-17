@@ -126,7 +126,7 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
         return ComparisonActualFile(
             path_with_transformed_contents,
             ActualFilePropertyDescriptorConstructorForComparisonFile(
-                file_with_transformed_contents,
+                path_with_transformed_contents.describer,
                 actual_file_attributes.OUTPUT_FROM_PROGRAM_OBJECT_NAME),
             False
         )
