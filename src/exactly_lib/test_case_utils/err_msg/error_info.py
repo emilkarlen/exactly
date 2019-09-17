@@ -37,7 +37,7 @@ class ExplanationErrorInfo(ErrorInfo):
 class ErrorMessagePartConstructor:
     """Constructs lines that are a part of an error message."""
 
-    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
+    def lines(self) -> List[str]:
         """
         :return: empty list if there is nothing to say
         """
@@ -59,12 +59,12 @@ class ErrorMessagePartConstructorOfFixed(ErrorMessagePartConstructor):
     def __init__(self, fixed: ErrorMessagePartFixConstructor):
         self._fixed = fixed
 
-    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
+    def lines(self) -> List[str]:
         return self._fixed.lines()
 
 
 class NoErrorMessagePartConstructor(ErrorMessagePartConstructor):
-    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
+    def lines(self) -> List[str]:
         return []
 
 

@@ -24,8 +24,7 @@ class ExplanationFailureInfoResolver:
                 environment: ErrorMessageResolvingEnvironment,
                 explanation: str) -> ExplanationErrorInfo:
         return ExplanationErrorInfo(explanation,
-                                    self.object_descriptor.lines(
-                                        environment))
+                                    self.object_descriptor.lines())
 
 
 class ExpectedValueResolver:

@@ -23,7 +23,7 @@ class PropertyDescriptorWithConstantPropertyName(PropertyDescriptor):
     def description(self, environment: ErrorMessageResolvingEnvironment
                     ) -> PropertyDescription:
         return PropertyDescription(self._name,
-                                   self._object_descriptor.lines(environment))
+                                   self._object_descriptor.lines())
 
 
 class PropertyDescriptorWithConstantPropertyNameOfFix(PropertyDescriptor):

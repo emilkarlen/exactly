@@ -42,7 +42,7 @@ class _FilePropertyDescriptorConstructor(error_message.FilePropertyDescriptorCon
         path = self._path
 
         class _ErrorMessagePartConstructor(ErrorMessagePartConstructor):
-            def lines(self, environment: error_message.ErrorMessageResolvingEnvironment) -> List[str]:
+            def lines(self) -> List[str]:
                 return path_rendering.path_strings(path)
 
         return PropertyDescriptorWithConstantPropertyName(contents_attribute,
