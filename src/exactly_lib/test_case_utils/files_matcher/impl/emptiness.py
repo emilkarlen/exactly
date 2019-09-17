@@ -115,7 +115,7 @@ class _ErrorMessageResolver(ErrorMessageResolver):
                      environment: ErrorMessageResolvingEnvironment) -> diff_msg.DiffErrorInfo:
         property_descriptor = self._setup.model.error_message_info.property_descriptor
         return diff_msg.DiffErrorInfo(
-            property_descriptor(config.EMPTINESS_PROPERTY_NAME).description(environment),
+            property_descriptor(config.EMPTINESS_PROPERTY_NAME).description(),
             self._setup.expectation_type,
             self._setup.expected_description_str,
             self.resolve_actual_info(self._actual_files,

@@ -152,12 +152,12 @@ class _ErrorMessageResolver(Generic[T], ErrorMessageResolver):
         self.operator = operator
 
     def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
-        return self.failure_info(environment).error_message()
+        return self.failure_info().error_message()
 
-    def failure_info(self, environment: ErrorMessageResolvingEnvironment) -> diff_msg.DiffErrorInfo:
+    def failure_info(self) -> diff_msg.DiffErrorInfo:
         expected_str = self.operator.name + ' ' + str(self.rhs)
         return diff_msg.DiffErrorInfo(
-            self.property_descriptor.description(environment),
+            self.property_descriptor.description(),
             self.expectation_type,
             expected_str,
             diff_msg.actual_with_single_line_value(str(self.lhs_actual_property_value))
@@ -175,7 +175,7 @@ class _FailureReporter(Generic[T]):
         return self.err_msg_resolver.resolve(self.environment)
 
     def failure_info(self) -> diff_msg.DiffErrorInfo:
-        return self.err_msg_resolver.failure_info(self.environment)
+        return self.err_msg_resolver.failure_info()
 
 
 class _ComparisonExecutor(Generic[T]):

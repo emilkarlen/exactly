@@ -88,30 +88,10 @@ class PropertyDescription:
 
 
 class PropertyDescriptor:
-    def description(self, environment: ErrorMessageResolvingEnvironment
-                    ) -> PropertyDescription:
-        raise NotImplementedError('abstract method')
-
-
-class PropertyFixedDescriptor(ABC):
-    @abstractmethod
     def description(self) -> PropertyDescription:
         raise NotImplementedError('abstract method')
 
 
-class PropertyDescriptorOfFixed(PropertyDescriptor):
-    def __init__(self, fix: PropertyFixedDescriptor):
-        self._fix = fix
-
-    def description(self, environment: ErrorMessageResolvingEnvironment) -> PropertyDescription:
-        return self._fix.description()
-
-
 class FilePropertyDescriptorConstructor:
     def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
-        raise NotImplementedError('abstract method')
-
-
-class FilePropertyFixedDescriptorConstructor:
-    def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyFixedDescriptor:
         raise NotImplementedError('abstract method')
