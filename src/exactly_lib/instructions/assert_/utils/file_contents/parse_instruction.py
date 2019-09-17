@@ -3,8 +3,8 @@ from exactly_lib.instructions.assert_.utils.assertion_part import AssertionInstr
     IdentityAssertionPartWithValidationAndReferences
 from exactly_lib.instructions.assert_.utils.file_contents import parse_file_contents_assertion_part
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor
-from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileExistenceAssertionPart, \
-    FileConstructorAssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileConstructorAssertionPart, \
+    IsExistingRegularFileAssertionPart
 from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionTokenParser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
@@ -41,12 +41,14 @@ class Parser(AssertPhaseInstructionTokenParser):
                                                              actual_file_constructor.references),
             FileConstructorAssertionPart(),
         )
-        assertion_part_sequence = assertion_part.compose_with_sequence(assertion_part_sequence,
-                                                                       FileExistenceAssertionPart(),
-                                                                       )
-        assertion_part_sequence = assertion_part.compose_with_sequence(assertion_part_sequence,
-                                                                       actual_file_assertion_part,
-                                                                       )
+        assertion_part_sequence = assertion_part.compose_with_sequence(
+            assertion_part_sequence,
+            IsExistingRegularFileAssertionPart(),
+        )
+        assertion_part_sequence = assertion_part.compose_with_sequence(
+            assertion_part_sequence,
+            actual_file_assertion_part,
+        )
         return AssertionInstructionFromAssertionPart(
             assertion_part_sequence,
             source_info,

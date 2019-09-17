@@ -1,10 +1,6 @@
-import pathlib
 from abc import ABC, abstractmethod
-from typing import Sequence, Optional
+from typing import Sequence
 
-from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.definitions.actual_file_attributes import PLAIN_FILE_OBJECT_NAME, OUTPUT_FROM_PROGRAM_OBJECT_NAME
-from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -15,32 +11,32 @@ from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.err_msg.path_description import path_value_description
 from exactly_lib.test_case_utils.err_msg.property_description import file_property_name
-from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
-from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
-from exactly_lib.type_system.data import file_refs
+from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
+from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
 from exactly_lib.type_system.error_message import PropertyDescriptor, FilePropertyDescriptorConstructor
 
 
-class ComparisonActualFileResolver(ABC):
+class ComparisonActualFile(tuple):
+    def __new__(cls,
+                actual_path: DescribedPathPrimitive,
+                checked_file_describer: FilePropertyDescriptorConstructor,
+                file_access_needs_to_be_verified: bool
+                ):
+        return tuple.__new__(cls, (checked_file_describer,
+                                   actual_path,
+                                   file_access_needs_to_be_verified))
+
     @property
-    def property_descriptor_constructor(self) -> FilePropertyDescriptorConstructor:
-        return _ActualFilePropertyDescriptorConstructorForComparisonFile(self.file_ref_resolver(),
-                                                                         self.object_name())
+    def checked_file_describer(self) -> FilePropertyDescriptorConstructor:
+        return self[0]
 
-    @abstractmethod
-    def object_name(self) -> str:
-        pass
+    @property
+    def path(self) -> DescribedPathPrimitive:
+        return self[1]
 
-    @abstractmethod
-    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[TextRenderer]:
-        """
-        :return: None iff there is no failure.
-        """
-        pass
-
-    @abstractmethod
-    def file_ref_resolver(self) -> FileRefResolver:
-        pass
+    @property
+    def file_access_needs_to_be_verified(self) -> bool:
+        return self[2]
 
 
 class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndValidation, ABC):
@@ -48,28 +44,43 @@ class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndValidation, A
     def construct(self,
                   source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep,
-                  os_services: OsServices) -> ComparisonActualFileResolver:
+                  os_services: OsServices) -> ComparisonActualFile:
         pass
 
 
-class ResolverConstantWithReferences(ComparisonActualFileResolver, ABC):
-    def __init__(self, references: Sequence[SymbolReference]):
-        self._references = references
+class ConstructorForPath(ComparisonActualFileConstructor):
+    def __init__(self,
+                 path: FileRefResolver,
+                 object_name: str,
+                 file_access_needs_to_be_verified: bool,
+                 ):
+        """
 
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._references
-
-
-class ConstructorForConstant(ComparisonActualFileConstructor):
-    def __init__(self, constructed_value: ResolverConstantWithReferences):
-        self._constructed_value = constructed_value
+        :param path: The path of the file that represents the actual string.
+        :param object_name: Tells what "path" is representing.
+        :param file_access_needs_to_be_verified: Tells if the path
+        referred to by "path" may be invalid (e.g. do not exist), and
+        thus need to be verified before it can be used, and the result of
+        this verification may be that the path is invalid and thus the
+        operation must be aborted with an explaining error message.
+        """
+        self._path = path
+        self._object_name = object_name
+        self._file_access_needs_to_be_verified = file_access_needs_to_be_verified
 
     def construct(self,
                   source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep,
-                  os_services: OsServices) -> ComparisonActualFileResolver:
-        return self._constructed_value
+                  os_services: OsServices) -> ComparisonActualFile:
+        return ComparisonActualFile(
+            described_path_resolvers.of(self._path)
+                .resolve__with_cwd_as_cd(environment.symbols)
+                .value_of_any_dependency(environment.home_and_sds),
+            ActualFilePropertyDescriptorConstructorForComparisonFile(
+                self._path,
+                self._object_name),
+            self._file_access_needs_to_be_verified,
+        )
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
@@ -77,48 +88,10 @@ class ConstructorForConstant(ComparisonActualFileConstructor):
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self._constructed_value.references
+        return self._path.references
 
 
-class ResolverForFileRef(ResolverConstantWithReferences):
-    def __init__(self, file_ref_resolver: FileRefResolver):
-        super().__init__(file_ref_resolver.references)
-        self._file_ref_resolver = file_ref_resolver
-
-    def object_name(self) -> str:
-        return PLAIN_FILE_OBJECT_NAME
-
-    def file_ref_resolver(self) -> FileRefResolver:
-        return self._file_ref_resolver
-
-    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[TextRenderer]:
-        return pre_or_post_sds_failure_message_or_none(FileRefCheck(self._file_ref_resolver,
-                                                                    must_exist_as(FileType.REGULAR)),
-                                                       environment.path_resolving_environment_pre_or_post_sds)
-
-
-class ResolverForProgramOutput(ComparisonActualFileResolver):
-    def __init__(self, file_with_program_output: pathlib.Path):
-        self._file_with_program_output = file_with_program_output
-        if not file_with_program_output.is_absolute():
-            raise ValueError('Path must be absolute: ' + str(file_with_program_output))
-
-    @property
-    def property_descriptor_constructor(self) -> FilePropertyDescriptorConstructor:
-        return _ActualFilePropertyDescriptorConstructorForComparisonFile(self.file_ref_resolver(),
-                                                                         self.object_name())
-
-    def object_name(self) -> str:
-        return OUTPUT_FROM_PROGRAM_OBJECT_NAME
-
-    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[TextRenderer]:
-        return None
-
-    def file_ref_resolver(self) -> FileRefResolver:
-        return file_ref_resolvers.constant(file_refs.absolute_path(self._file_with_program_output))
-
-
-class _ActualFilePropertyDescriptorConstructorForComparisonFile(FilePropertyDescriptorConstructor):
+class ActualFilePropertyDescriptorConstructorForComparisonFile(FilePropertyDescriptorConstructor):
     def __init__(self,
                  file_ref: FileRefResolver,
                  object_name: str):

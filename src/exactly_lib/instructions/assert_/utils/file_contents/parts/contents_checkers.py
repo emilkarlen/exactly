@@ -1,40 +1,21 @@
 from typing import Sequence
 
-from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileResolver, \
-    ComparisonActualFileConstructor
+from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart, IdentityAssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor, \
+    ComparisonActualFile
 from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils import pfh_exception
-from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
-from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
 from exactly_lib.test_case_utils.file_system_element_matcher import \
     FileSystemElementPropertiesMatcher
-from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 
 
-class ComparisonActualFile(tuple):
-    def __new__(cls,
-                actual_path: DescribedPathPrimitive,
-                checked_file_describer: FilePropertyDescriptorConstructor,
-                ):
-        return tuple.__new__(cls, (checked_file_describer, actual_path))
-
-    @property
-    def checked_file_describer(self) -> FilePropertyDescriptorConstructor:
-        return self[0]
-
-    @property
-    def path(self) -> DescribedPathPrimitive:
-        return self[1]
-
-
-class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor, ComparisonActualFileResolver]):
+class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor, ComparisonActualFile]):
     """
     Constructs the actual file.
     """
@@ -43,7 +24,7 @@ class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               custom_environment: InstructionSourceInfo,
-              value_to_check: ComparisonActualFileConstructor) -> ComparisonActualFileResolver:
+              value_to_check: ComparisonActualFileConstructor) -> ComparisonActualFile:
         return value_to_check.construct(custom_environment,
                                         environment,
                                         os_services)
@@ -67,38 +48,9 @@ class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, File
                            DestinationFilePathGetter())
 
 
-class FileExistenceAssertionPart(AssertionPart[ComparisonActualFileResolver, ComparisonActualFile]):
+class IsExistingRegularFileAssertionPart(IdentityAssertionPart[ComparisonActualFile]):
     """
-    Checks existence of a :class:`ComparisonActualFile`,
-
-    and returns it's path, if it exists.
-
-    :raises PfhFailException: File does not exist.
-    """
-
-    def check(self,
-              environment: InstructionEnvironmentForPostSdsStep,
-              os_services: OsServices,
-              custom_environment,
-              actual_file: ComparisonActualFileResolver,
-              ) -> ComparisonActualFile:
-        """
-        :return: The resolved path
-        """
-        failure_message = actual_file.file_check_failure(environment)
-        if failure_message:
-            raise pfh_exception.PfhFailException(failure_message)
-
-        actual_path = described_path_resolvers.of(actual_file.file_ref_resolver()) \
-            .resolve__with_cwd_as_cd(environment.symbols) \
-            .value_of_any_dependency(environment.home_and_sds)
-        return ComparisonActualFile(actual_path,
-                                    actual_file.property_descriptor_constructor)
-
-
-class IsExistingRegularFileAssertionPart(AssertionPart[ComparisonActualFile, ComparisonActualFile]):
-    """
-    :raises PfhHardErrorException: The file is not an existing regular file (symlinks followed).
+    :raises pfh_exception.PfhFailException: The file is not an existing regular file (symlinks followed).
     """
 
     def __init__(self):
@@ -107,16 +59,22 @@ class IsExistingRegularFileAssertionPart(AssertionPart[ComparisonActualFile, Com
             file_properties.ActualFilePropertiesResolver(file_properties.FileType.REGULAR,
                                                          follow_symlinks=True))
 
-    def check(self,
-              environment: InstructionEnvironmentForPostSdsStep,
-              os_services: OsServices,
-              custom_environment,
-              actual_file: ComparisonActualFile,
-              ) -> ComparisonActualFile:
-        err_msg_resolver = self._file_prop_check.matches(actual_file.path)
+    def _check(self,
+               environment: InstructionEnvironmentForPostSdsStep,
+               os_services: OsServices,
+               custom_environment,
+               actual_file: ComparisonActualFile,
+               ):
+        if actual_file.file_access_needs_to_be_verified:
+            self.__check(environment, actual_file)
 
-        if err_msg_resolver:
-            err_msg_env = err_msg_env_from_instr_env(environment)
-            raise pfh_exception.PfhHardErrorException(err_msg_resolver.resolve__tr(err_msg_env))
+    def __check(self,
+                environment: InstructionEnvironmentForPostSdsStep,
+                actual_file: ComparisonActualFile,
+                ):
+        if actual_file.file_access_needs_to_be_verified:
+            err_msg_resolver = self._file_prop_check.matches(actual_file.path)
 
-        return actual_file
+            if err_msg_resolver:
+                err_msg_env = err_msg_env_from_instr_env(environment)
+                raise pfh_exception.PfhFailException(err_msg_resolver.resolve__tr(err_msg_env))

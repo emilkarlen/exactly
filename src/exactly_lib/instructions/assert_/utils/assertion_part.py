@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import Sequence, Any, Callable, TypeVar, Generic, List
 
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
@@ -18,7 +19,7 @@ B = TypeVar('B')
 C = TypeVar('C')
 
 
-class AssertionPart(ObjectWithSymbolReferencesAndValidation, Generic[A, B]):
+class AssertionPart(Generic[A, B], ObjectWithSymbolReferencesAndValidation, ABC):
     """
     A part of an assertion instruction that
     executes one part of the whole assertion.
@@ -37,6 +38,7 @@ class AssertionPart(ObjectWithSymbolReferencesAndValidation, Generic[A, B]):
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
 
+    @abstractmethod
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
@@ -52,7 +54,7 @@ class AssertionPart(ObjectWithSymbolReferencesAndValidation, Generic[A, B]):
 
         :raises PfhException: Indicates that the assertion part does not PASS.
         """
-        raise NotImplementedError('abstract method')
+        pass
 
     def check_and_return_pfh(self,
                              environment: InstructionEnvironmentForPostSdsStep,
@@ -67,7 +69,27 @@ class AssertionPart(ObjectWithSymbolReferencesAndValidation, Generic[A, B]):
                                               value_to_check)
 
 
-class IdentityAssertionPartWithValidationAndReferences(AssertionPart[A, A]):
+class IdentityAssertionPart(Generic[A], AssertionPart[A, A]):
+    def check(self,
+              environment: InstructionEnvironmentForPostSdsStep,
+              os_services: OsServices,
+              custom_environment,
+              value_to_check: A
+              ) -> A:
+        self._check(environment, os_services, custom_environment, value_to_check)
+        return value_to_check
+
+    @abstractmethod
+    def _check(self,
+               environment: InstructionEnvironmentForPostSdsStep,
+               os_services: OsServices,
+               custom_environment,
+               value_to_check: A
+               ):
+        pass
+
+
+class IdentityAssertionPartWithValidationAndReferences(Generic[A], IdentityAssertionPart[A]):
     def __init__(self,
                  validator: PreOrPostSdsValidator,
                  references: Sequence[SymbolReference]):
@@ -78,13 +100,13 @@ class IdentityAssertionPartWithValidationAndReferences(AssertionPart[A, A]):
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    def check(self,
-              environment: InstructionEnvironmentForPostSdsStep,
-              os_services: OsServices,
-              custom_environment,
-              value_to_check: A
-              ) -> A:
-        return value_to_check
+    def _check(self,
+               environment: InstructionEnvironmentForPostSdsStep,
+               os_services: OsServices,
+               custom_environment,
+               value_to_check: A
+               ):
+        pass
 
 
 class SequenceOfCooperativeAssertionParts(AssertionPart[A, B]):

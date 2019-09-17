@@ -19,11 +19,11 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
     def references(self) -> Sequence[SymbolReference]:
         return self._string_matcher.references
 
-    def check(self,
-              environment: InstructionEnvironmentForPostSdsStep,
-              os_services: OsServices,
-              custom_environment,
-              file_to_check: FileToCheck) -> FileToCheck:
+    def _check(self,
+               environment: InstructionEnvironmentForPostSdsStep,
+               os_services: OsServices,
+               custom_environment,
+               file_to_check: FileToCheck):
         value = self._string_matcher.resolve(environment.symbols)
         matcher = value.value_of_any_dependency(environment.home_and_sds)
         mb_error_message = matcher.matches(file_to_check)
@@ -31,4 +31,3 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
             raise pfh_exception.PfhFailException(
                 mb_error_message.resolve__tr(err_msg_env_from_instr_env(environment))
             )
-        return file_to_check

@@ -10,7 +10,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.err_msg.property_description import property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
-from exactly_lib.test_case_utils.pfh_exception import PfhHardErrorException
+from exactly_lib.test_case_utils.pfh_exception import PfhHardErrorException, PfhFailException
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.error_message import PropertyDescriptor
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
@@ -45,8 +45,8 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
                 .resolve__with_cwd_as_cd(empty_symbol_table()) \
                 .value_of_any_dependency(fake_tcds())
             model = sut.ComparisonActualFile(described_path,
-                                             FilePropertyDescriptorConstructorTestImpl()
-                                             )
+                                             FilePropertyDescriptorConstructorTestImpl(),
+                                             True)
             # ACT #
 
             actual = assertion_part.check(self.environment, self.the_os_services,
@@ -56,32 +56,47 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
 
             self.assertIs(model, actual)
 
-    def test_PfhHardError_SHOULD_be_raised_WHEN_file_does_not_exist(self):
+    def test_PfhFail_SHOULD_be_raised_WHEN_file_does_not_exist(self):
         # ARRANGE #
         assertion_part = sut.IsExistingRegularFileAssertionPart()
         # ACT & ASSERT #
-        with self.assertRaises(PfhHardErrorException):
+        with self.assertRaises(PfhFailException):
             path = pathlib.Path('a file that does not exist')
             assertion_part.check(self.environment, self.the_os_services,
                                  'custom environment',
                                  sut.ComparisonActualFile(
                                      described_path.new_primitive(path),
                                      FilePropertyDescriptorConstructorTestImpl(),
+                                     True,
                                  ))
 
-    def test_PfhHardError_SHOULD_be_raised_WHEN_file_does_exist_but_is_not_a_regular_file(self):
+    def test_PfhFail_SHOULD_be_raised_WHEN_file_does_exist_but_is_not_a_regular_file(self):
         # ARRANGE #
         assertion_part = sut.IsExistingRegularFileAssertionPart()
         # ACT & ASSERT #
         with tmp_dir() as path_of_existing_directory:
-            with self.assertRaises(PfhHardErrorException):
+            with self.assertRaises(PfhFailException):
                 assertion_part.check(self.environment, self.the_os_services,
                                      'custom environment',
                                      sut.ComparisonActualFile(
                                          described_path.new_primitive(path_of_existing_directory),
                                          FilePropertyDescriptorConstructorTestImpl(),
+                                         True,
                                      )
                                      )
+
+    def test_no_exception_SHOULD_be_not_raised_WHEN_file_does_not_exist_but_file_does_not_need_to_be_verified(self):
+        # ARRANGE #
+        assertion_part = sut.IsExistingRegularFileAssertionPart()
+        # ACT & ASSERT #
+        path = pathlib.Path('a file that does not exist')
+        assertion_part.check(self.environment, self.the_os_services,
+                             'custom environment',
+                             sut.ComparisonActualFile(
+                                 described_path.new_primitive(path),
+                                 FilePropertyDescriptorConstructorTestImpl(),
+                                 False,
+                             ))
 
 
 class StringTransformerResolverWithReferences(StringTransformerResolver):
