@@ -1,32 +1,18 @@
 import pathlib
 from typing import List, Optional
 
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
 from exactly_lib.test_case_file_structure import path_relativity as pr
 from exactly_lib.test_case_file_structure import relative_path_options as rpo
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType, RelSdsOptionType, RelOptionType
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SDS_SUB_DIRECTORIES
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.err_msg import property_description, error_info
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor, ErrorMessagePartFixConstructor
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartFixConstructor
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor
+from exactly_lib.type_system.error_message import PropertyDescriptor
 
 EXACTLY_SANDBOX_ROOT_DIR_NAME = 'EXACTLY_SANDBOX'
-
-
-class PathValuePartConstructor(ErrorMessagePartConstructor):
-    def __init__(self, path_resolver: FileRefResolver):
-        self.path_resolver = path_resolver
-
-    def lines(self, environment: ErrorMessageResolvingEnvironment) -> List[str]:
-        path_resolve_env = path_resolving_env_from_err_msg_env(environment)
-        path_value = self.path_resolver.resolve(path_resolve_env.symbols)
-
-        return lines_for_path_value(path_value, environment.tcds)
 
 
 class PathValuePartConstructorOfPathDescriber(ErrorMessagePartFixConstructor):
@@ -147,52 +133,9 @@ def path_value_with_relativity_name_prefix(path_value: FileRef,
     return path_value_with_relativity_name_prefix__rel_tcds_dir(path_value)
 
 
-def path_value_with_relativity_name_prefix_str(path: pathlib.Path, tcds: HomeAndSds) -> str:
-    hds = tcds.hds
-    sds = tcds.sds
-
-    def rel_hds() -> pathlib.Path:
-        for ro in RelHomeOptionType:
-            try:
-                suffix = path.relative_to(hds.get(ro))
-                return pathlib.Path(rpo.REL_HDS_OPTIONS_MAP[ro].directory_variable_name / suffix)
-            except ValueError:
-                pass
-        raise ValueError()
-
-    def rel_sds() -> pathlib.Path:
-        suffix_of_sds = path.relative_to(sds.root_dir)
-        for ro in RelSdsOptionType:
-            try:
-                suffix = suffix_of_sds.relative_to(SDS_SUB_DIRECTORIES[ro])
-                return pathlib.Path(rpo.REL_SDS_OPTIONS_MAP[ro].directory_variable_name / suffix)
-            except ValueError:
-                pass
-        return pathlib.Path(EXACTLY_SANDBOX_ROOT_DIR_NAME) / suffix_of_sds
-
-    def get_path() -> pathlib.Path:
-        try:
-            return rel_sds()
-        except ValueError:
-            try:
-                return rel_hds()
-            except ValueError:
-                return path
-
-    return str(get_path())
-
-
 def path_value_description(property_name: str,
-                           path_resolver: FileRefResolver) -> PropertyDescriptor:
-    return property_description.PropertyDescriptorWithConstantPropertyName(
-        property_name,
-        PathValuePartConstructor(path_resolver),
-    )
-
-
-def path_value_description__from_described(property_name: str,
-                                           path: PathDescriberForPrimitive,
-                                           mimic_text_renderer_layout: bool = False) -> PropertyDescriptor:
+                           path: PathDescriberForPrimitive,
+                           mimic_text_renderer_layout: bool = False) -> PropertyDescriptor:
     return property_description.PropertyDescriptorWithConstantPropertyName(
         property_name,
         error_info.ErrorMessagePartConstructorOfFixed(

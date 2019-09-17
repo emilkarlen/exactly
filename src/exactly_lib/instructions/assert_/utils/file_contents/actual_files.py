@@ -100,7 +100,7 @@ class ActualFilePropertyDescriptorConstructorForComparisonFile(FilePropertyDescr
         self._object_name = object_name
 
     def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
-        return path_description.path_value_description__from_described(
+        return path_description.path_value_description(
             property_description.file_property_name(contents_attribute, self._object_name),
             self._path,
             True,

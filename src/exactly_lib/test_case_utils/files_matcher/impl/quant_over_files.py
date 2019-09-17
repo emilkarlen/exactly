@@ -263,7 +263,7 @@ class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConst
 
     def construct_for_contents_attribute(self,
                                          contents_attribute: str) -> PropertyDescriptor:
-        return path_description.path_value_description__from_described(
+        return path_description.path_value_description(
             property_description.file_property_name(contents_attribute,
                                                     actual_file_attributes.PLAIN_FILE_OBJECT_NAME),
             self._file_in_dir.path.describer,

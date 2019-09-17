@@ -33,7 +33,7 @@ class _ErrorMessageResolverForFailingFileProperties(ErrorMessageResolver):
     def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
         from exactly_lib.util.logic_types import ExpectationType
 
-        property_descriptor = path_description.path_value_description__from_described(
+        property_descriptor = path_description.path_value_description(
             actual_file_attributes.PLAIN_FILE_OBJECT_NAME,
             self.failing_file,
             True,

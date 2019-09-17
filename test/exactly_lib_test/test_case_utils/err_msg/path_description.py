@@ -13,10 +13,7 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestPathValueWithRelativityNamePrefix),
-        unittest.makeSuite(TestPathValueWithRelativityNamePrefixStr),
-    ])
+    return unittest.makeSuite(TestPathValueWithRelativityNamePrefix)
 
 
 class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
@@ -139,56 +136,6 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
 
     def _expected_str(self, directory_name: str, path_suffix: PathPart) -> str:
         return str(pathlib.PosixPath(directory_name, path_suffix.value()))
-
-
-class TestPathValueWithRelativityNamePrefixStr(unittest.TestCase):
-    path_suffixes = [
-        file_refs.empty_path_part(),
-        file_refs.constant_path_part('path-suffix'),
-        file_refs.constant_path_part('../path-suffix'),
-    ]
-
-    def test_rel_home(self):
-        tcds = fake_home_and_sds()
-
-        for path_suffix in self.path_suffixes:
-            for rel_home_option in rpo.RelHomeOptionType:
-                with self.subTest(relativity=str(rel_home_option),
-                                  path_suffix=path_suffix.value()):
-                    path_value = file_refs.rel_home(rel_home_option, path_suffix)
-                    path = path_value.value_of_any_dependency(tcds)
-                    # ACT #
-                    actual = sut.path_value_with_relativity_name_prefix_str(path, tcds)
-                    # ASSERT #
-                    expected = _expected_str(rpo.REL_HDS_OPTIONS_MAP[rel_home_option].directory_variable_name,
-                                             path_suffix)
-                    self.assertEqual(expected, actual)
-
-    def test_rel_sds(self):
-        tcds = fake_home_and_sds()
-
-        for path_suffix in self.path_suffixes:
-            for rel_sds_option in rpo.RelSdsOptionType:
-                with self.subTest(relativity=str(rel_sds_option),
-                                  path_suffix=path_suffix.value()):
-                    path_value = file_refs.rel_sandbox(rel_sds_option, path_suffix)
-                    path = path_value.value_of_any_dependency(tcds)
-                    # ACT #
-                    actual = sut.path_value_with_relativity_name_prefix_str(path, tcds)
-                    # ASSERT #
-                    expected = _expected_str(rpo.REL_SDS_OPTIONS_MAP[rel_sds_option].directory_variable_name,
-                                             path_suffix)
-                    self.assertEqual(expected, actual)
-
-    def test_absolute(self):
-        tcds = fake_home_and_sds()
-        absolute_path = str(pathlib.Path.cwd().resolve())
-        path_value = file_refs.absolute_file_name(absolute_path)
-        path = path_value.value_of_any_dependency(tcds)
-        # ACT #
-        actual = sut.path_value_with_relativity_name_prefix_str(path, tcds)
-        # ASSERT #
-        self.assertEqual(absolute_path, actual)
 
 
 def _expected_str(directory_name: str, path_suffix: PathPart) -> str:
