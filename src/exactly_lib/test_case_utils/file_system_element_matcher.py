@@ -35,7 +35,9 @@ class _ErrorMessageResolverForFailingFileProperties(ErrorMessageResolver):
 
         property_descriptor = path_description.path_value_description__from_described(
             actual_file_attributes.PLAIN_FILE_OBJECT_NAME,
-            self.failing_file)
+            self.failing_file,
+            True,
+        )
         diff_failure_resolver = diff_msg_utils.DiffFailureInfoResolver(
             property_descriptor,
             ExpectationType.POSITIVE,

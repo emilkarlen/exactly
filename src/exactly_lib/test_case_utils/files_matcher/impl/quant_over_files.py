@@ -266,4 +266,6 @@ class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConst
         return path_description.path_value_description__from_described(
             property_description.file_property_name(contents_attribute,
                                                     actual_file_attributes.PLAIN_FILE_OBJECT_NAME),
-            self._file_in_dir.path.describer)
+            self._file_in_dir.path.describer,
+            True,
+        )

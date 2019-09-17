@@ -30,11 +30,21 @@ class PathValuePartConstructor(ErrorMessagePartConstructor):
 
 
 class PathValuePartConstructorOfPathDescriber(ErrorMessagePartFixConstructor):
-    def __init__(self, path: PathDescriberForPrimitive):
+    def __init__(self,
+                 path: PathDescriberForPrimitive,
+                 mimic_text_renderer_layout: bool = False):
         self.path = path
+        self.mimic_text_renderer_layout = mimic_text_renderer_layout
 
     def lines(self) -> List[str]:
-        return path_rendering.path_strings(self.path)
+        path_str_list = path_rendering.path_strings(self.path)
+        if self.mimic_text_renderer_layout:
+            return [
+                '  ' + path_str
+                for path_str in path_str_list
+            ]
+        else:
+            return path_str_list
 
 
 def lines_for_path_value(path_value: FileRef, tcds: HomeAndSds) -> List[str]:
@@ -181,8 +191,10 @@ def path_value_description(property_name: str,
 
 
 def path_value_description__from_described(property_name: str,
-                                           path: PathDescriberForPrimitive) -> PropertyDescriptor:
+                                           path: PathDescriberForPrimitive,
+                                           mimic_text_renderer_layout: bool = False) -> PropertyDescriptor:
     return property_description.PropertyDescriptorWithConstantPropertyName(
         property_name,
-        error_info.ErrorMessagePartConstructorOfFixed(PathValuePartConstructorOfPathDescriber(path)),
+        error_info.ErrorMessagePartConstructorOfFixed(
+            PathValuePartConstructorOfPathDescriber(path, mimic_text_renderer_layout)),
     )

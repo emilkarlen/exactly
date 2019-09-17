@@ -94,13 +94,14 @@ class ConstructorForPath(ComparisonActualFileConstructor):
 
 class ActualFilePropertyDescriptorConstructorForComparisonFile(FilePropertyDescriptorConstructor):
     def __init__(self,
-                 file_ref: PathDescriberForPrimitive,
+                 path: PathDescriberForPrimitive,
                  object_name: str):
-        self._file_ref = file_ref
+        self._path = path
         self._object_name = object_name
 
     def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
         return path_description.path_value_description__from_described(
             property_description.file_property_name(contents_attribute, self._object_name),
-            self._file_ref
+            self._path,
+            True,
         )
