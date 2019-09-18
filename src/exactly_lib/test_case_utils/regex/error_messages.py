@@ -3,7 +3,6 @@ import pathlib
 from typing import List
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
@@ -25,12 +24,12 @@ class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
         prefix = ''
         if self._prefix:
             prefix = self._prefix + ' '
-        return prefix + self._expected_obj_description(environment)
+        return prefix + self._expected_obj_description()
 
-    def _expected_obj_description(self, environment: ErrorMessageResolvingEnvironment) -> str:
+    def _expected_obj_description(self) -> str:
         return 'todo'
 
-    def _string_fragment(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
+    def _string_fragment(self) -> str:
         return 'todo'
 
 
