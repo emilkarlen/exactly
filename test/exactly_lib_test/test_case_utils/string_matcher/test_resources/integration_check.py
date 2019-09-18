@@ -9,7 +9,7 @@ from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
 from exactly_lib.util.file_utils import preserved_cwd
@@ -60,7 +60,6 @@ class Executor:
         self.parser = parser
         self.arrangement = arrangement
         self.expectation = expectation
-        self._err_msg_env = None
 
     def execute(self, source: ParseSource):
         try:
@@ -89,8 +88,6 @@ class Executor:
                 symbols=self.arrangement.symbols) as path_resolving_environment:
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
             home_and_sds = path_resolving_environment.home_and_sds
-            self._err_msg_env = ErrorMessageResolvingEnvironment(home_and_sds,
-                                                                 self.arrangement.symbols)
 
             with preserved_cwd():
                 os.chdir(str(home_and_sds.hds.case_dir))
@@ -191,13 +188,13 @@ class Executor:
         else:
             self.put.assertIsNotNone(result,
                                      'result from main')
-            err_msg = result.resolve(self._err_msg_env)
+            err_msg = result.resolve()
             self.expectation.main_result.apply_with_message(self.put, err_msg,
                                                             'error result of main')
 
     def _check_hard_error(self, result: HardErrorException):
         if self.expectation.is_hard_error is not None:
-            err_msg = result.error.resolve_sequence(self._err_msg_env)
+            err_msg = result.error.resolve_sequence()
             assertion_on_text_renderer = asrt_text_doc.is_single_pre_formatted_text(self.expectation.is_hard_error)
             assertion_on_text_renderer.apply_with_message(self.put, err_msg,
                                                           'error message for hard error')

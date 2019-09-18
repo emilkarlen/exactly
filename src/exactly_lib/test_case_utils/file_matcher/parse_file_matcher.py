@@ -15,7 +15,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartFixConstructor
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import file_matchers
@@ -47,7 +47,7 @@ REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
                            syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name)
 
 
-class FileSelectionDescriptor(ErrorMessagePartFixConstructor):
+class FileSelectionDescriptor(ErrorMessagePartConstructor):
     def __init__(self, matcher: FileMatcher):
         self.matcher = matcher
 

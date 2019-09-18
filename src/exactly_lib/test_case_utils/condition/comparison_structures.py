@@ -14,7 +14,7 @@ from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_from_references
 from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
+from exactly_lib.type_system.error_message import PropertyDescriptor, \
     ErrorMessageResolver
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -120,8 +120,6 @@ class ComparisonHandler(Generic[T]):
         return self._executor(environment).execute_and_return_failure_via_err_msg_resolver()
 
     def _executor(self, environment: PathResolvingEnvironmentPreOrPostSds):
-        err_msg_env = ErrorMessageResolvingEnvironment(environment.home_and_sds,
-                                                       environment.symbols)
         lhs = self.actual_value_lhs.resolve_value_of_any_dependency(environment)
         rhs = self.expected_value_rhs.resolve_value_of_any_dependency(environment)
         return _ComparisonExecutor(
@@ -134,7 +132,7 @@ class ComparisonHandler(Generic[T]):
                                                    lhs,
                                                    rhs,
                                                    self.operator),
-                             err_msg_env)
+                             )
         )
 
 
@@ -151,7 +149,7 @@ class _ErrorMessageResolver(Generic[T], ErrorMessageResolver):
         self.rhs = rhs
         self.operator = operator
 
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+    def resolve(self) -> str:
         return self.failure_info().error_message()
 
     def failure_info(self) -> diff_msg.DiffErrorInfo:
@@ -167,12 +165,11 @@ class _ErrorMessageResolver(Generic[T], ErrorMessageResolver):
 class _FailureReporter(Generic[T]):
     def __init__(self,
                  err_msg_resolver: _ErrorMessageResolver[T],
-                 environment: ErrorMessageResolvingEnvironment):
+                 ):
         self.err_msg_resolver = err_msg_resolver
-        self.environment = environment
 
     def unexpected_value_message(self) -> str:
-        return self.err_msg_resolver.resolve(self.environment)
+        return self.err_msg_resolver.resolve()
 
     def failure_info(self) -> diff_msg.DiffErrorInfo:
         return self.err_msg_resolver.failure_info()

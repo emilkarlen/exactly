@@ -324,9 +324,7 @@ class _Assertion:
         return self._err_msg_for__td(env_dep_texts.of_old(msg_resolver))
 
     def _err_msg_for__td(self, msg_resolver: TextResolver) -> TextRenderer:
-        env = error_message.ErrorMessageResolvingEnvironment(self.environment.home_and_sds,
-                                                             self.environment.symbols)
-        return msg_resolver.resolve_sequence(env)
+        return msg_resolver.resolve_sequence()
 
 
 _ERROR_MESSAGE_HEADER = 'Failure for path:'

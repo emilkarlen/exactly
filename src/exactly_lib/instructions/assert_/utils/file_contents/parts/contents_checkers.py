@@ -3,7 +3,6 @@ from typing import Sequence
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart, IdentityAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor, \
     ComparisonActualFile
-from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
@@ -66,15 +65,12 @@ class IsExistingRegularFileAssertionPart(IdentityAssertionPart[ComparisonActualF
                actual_file: ComparisonActualFile,
                ):
         if actual_file.file_access_needs_to_be_verified:
-            self.__check(environment, actual_file)
+            self.__check(actual_file)
 
-    def __check(self,
-                environment: InstructionEnvironmentForPostSdsStep,
-                actual_file: ComparisonActualFile,
+    def __check(self, actual_file: ComparisonActualFile,
                 ):
         if actual_file.file_access_needs_to_be_verified:
             err_msg_resolver = self._file_prop_check.matches(actual_file.path)
 
             if err_msg_resolver:
-                err_msg_env = err_msg_env_from_instr_env(environment)
-                raise pfh_exception.PfhFailException(err_msg_resolver.resolve__tr(err_msg_env))
+                raise pfh_exception.PfhFailException(err_msg_resolver.resolve__tr())

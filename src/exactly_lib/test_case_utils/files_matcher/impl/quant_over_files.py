@@ -9,7 +9,6 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.type_system.data import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForFileWithDescriptor
@@ -17,6 +16,7 @@ from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
 from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
     resolver_validator_for_file_matcher
+from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
     FilePropertyDescriptorConstructor, ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcherModel
@@ -220,22 +220,20 @@ class _ErrorReportingHelper:
         return self.err_msg_for_dir(single_line_value)
 
     def err_msg_for_dir(self, single_line_value: str) -> ErrorMessageResolver:
-        def resolve(environment: ErrorMessageResolvingEnvironment) -> str:
-            return self._diff_failure_info_for_dir().resolve(environment,
-                                                             diff_msg.ActualInfo(single_line_value)).error_message()
+        def resolve() -> str:
+            return self._diff_failure_info_for_dir().resolve(diff_msg.ActualInfo(single_line_value)).error_message()
 
         return err_msg_resolvers.of_function(resolve)
 
     def err_msg_for_file_in_dir(self,
                                 single_line_value: str,
                                 file_element: FileModel) -> ErrorMessageResolver:
-        def resolve(environment: ErrorMessageResolvingEnvironment) -> str:
+        def resolve() -> str:
             failing_file_description_lines = path_rendering.path_strings(
                 file_element.path.describer,
             )
             actual_info = diff_msg.ActualInfo(single_line_value, failing_file_description_lines)
-            return self._diff_failure_info_for_dir().resolve(environment,
-                                                             actual_info).error_message()
+            return self._diff_failure_info_for_dir().resolve(actual_info).error_message()
 
         return err_msg_resolvers.of_function(resolve)
 

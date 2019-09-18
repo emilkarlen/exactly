@@ -20,7 +20,7 @@ class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
         self._prefix = prefix
         self.expected_contents = expected_contents
 
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+    def resolve(self) -> str:
         prefix = ''
         if self._prefix:
             prefix = self._prefix + ' '
@@ -73,12 +73,12 @@ class _ErrorMessageResolver(ErrorMessageResolver):
         self._checked_file_describer = checked_file_describer
         self._actual_info = actual_info
 
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+    def resolve(self) -> str:
         description_of_actual_file = self._checked_file_describer.construct_for_contents_attribute(CONTENTS_ATTRIBUTE)
         failure_info_resolver = DiffFailureInfoResolver(
             description_of_actual_file,
             self._expectation_type,
             self._expected_value,
         )
-        failure_info = failure_info_resolver.resolve(environment, self._actual_info)
+        failure_info = failure_info_resolver.resolve(self._actual_info)
         return failure_info.error_message()

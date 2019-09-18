@@ -73,7 +73,7 @@ class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
         self._prefix = prefix
         self.expected_contents = expected_contents
 
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+    def resolve(self) -> str:
         prefix = ''
         if self._prefix:
             prefix = self._prefix + ' '

@@ -31,43 +31,26 @@ class ErrorMessageResolvingEnvironment:
 
 class ErrorMessageResolver(ABC):
     @abstractmethod
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+    def resolve(self) -> str:
         pass
 
-    def resolve__tr(self, environment: ErrorMessageResolvingEnvironment) -> TextRenderer:
-        return text_docs.single_pre_formatted_line_object(self.resolve(environment))
+    def resolve__tr(self) -> TextRenderer:
+        return text_docs.single_pre_formatted_line_object(self.resolve())
 
 
-class ErrorMessageFixedResolver(ABC):
-    @abstractmethod
-    def message(self) -> str:
-        pass
-
-    def message__tr(self) -> TextRenderer:
-        return text_docs.single_pre_formatted_line_object(self.message())
-
-
-class ErrorMessageResolverOfFixed(ErrorMessageResolver):
-    def __init__(self, fixed: ErrorMessageFixedResolver):
-        self._fixed = fixed
-
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
-        return self._fixed.message()
-
-
-class ConstantErrorMessageResolver(ErrorMessageFixedResolver):
+class ConstantErrorMessageResolver(ErrorMessageResolver):
     def __init__(self, constant: str):
         self._constant = constant
 
-    def message(self) -> str:
+    def resolve(self) -> str:
         return self._constant
 
 
-class OfTextDoc(ErrorMessageFixedResolver):
+class OfTextDoc(ErrorMessageResolver):
     def __init__(self, message: TextRenderer):
         self._message = message
 
-    def message(self) -> str:
+    def resolve(self) -> str:
         return print.print_to_str(self._message.render_sequence())
 
 

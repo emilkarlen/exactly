@@ -67,14 +67,12 @@ def matcher_for_any_line_matches(expectation_type: ExpectationType,
             return _AnyLineMatchesStringMatcherForPositiveMatch(
                 instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
                 expectation_type,
-                line_matcher,
-                err_msg_env)
+                line_matcher)
         else:
             return _AnyLineMatchesStringMatcherForNegativeMatch(
                 instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
                 expectation_type,
-                line_matcher,
-                err_msg_env)
+                line_matcher)
 
     def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
         return resolving_dependencies_from_references(line_matcher_resolver.references, symbols)
@@ -100,14 +98,12 @@ def matcher_for_every_line_matches(expectation_type: ExpectationType,
             return _EveryLineMatchesStringMatcherForPositiveMatch(
                 instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
                 expectation_type,
-                line_matcher,
-                err_msg_env)
+                line_matcher)
         else:
             return _EveryLineMatchesStringMatcherForNegativeMatch(
                 instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
                 expectation_type,
-                line_matcher,
-                err_msg_env)
+                line_matcher)
 
     def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
         return resolving_dependencies_from_references(line_matcher_resolver.references, symbols)
@@ -132,12 +128,11 @@ class _StringMatcherBase(StringMatcher):
                  any_or_every_keyword: str,
                  expectation_type: ExpectationType,
                  line_matcher: LineMatcher,
-                 err_msg_environment: ErrorMessageResolvingEnvironment):
+                 ):
         super().__init__()
         self._any_or_every_keyword = any_or_every_keyword
         self._expectation_type = expectation_type
         self._line_matcher = line_matcher
-        self._err_msg_environment = err_msg_environment
 
     @property
     def option_description(self) -> str:
@@ -163,10 +158,9 @@ class _StringMatcherBase(StringMatcher):
                      actual_single_line_value: str,
                      description_lines: Sequence[str] = ()):
         failure_info_resolver = self._diff_failure_info_resolver(checked_file_describer)
-        failure_info = failure_info_resolver.resolve(self._err_msg_environment,
-                                                     diff_msg.actual_with_single_line_value(
-                                                         actual_single_line_value,
-                                                         description_lines))
+        failure_info = failure_info_resolver.resolve(diff_msg.actual_with_single_line_value(
+            actual_single_line_value,
+            description_lines))
         raise pfh_exception.PfhFailException(failure_info.error_message__as_td())
 
     def _report_fail_with_line(self,
@@ -176,10 +170,9 @@ class _StringMatcherBase(StringMatcher):
         single_line_actual_value = 'Line {} {}'.format(number__contents[0], cause)
 
         failure_info_resolver = self._diff_failure_info_resolver(checked_file_describer)
-        failure_info = failure_info_resolver.resolve(self._err_msg_environment,
-                                                     diff_msg.actual_with_single_line_value(
-                                                         single_line_actual_value,
-                                                         [number__contents[1]]))
+        failure_info = failure_info_resolver.resolve(diff_msg.actual_with_single_line_value(
+            single_line_actual_value,
+            [number__contents[1]]))
         raise pfh_exception.PfhFailException(failure_info.error_message__as_td())
 
     def _diff_failure_info_resolver(self,

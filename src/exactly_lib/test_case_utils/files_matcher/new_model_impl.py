@@ -85,9 +85,9 @@ class ErrorMessageInfoForDir(ErrorMessageInfo):
         self._files_selection = files_selection
 
     def property_descriptor(self, property_name: str) -> PropertyDescriptor:
-        return property_description.PropertyDescriptorWithConstantPropertyNameOfFix(
+        return property_description.PropertyDescriptorWithConstantPropertyName(
             property_name,
-            property_description.multiple_object_descriptors__fixed([
+            property_description.multiple_object_descriptors([
                 path_description.PathValuePartConstructorOfPathDescriber(self._dir_path),
                 parse_file_matcher.FileSelectionDescriptor(self._files_selection),
             ])

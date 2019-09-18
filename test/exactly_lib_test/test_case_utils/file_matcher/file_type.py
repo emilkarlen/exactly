@@ -15,8 +15,6 @@ def suite() -> unittest.TestSuite:
 
 
 class TestFileType(unittest.TestCase):
-    ERR_MSG_ENV = fake_error_message_resolving_environment()
-
     def _check(self,
                file_type_to_check_for: FileType,
                expected_result: bool,
@@ -55,7 +53,7 @@ class TestFileType(unittest.TestCase):
                 else:
                     self.assertIsInstance(actual_result, ErrorMessageResolver,
                                           'result')
-                    err_msg = actual_result.resolve(self.ERR_MSG_ENV)
+                    err_msg = actual_result.resolve()
                     self.assertIsInstance(err_msg, str, 'error message')
 
     def test_regular(self):

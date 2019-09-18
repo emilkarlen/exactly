@@ -108,36 +108,28 @@ class _ErrorMessageResolver(ErrorMessageResolver):
         self._setup = setup
         self._actual_files = actual_files
 
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
-        return self.resolve_diff(environment).error_message()
+    def resolve(self) -> str:
+        return self.resolve_diff().error_message()
 
-    def resolve_diff(self,
-                     environment: ErrorMessageResolvingEnvironment) -> diff_msg.DiffErrorInfo:
+    def resolve_diff(self) -> diff_msg.DiffErrorInfo:
         property_descriptor = self._setup.model.error_message_info.property_descriptor
         return diff_msg.DiffErrorInfo(
             property_descriptor(config.EMPTINESS_PROPERTY_NAME).description(),
             self._setup.expectation_type,
             self._setup.expected_description_str,
-            self.resolve_actual_info(self._actual_files,
-                                     path_resolving_env_from_err_msg_env(environment))
+            self.resolve_actual_info(self._actual_files)
         )
 
-    def resolve_actual_info(self,
-                            actual_files: List[FileModel],
-                            environment: PathResolvingEnvironmentPreOrPostSds) -> diff_msg.ActualInfo:
+    def resolve_actual_info(self, actual_files: List[FileModel]) -> diff_msg.ActualInfo:
         num_files_in_dir = len(actual_files)
         single_line_value = str(num_files_in_dir) + ' files'
         return diff_msg.ActualInfo(single_line_value,
-                                   self._resolve_description_lines(actual_files, environment))
+                                   self._resolve_description_lines(actual_files))
 
-    def _resolve_description_lines(self,
-                                   actual_files: List[FileModel],
-                                   environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
-        return ['Actual contents:'] + self._dir_contents_err_msg_lines(actual_files, environment)
+    def _resolve_description_lines(self, actual_files: List[FileModel]) -> List[str]:
+        return ['Actual contents:'] + self._dir_contents_err_msg_lines(actual_files)
 
-    def _dir_contents_err_msg_lines(self,
-                                    actual_files_in_dir: List[FileModel],
-                                    environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
+    def _dir_contents_err_msg_lines(self, actual_files_in_dir: List[FileModel]) -> List[str]:
         paths_in_dir = [
             f.relative_to_root_dir
             for f in actual_files_in_dir

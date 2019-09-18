@@ -6,13 +6,13 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, FilesMatcherValue, Environment, \
     FilesMatcherModel
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
@@ -59,7 +59,6 @@ class _Executor:
         self.parser = parser
         self.arrangement = arrangement
         self.expectation = expectation
-        self._err_msg_env = None
 
     def execute(self, source: ParseSource):
         try:
@@ -74,11 +73,6 @@ class _Executor:
                                                           resolver.references,
                                                           'symbol-usages after parse')
 
-        # matches_string_matcher_resolver(
-        #     references=asrt.anything_goes(),
-        #     symbols=self.arrangement.symbols).apply_with_message(self.put, resolver,
-        #                                                          'resolver structure')
-
         with home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 hds_contents=self.arrangement.hds_contents,
@@ -88,8 +82,6 @@ class _Executor:
                 symbols=self.arrangement.symbols) as path_resolving_environment:
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
             home_and_sds = path_resolving_environment.home_and_sds
-            self._err_msg_env = ErrorMessageResolvingEnvironment(home_and_sds,
-                                                                 self.arrangement.symbols)
 
             with preserved_cwd():
                 os.chdir(str(home_and_sds.hds.case_dir))
@@ -185,13 +177,13 @@ class _Executor:
         else:
             self.put.assertIsNotNone(result,
                                      'result from main')
-            err_msg = result.resolve(self._err_msg_env)
+            err_msg = result.resolve()
             self.expectation.main_result.apply_with_message(self.put, err_msg,
                                                             'error result of main')
 
     def _check_hard_error(self, result: HardErrorException):
         if self.expectation.is_hard_error is not None:
-            err_msg = result.error.resolve_sequence(self._err_msg_env)
+            err_msg = result.error.resolve_sequence()
             assertion_on_text_renderer = asrt_text_doc.is_single_pre_formatted_text(self.expectation.is_hard_error)
             assertion_on_text_renderer.apply_with_message(self.put, err_msg,
                                                           'error message for hard error')

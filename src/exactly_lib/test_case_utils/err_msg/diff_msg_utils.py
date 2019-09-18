@@ -4,12 +4,7 @@ from exactly_lib.util.logic_types import ExpectationType
 
 
 class ExpectedValueResolver:
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
-        raise NotImplementedError('abstract method')
-
-
-class ExpectedValueFixedResolver:
-    def message(self) -> str:
+    def resolve(self) -> str:
         raise NotImplementedError('abstract method')
 
 
@@ -17,24 +12,12 @@ class ConstantExpectedValueResolver(ExpectedValueResolver):
     def __init__(self, value: str):
         self.value = value
 
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
-        return self.value
-
-
-class ConstantExpectedValueFixedResolver(ExpectedValueFixedResolver):
-    def __init__(self, value: str):
-        self.value = value
-
-    def message(self) -> str:
+    def resolve(self) -> str:
         return self.value
 
 
 def expected_constant(value: str) -> ExpectedValueResolver:
     return ConstantExpectedValueResolver(value)
-
-
-def expected_constant__fixed(value: str) -> ExpectedValueFixedResolver:
-    return ConstantExpectedValueFixedResolver(value)
 
 
 class DiffFailureInfoResolver:
@@ -60,11 +43,9 @@ class DiffFailureInfoResolver:
         self.expectation_type = expectation_type
         self.expected = expected
 
-    def resolve(self,
-                environment: ErrorMessageResolvingEnvironment,
-                actual: diff_msg.ActualInfo) -> diff_msg.DiffErrorInfo:
+    def resolve(self, actual: diff_msg.ActualInfo) -> diff_msg.DiffErrorInfo:
         return diff_msg.DiffErrorInfo(
             self.property_descriptor.description(),
             self.expectation_type,
-            self.expected.resolve(environment),
+            self.expected.resolve(),
             actual)

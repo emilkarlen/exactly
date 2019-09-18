@@ -6,7 +6,7 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, ErrorMessageResolver
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcher, LineMatcherLine
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
@@ -86,10 +86,6 @@ class _Checker:
         self.arrangement = arrangement
         self.expectation = expectation
         self.tcds = fake_home_and_sds()
-        self.err_msg_env = ErrorMessageResolvingEnvironment(
-            self.tcds,
-            self.arrangement.symbols
-        )
 
     def check(self):
         try:
@@ -185,7 +181,7 @@ class _Checker:
         else:
             self.put.assertIsNotNone(result,
                                      'result from main')
-            err_msg = result.resolve(self.err_msg_env)
+            err_msg = result.resolve()
             self.expectation.main_result.apply_with_message(self.put, err_msg,
                                                             'error result of main')
 
@@ -193,11 +189,7 @@ class _Checker:
         if self.expectation.is_hard_error is None:
             self.put.fail('Unexpected HARD_ERROR')
         else:
-            err_msg_env = ErrorMessageResolvingEnvironment(
-                self.tcds,
-                self.arrangement.symbols
-            )
-            err_msg = result.error.resolve_sequence(err_msg_env)
+            err_msg = result.error.resolve_sequence()
             assertion_on_text_renderer = asrt_text_doc.is_single_pre_formatted_text(self.expectation.is_hard_error)
             assertion_on_text_renderer.apply_with_message(self.put, err_msg,
                                                           'error message for hard error')

@@ -52,10 +52,9 @@ class _ErrorMessageResolver(ErrorMessageResolver):
         self._actual_file_prop_descriptor_constructor = actual_file_prop_descriptor_constructor
         self._actual = actual
 
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+    def resolve(self) -> str:
         diff_failure_info_resolver = self._failure_info_resolver(self._actual_file_prop_descriptor_constructor)
-        failure_info = diff_failure_info_resolver.resolve(environment,
-                                                          diff_msg.actual_with_single_line_value(self._actual))
+        failure_info = diff_failure_info_resolver.resolve(diff_msg.actual_with_single_line_value(self._actual))
         return failure_info.error_message()
 
     def _failure_info_resolver(self,

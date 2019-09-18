@@ -1,10 +1,9 @@
 import unittest
-
 from abc import ABC, abstractmethod
 from typing import Optional
 
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
 
@@ -22,7 +21,7 @@ class AssertApplicationOfMatcherInSymbolTable(ValueAssertionBase[InstructionEnvi
                message_builder: MessageBuilder):
         result = self._apply_matcher(value)
 
-        check_result(put, value,
+        check_result(put,
                      self.expected_matcher_result,
                      result)
 
@@ -33,7 +32,6 @@ class AssertApplicationOfMatcherInSymbolTable(ValueAssertionBase[InstructionEnvi
 
 
 def check_result(put: unittest.TestCase,
-                 environment: InstructionEnvironmentForPostSdsStep,
                  expected_matcher_result: Optional[ValueAssertion[str]],
                  actual_result: Optional[ErrorMessageResolver]):
     if expected_matcher_result is None:
@@ -42,8 +40,6 @@ def check_result(put: unittest.TestCase,
     else:
         put.assertIsNotNone(actual_result,
                             'result from main')
-        err_msg_env = ErrorMessageResolvingEnvironment(environment.home_and_sds,
-                                                       environment.symbols)
-        err_msg = actual_result.resolve(err_msg_env)
+        err_msg = actual_result.resolve()
         expected_matcher_result.apply_with_message(put, err_msg,
                                                    'error result of main')

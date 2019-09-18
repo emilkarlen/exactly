@@ -31,7 +31,7 @@ class _ErrorMessageResolverForFailingFileProperties(ErrorMessageResolver):
         self.failing_file = failing_file
         self.failure = failure
 
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+    def resolve(self) -> str:
         from exactly_lib.util.logic_types import ExpectationType
 
         property_descriptor = path_description.path_value_description(
@@ -45,7 +45,7 @@ class _ErrorMessageResolverForFailingFileProperties(ErrorMessageResolver):
             diff_msg_utils.ConstantExpectedValueResolver('existing regular file'),
         )
         actual_info = diff_msg.ActualInfo(file_properties.render_property(self.failure))
-        return diff_failure_resolver.resolve(environment, actual_info).error_message()
+        return diff_failure_resolver.resolve(actual_info).error_message()
 
 
 class ErrorMessageResolverForFailingFileProperties2(ErrorMessageResolver):
@@ -57,7 +57,7 @@ class ErrorMessageResolverForFailingFileProperties2(ErrorMessageResolver):
         self.failing_file_property_descriptor = failing_file_property_descriptor
         self.failure = failure
 
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+    def resolve(self) -> str:
         from exactly_lib.util.logic_types import ExpectationType
 
         expected_file_type_description = file_properties.TYPE_INFO[self.expected].description
@@ -68,4 +68,4 @@ class ErrorMessageResolverForFailingFileProperties2(ErrorMessageResolver):
             diff_msg_utils.ConstantExpectedValueResolver('existing ' + expected_file_type_description),
         )
         actual_info = diff_msg.ActualInfo(file_properties.render_property(self.failure))
-        return diff_failure_resolver.resolve(environment, actual_info).error_message()
+        return diff_failure_resolver.resolve(actual_info).error_message()

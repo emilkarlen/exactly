@@ -10,7 +10,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForPrimitivePath
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand
@@ -51,7 +51,6 @@ class Executor:
         self.parser = parser
         self.arrangement = arrangement
         self.expectation = expectation
-        self._err_msg_env = None
 
     def execute(self, source: ParseSource):
         try:
@@ -82,9 +81,6 @@ class Executor:
                 self.arrangement.symbols)
 
             matcher_value, matcher = self._resolve(resolver, environment)
-
-            self._err_msg_env = ErrorMessageResolvingEnvironment(tcds,
-                                                                 self.arrangement.symbols)
 
             with preserved_cwd():
                 os.chdir(str(tcds.hds.case_dir))
@@ -186,13 +182,13 @@ class Executor:
         else:
             self.put.assertIsNotNone(result,
                                      'result from main')
-            err_msg = result.resolve(self._err_msg_env)
+            err_msg = result.resolve()
             self.expectation.main_result.apply_with_message(self.put, err_msg,
                                                             'error result of main')
 
     def _check_hard_error(self, result: HardErrorException):
         if self.expectation.is_hard_error is not None:
-            err_msg = result.error.resolve_sequence(self._err_msg_env)
+            err_msg = result.error.resolve_sequence()
             assertion_on_text_renderer = asrt_text_doc.is_single_pre_formatted_text(self.expectation.is_hard_error)
             assertion_on_text_renderer.apply_with_message(self.put, err_msg,
                                                           'error message for hard error')

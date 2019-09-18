@@ -29,5 +29,5 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
         mb_error_message = matcher.matches(file_to_check)
         if mb_error_message is not None:
             raise pfh_exception.PfhFailException(
-                mb_error_message.resolve__tr(err_msg_env_from_instr_env(environment))
+                mb_error_message.resolve__tr()
             )

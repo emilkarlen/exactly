@@ -67,9 +67,7 @@ class FileMatcherNameGlobPattern(FileMatcher):
         if self.matches(model):
             return None
         else:
-            return err_msg_resolvers.resolver_of_fixed(
-                err_msg_resolvers.of_path__fixed(model.path.describer)
-            )
+            return err_msg_resolvers.of_path(model.path.describer)
 
     def matches(self, model: FileMatcherModel) -> bool:
         return model.path.primitive.match(self._glob_pattern)

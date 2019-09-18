@@ -29,7 +29,7 @@ class _OfConstantRenderer(SequenceRendererResolver[MajorBlock]):
     def __init__(self, renderer: TextRenderer):
         self._renderer = renderer
 
-    def resolve_sequence(self, environment: ErrorMessageResolvingEnvironment) -> TextRenderer:
+    def resolve_sequence(self) -> TextRenderer:
         return self._renderer
 
 
@@ -37,16 +37,16 @@ class _ResolverAsOldResolver(ErrorMessageResolver):
     def __init__(self, resolver: TextResolver):
         self._resolver = resolver
 
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
-        return print.print_to_str(self._resolver.resolve_sequence(environment).render_sequence())
+    def resolve(self) -> str:
+        return print.print_to_str(self._resolver.resolve_sequence().render_sequence())
 
 
 class _ResolverFromOldResolver(SequenceRendererResolver[MajorBlock]):
     def __init__(self, old: ErrorMessageResolver):
         self._old = old
 
-    def resolve_sequence(self, environment: ErrorMessageResolvingEnvironment) -> TextRenderer:
-        return self._old.resolve__tr(environment)
+    def resolve_sequence(self) -> TextRenderer:
+        return self._old.resolve__tr()
 
 
 class _ConstantPreFormatted(SequenceRendererResolver[MajorBlock]):
@@ -57,6 +57,6 @@ class _ConstantPreFormatted(SequenceRendererResolver[MajorBlock]):
         self._x = x
         self._is_line_ended = is_line_ended
 
-    def resolve_sequence(self, environment: ErrorMessageResolvingEnvironment) -> TextRenderer:
+    def resolve_sequence(self) -> TextRenderer:
         return text_docs.single_pre_formatted_line_object(self._x,
                                                           self._is_line_ended)

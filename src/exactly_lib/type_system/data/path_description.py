@@ -5,17 +5,17 @@ from exactly_lib.test_case_file_structure import path_relativity as pr
 from exactly_lib.test_case_file_structure import relative_path_options as rpo
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.err_msg import property_description, error_info
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartFixConstructor
+from exactly_lib.test_case_utils.err_msg import property_description
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
-from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.data.file_ref import FileRef
+from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.error_message import PropertyDescriptor
 
 EXACTLY_SANDBOX_ROOT_DIR_NAME = 'EXACTLY_SANDBOX'
 
 
-class PathValuePartConstructorOfPathDescriber(ErrorMessagePartFixConstructor):
+class PathValuePartConstructorOfPathDescriber(ErrorMessagePartConstructor):
     def __init__(self,
                  path: PathDescriberForPrimitive,
                  mimic_text_renderer_layout: bool = False):
@@ -138,6 +138,5 @@ def path_value_description(property_name: str,
                            mimic_text_renderer_layout: bool = False) -> PropertyDescriptor:
     return property_description.PropertyDescriptorWithConstantPropertyName(
         property_name,
-        error_info.ErrorMessagePartConstructorOfFixed(
-            PathValuePartConstructorOfPathDescriber(path, mimic_text_renderer_layout)),
+        PathValuePartConstructorOfPathDescriber(path, mimic_text_renderer_layout),
     )

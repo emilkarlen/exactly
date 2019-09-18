@@ -1,8 +1,6 @@
-from abc import ABC, abstractmethod
 from typing import List, Sequence
 
 from exactly_lib.test_case.result import pfh
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.util.string import line_separated
 
 
@@ -44,34 +42,15 @@ class ErrorMessagePartConstructor:
         raise NotImplementedError('abstract method')
 
 
-class ErrorMessagePartFixConstructor(ABC):
-    """Constructs lines that are a part of an error message."""
-
-    @abstractmethod
-    def lines(self) -> List[str]:
-        """
-        :return: empty list if there is nothing to say
-        """
-        raise NotImplementedError('abstract method')
-
-
-class ErrorMessagePartConstructorOfFixed(ErrorMessagePartConstructor):
-    def __init__(self, fixed: ErrorMessagePartFixConstructor):
-        self._fixed = fixed
-
-    def lines(self) -> List[str]:
-        return self._fixed.lines()
-
-
 class NoErrorMessagePartConstructor(ErrorMessagePartConstructor):
     def lines(self) -> List[str]:
         return []
 
 
-class MultipleErrorMessagePartFixConstructor(ErrorMessagePartFixConstructor):
+class MultipleErrorMessagePartConstructor(ErrorMessagePartConstructor):
     def __init__(self,
                  separator_lines: List[str],
-                 constructors: Sequence[ErrorMessagePartFixConstructor]):
+                 constructors: Sequence[ErrorMessagePartConstructor]):
         self.separator_lines = tuple(separator_lines)
         self.constructors = tuple(constructors)
 

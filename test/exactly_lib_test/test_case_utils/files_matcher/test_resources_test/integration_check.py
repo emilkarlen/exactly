@@ -298,7 +298,7 @@ class _FilesMatcherValueThatAssertsModelsIsExpected(FilesMatcherValue):
         self.relativity = relativity
 
     @property
-    def negation(self):
+    def negation(self) -> FilesMatcherValue:
         raise NotImplementedError('should not be used')
 
     def matches(self,

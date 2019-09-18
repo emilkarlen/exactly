@@ -127,7 +127,7 @@ class _ErrorMessageResolver(ErrorMessageResolver):
         self._pattern = pattern
         self._actual_contents = actual_contents
 
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> str:
+    def resolve(self) -> str:
         regex_line = self._header() + self._flags_string() + shlex.quote(self._pattern.pattern)
         return regex_line + '\nIn:\n' + self._contents_lines()
 

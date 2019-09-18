@@ -68,9 +68,7 @@ class FileMatcherBaseNameRegExPattern(FileMatcher):
         if self.matches(model):
             return None
         else:
-            return err_msg_resolvers.resolver_of_fixed(
-                err_msg_resolvers.constant__fixed(str(model.path.primitive.name))
-            )
+            return err_msg_resolvers.constant(str(model.path.primitive.name))
 
     def matches(self, model: FileMatcherModel) -> bool:
         return self._compiled_reg_ex.search(model.path.primitive.name) is not None

@@ -8,15 +8,9 @@ from exactly_lib.util.simple_textstruct.structure import MajorBlock
 T = TypeVar('T')
 
 
-class RendererResolver(Generic[T], ABC):
-    @abstractmethod
-    def resolve(self, environment: ErrorMessageResolvingEnvironment) -> Renderer[T]:
-        pass
-
-
 class SequenceRendererResolver(Generic[T], ABC):
     @abstractmethod
-    def resolve_sequence(self, environment: ErrorMessageResolvingEnvironment) -> SequenceRenderer[T]:
+    def resolve_sequence(self) -> SequenceRenderer[T]:
         pass
 
 
