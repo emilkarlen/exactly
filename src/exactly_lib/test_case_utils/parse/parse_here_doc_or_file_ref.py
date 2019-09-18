@@ -1,5 +1,4 @@
 import functools
-import pathlib
 import shlex
 from typing import Tuple
 
@@ -7,16 +6,13 @@ from exactly_lib.definitions import instruction_arguments
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
 from exactly_lib.symbol.data.string_or_file import StringOrFileRefResolver
-from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
-from exactly_lib.type_system.data.path_description import path_value_with_relativity_name_prefix
 from exactly_lib.test_case_utils.parse import parse_here_document, parse_file_ref
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
+from exactly_lib.type_system.data.string_or_file_ref_values import SourceType, StringOrPath
 from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
@@ -73,7 +69,7 @@ def parse_string_or_here_doc_from_token_parser(token_parser: TokenParser,
 class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
     def __init__(self,
                  prefix: str,
-                 expected_contents: StringOrFileRefResolver):
+                 expected_contents: StringOrPath):
         self._prefix = prefix
         self.expected_contents = expected_contents
 
@@ -81,24 +77,20 @@ class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
         prefix = ''
         if self._prefix:
             prefix = self._prefix + ' '
-        return prefix + self._expected_obj_description(environment)
+        return prefix + self._expected_obj_description()
 
-    def _expected_obj_description(self, environment: ErrorMessageResolvingEnvironment) -> str:
-        resolving_env = path_resolving_env_from_err_msg_env(environment)
+    def _expected_obj_description(self) -> str:
         source_type = self.expected_contents.source_type
         if source_type is SourceType.HERE_DOC:
             return instruction_arguments.HERE_DOCUMENT.name
         elif source_type is SourceType.STRING:
-            return instruction_arguments.STRING.name + ' ' + self._string_fragment(resolving_env)
+            return instruction_arguments.STRING.name + ' ' + self._string_fragment()
         else:
-            path_value = self.expected_contents.file_reference_resolver.resolve(resolving_env.symbols)
-            path_description = path_value_with_relativity_name_prefix(path_value,
-                                                                      resolving_env.home_and_sds,
-                                                                      pathlib.Path.cwd())
+            path_description = self.expected_contents.file_ref_value.describer.value.render()
             return instruction_arguments.FILE_ARGUMENT.name + ' ' + path_description
 
-    def _string_fragment(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
-        expected = self.expected_contents.string_resolver.resolve_value_of_any_dependency(environment)
+    def _string_fragment(self) -> str:
+        expected = self.expected_contents.string_value
         max_num_chars = 20
         string_fragment = shlex.quote(expected[:max_num_chars])
         if len(expected) > max_num_chars:

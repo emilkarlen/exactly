@@ -19,9 +19,9 @@ from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
+from exactly_lib.type_system.data.string_or_file_ref_values import StringOrPath
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver, \
     ErrorMessageResolvingEnvironment
-from exactly_lib.type_system.data.string_or_file_ref_values import StringOrPath
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import tmp_text_file_containing, TmpDirFileSpace
@@ -52,17 +52,18 @@ def parse(expectation_type: ExpectationType,
 def value_resolver(expectation_type: ExpectationType,
                    expected_contents: StringOrFileRefResolver) -> StringMatcherResolver:
     validator = _validator_of_expected(expected_contents)
-    error_message_constructor = _ErrorMessageResolverConstructor(
-        expectation_type,
-        parse_here_doc_or_file_ref.ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
-                                                         expected_contents)
-    )
 
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
+        expected_contents_primitive = expected_contents.resolve(environment.symbols).value_of_any_dependency(
+            environment.home_and_sds)
         return EqualityStringMatcher(
             expectation_type,
-            expected_contents.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds),
-            error_message_constructor,
+            expected_contents_primitive,
+            _ErrorMessageResolverConstructor(
+                expectation_type,
+                parse_here_doc_or_file_ref.ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
+                                                                 expected_contents_primitive)
+            ),
             FixedPreOrPostSdsValidator(environment, validator)
         )
 

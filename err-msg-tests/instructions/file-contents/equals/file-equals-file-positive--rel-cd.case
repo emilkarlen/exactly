@@ -1,0 +1,17 @@
+[setup]
+
+
+file actual-file = <<EOF
+actual contents
+EOF
+
+file expected-file = <<EOF
+expected contents
+EOF
+
+
+[assert]
+
+
+contents actual-file
+         equals -file -rel-cd expected-file
