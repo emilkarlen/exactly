@@ -5,7 +5,7 @@ from typing import List, Set, Optional
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.program.string_or_file import StringOrFileRefResolver
+from exactly_lib.symbol.data.string_or_file import StringOrFileRefResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, SingleStepValidator, \
@@ -21,7 +21,7 @@ from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver, \
     ErrorMessageResolvingEnvironment
-from exactly_lib.type_system.logic.program.string_or_file_ref_values import StringOrPath
+from exactly_lib.type_system.data.string_or_file_ref_values import StringOrPath
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import tmp_text_file_containing, TmpDirFileSpace

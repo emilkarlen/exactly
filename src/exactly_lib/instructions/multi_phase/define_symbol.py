@@ -29,7 +29,7 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
-from exactly_lib.symbol.logic.program.string_or_file import SourceType
+from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver

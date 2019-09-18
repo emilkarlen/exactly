@@ -9,7 +9,8 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.error_messages import path_resolving_env_from_err_msg_env
-from exactly_lib.symbol.logic.program.string_or_file import SourceType, StringOrFileRefResolver
+from exactly_lib.symbol.data.string_or_file import StringOrFileRefResolver
+from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.path_description import path_value_with_relativity_name_prefix

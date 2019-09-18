@@ -1,4 +1,3 @@
-import enum
 from typing import Sequence
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
@@ -8,14 +7,8 @@ from exactly_lib.symbol.utils import DirDepValueResolver
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.file_properties import FileType, must_exist_as
-from exactly_lib.type_system.logic.program.string_or_file_ref_values import StringOrFileRefValue
+from exactly_lib.type_system.data.string_or_file_ref_values import StringOrFileRefValue, SourceType
 from exactly_lib.util.symbol_table import SymbolTable
-
-
-class SourceType(enum.Enum):
-    STRING = 1
-    HERE_DOC = 2
-    PATH = 3
 
 
 class StringOrFileRefResolver(DirDepValueResolver[StringOrFileRefValue]):
@@ -58,9 +51,13 @@ class StringOrFileRefResolver(DirDepValueResolver[StringOrFileRefValue]):
 
     def resolve(self, symbols: SymbolTable) -> StringOrFileRefValue:
         if self.is_file_ref:
-            return StringOrFileRefValue(None, self._file_ref.resolve(symbols))
+            return StringOrFileRefValue(self._source_type,
+                                        None,
+                                        self._file_ref.resolve(symbols))
         else:
-            return StringOrFileRefValue(self._string.resolve(symbols), None)
+            return StringOrFileRefValue(self._source_type,
+                                        self._string.resolve(symbols),
+                                        None)
 
     @property
     def references(self) -> Sequence[SymbolReference]:

@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.logic.program import string_or_file
+from exactly_lib.symbol.data import string_or_file
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
@@ -34,7 +34,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources import concrete_path_parts
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes_str
-
+from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
@@ -447,7 +447,7 @@ def _expect_file_ref(put: unittest.TestCase,
     # ACT #
     actual = sut.parse_from_parse_source(source, rel_opt_arg_conf)
     # ASSERT #
-    put.assertIs(string_or_file.SourceType.PATH,
+    put.assertIs(SourceType.PATH,
                  actual.source_type,
                  'source type')
     put.assertTrue(actual.is_file_ref,
@@ -468,7 +468,7 @@ def _expect_here_doc(put: unittest.TestCase,
     # ACT #
     actual = sut.parse_from_parse_source(source)
     # ASSERT #
-    put.assertIs(string_or_file.SourceType.HERE_DOC,
+    put.assertIs(SourceType.HERE_DOC,
                  actual.source_type,
                  'source type')
     put.assertFalse(actual.is_file_ref,
@@ -488,7 +488,7 @@ def _expect_string(put: unittest.TestCase,
     # ACT #
     actual = sut.parse_from_parse_source(source)
     # ASSERT #
-    put.assertIs(string_or_file.SourceType.STRING,
+    put.assertIs(SourceType.STRING,
                  actual.source_type,
                  'source type')
     put.assertFalse(actual.is_file_ref,

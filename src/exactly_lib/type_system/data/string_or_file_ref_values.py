@@ -1,3 +1,4 @@
+import enum
 import pathlib
 from typing import Optional, Set
 
@@ -9,17 +10,25 @@ from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.type_system.value_type import DataValueType
 
 
+class SourceType(enum.Enum):
+    STRING = 1
+    HERE_DOC = 2
+    PATH = 3
+
+
 class StringOrPath(tuple):
     """
     Either a :class:`str` or a :class:`pathlib.Path`
     """
 
     def __new__(cls,
+                source_type: SourceType,
                 string_value: Optional[str],
                 file_value: Optional[pathlib.Path]):
         return tuple.__new__(cls, (DataValueType.STRING if string_value is not None else DataValueType.PATH,
                                    string_value,
-                                   file_value))
+                                   file_value,
+                                   source_type))
 
     @property
     def value_type(self) -> DataValueType:
@@ -50,6 +59,10 @@ class StringOrPath(tuple):
         """
         return self[2]
 
+    @property
+    def source_type(self) -> SourceType:
+        return self[3]
+
 
 class StringOrFileRefValue(MultiDirDependentValue[StringOrPath]):
     """
@@ -57,11 +70,17 @@ class StringOrFileRefValue(MultiDirDependentValue[StringOrPath]):
     """
 
     def __init__(self,
+                 source_type: SourceType,
                  string_value: Optional[StringValue],
                  file_value: Optional[FileRef]):
+        self._source_type = source_type
         self._value_type = DataValueType.STRING if string_value is not None else DataValueType.PATH
         self._string_value = string_value
         self._file_ref_value = file_value
+
+    @property
+    def source_type(self) -> SourceType:
+        return self._source_type
 
     @property
     def value_type(self) -> DataValueType:
@@ -100,20 +119,28 @@ class StringOrFileRefValue(MultiDirDependentValue[StringOrPath]):
 
     def value_when_no_dir_dependencies(self) -> StringOrPath:
         if self.is_file_ref:
-            return StringOrPath(None, self._file_ref_value.value_when_no_dir_dependencies())
+            return StringOrPath(self._source_type,
+                                None,
+                                self._file_ref_value.value_when_no_dir_dependencies())
         else:
-            return StringOrPath(self._string_value.value_when_no_dir_dependencies(), None)
+            return StringOrPath(self._source_type,
+                                self._string_value.value_when_no_dir_dependencies(),
+                                None)
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringOrPath:
         if self.is_file_ref:
-            return StringOrPath(None, self._file_ref_value.value_of_any_dependency(home_and_sds))
+            return StringOrPath(self._source_type,
+                                None,
+                                self._file_ref_value.value_of_any_dependency(home_and_sds))
         else:
-            return StringOrPath(self._string_value.value_of_any_dependency(home_and_sds), None)
+            return StringOrPath(self._source_type,
+                                self._string_value.value_of_any_dependency(home_and_sds),
+                                None)
 
 
 def of_string(string_value: StringValue) -> StringOrFileRefValue:
-    return StringOrFileRefValue(string_value, None)
+    return StringOrFileRefValue(SourceType.STRING, string_value, None)
 
 
 def of_file_ref(file_ref: FileRef) -> StringOrFileRefValue:
-    return StringOrFileRefValue(None, file_ref)
+    return StringOrFileRefValue(SourceType.PATH, None, file_ref)
