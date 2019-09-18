@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.impl.path import described_path_resolvers
@@ -15,8 +15,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 class StringOrFileRefResolver(DirDepValueResolver[StringOrFileRefValue]):
     def __init__(self,
                  source_type: SourceType,
-                 string_resolver: StringResolver,
-                 file_reference: FileRefResolver):
+                 string_resolver: Optional[StringResolver],
+                 file_reference: Optional[FileRefResolver]):
         self._source_type = source_type
         self._string = string_resolver
         self._file_ref = file_reference
