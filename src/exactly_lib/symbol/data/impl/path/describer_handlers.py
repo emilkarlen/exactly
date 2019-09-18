@@ -5,21 +5,21 @@ from pathlib import Path
 from typing import Optional, List
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.impl.path import resolver_str_renderers
+from exactly_lib.symbol.data.impl.path import value_str_renderers, describer_from_str as _from_str, \
+    primitive_str_renderers
+from exactly_lib.symbol.data.impl.path.described_w_handler import PathDescriberHandlerForValue, \
+    PathDescriberHandlerForResolver, PathDescriberHandlerForPrimitive
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, DirectoryStructurePartition, \
     SpecificPathRelativity
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system.data.path_describer import PathDescriberForValue, PathDescriberForPrimitive, \
-    PathDescriberForResolver
-from exactly_lib.symbol.data.impl.path import value_str_renderers, describer_from_str as _from_str, \
-    primitive_str_renderers
-from exactly_lib.symbol.data.impl.path import resolver_str_renderers
-from exactly_lib.symbol.data.impl.path.described_w_handler import PathDescriberHandlerForValue, \
-    PathDescriberHandlerForResolver, PathDescriberHandlerForPrimitive
 from exactly_lib.type_system.data import concrete_path_parts
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
+from exactly_lib.type_system.data.path_describer import PathDescriberForValue, PathDescriberForPrimitive, \
+    PathDescriberForResolver
 from exactly_lib.type_system.data.path_part import PathPart
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.symbol_table import SymbolTable
@@ -250,7 +250,7 @@ class PathManipulationFunctionalityForFixedValueForRelCwd(PathManipulationFuncti
                  resolver_describer: _ResolverDescriber,
                  value: FileRef,
                  tcds: HomeAndSds,
-                 cwd: Path,
+                 cwd: Optional[Path],
                  ):
         super().__init__(resolver_describer, value)
         self._tcds = tcds
@@ -258,9 +258,12 @@ class PathManipulationFunctionalityForFixedValueForRelCwd(PathManipulationFuncti
 
     @property
     def value(self) -> Renderer[str]:
-        return value_str_renderers.PathValueRelCwd(self._value,
-                                                   self._cwd,
-                                                   self._tcds)
+        return (
+            value_str_renderers.PathValueRelUnknownCwd(self._value)
+            if self._cwd is None
+            else
+            value_str_renderers.PathValueRelCwd(self._value, self._cwd, self._tcds)
+        )
 
     def child(self, child_path_component: str) -> PathManipulationFunctionalityForFixedValue:
         return PathManipulationFunctionalityForFixedValueForRelCwd(
