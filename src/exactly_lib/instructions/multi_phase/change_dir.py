@@ -23,7 +23,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
-from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra

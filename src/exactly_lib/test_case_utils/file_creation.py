@@ -3,7 +3,7 @@ from typing import Optional, Any, Callable
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
-from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
+from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, \
     ensure_directory_exists

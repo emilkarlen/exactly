@@ -9,8 +9,8 @@ from exactly_lib.symbol.logic.string_transformer import StringTransformerResolve
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.err_msg.property_description import property_descriptor_with_just_a_constant_name
-from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
-from exactly_lib.test_case_utils.pfh_exception import PfhHardErrorException, PfhFailException
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
+from exactly_lib.test_case_utils.pfh_exception import PfhFailException
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.error_message import PropertyDescriptor
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue

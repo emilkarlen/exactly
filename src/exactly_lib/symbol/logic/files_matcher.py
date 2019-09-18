@@ -5,7 +5,7 @@ from typing import Optional, Iterator
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
+from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.error_message import ErrorMessageResolver, PropertyDescriptor
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.value_type import LogicValueType, ValueType

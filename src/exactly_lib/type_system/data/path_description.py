@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.err_msg import property_description, error_info
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartFixConstructor
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
-from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive
+from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.error_message import PropertyDescriptor
 

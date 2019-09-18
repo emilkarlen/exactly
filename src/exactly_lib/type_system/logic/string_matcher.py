@@ -6,7 +6,7 @@ from typing import Set, Optional
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
+from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib.type_system.logic.string_transformer import StringTransformer

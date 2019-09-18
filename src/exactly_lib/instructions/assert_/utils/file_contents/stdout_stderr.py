@@ -22,7 +22,7 @@ from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref

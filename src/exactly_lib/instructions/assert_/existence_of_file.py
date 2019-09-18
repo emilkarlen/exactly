@@ -29,7 +29,7 @@ from exactly_lib.test_case_utils import file_properties, negation_of_predicate
 from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.err_msg2.env_dep_text import TextResolver
 from exactly_lib.test_case_utils.err_msg2.header_rendering import SimpleHeaderMinorBlockRenderer
-from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.test_case_utils.err_msg2.path_rendering import HeaderAndPathMajorBlock, \
     PathRepresentationsRenderersForPrimitive
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models

@@ -2,13 +2,13 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.described_path import DescribedPathResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathValue, DescribedPathPrimitive, \
-    DescribedPathResolver
-from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForResolver, PathDescriberForValue, \
-    PathDescriberForPrimitive
+from exactly_lib.type_system.data.described_path import DescribedPathPrimitive, DescribedPathValue
 from exactly_lib.type_system.data.file_ref import FileRef
+from exactly_lib.type_system.data.path_describer import PathDescriberForResolver, PathDescriberForValue, \
+    PathDescriberForPrimitive
 from exactly_lib.util.symbol_table import SymbolTable
 
 

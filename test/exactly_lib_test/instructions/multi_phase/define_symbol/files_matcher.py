@@ -9,7 +9,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherValue, FilesMatch
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.util.logic_types import ExpectationType

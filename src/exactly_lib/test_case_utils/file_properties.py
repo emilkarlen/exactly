@@ -9,7 +9,7 @@ from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
-from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive
+from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer

@@ -10,7 +10,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, FilesMa
     FilesMatcherModel
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.hard_error import HardErrorException

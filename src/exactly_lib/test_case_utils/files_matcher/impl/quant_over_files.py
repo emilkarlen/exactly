@@ -9,7 +9,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.test_case_utils.err_msg import path_description
+from exactly_lib.type_system.data import path_description
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForFileWithDescriptor

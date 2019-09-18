@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
@@ -9,10 +10,10 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.err_msg import path_description, property_description
-from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
-from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive
-from exactly_lib.test_case_utils.err_msg2.path_impl import described_path_resolvers
+from exactly_lib.test_case_utils.err_msg import property_description
+from exactly_lib.type_system.data import path_description
+from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.error_message import PropertyDescriptor, FilePropertyDescriptorConstructor
 
 

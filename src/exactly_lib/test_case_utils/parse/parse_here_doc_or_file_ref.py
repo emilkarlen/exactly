@@ -13,7 +13,7 @@ from exactly_lib.symbol.data.string_or_file import StringOrFileRefResolver
 from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
-from exactly_lib.test_case_utils.err_msg.path_description import path_value_with_relativity_name_prefix
+from exactly_lib.type_system.data.path_description import path_value_with_relativity_name_prefix
 from exactly_lib.test_case_utils.parse import parse_here_document, parse_file_ref
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration

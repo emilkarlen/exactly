@@ -2,8 +2,8 @@ from typing import List
 
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
-from exactly_lib.test_case_utils.err_msg2.described_path import DescribedPathPrimitive
-from exactly_lib.test_case_utils.err_msg2.path_describer import PathDescriberForPrimitive
+from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system import error_message
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.util.file_utils import TmpDirFileSpace
