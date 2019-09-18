@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.utils import DirDepValueResolver
@@ -53,7 +54,7 @@ class StringOrFileRefResolver(DirDepValueResolver[StringOrFileRefValue]):
         if self.is_file_ref:
             return StringOrFileRefValue(self._source_type,
                                         None,
-                                        self._file_ref.resolve(symbols))
+                                        described_path_resolvers.of(self._file_ref).resolve__with_unknown_cd(symbols))
         else:
             return StringOrFileRefValue(self._source_type,
                                         self._string.resolve(symbols),

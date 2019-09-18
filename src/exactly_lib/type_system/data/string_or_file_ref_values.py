@@ -1,11 +1,10 @@
 import enum
-import pathlib
 from typing import Optional, Set
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system.data.file_ref import FileRef
+from exactly_lib.type_system.data.described_path import DescribedPathPrimitive, DescribedPathValue
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.type_system.value_type import DataValueType
 
@@ -24,7 +23,7 @@ class StringOrPath(tuple):
     def __new__(cls,
                 source_type: SourceType,
                 string_value: Optional[str],
-                file_value: Optional[pathlib.Path]):
+                file_value: Optional[DescribedPathPrimitive]):
         return tuple.__new__(cls, (DataValueType.STRING if string_value is not None else DataValueType.PATH,
                                    string_value,
                                    file_value,
@@ -53,7 +52,7 @@ class StringOrPath(tuple):
         return self[1]
 
     @property
-    def file_ref_value(self) -> pathlib.Path:
+    def file_ref_value(self) -> DescribedPathPrimitive:
         """
         :return: Not None iff :class:`DataValueType` is `DataValueType.PATH`
         """
@@ -72,7 +71,7 @@ class StringOrFileRefValue(MultiDirDependentValue[StringOrPath]):
     def __init__(self,
                  source_type: SourceType,
                  string_value: Optional[StringValue],
-                 file_value: Optional[FileRef]):
+                 file_value: Optional[DescribedPathValue]):
         self._source_type = source_type
         self._value_type = DataValueType.STRING if string_value is not None else DataValueType.PATH
         self._string_value = string_value
@@ -105,7 +104,7 @@ class StringOrFileRefValue(MultiDirDependentValue[StringOrPath]):
         return self._string_value
 
     @property
-    def file_ref_value(self) -> FileRef:
+    def file_ref_value(self) -> DescribedPathValue:
         """
         :return: Not None iff :class:`DataValueType` is `DataValueType.PATH`
         """
@@ -113,7 +112,7 @@ class StringOrFileRefValue(MultiDirDependentValue[StringOrPath]):
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         if self.is_file_ref:
-            return self.file_ref_value.resolving_dependencies()
+            return self.file_ref_value.value.resolving_dependencies()
         else:
             return self.string_value.resolving_dependencies()
 
@@ -136,11 +135,3 @@ class StringOrFileRefValue(MultiDirDependentValue[StringOrPath]):
             return StringOrPath(self._source_type,
                                 self._string_value.value_of_any_dependency(home_and_sds),
                                 None)
-
-
-def of_string(string_value: StringValue) -> StringOrFileRefValue:
-    return StringOrFileRefValue(SourceType.STRING, string_value, None)
-
-
-def of_file_ref(file_ref: FileRef) -> StringOrFileRefValue:
-    return StringOrFileRefValue(SourceType.PATH, None, file_ref)

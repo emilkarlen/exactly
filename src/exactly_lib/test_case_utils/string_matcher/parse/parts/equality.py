@@ -123,7 +123,7 @@ class EqualityStringMatcher(StringMatcher):
 
     def _file_path_for_file_with_expected_contents(self, tmp_file_space: TmpDirFileSpace) -> pathlib.Path:
         if self._expected_contents.is_path:
-            return self._expected_contents.file_ref_value
+            return self._expected_contents.file_ref_value.primitive
         else:
             contents = self._expected_contents.string_value
             return tmp_text_file_containing(contents,
