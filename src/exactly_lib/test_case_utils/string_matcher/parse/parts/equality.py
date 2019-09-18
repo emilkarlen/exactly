@@ -14,11 +14,10 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
-from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
+from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver, ExpectedValueResolver
 from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
-from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import ExpectedValueResolver
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver, \
     ErrorMessageResolvingEnvironment
@@ -53,9 +52,11 @@ def parse(expectation_type: ExpectationType,
 def value_resolver(expectation_type: ExpectationType,
                    expected_contents: StringOrFileRefResolver) -> StringMatcherResolver:
     validator = _validator_of_expected(expected_contents)
-    error_message_constructor = _ErrorMessageResolverConstructor(expectation_type,
-                                                                 ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
-                                                                                       expected_contents))
+    error_message_constructor = _ErrorMessageResolverConstructor(
+        expectation_type,
+        parse_here_doc_or_file_ref.ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
+                                                         expected_contents)
+    )
 
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
         return EqualityStringMatcher(
