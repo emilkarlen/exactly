@@ -2,14 +2,16 @@ from typing import Any, Sequence
 
 from exactly_lib.common.err_msg.definitions import Blocks, Block
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
 from exactly_lib.util.simple_textstruct.rendering import \
     renderer_combinators as rend_comb, \
     component_renderers as comp_rend
+from exactly_lib.util.simple_textstruct.rendering.components import LineObjectRenderer
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, LineElement, PreFormattedStringLineObject, \
-    MajorBlock
+    MajorBlock, LineObject
 
 
 def single_pre_formatted_line_object(x: Any,
@@ -65,6 +67,12 @@ def major_blocks_of_string_lines(lines: Sequence[str]) -> SequenceRenderer[Major
     )
 
 
+def of_err_msg_resolver(resolver: ErrorMessageResolver) -> TextRenderer:
+    return blocks.MajorBlocksOfSingleLineObject(
+        _ErrorMessageResolverLineObject(resolver)
+    )
+
+
 class _OfBlocks(SequenceRenderer[MinorBlock]):
     def __init__(self, contents: Blocks):
         self._contents = contents
@@ -84,3 +92,12 @@ def _mk_minor_block(lines: Block) -> MinorBlock:
         for line in lines
     ]
     )
+
+
+class _ErrorMessageResolverLineObject(LineObjectRenderer):
+    def __init__(self, resolver: ErrorMessageResolver):
+        self._resolver = resolver
+
+    def render(self) -> LineObject:
+        return PreFormattedStringLineObject(self._resolver.resolve(),
+                                            False)
