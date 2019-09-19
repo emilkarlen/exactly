@@ -298,7 +298,7 @@ class _Assertion:
                 )
                 return pfh.new_pfh_fail(err_msg)
         except hard_error.HardErrorException as ex:
-            return pfh.new_pfh_hard_error(self._err_msg_for__td(ex.error))
+            return pfh.new_pfh_hard_error(ex.error)
 
     def _matches_file_matcher_for_expectation_type(self) -> Optional[ErrorMessageResolver]:
         resolver = self._file_matcher_for_expectation_type()

@@ -1,5 +1,6 @@
 from typing import List, Set, Optional
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
@@ -9,7 +10,6 @@ from exactly_lib.test_case.validation.pre_or_post_value_validators import ValueV
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.file_system_element_matcher import ErrorMessageResolverForFailingFileProperties2
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic import string_matcher
@@ -45,7 +45,7 @@ class RegularFileMatchesStringMatcher(FileMatcher):
                 actual_file_attributes.TYPE_ATTRIBUTE
             )
             raise HardErrorException(
-                env_dep_texts.of_old(
+                text_docs.of_err_msg_resolver(
                     ErrorMessageResolverForFailingFileProperties2(property_descriptor,
                                                                   failure_info_properties,
                                                                   self._expected_file_type)

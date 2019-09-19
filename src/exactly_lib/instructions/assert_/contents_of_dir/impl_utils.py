@@ -1,8 +1,8 @@
 from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
-from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, Environment
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
@@ -10,7 +10,6 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils import file_properties, pfh_exception as pfh_ex_method
 from exactly_lib.test_case_utils import file_ref_check
 from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 
@@ -82,5 +81,4 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
 
             return files_source
         except HardErrorException as ex:
-            err_msg = ex.error.resolve_sequence()
-            raise pfh_ex_method.PfhHardErrorException(err_msg)
+            raise pfh_ex_method.PfhHardErrorException(ex.error)

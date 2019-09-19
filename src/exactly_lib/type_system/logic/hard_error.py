@@ -1,10 +1,10 @@
-from exactly_lib.test_case_utils.err_msg2.env_dep_text import TextResolver
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 
 
 class HardErrorException(Exception):
-    def __init__(self, error: TextResolver):
+    def __init__(self, error: TextRenderer):
         self._error = error
 
     @property
-    def error(self) -> TextResolver:
+    def error(self) -> TextRenderer:
         return self._error

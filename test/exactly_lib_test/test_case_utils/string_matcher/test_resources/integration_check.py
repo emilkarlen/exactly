@@ -194,9 +194,8 @@ class Executor:
 
     def _check_hard_error(self, result: HardErrorException):
         if self.expectation.is_hard_error is not None:
-            err_msg = result.error.resolve_sequence()
             assertion_on_text_renderer = asrt_text_doc.is_single_pre_formatted_text(self.expectation.is_hard_error)
-            assertion_on_text_renderer.apply_with_message(self.put, err_msg,
+            assertion_on_text_renderer.apply_with_message(self.put, result.error,
                                                           'error message for hard error')
             raise _CheckIsDoneException()
         else:

@@ -4,6 +4,7 @@ Test of test-infrastructure: instruction_check.
 import unittest
 from typing import Sequence, Optional, List, Set
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
@@ -15,7 +16,6 @@ from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
 from exactly_lib.type_system.error_message import ErrorMessageResolver
@@ -296,7 +296,7 @@ class _StringMatcherThatReportsHardError(StringMatcher):
         return 'unconditional HARD ERROR'
 
     def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        raise HardErrorException(env_dep_texts.constant('unconditional hard error'))
+        raise HardErrorException(text_docs.single_pre_formatted_line_object('unconditional hard error'))
 
 
 def parser_for_constant(resolved_value: StringMatcher = StringMatcherConstant(None),

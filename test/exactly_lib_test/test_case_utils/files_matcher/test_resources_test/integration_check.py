@@ -4,6 +4,7 @@ Test of test-infrastructure: instruction_check.
 import unittest
 from typing import Sequence, Optional, List
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
@@ -15,7 +16,6 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
-from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
@@ -330,7 +330,7 @@ class _FilesMatcherValueThatReportsHardError(FilesMatcherValue):
                 environment: Environment,
                 files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         raise HardErrorException(
-            env_dep_texts.constant('unconditional hard error')
+            text_docs.single_pre_formatted_line_object('unconditional hard error')
         )
 
 
