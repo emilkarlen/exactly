@@ -2,8 +2,6 @@ from typing import Any, Sequence
 
 from exactly_lib.common.err_msg.definitions import Blocks, Block
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.util import file_printables
-from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
 from exactly_lib.util.simple_textstruct.rendering import \
@@ -32,10 +30,6 @@ def single_line(x: Any) -> TextRenderer:
     return blocks.MajorBlocksOfSingleLineObject(
         line_objects.StringLineObject(x)
     )
-
-
-def single_pre_formatted_line_object__from_fp(fp: FilePrintable) -> TextRenderer:
-    return single_pre_formatted_line_object(file_printables.print_to_string(fp))
 
 
 def minor_blocks_of_string_blocks(contents: Blocks) -> SequenceRenderer[MinorBlock]:
