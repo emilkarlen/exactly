@@ -2,7 +2,6 @@ import itertools
 from typing import Callable, List, Sequence, Optional
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYPE_INFO_DICT
@@ -27,6 +26,7 @@ from exactly_lib_test.cli.program_modes.test_resources import main_program_execu
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import MainProgramConfig
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
 from exactly_lib_test.common.test_resources import instruction_setup
+from exactly_lib_test.common.test_resources.text_doc_assertions import new_pre_formatted_str_for_test
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instrs
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatRunsConstantActions
@@ -162,7 +162,7 @@ class _ActorThatParsesReferences(Actor):
             if len(parts) == 2 and parts[0] == self._reference_instruction_name:
                 ret_val.append(parts[1])
             else:
-                err_msg = text_docs.single_pre_formatted_line_object(
+                err_msg = new_pre_formatted_str_for_test(
                     strings.FormatPositional(
                         'Invalid act phase instruction: {}\nExpecting: {}',
                         line,

@@ -40,7 +40,7 @@ class ConfigurationForTheAssertPhase(AssertConfigurationBase, test_impl.Configur
                                              assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
         return Expectation(
             validation_post_sds=svh_assertions.is_validation_error(
-                asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
+                asrt_text_doc.is_string_for_test(assertion_on_error_message)
             )
         )
 

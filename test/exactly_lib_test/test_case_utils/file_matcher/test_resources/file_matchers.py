@@ -1,7 +1,7 @@
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcher
 from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
 
 
 class ConstantResultMatcher(sut.FileMatcher):
@@ -25,4 +25,4 @@ class FileMatcherThatReportsHardError(FileMatcher):
         return 'unconditional HARD ERROR'
 
     def matches(self, model: FileMatcherModel) -> bool:
-        raise HardErrorException(text_docs.single_pre_formatted_line_object(self.error_message))
+        raise HardErrorException(new_single_string_text_for_test(self.error_message))

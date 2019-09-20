@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
         actual = sut.translate_pfh_exception_to_pfh(test_action, DO_FAIL, error_message)
         # ASSERT #
         expectation = asrt_pfh.is_fail(
-            asrt_text_doc.is_single_pre_formatted_text(asrt.equals(error_message))
+            asrt_text_doc.is_string_for_test(asrt.equals(error_message))
         )
         expectation.apply_without_message(self, actual)
 
@@ -39,7 +39,7 @@ class Test(unittest.TestCase):
         actual = sut.translate_pfh_exception_to_pfh(test_action, DO_HARD_ERROR, error_message)
         # ASSERT #
         expectation = asrt_pfh.is_hard_error(
-            asrt_text_doc.is_single_pre_formatted_text(asrt.equals(error_message))
+            asrt_text_doc.is_string_for_test(asrt.equals(error_message))
         )
         expectation.apply_without_message(self, actual)
 

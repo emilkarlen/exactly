@@ -54,7 +54,7 @@ class AssertConfigurationBase(ConfigurationBase):
     def expect_hard_error_of_main(self,
                                   assertion_on_error_message: ValueAssertion[str] = asrt.anything_goes()):
         return Expectation(main_result=pfh_assertions.is_hard_error(
-            asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
+            asrt_text_doc.is_string_for_test(assertion_on_error_message)
         ))
 
     def expect_failing_validation_pre_sds(self,

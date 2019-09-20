@@ -189,7 +189,7 @@ class _Checker:
         if self.expectation.is_hard_error is None:
             self.put.fail('Unexpected HARD_ERROR')
         else:
-            assertion_on_text_renderer = asrt_text_doc.is_single_pre_formatted_text(self.expectation.is_hard_error)
+            assertion_on_text_renderer = asrt_text_doc.is_string_for_test(self.expectation.is_hard_error)
             assertion_on_text_renderer.apply_with_message(self.put, result.error,
                                                           'error message for hard error')
             raise _CheckIsDoneException()

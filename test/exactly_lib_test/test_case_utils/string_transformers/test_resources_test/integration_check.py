@@ -4,7 +4,6 @@ Test of test-infrastructure: instruction_check.
 import unittest
 from typing import List
 
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
@@ -13,6 +12,7 @@ from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.string_transformer import StringTransformerModel, StringTransformerValue, \
     StringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
@@ -176,7 +176,7 @@ class _StringTransformerThatReportsHardError(StringTransformer):
         return 'unconditional HARD ERROR'
 
     def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        raise HardErrorException(text_docs.single_pre_formatted_line_object('unconditional hard error'))
+        raise HardErrorException(new_single_string_text_for_test('unconditional hard error'))
 
 
 class StringTransformerResolverThatAssertsThatSymbolsAreAsExpected(StringTransformerResolver):

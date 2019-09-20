@@ -90,7 +90,7 @@ class ConfigurationBase:
         both for assert- and non-assert phase instructions.
         """
         return self.expect_failure_of_main(
-            asrt_text_doc.is_single_pre_formatted_text(assertion_on_error_message)
+            asrt_text_doc.is_string_for_test(assertion_on_error_message)
         )
 
     def expect_failing_validation_pre_sds(self,

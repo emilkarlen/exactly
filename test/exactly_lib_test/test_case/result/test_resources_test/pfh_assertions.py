@@ -110,25 +110,25 @@ class TestFailureMessage(unittest.TestCase):
         cases = [
             NEA('fail',
                 sut.failure_message_is(
-                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals(expected_err_msg))
+                    asrt_text_doc.is_string_for_test(asrt.equals(expected_err_msg))
                 ),
                 pfh.new_pfh_fail(asrt_text_doc.new_single_string_text_for_test(expected_err_msg)),
                 ),
             NEA('fail/const msg',
                 sut.failure_message_is(
-                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals(expected_err_msg))
+                    asrt_text_doc.is_string_for_test(asrt.equals(expected_err_msg))
                 ),
                 pfh.new_pfh_fail__str(expected_err_msg),
                 ),
             NEA('hard error',
                 sut.failure_message_is(
-                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals(expected_err_msg))
+                    asrt_text_doc.is_string_for_test(asrt.equals(expected_err_msg))
                 ),
                 pfh.new_pfh_hard_error(asrt_text_doc.new_single_string_text_for_test(expected_err_msg)),
                 ),
             NEA('hard error/const msg',
                 sut.failure_message_is(
-                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals(expected_err_msg))
+                    asrt_text_doc.is_string_for_test(asrt.equals(expected_err_msg))
                 ),
                 pfh.new_pfh_hard_error__str(expected_err_msg),
                 ),
@@ -145,13 +145,13 @@ class TestFailureMessage(unittest.TestCase):
         cases = [
             NEA('fail',
                 sut.failure_message_is(
-                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals(expected_err_msg))
+                    asrt_text_doc.is_string_for_test(asrt.equals(expected_err_msg))
                 ),
                 pfh.new_pfh_fail__str(actual_err_msg),
                 ),
             NEA('hard error',
                 sut.failure_message_is(
-                    asrt_text_doc.is_single_pre_formatted_text(asrt.equals(expected_err_msg))
+                    asrt_text_doc.is_string_for_test(asrt.equals(expected_err_msg))
                 ),
                 pfh.new_pfh_hard_error__str(actual_err_msg),
                 ),

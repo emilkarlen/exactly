@@ -1,5 +1,5 @@
 import unittest
-from typing import Optional
+from typing import Optional, Any
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -21,19 +21,24 @@ def new_single_string_text_for_test__optional(text: Optional[str]) -> Optional[T
             )
 
 
+def new_pre_formatted_str_for_test(x: Any,
+                                   is_line_ended: bool = False) -> TextRenderer:
+    return text_docs.single_pre_formatted_line_object(x, is_line_ended)
+
+
 def is_single_pre_formatted_text_that_equals(text: str) -> ValueAssertion[TextRenderer]:
-    return is_single_pre_formatted_text(asrt.equals(text))
+    return _is_single_pre_formatted_text(asrt.equals(text))
 
 
 def is_string_for_test(text: ValueAssertion[str]) -> ValueAssertion[TextRenderer]:
-    return is_single_pre_formatted_text(text)
+    return _is_single_pre_formatted_text(text)
 
 
 def is_string_for_test_that_equals(text: str) -> ValueAssertion[TextRenderer]:
     return is_string_for_test(asrt.equals(text))
 
 
-def is_single_pre_formatted_text(text: ValueAssertion[str]) -> ValueAssertion[TextRenderer]:
+def _is_single_pre_formatted_text(text: ValueAssertion[str]) -> ValueAssertion[TextRenderer]:
     return asrt_renderer.is_renderer_of_major_blocks(
         asrt.matches_sequence([
             asrt_struct.matches_major_block__w_plain_properties(

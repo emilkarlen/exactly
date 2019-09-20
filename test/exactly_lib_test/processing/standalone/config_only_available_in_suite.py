@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Optional
 
 from exactly_lib.cli.main_program import TestSuiteDefinition
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.definitions.test_suite.section_names import CONFIGURATION
@@ -21,6 +20,7 @@ from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_d
 from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
+from exactly_lib_test.common.test_resources.text_doc_assertions import new_pre_formatted_str_for_test
 from exactly_lib_test.execution.test_resources.instruction_test_resources import assert_phase_instruction_that
 from exactly_lib_test.processing.processing_utils import PreprocessorThat
 from exactly_lib_test.processing.standalone.test_resources.run_processor import capture_output_from_processor
@@ -202,7 +202,7 @@ class AssertPhaseInstructionThatPassIffStdoutEqualsString(AssertPhaseInstruction
             return pfh.new_pfh_pass()
         else:
             return pfh.new_pfh_fail(
-                text_docs.single_pre_formatted_line_object(
+                new_pre_formatted_str_for_test(
                     strings.FormatPositional('Expected: {}\nActual  : {}',
                                              self.expected, actual_contents,
                                              )

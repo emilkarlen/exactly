@@ -1,7 +1,6 @@
 import unittest
 from typing import Sequence, Any
 
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.instructions.assert_.utils import assertion_part as sut
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -12,6 +11,7 @@ from exactly_lib.test_case.validation.pre_or_post_validation import ConstantSucc
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
+from exactly_lib_test.common.test_resources.text_doc_assertions import is_string_for_test
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh, svh_assertions as asrt_svh
@@ -55,7 +55,7 @@ class TestAssertionPart(unittest.TestCase):
                                                                  1)
         # ASSERT #
         assertion = asrt_pfh.is_fail(
-            asrt_text_doc.is_single_pre_formatted_text(
+            is_string_for_test(
                 asrt.equals(PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE))
         )
         assertion.apply_without_message(self, actual)
@@ -246,7 +246,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         actual = instruction.main(self.environment, self.the_os_services)
         # ASSERT #
         assertion = asrt_pfh.is_fail(
-            asrt_text_doc.is_single_pre_formatted_text(
+            asrt_text_doc.is_string_for_test(
                 asrt.equals(PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE)
             )
         )
@@ -274,7 +274,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         actual = instruction.main(self.environment, self.the_os_services)
         # ASSERT #
         assertion = asrt_pfh.is_fail(
-            asrt_text_doc.is_single_pre_formatted_text(
+            asrt_text_doc.is_string_for_test(
                 asrt.equals(PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE))
         )
         assertion.apply_without_message(self, actual)

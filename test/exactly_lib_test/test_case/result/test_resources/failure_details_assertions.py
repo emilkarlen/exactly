@@ -61,7 +61,7 @@ class _ExpectedFailureDetails(ValueAssertionBase[FailureDetails]):
             put.assertIsNotNone(value.failure_message,
                                 message_comp_builder)
 
-            asrt_text_doc.is_single_pre_formatted_text(self._error_message_or_none).apply(
+            asrt_text_doc.is_string_for_test(self._error_message_or_none).apply(
                 put,
                 value.failure_message,
                 message_comp_builder.for_sub_component('text-doc')
