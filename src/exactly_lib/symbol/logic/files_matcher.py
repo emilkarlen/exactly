@@ -21,7 +21,6 @@ class Environment:
                  ):
         self.path_resolving_environment = path_resolving_environment
         self.tmp_files_space = tmp_files_space
-        self.symbols = path_resolving_environment.symbols
 
 
 class ErrorMessageInfo(ABC):
@@ -63,9 +62,8 @@ class FilesMatcherModel(ABC):
 class FilesMatcherValue(ABC):
     @property
     @abstractmethod
-    def negation(self):
+    def negation(self) -> 'FilesMatcherValue':
         """
-        :rtype FilesMatcherValue
         :return: A matcher that matches the negation of this matcher
         """
         pass

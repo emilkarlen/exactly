@@ -71,13 +71,3 @@ class _SubSetSelectorMatcher(FilesMatcherResolver):
             self._selector.resolve(symbols),
             self._matcher_on_selection.resolve(symbols)
         )
-
-    def matches(self,
-                environment: Environment,
-                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        selector = self._selector.resolve(environment.symbols)
-        matcher_on_selection = self.resolve(environment.symbols)
-        return matcher_on_selection.matches(
-            environment,
-            files_source.sub_set(selector.value_of_any_dependency(environment.path_resolving_environment.home_and_sds)),
-        )
