@@ -1,5 +1,5 @@
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.util.simple_textstruct.rendering import blocks
 from exactly_lib.util.simple_textstruct.rendering.components import LineObjectRenderer
 from exactly_lib.util.simple_textstruct.structure import LineObject, PreFormattedStringLineObject

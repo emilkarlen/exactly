@@ -4,7 +4,7 @@ from typing import List, Sequence, TypeVar, Generic, Optional
 
 from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.test_case.result import pfh
-from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.util.logic_types import ExpectationType, from_is_negated
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

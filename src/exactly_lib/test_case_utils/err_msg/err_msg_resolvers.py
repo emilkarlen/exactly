@@ -3,8 +3,8 @@ from typing import Sequence, Callable
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
-from exactly_lib.type_system.err_msg import error_message
-from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
+from exactly_lib.type_system.err_msg import err_msg_resolver
+from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver, ConstantErrorMessageResolver
 
 
 def itemized_list(items: Sequence[ErrorMessageResolver],
@@ -33,7 +33,7 @@ def constant(msg: str) -> ErrorMessageResolver:
 
 
 def text_doc(message: TextRenderer) -> ErrorMessageResolver:
-    return error_message.OfTextDoc(message)
+    return err_msg_resolver.OfTextDoc(message)
 
 
 def of_path(path: PathDescriberForPrimitive) -> ErrorMessageResolver:

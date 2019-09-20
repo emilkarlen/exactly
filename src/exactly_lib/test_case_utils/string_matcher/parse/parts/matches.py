@@ -13,7 +13,7 @@ from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromValueWithValidation, \
     StringMatcherValueWithValidation
-from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable

@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Sequence, TypeVar, Generic
 
-from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.trace import trace
 from exactly_lib.type_system.trace.trace import Detail, Node
 

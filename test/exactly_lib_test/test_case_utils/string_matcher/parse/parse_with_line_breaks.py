@@ -2,7 +2,7 @@ import unittest
 from typing import Optional
 
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import SB
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
