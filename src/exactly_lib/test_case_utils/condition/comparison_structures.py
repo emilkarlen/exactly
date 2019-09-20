@@ -14,8 +14,8 @@ from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_from_references
 from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
-from exactly_lib.type_system.error_message import PropertyDescriptor, \
-    ErrorMessageResolver
+from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 

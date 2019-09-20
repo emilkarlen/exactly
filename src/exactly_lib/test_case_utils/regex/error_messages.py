@@ -7,8 +7,8 @@ from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
-from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, \
-    ErrorMessageResolver
+from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.util import file_utils
 from exactly_lib.util.logic_types import ExpectationType
 

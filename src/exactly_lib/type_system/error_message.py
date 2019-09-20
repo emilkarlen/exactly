@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import List
 
 from exactly_lib.common.report_rendering import print
 from exactly_lib.common.report_rendering import text_docs
@@ -29,29 +28,3 @@ class OfTextDoc(ErrorMessageResolver):
 
     def resolve(self) -> str:
         return print.print_to_str(self._message.render_sequence())
-
-
-class PropertyDescription:
-    def __init__(self,
-                 name: str,
-                 object_description_lines: List[str]):
-        self._name = name
-        self._details_lines = object_description_lines
-
-    @property
-    def name(self) -> str:
-        return self._name
-
-    @property
-    def object_description_lines(self) -> List[str]:
-        return self._details_lines
-
-
-class PropertyDescriptor:
-    def description(self) -> PropertyDescription:
-        raise NotImplementedError('abstract method')
-
-
-class FilePropertyDescriptorConstructor:
-    def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
-        raise NotImplementedError('abstract method')

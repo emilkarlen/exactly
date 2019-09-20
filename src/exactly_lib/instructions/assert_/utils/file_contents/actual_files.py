@@ -14,7 +14,7 @@ from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
-from exactly_lib.type_system.error_message import PropertyDescriptor, FilePropertyDescriptorConstructor
+from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
 
 
 class ComparisonActualFile(tuple):

@@ -4,7 +4,7 @@ from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorInfo
-from exactly_lib.type_system.error_message import PropertyDescription
+from exactly_lib.type_system.err_msg.prop_descr import PropertyDescription
 from exactly_lib.util import file_printables
 from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.logic_types import ExpectationType

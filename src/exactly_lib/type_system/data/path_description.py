@@ -10,7 +10,7 @@ from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConst
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
-from exactly_lib.type_system.error_message import PropertyDescriptor
+from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 
 EXACTLY_SANDBOX_ROOT_DIR_NAME = 'EXACTLY_SANDBOX'
 

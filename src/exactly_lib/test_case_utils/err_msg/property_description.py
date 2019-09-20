@@ -2,8 +2,7 @@ from typing import Sequence
 
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor, NoErrorMessagePartConstructor, \
     MultipleErrorMessagePartConstructor
-from exactly_lib.type_system.error_message import PropertyDescription, \
-    PropertyDescriptor
+from exactly_lib.type_system.err_msg.prop_descr import PropertyDescription, PropertyDescriptor
 
 OBJECT_DESCRIPTOR_PARTS_SEPARATOR_LINES = ['']
 
