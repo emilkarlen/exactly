@@ -1,6 +1,6 @@
 from typing import List, Set, Optional
 
-from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.common.report_rendering import text_docs__old
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
@@ -45,7 +45,7 @@ class RegularFileMatchesStringMatcher(FileMatcher):
                 actual_file_attributes.TYPE_ATTRIBUTE
             )
             raise HardErrorException(
-                text_docs.of_err_msg_resolver(
+                text_docs__old.of_err_msg_resolver(
                     ErrorMessageResolverForFailingFileProperties2(property_descriptor,
                                                                   failure_info_properties,
                                                                   self._expected_file_type)
