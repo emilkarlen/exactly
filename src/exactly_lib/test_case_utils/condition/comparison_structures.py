@@ -23,6 +23,83 @@ A = TypeVar('A')
 T = TypeVar('T')
 
 
+class _ErrorMessageResolver(Generic[T], ErrorMessageResolver):
+    def __init__(self,
+                 property_descriptor: PropertyDescriptor,
+                 expectation_type: ExpectationType,
+                 lhs_actual_property_value: T,
+                 rhs: T,
+                 operator: ComparisonOperator):
+        self.property_descriptor = property_descriptor
+        self.expectation_type = expectation_type
+        self.lhs_actual_property_value = lhs_actual_property_value
+        self.rhs = rhs
+        self.operator = operator
+
+    def resolve(self) -> str:
+        return self.failure_info().error_message()
+
+    def failure_info(self) -> diff_msg.DiffErrorInfo:
+        expected_str = self.operator.name + ' ' + str(self.rhs)
+        return diff_msg.DiffErrorInfo(
+            self.property_descriptor.description(),
+            self.expectation_type,
+            expected_str,
+            diff_msg.actual_with_single_line_value(str(self.lhs_actual_property_value))
+        )
+
+
+class _FailureReporter(Generic[T]):
+    def __init__(self,
+                 err_msg_resolver: _ErrorMessageResolver[T],
+                 ):
+        self.err_msg_resolver = err_msg_resolver
+
+    def unexpected_value_message(self) -> str:
+        return self.err_msg_resolver.resolve()
+
+    def failure_info(self) -> diff_msg.DiffErrorInfo:
+        return self.err_msg_resolver.failure_info()
+
+
+class ComparisonExecutor(Generic[T]):
+    def __init__(self,
+                 expectation_type: ExpectationType,
+                 lhs_actual_property_value: T,
+                 rhs: T,
+                 operator: ComparisonOperator,
+                 failure_reporter: _FailureReporter):
+        self.expectation_type = expectation_type
+        self.lhs_actual_property_value = lhs_actual_property_value
+        self.rhs = rhs
+        self.operator = operator
+        self.failure_reporter = failure_reporter
+
+    def execute_and_return_failure_via_err_msg_resolver(self) -> Optional[ErrorMessageResolver]:
+        return self._execute(self._get_err_msg_resolver)
+
+    def execute_and_return_pfh_via_exceptions(self):
+        self._execute(self._raise_fail_exception)
+
+    def _execute(self, failure_reporter: Callable[[], ErrorMessageResolver]) -> Optional[ErrorMessageResolver]:
+        comparison_fun = self.operator.operator_fun
+        condition_is_satisfied = bool(comparison_fun(self.lhs_actual_property_value,
+                                                     self.rhs))
+        if condition_is_satisfied:
+            if self.expectation_type is ExpectationType.NEGATIVE:
+                return failure_reporter()
+        else:
+            if self.expectation_type is ExpectationType.POSITIVE:
+                return failure_reporter()
+
+    def _raise_fail_exception(self):
+        err_msg = self.failure_reporter.unexpected_value_message()
+        raise pfh_exception.PfhFailException(text_docs.single_pre_formatted_line_object(err_msg))
+
+    def _get_err_msg_resolver(self) -> ErrorMessageResolver:
+        return self.failure_reporter.err_msg_resolver
+
+
 class OperandValue(ABC, Generic[T], MultiDirDependentValue[T]):
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return set()
@@ -83,7 +160,39 @@ class OperandValueFromOperandResolver(Generic[T], OperandValue[T]):
         return self._operand_resolver.resolve_value_of_any_dependency(environment)
 
 
-class ComparisonHandler(Generic[T]):
+class ComparisonHandlerValue(Generic[T]):
+    """A comparison operator, resolvers for left and right operands, and an `ExpectationType`"""
+
+    def __init__(self,
+                 property_descriptor: PropertyDescriptor,
+                 expectation_type: ExpectationType,
+                 actual_value_lhs: OperandValue[T],
+                 operator: comparators.ComparisonOperator,
+                 expected_value_rhs: OperandValue[T]):
+        self.property_descriptor = property_descriptor
+        self.expectation_type = expectation_type
+        self.actual_value_lhs = actual_value_lhs
+        self.expected_value_rhs = expected_value_rhs
+        self.operator = operator
+
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> ComparisonExecutor:
+        lhs = self.actual_value_lhs.value_of_any_dependency(tcds)
+        rhs = self.expected_value_rhs.value_of_any_dependency(tcds)
+        return ComparisonExecutor(
+            self.expectation_type,
+            lhs,
+            rhs,
+            self.operator,
+            _FailureReporter(_ErrorMessageResolver(self.property_descriptor,
+                                                   self.expectation_type,
+                                                   lhs,
+                                                   rhs,
+                                                   self.operator),
+                             )
+        )
+
+
+class ComparisonHandlerResolver(Generic[T]):
     """A comparison operator, resolvers for left and right operands, and an `ExpectationType`"""
 
     def __init__(self,
@@ -112,105 +221,14 @@ class ComparisonHandler(Generic[T]):
         """
         self.validator.validate_pre_sds(environment)
 
-    def execute(self, environment: PathResolvingEnvironmentPreOrPostSds):
-        self._executor(environment).execute_and_return_pfh_via_exceptions()
-
-    def execute_and_report_as_err_msg_resolver(self, environment: PathResolvingEnvironmentPreOrPostSds
-                                               ) -> Optional[ErrorMessageResolver]:
-        return self._executor(environment).execute_and_return_failure_via_err_msg_resolver()
-
-    def _executor(self, environment: PathResolvingEnvironmentPreOrPostSds):
-        lhs = self.actual_value_lhs.resolve_value_of_any_dependency(environment)
-        rhs = self.expected_value_rhs.resolve_value_of_any_dependency(environment)
-        return _ComparisonExecutor(
+    def resolve(self, symbols: SymbolTable) -> ComparisonHandlerValue:
+        return ComparisonHandlerValue(
+            self.property_descriptor,
             self.expectation_type,
-            lhs,
-            rhs,
+            self.actual_value_lhs.resolve(symbols),
             self.operator,
-            _FailureReporter(_ErrorMessageResolver(self.property_descriptor,
-                                                   self.expectation_type,
-                                                   lhs,
-                                                   rhs,
-                                                   self.operator),
-                             )
+            self.expected_value_rhs.resolve(symbols),
         )
-
-
-class _ErrorMessageResolver(Generic[T], ErrorMessageResolver):
-    def __init__(self,
-                 property_descriptor: PropertyDescriptor,
-                 expectation_type: ExpectationType,
-                 lhs_actual_property_value: T,
-                 rhs: T,
-                 operator: ComparisonOperator):
-        self.property_descriptor = property_descriptor
-        self.expectation_type = expectation_type
-        self.lhs_actual_property_value = lhs_actual_property_value
-        self.rhs = rhs
-        self.operator = operator
-
-    def resolve(self) -> str:
-        return self.failure_info().error_message()
-
-    def failure_info(self) -> diff_msg.DiffErrorInfo:
-        expected_str = self.operator.name + ' ' + str(self.rhs)
-        return diff_msg.DiffErrorInfo(
-            self.property_descriptor.description(),
-            self.expectation_type,
-            expected_str,
-            diff_msg.actual_with_single_line_value(str(self.lhs_actual_property_value))
-        )
-
-
-class _FailureReporter(Generic[T]):
-    def __init__(self,
-                 err_msg_resolver: _ErrorMessageResolver[T],
-                 ):
-        self.err_msg_resolver = err_msg_resolver
-
-    def unexpected_value_message(self) -> str:
-        return self.err_msg_resolver.resolve()
-
-    def failure_info(self) -> diff_msg.DiffErrorInfo:
-        return self.err_msg_resolver.failure_info()
-
-
-class _ComparisonExecutor(Generic[T]):
-    def __init__(self,
-                 expectation_type: ExpectationType,
-                 lhs_actual_property_value: T,
-                 rhs: T,
-                 operator: ComparisonOperator,
-                 failure_reporter: _FailureReporter):
-        self.expectation_type = expectation_type
-        self.lhs_actual_property_value = lhs_actual_property_value
-        self.rhs = rhs
-        self.operator = operator
-        self.failure_reporter = failure_reporter
-
-    def execute_and_return_failure_via_err_msg_resolver(self) -> Optional[ErrorMessageResolver]:
-        return self._execute(self._get_err_msg_resolver)
-
-    def execute_and_return_pfh_via_exceptions(self):
-        self._execute(self._raise_fail_exception)
-
-    def _execute(self, failure_reporter: Callable[[], A]) -> Optional[A]:
-        comparison_fun = self.operator.operator_fun
-        condition_is_satisfied = bool(comparison_fun(self.lhs_actual_property_value,
-                                                     self.rhs))
-        if condition_is_satisfied:
-            if self.expectation_type is ExpectationType.NEGATIVE:
-                return failure_reporter()
-        else:
-            if self.expectation_type is ExpectationType.POSITIVE:
-                return failure_reporter()
-
-    def _raise_fail_exception(self):
-        err_msg = self.failure_reporter.unexpected_value_message()
-        raise pfh_exception.PfhFailException(text_docs.single_pre_formatted_line_object(err_msg))
-
-    def _get_err_msg_resolver(self) -> ErrorMessageResolver:
-        return self.failure_reporter.err_msg_resolver
 
 
 class Validator(SvhPreSdsValidatorViaExceptions):

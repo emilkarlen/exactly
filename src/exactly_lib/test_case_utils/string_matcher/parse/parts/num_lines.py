@@ -65,7 +65,15 @@ class NumLinesStringMatcher(StringMatcher):
         self._expectation_type = expectation_type
 
     def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        comparison_handler = comparison_structures.ComparisonHandler(
+        executor = self._executor(model)
+
+        try:
+            executor.execute_and_return_pfh_via_exceptions()
+        except pfh_exception.PfhException as ex:
+            return err_msg_resolvers.text_doc(ex.err_msg)
+
+    def _executor(self, model: FileToCheck) -> comparison_structures.ComparisonExecutor:
+        resolver = comparison_structures.ComparisonHandlerResolver(
             model.describer.construct_for_contents_attribute(
                 matcher_options.NUM_LINES_DESCRIPTION),
             self._expectation_type,
@@ -73,10 +81,9 @@ class NumLinesStringMatcher(StringMatcher):
             self._cmp_op_and_rhs.operator,
             self._cmp_op_and_rhs.right_operand)
 
-        try:
-            comparison_handler.execute(self._environment)
-        except pfh_exception.PfhException as ex:
-            return err_msg_resolvers.text_doc(ex.err_msg)
+        return resolver. \
+            resolve(self._environment.symbols). \
+            value_of_any_dependency(self._environment.home_and_sds)
 
 
 class NumLinesResolver(comparison_structures.OperandResolver[int]):

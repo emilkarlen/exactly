@@ -78,7 +78,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         cmp_op_and_rhs = parse_integer_comparison_operator_and_rhs(parser,
                                                                    must_be_within_byte_range)
         parser.report_superfluous_arguments_if_not_at_eol()
-        cmp_setup = comparison_structures.ComparisonHandler(
+        cmp_setup = comparison_structures.ComparisonHandlerResolver(
             property_descriptor_with_just_a_constant_name(_PROPERTY_NAME),
             expectation_type,
             ExitCodeResolver(),

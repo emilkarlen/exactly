@@ -24,9 +24,9 @@ def num_files_matcher(expectation_type: ExpectationType,
         SvhValidatorViaExceptionsFromPreAndPostSdsValidators(
             pre_sds=comparison_structures.OperandValidator(operator_and_r_operand.right_operand))
     )
-    return _NumFilesMatcher(expectation_type,
-                            operator_and_r_operand,
-                            validator)
+    return _NumFilesMatcherResolver(expectation_type,
+                                    operator_and_r_operand,
+                                    validator)
 
 
 class _NumFilesMatcherValue(FilesMatcherValue):
@@ -46,7 +46,7 @@ class _NumFilesMatcherValue(FilesMatcherValue):
     def matches(self,
                 environment: Environment,
                 files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        comparison_handler = comparison_structures.ComparisonHandler(
+        comparison_handler = comparison_structures.ComparisonHandlerResolver(
             files_source.error_message_info.property_descriptor(config.NUM_FILES_PROPERTY_NAME),
             self._expectation_type,
             NumFilesResolver(files_source),
@@ -55,10 +55,12 @@ class _NumFilesMatcherValue(FilesMatcherValue):
 
         env = environment.path_resolving_environment
 
-        return comparison_handler.execute_and_report_as_err_msg_resolver(env)
+        executor = comparison_handler.resolve(env.symbols).value_of_any_dependency(env.home_and_sds)
+
+        return executor.execute_and_return_failure_via_err_msg_resolver()
 
 
-class _NumFilesMatcher(FilesMatcherResolverBase):
+class _NumFilesMatcherResolver(FilesMatcherResolverBase):
     def __init__(self,
                  expectation_type: ExpectationType,
                  operator_and_r_operand: parse_expr.IntegerComparisonOperatorAndRightOperandResolver,
@@ -80,10 +82,10 @@ class _NumFilesMatcher(FilesMatcherResolverBase):
 
     @property
     def negation(self) -> FilesMatcherResolver:
-        return _NumFilesMatcher(logic_types.negation(self._expectation_type),
-                                self._operator_and_r_operand,
-                                self._validator
-                                )
+        return _NumFilesMatcherResolver(logic_types.negation(self._expectation_type),
+                                        self._operator_and_r_operand,
+                                        self._validator
+                                        )
 
 
 class NumFilesResolver(comparison_structures.OperandResolver[int]):

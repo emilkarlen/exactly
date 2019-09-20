@@ -5,7 +5,7 @@ from exactly_lib.test_case import os_services
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils import svh_exception
 from exactly_lib.test_case_utils.condition import comparators, instruction as sut
-from exactly_lib.test_case_utils.condition.comparison_structures import ComparisonHandler, OperandResolver
+from exactly_lib.test_case_utils.condition.comparison_structures import ComparisonHandlerResolver, OperandResolver
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
 from exactly_lib.util.logic_types import ExpectationType
@@ -45,9 +45,9 @@ class TestSymbolReferences(unittest.TestCase):
                                                     symbol_2_reffed_by_r_op])
 
         instruction = sut.Instruction(
-            ComparisonHandler(THE_PROPERTY_DESCRIPTOR,
-                              ExpectationType.POSITIVE,
-                              l_op, comparators.EQ, r_op))
+            ComparisonHandlerResolver(THE_PROPERTY_DESCRIPTOR,
+                                      ExpectationType.POSITIVE,
+                                      l_op, comparators.EQ, r_op))
 
         # ACT #
 
@@ -234,12 +234,12 @@ class TestMain(unittest.TestCase):
         for name, result_assertion, expectation_type, l_op, op, r_op in cases:
             # ARRANGE #
             instruction_to_check = sut.Instruction(
-                ComparisonHandler(THE_PROPERTY_DESCRIPTOR,
-                                  expectation_type,
-                                  operand_resolver_that(
+                ComparisonHandlerResolver(THE_PROPERTY_DESCRIPTOR,
+                                          expectation_type,
+                                          operand_resolver_that(
                                       resolve_return_value_action=do_return(l_op)),
-                                  op,
-                                  operand_resolver_that(
+                                          op,
+                                          operand_resolver_that(
                                       resolve_return_value_action=do_return(r_op))))
             with self.subTest(name=name):
                 # ACT #
@@ -253,9 +253,9 @@ class TestMain(unittest.TestCase):
 
 
 def cmp_setup(l_op: OperandResolver,
-              r_op: OperandResolver) -> ComparisonHandler:
-    return ComparisonHandler(THE_PROPERTY_DESCRIPTOR,
-                             ExpectationType.POSITIVE,
-                             l_op,
-                             comparators.EQ,
-                             r_op)
+              r_op: OperandResolver) -> ComparisonHandlerResolver:
+    return ComparisonHandlerResolver(THE_PROPERTY_DESCRIPTOR,
+                                     ExpectationType.POSITIVE,
+                                     l_op,
+                                     comparators.EQ,
+                                     r_op)

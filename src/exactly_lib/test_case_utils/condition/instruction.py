@@ -7,14 +7,14 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_utils import pfh_exception, svh_exception
-from exactly_lib.test_case_utils.condition.comparison_structures import ComparisonHandler
+from exactly_lib.test_case_utils.condition.comparison_structures import ComparisonHandlerResolver
 
 
 class Instruction(AssertPhaseInstruction):
     """Makes an instruction of a :class:`ComparisonHandler`"""
 
     def __init__(self,
-                 comparison_handler: ComparisonHandler):
+                 comparison_handler: ComparisonHandlerResolver):
         self.comparison_setup = comparison_handler
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
@@ -31,5 +31,9 @@ class Instruction(AssertPhaseInstruction):
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         return pfh_exception.translate_pfh_exception_to_pfh(
-            self.comparison_setup.execute,
-            environment.path_resolving_environment_pre_or_post_sds)
+            self._execute,
+            environment)
+
+    def _execute(self, environment: i.InstructionEnvironmentForPostSdsStep):
+        executor = self.comparison_setup.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        executor.execute_and_return_pfh_via_exceptions()
