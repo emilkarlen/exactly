@@ -1,11 +1,6 @@
-import pathlib
 import unittest
 
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.trace.trace import Node, Detail
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_sds
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -17,7 +12,6 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestDefaultAssertions),
         unittest.makeSuite(TestAssertionOnRenderedNode),
-        unittest.makeSuite(TestGivenEnvironmentIsUsed),
     ])
 
 
@@ -64,37 +58,12 @@ class TestAssertionOnRenderedNode(unittest.TestCase):
                                         NodeRendererForTest(actual))
 
 
-class TestGivenEnvironmentIsUsed(unittest.TestCase):
-    def test(self):
-        renderer = NodeRendererThatUsesHomeCaseDirAsHeader()
-        given_environment = ErrorMessageResolvingEnvironment(
-            HomeAndSds(
-                HomeDirectoryStructure(pathlib.Path('home-case'),
-                                       pathlib.Path('home-act')),
-                fake_sds(),
-            )
-        )
-        assertion = sut.matches_node_renderer(
-            rendered_node=asrt_trace.matches_node(header=asrt.equals(str(given_environment.tcds.hds.case_dir))),
-            in_environment=given_environment,
-        )
-
-        # ACT & ASSERT #
-
-        assertion.apply_without_message(self, renderer)
-
-
 class NodeRendererForTest(sut.NodeRenderer):
     def __init__(self, result):
         self.result = result
 
-    def render(self, environment: ErrorMessageResolvingEnvironment) -> Node:
+    def render(self) -> Node:
         return self.result
-
-
-class NodeRendererThatUsesHomeCaseDirAsHeader(sut.NodeRenderer):
-    def render(self, environment: ErrorMessageResolvingEnvironment) -> Node:
-        return sut.Node(str(environment.tcds.hds.case_dir), None, [], [])
 
 
 class DetailForTest(Detail):
