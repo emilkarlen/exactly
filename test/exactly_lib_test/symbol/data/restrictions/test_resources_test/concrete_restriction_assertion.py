@@ -13,6 +13,7 @@ from exactly_lib.type_system.value_type import DataValueType, TypeCategory
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
+from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -32,22 +33,22 @@ def suite() -> unittest.TestSuite:
 class TestIsFailureOfIndirectReference(unittest.TestCase):
     def test_pass(self):
         cases = [
-            (
+            NEA(
                 'default behaviour',
                 sut.is_failure_of_indirect_reference(),
                 FailureOfIndirectReference('symbol_name', [], _new_em('error message')),
             ),
-            (
+            NEA(
                 'default behaviour with non-empty list',
                 sut.is_failure_of_indirect_reference(),
                 FailureOfIndirectReference('symbol_name', [], _new_em('error message')),
             ),
-            (
+            NEA(
                 'name of symbol',
                 sut.is_failure_of_indirect_reference(failing_symbol=asrt.equals('the-failing-symbol')),
                 FailureOfIndirectReference('the-failing-symbol', [], _new_em('error message')),
             ),
-            (
+            NEA(
                 'error message',
                 sut.is_failure_of_indirect_reference(
                     error_message=asrt_text_doc.is_string_for_test_that_equals('the error message')
@@ -55,22 +56,22 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
                 FailureOfIndirectReference('symbol_name', [], _new_em('the error message'),
                                            'meaning'),
             ),
-            (
+            NEA(
                 'error message',
                 sut.is_failure_of_indirect_reference(meaning_of_failure=asrt.equals('meaning')),
                 FailureOfIndirectReference('symbol_name', [], _new_em('the error message'),
                                            'meaning'),
             ),
-            (
+            NEA(
                 'path to failing symbol',
                 sut.is_failure_of_indirect_reference(path_to_failing_symbol=asrt.equals(['sym1', 'sym2'])),
                 FailureOfIndirectReference('symbol_name', ['sym1', 'sym2'],
                                            _new_em('the error message')),
             ),
         ]
-        for description, assertion, actual in cases:
-            with self.subTest(msg=description):
-                assertion.apply_without_message(self, actual)
+        for case in cases:
+            with self.subTest(msg=case.name):
+                case.expected.apply_without_message(self, case.actual)
 
     def test__default_behaviour__fail_if_symbol_name_is_not_string(self):
         assert_that_assertion_fails(
@@ -93,7 +94,7 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
             sut.is_failure_of_indirect_reference(),
             FailureOfIndirectReference('failing_symbol',
                                        [],
-                                       ErrorMessageWithFixTip(['this is a TextRenderer - not a string'])),
+                                       ErrorMessageWithFixTip(['this is a list - not a string'])),
         )
 
     def test__default_behaviour__fail_if_meaning_of_failure_is_not_a_string(self):
@@ -102,7 +103,7 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
             FailureOfIndirectReference('failing_symbol',
                                        [],
                                        _new_em('error message'),
-                                       meaning_of_failure=['list - not a string'])
+                                       meaning_of_failure=['this is a list - not a string'])
         )
 
     def test_fail_if_symbol_name_is_unexpected(self):
