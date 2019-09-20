@@ -1,6 +1,6 @@
 from typing import Optional
 
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
 
 

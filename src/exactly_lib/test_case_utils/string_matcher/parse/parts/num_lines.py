@@ -15,7 +15,7 @@ from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable

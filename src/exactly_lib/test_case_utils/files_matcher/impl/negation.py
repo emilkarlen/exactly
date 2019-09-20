@@ -4,7 +4,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     Environment, FilesMatcherModel, FilesMatcherValue
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
 from exactly_lib.util.symbol_table import SymbolTable
 
 

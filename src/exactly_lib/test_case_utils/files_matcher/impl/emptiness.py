@@ -7,7 +7,7 @@ from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
 from exactly_lib.util import logic_types
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable

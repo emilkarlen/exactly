@@ -20,8 +20,8 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.type_system.data.string_or_file_ref_values import StringOrPath
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
-from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import tmp_text_file_containing, TmpDirFileSpace

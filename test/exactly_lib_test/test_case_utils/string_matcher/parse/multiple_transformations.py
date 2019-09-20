@@ -3,7 +3,7 @@ from typing import Iterable, Optional
 
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source

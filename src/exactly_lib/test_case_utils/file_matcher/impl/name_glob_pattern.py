@@ -10,7 +10,7 @@ from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromValueParts
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.data.string_value import StringValue
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher, FileMatcherModel
 from exactly_lib.util.symbol_table import SymbolTable
 

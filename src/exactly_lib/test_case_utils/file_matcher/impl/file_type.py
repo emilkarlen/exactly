@@ -3,7 +3,7 @@ from typing import Optional
 
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 
 

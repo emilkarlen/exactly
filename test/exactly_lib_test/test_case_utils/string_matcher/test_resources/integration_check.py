@@ -9,7 +9,7 @@ from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
 from exactly_lib.util.file_utils import preserved_cwd

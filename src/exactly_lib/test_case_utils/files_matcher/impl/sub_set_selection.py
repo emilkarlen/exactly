@@ -9,7 +9,7 @@ from exactly_lib.test_case.validation import pre_or_post_validation as validatio
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
     resolver_validator_for_file_matcher
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
 from exactly_lib.util.symbol_table import SymbolTable
 

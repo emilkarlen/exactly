@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser

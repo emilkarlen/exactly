@@ -2,9 +2,9 @@ from typing import Sequence, Callable
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
-from exactly_lib.type_system import error_message
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
+from exactly_lib.type_system.err_msg import error_message
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver, ConstantErrorMessageResolver
 
 
 def itemized_list(items: Sequence[ErrorMessageResolver],

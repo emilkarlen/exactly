@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
 

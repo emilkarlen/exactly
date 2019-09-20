@@ -4,7 +4,7 @@ from typing import List, Iterator, Optional
 from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForPrimitivePath
 from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib.util.file_utils import TmpDirFileSpace
 

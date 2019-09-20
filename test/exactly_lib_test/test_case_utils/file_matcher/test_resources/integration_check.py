@@ -10,7 +10,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForPrimitivePath
-from exactly_lib.type_system.error_message import ErrorMessageResolver
+from exactly_lib.type_system.err_msg.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand
