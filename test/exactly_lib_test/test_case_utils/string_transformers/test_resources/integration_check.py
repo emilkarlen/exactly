@@ -6,7 +6,6 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerValue, \
     StringTransformerModel
@@ -100,10 +99,6 @@ class _Checker:
         self.arrangement = arrangement
         self.expectation = expectation
         self.tcds = fake_home_and_sds()
-        self.err_msg_env = ErrorMessageResolvingEnvironment(
-            self.tcds,
-            self.arrangement.symbols
-        )
 
     def check(self):
         try:

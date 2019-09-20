@@ -19,8 +19,7 @@ from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_li
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_from_references
-from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver, \
-    ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.error_message import FilePropertyDescriptorConstructor, ErrorMessageResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util.logic_types import ExpectationType
@@ -57,8 +56,6 @@ def _parse_line_matches_tokens_and_line_matcher(token_parser: TokenParser) -> Li
 def matcher_for_any_line_matches(expectation_type: ExpectationType,
                                  line_matcher_resolver: LineMatcherResolver) -> StringMatcherResolver:
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
-        err_msg_env = ErrorMessageResolvingEnvironment(environment.home_and_sds,
-                                                       environment.symbols)
         line_matcher = line_matcher_resolver \
             .resolve(environment.symbols) \
             .value_of_any_dependency(environment.home_and_sds)
@@ -88,8 +85,6 @@ def matcher_for_any_line_matches(expectation_type: ExpectationType,
 def matcher_for_every_line_matches(expectation_type: ExpectationType,
                                    line_matcher_resolver: LineMatcherResolver) -> StringMatcherResolver:
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
-        err_msg_env = ErrorMessageResolvingEnvironment(environment.home_and_sds,
-                                                       environment.symbols)
         line_matcher = line_matcher_resolver \
             .resolve(environment.symbols) \
             .value_of_any_dependency(environment.home_and_sds)

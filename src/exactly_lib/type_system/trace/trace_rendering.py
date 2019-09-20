@@ -43,7 +43,7 @@ class DetailRendererOfErrorMessageResolver(DetailRenderer):
         self._message_resolver = message_resolver
 
     def render(self, environment: ErrorMessageResolvingEnvironment) -> Detail:
-        return trace.StringDetail(self._message_resolver.resolve(environment))
+        return trace.StringDetail(self._message_resolver.resolve())
 
 
 class DetailRendererOfConstant(DetailRenderer):

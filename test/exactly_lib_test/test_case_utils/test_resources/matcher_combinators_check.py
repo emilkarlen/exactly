@@ -2,10 +2,8 @@ import unittest
 from typing import List, Tuple
 
 from exactly_lib.definitions import expression
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import Matcher, MatcherWTrace, MatchingResult
 from exactly_lib.type_system.trace.trace import Node
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
@@ -402,12 +400,6 @@ class TestNotBase(TestCaseBase):
         self.assertIs(model_that_should_be_registered,
                       sub_matcher.registered_argument,
                       'sub_matcher matcher should have received the argument')
-
-
-_ARBITRARY_ERR_MSG_RESOLVING_ENV = ErrorMessageResolvingEnvironment(
-    fake_tcds(),
-    None,
-)
 
 
 def child_1_to_n(child_results: List[bool]) -> List[MatcherNameAndResult]:
