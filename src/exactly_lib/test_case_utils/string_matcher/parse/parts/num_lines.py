@@ -9,7 +9,7 @@ from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
-    IntegerComparisonOperatorAndRightOperand
+    IntegerComparisonOperatorAndRightOperandResolver
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import validator_for_non_negative
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
@@ -30,7 +30,7 @@ def parse(expectation_type: ExpectationType,
 
 
 def value_resolver(expectation_type: ExpectationType,
-                   cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand,
+                   cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperandResolver,
                    ) -> StringMatcherResolver:
     def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
         return cmp_op_and_rhs.right_operand.resolve(symbols).resolving_dependencies()
@@ -56,7 +56,7 @@ class NumLinesStringMatcher(StringMatcher):
         return diff_msg.negation_str(self._expectation_type) + matcher_options.NUM_LINES_DESCRIPTION
 
     def __init__(self,
-                 cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand,
+                 cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperandResolver,
                  expectation_type: ExpectationType,
                  environment: PathResolvingEnvironmentPreOrPostSds,
                  ):

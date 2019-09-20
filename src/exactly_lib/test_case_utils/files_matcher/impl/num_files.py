@@ -18,7 +18,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def num_files_matcher(expectation_type: ExpectationType,
-                      operator_and_r_operand: parse_expr.IntegerComparisonOperatorAndRightOperand
+                      operator_and_r_operand: parse_expr.IntegerComparisonOperatorAndRightOperandResolver
                       ) -> FilesMatcherResolver:
     validator = PreOrPostSdsValidatorFromValidatorViaExceptions(
         SvhValidatorViaExceptionsFromPreAndPostSdsValidators(
@@ -32,7 +32,7 @@ def num_files_matcher(expectation_type: ExpectationType,
 class _NumFilesMatcherValue(FilesMatcherValue):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 operator_and_r_operand: parse_expr.IntegerComparisonOperatorAndRightOperand):
+                 operator_and_r_operand: parse_expr.IntegerComparisonOperatorAndRightOperandResolver):
         self._expectation_type = expectation_type
         self._operator_and_r_operand = operator_and_r_operand
 
@@ -61,7 +61,7 @@ class _NumFilesMatcherValue(FilesMatcherValue):
 class _NumFilesMatcher(FilesMatcherResolverBase):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 operator_and_r_operand: parse_expr.IntegerComparisonOperatorAndRightOperand,
+                 operator_and_r_operand: parse_expr.IntegerComparisonOperatorAndRightOperandResolver,
                  validator: PreOrPostSdsValidator):
         self._operator_and_r_operand = operator_and_r_operand
 

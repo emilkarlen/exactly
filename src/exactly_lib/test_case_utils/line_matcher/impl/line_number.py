@@ -1,16 +1,16 @@
 from typing import Set
 
+import exactly_lib.test_case_utils.condition.integer.integer_value
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.condition.integer import integer_resolver
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcherFromComparisonOperator
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
-    IntegerComparisonOperatorAndRightOperand
+    IntegerComparisonOperatorAndRightOperandResolver
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import validator_for_non_negative
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherLineNumber
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherResolverFromParts
@@ -28,7 +28,7 @@ def parse_line_number(parser: TokenParser) -> LineMatcherResolver:
     return resolver(cmp_op_and_rhs)
 
 
-def resolver(condition: IntegerComparisonOperatorAndRightOperand) -> LineMatcherResolver:
+def resolver(condition: IntegerComparisonOperatorAndRightOperandResolver) -> LineMatcherResolver:
     def get_value(symbols: SymbolTable) -> LineMatcherValue:
         return _Value(condition.right_operand.property_name,
                       condition.operator,
@@ -44,7 +44,7 @@ class _Value(LineMatcherValue):
     def __init__(self,
                  name_of_lhs: str,
                  operator: comparators.ComparisonOperator,
-                 int_expression: integer_resolver.IntegerValue):
+                 int_expression: exactly_lib.test_case_utils.condition.integer.integer_value.IntegerValue):
         self._name_of_lhs = name_of_lhs
         self._operator = operator
         self._int_expression = int_expression

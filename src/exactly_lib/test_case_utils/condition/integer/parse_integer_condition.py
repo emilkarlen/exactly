@@ -15,7 +15,8 @@ from exactly_lib.test_case_utils.condition.integer import integer_resolver
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import python_evaluate, NotAnIntegerException
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher, \
     IntegerMatcherFromComparisonOperator
-from exactly_lib.test_case_utils.condition.integer.integer_resolver import IntegerResolver, CustomIntegerValidator
+from exactly_lib.test_case_utils.condition.integer.integer_resolver import IntegerResolver
+from exactly_lib.test_case_utils.condition.integer.integer_value import CustomIntegerValidator, IntegerValue
 from exactly_lib.test_case_utils.condition.parse import parse_comparison_operator
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.value_type import ValueType
@@ -32,11 +33,19 @@ def validator_for_non_negative(actual: int) -> Optional[TextRenderer]:
     return None
 
 
-class IntegerComparisonOperatorAndRightOperand:
+class IntegerComparisonOperatorAndRightOperandResolver:
     def __init__(self,
                  operator: comparators.ComparisonOperator,
                  rhs_resolver: IntegerResolver):
         self.right_operand = rhs_resolver
+        self.operator = operator
+
+
+class IntegerComparisonOperatorAndRightOperandValue:
+    def __init__(self,
+                 operator: comparators.ComparisonOperator,
+                 rhs_value: IntegerValue):
+        self.right_operand = rhs_value
         self.operator = operator
 
 
@@ -60,15 +69,15 @@ def parse_integer_matcher(parser: TokenParser,
 def parse_integer_comparison_operator_and_rhs(
         parser: TokenParser,
         custom_integer_restriction: Optional[CustomIntegerValidator] = None,
-        property_name: str = 'expected value') -> IntegerComparisonOperatorAndRightOperand:
+        property_name: str = 'expected value') -> IntegerComparisonOperatorAndRightOperandResolver:
     my_parser = token_parser_with_additional_error_message_format_map(parser, {'INTEGER': INTEGER_ARGUMENT.name})
 
     operator = parse_comparison_operator(my_parser)
     integer_token = my_parser.consume_mandatory_token('Missing {INTEGER} expression')
 
     resolver = integer_resolver_of(property_name, integer_token, custom_integer_restriction)
-    return IntegerComparisonOperatorAndRightOperand(operator,
-                                                    resolver)
+    return IntegerComparisonOperatorAndRightOperandResolver(operator,
+                                                            resolver)
 
 
 def integer_resolver_of(property_name: str,
