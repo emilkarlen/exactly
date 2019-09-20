@@ -47,7 +47,6 @@ class _EmptinessMatcherValue(FilesMatcherValue):
                                      EMPTINESS_CHECK_EXPECTED_VALUE)
         executor = _EmptinessExecutor(
             err_msg_setup,
-            environment,
             self._expectation_type,
             files_source)
 
@@ -68,11 +67,9 @@ class _ErrMsgSetup:
 class _EmptinessExecutor:
     def __init__(self,
                  err_msg_setup: _ErrMsgSetup,
-                 environment: Environment,
                  expectation_type: ExpectationType,
                  model: FilesMatcherModel):
         self.err_msg_setup = err_msg_setup
-        self.path_resolving_env = environment.path_resolving_environment
         self.expectation_type = expectation_type
         self.error_message_setup = err_msg_setup
         self.model = model
