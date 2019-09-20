@@ -1,11 +1,12 @@
 import operator as py_operator_fun
 import types
+from typing import Any, Callable
 
 
 class ComparisonOperator(tuple):
     def __new__(cls,
                 name: str,
-                operator_fun: types.FunctionType):
+                operator_fun: Callable[[Any, Any], int]):
         return tuple.__new__(cls, (name, operator_fun))
 
     @property
