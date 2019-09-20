@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 
 from exactly_lib.actors import command_line
 from exactly_lib.processing.act_phase import ActPhaseSetup

@@ -1,6 +1,5 @@
 import itertools
 import unittest
-
 from typing import Iterable
 
 from exactly_lib.test_case_utils.condition import comparators

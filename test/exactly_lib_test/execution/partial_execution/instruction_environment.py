@@ -1,6 +1,5 @@
-import unittest
-
 import functools
+import unittest
 
 from exactly_lib.execution.partial_execution.configuration import TestCase
 from exactly_lib.test_case import phase_identifier

@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 
 from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.actor import actor_utils

@@ -1,5 +1,4 @@
 import unittest
-
 from typing import Iterable, List
 
 from exactly_lib.definitions import expression

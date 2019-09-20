@@ -1,5 +1,4 @@
 import unittest
-
 from typing import Sequence, Callable, TypeVar
 
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver

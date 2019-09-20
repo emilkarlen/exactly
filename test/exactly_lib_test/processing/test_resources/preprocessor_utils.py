@@ -1,10 +1,9 @@
-import sys
-from time import strftime, localtime
-
 import pathlib
 import shlex
+import sys
 import tempfile
 from contextlib import contextmanager
+from time import strftime, localtime
 from typing import Callable, List, Sequence
 
 from exactly_lib import program_info

@@ -1,6 +1,5 @@
-import unittest
-
 import os
+import unittest
 
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser, \
     InstructionParserWithoutSourceFileLocationInfo

@@ -27,6 +27,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import fro
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.symbol_usage import SymbolUsage
@@ -36,7 +37,6 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.util.cli_syntax.elements import argument as a

@@ -1,5 +1,4 @@
 import itertools
-
 from typing import List, Sequence, Iterator, Dict, Callable, Optional
 
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SYMBOL_INFO, SymbolDefinitionInfo, \

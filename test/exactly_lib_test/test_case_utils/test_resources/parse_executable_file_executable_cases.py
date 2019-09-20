@@ -1,7 +1,6 @@
-import unittest
-
 import os
 import pathlib
+import unittest
 from typing import List
 
 from exactly_lib.section_document.parse_source import ParseSource

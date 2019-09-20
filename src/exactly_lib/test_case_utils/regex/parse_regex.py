@@ -9,7 +9,6 @@ from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -17,6 +16,7 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import parse_string_or_here_doc_from_token_parser
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
+from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a

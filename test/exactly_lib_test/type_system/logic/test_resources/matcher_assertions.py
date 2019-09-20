@@ -1,5 +1,4 @@
 import unittest
-
 from typing import List, Generic, TypeVar, Callable
 
 from exactly_lib.type_system.logic.matcher_base_class import Matcher

@@ -1,5 +1,4 @@
 import unittest
-
 from typing import List
 
 from exactly_lib.definitions import file_ref as file_ref_syntax

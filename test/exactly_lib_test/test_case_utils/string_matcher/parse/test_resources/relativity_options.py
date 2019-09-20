@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 from typing import List, Callable
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds

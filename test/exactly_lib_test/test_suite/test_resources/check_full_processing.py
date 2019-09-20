@@ -1,7 +1,6 @@
-import unittest
-
 import pathlib
 import tempfile
+import unittest
 
 from exactly_lib import program_info
 from exactly_lib.common import instruction_setup

@@ -17,12 +17,12 @@ from exactly_lib.instructions.multi_phase.utils.assert_phase_info import IsAHelp
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
 from exactly_lib.util.textformat.structure import structures as docs

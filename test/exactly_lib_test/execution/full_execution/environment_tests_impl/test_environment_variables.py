@@ -1,7 +1,6 @@
-import unittest
-
 import pathlib
 import types
+import unittest
 
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.full_execution.result import FullExeResultStatus

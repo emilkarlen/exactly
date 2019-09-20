@@ -1,5 +1,4 @@
 import unittest
-
 from typing import List, Callable
 
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser

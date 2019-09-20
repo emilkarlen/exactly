@@ -2,8 +2,8 @@ import re
 from typing import Iterable
 
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex
-from exactly_lib.test_case_utils.string_transformer.impl.select import SelectStringTransformer
 from exactly_lib.test_case_utils.string_transformer.impl.replace import ReplaceStringTransformer
+from exactly_lib.test_case_utils.string_transformer.impl.select import SelectStringTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.string_transformer import CustomStringTransformer
 

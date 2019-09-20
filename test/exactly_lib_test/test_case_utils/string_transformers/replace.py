@@ -1,6 +1,5 @@
-import unittest
-
 import re
+import unittest
 
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer

@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 from typing import List
 
 from exactly_lib.default.program_modes.test_case.builtin_symbols import test_case_dir_symbols, string_transformers

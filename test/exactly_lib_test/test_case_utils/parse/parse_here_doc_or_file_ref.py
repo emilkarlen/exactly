@@ -12,6 +12,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
     RelOptionsConfiguration
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
+from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, singleton_symbol_table_2
@@ -34,7 +35,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources import concrete_path_parts
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes_str
-from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
+
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([

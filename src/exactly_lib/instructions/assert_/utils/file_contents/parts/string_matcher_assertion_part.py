@@ -2,7 +2,6 @@ from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart, \
     FileToCheck
-from exactly_lib.instructions.utils.error_messages import err_msg_env_from_instr_env
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices

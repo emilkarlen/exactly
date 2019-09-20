@@ -1,8 +1,7 @@
-import unittest
-
 import os
 import pathlib
 import shutil
+import unittest
 
 from exactly_lib.actors.source_interpreter import python3
 from exactly_lib.execution.configuration import ExecutionConfiguration

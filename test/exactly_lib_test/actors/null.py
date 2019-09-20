@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 
 from exactly_lib.actors import null as sut
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER

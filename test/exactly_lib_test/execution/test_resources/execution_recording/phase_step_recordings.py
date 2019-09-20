@@ -1,6 +1,5 @@
-import unittest
-
 import types
+import unittest
 from operator import attrgetter
 from typing import Callable
 

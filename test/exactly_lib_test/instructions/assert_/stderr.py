@@ -1,5 +1,4 @@
 import unittest
-
 from typing import Callable
 
 from exactly_lib.instructions.assert_ import stderr as sut

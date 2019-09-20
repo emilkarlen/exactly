@@ -1,5 +1,4 @@
 import unittest
-
 from typing import TypeVar, Callable, Set, Optional, Generic
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue, SingleDirDependentValue, \

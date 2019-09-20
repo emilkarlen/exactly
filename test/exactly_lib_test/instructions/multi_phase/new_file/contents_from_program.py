@@ -21,8 +21,8 @@ from exactly_lib_test.instructions.multi_phase.new_file.test_resources.common_te
     TestCaseBase
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils import \
     IS_FAILURE, IS_SUCCESS, AN_ALLOWED_DST_FILE_RELATIVITY
-from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.multi_phase.test_resources import instruction_embryo_check as embryo_check
+from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import \
     TransformableContentsConstructor, output_from_program
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
@@ -47,6 +47,7 @@ from exactly_lib_test.test_case_utils.program.test_resources import arguments_bu
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
+from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.arguments_building import Stringable
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -60,7 +61,6 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.string_transformers import \
     MyToUppercaseTransformer
-from exactly_lib_test.test_case_utils.test_resources import validation
 
 
 def suite() -> unittest.TestSuite:

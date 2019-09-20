@@ -1,6 +1,5 @@
-import unittest
-
 import types
+import unittest
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep

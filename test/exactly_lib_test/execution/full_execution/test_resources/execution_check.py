@@ -1,6 +1,5 @@
-import unittest
-
 import os
+import unittest
 
 from exactly_lib.execution.configuration import PredefinedProperties, ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution

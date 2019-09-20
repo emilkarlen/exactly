@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 
 from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.execution.phase_step_simple import \

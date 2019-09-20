@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 from typing import Callable
 
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser

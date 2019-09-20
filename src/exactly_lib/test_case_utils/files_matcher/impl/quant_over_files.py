@@ -17,7 +17,7 @@ from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatche
 from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
     resolver_validator_for_file_matcher
 from exactly_lib.type_system.data import path_description
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor, \
+from exactly_lib.type_system.error_message import PropertyDescriptor, \
     FilePropertyDescriptorConstructor, ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcherModel
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck

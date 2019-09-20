@@ -16,6 +16,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
     InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -29,7 +30,6 @@ from exactly_lib.test_case_utils import file_properties, negation_of_predicate
 from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.err_msg2.env_dep_text import TextResolver
 from exactly_lib.test_case_utils.err_msg2.header_rendering import SimpleHeaderMinorBlockRenderer
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.test_case_utils.err_msg2.path_rendering import HeaderAndPathMajorBlock, \
     PathRepresentationsRenderersForPrimitive
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
@@ -39,7 +39,6 @@ from exactly_lib.test_case_utils.file_properties import render_failure__wo_file_
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.type_system import error_message
 from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.type_system.logic import hard_error
 from exactly_lib.util.cli_syntax.elements import argument as a

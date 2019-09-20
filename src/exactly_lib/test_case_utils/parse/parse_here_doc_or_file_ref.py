@@ -13,7 +13,6 @@ from exactly_lib.test_case_utils.parse import parse_here_document, parse_file_re
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.type_system.data.string_or_file_ref_values import SourceType, StringOrPath
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 

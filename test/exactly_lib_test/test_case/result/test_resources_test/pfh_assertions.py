@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.test_case.result import pfh
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as sut

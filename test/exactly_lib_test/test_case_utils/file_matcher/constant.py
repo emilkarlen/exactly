@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matcher_models import \

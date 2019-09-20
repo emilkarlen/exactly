@@ -29,7 +29,6 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
-from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
@@ -48,6 +47,7 @@ from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.test_case_utils.string_transformer import resolvers as line_transformer_resolvers, \
     parse_string_transformer
+from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a

@@ -14,6 +14,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
 from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import file_ref_resolvers
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
@@ -22,7 +23,6 @@ from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref

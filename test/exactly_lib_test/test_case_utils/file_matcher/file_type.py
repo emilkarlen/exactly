@@ -3,7 +3,6 @@ import unittest
 from exactly_lib.test_case_utils.file_matcher.impl import file_type
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.error_message import ErrorMessageResolver
-from exactly_lib_test.test_case.test_resources.instruction_environment import fake_error_message_resolving_environment
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as model
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir

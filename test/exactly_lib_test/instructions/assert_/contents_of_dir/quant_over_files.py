@@ -1,6 +1,5 @@
-import unittest
-
 import shlex
+import unittest
 
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings

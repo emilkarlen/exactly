@@ -1,6 +1,5 @@
-import unittest
-
 import re
+import unittest
 
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name

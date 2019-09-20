@@ -2,8 +2,8 @@ import re
 import unittest
 
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
-from exactly_lib.test_case_utils.string_transformer.impl.select import SelectStringTransformer
 from exactly_lib.test_case_utils.string_transformer.impl.replace import ReplaceStringTransformer
+from exactly_lib.test_case_utils.string_transformer.impl.select import SelectStringTransformer
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer, SequenceStringTransformer, \
     CustomStringTransformer
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import value_assertions as sut

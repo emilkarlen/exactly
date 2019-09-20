@@ -1,5 +1,4 @@
 import unittest
-
 from typing import List, Optional
 
 from exactly_lib.symbol.data import string_resolvers

@@ -1,5 +1,4 @@
 import unittest
-
 from typing import Optional
 
 from exactly_lib.definitions import instruction_arguments

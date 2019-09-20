@@ -1,5 +1,4 @@
 import unittest
-
 from typing import Iterable
 
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
@@ -13,9 +12,9 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc i
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess

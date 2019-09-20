@@ -1,5 +1,4 @@
 import unittest
-
 from typing import List
 
 from exactly_lib.type_system.logic.string_transformer import StringTransformerModel

@@ -1,5 +1,4 @@
 import unittest
-
 from typing import List
 
 from exactly_lib_test.test_resources.process import SubProcessResult

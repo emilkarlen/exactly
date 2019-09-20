@@ -2,14 +2,14 @@ from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.test_case_utils.file_properties import FilePropertiesCheck
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
+from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 
 
 class FileRefCheck:

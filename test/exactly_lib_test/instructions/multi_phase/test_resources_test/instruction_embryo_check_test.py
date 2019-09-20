@@ -1,9 +1,8 @@
 """
 Test of test-infrastructure: instruction_embryo_check.
 """
-import unittest
-
 import pathlib
+import unittest
 
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo as embryo
 from exactly_lib.section_document.parse_source import ParseSource

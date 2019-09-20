@@ -1,5 +1,4 @@
 import itertools
-
 import unittest
 
 from exactly_lib.cli.definitions import exit_codes

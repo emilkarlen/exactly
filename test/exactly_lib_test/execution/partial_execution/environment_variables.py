@@ -1,8 +1,7 @@
-import time
-import unittest
-
 import os
 import re
+import time
+import unittest
 
 from exactly_lib.execution import phase_step_simple as step
 from exactly_lib.execution.phase_step import SimplePhaseStep

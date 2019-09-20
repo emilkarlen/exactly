@@ -1,7 +1,6 @@
 import unittest
 from typing import Optional
 
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.execution.impl.phase_step_execution import execute_phase_prim
 from exactly_lib.execution.impl.result import Failure
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
@@ -9,6 +8,7 @@ from exactly_lib.execution.impl.single_instruction_executor import ControlledIns
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.line_source import Line
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import failure_assertions as asrt_failure
 from exactly_lib_test.execution.test_resources.phase_step_execution import RecordingMedia, \
     TestInstruction, ElementHeaderExecutorThatRecordsHeaderAndLineNumber, \
@@ -20,7 +20,6 @@ from exactly_lib_test.section_document.test_resources.source_location_assertions
     equals_single_line_source_location_path
 from exactly_lib_test.test_case.result.test_resources import failure_details_assertions as asrt_failure_details
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
 
 def suite() -> unittest.TestSuite:

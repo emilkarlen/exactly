@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case_utils import pfh_exception
@@ -18,7 +17,6 @@ from exactly_lib_test.test_case.test_resources import instruction_environment
 from exactly_lib_test.test_case_utils.condition.test_resources.operand_resolver import operand_resolver_that
 from exactly_lib_test.test_resources import actions
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:

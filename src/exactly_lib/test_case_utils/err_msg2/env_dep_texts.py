@@ -4,7 +4,7 @@ from exactly_lib.common.report_rendering import print
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case_utils.err_msg2.env_dep_text import TextResolver, SequenceRendererResolver
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment
+from exactly_lib.type_system.error_message import ErrorMessageResolver
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 
 

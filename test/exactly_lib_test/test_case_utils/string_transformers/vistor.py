@@ -1,6 +1,5 @@
-import unittest
-
 import re
+import unittest
 from typing import Iterable
 
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant

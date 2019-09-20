@@ -1,5 +1,4 @@
 import unittest
-
 from typing import Optional
 
 from exactly_lib.instructions.multi_phase import define_symbol as sut

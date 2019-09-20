@@ -1,5 +1,4 @@
 import unittest
-
 from typing import List, Tuple, Iterator
 
 from exactly_lib.section_document.parse_source import ParseSource

@@ -1,7 +1,8 @@
-from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherNot, FileMatcherAnd, FileMatcherOr, FileMatcherConstant
-from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
-from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
+from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherNot, FileMatcherAnd, FileMatcherOr, \
+    FileMatcherConstant
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
+from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
+from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 
 

@@ -1,5 +1,4 @@
 import itertools
-
 from typing import Iterable, Optional, Set
 
 from exactly_lib.util.textformat.constructor import paragraphs

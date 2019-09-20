@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 from typing import List
 
 from exactly_lib_test.processing.test_resources import preprocessor_utils

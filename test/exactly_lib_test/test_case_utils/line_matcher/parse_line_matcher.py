@@ -1,6 +1,5 @@
-import unittest
-
 import re
+import unittest
 from typing import List, Sequence
 
 import exactly_lib.test_case_utils.line_matcher.impl.line_number
@@ -24,7 +23,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     import remaining_source
 from exactly_lib_test.symbol.test_resources import resolver_assertions
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
-from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax, integration_check
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.resolver_assertions import \
     resolved_value_equals_line_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.value_assertions import value_matches_line_matcher
@@ -281,6 +280,7 @@ class TestLineNumberParser(unittest.TestCase):
                 self._check(case.source,
                             Expectation(expected_resolver,
                                         case.source_assertion))
+
 
 class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase):
     _conf = Configuration()

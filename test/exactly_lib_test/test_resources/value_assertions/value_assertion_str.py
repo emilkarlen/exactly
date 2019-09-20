@@ -1,6 +1,5 @@
-import unittest
-
 import re
+import unittest
 
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase

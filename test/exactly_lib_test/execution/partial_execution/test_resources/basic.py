@@ -1,8 +1,7 @@
-import unittest
-
 import pathlib
 import shutil
 import types
+import unittest
 from typing import Callable, Optional
 
 from exactly_lib.execution.configuration import ExecutionConfiguration

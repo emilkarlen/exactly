@@ -1,6 +1,5 @@
-import unittest
-
 import os
+import unittest
 
 from exactly_lib.instructions.multi_phase import run as sut
 from exactly_lib.instructions.multi_phase.utils.instruction_from_parts_for_executing_program import \

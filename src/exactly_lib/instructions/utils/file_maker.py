@@ -14,8 +14,8 @@ from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator, \
     ValidationStep
 from exactly_lib.test_case_utils import file_ref_check, file_properties, file_creation
-from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file__dp
+from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.process_execution.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
     execute_and_read_stderr_if_non_zero_exitcode, result_for_non_success_or_non_zero_exit_code

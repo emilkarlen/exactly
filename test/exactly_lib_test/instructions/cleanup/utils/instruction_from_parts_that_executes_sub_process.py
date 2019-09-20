@@ -6,6 +6,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.test_case import phase_identifier
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.cleanup.test_resources.configuration import CleanupConfigurationBase
 from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources import \
@@ -13,8 +14,6 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
 from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.util.test_resources import file_printable_assertions as asrt_file_printable
-from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
 
 def suite() -> unittest.TestSuite:

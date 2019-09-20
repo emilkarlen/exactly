@@ -1,5 +1,5 @@
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.type_system.error_message import ErrorMessageResolvingEnvironment, PropertyDescriptor
+from exactly_lib.type_system.error_message import PropertyDescriptor
 from exactly_lib.util.logic_types import ExpectationType
 
 

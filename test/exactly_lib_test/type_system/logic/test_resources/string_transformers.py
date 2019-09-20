@@ -1,5 +1,4 @@
 import itertools
-
 from typing import Iterable, Callable
 
 from exactly_lib.type_system.logic.string_transformer import StringTransformer

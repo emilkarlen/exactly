@@ -1,6 +1,5 @@
-import unittest
-
 import os
+import unittest
 
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import Actor

@@ -1,5 +1,4 @@
 import unittest
-
 from abc import ABC
 
 from exactly_lib.section_document.parse_source import ParseSource

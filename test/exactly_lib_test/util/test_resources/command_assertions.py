@@ -1,6 +1,5 @@
-import sys
-
 import pathlib
+import sys
 from typing import List
 
 from exactly_lib.util.process_execution.command import Command, CommandDriver
@@ -15,44 +14,44 @@ def equals_executable_file_command_driver(expected: CommandDriverForExecutableFi
                                           ) -> ValueAssertion[CommandDriver]:
     return asrt.is_instance_with__many(CommandDriverForExecutableFile,
                                        [
-                                          asrt.sub_component('executable_file',
-                                                             CommandDriverForExecutableFile.executable_file.fget,
-                                                             asrt.equals(expected.executable_file)
-                                                             ),
-                                          asrt.sub_component('shell',
-                                                             _get_is_shell,
-                                                             asrt.equals(False)
-                                                             ),
-                                      ])
+                                           asrt.sub_component('executable_file',
+                                                              CommandDriverForExecutableFile.executable_file.fget,
+                                                              asrt.equals(expected.executable_file)
+                                                              ),
+                                           asrt.sub_component('shell',
+                                                              _get_is_shell,
+                                                              asrt.equals(False)
+                                                              ),
+                                       ])
 
 
 def equals_system_program_command_driver(expected: CommandDriverForSystemProgram
                                          ) -> ValueAssertion[CommandDriver]:
     return asrt.is_instance_with__many(CommandDriverForSystemProgram,
                                        [
-                                          asrt.sub_component('executable_file',
-                                                             CommandDriverForSystemProgram.program.fget,
-                                                             asrt.equals(expected.program)
-                                                             ),
-                                          asrt.sub_component('shell',
-                                                             _get_is_shell,
-                                                             asrt.equals(False)
-                                                             ),
-                                      ])
+                                           asrt.sub_component('executable_file',
+                                                              CommandDriverForSystemProgram.program.fget,
+                                                              asrt.equals(expected.program)
+                                                              ),
+                                           asrt.sub_component('shell',
+                                                              _get_is_shell,
+                                                              asrt.equals(False)
+                                                              ),
+                                       ])
 
 
 def equals_shell_command_driver(expected: CommandDriverForShell) -> ValueAssertion[CommandDriver]:
     return asrt.is_instance_with__many(CommandDriverForShell,
                                        [
-                                          asrt.sub_component('shell_command_line',
-                                                             CommandDriverForShell.shell_command_line.fget,
-                                                             asrt.equals(expected.shell_command_line)
-                                                             ),
-                                          asrt.sub_component('shell',
-                                                             _get_is_shell,
-                                                             asrt.equals(True)
-                                                             ),
-                                      ])
+                                           asrt.sub_component('shell_command_line',
+                                                              CommandDriverForShell.shell_command_line.fget,
+                                                              asrt.equals(expected.shell_command_line)
+                                                              ),
+                                           asrt.sub_component('shell',
+                                                              _get_is_shell,
+                                                              asrt.equals(True)
+                                                              ),
+                                       ])
 
 
 def matches_command(driver: ValueAssertion[CommandDriver],

@@ -6,8 +6,7 @@ from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
-from exactly_lib.type_system.error_message import ErrorMessageResolver, ErrorMessageResolvingEnvironment, \
-    PropertyDescriptor
+from exactly_lib.type_system.error_message import ErrorMessageResolver, PropertyDescriptor
 
 
 class FileSystemElementPropertiesMatcher:

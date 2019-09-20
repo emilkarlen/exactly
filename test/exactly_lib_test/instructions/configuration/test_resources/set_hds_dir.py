@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 from pathlib import Path
 from typing import Callable
 

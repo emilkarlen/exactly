@@ -1,5 +1,4 @@
 import unittest
-
 from typing import Sequence
 
 from exactly_lib.symbol import resolver_structure as rs
