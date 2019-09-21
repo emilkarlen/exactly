@@ -16,7 +16,8 @@ from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.assertions import matches_string_matcher_resolver
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.assertions import matches_string_matcher_resolver, \
+    matches_string_matcher_attributes
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder, \
     ModelConstructor
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
@@ -74,10 +75,9 @@ class Executor:
                                                           resolver.references,
                                                           'symbol-usages after parse')
 
-        matches_string_matcher_resolver(
-            references=asrt.anything_goes(),
-            symbols=self.arrangement.symbols).apply_with_message(self.put, resolver,
-                                                                 'resolver structure')
+        matches_string_matcher_attributes(
+            references=asrt.anything_goes()).apply_with_message(self.put, resolver,
+                                                                'resolver structure')
 
         with home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,

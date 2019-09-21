@@ -1,104 +1,76 @@
-from typing import Optional, Sequence, Set
-
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils import pfh_exception
-from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
-from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
-    IntegerComparisonOperatorAndRightOperandResolver
-from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import validator_for_non_negative
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
+from exactly_lib.test_case_utils.matcher import applier
+from exactly_lib.test_case_utils.matcher.element_getter import ElementGetter, ElementGetterResolver
+from exactly_lib.test_case_utils.matcher.impls import element_getters, parse_integer_matcher
+from exactly_lib.test_case_utils.matcher.matcher import Failure
+from exactly_lib.test_case_utils.string_matcher import matcher_applier, matcher_options
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
+from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
+from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib.util.symbol_table import SymbolTable
+
+_PROPERTY_NAME = 'number of lines'
 
 
 def parse(expectation_type: ExpectationType,
           token_parser: TokenParser) -> StringMatcherResolver:
-    cmp_op_and_rhs = parse_cmp_op.parse_integer_comparison_operator_and_rhs(token_parser,
-                                                                            validator_for_non_negative)
-    return value_resolver(expectation_type,
-                          cmp_op_and_rhs)
-
-
-def value_resolver(expectation_type: ExpectationType,
-                   cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperandResolver,
-                   ) -> StringMatcherResolver:
-    def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
-        return cmp_op_and_rhs.right_operand.resolve(symbols).resolving_dependencies()
-
-    def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
-        return NumLinesStringMatcher(
-            cmp_op_and_rhs,
-            expectation_type,
-            environment,
-        )
-
-    return StringMatcherResolverFromParts(
-        cmp_op_and_rhs.right_operand.references,
-        cmp_op_and_rhs.right_operand.pre_or_post_sds_validator,
-        get_resolving_dependencies,
-        get_matcher,
+    matcher = parse_integer_matcher.parse(
+        token_parser,
+        expectation_type,
+        parse_cmp_op.validator_for_non_negative,
+        _PROPERTY_NAME,
+    )
+    return matcher_applier.MaStringMatcherResolver(
+        applier.MatcherApplierResolver(
+            matcher,
+            _operand_from_model_resolver(),
+        ),
+        _mk_error_message,
     )
 
 
-class NumLinesStringMatcher(StringMatcher):
-    @property
-    def option_description(self) -> str:
-        return diff_msg.negation_str(self._expectation_type) + matcher_options.NUM_LINES_DESCRIPTION
-
-    def __init__(self,
-                 cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperandResolver,
-                 expectation_type: ExpectationType,
-                 environment: PathResolvingEnvironmentPreOrPostSds,
-                 ):
-        self._cmp_op_and_rhs = cmp_op_and_rhs
-        self._environment = environment
-        self._expectation_type = expectation_type
-
-    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        executor = self._executor(model)
-
-        try:
-            executor.execute_and_return_pfh_via_exceptions()
-        except pfh_exception.PfhException as ex:
-            return err_msg_resolvers.text_doc(ex.err_msg)
-
-    def _executor(self, model: FileToCheck) -> comparison_structures.ComparisonExecutor:
-        resolver = comparison_structures.ComparisonHandlerResolver(
-            model.describer.construct_for_contents_attribute(
-                matcher_options.NUM_LINES_DESCRIPTION),
-            self._expectation_type,
-            NumLinesResolver(model),
-            self._cmp_op_and_rhs.operator,
-            self._cmp_op_and_rhs.right_operand)
-
-        return resolver. \
-            resolve(self._environment.symbols). \
-            value_of_any_dependency(self._environment.home_and_sds)
-
-
-class NumLinesResolver(comparison_structures.OperandResolver[int]):
-    def __init__(self,
-                 file_to_check: FileToCheck):
-        super().__init__(matcher_options.NUM_LINES_DESCRIPTION)
-        self.file_to_check = file_to_check
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return []
-
-    def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
+class _ElementGetter(ElementGetter[FileToCheck, int]):
+    def get_from(self, model: FileToCheck) -> int:
         ret_val = 0
-        with self.file_to_check.lines() as lines:
-            for line in lines:
+        with model.lines() as lines:
+            for _ in lines:
                 ret_val += 1
         return ret_val
+
+
+def _operand_from_model_resolver() -> ElementGetterResolver[FileToCheck, int]:
+    return element_getters.ElementGetterResolverConstant(
+        element_getters.ElementGetterValueConstant(
+            _ElementGetter(),
+        )
+    )
+
+
+def _mk_error_message(model: FileToCheck, failure: Failure[int]) -> ErrorMessageResolver:
+    return _ErrorMessageResolver(
+        model.describer.construct_for_contents_attribute(
+            matcher_options.NUM_LINES_DESCRIPTION),
+        failure,
+    )
+
+
+class _ErrorMessageResolver(ErrorMessageResolver):
+    def __init__(self,
+                 property_descriptor: PropertyDescriptor,
+                 failure: Failure[int]):
+        self.property_descriptor = property_descriptor
+        self.failure = failure
+
+    def resolve(self) -> str:
+        return self.failure_info().error_message()
+
+    def failure_info(self) -> diff_msg.DiffErrorInfo:
+        return diff_msg.DiffErrorInfo(
+            self.property_descriptor.description(),
+            self.failure.expectation_type,
+            self.failure.expected,
+            diff_msg.actual_with_single_line_value(str(self.failure.actual))
+        )

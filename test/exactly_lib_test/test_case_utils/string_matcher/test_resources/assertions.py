@@ -60,3 +60,23 @@ def matches_string_matcher_resolver(primitive_value: ValueAssertion[StringMatche
                                ),
         ])
     )
+
+
+def matches_string_matcher_attributes(references: ValueAssertion = asrt.is_empty_sequence,
+                                      ) -> ValueAssertion[LogicValueResolver]:
+    return asrt.is_instance_with(
+        StringMatcherResolver,
+        asrt.and_([
+            is_resolver_of_logic_type(LogicValueType.STRING_MATCHER,
+                                      ValueType.STRING_MATCHER),
+
+            asrt.sub_component('references',
+                               resolver_structure.get_references,
+                               references),
+
+            asrt.sub_component('validator',
+                               lambda resolver: resolver.validator,
+                               asrt.is_instance(PreOrPostSdsValidator)
+                               ),
+        ])
+    )
