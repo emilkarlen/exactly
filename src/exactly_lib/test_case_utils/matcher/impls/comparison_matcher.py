@@ -9,6 +9,7 @@ from exactly_lib.test_case_utils.matcher.matcher import Matcher, MatcherValue, M
 from exactly_lib.test_case_utils.matcher.object import ObjectValue, ObjectResolver
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
+from exactly_lib.util import logic_types
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -22,10 +23,19 @@ class ComparisonMatcher(Generic[T], Matcher[T]):
                  rhs: T,
                  model_renderer: Callable[[T], str],
                  ):
-        self.model_renderer = model_renderer
+        self._model_renderer = model_renderer
         self._expectation_type = expectation_type
         self._rhs = rhs
         self._operator = operator
+
+    @property
+    def negation(self) -> Matcher:
+        return ComparisonMatcher(
+            logic_types.negation(self._expectation_type),
+            self._operator,
+            self._rhs,
+            self._model_renderer,
+        )
 
     def matches(self, model: T) -> Optional[Failure[T]]:
         lhs = model

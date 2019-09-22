@@ -29,6 +29,11 @@ class Matcher(Generic[T], ABC):
         """
         pass
 
+    @property
+    @abstractmethod
+    def negation(self) -> 'Matcher':
+        pass
+
 
 class MatcherValue(Generic[T], ABC):
     @abstractmethod
