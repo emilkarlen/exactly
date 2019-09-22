@@ -6,7 +6,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.data.impl.path import described_path_resolvers
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherValue, FilesMatcherModel, Environment
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherModel, FilesMatcher
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
@@ -250,14 +250,13 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
                        environment: InstructionEnvironmentForPostSdsStep) -> Optional[ErrorMessageResolver]:
         matcher_to_apply = self._get_matcher(environment)
         model = self._new_model(environment)
-        matcher_environment = Environment(environment.path_resolving_environment_pre_or_post_sds,
-                                          environment.phase_logging.space_for_instruction())
+        return matcher_to_apply.matches(model)
 
-        return matcher_to_apply.matches(matcher_environment, model)
-
-    def _get_matcher(self, environment: InstructionEnvironmentForPostSdsStep) -> FilesMatcherValue:
+    def _get_matcher(self, environment: InstructionEnvironmentForPostSdsStep) -> FilesMatcher:
         resolver = lookups.lookup_files_matcher(environment.symbols, self.matcher_symbol_name)
-        return resolver.resolve(environment.symbols)
+        return resolver.resolve(environment.symbols) \
+            .value_of_any_dependency(environment.home_and_sds) \
+            .construct(environment.phase_logging.space_for_instruction())
 
     def _new_model(self, environment: InstructionEnvironmentForPostSdsStep) -> FilesMatcherModel:
         rel_opt_conf = rel_opt_confs.conf_rel_sds(RelSdsOptionType.REL_RESULT)

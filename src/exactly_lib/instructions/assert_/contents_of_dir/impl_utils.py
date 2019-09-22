@@ -3,7 +3,7 @@ from typing import Sequence
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.impl.path import described_path_resolvers
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, Environment
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -62,8 +62,6 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
               os_services: OsServices,
               custom_environment,
               files_source: FilesSource) -> FilesSource:
-        env = Environment(environment.path_resolving_environment_pre_or_post_sds,
-                          environment.phase_logging.space_for_instruction())
         model = FilesMatcherModelForDir(
             environment.phase_logging.space_for_instruction(),
             described_path_resolvers.of(files_source.path_of_dir)
@@ -71,9 +69,10 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
                 .value_of_any_dependency(environment.home_and_sds),
         )
         value = self._files_matcher.resolve(environment.symbols)
+        primitive = value.value_of_any_dependency(environment.home_and_sds)
+        matcher = primitive.construct(environment.phase_logging.space_for_instruction())
         try:
-            mb_error_message = value.matches(env,
-                                             model)
+            mb_error_message = matcher.matches(model)
             if mb_error_message is not None:
                 raise pfh_ex_method.PfhFailException(
                     env_dep_texts.of_old(mb_error_message).resolve_sequence()

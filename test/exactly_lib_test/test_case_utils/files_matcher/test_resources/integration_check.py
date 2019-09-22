@@ -7,14 +7,14 @@ from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data.impl.path import described_path_resolvers
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, FilesMatcherValue, Environment, \
-    FilesMatcherModel
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, FilesMatcherValue, FilesMatcherModel, \
+    FilesMatcher
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand
+from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
@@ -108,11 +108,12 @@ class _Executor:
                 return
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
             write_act_result(home_and_sds.sds, act_result)
-            matcher = self._resolve(resolver, environment)
+            dir_file_space, files_source = self._new_model(environment)
 
-            model_env, files_source = self._new_model(environment)
+            matcher_value = self._resolve(resolver, environment)
+            matcher = matcher_value.value_of_any_dependency(home_and_sds).construct(dir_file_space)
 
-            self._execute_main(model_env, files_source, matcher)
+            self._execute_main(files_source, matcher)
 
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
             self.expectation.main_side_effects_on_home_and_sds.apply(self.put, home_and_sds)
@@ -158,11 +159,10 @@ class _Executor:
         return result
 
     def _execute_main(self,
-                      environment: Environment,
                       files_source: FilesMatcherModel,
-                      matcher: FilesMatcherValue):
+                      matcher: FilesMatcher):
         try:
-            main_result = matcher.matches(environment, files_source)
+            main_result = matcher.matches(files_source)
             self._check_main_result(main_result)
         except HardErrorException as ex:
             self._check_hard_error(ex)
@@ -191,13 +191,10 @@ class _Executor:
             self.put.fail('Unexpected HARD_ERROR')
 
     def _new_model(self, environment: PathResolvingEnvironmentPreOrPostSds
-                   ) -> Tuple[Environment, FilesMatcherModel]:
+                   ) -> Tuple[TmpDirFileSpace, FilesMatcherModel]:
         tmp_file_space = TmpDirFileSpaceAsDirCreatedOnDemand(environment.sds.log_dir)
         return (
-            Environment(
-                environment,
-                tmp_file_space
-            ),
+            tmp_file_space,
             FilesMatcherModelForDir(
                 tmp_file_space,
                 described_path_resolvers.of(self.model.dir_path_resolver)
