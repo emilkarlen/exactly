@@ -1,14 +1,13 @@
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
-from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.matcher import applier
 from exactly_lib.test_case_utils.matcher.element_getter import ElementGetter, ElementGetterResolver
 from exactly_lib.test_case_utils.matcher.impls import element_getters, parse_integer_matcher
+from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
 from exactly_lib.test_case_utils.matcher.matcher import Failure
 from exactly_lib.test_case_utils.string_matcher import matcher_applier, matcher_options
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.logic_types import ExpectationType
 
@@ -47,27 +46,8 @@ def _operand_from_model_resolver() -> ElementGetterResolver[FileToCheck, int]:
 
 
 def _mk_error_message(model: FileToCheck, failure: Failure[int]) -> ErrorMessageResolver:
-    return _ErrorMessageResolver(
+    return ErrorMessageResolverForFailure(
         model.describer.construct_for_contents_attribute(
             matcher_options.NUM_LINES_DESCRIPTION),
         failure,
     )
-
-
-class _ErrorMessageResolver(ErrorMessageResolver):
-    def __init__(self,
-                 property_descriptor: PropertyDescriptor,
-                 failure: Failure[int]):
-        self.property_descriptor = property_descriptor
-        self.failure = failure
-
-    def resolve(self) -> str:
-        return self.failure_info().error_message()
-
-    def failure_info(self) -> diff_msg.DiffErrorInfo:
-        return diff_msg.DiffErrorInfo(
-            self.property_descriptor.description(),
-            self.failure.expectation_type,
-            self.failure.expected,
-            diff_msg.actual_with_single_line_value(str(self.failure.actual))
-        )
