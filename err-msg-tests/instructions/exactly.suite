@@ -1,5 +1,6 @@
 [suites]
 
+exit-code
 change-dir
 create-file
 create-dir
