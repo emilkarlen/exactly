@@ -9,18 +9,24 @@ from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.instructions.assert_.utils import instruction_of_matcher
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.element_parsers.token_stream_parser import new_token_parser
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils import negation_of_predicate, pfh_exception
-from exactly_lib.test_case_utils.condition import comparison_structures, instruction
-from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
-    parse_integer_comparison_operator_and_rhs
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
+from exactly_lib.test_case_utils.matcher.applier import MatcherApplierResolver
+from exactly_lib.test_case_utils.matcher.element_getter import ElementGetterValue, ElementGetter
+from exactly_lib.test_case_utils.matcher.impls import element_getters, parse_integer_matcher
+from exactly_lib.test_case_utils.matcher.impls import err_msg
+from exactly_lib.test_case_utils.matcher.matcher import Failure
+from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -75,21 +81,35 @@ class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
         parser = new_token_parser(rest_of_line)
         expectation_type = parser.consume_optional_negation_operator()
-        cmp_op_and_rhs = parse_integer_comparison_operator_and_rhs(parser,
-                                                                   must_be_within_byte_range)
-        parser.report_superfluous_arguments_if_not_at_eol()
-        cmp_setup = comparison_structures.ComparisonHandlerResolver(
-            property_descriptor_with_just_a_constant_name(_PROPERTY_NAME),
+        matcher = parse_integer_matcher.parse(
+            parser,
             expectation_type,
-            ExitCodeResolver(),
-            cmp_op_and_rhs.operator,
-            cmp_op_and_rhs.right_operand)
-        return instruction.Instruction(cmp_setup)
+            _must_be_within_byte_range,
+        )
+        matcher_applier = MatcherApplierResolver(
+            matcher,
+            element_getters.ElementGetterResolverConstant(_ExitCodeGetterValue()),
+        )
+        parser.report_superfluous_arguments_if_not_at_eol()
+        return instruction_of_matcher.Instruction(
+            matcher_applier,
+            _mk_error_message,
+        )
 
 
-class ExitCodeResolver(comparison_structures.OperandResolver[int]):
-    def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
-        sds = environment.sds
+def _mk_error_message(failure: Failure[int]) -> ErrorMessageResolver:
+    return err_msg.ErrorMessageResolverForFailure(
+        property_descriptor_with_just_a_constant_name(_PROPERTY_NAME),
+        failure,
+    )
+
+
+class _ExitCodeGetter(ElementGetter[None, int]):
+    def __init__(self, sds: SandboxDirectoryStructure):
+        self._sds = sds
+
+    def get_from(self, model: None) -> int:
+        sds = self._sds
         try:
             f = sds.result.exitcode_file.open()
         except IOError:
@@ -129,10 +149,15 @@ class ExitCodeResolver(comparison_structures.OperandResolver[int]):
                         'contents': contents,
                     })
             )
-            raise pfh_exception.PfhHardErrorException(msg)
+            raise HardErrorException(msg)
 
 
-def must_be_within_byte_range(actual: int) -> Optional[TextRenderer]:
+class _ExitCodeGetterValue(ElementGetterValue[None, int]):
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> ElementGetter[None, int]:
+        return _ExitCodeGetter(tcds.sds)
+
+
+def _must_be_within_byte_range(actual: int) -> Optional[TextRenderer]:
     if actual < 0 or actual > 255:
         return expected_found.unexpected_lines(_OPERAND_DESCRIPTION,
                                                str(actual))
