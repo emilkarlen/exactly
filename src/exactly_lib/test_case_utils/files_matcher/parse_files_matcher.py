@@ -8,12 +8,13 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
-from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as expression_parse
+from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, sub_set_selection, \
     negation
 from exactly_lib.test_case_utils.files_matcher.impl import symbol_reference
+from exactly_lib.test_case_utils.matcher.impls import parse_integer_matcher
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 
 
@@ -64,11 +65,13 @@ class _SimpleMatcherParser:
         return emptiness.emptiness_matcher(ExpectationType.POSITIVE)
 
     def parse_num_files_check(self, parser: TokenParser) -> FilesMatcherResolver:
-        cmp_op_and_rhs = expression_parse.parse_integer_comparison_operator_and_rhs(
+        matcher = parse_integer_matcher.parse(
             parser,
-            expression_parse.validator_for_non_negative)
+            ExpectationType.POSITIVE,
+            parse_cmp_op.validator_for_non_negative,
+        )
 
-        return num_files.num_files_matcher(ExpectationType.POSITIVE, cmp_op_and_rhs)
+        return num_files.resolver(matcher)
 
     def parse_file_quantified_assertion__all(self, parser: TokenParser) -> FilesMatcherResolver:
         return self._file_quantified_assertion(Quantifier.ALL, parser)
