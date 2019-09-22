@@ -91,7 +91,6 @@ class _NumFilesMatcherResolver(FilesMatcherResolverBase):
 class NumFilesResolver(comparison_structures.OperandResolver[int]):
     def __init__(self,
                  path_to_check: FilesMatcherModel):
-        super().__init__(config.NUM_FILES_PROPERTY_NAME)
         self.path_to_check = path_to_check
 
     def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:

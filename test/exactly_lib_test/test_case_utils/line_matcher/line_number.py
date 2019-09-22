@@ -62,8 +62,7 @@ class IntegrationCheckCase:
 class Test(unittest.TestCase):
     def test_option_description_SHOULD_be_a_string(self):
         # ARRANGE #
-        integer_matcher = IntegerMatcherFromComparisonOperator('the name of lhs',
-                                                               comparators.EQ,
+        integer_matcher = IntegerMatcherFromComparisonOperator(comparators.EQ,
                                                                69 + 72)
         a_matcher = LineMatcherLineNumber(integer_matcher)
 
@@ -269,8 +268,7 @@ def successful_and_unsuccessful(name: str,
 def matcher_of(operator: comparators.ComparisonOperator,
                constant_rhs: int) -> LineMatcherLineNumber:
     return LineMatcherLineNumber(
-        IntegerMatcherFromComparisonOperator('the name of lhs',
-                                             operator,
+        IntegerMatcherFromComparisonOperator(operator,
                                              constant_rhs))
 
 

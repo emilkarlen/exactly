@@ -11,12 +11,11 @@ def operand_resolver_that(validate_pre_sds=actions.do_nothing__single_arg,
                           resolve_return_value_action=actions.do_nothing,
                           resolve_initial_action=None,
                           symbol_usages: Optional[Sequence[SymbolReference]] = None,
-                          property_name: str = 'test property') -> OperandResolver:
+                          ) -> OperandResolver:
     return _OperandResolverThat(
         validate_pre_sds,
         actions.action_of(resolve_initial_action, resolve_return_value_action),
         [] if symbol_usages is None else symbol_usages,
-        property_name
     )
 
 
@@ -25,9 +24,7 @@ class _OperandResolverThat(OperandResolver[T]):
                  validate_pre_sds: Callable[[PathResolvingEnvironmentPreSds], None],
                  resolve: Callable[[PathResolvingEnvironmentPreOrPostSds], T],
                  symbol_usages: Sequence[SymbolReference],
-                 property_name: str = 'test property'):
-        super().__init__(property_name)
-
+                 ):
         self._validate_pre_sds = validate_pre_sds
         self._resolve = resolve
         self._symbol_usages = symbol_usages

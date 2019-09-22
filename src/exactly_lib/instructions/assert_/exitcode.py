@@ -88,9 +88,6 @@ class Parser(InstructionParserThatConsumesCurrentLine):
 
 
 class ExitCodeResolver(comparison_structures.OperandResolver[int]):
-    def __init__(self):
-        super().__init__(_PROPERTY_NAME)
-
     def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
         sds = environment.sds
         try:

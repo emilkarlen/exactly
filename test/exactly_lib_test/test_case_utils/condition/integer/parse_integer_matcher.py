@@ -19,9 +19,6 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestParseIntegerMatcher)
 
 
-_NAME_OF_LHS = 'LHS'
-
-
 class Case:
     def __init__(self,
                  name: str,
@@ -165,7 +162,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
         for case in cases:
             with from_parse_source(case.source) as parser:
                 # ACT #
-                actual = sut.parse_integer_matcher(parser, _NAME_OF_LHS)
+                actual = sut.parse_integer_matcher(parser)
                 # ASSERT #
             case.source_assertion.apply_with_message(self, case.source, 'source')
             case.result_assertion.apply_with_message(self, actual, 'parsed value')
@@ -177,6 +174,5 @@ def model_of(rhs: int) -> ModelInfo:
 
 def matcher_of(operator: comparators.ComparisonOperator,
                constant_rhs: int) -> IntegerMatcher:
-    return IntegerMatcherFromComparisonOperator(_NAME_OF_LHS,
-                                                operator,
+    return IntegerMatcherFromComparisonOperator(operator,
                                                 constant_rhs)

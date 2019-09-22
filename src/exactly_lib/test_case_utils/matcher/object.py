@@ -25,9 +25,6 @@ class ObjectValue(Generic[T], MultiDirDependentValue[T], ABC):
 class ObjectResolver(Generic[T], ABC):
     """Resolves an arbitrary object"""
 
-    def __init__(self, property_name: str):
-        self.property_name = property_name
-
     @property
     def references(self) -> Sequence[SymbolReference]:
         return []

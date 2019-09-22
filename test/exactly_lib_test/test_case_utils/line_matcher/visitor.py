@@ -41,8 +41,7 @@ class TestLineMatcherStructureVisitor(unittest.TestCase):
 
     def test_visit_line_number(self):
         # ARRANGE #
-        instance = sut.LineMatcherLineNumber(IntegerMatcherFromComparisonOperator('name of lhs',
-                                                                                  comparators.EQ,
+        instance = sut.LineMatcherLineNumber(IntegerMatcherFromComparisonOperator(comparators.EQ,
                                                                                   72))
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #

@@ -13,11 +13,9 @@ from exactly_lib.util.logic_types import ExpectationType
 def parse(parser: TokenParser,
           expectation_type: ExpectationType,
           custom_integer_restriction: Optional[CustomIntegerValidator],
-          property_name: str,
           ) -> MatcherResolver[int]:
     op_and_rhs = parse_integer_comparison_operator_and_rhs(parser,
-                                                           custom_integer_restriction,
-                                                           property_name)
+                                                           custom_integer_restriction)
     return ComparisonMatcherResolver(
         expectation_type,
         op_and_rhs.operator,

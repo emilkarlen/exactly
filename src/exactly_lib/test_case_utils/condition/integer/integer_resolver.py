@@ -30,16 +30,13 @@ class _IntResolver:
 
 class IntegerResolver(OperandResolver[int]):
     def __init__(self,
-                 property_name: str,
                  value_resolver: StringResolver,
                  custom_integer_validator: Optional[CustomIntegerValidator] = None):
         """
-        :param property_name:
         :param value_resolver:
         :param custom_integer_validator: Function that takes the resolved value as only argument,
         and returns a str if validation fails, otherwise None
         """
-        super().__init__(property_name)
         self._value_resolver = value_resolver
         self._custom_integer_validator = custom_integer_validator
         self._int_resolver = _IntResolver(value_resolver)

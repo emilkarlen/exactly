@@ -237,10 +237,10 @@ class TestMain(unittest.TestCase):
                 ComparisonHandlerResolver(THE_PROPERTY_DESCRIPTOR,
                                           expectation_type,
                                           operand_resolver_that(
-                                      resolve_return_value_action=do_return(l_op)),
+                                              resolve_return_value_action=do_return(l_op)),
                                           op,
                                           operand_resolver_that(
-                                      resolve_return_value_action=do_return(r_op))))
+                                              resolve_return_value_action=do_return(r_op))))
             with self.subTest(name=name):
                 # ACT #
 

@@ -119,9 +119,6 @@ class OperandValue(ABC, Generic[T], MultiDirDependentValue[T]):
 class OperandResolver(Generic[T]):
     """Resolves an operand used in a comparision"""
 
-    def __init__(self, property_name: str):
-        self.property_name = property_name
-
     @property
     def references(self) -> Sequence[SymbolReference]:
         return []

@@ -17,21 +17,17 @@ from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherResolv
 from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcher
 from exactly_lib.util.symbol_table import SymbolTable
 
-LINE_NUMBER_PROPERTY = 'line number'
-
 
 def parse_line_number(parser: TokenParser) -> LineMatcherResolver:
     cmp_op_and_rhs = parse_cmp_op.parse_integer_comparison_operator_and_rhs(parser,
-                                                                            validator_for_non_negative,
-                                                                            LINE_NUMBER_PROPERTY)
+                                                                            validator_for_non_negative)
 
     return resolver(cmp_op_and_rhs)
 
 
 def resolver(condition: IntegerComparisonOperatorAndRightOperandResolver) -> LineMatcherResolver:
     def get_value(symbols: SymbolTable) -> LineMatcherValue:
-        return _Value(condition.right_operand.property_name,
-                      condition.operator,
+        return _Value(condition.operator,
                       condition.right_operand.resolve(symbols))
 
     return LineMatcherResolverFromParts(
@@ -42,10 +38,8 @@ def resolver(condition: IntegerComparisonOperatorAndRightOperandResolver) -> Lin
 
 class _Value(LineMatcherValue):
     def __init__(self,
-                 name_of_lhs: str,
                  operator: comparators.ComparisonOperator,
                  int_expression: exactly_lib.test_case_utils.condition.integer.integer_value.IntegerValue):
-        self._name_of_lhs = name_of_lhs
         self._operator = operator
         self._int_expression = int_expression
 
@@ -62,6 +56,5 @@ class _Value(LineMatcherValue):
         return self._matcher_of(self._int_expression.value_of_any_dependency(tcds))
 
     def _matcher_of(self, rhs: int) -> LineMatcher:
-        return LineMatcherLineNumber(IntegerMatcherFromComparisonOperator(self._name_of_lhs,
-                                                                          self._operator,
+        return LineMatcherLineNumber(IntegerMatcherFromComparisonOperator(self._operator,
                                                                           rhs))

@@ -28,7 +28,6 @@ class ObjectValueOfOperandValue(Generic[T], ObjectValue[T]):
 
 class ObjectResolverOfOperandResolver(Generic[T], ObjectResolver[T]):
     def __init__(self, operand: OperandResolver):
-        super().__init__(operand.property_name)
         self._operand = operand
         self._validator = _Validator(operand)
 

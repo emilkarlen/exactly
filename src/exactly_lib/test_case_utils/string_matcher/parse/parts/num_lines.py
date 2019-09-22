@@ -12,8 +12,6 @@ from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.logic_types import ExpectationType
 
-_PROPERTY_NAME = 'number of lines'
-
 
 def parse(expectation_type: ExpectationType,
           token_parser: TokenParser) -> StringMatcherResolver:
@@ -21,7 +19,6 @@ def parse(expectation_type: ExpectationType,
         token_parser,
         expectation_type,
         parse_cmp_op.validator_for_non_negative,
-        _PROPERTY_NAME,
     )
     return matcher_applier.MaStringMatcherResolver(
         applier.MatcherApplierResolver(

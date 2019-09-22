@@ -238,7 +238,6 @@ class TestLineNumberParser(unittest.TestCase):
             return ModelInfo((rhs, 'irrelevant line contents'))
 
         expected_integer_matcher = IntegerMatcherFromComparisonOperator(
-            exactly_lib.test_case_utils.line_matcher.impl.line_number.LINE_NUMBER_PROPERTY,
             comparators.LT,
             69)
         expected_resolver = resolved_value_is_line_number_matcher(expected_integer_matcher,
@@ -308,7 +307,6 @@ class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase)
         comparator = comparators.LT
         rhs = 72
         expected_integer_matcher = IntegerMatcherFromComparisonOperator(
-            exactly_lib.test_case_utils.line_matcher.impl.line_number.LINE_NUMBER_PROPERTY,
             comparator,
             rhs)
         expected_resolver = resolved_value_is_line_number_matcher(expected_integer_matcher,

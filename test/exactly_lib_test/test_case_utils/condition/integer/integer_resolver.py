@@ -94,7 +94,7 @@ class TestValidateAndResolve(unittest.TestCase):
                 # ARRANGE #
 
                 string_value_resolver = parse_string.string_resolver_from_string(case.source)
-                resolver_to_check = sut.IntegerResolver('prop to check', string_value_resolver)
+                resolver_to_check = sut.IntegerResolver(string_value_resolver)
 
                 # ACT #
 
@@ -127,7 +127,6 @@ class TestSymbolReferences(unittest.TestCase):
         # ARRANGE #
 
         resolver_to_check = sut.IntegerResolver(
-            'the property to check',
             string_resolvers.str_constant(str(1))
         )
 
@@ -148,7 +147,6 @@ class TestSymbolReferences(unittest.TestCase):
         the_string_resolver = string_resolvers.symbol_reference(reference_of_string_resolver)
 
         resolver_to_check = sut.IntegerResolver(
-            'the property to check',
             the_string_resolver
         )
 
@@ -183,8 +181,7 @@ class TestValidationPreSds(unittest.TestCase):
                         custom_validator_is_none=str(custom_validator is None),
                         resolved_value=resolved_value):
                     # ARRANGE #
-                    resolver_to_check = sut.IntegerResolver('the property to check',
-                                                            string_resolvers.str_constant(resolved_value),
+                    resolver_to_check = sut.IntegerResolver(string_resolvers.str_constant(resolved_value),
                                                             custom_validator)
                     with self.subTest(tested_obect='resolver'):
                         # ACT & ASSERT #
@@ -211,7 +208,6 @@ class TestValidationPreSds(unittest.TestCase):
         # ARRANGE #
         error_message_from_custom_validator = 'error message'
         resolver_to_check = sut.IntegerResolver(
-            'the property to check',
             string_resolvers.str_constant(str(resolved_value)),
             CustomValidator(
                 value_that_makes_the_validation_succeed=resolved_value + 1,
@@ -261,7 +257,6 @@ class TestValidationPreSds(unittest.TestCase):
         for value_string in resolved_string_value_cases:
             for custom_validator in custom_validator_cases:
                 resolver_to_check = sut.IntegerResolver(
-                    'the property to check',
                     string_resolvers.str_constant(str(value_string)),
                     custom_validator
                 )
