@@ -2,6 +2,7 @@ import unittest
 from typing import Iterable, Optional
 
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
@@ -106,6 +107,10 @@ class PrependStringToLinesTransformer(StringTransformer):
 class EqualsMatcher(StringMatcher):
     def __init__(self, expected: str):
         self.expected = expected
+
+    @property
+    def name(self) -> str:
+        return matcher_options.EQUALS_ARGUMENT
 
     @property
     def option_description(self) -> str:

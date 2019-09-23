@@ -1,7 +1,7 @@
-from exactly_lib.definitions import expression
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions import expression, instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
+from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
@@ -14,10 +14,6 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 CONSTANT_TRUE_MATCHER_RESOLVER = resolvers.LineMatcherConstantResolver(line_matchers.LineMatcherConstant(True))
-
-REGEX_MATCHER_NAME = 'matches'
-
-LINE_NUMBER_MATCHER_NAME = 'line-num'
 
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
@@ -110,10 +106,10 @@ GRAMMAR = grammar.Grammar(
     _CONCEPT,
     mk_reference=resolvers.LineMatcherReferenceResolver,
     simple_expressions={
-        REGEX_MATCHER_NAME:
+        line_matcher.REGEX_MATCHER_NAME:
             grammar.SimpleExpression(parse_regex,
                                      _REGEX_SYNTAX_DESCRIPTION),
-        LINE_NUMBER_MATCHER_NAME:
+        line_matcher.LINE_NUMBER_MATCHER_NAME:
             grammar.SimpleExpression(line_number.parse_line_number,
                                      _LINE_NUMBER_SYNTAX_DESCRIPTION),
     },

@@ -133,6 +133,10 @@ class AVisitorThatRecordsVisitedMethods(sut.LineMatcherStructureVisitor):
 
 class UnknownLineMatcher(sut.LineMatcher):
     @property
+    def name(self) -> str:
+        return str(type(self))
+
+    @property
     def option_description(self) -> str:
         return 'unknown matcher type'
 

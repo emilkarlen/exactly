@@ -1,5 +1,6 @@
 import unittest
 
+import exactly_lib.definitions.primitives.files_matcher
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -7,7 +8,6 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import instruction_arguments as args
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
@@ -56,7 +56,7 @@ class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesChec
               condition_str: str,
               ) -> str:
         return 'ignored-name-of-dir-to-check {num_files} {condition}'.format(
-            num_files=config.NUM_FILES_CHECK_ARGUMENT,
+            num_files=exactly_lib.definitions.primitives.files_matcher.NUM_FILES_CHECK_ARGUMENT,
             condition=condition_str)
 
 

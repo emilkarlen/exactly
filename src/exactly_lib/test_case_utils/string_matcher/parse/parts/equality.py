@@ -18,6 +18,7 @@ from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoRe
 from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
+from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.type_system.data.string_or_file_ref_values import StringOrPath
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -107,6 +108,10 @@ class EqualityStringMatcher(StringMatcher):
         self._expected_contents = expected_contents
         self._validator = validator
         self._err_msg_constructor = error_message_constructor
+
+    @property
+    def name(self) -> str:
+        return matcher_options.EQUALS_ARGUMENT
 
     def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         error_from_validation = self._do_post_setup_validation()

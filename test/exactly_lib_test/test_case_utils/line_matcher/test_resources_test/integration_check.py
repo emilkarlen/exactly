@@ -172,6 +172,10 @@ class TestFailingExpectations(TestCaseBase):
 
 class _LineMatcherThatReportsHardError(LineMatcher):
     @property
+    def name(self) -> str:
+        return str(type(self))
+
+    @property
     def option_description(self) -> str:
         return 'unconditional HARD ERROR'
 

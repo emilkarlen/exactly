@@ -1,6 +1,7 @@
 from typing import Optional
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
+from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
@@ -15,6 +16,10 @@ class EmptinessStringMatcher(StringMatcher):
     def __init__(self, expectation_type: ExpectationType):
         super().__init__()
         self.expectation_type = expectation_type
+
+    @property
+    def name(self) -> str:
+        return file_or_dir_contents.EMPTINESS_CHECK_ARGUMENT
 
     @property
     def option_description(self) -> str:

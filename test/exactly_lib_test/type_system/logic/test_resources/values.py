@@ -16,6 +16,10 @@ class FakeStringTransformer(StringTransformer):
 
 class FileMatcherTestImpl(FileMatcher):
     @property
+    def name(self) -> str:
+        return str(type(self))
+
+    @property
     def option_description(self) -> str:
         return str(type(self))
 
@@ -24,6 +28,10 @@ class FileMatcherTestImpl(FileMatcher):
 
 
 class LineMatcherNotImplementedTestImpl(LineMatcher):
+    @property
+    def name(self) -> str:
+        return str(type(self))
+
     @property
     def option_description(self) -> str:
         return str(type(self))
@@ -46,6 +54,10 @@ class LineMatcherFromPredicates(LineMatcher):
                  line_contents_predicate: Callable[[str], bool] = lambda x: True):
         self.line_num = line_num_predicate
         self.line_contents = line_contents_predicate
+
+    @property
+    def name(self) -> str:
+        return str(type(self))
 
     @property
     def option_description(self) -> str:

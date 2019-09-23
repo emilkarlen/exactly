@@ -1,0 +1,2 @@
+REGEX_MATCHER_NAME = 'matches'
+LINE_NUMBER_MATCHER_NAME = 'line-num'

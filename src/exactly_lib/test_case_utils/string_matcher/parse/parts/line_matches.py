@@ -131,6 +131,12 @@ class _StringMatcherBase(StringMatcher):
         self._line_matcher = line_matcher
 
     @property
+    def name(self) -> str:
+        return ' '.join([self._any_or_every_keyword,
+                         matcher_options.LINE_ARGUMENT,
+                         ])
+
+    @property
     def option_description(self) -> str:
         components = [self._any_or_every_keyword,
                       matcher_options.LINE_ARGUMENT,

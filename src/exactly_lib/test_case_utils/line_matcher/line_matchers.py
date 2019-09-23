@@ -1,6 +1,7 @@
-from typing import Sequence
+from typing import Sequence, Pattern
 
 from exactly_lib.definitions import expression
+from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
@@ -33,7 +34,7 @@ class LineMatcherConstant(LineMatcher):
 class LineMatcherRegex(LineMatcher):
     """Matches lines who's contents matches a given regex."""
 
-    def __init__(self, compiled_regular_expression):
+    def __init__(self, compiled_regular_expression: Pattern):
         self._compiled_regular_expression = compiled_regular_expression
         self._regex_detail_renderer = trace_renderers.DetailRendererOfConstant(
             trace.StringDetail(self.option_description)
@@ -41,7 +42,7 @@ class LineMatcherRegex(LineMatcher):
 
     @property
     def name(self) -> str:
-        return 'matches (TODO use const)'
+        return line_matcher.REGEX_MATCHER_NAME
 
     @property
     def option_description(self) -> str:
@@ -71,7 +72,7 @@ class LineMatcherLineNumber(LineMatcher):
 
     @property
     def name(self) -> str:
-        return 'line-num (TODO use const)'
+        return line_matcher.LINE_NUMBER_MATCHER_NAME
 
     @property
     def option_description(self) -> str:

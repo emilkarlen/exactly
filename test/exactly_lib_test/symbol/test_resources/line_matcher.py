@@ -25,6 +25,10 @@ class LineMatcherConstantTestImpl(LineMatcher):
         self._result = result
 
     @property
+    def name(self) -> str:
+        return self.option_description
+
+    @property
     def option_description(self) -> str:
         return 'any line' if self._result else 'no line'
 

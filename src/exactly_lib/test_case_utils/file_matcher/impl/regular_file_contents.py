@@ -2,6 +2,7 @@ from typing import List, Set, Optional
 
 from exactly_lib.common.report_rendering import text_docs__old
 from exactly_lib.definitions import actual_file_attributes
+from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -25,6 +26,10 @@ class RegularFileMatchesStringMatcher(FileMatcher):
         self._expected_file_type = file_properties.FileType.REGULAR
         self._is_regular_file_check = file_properties.ActualFilePropertiesResolver(self._expected_file_type,
                                                                                    follow_symlinks=True)
+
+    @property
+    def name(self) -> str:
+        return file_check_properties.REGULAR_FILE_CONTENTS
 
     @property
     def option_description(self) -> str:

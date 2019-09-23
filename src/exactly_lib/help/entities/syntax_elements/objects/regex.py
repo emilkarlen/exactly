@@ -1,10 +1,10 @@
+import exactly_lib.definitions.primitives.file_matcher
 from exactly_lib.common.help.see_also import SeeAlsoUrlInfo
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, cli_argument_syntax_element_description
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation
-from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -23,7 +23,7 @@ _TEXT_PARSER = TextParser({
     'STRING': syntax_elements.STRING_SYNTAX_ELEMENT.argument.name,
     'SYMBOL_REFERENCE': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.argument.name,
     'file_matcher': formatting.entity_(types.FILE_MATCHER_TYPE_INFO),
-    'name': parse_file_matcher.NAME_MATCHER_NAME,
+    'name': exactly_lib.definitions.primitives.file_matcher.NAME_MATCHER_NAME,
 })
 
 SEE_ALSO_URL_INFO = SeeAlsoUrlInfo('Python regular expressions',

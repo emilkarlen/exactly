@@ -16,6 +16,10 @@ class IntegerMatcherFromComparisonOperator(IntegerMatcher):
         self._constant_rhs = constant_rhs
         self._operator = operator
 
+    @property
+    def name(self) -> str:
+        return self._operator.name
+
     def matches(self, model: int) -> bool:
         return self._operator.operator_fun(model, self._constant_rhs)
 

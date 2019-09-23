@@ -53,6 +53,10 @@ class BaseNameMatcher(sut.FileMatcher):
     def __init__(self, base_name_that_matches: str):
         self.base_name_that_matches = base_name_that_matches
 
+    @property
+    def name(self) -> str:
+        return str(type(self))
+
     def matches(self, model: FileMatcherModel) -> bool:
         return model.path.primitive.name == self.base_name_that_matches
 

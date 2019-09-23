@@ -20,6 +20,7 @@ def parse(expectation_type: ExpectationType,
         parse_cmp_op.validator_for_non_negative,
     )
     return matcher_applier.MaStringMatcherResolver(
+        matcher_options.NUM_LINES_ARGUMENT,
         applier.MatcherApplierResolver(
             matcher,
             _operand_from_model_resolver(),

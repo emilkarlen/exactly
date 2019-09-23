@@ -24,6 +24,10 @@ class FilesMatcherTestImpl(FilesMatcher):
         self._result = result
 
     @property
+    def name(self) -> str:
+        return str(type(self))
+
+    @property
     def negation(self) -> FilesMatcher:
         return FilesMatcherTestImpl(not self._result)
 

@@ -1,6 +1,6 @@
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.primitives.files_matcher import NUM_FILES_CHECK_ARGUMENT
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils import file_or_dir_contents_resources
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.util.cli_syntax.elements import argument as a
 
@@ -19,10 +19,6 @@ ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfig
     PATH_ARGUMENT.name,
     True)
 
-QUANTIFICATION_OVER_FILE_ARGUMENT = 'file'
-
-NUM_FILES_CHECK_ARGUMENT = 'num-files'
-
 NUM_FILES_ARGUMENT_CONSTANT = a.Constant(NUM_FILES_CHECK_ARGUMENT)
 
 NUM_FILES_PROPERTY_NAME = 'number of files in dir'
@@ -32,5 +28,3 @@ EMPTINESS_PROPERTY_NAME = 'contents of dir'
 NEGATION_OPERATOR = instruction_arguments.NEGATION_ARGUMENT_STR
 
 SELECTION_OPTION = instruction_arguments.SELECTION_OPTION
-
-EMPTINESS_CHECK_ARGUMENT = file_or_dir_contents_resources.EMPTINESS_CHECK_ARGUMENT

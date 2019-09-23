@@ -305,6 +305,10 @@ class _FilesMatcherThatAssertsModelsIsExpected(FilesMatcher):
         self._tcds = tcds
 
     @property
+    def name(self) -> str:
+        return str(type(self))
+
+    @property
     def negation(self) -> FilesMatcher:
         raise NotImplementedError('unsupported')
 
@@ -344,6 +348,10 @@ class _FilesMatcherValueThatAssertsModelsIsExpected(FilesMatcherValue):
 
 
 class _FilesMatcherThatReportsHardError(FilesMatcher):
+
+    @property
+    def name(self) -> str:
+        return str(type(self))
 
     @property
     def negation(self) -> FilesMatcher:

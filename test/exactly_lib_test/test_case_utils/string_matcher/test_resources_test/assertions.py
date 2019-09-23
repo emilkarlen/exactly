@@ -4,7 +4,6 @@ from typing import Sequence
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
-from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
@@ -13,6 +12,7 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources import asser
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant
 from exactly_lib_test.type_system.logic.test_resources.values import FileMatcherTestImpl
 
 

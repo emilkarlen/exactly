@@ -65,6 +65,11 @@ class TestNot(matcher_combinators_check.TestNotBase):
 
 class FileMatcherThatRegistersModelArgument(sut.FileMatcher,
                                             matcher_combinators_check.MatcherThatRegistersModelArgument):
+
+    @property
+    def name(self) -> str:
+        return str(type(self))
+
     @property
     def option_description(self) -> str:
         raise NotImplementedError('this method should not be used')

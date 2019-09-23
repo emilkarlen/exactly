@@ -1,5 +1,6 @@
 from typing import Sequence, Optional
 
+from exactly_lib.definitions import expression
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     FilesMatcherModel, FilesMatcherValue, FilesMatcher, FilesMatcherConstructor
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -18,6 +19,10 @@ def negation_matcher(matcher_to_negate: FilesMatcherResolver) -> FilesMatcherRes
 class _NegationMatcher(FilesMatcher):
     def __init__(self, matcher_to_negate: FilesMatcher):
         self._matcher_to_negate = matcher_to_negate
+
+    @property
+    def name(self) -> str:
+        return expression.NOT_OPERATOR_NAME
 
     @property
     def negation(self) -> FilesMatcher:

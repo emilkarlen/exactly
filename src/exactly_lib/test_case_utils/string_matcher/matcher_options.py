@@ -1,5 +1,5 @@
 from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
-from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_ARGUMENT
+from exactly_lib.definitions.primitives.file_or_dir_contents import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 NOT_ARGUMENT = NEGATION_ARGUMENT_STR

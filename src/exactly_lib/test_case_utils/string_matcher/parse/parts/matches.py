@@ -79,6 +79,14 @@ class MatchesRegexStringMatcher(StringMatcher):
         self._pattern = pattern
         self._err_msg_constructor = error_message_constructor
 
+    @property
+    def name(self) -> str:
+        return matcher_options.MATCHES_ARGUMENT
+
+    @property
+    def option_description(self) -> str:
+        return diff_msg.negation_str(self._expectation_type) + matcher_options.MATCHES_ARGUMENT
+
     def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         actual_contents = self._actual_contents(model)
         match = self._find_match(actual_contents)
@@ -103,10 +111,6 @@ class MatchesRegexStringMatcher(StringMatcher):
     def _actual_contents(model: FileToCheck) -> str:
         with model.lines() as lines:
             return ''.join(lines)
-
-    @property
-    def option_description(self) -> str:
-        return diff_msg.negation_str(self._expectation_type) + matcher_options.MATCHES_ARGUMENT
 
     def _err_msg_resolver(self, actual_contents: str) -> ErrorMessageResolver:
         return _ErrorMessageResolver(self._expectation_type,

@@ -60,6 +60,10 @@ class FileMatcherNameGlobPattern(FileMatcher):
         return self._glob_pattern
 
     @property
+    def name(self) -> str:
+        return 'name matches glob pattern'
+
+    @property
     def option_description(self) -> str:
         return 'name matches glob pattern ' + self._glob_pattern
 

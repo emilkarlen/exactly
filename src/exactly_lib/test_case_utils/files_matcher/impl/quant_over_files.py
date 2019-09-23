@@ -1,8 +1,10 @@
 from typing import Sequence, Optional, Iterator
 
+import exactly_lib.definitions.primitives.files_matcher
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.primitives.files_matcher import QUANTIFICATION_OVER_FILE_ARGUMENT
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     FileModel, FilesMatcherModel, FilesMatcherValue, FilesMatcher, FilesMatcherConstructor
@@ -13,7 +15,6 @@ from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForFileWithDescriptor
-from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherResolverBase
 from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
@@ -52,6 +53,10 @@ class _QuantifiedMatcher(FilesMatcher):
         self._quantifier = quantifier
         self._matcher_on_file = matcher_on_file
         self._tmp_files_space = tmp_files_space
+
+    @property
+    def name(self) -> str:
+        return _NAMES[self._quantifier]
 
     @property
     def negation(self) -> FilesMatcher:
@@ -258,7 +263,7 @@ class _ErrorReportingHelper:
 
     def _description_of_expected(self):
         return ' '.join([instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier],
-                         config.QUANTIFICATION_OVER_FILE_ARGUMENT,
+                         exactly_lib.definitions.primitives.files_matcher.QUANTIFICATION_OVER_FILE_ARGUMENT,
                          _SATISFIES,
                          syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.singular_name])
 
@@ -275,3 +280,12 @@ class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConst
             self._file_in_dir.path.describer,
             True,
         )
+
+
+_NAMES = {
+    q: ' '.join([
+        instruction_arguments.QUANTIFIER_ARGUMENTS[q],
+        QUANTIFICATION_OVER_FILE_ARGUMENT,
+    ])
+    for q in Quantifier
+}

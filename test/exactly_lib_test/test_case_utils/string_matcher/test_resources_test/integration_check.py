@@ -16,7 +16,6 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
-from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
@@ -42,6 +41,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, em
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     sds_2_home_and_sds_assertion
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant
 
 
 def suite() -> unittest.TestSuite:
@@ -292,6 +292,10 @@ def string_matcher_that_asserts_models_is_expected(put: unittest.TestCase,
 
 class _StringMatcherThatReportsHardError(StringMatcher):
     @property
+    def name(self) -> str:
+        return 'unconditional HARD ERROR'
+
+    @property
     def option_description(self) -> str:
         return 'unconditional HARD ERROR'
 
@@ -366,6 +370,10 @@ class StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(StringMatcherTestImpl
     def __init__(self, tcds: HomeAndSds):
         self.tcds = tcds
 
+    @property
+    def name(self) -> str:
+        return str(type(self))
+
     def _matches_side_effects(self, model: FileToCheck):
         utils.raise_test_error_if_cwd_is_not_test_root(self.tcds.sds)
 
@@ -376,6 +384,10 @@ class StringMatcherThatAssertsModelsIsExpected(StringMatcherTestImplBase):
                  expected_model_string_contents: str):
         self.put = put
         self.expected_model_string_contents = expected_model_string_contents
+
+    @property
+    def name(self) -> str:
+        return str(type(self))
 
     def _matches_side_effects(self, model: FileToCheck):
         self._assert_original_file_is_existing_regular_file_with_expected_contents(model)

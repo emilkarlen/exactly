@@ -1,12 +1,12 @@
 import unittest
 
+from exactly_lib.definitions.primitives.file_matcher import NAME_MATCHER_NAME
 from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher.impl import file_type
 from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
-from exactly_lib.test_case_utils.file_matcher.parse_file_matcher import NAME_MATCHER_NAME
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources import \

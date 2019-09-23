@@ -1,6 +1,7 @@
 import pathlib
 from typing import Optional
 
+from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -20,6 +21,10 @@ class FileMatcherType(FileMatcher):
     @property
     def file_type(self) -> file_properties.FileType:
         return self._file_type
+
+    @property
+    def name(self) -> str:
+        return file_matcher.TYPE_MATCHER_NAME
 
     @property
     def option_description(self) -> str:

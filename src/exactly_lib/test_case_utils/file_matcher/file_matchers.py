@@ -20,6 +20,10 @@ class FileMatcherConstant(FileMatcher):
         return self._result
 
     @property
+    def name(self) -> str:
+        return self.option_description
+
+    @property
     def option_description(self) -> str:
         return 'any file' if self._result else 'no file'
 
@@ -32,6 +36,10 @@ class FileMatcherNot(FileMatcher):
 
     def __init__(self, matcher: FileMatcher):
         self._matcher = matcher
+
+    @property
+    def name(self) -> str:
+        return expression.NOT_OPERATOR_NAME
 
     @property
     def negated_matcher(self) -> FileMatcher:
@@ -50,6 +58,10 @@ class FileMatcherAnd(FileMatcher):
 
     def __init__(self, matchers: List[FileMatcher]):
         self._matchers = tuple(matchers)
+
+    @property
+    def name(self) -> str:
+        return expression.AND_OPERATOR_NAME
 
     @property
     def matchers(self) -> List[FileMatcher]:
@@ -77,6 +89,10 @@ class FileMatcherOr(FileMatcher):
 
     def __init__(self, matchers: List[FileMatcher]):
         self._matchers = tuple(matchers)
+
+    @property
+    def name(self) -> str:
+        return expression.OR_OPERATOR_NAME
 
     @property
     def option_description(self) -> str:

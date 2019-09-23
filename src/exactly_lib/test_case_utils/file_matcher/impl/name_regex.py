@@ -57,6 +57,10 @@ class FileMatcherBaseNameRegExPattern(FileMatcher):
         self._compiled_reg_ex = compiled_reg_ex
 
     @property
+    def name(self) -> str:
+        return 'base name matches regular expression'
+
+    @property
     def reg_ex_pattern(self) -> str:
         return self._compiled_reg_ex.pattern
 

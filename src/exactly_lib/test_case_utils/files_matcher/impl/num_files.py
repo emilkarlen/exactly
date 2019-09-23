@@ -1,5 +1,6 @@
 from typing import Sequence, Optional
 
+from exactly_lib.definitions.primitives import files_matcher
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     FilesMatcherModel, FilesMatcherValue, FilesMatcher, FilesMatcherConstructor
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -27,6 +28,10 @@ class _FilesMatcher(FilesMatcher):
                  matcher: Matcher[int]):
         self._expectation_type = expectation_type
         self._matcher = matcher
+
+    @property
+    def name(self) -> str:
+        return files_matcher.NUM_FILES_CHECK_ARGUMENT
 
     @property
     def negation(self) -> FilesMatcher:

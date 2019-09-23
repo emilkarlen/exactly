@@ -1,0 +1,2 @@
+NAME_MATCHER_NAME = 'name'
+TYPE_MATCHER_NAME = 'type'

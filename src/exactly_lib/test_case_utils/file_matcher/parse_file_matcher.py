@@ -7,6 +7,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.definitions.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
+from exactly_lib.definitions.primitives.file_matcher import NAME_MATCHER_NAME, TYPE_MATCHER_NAME
 from exactly_lib.definitions.test_case.file_check_properties import REGULAR_FILE_CONTENTS
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document import parser_classes
@@ -32,10 +33,6 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 CONSTANT_TRUE_MATCHER_RESOLVER = FileMatcherConstantResolver(MATCH_EVERY_FILE)
-
-NAME_MATCHER_NAME = 'name'
-
-TYPE_MATCHER_NAME = 'type'
 
 NAME_MATCHER_ARGUMENT = instruction_arguments.GLOB_PATTERN
 

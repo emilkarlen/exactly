@@ -1,5 +1,6 @@
 from typing import Sequence, Optional
 
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     FilesMatcherModel, FilesMatcherValue, FilesMatcher, FilesMatcherConstructor
@@ -29,6 +30,10 @@ class _SubSetSelectorMatcher(FilesMatcher):
                  matcher_on_selection: FilesMatcher):
         self._selector = selector
         self._matcher_on_selection = matcher_on_selection
+
+    @property
+    def name(self) -> str:
+        return instruction_arguments.SELECTION_OPTION.name
 
     @property
     def negation(self) -> FilesMatcher:

@@ -1,5 +1,6 @@
 from typing import Optional, List
 
+import exactly_lib.definitions.primitives.file_matcher
 from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
@@ -42,7 +43,7 @@ def name_glob_pattern_matcher_of(pattern: str) -> str:
     if ' ' in pattern_arg and pattern_arg[0] not in token.QUOTE_CHARS:
         pattern_arg = token.HARD_QUOTE_CHAR + pattern_arg + token.HARD_QUOTE_CHAR
 
-    return parse_file_matcher.NAME_MATCHER_NAME + ' ' + pattern_arg
+    return exactly_lib.definitions.primitives.file_matcher.NAME_MATCHER_NAME + ' ' + pattern_arg
 
 
 def name_reg_ex_pattern_matcher_of(pattern: str,
@@ -52,7 +53,7 @@ def name_reg_ex_pattern_matcher_of(pattern: str,
         pattern_arg = token.HARD_QUOTE_CHAR + pattern_arg + token.HARD_QUOTE_CHAR
 
     args = [
-        parse_file_matcher.NAME_MATCHER_NAME,
+        exactly_lib.definitions.primitives.file_matcher.NAME_MATCHER_NAME,
         option_syntax.option_syntax(parse_file_matcher.REG_EX_OPTION),
     ]
     if ignore_case:
@@ -69,7 +70,7 @@ def and_(matchers: List[str]) -> str:
 
 
 def type_matcher_of(file_type: file_properties.FileType) -> str:
-    return parse_file_matcher.TYPE_MATCHER_NAME + \
+    return exactly_lib.definitions.primitives.file_matcher.TYPE_MATCHER_NAME + \
            ' ' + \
            file_properties.TYPE_INFO[file_type].type_argument
 

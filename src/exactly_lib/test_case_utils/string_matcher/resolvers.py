@@ -1,6 +1,6 @@
 from typing import Sequence, Callable, Set, Optional
 
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions import instruction_arguments, expression
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
@@ -254,6 +254,10 @@ class StringMatcherReferenceResolver(StringMatcherResolver):
 class _NegationStringMatcher(StringMatcher):
     def __init__(self, negated: StringMatcher):
         self.negated = negated
+
+    @property
+    def name(self) -> str:
+        return expression.NOT_OPERATOR_NAME
 
     @property
     def option_description(self) -> str:

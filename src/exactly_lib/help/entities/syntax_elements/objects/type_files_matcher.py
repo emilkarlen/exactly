@@ -1,5 +1,6 @@
 from typing import List
 
+import exactly_lib.definitions.primitives.files_matcher
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args, \
     SyntaxElementDescription, cli_argument_syntax_element_description
 from exactly_lib.definitions import instruction_arguments
@@ -86,7 +87,8 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
                                           instruction_arguments.ALL_QUANTIFIER_ARGUMENT),
                                   ])
         file_arg = a.Single(a.Multiplicity.MANDATORY,
-                            a.Constant(config.QUANTIFICATION_OVER_FILE_ARGUMENT))
+                            a.Constant(
+                                exactly_lib.definitions.primitives.files_matcher.QUANTIFICATION_OVER_FILE_ARGUMENT))
 
         separator_arg = a.Single(a.Multiplicity.MANDATORY,
                                  a.Constant(

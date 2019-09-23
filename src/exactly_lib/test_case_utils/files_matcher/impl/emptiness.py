@@ -1,5 +1,6 @@
 from typing import Sequence, List, Optional, Iterator
 
+from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     FileModel, FilesMatcherModel, FilesMatcherValue, FilesMatcher, FilesMatcherConstructor
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -38,6 +39,10 @@ class _EmptinessMatcherValue(FilesMatcherValue):
 class _EmptinessMatcher(FilesMatcher):
     def __init__(self, expectation_type: ExpectationType):
         self._expectation_type = expectation_type
+
+    @property
+    def name(self) -> str:
+        return file_or_dir_contents.EMPTINESS_CHECK_ARGUMENT
 
     @property
     def negation(self) -> FilesMatcher:

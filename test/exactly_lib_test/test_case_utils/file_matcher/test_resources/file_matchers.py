@@ -8,6 +8,10 @@ class ConstantResultMatcher(sut.FileMatcher):
     def __init__(self, result: bool):
         self.result = result
 
+    @property
+    def name(self) -> str:
+        return 'constant ' + str(self.result)
+
     def matches(self, model: FileMatcherModel) -> bool:
         return self.result
 
@@ -19,6 +23,10 @@ class ConstantResultMatcher(sut.FileMatcher):
 class FileMatcherThatReportsHardError(FileMatcher):
     def __init__(self, error_message: str = 'unconditional hard error'):
         self.error_message = error_message
+
+    @property
+    def name(self) -> str:
+        return str(type(self))
 
     @property
     def option_description(self) -> str:

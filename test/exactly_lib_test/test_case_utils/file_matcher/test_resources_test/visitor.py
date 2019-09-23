@@ -146,6 +146,10 @@ class AVisitorThatRecordsVisitedMethods(visitor.FileMatcherStructureVisitor):
 
 class UnknownFileMatcher(FileMatcher):
     @property
+    def name(self) -> str:
+        return str(type(self))
+
+    @property
     def option_description(self) -> str:
         return str(type(self))
 

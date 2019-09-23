@@ -1,3 +1,4 @@
+import exactly_lib.definitions.primitives.files_matcher
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.section_document import parser_classes
@@ -10,7 +11,6 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
-from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, sub_set_selection, \
     negation
 from exactly_lib.test_case_utils.files_matcher.impl import symbol_reference
@@ -46,8 +46,8 @@ def parse_files_matcher(parser: TokenParser,
 class _SimpleMatcherParser:
     def __init__(self):
         self.matcher_parsers = {
-            config.NUM_FILES_CHECK_ARGUMENT: self.parse_num_files_check,
-            config.EMPTINESS_CHECK_ARGUMENT: self.parse_empty_check,
+            exactly_lib.definitions.primitives.files_matcher.NUM_FILES_CHECK_ARGUMENT: self.parse_num_files_check,
+            exactly_lib.definitions.primitives.files_matcher.EMPTINESS_CHECK_ARGUMENT: self.parse_empty_check,
             instruction_arguments.ALL_QUANTIFIER_ARGUMENT: self.parse_file_quantified_assertion__all,
             instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT: self.parse_file_quantified_assertion__exists,
         }
@@ -91,8 +91,9 @@ class _SimpleMatcherParser:
     def _file_quantified_assertion(self,
                                    quantifier: Quantifier,
                                    parser: TokenParser) -> FilesMatcherResolver:
-        parser.consume_mandatory_constant_unquoted_string(config.QUANTIFICATION_OVER_FILE_ARGUMENT,
-                                                          must_be_on_current_line=True)
+        parser.consume_mandatory_constant_unquoted_string(
+            exactly_lib.definitions.primitives.files_matcher.QUANTIFICATION_OVER_FILE_ARGUMENT,
+            must_be_on_current_line=True)
         parser.consume_mandatory_constant_unquoted_string(
             instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
             must_be_on_current_line=True)

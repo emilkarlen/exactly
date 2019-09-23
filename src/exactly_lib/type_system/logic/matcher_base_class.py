@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import TypeVar, Generic
 
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -10,6 +10,11 @@ T = TypeVar('T')
 
 class Matcher(Generic[T], WithOptionDescription, ABC):
     """Matches a model."""
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        pass
 
     def matches(self, model: T) -> bool:
         raise NotImplementedError('abstract method')

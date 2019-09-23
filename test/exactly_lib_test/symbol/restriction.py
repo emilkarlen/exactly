@@ -7,7 +7,6 @@ from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
-from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data import list_value
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
@@ -25,6 +24,7 @@ from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherR
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.type_system.data.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
+from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant
 from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer, \
     LineMatcherNotImplementedTestImpl
 

@@ -14,11 +14,17 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 class MaStringMatcher(Generic[T], StringMatcher):
     def __init__(self,
+                 name: str,
                  applier: MatcherApplier[FileToCheck, T],
                  err_msg_constructor: Callable[[FileToCheck, Failure[T]], ErrorMessageResolver],
                  ):
+        self._name = name
         self._applier = applier
         self._err_msg_constructor = err_msg_constructor
+
+    @property
+    def name(self) -> str:
+        return self._name
 
     @property
     def option_description(self) -> str:
@@ -34,9 +40,11 @@ class MaStringMatcher(Generic[T], StringMatcher):
 
 class MaStringMatcherValue(Generic[T], StringMatcherValue):
     def __init__(self,
+                 name: str,
                  applier: MatcherApplierValue[FileToCheck, T],
                  err_msg_constructor: Callable[[FileToCheck, Failure[T]], ErrorMessageResolver],
                  ):
+        self._name = name
         self._applier = applier
         self._err_msg_constructor = err_msg_constructor
 
@@ -51,6 +59,7 @@ class MaStringMatcherValue(Generic[T], StringMatcherValue):
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
         return MaStringMatcher(
+            self._name,
             self._applier.value_of_any_dependency(home_and_sds),
             self._err_msg_constructor,
         )
@@ -58,9 +67,11 @@ class MaStringMatcherValue(Generic[T], StringMatcherValue):
 
 class MaStringMatcherResolver(Generic[T], StringMatcherResolver):
     def __init__(self,
+                 name: str,
                  applier: MatcherApplierResolver[FileToCheck, T],
                  err_msg_constructor: Callable[[FileToCheck, Failure[T]], ErrorMessageResolver],
                  ):
+        self._name = name
         self._applier = applier
         self._err_msg_constructor = err_msg_constructor
 
@@ -74,6 +85,7 @@ class MaStringMatcherResolver(Generic[T], StringMatcherResolver):
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
         return MaStringMatcherValue(
+            self._name,
             self._applier.resolve(symbols),
             self._err_msg_constructor
         )

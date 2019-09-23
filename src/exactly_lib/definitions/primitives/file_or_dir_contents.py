@@ -1,0 +1,1 @@
+EMPTINESS_CHECK_ARGUMENT = 'empty'

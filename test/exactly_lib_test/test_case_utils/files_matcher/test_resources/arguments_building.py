@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Sequence, Dict
 
+import exactly_lib.definitions.primitives.files_matcher
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndExpectSetup
@@ -31,7 +31,7 @@ class AssertionVariantArgumentsConstructor:
 
 class EmptyAssertionVariant(AssertionVariantArgumentsConstructor):
     def __str__(self):
-        return config.EMPTINESS_CHECK_ARGUMENT
+        return exactly_lib.definitions.primitives.files_matcher.EMPTINESS_CHECK_ARGUMENT
 
 
 class SymbolReferenceAssertionVariant(AssertionVariantArgumentsConstructor):
@@ -49,7 +49,7 @@ class NumFilesAssertionVariant(AssertionVariantArgumentsConstructor):
 
     def __str__(self):
         return '{num_files} {condition}'.format(
-            num_files=config.NUM_FILES_CHECK_ARGUMENT,
+            num_files=exactly_lib.definitions.primitives.files_matcher.NUM_FILES_CHECK_ARGUMENT,
             condition=self._condition)
 
 
@@ -65,7 +65,7 @@ class FileQuantificationAssertionVariant(AssertionVariantArgumentsConstructor):
     def __str__(self):
         return '{quantifier} {file} {separator} {file_assertion}'.format(
             quantifier=instruction_arguments.QUANTIFIER_ARGUMENTS[self._quantifier],
-            file=config.QUANTIFICATION_OVER_FILE_ARGUMENT,
+            file=exactly_lib.definitions.primitives.files_matcher.QUANTIFICATION_OVER_FILE_ARGUMENT,
             separator=instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
             file_assertion=str(self._file_assertion)
         )
@@ -236,4 +236,4 @@ def symbol_reference(symbol_name: str) -> str:
 
 
 def arbitrary_single_line_value_that_must_not_be_quoted() -> str:
-    return config.EMPTINESS_CHECK_ARGUMENT
+    return exactly_lib.definitions.primitives.files_matcher.EMPTINESS_CHECK_ARGUMENT

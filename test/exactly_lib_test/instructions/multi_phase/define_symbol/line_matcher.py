@@ -1,10 +1,10 @@
 import re
 import unittest
 
+import exactly_lib.definitions.primitives.line_matcher
 from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant, LineMatcherAnd, LineMatcherRegex
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
 from exactly_lib.util.symbol_table import SymbolTable
@@ -142,7 +142,7 @@ class TestUnsuccessfulScenarios(TestCaseBase):
         cases = [
             (
                 'single quoted argument',
-                str(surrounded_by_hard_quotes(parse_line_matcher.REGEX_MATCHER_NAME)),
+                str(surrounded_by_hard_quotes(exactly_lib.definitions.primitives.line_matcher.REGEX_MATCHER_NAME)),
             ),
             (
                 'non-transformer name that is not a valid symbol name',

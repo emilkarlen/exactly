@@ -1,12 +1,12 @@
 from typing import Sequence
 
-from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherConstant
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext, \
     StringMatcherResolverConstantTestImpl
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import constant_validator
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, ValidationActual
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant
 
 
 class ValidationCase:

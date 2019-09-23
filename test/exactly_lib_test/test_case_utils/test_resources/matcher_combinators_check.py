@@ -16,6 +16,10 @@ class MatcherThatRegistersModelArgument(Matcher):
         self._constant_result = constant_result
         self._registered_argument = None
 
+    @property
+    def name(self) -> str:
+        return str(type(self))
+
     def matches(self, model: T) -> bool:
         raise NotImplementedError('unsupported')
 
@@ -35,6 +39,10 @@ class MatcherWTraceThatRegistersModelArgument(MatcherWTrace):
     def __init__(self, constant_result: bool):
         self._constant_result = constant_result
         self._registered_argument = None
+
+    @property
+    def name(self) -> str:
+        return str(type(self)) + ': ' + str(self._constant_result)
 
     @property
     def option_description(self) -> str:
