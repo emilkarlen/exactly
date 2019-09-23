@@ -13,7 +13,7 @@ from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForFileWithDescriptor
 from exactly_lib.test_case_utils.files_matcher import config
-from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
+from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherResolverBase
 from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
     resolver_validator_for_file_matcher
 from exactly_lib.type_system.data import path_description

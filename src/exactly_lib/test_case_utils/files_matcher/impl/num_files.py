@@ -6,7 +6,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.files_matcher import config
-from exactly_lib.test_case_utils.files_matcher.files_matchers import FilesMatcherResolverBase
+from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherResolverBase
 from exactly_lib.test_case_utils.matcher.applier import MatcherApplier
 from exactly_lib.test_case_utils.matcher.element_getter import ElementGetter
 from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
