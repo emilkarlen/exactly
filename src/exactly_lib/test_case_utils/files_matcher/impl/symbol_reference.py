@@ -22,16 +22,16 @@ class _ReferenceResolver(FilesMatcherResolver):
                                             ValueTypeRestriction(ValueType.FILES_MATCHER))]
         self._validator = _ValidatorOfReferredResolver(name_of_referenced_resolver)
 
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._references
+
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
 
     def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
         resolver = lookups.lookup_files_matcher(symbols, self._name_of_referenced_resolver)
         return resolver.resolve(symbols)
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._references
 
     def __str__(self):
         return str(type(self)) + '\'' + str(self._name_of_referenced_resolver) + '\''

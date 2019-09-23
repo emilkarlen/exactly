@@ -47,7 +47,8 @@ class _SubSetSelectorMatcher(FilesMatcher):
 class _SubSetSelectorMatcherValue(FilesMatcherValue):
     def __init__(self,
                  selector: FileMatcherValue,
-                 matcher_on_selection: FilesMatcherValue):
+                 matcher_on_selection: FilesMatcherValue,
+                 ):
         self._selector = selector
         self._matcher_on_selection = matcher_on_selection
 

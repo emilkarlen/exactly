@@ -36,12 +36,9 @@ _QUANTIFIER__FILE__SATISFY = ' file match'
 _SATISFIES = 'matches'
 
 
-def quantified_matcher(expectation_type: ExpectationType,
-                       quantifier: Quantifier,
-                       matcher_on_file: FileMatcherResolver,
-                       ) -> FilesMatcherResolver:
-    return _QuantifiedMatcherResolver(expectation_type,
-                                      quantifier,
+def quantified_matcher(quantifier: Quantifier,
+                       matcher_on_file: FileMatcherResolver) -> FilesMatcherResolver:
+    return _QuantifiedMatcherResolver(quantifier,
                                       matcher_on_file)
 
 
@@ -76,10 +73,9 @@ class _QuantifiedMatcher(FilesMatcher):
 
 class _QuantifiedMatcherValue(FilesMatcherValue):
     def __init__(self,
-                 expectation_type: ExpectationType,
                  quantifier: Quantifier,
-                 matcher_on_file: FileMatcherValue):
-        self._expectation_type = expectation_type
+                 matcher_on_file: FileMatcherValue,
+                 ):
         self._quantifier = quantifier
         self._matcher_on_file = matcher_on_file
 
@@ -88,7 +84,7 @@ class _QuantifiedMatcherValue(FilesMatcherValue):
 
         def mk_matcher(tmp_files_space: TmpDirFileSpace) -> FilesMatcher:
             return _QuantifiedMatcher(
-                self._expectation_type,
+                ExpectationType.POSITIVE,
                 self._quantifier,
                 matcher_on_file,
                 tmp_files_space,
@@ -99,11 +95,9 @@ class _QuantifiedMatcherValue(FilesMatcherValue):
 
 class _QuantifiedMatcherResolver(FilesMatcherResolverBase):
     def __init__(self,
-                 expectation_type: ExpectationType,
                  quantifier: Quantifier,
                  matcher_on_file: FileMatcherResolver):
-        super().__init__(expectation_type,
-                         resolver_validator_for_file_matcher(matcher_on_file),
+        super().__init__(resolver_validator_for_file_matcher(matcher_on_file),
                          )
         self._quantifier = quantifier
         self._matcher_on_file = matcher_on_file
@@ -114,17 +108,8 @@ class _QuantifiedMatcherResolver(FilesMatcherResolverBase):
 
     def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
         return _QuantifiedMatcherValue(
-            self._expectation_type,
             self._quantifier,
             self._matcher_on_file.resolve(symbols),
-        )
-
-    @property
-    def negation(self) -> FilesMatcherResolver:
-        return _QuantifiedMatcherResolver(
-            logic_types.negation(self._expectation_type),
-            self._quantifier,
-            self._matcher_on_file
         )
 
 

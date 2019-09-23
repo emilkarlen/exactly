@@ -62,7 +62,7 @@ class _SimpleMatcherParser:
             return self.parse_symbol_reference(matcher_name, parser)
 
     def parse_empty_check(self, parser: TokenParser) -> FilesMatcherResolver:
-        return emptiness.emptiness_matcher(ExpectationType.POSITIVE)
+        return emptiness.emptiness_matcher()
 
     def parse_num_files_check(self, parser: TokenParser) -> FilesMatcherResolver:
         matcher = parse_integer_matcher.parse(
@@ -105,9 +105,7 @@ class _SimpleMatcherParser:
                                         quantifier: Quantifier,
                                         matcher_on_file: FileMatcherResolver,
                                         ) -> FilesMatcherResolver:
-        return quant_over_files.quantified_matcher(ExpectationType.POSITIVE,
-                                                   quantifier,
-                                                   matcher_on_file)
+        return quant_over_files.quantified_matcher(quantifier, matcher_on_file)
 
 
 _SIMPLE_MATCHER_PARSER = _SimpleMatcherParser()

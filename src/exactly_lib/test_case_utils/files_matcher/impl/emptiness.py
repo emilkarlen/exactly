@@ -15,8 +15,8 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def emptiness_matcher(expectation_type: ExpectationType) -> FilesMatcherResolver:
-    return _EmptinessMatcherResolver(expectation_type)
+def emptiness_matcher() -> FilesMatcherResolver:
+    return _EmptinessMatcherResolver()
 
 
 class _EmptinessMatcherResolver(FilesMatcherResolverBase):
@@ -24,22 +24,14 @@ class _EmptinessMatcherResolver(FilesMatcherResolverBase):
     def references(self) -> Sequence[SymbolReference]:
         return ()
 
-    @property
-    def negation(self) -> FilesMatcherResolver:
-        return _EmptinessMatcherResolver(logic_types.negation(self._expectation_type),
-                                         self._validator)
-
     def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
-        return _EmptinessMatcherValue(self._expectation_type)
+        return _EmptinessMatcherValue()
 
 
 class _EmptinessMatcherValue(FilesMatcherValue):
-    def __init__(self, expectation_type: ExpectationType):
-        self._expectation_type = expectation_type
-
     def value_of_any_dependency(self, tcds: HomeAndSds) -> FilesMatcherConstructor:
         return files_matchers.ConstantConstructor(
-            _EmptinessMatcher(self._expectation_type)
+            _EmptinessMatcher(ExpectationType.POSITIVE)
         )
 
 

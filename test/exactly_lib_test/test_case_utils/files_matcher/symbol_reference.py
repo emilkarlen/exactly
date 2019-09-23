@@ -52,7 +52,7 @@ class TestWithAssertionVariantForSymbolReference(tr.TestWithAssertionVariantBase
         return FilesMatcherArgumentsSetup(
             fm_args.SymbolReferenceAssertionVariant(SYMBOL_NAME),
             symbols_in_arrangement={
-                SYMBOL_NAME: emptiness_matcher(ExpectationType.POSITIVE)
+                SYMBOL_NAME: emptiness_matcher()
             },
             expected_references=[EXPECTED_REFERENCE]
         )

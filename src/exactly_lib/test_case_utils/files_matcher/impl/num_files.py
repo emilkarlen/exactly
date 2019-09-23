@@ -18,7 +18,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def resolver(matcher: MatcherResolver[int]) -> FilesMatcherResolver:
-    return _NumFilesMatcherResolver(ExpectationType.POSITIVE, matcher)
+    return _NumFilesMatcherResolver(matcher)
 
 
 class _FilesMatcher(FilesMatcher):
@@ -60,15 +60,13 @@ class _FilesMatcher(FilesMatcher):
 
 class _NumFilesMatcherValue(FilesMatcherValue):
     def __init__(self,
-                 expectation_type: ExpectationType,
                  matcher: MatcherValue[int]):
-        self._expectation_type = expectation_type
         self._matcher = matcher
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> FilesMatcherConstructor:
         return files_matchers.ConstantConstructor(
             _FilesMatcher(
-                self._expectation_type,
+                ExpectationType.POSITIVE,
                 self._matcher.value_of_any_dependency(tcds),
             ),
         )
@@ -76,27 +74,18 @@ class _NumFilesMatcherValue(FilesMatcherValue):
 
 class _NumFilesMatcherResolver(FilesMatcherResolverBase):
     def __init__(self,
-                 expectation_type: ExpectationType,
-                 matcher: MatcherResolver[int]):
+                 matcher: MatcherResolver[int],
+                 ):
         self._matcher = matcher
 
-        super().__init__(expectation_type,
-                         matcher.validator)
+        super().__init__(matcher.validator)
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._matcher.references
 
-    @property
-    def negation(self) -> FilesMatcherResolver:
-        return _NumFilesMatcherResolver(
-            logic_types.negation(self._expectation_type),
-            self._matcher,
-        )
-
     def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
         return _NumFilesMatcherValue(
-            self._expectation_type,
             self._matcher.resolve(symbols),
         )
 

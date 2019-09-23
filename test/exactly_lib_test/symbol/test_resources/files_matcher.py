@@ -18,12 +18,6 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-class FilesMatcherValueTestImpl(FilesMatcherValue):
-    def __init__(self,
-                 resolved_value: bool = True):
-        self._resolved_value = resolved_value
-
-
 class FilesMatcherTestImpl(FilesMatcher):
     def __init__(self,
                  result: bool = True):
@@ -42,7 +36,8 @@ class FilesMatcherTestImpl(FilesMatcher):
 
 class FilesMatcherValueConstantTestImpl(FilesMatcherValue):
     def __init__(self,
-                 constant: FilesMatcherConstructor):
+                 constant: FilesMatcherConstructor,
+                 ):
         self._constant = constant
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> FilesMatcherConstructor:

@@ -391,14 +391,14 @@ class _FilesMatcherResolverThatAssertsThatSymbolsAreAsExpected(FilesMatcherResol
     def references(self) -> List[SymbolReference]:
         return []
 
+    def validator(self) -> PreOrPostSdsValidator:
+        return ValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(self._put,
+                                                                         self._expectation)
+
     def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
         self._expectation.apply_with_message(self._put, symbols, 'symbols given to resolve')
 
         return files_matcher.value_with_result(True)
-
-    def validator(self) -> PreOrPostSdsValidator:
-        return ValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(self._put,
-                                                                         self._expectation)
 
 
 class ValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(PreOrPostSdsValidator):
