@@ -11,7 +11,7 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeR
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions, ReferenceRestrictions, Failure
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.data.test_resources.path_relativity import equals_path_relativity_variants
@@ -65,7 +65,9 @@ def is_failure_of_indirect_reference(
         failing_symbol: ValueAssertion[str] = asrt.is_instance(str),
         path_to_failing_symbol: ValueAssertion[Sequence[str]] = asrt.is_instance(list),
         error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text(),
-        meaning_of_failure: ValueAssertion = asrt.is_instance(str)) -> ValueAssertion:
+        meaning_of_failure: ValueAssertion[Optional[TextRenderer]] =
+        asrt.is_none_or_instance_with(SequenceRenderer, asrt_text_doc.is_any_text()),
+) -> ValueAssertion:
     return asrt.is_instance_with(FailureOfIndirectReference,
                                  asrt.and_([
                                      asrt.sub_component('failing_symbol',
@@ -77,7 +79,7 @@ def is_failure_of_indirect_reference(
                                      asrt.sub_component('error',
                                                         FailureOfIndirectReference.error.fget,
                                                         is_value_failure(error_message)),
-                                     asrt.sub_component('meaning_of_failure_of_indirect_reference',
+                                     asrt.sub_component('meaning_of_failure',
                                                         FailureOfIndirectReference.meaning_of_failure.fget,
                                                         meaning_of_failure),
                                  ]))
@@ -116,7 +118,6 @@ class _EqualsValueRestrictionVisitor(ValueRestrictionVisitor):
 def matches_restrictions_on_direct_and_indirect(
         assertion_on_direct: ValueAssertion = asrt.anything_goes(),
         assertion_on_every: ValueAssertion = asrt.anything_goes(),
-        meaning_of_failure_of_indirect_reference: ValueAssertion = asrt.is_instance(str),
 ) -> ValueAssertion[ReferenceRestrictions]:
     return asrt.is_instance_with(
         ReferenceRestrictionsOnDirectAndIndirect,
@@ -127,9 +128,6 @@ def matches_restrictions_on_direct_and_indirect(
             asrt.sub_component('indirect',
                                ReferenceRestrictionsOnDirectAndIndirect.indirect.fget,
                                assertion_on_every),
-            asrt.sub_component('meaning_of_failure_of_indirect_reference',
-                               ReferenceRestrictionsOnDirectAndIndirect.meaning_of_failure_of_indirect_reference.fget,
-                               meaning_of_failure_of_indirect_reference)
         ])
     )
 

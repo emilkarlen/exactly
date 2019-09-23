@@ -28,7 +28,7 @@ class FailureOfIndirectReference(Failure):
                  failing_symbol: str,
                  path_to_failing_symbol: List[str],
                  error: ErrorMessageWithFixTip,
-                 meaning_of_failure: str = ''):
+                 meaning_of_failure: Optional[TextRenderer] = None):
         self._failing_symbol = failing_symbol
         self._path_to_failing_symbol = path_to_failing_symbol
         self._error = error
@@ -53,7 +53,7 @@ class FailureOfIndirectReference(Failure):
         return self._error
 
     @property
-    def meaning_of_failure(self) -> str:
+    def meaning_of_failure(self) -> Optional[TextRenderer]:
         return self._meaning_of_failure
 
 
@@ -67,7 +67,7 @@ class ReferenceRestrictionsOnDirectAndIndirect(DataTypeReferenceRestrictions):
     def __init__(self,
                  direct: ValueRestriction,
                  indirect: ValueRestriction = None,
-                 meaning_of_failure_of_indirect_reference: str = ''):
+                 meaning_of_failure_of_indirect_reference: Optional[TextRenderer] = None):
         self._direct = direct
         self._indirect = indirect
         self._meaning_of_failure_of_indirect_reference = meaning_of_failure_of_indirect_reference
@@ -103,10 +103,6 @@ class ReferenceRestrictionsOnDirectAndIndirect(DataTypeReferenceRestrictions):
         :rtype: None or ValueRestriction
         """
         return self._indirect
-
-    @property
-    def meaning_of_failure_of_indirect_reference(self) -> str:
-        return self._meaning_of_failure_of_indirect_reference
 
     def check_indirect(self,
                        symbol_table: SymbolTable,
@@ -228,7 +224,7 @@ def is_any_data_type() -> DataTypeReferenceRestrictions:
     return ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction())
 
 
-def string_made_up_by_just_strings(meaning_of_failure_of_indirect_reference: str = ''
+def string_made_up_by_just_strings(meaning_of_failure_of_indirect_reference: Optional[TextRenderer] = None
                                    ) -> ReferenceRestrictionsOnDirectAndIndirect:
     return ReferenceRestrictionsOnDirectAndIndirect(
         direct=StringRestriction(),

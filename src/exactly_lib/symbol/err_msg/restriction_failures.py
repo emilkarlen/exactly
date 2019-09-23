@@ -12,7 +12,7 @@ from exactly_lib.symbol.lookups import lookup_container
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.restriction import Failure, InvalidTypeCategoryFailure, InvalidValueTypeFailure
 from exactly_lib.type_system.value_type import TYPE_CATEGORY_2_VALUE_TYPE_SEQUENCE
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators, blocks, line_objects
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators
 from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.symbol_table import SymbolTable
@@ -80,11 +80,7 @@ def _of_indirect(failing_symbol: str,
     major_blocks_sequence = []
 
     if failure.meaning_of_failure:
-        major_blocks_sequence.append(
-            blocks.MajorBlocksOfSingleLineObject(
-                line_objects.StringLineObject(failure.meaning_of_failure)
-            )
-        )
+        major_blocks_sequence.append(failure.meaning_of_failure)
 
     error = failure.error
 

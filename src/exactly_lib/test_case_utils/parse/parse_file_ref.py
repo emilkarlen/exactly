@@ -3,6 +3,7 @@ import pathlib
 import types
 from typing import Sequence, Optional, Callable, Union
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
@@ -39,6 +40,7 @@ from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.parse.token import TokenType, Token
+from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.symbol_table import SymbolTable
 
 ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}
@@ -359,11 +361,17 @@ def _path_suffix_resolver_from_fragments(fragments: list) -> PathPartResolver:
 
 
 PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
-    'Every symbol used as a path component of a {path_type} '
-    'must be defined as a {string_type}.'.format(
-        path_type=help_texts.DATA_TYPE_INFO_DICT[DataValueType.PATH].identifier,
-        string_type=help_texts.DATA_TYPE_INFO_DICT[DataValueType.STRING].identifier,
-    ))
+    text_docs.single_pre_formatted_line_object(
+        strings.FormatMap(
+            'Every symbol used as a path component of a {path_type} '
+            'must be defined as a {string_type}.',
+            {
+                'path_type': help_texts.DATA_TYPE_INFO_DICT[DataValueType.PATH].identifier,
+                'string_type': help_texts.DATA_TYPE_INFO_DICT[DataValueType.STRING].identifier,
+            },
+        )
+    )
+)
 
 
 def type_must_be_either_path_or_string__err_msg_generator(name_of_failing_symbol: str,

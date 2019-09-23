@@ -111,7 +111,8 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
         # ARRANGE #
         restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
             direct=ValueRestrictionThatRaisesErrorIfApplied(),
-            indirect=ValueRestrictionThatRaisesErrorIfApplied())
+            indirect=ValueRestrictionThatRaisesErrorIfApplied(),
+        )
         level_2_symbol = symbol_table_entry('level_2_symbol', [])
         level_1a_symbol = symbol_table_entry('level_1a_symbol',
                                              [reference_to(level_2_symbol, restrictions_that_should_not_be_used)])
@@ -126,7 +127,8 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
         restriction_that_registers_processed_symbols = RestrictionThatRegistersProcessedSymbols(
             resolver_container_2_result__fun=unconditional_satisfaction)
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
-            direct=restriction_that_registers_processed_symbols)
+            direct=restriction_that_registers_processed_symbols,
+        )
         # ACT #
         restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
         # ASSERT #
@@ -169,7 +171,8 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         level_2_symbol = symbol_table_entry('level_2_symbol', [])
         restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
             direct=ValueRestrictionThatRaisesErrorIfApplied(),
-            indirect=ValueRestrictionThatRaisesErrorIfApplied())
+            indirect=ValueRestrictionThatRaisesErrorIfApplied(),
+        )
 
         level_1a_symbol = symbol_table_entry('level_1a_symbol',
                                              [reference_to(level_2_symbol, restrictions_that_should_not_be_used)])
@@ -185,7 +188,8 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
             resolver_container_2_result__fun=unconditional_satisfaction)
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
             indirect=restriction_that_registers_processed_symbols,
-            direct=unconditionally_satisfied_value_restriction())
+            direct=unconditionally_satisfied_value_restriction(),
+        )
         # ACT #
         container = level_0_symbol.value
         assert isinstance(container, SymbolContainer), 'Expects a SymbolContainer'
@@ -208,7 +212,8 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         # ARRANGE #
         restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
             direct=ValueRestrictionThatRaisesErrorIfApplied(),
-            indirect=ValueRestrictionThatRaisesErrorIfApplied())
+            indirect=ValueRestrictionThatRaisesErrorIfApplied(),
+        )
 
         level_1a_symbol = symbol_table_entry('level_1a_symbol',
                                              [])
@@ -227,7 +232,9 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
             indirect=restriction_that_registers_processed_symbols,
             direct=unconditionally_satisfied_value_restriction(),
-            meaning_of_failure_of_indirect_reference='meaning of failure')
+            meaning_of_failure_of_indirect_reference=
+            asrt_text_doc.new_single_string_text_for_test__optional('meaning of failure'),
+        )
         # ACT #
         actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
         # ASSERT #
@@ -235,7 +242,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
             failing_symbol=asrt.equals(level_1a_symbol.key),
             path_to_failing_symbol=asrt.equals([]),
             error_message=asrt_text_doc.is_string_for_test_that_equals(result_that_indicates_error),
-            meaning_of_failure=asrt.equals('meaning of failure')
+            meaning_of_failure=asrt_text_doc.is_string_for_test_that_equals('meaning of failure')
         )
         result_assertion.apply_with_message(self, actual_result, 'result of processing')
         actual_processed_symbols = dict(restriction_that_registers_processed_symbols.visited.items())
@@ -266,7 +273,8 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
                 satisfied_value_type = DataValueType.STRING
                 restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
                     direct=ValueRestrictionThatRaisesErrorIfApplied(),
-                    indirect=ValueRestrictionThatRaisesErrorIfApplied())
+                    indirect=ValueRestrictionThatRaisesErrorIfApplied(),
+                )
 
                 level_1a_symbol = symbol_table_entry('level_1a_symbol',
                                                      references=[reference_to(dissatisfied_level_2_symbol,
@@ -290,7 +298,9 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
                 restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
                     indirect=restriction_on_every_indirect,
                     direct=unconditionally_satisfied_value_restriction(),
-                    meaning_of_failure_of_indirect_reference='meaning of failure')
+                    meaning_of_failure_of_indirect_reference=
+                    asrt_text_doc.new_single_string_text_for_test__optional('meaning of failure'),
+                )
                 # ACT #
                 actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key,
                                                                      level_0_symbol.value)
@@ -299,7 +309,8 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
                     failing_symbol=asrt.equals(dissatisfied_level_2_symbol.key),
                     path_to_failing_symbol=asrt.equals(
                         [level_1a_symbol.key]),
-                    meaning_of_failure=asrt.equals('meaning of failure'))
+                    meaning_of_failure=asrt_text_doc.is_string_for_test_that_equals('meaning of failure')
+                )
                 expected_result.apply_with_message(self, actual_result, 'result of processing')
                 actual_processed_symbols = dict(restriction_on_every_indirect.visited.items())
                 expected_processed_symbol = {
@@ -313,7 +324,8 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         # ARRANGE #
         restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
             direct=ValueRestrictionThatRaisesErrorIfApplied(),
-            indirect=ValueRestrictionThatRaisesErrorIfApplied())
+            indirect=ValueRestrictionThatRaisesErrorIfApplied(),
+        )
         satisfied_value_type = DataValueType.STRING
         dissatisfied_value_type = DataValueType.PATH
 
@@ -347,14 +359,18 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
             indirect=restriction_on_every_indirect,
             direct=unconditionally_satisfied_value_restriction(),
-            meaning_of_failure_of_indirect_reference='meaning of failure')
+            meaning_of_failure_of_indirect_reference=
+            asrt_text_doc.new_single_string_text_for_test__optional('meaning of failure'),
+        )
         # ACT #
         actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
         # ASSERT #
-        expected_result = is_failure_of_indirect_reference(failing_symbol=asrt.equals(level_3_symbol.key),
-                                                           path_to_failing_symbol=asrt.equals([level_1b_symbol.key,
-                                                                                               level_2_symbol.key]),
-                                                           meaning_of_failure=asrt.equals('meaning of failure'))
+        expected_result = is_failure_of_indirect_reference(
+            failing_symbol=asrt.equals(level_3_symbol.key),
+            path_to_failing_symbol=asrt.equals([level_1b_symbol.key,
+                                                level_2_symbol.key]),
+            meaning_of_failure=asrt_text_doc.is_string_for_test_that_equals('meaning of failure'),
+        )
         expected_result.apply_with_message(self, actual_result, 'result of processing')
         actual_processed_symbols = dict(restriction_on_every_indirect.visited.items())
         expected_processed_symbol = {
@@ -422,7 +438,8 @@ class TestOrReferenceRestrictions(unittest.TestCase):
         for referenced_symbol_case_name, referenced_symbol in referenced_symbol_cases:
             restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
                 direct=ValueRestrictionThatRaisesErrorIfApplied(),
-                indirect=ValueRestrictionThatRaisesErrorIfApplied())
+                indirect=ValueRestrictionThatRaisesErrorIfApplied(),
+            )
 
             value_type_of_referencing_symbol = DataValueType.STRING
             value_type_other_than_referencing_symbol = DataValueType.PATH
@@ -521,7 +538,8 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                                                references=[])
         restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
             direct=ValueRestrictionThatRaisesErrorIfApplied(),
-            indirect=ValueRestrictionThatRaisesErrorIfApplied())
+            indirect=ValueRestrictionThatRaisesErrorIfApplied(),
+        )
 
         referencing_symbol = symbol_table_entry('referencing_symbol',
                                                 value_type=DataValueType.STRING,

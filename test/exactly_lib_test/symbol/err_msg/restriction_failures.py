@@ -48,7 +48,7 @@ class TestErrorMessage(unittest.TestCase):
         actual = sut.ErrorMessage(self.string_sym_def_1.name,
                                   self.symbol_table,
                                   FailureOfDirectReference(_new_em('the message',
-                                                                    'the how to fix')))
+                                                                   'the how to fix')))
         # ASSERT #
         asrt_text_doc.assert_is_valid_text_renderer(self, actual)
 
@@ -59,7 +59,7 @@ class TestErrorMessage(unittest.TestCase):
                                   FailureOfIndirectReference(self.string_sym_def_1.name,
                                                              [self.string_sym_def_2.name],
                                                              _new_em('the message',
-                                                                      'the how to fix')))
+                                                                     'the how to fix')))
         # ASSERT #
         asrt_text_doc.assert_is_valid_text_renderer(self, actual)
 

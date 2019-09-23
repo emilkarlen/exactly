@@ -1,3 +1,4 @@
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -11,12 +12,13 @@ from exactly_lib.test_case_utils.program.parse import parse_arguments
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 from exactly_lib.type_system.value_type import DataValueType
+from exactly_lib.util.simple_textstruct.rendering import strings
 
 
 def parse_as_command(parser: TokenParser) -> CommandResolver:
     program_name = parse_string.parse_string_from_token_parser(parser, _PARSE_NAME_CONF)
     additional_arguments = parse_arguments.parse_from_token_parser(parser)
-    
+
     return CommandResolver(CommandDriverResolverForSystemProgram(program_name),
                            additional_arguments)
 
@@ -35,9 +37,13 @@ def program_parser() -> Parser[ProgramResolver]:
 
 
 _PROGRAM_NAME_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
-    'A program name must be defined in terms of {string_type}.'.format(
-        string_type=define_symbol.DATA_TYPE_INFO_DICT[DataValueType.STRING].identifier,
-    ))
+    text_docs.single_pre_formatted_line_object(
+        strings.FormatMap(
+            'A program name must be defined in terms of {string_type}.',
+            {'string_type': define_symbol.DATA_TYPE_INFO_DICT[DataValueType.STRING].identifier},
+        )
+    )
+)
 
 _PARSE_NAME_CONF = parse_string.Configuration('NAME',
                                               _PROGRAM_NAME_STRING_REFERENCES_RESTRICTION)

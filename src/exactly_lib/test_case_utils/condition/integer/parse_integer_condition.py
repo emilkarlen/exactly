@@ -1,5 +1,6 @@
 from typing import Optional
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.instruction_arguments import INTEGER_ARGUMENT
@@ -22,6 +23,7 @@ from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
+from exactly_lib.util.simple_textstruct.rendering import strings
 
 _NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'
 
@@ -89,9 +91,18 @@ def integer_resolver_of(value_token: Token,
 def _string_resolver_of(value_token: Token) -> StringResolver:
     return parse_string.parse_string_resolver_from_token(
         value_token,
-        string_made_up_by_just_strings(
-            'The {INTEGER} argument must be made up of just {string_type} values.'.format(
-                INTEGER=syntax_elements.INTEGER_SYNTAX_ELEMENT.argument.name,
-                string_type=help_texts.ANY_TYPE_INFO_DICT[ValueType.STRING].identifier,
-            )
-        ))
+        _REFERENCE_RESTRICTIONS,
+    )
+
+
+_REFERENCE_RESTRICTIONS = string_made_up_by_just_strings(
+    text_docs.single_pre_formatted_line_object(
+        strings.FormatMap(
+            'The {INTEGER} argument must be made up of just {string_type} values.',
+            {
+                'INTEGER': syntax_elements.INTEGER_SYNTAX_ELEMENT.argument.name,
+                'string_type': help_texts.ANY_TYPE_INFO_DICT[ValueType.STRING].identifier
+            }
+        )
+    )
+)

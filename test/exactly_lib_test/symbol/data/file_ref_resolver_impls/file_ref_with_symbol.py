@@ -41,7 +41,8 @@ class TestRelSymbol(unittest.TestCase):
         symbol_name_of_rel_path = 'symbol_name_of_rel_path'
         symbol_name_of_path_suffix = 'symbol_name_of_path_suffix'
         restrictions_on_path_suffix_symbol = restrictions.ReferenceRestrictionsOnDirectAndIndirect(
-            AnyDataTypeRestriction())
+            AnyDataTypeRestriction()
+        )
         expected_mandatory_references = [
             vr_tr.equals_symbol_reference_with_restriction_on_direct_target(
                 symbol_name_of_rel_path,
