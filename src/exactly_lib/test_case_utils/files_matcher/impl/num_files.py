@@ -35,7 +35,7 @@ class _FilesMatcher(FilesMatcher):
             self._matcher,
         )
 
-    def matches(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         matcher_applier = self._matcher_applier()
 
         failure = matcher_applier.apply(files_source)

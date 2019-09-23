@@ -2,7 +2,7 @@ import unittest
 from typing import List, Tuple
 
 from exactly_lib.definitions import expression
-from exactly_lib.type_system.logic.matcher_base_class import Matcher, MatcherWTrace, MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import Matcher, MatcherWTrace, MatchingResult, T
 from exactly_lib.type_system.trace.trace import Node
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -15,6 +15,13 @@ class MatcherThatRegistersModelArgument(Matcher):
     def __init__(self, constant_result: bool):
         self._constant_result = constant_result
         self._registered_argument = None
+
+    def matches(self, model: T) -> bool:
+        raise NotImplementedError('unsupported')
+
+    @property
+    def option_description(self) -> str:
+        raise NotImplementedError('unsupported')
 
     def register_argument(self, argument):
         self._registered_argument = argument

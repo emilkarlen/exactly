@@ -60,9 +60,9 @@ class FileMatcherAnd(FileMatcher):
         op = ' ' + expression.AND_OPERATOR_NAME + ' '
         return '({})'.format(op.join(map(lambda fm: fm.option_description, self.matchers)))
 
-    def matches2(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
         for matcher in self._matchers:
-            error = matcher.matches2(model)
+            error = matcher.matches_emr(model)
             if error is not None:
                 return error
         return None

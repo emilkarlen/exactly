@@ -20,7 +20,7 @@ class EmptinessStringMatcher(StringMatcher):
     def option_description(self) -> str:
         return diff_msg.negation_str(self.expectation_type) + 'empty'
 
-    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         first_line = self._first_line(model)
         if self.expectation_type is ExpectationType.POSITIVE:
             if first_line != '':

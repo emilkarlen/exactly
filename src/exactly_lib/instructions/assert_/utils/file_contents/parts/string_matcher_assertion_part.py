@@ -25,7 +25,7 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
                file_to_check: FileToCheck):
         value = self._string_matcher.resolve(environment.symbols)
         matcher = value.value_of_any_dependency(environment.home_and_sds)
-        mb_error_message = matcher.matches(file_to_check)
+        mb_error_message = matcher.matches_emr(file_to_check)
         if mb_error_message is not None:
             raise pfh_exception.PfhFailException(
                 mb_error_message.resolve__tr()

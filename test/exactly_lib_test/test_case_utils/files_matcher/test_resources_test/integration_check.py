@@ -308,7 +308,7 @@ class _FilesMatcherThatAssertsModelsIsExpected(FilesMatcher):
     def negation(self) -> FilesMatcher:
         raise NotImplementedError('unsupported')
 
-    def matches(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         self.put.assertIsInstance(files_source, FilesMatcherModelForDir, 'files_source')
         assert isinstance(files_source, FilesMatcherModelForDir)
         actual = list(map(lambda fm: fm.path.primitive, files_source.files()))
@@ -349,7 +349,7 @@ class _FilesMatcherThatReportsHardError(FilesMatcher):
     def negation(self) -> FilesMatcher:
         raise NotImplementedError('unsupported')
 
-    def matches(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         raise HardErrorException(
             new_single_string_text_for_test('unconditional hard error')
         )

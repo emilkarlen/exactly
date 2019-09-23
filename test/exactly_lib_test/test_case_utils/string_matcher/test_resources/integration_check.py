@@ -173,7 +173,7 @@ class Executor:
                       model: FileToCheck,
                       matcher: StringMatcher):
         try:
-            main_result = matcher.matches(model)
+            main_result = matcher.matches_emr(model)
             self._check_main_result(main_result)
         except HardErrorException as ex:
             self._check_hard_error(ex)

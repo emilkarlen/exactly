@@ -37,9 +37,9 @@ class _SubSetSelectorMatcher(FilesMatcher):
             self._matcher_on_selection.negation,
         )
 
-    def matches(self,
-                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        return self._matcher_on_selection.matches(
+    def matches_emr(self,
+                    files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+        return self._matcher_on_selection.matches_emr(
             files_source.sub_set(self._selector),
         )
 

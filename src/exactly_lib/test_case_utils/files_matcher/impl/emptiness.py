@@ -43,7 +43,7 @@ class _EmptinessMatcher(FilesMatcher):
     def negation(self) -> FilesMatcher:
         return _EmptinessMatcher(logic_types.negation(self._expectation_type))
 
-    def matches(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         err_msg_setup = _ErrMsgSetup(files_source,
                                      self._expectation_type,
                                      EMPTINESS_CHECK_EXPECTED_VALUE)

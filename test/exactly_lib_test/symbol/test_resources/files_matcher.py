@@ -27,7 +27,7 @@ class FilesMatcherTestImpl(FilesMatcher):
     def negation(self) -> FilesMatcher:
         return FilesMatcherTestImpl(not self._result)
 
-    def matches(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         if self._result:
             return None
         else:

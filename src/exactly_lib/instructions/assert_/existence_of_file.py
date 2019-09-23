@@ -308,7 +308,7 @@ class _Assertion:
             self.environment.phase_logging.space_for_instruction(),
             self.described_path)
 
-        return fm.matches2(model)
+        return fm.matches_emr(model)
 
     def _file_matcher_for_expectation_type(self) -> parse_file_matcher.FileMatcherResolver:
         return (self.file_matcher

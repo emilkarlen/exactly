@@ -108,7 +108,7 @@ class EqualityStringMatcher(StringMatcher):
         self._validator = validator
         self._err_msg_constructor = error_message_constructor
 
-    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         error_from_validation = self._do_post_setup_validation()
         if error_from_validation is not None:
             return error_from_validation

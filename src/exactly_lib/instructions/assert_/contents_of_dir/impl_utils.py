@@ -72,7 +72,7 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
         primitive = value.value_of_any_dependency(environment.home_and_sds)
         matcher = primitive.construct(environment.phase_logging.space_for_instruction())
         try:
-            mb_error_message = matcher.matches(model)
+            mb_error_message = matcher.matches_emr(model)
             if mb_error_message is not None:
                 raise pfh_ex_method.PfhFailException(
                     env_dep_texts.of_old(mb_error_message).resolve_sequence()

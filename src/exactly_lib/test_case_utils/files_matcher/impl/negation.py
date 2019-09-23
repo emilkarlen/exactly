@@ -23,9 +23,9 @@ class _NegationMatcher(FilesMatcher):
     def negation(self) -> FilesMatcher:
         return self._matcher_to_negate
 
-    def matches(self,
-                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        return self._matcher_to_negate.negation.matches(files_source)
+    def matches_emr(self,
+                    files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+        return self._matcher_to_negate.negation.matches_emr(files_source)
 
 
 class _NegationMatcherValue(FilesMatcherValue):

@@ -9,6 +9,7 @@ from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
@@ -50,14 +51,17 @@ class FilesMatcherModel(ABC):
         pass
 
 
-class FilesMatcher(ABC):
+class FilesMatcher(Matcher[FilesMatcherModel], ABC):
+    def option_description(self) -> str:
+        return 'todo'
+
     @property
     @abstractmethod
     def negation(self) -> 'FilesMatcher':
         pass
 
     @abstractmethod
-    def matches(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         """
         :raises HardErrorException: In case of HARD ERROR
         :return: None iff match

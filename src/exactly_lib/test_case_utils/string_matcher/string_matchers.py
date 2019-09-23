@@ -19,7 +19,7 @@ class StringMatcherConstant(StringMatcher):
     def result_constant(self) -> Optional[ErrorMessageResolver]:
         return self._result
 
-    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         return self._result
 
 
@@ -36,10 +36,10 @@ class StringMatcherOnTransformedFileToCheck(StringMatcher):
     def option_description(self) -> str:
         return 'transformed: ' + self._on_transformed.option_description
 
-    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         complete_transformer = self._complete_transformer(model)
         transformed_model = model.with_transformation(complete_transformer)
-        return self._on_transformed.matches(transformed_model)
+        return self._on_transformed.matches_emr(transformed_model)
 
     def _complete_transformer(self, model: FileToCheck) -> StringTransformer:
         if model.string_transformer.is_identity_transformer:

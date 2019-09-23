@@ -162,7 +162,7 @@ class _Executor:
                       files_source: FilesMatcherModel,
                       matcher: FilesMatcher):
         try:
-            main_result = matcher.matches(files_source)
+            main_result = matcher.matches_emr(files_source)
             self._check_main_result(main_result)
         except HardErrorException as ex:
             self._check_hard_error(ex)

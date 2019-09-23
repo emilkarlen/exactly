@@ -79,7 +79,7 @@ class MatchesRegexStringMatcher(StringMatcher):
         self._pattern = pattern
         self._err_msg_constructor = error_message_constructor
 
-    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         actual_contents = self._actual_contents(model)
         match = self._find_match(actual_contents)
         if match is None:

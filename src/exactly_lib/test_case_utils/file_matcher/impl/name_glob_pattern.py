@@ -63,7 +63,7 @@ class FileMatcherNameGlobPattern(FileMatcher):
     def option_description(self) -> str:
         return 'name matches glob pattern ' + self._glob_pattern
 
-    def matches2(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
         if self.matches(model):
             return None
         else:

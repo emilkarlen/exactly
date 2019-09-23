@@ -25,7 +25,7 @@ class FileMatcherType(FileMatcher):
     def option_description(self) -> str:
         return 'type is ' + file_properties.TYPE_INFO[self._file_type].description
 
-    def matches2(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
         path = model.path.primitive
         try:
             stat_result = self._stat_method(path)

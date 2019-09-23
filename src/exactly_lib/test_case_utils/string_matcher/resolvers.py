@@ -259,8 +259,8 @@ class _NegationStringMatcher(StringMatcher):
     def option_description(self) -> str:
         return instruction_arguments.NEGATION_ARGUMENT_STR + ' ' + self.negated.option_description
 
-    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        result = self.negated.matches(model)
+    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+        result = self.negated.matches_emr(model)
         if result is None:
             return self._failure_message_resolver()
         else:

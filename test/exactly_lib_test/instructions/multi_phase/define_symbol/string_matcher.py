@@ -229,7 +229,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
                        environment: InstructionEnvironmentForPostSdsStep) -> Optional[ErrorMessageResolver]:
         matcher_to_apply = self._get_matcher(environment)
         model = self._new_model(environment)
-        return matcher_to_apply.matches(model)
+        return matcher_to_apply.matches_emr(model)
 
     def _get_matcher(self, environment: InstructionEnvironmentForPostSdsStep) -> StringMatcher:
         matcher_resolver = lookups.lookup_string_matcher(environment.symbols, self.matcher_symbol_name)

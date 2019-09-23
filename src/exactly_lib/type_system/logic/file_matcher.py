@@ -36,10 +36,10 @@ class FileMatcherModel(ABC):
         pass
 
 
-class FileMatcher(Matcher[FileMatcherModel]):
+class FileMatcher(Matcher[FileMatcherModel], ABC):
     """Matches a path of an existing file."""
 
-    def matches2(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
         """"Want this variant to replace the bool variant."""
         if self.matches(model):
             return None

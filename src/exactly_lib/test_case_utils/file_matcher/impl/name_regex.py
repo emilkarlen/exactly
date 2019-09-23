@@ -64,7 +64,7 @@ class FileMatcherBaseNameRegExPattern(FileMatcher):
     def option_description(self) -> str:
         return 'base name matches regular expression ' + self.reg_ex_pattern
 
-    def matches2(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
         if self.matches(model):
             return None
         else:

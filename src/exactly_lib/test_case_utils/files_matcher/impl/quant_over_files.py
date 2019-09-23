@@ -62,7 +62,7 @@ class _QuantifiedMatcher(FilesMatcher):
             self._tmp_files_space,
         )
 
-    def matches(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         checker = _Checker(self._expectation_type,
                            self._quantifier,
                            self._matcher_on_file,
@@ -190,7 +190,7 @@ class _Checker:
         return self.files_source_model.files()
 
     def check_file(self, file_element: FileModel) -> Optional[ErrorMessageResolver]:
-        return self.matcher_on_file.matches2(self.models_factory.file_matcher_model(file_element))
+        return self.matcher_on_file.matches_emr(self.models_factory.file_matcher_model(file_element))
 
 
 class _ModelsFactory:

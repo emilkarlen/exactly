@@ -42,7 +42,7 @@ class TestFileType(unittest.TestCase):
                                  'result')
 
             with self.subTest('matches2'):
-                actual_result = matcher_to_check.matches2(
+                actual_result = matcher_to_check.matches_emr(
                     model.with_dir_space_that_must_not_be_used(file_path_to_check))
 
                 # ASSERT #

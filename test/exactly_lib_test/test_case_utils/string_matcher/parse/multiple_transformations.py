@@ -111,7 +111,7 @@ class EqualsMatcher(StringMatcher):
     def option_description(self) -> str:
         return 'equals ' + self.expected
 
-    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         actual = self._as_single_string(model)
         if self.expected == actual:
             return None

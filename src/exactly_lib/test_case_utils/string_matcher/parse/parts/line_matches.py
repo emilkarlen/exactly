@@ -138,7 +138,7 @@ class _StringMatcherBase(StringMatcher):
                       self._line_matcher.option_description]
         return ' '.join(components)
 
-    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         try:
             self._check(self._line_matcher, model)
         except pfh_exception.PfhFailException as ex:

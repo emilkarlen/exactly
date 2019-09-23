@@ -6,7 +6,7 @@ from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCh
 
 class StringMatcherTestImplBase(StringMatcher):
 
-    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         self._matches_side_effects(model)
         return None
 

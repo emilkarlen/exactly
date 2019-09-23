@@ -166,7 +166,7 @@ class _Checker:
 
     def _check_application(self, matcher: LineMatcher):
         try:
-            main_result = matcher.matches2(self.model)
+            main_result = matcher.matches_emr(self.model)
             self._check_application_result(main_result)
         except HardErrorException as ex:
             self._check_hard_error(ex)

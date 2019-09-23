@@ -34,7 +34,7 @@ class LineMatcher(MatcherWTrace[LineMatcherLine]):
         return TraceBuilder(self.name)
 
     def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
-        mb_fail = self.matches2(line)
+        mb_fail = self.matches_emr(line)
 
         tb = self._new_tb()
 
@@ -44,7 +44,7 @@ class LineMatcher(MatcherWTrace[LineMatcherLine]):
             tb.details.append(trace_rendering.DetailRendererOfErrorMessageResolver(mb_fail))
             return tb.build_result(False)
 
-    def matches2(self, line: LineMatcherLine) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, line: LineMatcherLine) -> Optional[ErrorMessageResolver]:
         if self.matches(line):
             return None
         else:

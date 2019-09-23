@@ -31,12 +31,12 @@ class RegularFileMatchesStringMatcher(FileMatcher):
         return 'contents matches STRING-MATCHER'
 
     def matches(self, model: FileMatcherModel) -> bool:
-        return self.matches2(model) is None
+        return self.matches_emr(model) is None
 
-    def matches2(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
         self._hard_error_if_not_regular_file(model)
         model = self._string_matcher_model(model)
-        return self._string_matcher.matches(model)
+        return self._string_matcher.matches_emr(model)
 
     def _hard_error_if_not_regular_file(self, model: FileMatcherModel):
         failure_info_properties = self._is_regular_file_check.resolve_failure_info(model.path.primitive)

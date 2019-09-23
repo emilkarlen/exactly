@@ -24,7 +24,7 @@ class MaStringMatcher(Generic[T], StringMatcher):
     def option_description(self) -> str:
         return 'todo'
 
-    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         failure = self._applier.apply(model)
         if failure is None:
             return None

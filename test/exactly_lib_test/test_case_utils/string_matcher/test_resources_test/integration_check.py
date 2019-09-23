@@ -295,7 +295,7 @@ class _StringMatcherThatReportsHardError(StringMatcher):
     def option_description(self) -> str:
         return 'unconditional HARD ERROR'
 
-    def matches(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         raise HardErrorException(new_single_string_text_for_test('unconditional hard error'))
 
 
