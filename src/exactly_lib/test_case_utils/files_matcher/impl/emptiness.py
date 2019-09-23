@@ -1,11 +1,13 @@
 from typing import Sequence, List, Optional, Iterator
 
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
-    Environment, FileModel, FilesMatcherModel, FilesMatcherValue
+    FileModel, FilesMatcherModel, FilesMatcherValue, FilesMatcher, FilesMatcherConstructor
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.test_case_utils.files_matcher import config
+from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherResolverBase
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.util import logic_types
@@ -14,18 +16,18 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def emptiness_matcher(expectation_type: ExpectationType) -> FilesMatcherResolver:
-    return _EmptinessMatcher(expectation_type)
+    return _EmptinessMatcherResolver(expectation_type)
 
 
-class _EmptinessMatcher(FilesMatcherResolverBase):
+class _EmptinessMatcherResolver(FilesMatcherResolverBase):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return ()
 
     @property
     def negation(self) -> FilesMatcherResolver:
-        return _EmptinessMatcher(logic_types.negation(self._expectation_type),
-                                 self._validator)
+        return _EmptinessMatcherResolver(logic_types.negation(self._expectation_type),
+                                         self._validator)
 
     def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
         return _EmptinessMatcherValue(self._expectation_type)
@@ -35,13 +37,21 @@ class _EmptinessMatcherValue(FilesMatcherValue):
     def __init__(self, expectation_type: ExpectationType):
         self._expectation_type = expectation_type
 
-    @property
-    def negation(self) -> FilesMatcherValue:
-        return _EmptinessMatcherValue(logic_types.negation(self._expectation_type))
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> FilesMatcherConstructor:
+        return files_matchers.ConstantConstructor(
+            _EmptinessMatcher(self._expectation_type)
+        )
 
-    def matches(self,
-                environment: Environment,
-                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+
+class _EmptinessMatcher(FilesMatcher):
+    def __init__(self, expectation_type: ExpectationType):
+        self._expectation_type = expectation_type
+
+    @property
+    def negation(self) -> FilesMatcher:
+        return _EmptinessMatcher(logic_types.negation(self._expectation_type))
+
+    def matches(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         err_msg_setup = _ErrMsgSetup(files_source,
                                      self._expectation_type,
                                      EMPTINESS_CHECK_EXPECTED_VALUE)

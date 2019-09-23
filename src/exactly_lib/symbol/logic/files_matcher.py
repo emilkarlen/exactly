@@ -61,6 +61,11 @@ class FilesMatcherModel(ABC):
 
 
 class FilesMatcher(ABC):
+    @property
+    @abstractmethod
+    def negation(self) -> 'FilesMatcher':
+        pass
+
     @abstractmethod
     def matches(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         """
@@ -77,24 +82,6 @@ class FilesMatcherConstructor(ABC):
 
 
 class FilesMatcherValue(ABC):
-    @property
-    @abstractmethod
-    def negation(self) -> 'FilesMatcherValue':
-        """
-        :return: A matcher that matches the negation of this matcher
-        """
-        pass
-
-    @abstractmethod
-    def matches(self,
-                environment: Environment,
-                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        """
-        :raises HardErrorException: In case of HARD ERROR
-        :return: None iff match
-        """
-        pass
-
     @abstractmethod
     def value_of_any_dependency(self, tcds: HomeAndSds) -> FilesMatcherConstructor:
         pass

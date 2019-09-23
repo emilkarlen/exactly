@@ -1,16 +1,16 @@
 from typing import Sequence, Optional
 
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
-    Environment, FilesMatcherModel, FilesMatcherValue
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+    FilesMatcherModel, FilesMatcherValue, FilesMatcher, FilesMatcherConstructor
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.condition import comparison_structures
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.files_matcher import config
+from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherResolverBase
 from exactly_lib.test_case_utils.matcher.applier import MatcherApplier
 from exactly_lib.test_case_utils.matcher.element_getter import ElementGetter
 from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
-from exactly_lib.test_case_utils.matcher.matcher import MatcherResolver, MatcherValue
+from exactly_lib.test_case_utils.matcher.matcher import MatcherResolver, MatcherValue, Matcher
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.util import logic_types
 from exactly_lib.util.logic_types import ExpectationType
@@ -21,24 +21,22 @@ def resolver(matcher: MatcherResolver[int]) -> FilesMatcherResolver:
     return _NumFilesMatcherResolver(ExpectationType.POSITIVE, matcher)
 
 
-class _NumFilesMatcherValue(FilesMatcherValue):
+class _FilesMatcher(FilesMatcher):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 matcher: MatcherValue[int]):
+                 matcher: Matcher[int]):
         self._expectation_type = expectation_type
         self._matcher = matcher
 
     @property
-    def negation(self) -> FilesMatcherValue:
-        return _NumFilesMatcherValue(
+    def negation(self) -> FilesMatcher:
+        return _FilesMatcher(
             logic_types.negation(self._expectation_type),
             self._matcher,
         )
 
-    def matches(self,
-                environment: Environment,
-                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        matcher_applier = self._matcher_applier(environment)
+    def matches(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+        matcher_applier = self._matcher_applier()
 
         failure = matcher_applier.apply(files_source)
 
@@ -52,12 +50,28 @@ class _NumFilesMatcherValue(FilesMatcherValue):
             None
         )
 
-    def _matcher_applier(self, environment: Environment) -> MatcherApplier[FilesMatcherModel, int]:
-        matcher = self._matcher.value_of_any_dependency(environment.path_resolving_environment.home_and_sds)
+    def _matcher_applier(self, ) -> MatcherApplier[FilesMatcherModel, int]:
+        matcher = self._matcher
         if self._expectation_type is ExpectationType.NEGATIVE:
             matcher = matcher.negation
 
         return MatcherApplier(matcher, _ElementGetter())
+
+
+class _NumFilesMatcherValue(FilesMatcherValue):
+    def __init__(self,
+                 expectation_type: ExpectationType,
+                 matcher: MatcherValue[int]):
+        self._expectation_type = expectation_type
+        self._matcher = matcher
+
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> FilesMatcherConstructor:
+        return files_matchers.ConstantConstructor(
+            _FilesMatcher(
+                self._expectation_type,
+                self._matcher.value_of_any_dependency(tcds),
+            ),
+        )
 
 
 class _NumFilesMatcherResolver(FilesMatcherResolverBase):
@@ -90,12 +104,3 @@ class _NumFilesMatcherResolver(FilesMatcherResolverBase):
 class _ElementGetter(ElementGetter[FilesMatcherModel, int]):
     def get_from(self, model: FilesMatcherModel) -> int:
         return len(list(model.files()))
-
-
-class NumFilesResolver(comparison_structures.OperandResolver[int]):
-    def __init__(self,
-                 path_to_check: FilesMatcherModel):
-        self.path_to_check = path_to_check
-
-    def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
-        return len(list(self.path_to_check.files()))

@@ -1,12 +1,14 @@
 from typing import Sequence, Optional
 
 from exactly_lib.symbol import symbol_usage as su
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, Environment, FilesMatcherModel, \
-    FilesMatcherValue
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, FilesMatcherModel, \
+    FilesMatcherValue, FilesMatcherConstructor, FilesMatcher
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -21,17 +23,46 @@ class FilesMatcherValueTestImpl(FilesMatcherValue):
                  resolved_value: bool = True):
         self._resolved_value = resolved_value
 
-    @property
-    def negation(self) -> FilesMatcherValue:
-        return FilesMatcherValueTestImpl(not self._resolved_value)
 
-    def matches(self,
-                environment: Environment,
-                files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        if self._resolved_value:
+class FilesMatcherTestImpl(FilesMatcher):
+    def __init__(self,
+                 result: bool = True):
+        self._result = result
+
+    @property
+    def negation(self) -> FilesMatcher:
+        return FilesMatcherTestImpl(not self._result)
+
+    def matches(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+        if self._result:
             return None
         else:
-            return err_msg_resolvers.constant('test impl with constant ' + str(self._resolved_value))
+            return err_msg_resolvers.constant('test impl with constant ' + str(self._result))
+
+
+class FilesMatcherValueConstantTestImpl(FilesMatcherValue):
+    def __init__(self,
+                 constant: FilesMatcherConstructor):
+        self._constant = constant
+
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> FilesMatcherConstructor:
+        return self._constant
+
+
+def constant_value(matcher: FilesMatcher) -> FilesMatcherValue:
+    return FilesMatcherValueConstantTestImpl(
+        files_matchers.ConstantConstructor(
+            matcher
+        )
+    )
+
+
+def value_with_result(result: bool) -> FilesMatcherValue:
+    return FilesMatcherValueConstantTestImpl(
+        files_matchers.ConstantConstructor(
+            FilesMatcherTestImpl(result)
+        )
+    )
 
 
 class FilesMatcherResolverConstantTestImpl(FilesMatcherResolver):
@@ -55,7 +86,7 @@ class FilesMatcherResolverConstantTestImpl(FilesMatcherResolver):
         return self._validator
 
     def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
-        return FilesMatcherValueTestImpl(self._resolved_value)
+        return value_with_result(self._resolved_value)
 
 
 class FilesMatcherResolverConstantValueTestImpl(FilesMatcherResolver):
