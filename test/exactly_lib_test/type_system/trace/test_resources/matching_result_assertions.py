@@ -1,5 +1,5 @@
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.trace.trace_rendering import NodeRenderer
+from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering

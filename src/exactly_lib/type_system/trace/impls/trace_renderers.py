@@ -1,22 +1,9 @@
-from abc import ABC
-from typing import Sequence, TypeVar, Generic
+from typing import Generic, Sequence
 
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.trace import trace
-from exactly_lib.type_system.trace.trace import Detail, Node
-
-
-class DetailRenderer(ABC):
-    def render(self) -> Detail:
-        pass
-
-
-NODE_DATA = TypeVar('NODE_DATA')
-
-
-class NodeRenderer(Generic[NODE_DATA], ABC):
-    def render(self) -> Node[NODE_DATA]:
-        pass
+from exactly_lib.type_system.trace.trace import Node, Detail
+from exactly_lib.type_system.trace.trace_renderer import NODE_DATA, NodeRenderer, DetailRenderer
 
 
 class NodeRendererFromParts(Generic[NODE_DATA], NodeRenderer[NODE_DATA]):

@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.condition.integer.integer_matcher import Intege
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.trace import trace
-from exactly_lib.type_system.trace import trace_rendering
+from exactly_lib.type_system.trace.impls import trace_renderers
 
 
 class LineMatcherConstant(LineMatcher):
@@ -35,7 +35,7 @@ class LineMatcherRegex(LineMatcher):
 
     def __init__(self, compiled_regular_expression):
         self._compiled_regular_expression = compiled_regular_expression
-        self._regex_detail_renderer = trace_rendering.DetailRendererOfConstant(
+        self._regex_detail_renderer = trace_renderers.DetailRendererOfConstant(
             trace.StringDetail(self.option_description)
         )
 
@@ -65,7 +65,7 @@ class LineMatcherLineNumber(LineMatcher):
 
     def __init__(self, integer_matcher: IntegerMatcher):
         self._integer_matcher = integer_matcher
-        self._detail_renderer_of_expected = trace_rendering.DetailRendererOfConstant(
+        self._detail_renderer_of_expected = trace_renderers.DetailRendererOfConstant(
             trace.StringDetail(self.option_description)
         )
 

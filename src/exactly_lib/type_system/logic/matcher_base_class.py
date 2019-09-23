@@ -2,7 +2,7 @@ from abc import ABC
 from typing import TypeVar, Generic
 
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.trace.trace_rendering import NodeRenderer
+from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util.with_option_description import WithOptionDescription
 
 T = TypeVar('T')

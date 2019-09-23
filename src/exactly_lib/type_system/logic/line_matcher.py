@@ -9,8 +9,8 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult
-from exactly_lib.type_system.trace import trace_rendering
-from exactly_lib.type_system.trace.trace_building import TraceBuilder
+from exactly_lib.type_system.trace.impls import trace_renderers
+from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
 
 LineMatcherLine = Tuple[int, str]
 
@@ -41,7 +41,8 @@ class LineMatcher(MatcherWTrace[LineMatcherLine]):
         if mb_fail is None:
             return tb.build_result(True)
         else:
-            tb.details.append(trace_rendering.DetailRendererOfErrorMessageResolver(mb_fail))
+            tb.details.append(
+                trace_renderers.DetailRendererOfErrorMessageResolver(mb_fail))
             return tb.build_result(False)
 
     def matches_emr(self, line: LineMatcherLine) -> Optional[ErrorMessageResolver]:
