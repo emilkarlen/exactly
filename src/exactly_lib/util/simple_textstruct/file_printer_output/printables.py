@@ -1,8 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
-from exactly_lib.util.simple_textstruct.file_printer_output.print_on_file_printer import Printable
-from exactly_lib.util.simple_textstruct.file_printer_output.printer import Printer
+from exactly_lib.util.simple_textstruct.file_printer_output.printer import Printable, Printer
 
 
 class SequencePrintable(Printable):
