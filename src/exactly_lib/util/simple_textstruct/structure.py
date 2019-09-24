@@ -2,7 +2,6 @@ from abc import ABC
 from typing import TypeVar, Sequence, Optional, Generic
 
 from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
-from exactly_lib.util.file_printer import FilePrintable
 
 RET = TypeVar('RET')
 ENV = TypeVar('ENV')
@@ -127,32 +126,6 @@ class StringLinesObject(LineObject):
         return self._strings
 
 
-class FilePrintableLineObject(LineObject):
-    """
-    A FilePrintable.
-
-    Hopefully, this is a temporary class, used while
-    changing method of message rendering.
-    """
-
-    def __init__(self,
-                 file_printable: FilePrintable,
-                 is_line_ended: bool):
-        self._file_printable = file_printable
-        self._is_line_ended = is_line_ended
-
-    def accept(self, visitor: 'LineObjectVisitor[ENV, RET]', env: ENV) -> RET:
-        return visitor.visit_file_printable(env, self)
-
-    @property
-    def file_printable(self) -> FilePrintable:
-        return self._file_printable
-
-    @property
-    def is_line_ended(self) -> bool:
-        return self._is_line_ended
-
-
 class LineObjectVisitor(Generic[ENV, RET], ABC):
     def visit_pre_formatted(self, env: ENV, x: PreFormattedStringLineObject) -> RET:
         pass
@@ -161,9 +134,6 @@ class LineObjectVisitor(Generic[ENV, RET], ABC):
         pass
 
     def visit_string_lines(self, env: ENV, x: StringLinesObject) -> RET:
-        pass
-
-    def visit_file_printable(self, env: ENV, x: FilePrintableLineObject) -> RET:
         pass
 
 

@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib.util import file_printables
 from exactly_lib.util.simple_textstruct import structure as sut
 
 
@@ -9,7 +8,6 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestPreFormattedStringLineObject),
         unittest.makeSuite(TestStringLineObject),
         unittest.makeSuite(TestStringLinesObject),
-        unittest.makeSuite(TestFilePrintableLineObject),
 
         unittest.makeSuite(TestMinorBlock),
         unittest.makeSuite(TestMajorBlock),
@@ -126,44 +124,6 @@ class TestStringLinesObject(unittest.TestCase):
                          'visitor method')
 
 
-class TestFilePrintableLineObject(unittest.TestCase):
-    def test_getters(self):
-        # ARRANGE #
-
-        fp_arg = file_printables.of_new_line()
-        line_ended_arg = True
-        line_object = sut.FilePrintableLineObject(fp_arg, line_ended_arg)
-
-        # ACT && ASSERT #
-
-        self.assertIs(fp_arg,
-                      line_object.file_printable,
-                      'file_printable')
-        self.assertIs(line_ended_arg,
-                      line_object.is_line_ended,
-                      'is_line_ended')
-
-    def test_accept_visitor(self):
-        # ARRANGE #
-
-        line_object = sut.FilePrintableLineObject(file_printables.of_new_line(),
-                                                  False)
-        visitor = VisitorThatRegistersVisitedClassesAndReturnsTheEnv()
-        env = 'FilePrintableLineObject'
-
-        # ACT #
-
-        return_value = line_object.accept(visitor, env)
-
-        # ASSERT #
-
-        self.assertEqual(env, return_value,
-                         'return value')
-        self.assertEqual([sut.FilePrintableLineObject],
-                         visitor.visited_classes,
-                         'visitor method')
-
-
 class TestMinorBlock(unittest.TestCase):
     def test_getters(self):
         # ARRANGE #
@@ -228,8 +188,4 @@ class VisitorThatRegistersVisitedClassesAndReturnsTheEnv(sut.LineObjectVisitor[s
 
     def visit_string_lines(self, env: str, x: sut.StringLinesObject) -> str:
         self.visited_classes.append(sut.StringLinesObject)
-        return env
-
-    def visit_file_printable(self, env: str, x: sut.FilePrintableLineObject) -> str:
-        self.visited_classes.append(sut.FilePrintableLineObject)
         return env

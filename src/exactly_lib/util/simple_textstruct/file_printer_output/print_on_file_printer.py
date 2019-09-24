@@ -4,7 +4,7 @@ from exactly_lib.util.simple_textstruct.file_printer_output import printables as
 from exactly_lib.util.simple_textstruct.file_printer_output.printer import Printable, Printer
 from exactly_lib.util.simple_textstruct.structure import ElementProperties, MajorBlock, MinorBlock, \
     LineObjectVisitor, PreFormattedStringLineObject, Document, LineObject, LineElement, StringLineObject, \
-    StringLinesObject, FilePrintableLineObject
+    StringLinesObject
 
 
 class BlockSettings:
@@ -121,11 +121,6 @@ class _LineObjectHandler(LineObjectVisitor[Printer, None]):
     def visit_string_lines(self, env: Printer, x: StringLinesObject) -> None:
         for s in x.strings:
             env.write_indented(s)
-            env.new_line()
-
-    def visit_file_printable(self, env: Printer, x: FilePrintableLineObject) -> None:
-        x.file_printable.print_on(env.file_printer)
-        if not x.is_line_ended:
             env.new_line()
 
 

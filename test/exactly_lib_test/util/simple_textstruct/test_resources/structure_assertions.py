@@ -2,10 +2,9 @@ import unittest
 from typing import Sequence, Optional
 
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
-from exactly_lib.util.file_printer import FilePrintable
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, Document, \
     ElementProperties, LineObject, PreFormattedStringLineObject, StringLineObject, StringLinesObject, \
-    PLAIN_ELEMENT_PROPERTIES, FilePrintableLineObject, LineObjectVisitor
+    PLAIN_ELEMENT_PROPERTIES, LineObjectVisitor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, T, MessageBuilder
 
@@ -15,15 +14,15 @@ def matches_element_properties(
         color: ValueAssertion[Optional[ForegroundColor]] = asrt.anything_goes()) -> ValueAssertion[ElementProperties]:
     return asrt.is_instance_with__many(ElementProperties,
                                        [
-                                          asrt.sub_component('indented',
-                                                             ElementProperties.indented.fget,
-                                                             asrt.is_instance_with(bool, indented)
-                                                             ),
-                                          asrt.sub_component('color',
-                                                             ElementProperties.color.fget,
-                                                             asrt.is_none_or_instance_with(ForegroundColor, color)
-                                                             ),
-                                      ])
+                                           asrt.sub_component('indented',
+                                                              ElementProperties.indented.fget,
+                                                              asrt.is_instance_with(bool, indented)
+                                                              ),
+                                           asrt.sub_component('color',
+                                                              ElementProperties.color.fget,
+                                                              asrt.is_none_or_instance_with(ForegroundColor, color)
+                                                              ),
+                                       ])
 
 
 def equals_element_properties(expected: ElementProperties) -> ValueAssertion[ElementProperties]:
@@ -183,26 +182,6 @@ def is_string_lines(strings: ValueAssertion[Sequence[str]] = asrt.anything_goes(
     )
 
 
-def is_file_printable(file_printable: ValueAssertion[FilePrintable] = asrt.anything_goes(),
-                      is_line_ended: ValueAssertion[bool] = asrt.anything_goes(),
-                      ) -> ValueAssertion[LineObject]:
-    return asrt.is_instance_with__many(
-        FilePrintableLineObject,
-        [
-            asrt.sub_component('file_printable',
-                               FilePrintableLineObject.file_printable.fget,
-                               asrt.is_instance_with(FilePrintable,
-                                                     file_printable)
-                               ),
-            asrt.sub_component('is_line_ended',
-                               FilePrintableLineObject.is_line_ended.fget,
-                               asrt.is_instance_with(bool,
-                                                     is_line_ended)
-                               ),
-        ],
-    )
-
-
 def is_any_line_object() -> ValueAssertion[LineObject]:
     return _IS_ANY_LINE_OBJECT
 
@@ -216,9 +195,6 @@ class _LineObjectChecker(LineObjectVisitor[unittest.TestCase, None]):
 
     def visit_string_lines(self, put: unittest.TestCase, x: StringLinesObject) -> None:
         is_string_lines().apply_without_message(put, x)
-
-    def visit_file_printable(self, put: unittest.TestCase, x: FilePrintableLineObject) -> None:
-        is_file_printable().apply_without_message(put, x)
 
 
 class _IsAnyLineObject(asrt.ValueAssertionBase[LineObject]):
@@ -245,8 +221,6 @@ class _IsAnyLineObject(asrt.ValueAssertionBase[LineObject]):
         if isinstance(value, StringLineObject):
             return
         if isinstance(value, StringLinesObject):
-            return
-        if isinstance(value, FilePrintableLineObject):
             return
         msg = 'Not a know sub class of {}: {}'.format(LineObject, value)
         put.fail(message_builder.apply(msg))
