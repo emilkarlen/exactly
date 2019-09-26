@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.type_system.trace.trace import DetailVisitor, RET
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
+from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import trace_assertions as sut
 
@@ -14,6 +15,9 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestAssertionOnData),
         unittest.makeSuite(TestAssertionOnDetails),
         unittest.makeSuite(TestAssertionOnChildren),
+        unittest.makeSuite(TestIsStringDetail),
+        unittest.makeSuite(TestIsPreFormattedStringDetail),
+        unittest.makeSuite(TestAnyDetail),
     ])
 
 
@@ -129,6 +133,130 @@ class TestAssertionOnChildren(unittest.TestCase):
 
         assertion.apply_without_message(self,
                                         sut.Node('header', None, [], []))
+
+
+class TestIsStringDetail(unittest.TestCase):
+    def test_matches(self):
+        expected_string = 'expected string'
+        cases = [
+            NEA('default',
+                expected=
+                sut.is_string_detail(),
+                actual=
+                sut.StringDetail('anything'),
+                ),
+            NEA('string',
+                expected=
+                sut.is_string_detail(string=asrt.equals(expected_string)),
+                actual=
+                sut.StringDetail(expected_string)
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                case.expected.apply_without_message(self, case.actual)
+
+    def test_not_matches(self):
+        cases = [
+            NEA('unexpected object type',
+                expected=
+                sut.is_string_detail(),
+                actual=
+                sut.PreFormattedStringDetail('s'),
+                ),
+            NEA('string',
+                expected=
+                sut.is_string_detail(string=asrt.equals('expected')),
+                actual=
+                sut.StringDetail('actual'),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assert_that_assertion_fails(case.expected, case.actual)
+
+
+class TestIsPreFormattedStringDetail(unittest.TestCase):
+    def test_matches(self):
+        expected_string = 'expected string'
+        cases = [
+            NEA('default/False',
+                expected=
+                sut.is_pre_formatted_string_detail(),
+                actual=
+                sut.PreFormattedStringDetail('anything', False),
+                ),
+            NEA('default/True',
+                expected=
+                sut.is_pre_formatted_string_detail(),
+                actual=
+                sut.PreFormattedStringDetail('anything', True),
+                ),
+            NEA('object_with_to_string',
+                expected=
+                sut.is_pre_formatted_string_detail(object_with_to_string=asrt.equals(expected_string)),
+                actual=
+                sut.PreFormattedStringDetail(expected_string, True)
+                ),
+            NEA('string is line ended',
+                expected=
+                sut.is_pre_formatted_string_detail(string_is_line_ended=asrt.equals(True)),
+                actual=
+                sut.PreFormattedStringDetail('anything', True),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                case.expected.apply_without_message(self, case.actual)
+
+    def test_not_matches(self):
+        cases = [
+            NEA('unexpected object type',
+                expected=
+                sut.is_pre_formatted_string_detail(),
+                actual=
+                sut.StringDetail('s'),
+                ),
+            NEA('string',
+                expected=
+                sut.is_pre_formatted_string_detail(object_with_to_string=asrt.equals('expected')),
+                actual=
+                sut.PreFormattedStringDetail('actual', True),
+                ),
+            NEA('string is line ended',
+                expected=
+                sut.is_pre_formatted_string_detail(string_is_line_ended=asrt.equals(True)),
+                actual=
+                sut.PreFormattedStringDetail('anything', False),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assert_that_assertion_fails(case.expected, case.actual)
+
+
+class TestAnyDetail(unittest.TestCase):
+    def test_matches(self):
+        cases = [
+            sut.StringDetail('s'),
+            sut.PreFormattedStringDetail('pre-formatted', True),
+        ]
+        for line_object in cases:
+            with self.subTest(str(type(line_object))):
+                sut.is_any_detail().apply_without_message(self, line_object)
+
+    def test_not_matches(self):
+        cases = [
+            NameAndValue('not a sub class of LineObject',
+                         'not a LineObject'
+                         ),
+            NameAndValue('Unknown sub class of LineObject',
+                         DetailForTest()
+                         ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assert_that_assertion_fails(sut.is_any_detail(), case.value)
 
 
 class DetailForTest(sut.Detail):

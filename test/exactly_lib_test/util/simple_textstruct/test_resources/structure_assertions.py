@@ -6,7 +6,7 @@ from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock,
     ElementProperties, LineObject, PreFormattedStringLineObject, StringLineObject, StringLinesObject, \
     PLAIN_ELEMENT_PROPERTIES, LineObjectVisitor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, T, MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder
 
 
 def matches_element_properties(
@@ -209,7 +209,7 @@ class _IsAnyLineObject(asrt.ValueAssertionBase[LineObject]):
 
     def _apply(self,
                put: unittest.TestCase,
-               value: T,
+               value: LineObject,
                message_builder: MessageBuilder):
         put.assertIsInstance(value,
                              LineObject,
