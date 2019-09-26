@@ -11,6 +11,8 @@ class ForegroundColor(IntEnum):
     PURPLE = 35
     CYAN = 36
     WHITE = 37
+    BRIGHT_RED = 91
+    BRIGHT_GREEN = 92
 
 
 class FontStyle(IntEnum):

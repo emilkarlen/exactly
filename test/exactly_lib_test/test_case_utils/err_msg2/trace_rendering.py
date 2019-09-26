@@ -265,10 +265,10 @@ def _expected_header_properties(node: Node[bool]) -> s.ElementProperties:
 
 def _expected_header_color(node: Node[bool]) -> ForegroundColor:
     return (
-        ForegroundColor.GREEN
+        ForegroundColor.BRIGHT_GREEN
         if node.data
         else
-        ForegroundColor.RED
+        ForegroundColor.BRIGHT_RED
     )
 
 

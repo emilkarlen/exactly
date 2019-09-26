@@ -91,5 +91,5 @@ class _DetailRendererToLineElements(SequenceRenderer[LineElement],
         ]
 
 
-_HEADER_PROPERTIES_FOR_F = ElementProperties(0, ForegroundColor.RED, None)
-_HEADER_PROPERTIES_FOR_T = ElementProperties(0, ForegroundColor.GREEN, None)
+_HEADER_PROPERTIES_FOR_F = ElementProperties(0, ForegroundColor.BRIGHT_RED, None)
+_HEADER_PROPERTIES_FOR_T = ElementProperties(0, ForegroundColor.BRIGHT_GREEN, None)
