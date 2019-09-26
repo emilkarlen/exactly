@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.type_system.trace.trace import Node, Detail, DetailVisitor, StringDetail
+from exactly_lib.type_system.trace.trace import Node, Detail, DetailVisitor, StringDetail, PreFormattedStringDetail
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, elements
@@ -73,6 +73,12 @@ class _DetailRendererToLineElements(SequenceRenderer[LineElement],
     def visit_string(self, x: StringDetail) -> Sequence[LineElement]:
         return [
             LineElement(structure.StringLineObject(x.string))
+        ]
+
+    def visit_pre_formatted_string(self, x: PreFormattedStringDetail) -> Sequence[LineElement]:
+        return [
+            LineElement(structure.PreFormattedStringLineObject(x.object_with_to_string,
+                                                               x.string_is_line_ended))
         ]
 
 

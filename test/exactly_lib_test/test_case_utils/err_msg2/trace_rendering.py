@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils.err_msg2 import trace_rendering as sut
-from exactly_lib.type_system.trace.trace import Node, StringDetail
+from exactly_lib.type_system.trace.trace import Node, StringDetail, PreFormattedStringDetail
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -10,7 +10,10 @@ from exactly_lib_test.util.simple_textstruct.test_resources import structure_ass
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestBasicStructure)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestBasicStructure),
+        unittest.makeSuite(TestRenderingOfDetail),
+    ])
 
 
 class TestBasicStructure(unittest.TestCase):
@@ -167,6 +170,67 @@ class TestBasicStructure(unittest.TestCase):
                         expectation.apply_without_message(self, actual)
 
 
+class TestRenderingOfDetail(unittest.TestCase):
+    def test_string_detail(self):
+        # ARRANGE #
+
+        detail = StringDetail('the detail')
+        trace = Node('the root', False, [detail], ())
+
+        renderer = sut.BoolTraceRenderer(trace)
+
+        # ACT #
+
+        actual = renderer.render()
+
+        # ASSERT #
+
+        expectation = matches_trace_with_just_single_detail(
+            trace,
+            matches_string_detail_line_element(detail, level=1),
+        )
+
+        expectation.apply_without_message(self, actual)
+
+    def test_pre_formatted_string_detail(self):
+        # ARRANGE #
+
+        for string_is_line_ended in [False, True]:
+            with self.subTest(string_is_line_ended):
+                detail = PreFormattedStringDetail('the detail', string_is_line_ended)
+
+                trace = Node('the root', True, [detail], ())
+
+                renderer = sut.BoolTraceRenderer(trace)
+
+                # ACT #
+
+                actual = renderer.render()
+
+                # ASSERT #
+
+                expectation = matches_trace_with_just_single_detail(
+                    trace,
+                    matches_pre_formatted_string_detail_line_element(detail, level=1),
+                )
+
+                expectation.apply_without_message(self, actual)
+
+
+def matches_trace_with_just_single_detail(trace: Node[bool],
+                                          detail: ValueAssertion[s.LineElement],
+                                          ) -> ValueAssertion[s.MajorBlock]:
+    return asrt_struct.matches_major_block__w_plain_properties(
+        minor_blocks=asrt.matches_singleton_sequence(
+            asrt_struct.matches_minor_block__w_plain_properties(
+                line_elements=asrt.matches_sequence([
+                    matches_header_line_element(trace),
+                    detail,
+                ]),
+            ))
+    )
+
+
 def matches_header_line_element(node: Node[bool]) -> ValueAssertion[s.LineElement]:
     return asrt_struct.matches_line_element(
         line_object=asrt_struct.is_string__not_line_ended(asrt.equals(_expected_header_line(node))),
@@ -177,6 +241,18 @@ def matches_header_line_element(node: Node[bool]) -> ValueAssertion[s.LineElemen
 def matches_string_detail_line_element(detail: StringDetail, level: int) -> ValueAssertion[s.LineElement]:
     return asrt_struct.matches_line_element(
         line_object=asrt_struct.is_string__not_line_ended(asrt.equals(detail.string)),
+        properties=asrt_struct.equals_element_properties(expected_detail_properties(level=level)),
+    )
+
+
+def matches_pre_formatted_string_detail_line_element(detail: PreFormattedStringDetail,
+                                                     level: int,
+                                                     ) -> ValueAssertion[s.LineElement]:
+    return asrt_struct.matches_line_element(
+        line_object=asrt_struct.is_pre_formatted_string(
+            string=asrt.equals(detail.object_with_to_string),
+            string_is_line_ended=asrt.equals(detail.string_is_line_ended),
+        ),
         properties=asrt_struct.equals_element_properties(expected_detail_properties(level=level)),
     )
 

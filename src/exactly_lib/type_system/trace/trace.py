@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Sequence, TypeVar, Generic
+from typing import Sequence, TypeVar, Generic, Any
 
 RET = TypeVar('RET')
 
@@ -24,9 +24,33 @@ class StringDetail(Detail):
         return self._string
 
 
+class PreFormattedStringDetail(Detail):
+    def __init__(self,
+                 object_with_to_string: Any,
+                 string_is_line_ended: bool = False
+                 ):
+        self._object_with_to_string = object_with_to_string
+        self._string_is_line_ended = string_is_line_ended
+
+    def accept(self, visitor: 'DetailVisitor[RET]') -> RET:
+        return visitor.visit_pre_formatted_string(self)
+
+    @property
+    def object_with_to_string(self) -> str:
+        return self._object_with_to_string
+
+    @property
+    def string_is_line_ended(self) -> bool:
+        return self._string_is_line_ended
+
+
 class DetailVisitor(Generic[RET], ABC):
     @abstractmethod
     def visit_string(self, x: StringDetail) -> RET:
+        pass
+
+    @abstractmethod
+    def visit_pre_formatted_string(self, x: PreFormattedStringDetail) -> RET:
         pass
 
 
