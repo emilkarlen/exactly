@@ -23,12 +23,15 @@ class Matcher(Generic[T], WithOptionDescription, ABC):
         raise NotImplementedError('abstract method')
 
 
+TraceRenderer = NodeRenderer[bool]
+
+
 class MatchingResult:
     """The result of applying a matcher."""
 
     def __init__(self,
                  value: bool,
-                 trace: NodeRenderer[bool]):
+                 trace: TraceRenderer):
         self._value = value
         self._trace = trace
 
@@ -37,7 +40,7 @@ class MatchingResult:
         return self._value
 
     @property
-    def trace(self) -> NodeRenderer[bool]:
+    def trace(self) -> TraceRenderer:
         return self._trace
 
 

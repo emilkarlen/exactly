@@ -9,9 +9,11 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, pfh_exception as pfh_ex_method
 from exactly_lib.test_case_utils import file_ref_check
-from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
+from exactly_lib.test_case_utils.err_msg2 import path_err_msgs, trace_rendering, file_or_dir_contents_headers
+from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
 
 
 class FilesSource:
@@ -62,20 +64,29 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
               os_services: OsServices,
               custom_environment,
               files_source: FilesSource) -> FilesSource:
+        path_to_check = described_path_resolvers.of(files_source.path_of_dir). \
+            resolve__with_cwd_as_cd(environment.symbols). \
+            value_of_any_dependency(environment.home_and_sds)
+
         model = FilesMatcherModelForDir(
             environment.phase_logging.space_for_instruction(),
-            described_path_resolvers.of(files_source.path_of_dir)
-                .resolve__with_cwd_as_cd(environment.symbols)
-                .value_of_any_dependency(environment.home_and_sds),
+            path_to_check,
         )
         value = self._files_matcher.resolve(environment.symbols)
         primitive = value.value_of_any_dependency(environment.home_and_sds)
         matcher = primitive.construct(environment.phase_logging.space_for_instruction())
         try:
-            mb_error_message = matcher.matches_emr(model)
-            if mb_error_message is not None:
+            result = matcher.matches_w_trace(model)
+            if not result.value:
                 raise pfh_ex_method.PfhFailException(
-                    env_dep_texts.of_old(mb_error_message).resolve_sequence()
+                    rend_comb.SequenceR([
+                        path_err_msgs.line_header_block__primitive(
+                            file_or_dir_contents_headers.unexpected_of_file_type(FileType.DIRECTORY),
+                            path_to_check.describer,
+                        ),
+                        trace_rendering.BoolTraceRenderer(result.trace),
+                    ]
+                    )
                 )
 
             return files_source

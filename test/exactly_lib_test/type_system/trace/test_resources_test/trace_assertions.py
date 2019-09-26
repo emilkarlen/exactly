@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_system.trace.trace import DetailVisitor, RET
+from exactly_lib.type_system.trace.trace import DetailVisitor, RET, StringDetail
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
@@ -35,7 +35,7 @@ class TestDefaultAssertions(unittest.TestCase):
             NameAndValue('single valid detail',
                          sut.Node('header',
                                   None,
-                                  [DetailForTest()],
+                                  [StringDetail('the string')],
                                   [])
                          ),
             NameAndValue('single valid child',

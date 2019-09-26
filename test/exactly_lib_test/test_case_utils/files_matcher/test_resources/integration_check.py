@@ -14,6 +14,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
@@ -22,6 +23,10 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import 
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_system.trace.test_resources import trace_assertions as asrt_trace
+from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_renderer
 
 
 class TestCaseBase(unittest.TestCase):
@@ -162,21 +167,28 @@ class _Executor:
                       files_source: FilesMatcherModel,
                       matcher: FilesMatcher):
         try:
-            main_result = matcher.matches_emr(files_source)
-            self._check_main_result(main_result)
+            main_result__emr = matcher.matches_emr(files_source)
+            main_result__trace = matcher.matches_w_trace(files_source)
+
+            self._check_main_result(main_result__emr, main_result__trace)
         except HardErrorException as ex:
             self._check_hard_error(ex)
 
-    def _check_main_result(self, result: Optional[ErrorMessageResolver]):
+    def _check_main_result(self,
+                           result: Optional[ErrorMessageResolver],
+                           result__trace: MatchingResult,
+                           ):
         if self.expectation.is_hard_error is not None:
             self.put.fail('HARD_ERROR not reported (raised)')
 
         if self.expectation.main_result is None:
             self.put.assertIsNone(result,
                                   'result from main')
+            self._assert_is_matching_result_for(True, result__trace)
         else:
             self.put.assertIsNotNone(result,
                                      'result from main')
+            self._assert_is_matching_result_for(False, result__trace)
             err_msg = result.resolve()
             self.expectation.main_result.apply_with_message(self.put, err_msg,
                                                             'error result of main')
@@ -203,3 +215,20 @@ class _Executor:
                 self.model.files_selection,
             ),
         )
+
+    def _assert_is_matching_result_for(self,
+                                       expected_value: bool,
+                                       actual: MatchingResult,
+                                       ):
+        expectation = asrt_matching_result.matches(
+            value=asrt.equals(expected_value),
+            trace=asrt_trace_renderer.matches_node_renderer(
+                asrt_trace.matches_node(
+                    data=asrt.equals(expected_value),
+                ),
+            )
+        )
+
+        expectation.apply_with_message(self.put,
+                                       actual,
+                                       'matching result')

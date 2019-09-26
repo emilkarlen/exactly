@@ -33,7 +33,7 @@ class _SubSetSelectorMatcher(FilesMatcher):
 
     @property
     def name(self) -> str:
-        return instruction_arguments.SELECTION_OPTION.name
+        return instruction_arguments.SELECTION_OPTION.name.long
 
     @property
     def negation(self) -> FilesMatcher:
