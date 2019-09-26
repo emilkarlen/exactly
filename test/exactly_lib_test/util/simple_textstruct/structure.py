@@ -129,7 +129,7 @@ class TestMinorBlock(unittest.TestCase):
         # ARRANGE #
 
         parts_arg = []
-        properties_arg = sut.ElementProperties(False, None)
+        properties_arg = sut.ElementProperties(0, None)
         block = sut.MinorBlock(parts_arg, properties_arg)
 
         # ACT && ASSERT #
@@ -147,7 +147,7 @@ class TestMajorBlock(unittest.TestCase):
         # ARRANGE #
 
         parts = []
-        properties_arg = sut.ElementProperties(False, None)
+        properties_arg = sut.ElementProperties(0, None)
         block = sut.MajorBlock(parts, properties_arg)
 
         # ACT && ASSERT #

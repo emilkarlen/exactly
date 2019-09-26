@@ -5,7 +5,8 @@ from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.util.simple_textstruct.file_printer_output.test_resources import check_minor_block, \
-    MINOR_BLOCK_INDENT, LINE_ELEMENT_INDENT, check_minor_blocks, MINOR_BLOCKS_SEPARATOR
+    MINOR_BLOCK_INDENT, LINE_ELEMENT_INDENT, check_minor_blocks, MINOR_BLOCKS_SEPARATOR, indentation_cases, \
+    single_line_element_w_plain_properties
 
 
 def suite() -> unittest.TestSuite:
@@ -113,13 +114,15 @@ class TestMinorBlock(unittest.TestCase):
         string_1 = 'the 1st string'
         string_2 = 'the 2nd string'
         string_3 = 'the 3rd string'
+        string_4 = 'the 4th string'
         cases = [
             NEA(
                 'multiple types, with plain block properties',
                 lines_content([
                     string_1,
-                    LINE_ELEMENT_INDENT + string_2,
-                    string_3,
+                    LINE_ELEMENT_INDENT + LINE_ELEMENT_INDENT + string_2,
+                    LINE_ELEMENT_INDENT + string_3,
+                    string_4,
                 ]),
                 s.MinorBlock([
                     s.LineElement(
@@ -128,10 +131,14 @@ class TestMinorBlock(unittest.TestCase):
                     ),
                     s.LineElement(
                         s.StringLineObject(string_2),
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.indentation_properties(2),
                     ),
                     s.LineElement(
-                        s.PreFormattedStringLineObject(string_3, False),
+                        s.StringLineObject(string_3),
+                        s.indentation_properties(1),
+                    ),
+                    s.LineElement(
+                        s.PreFormattedStringLineObject(string_4, False),
                         s.INDENTED_ELEMENT_PROPERTIES,
                     ),
                 ],
@@ -171,6 +178,29 @@ class TestMinorBlock(unittest.TestCase):
                     self,
                     case.actual,
                     case.expected,
+                )
+
+    def test_indentation_element_property_SHOULD_cause_indentation(self):
+        # ARRANGE #
+        line_object = s.StringLineObject('the string')
+        for case in _INDENTATION_CASES:
+            with self.subTest(case.name):
+                # ACT & ASSERT #
+                check_minor_block(
+                    self,
+                    to_render=
+                    s.MinorBlock(
+                        [
+                            s.LineElement(line_object)
+                        ],
+                        case.actual,
+                    ),
+                    expectation=
+                    lines_content(
+                        [
+                            case.expected + line_object.string
+                        ]
+                    ),
                 )
 
 
@@ -277,3 +307,41 @@ class TestMinorBlocks(unittest.TestCase):
                     case.actual,
                     case.expected,
                 )
+
+    def test_indentation_SHOULD_BE_applied_per_block(self):
+        # ARRANGE #
+        string_1 = 'the 1st string'
+        string_2 = 'the 2nd string'
+        cases = [
+            NEA(
+                'two blocks, with different indent properties',
+                lines_content([
+                    MINOR_BLOCK_INDENT + MINOR_BLOCK_INDENT + string_1,
+                    MINOR_BLOCKS_SEPARATOR,
+                    string_2,
+                ]),
+                [
+                    s.MinorBlock([
+                        single_line_element_w_plain_properties(string_1),
+                    ],
+                        s.indentation_properties(2),
+                    ),
+                    s.MinorBlock([
+                        single_line_element_w_plain_properties(string_2),
+                    ],
+                        s.PLAIN_ELEMENT_PROPERTIES,
+                    ),
+                ],
+            ),
+        ]
+
+        for case in cases:
+            # ACT & ASSERT #
+            check_minor_blocks(
+                self,
+                case.actual,
+                case.expected,
+            )
+
+
+_INDENTATION_CASES = indentation_cases(MINOR_BLOCK_INDENT)

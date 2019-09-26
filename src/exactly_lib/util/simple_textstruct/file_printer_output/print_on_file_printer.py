@@ -89,8 +89,8 @@ class PrintablesFactory:
                  indent_delta: str,
                  contents: Printable) -> Printable:
         ret_val = contents
-        if properties.indented:
-            ret_val = ps.IncreasedIndentPrintable(indent_delta,
+        if properties.indentation:
+            ret_val = ps.IncreasedIndentPrintable(indent_delta * properties.indentation,
                                                   ret_val)
 
         if properties.color is not None:

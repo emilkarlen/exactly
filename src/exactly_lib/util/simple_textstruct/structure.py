@@ -9,15 +9,17 @@ ENV = TypeVar('ENV')
 
 class ElementProperties:
     def __init__(self,
-                 indented: bool,
+                 indentation: int,
                  color: Optional[ForegroundColor],
                  font_style: Optional[FontStyle] = None):
-        self._indented = indented
+        self._indented = indentation
+        if not isinstance(indentation, int):
+            raise ValueError('indentation is not an int')
         self._color = color
         self._font_style = font_style
 
     @property
-    def indented(self) -> bool:
+    def indentation(self) -> int:
         return self._indented
 
     @property
@@ -29,9 +31,13 @@ class ElementProperties:
         return self._font_style
 
 
-PLAIN_ELEMENT_PROPERTIES = ElementProperties(False, None)
+PLAIN_ELEMENT_PROPERTIES = ElementProperties(0, None)
 
-INDENTED_ELEMENT_PROPERTIES = ElementProperties(True, None)
+INDENTED_ELEMENT_PROPERTIES = ElementProperties(1, None)
+
+
+def indentation_properties(indentation: int) -> ElementProperties:
+    return ElementProperties(indentation, None, None)
 
 
 class Element(ABC):

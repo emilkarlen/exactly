@@ -1,12 +1,15 @@
 import io
 import unittest
-from typing import TypeVar, Callable, Sequence
+from typing import TypeVar, Callable, Sequence, List
 
 from exactly_lib.util.file_printer import FilePrinter
+from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib.util.simple_textstruct.file_printer_output.print_on_file_printer import LayoutSettings, BlockSettings, \
     PrintablesFactory
 from exactly_lib.util.simple_textstruct.file_printer_output.printer import Printable, Printer
-from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, Document
+from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, Document, \
+    indentation_properties, ElementProperties
+from exactly_lib_test.test_resources.test_utils import NEA
 
 T = TypeVar('T')
 
@@ -91,6 +94,16 @@ MINOR_BLOCKS_SEPARATOR = '<MINOR_BLOCKS_SEPARATOR>'
 MAJOR_BLOCKS_SEPARATOR = '<MAJOR_BLOCKS_SEPARATOR>'
 
 
+def indentation_cases(indent_str: str) -> List[NEA[str, ElementProperties]]:
+    return [
+        NEA('indentation of ' + str(indentation),
+            expected=indent_str * indentation,
+            actual=indentation_properties(indentation),
+            )
+        for indentation in [0, 1, 2]
+    ]
+
+
 class MajorBlocksSeparator(Printable):
     def print_on(self, printer: Printer):
         printer.write_non_indented(MAJOR_BLOCKS_SEPARATOR)
@@ -146,3 +159,10 @@ def _print_to_str(printable: Printable) -> str:
     printable.print_on(printer)
 
     return output_file.getvalue()
+
+
+def single_line_element_w_plain_properties(line_contents):
+    return s.LineElement(
+        s.StringLineObject(line_contents),
+        s.PLAIN_ELEMENT_PROPERTIES,
+    )

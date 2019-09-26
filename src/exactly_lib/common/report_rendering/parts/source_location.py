@@ -14,8 +14,8 @@ from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, Sequ
 from exactly_lib.util.simple_textstruct.structure import StringLinesObject, LineElement, MinorBlock, StringLineObject, \
     MajorBlock, PreFormattedStringLineObject, LineObject
 
-SOURCE_LINES_ELEMENT_PROPERTIES = structure.ElementProperties(True, None)
-SOURCE_LINES_BLOCK_PROPERTIES = structure.ElementProperties(False, None, FontStyle.BOLD)
+SOURCE_LINES_ELEMENT_PROPERTIES = structure.ElementProperties(1, None)
+SOURCE_LINES_BLOCK_PROPERTIES = structure.ElementProperties(0, None, FontStyle.BOLD)
 
 
 def line_number(n: int) -> str:

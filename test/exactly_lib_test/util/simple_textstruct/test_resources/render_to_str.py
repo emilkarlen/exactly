@@ -66,4 +66,4 @@ def print_to_str(printable: Printable) -> str:
     return output_file.getvalue()
 
 
-NO_INDENT_NO_COLOR_PROPERTIES = ElementProperties(False, None)
+NO_INDENT_NO_COLOR_PROPERTIES = ElementProperties(0, None)

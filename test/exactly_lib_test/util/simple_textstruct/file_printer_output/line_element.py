@@ -5,7 +5,7 @@ from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.util.simple_textstruct.file_printer_output.test_resources import LINE_ELEMENT_INDENT, \
-    check_line_element
+    check_line_element, indentation_cases
 
 
 def suite() -> unittest.TestSuite:
@@ -61,7 +61,7 @@ class TestLineElementOfPreFormattedString(unittest.TestCase):
 
     def test_element_properties_SHOULD_be_ignored(self):
         # ARRANGE #
-        ep_with_indent = s.ElementProperties(True,
+        ep_with_indent = s.ElementProperties(1,
                                              ForegroundColor.BLUE,
                                              FontStyle.UNDERLINE)
 
@@ -118,18 +118,18 @@ class TestLineElementOfStringLine(unittest.TestCase):
                     case.expected,
                 )
 
-    def test_WHEN_indentation_element_property_is_true_THEN_rendition_SHOULD_be_indented(self):
+    def test_indentation_element_property_SHOULD_cause_indentation(self):
         # ARRANGE #
-        ep_with_indent = s.INDENTED_ELEMENT_PROPERTIES
-
-        for case in self.cases:
-            with self.subTest(case.name):
-                # ACT & ASSERT #
-                check_line_element(
-                    self,
-                    s.LineElement(case.actual, ep_with_indent),
-                    LINE_ELEMENT_INDENT + case.expected,
-                )
+        for indentation_case in _INDENTATION_CASES:
+            for case in self.cases:
+                with self.subTest(line_object=case.name,
+                                  indentation=indentation_case.name):
+                    # ACT & ASSERT #
+                    check_line_element(
+                        self,
+                        s.LineElement(case.actual, indentation_case.actual),
+                        indentation_case.expected + case.expected,
+                    )
 
 
 class TestLineElementOfStringLines(unittest.TestCase):
@@ -180,20 +180,23 @@ class TestLineElementOfStringLines(unittest.TestCase):
                     lines_content(case.expected),
                 )
 
-    def test_WHEN_indentation_element_property_is_true_THEN_rendition_SHOULD_be_indented(self):
+    def test_indentation_element_property_SHOULD_cause_indentation(self):
         # ARRANGE #
-        element_properties = s.INDENTED_ELEMENT_PROPERTIES
+        for indentation_case in _INDENTATION_CASES:
+            for case in self.cases:
+                with self.subTest(line_object=case.name,
+                                  indentation=indentation_case.name):
+                    # ACT & ASSERT #
+                    check_line_element(
+                        self,
+                        s.LineElement(case.actual, indentation_case.actual),
+                        lines_content(
+                            [
+                                indentation_case.expected + l
+                                for l in case.expected
+                            ]
+                        ),
+                    )
 
-        for case in self.cases:
-            with self.subTest(case.name):
-                # ACT & ASSERT #
-                check_line_element(
-                    self,
-                    s.LineElement(case.actual, element_properties),
-                    lines_content(
-                        [
-                            LINE_ELEMENT_INDENT + l
-                            for l in case.expected
-                        ]
-                    ),
-                )
+
+_INDENTATION_CASES = indentation_cases(LINE_ELEMENT_INDENT)

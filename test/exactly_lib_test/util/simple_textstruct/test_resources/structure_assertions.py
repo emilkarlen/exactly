@@ -1,7 +1,7 @@
 import unittest
 from typing import Sequence, Optional
 
-from exactly_lib.util.ansi_terminal_color import ForegroundColor
+from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, Document, \
     ElementProperties, LineObject, PreFormattedStringLineObject, StringLineObject, StringLinesObject, \
     PLAIN_ELEMENT_PROPERTIES, LineObjectVisitor
@@ -10,25 +10,32 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 
 def matches_element_properties(
-        indented: ValueAssertion[bool] = asrt.anything_goes(),
-        color: ValueAssertion[Optional[ForegroundColor]] = asrt.anything_goes()) -> ValueAssertion[ElementProperties]:
+        indentation: ValueAssertion[int] = asrt.anything_goes(),
+        color: ValueAssertion[Optional[ForegroundColor]] = asrt.anything_goes(),
+        font_style: ValueAssertion[Optional[FontStyle]] = asrt.anything_goes(),
+) -> ValueAssertion[ElementProperties]:
     return asrt.is_instance_with__many(ElementProperties,
                                        [
-                                           asrt.sub_component('indented',
-                                                              ElementProperties.indented.fget,
-                                                              asrt.is_instance_with(bool, indented)
+                                           asrt.sub_component('indentation',
+                                                              ElementProperties.indentation.fget,
+                                                              asrt.is_instance_with(int, indentation)
                                                               ),
                                            asrt.sub_component('color',
                                                               ElementProperties.color.fget,
                                                               asrt.is_none_or_instance_with(ForegroundColor, color)
+                                                              ),
+                                           asrt.sub_component('font_style',
+                                                              ElementProperties.font_style.fget,
+                                                              asrt.is_none_or_instance_with(FontStyle, font_style)
                                                               ),
                                        ])
 
 
 def equals_element_properties(expected: ElementProperties) -> ValueAssertion[ElementProperties]:
     return matches_element_properties(
-        indented=asrt.equals(expected.indented),
-        color=asrt.equals(expected.color)
+        indentation=asrt.equals(expected.indentation),
+        color=asrt.equals(expected.color),
+        font_style=asrt.equals(expected.font_style),
     )
 
 

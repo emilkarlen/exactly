@@ -8,3 +8,7 @@ def suite() -> unittest.TestSuite:
         structure_assertions.suite(),
         renderer_assertions.suite(),
     ])
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

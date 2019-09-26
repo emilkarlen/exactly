@@ -7,7 +7,8 @@ from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.util.simple_textstruct.file_printer_output.test_resources import MINOR_BLOCK_INDENT, \
     LINE_ELEMENT_INDENT, MINOR_BLOCKS_SEPARATOR, check_major_block, \
-    MAJOR_BLOCK_INDENT, MAJOR_BLOCKS_SEPARATOR, check_major_blocks, check_document
+    MAJOR_BLOCK_INDENT, MAJOR_BLOCKS_SEPARATOR, check_major_blocks, check_document, indentation_cases, \
+    single_line_element_w_plain_properties
 
 
 def suite() -> unittest.TestSuite:
@@ -165,6 +166,28 @@ class TestMajorBlock(unittest.TestCase):
                     case.expected,
                 )
 
+    def test_indentation_element_property_SHOULD_cause_indentation(self):
+        # ARRANGE #
+        line_object = s.StringLineObject('the string')
+        for case in _INDENTATION_CASES:
+            with self.subTest(case.name):
+                # ACT & ASSERT #
+                check_major_block(
+                    self,
+                    to_render=
+                    s.MajorBlock([
+                        s.MinorBlock([s.LineElement(line_object)], s.PLAIN_ELEMENT_PROPERTIES)
+                    ],
+                        case.actual,
+                    ),
+                    expectation=
+                    lines_content(
+                        [
+                            case.expected + line_object.string
+                        ]
+                    ),
+                )
+
 
 class TestMajorBlocksAndDocument(unittest.TestCase):
     def test_empty_blocks_SHOULD_BE_separated_by_single_block_separator(self):
@@ -185,14 +208,7 @@ class TestMajorBlocksAndDocument(unittest.TestCase):
         )
 
         non_empty_block = s.MajorBlock([
-            s.MinorBlock([
-                s.LineElement(
-                    s.StringLineObject(string_1),
-                    s.PLAIN_ELEMENT_PROPERTIES,
-                ),
-            ],
-                s.PLAIN_ELEMENT_PROPERTIES,
-            ),
+            single_line_minor_block_w_plain_properties(string_1),
         ],
             s.PLAIN_ELEMENT_PROPERTIES,
         )
@@ -248,14 +264,7 @@ class TestMajorBlocksAndDocument(unittest.TestCase):
                 ]),
                 [
                     s.MajorBlock([
-                        s.MinorBlock([
-                            s.LineElement(
-                                s.StringLineObject(string_1),
-                                s.PLAIN_ELEMENT_PROPERTIES,
-                            ),
-                        ],
-                            s.PLAIN_ELEMENT_PROPERTIES,
-                        ),
+                        single_line_minor_block_w_plain_properties(string_1),
                     ],
                         s.PLAIN_ELEMENT_PROPERTIES,
                     ),
@@ -270,6 +279,36 @@ class TestMajorBlocksAndDocument(unittest.TestCase):
                         ),
                     ],
                         s.INDENTED_ELEMENT_PROPERTIES,
+                    ),
+                ],
+            ),
+        ]
+
+        for case in cases:
+            check_block_sequence_and_document(self, case)
+
+    def test_indentation_SHOULD_BE_applied_per_block(self):
+        # ARRANGE #
+        string_1 = 'the 1st string'
+        string_2 = 'the 2nd string'
+        cases = [
+            NEA(
+                'two blocks, with different indent properties',
+                lines_content([
+                    MAJOR_BLOCK_INDENT + MAJOR_BLOCK_INDENT + string_1,
+                    MAJOR_BLOCKS_SEPARATOR,
+                    string_2,
+                ]),
+                [
+                    s.MajorBlock([
+                        single_line_minor_block_w_plain_properties(string_1),
+                    ],
+                        s.indentation_properties(2),
+                    ),
+                    s.MajorBlock([
+                        single_line_minor_block_w_plain_properties(string_2),
+                    ],
+                        s.PLAIN_ELEMENT_PROPERTIES,
                     ),
                 ],
             ),
@@ -298,3 +337,14 @@ def check_block_sequence_and_document(put: unittest.TestCase,
             s.Document(case.actual),
             case.expected,
         )
+
+
+def single_line_minor_block_w_plain_properties(line_contents: str) -> s.MinorBlock:
+    return s.MinorBlock([
+        single_line_element_w_plain_properties(line_contents),
+    ],
+        s.PLAIN_ELEMENT_PROPERTIES,
+    )
+
+
+_INDENTATION_CASES = indentation_cases(MAJOR_BLOCK_INDENT)
