@@ -30,7 +30,7 @@ class DetailRendererOfErrorMessageResolver(DetailRenderer):
         self._message_resolver = message_resolver
 
     def render(self) -> Detail:
-        return trace.StringDetail(self._message_resolver.resolve())
+        return trace.PreFormattedStringDetail(self._message_resolver.resolve())
 
 
 class DetailRendererOfConstant(DetailRenderer):
