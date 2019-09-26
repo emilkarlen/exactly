@@ -1,0 +1,8 @@
+[setup]
+
+dir checked-dir
+
+[assert]
+
+
+dir-contents -rel-act checked-dir ! empty

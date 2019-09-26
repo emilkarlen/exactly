@@ -6,6 +6,7 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.matcher.element_getter import ElementGetter, ElementGetterValue, ElementGetterResolver
 from exactly_lib.test_case_utils.matcher.matcher import T, Matcher, MatcherValue, MatcherResolver, Failure
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable
 
 MODEL = TypeVar('MODEL')
@@ -24,6 +25,14 @@ class MatcherApplier(Generic[MODEL, T]):
         :raises HardErrorException
         """
         return self._matcher.matches(
+            self._model_adapter.get_from(model),
+        )
+
+    def matches_w_trace(self, model: MODEL) -> MatchingResult:
+        """
+        :raises HardErrorException
+        """
+        return self._matcher.matches_w_trace(
             self._model_adapter.get_from(model),
         )
 

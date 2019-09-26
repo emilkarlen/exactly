@@ -23,8 +23,12 @@ from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcherModel, FileMatcher
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
+from exactly_lib.type_system.trace.impls.trace_renderers import DetailRendererOfErrorMessageResolver
+from exactly_lib.type_system.trace.trace import Node
+from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util import logic_types
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
@@ -74,6 +78,45 @@ class _QuantifiedMatcher(FilesMatcher):
                            self._tmp_files_space,
                            files_source)
         return checker.check()
+
+    def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
+        checker = _Checker(self._expectation_type,
+                           self._quantifier,
+                           self._matcher_on_file,
+                           self._tmp_files_space,
+                           model)
+        mb_failure = checker.check()
+        return (
+            self._new_tb()
+                .append_child(_FileMatcherNodeRenderer(self._matcher_on_file, mb_failure))
+                .build_result(mb_failure is None)
+        )
+
+
+class _FileMatcherNodeRenderer(NodeRenderer[bool]):
+    def __init__(self,
+                 matcher_on_file: FileMatcher,
+                 result: Optional[ErrorMessageResolver],
+                 ):
+        self._matcher_on_file = matcher_on_file
+        self._result = result
+
+        self.matcher_on_file = matcher_on_file
+
+    def render(self) -> Node[bool]:
+        result = self._result is None
+        details = (
+            ()
+            if result
+            else
+            [DetailRendererOfErrorMessageResolver(self._result).render()]
+        )
+        return Node(
+            self._matcher_on_file.option_description,
+            result,
+            details,
+            ()
+        )
 
 
 class _QuantifiedMatcherValue(FilesMatcherValue):

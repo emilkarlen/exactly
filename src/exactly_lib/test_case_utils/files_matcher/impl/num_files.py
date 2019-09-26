@@ -13,6 +13,7 @@ from exactly_lib.test_case_utils.matcher.element_getter import ElementGetter
 from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
 from exactly_lib.test_case_utils.matcher.matcher import MatcherResolver, MatcherValue, Matcher
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util import logic_types
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -54,6 +55,14 @@ class _FilesMatcher(FilesMatcher):
             else
             None
         )
+
+    def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
+        matcher_result = self._matcher_applier().matches_w_trace(model)
+
+        tb = self._new_tb()
+        tb.append_child(matcher_result.trace)
+
+        return tb.build_result(matcher_result.value)
 
     def _matcher_applier(self, ) -> MatcherApplier[FilesMatcherModel, int]:
         matcher = self._matcher

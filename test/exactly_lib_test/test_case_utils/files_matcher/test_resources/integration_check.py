@@ -23,10 +23,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import 
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
-from exactly_lib_test.type_system.trace.test_resources import trace_assertions as asrt_trace
-from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_renderer
 
 
 class TestCaseBase(unittest.TestCase):
@@ -220,15 +217,6 @@ class _Executor:
                                        expected_value: bool,
                                        actual: MatchingResult,
                                        ):
-        expectation = asrt_matching_result.matches(
-            value=asrt.equals(expected_value),
-            trace=asrt_trace_renderer.matches_node_renderer(
-                asrt_trace.matches_node(
-                    data=asrt.equals(expected_value),
-                ),
-            )
-        )
-
-        expectation.apply_with_message(self.put,
-                                       actual,
-                                       'matching result')
+        asrt_matching_result.matches_value(expected_value).apply_with_message(self.put,
+                                                                              actual,
+                                                                              'matching result')

@@ -8,6 +8,7 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -31,6 +32,11 @@ class _NegationMatcher(FilesMatcher):
     def matches_emr(self,
                     files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         return self._matcher_to_negate.negation.matches_emr(files_source)
+
+    def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
+        un_negated = self._matcher_to_negate.matches_w_trace(model)
+
+        return self._new_tb().append_child(un_negated.trace).build_result(not un_negated.value)
 
 
 class _NegationMatcherValue(FilesMatcherValue):

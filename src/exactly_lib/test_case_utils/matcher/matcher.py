@@ -5,6 +5,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -24,6 +25,13 @@ class Failure(Generic[T]):
 class Matcher(Generic[T], ABC):
     @abstractmethod
     def matches(self, model: T) -> Optional[Failure[T]]:
+        """
+        :raises HardErrorException
+        """
+        pass
+
+    @abstractmethod
+    def matches_w_trace(self, model: T) -> MatchingResult:
         """
         :raises HardErrorException
         """

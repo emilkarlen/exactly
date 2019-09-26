@@ -11,6 +11,10 @@ from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherResolverBase
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.trace import trace
+from exactly_lib.type_system.trace.trace import Node
+from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util import logic_types
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -59,6 +63,21 @@ class _EmptinessMatcher(FilesMatcher):
 
         return executor.main()
 
+    def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
+        files_list = list(model.files())
+        num_files_in_dir = len(files_list)
+        if num_files_in_dir != 0:
+            return MatchingResult(
+                False,
+                _FailureTraceRenderer(
+                    self.name,
+                    files_list,
+                    model,
+                )
+            )
+        else:
+            return self._new_tb().build_result(True)
+
 
 class _ErrMsgSetup:
     def __init__(self,
@@ -69,6 +88,51 @@ class _ErrMsgSetup:
         self.expectation_type = expectation_type
         self.model = model
         self.expected_description_str = expected_description_str
+
+
+class _FailureTraceRenderer(NodeRenderer[bool]):
+    def __init__(self,
+                 matcher_name: str,
+                 actual_contents: List[FileModel],
+                 model: FilesMatcherModel):
+        self._matcher_name = matcher_name
+        self._actual_contents = actual_contents
+        self._model = model
+
+    def render(self) -> Node[bool]:
+        return Node(
+            self._matcher_name,
+            False,
+            self._details(),
+            ()
+        )
+
+    def _details(self) -> Sequence[trace.Detail]:
+        header = 'Actual contents ({} files):'.format(len(self._actual_contents))
+        return (
+                [trace.StringDetail(header)]
+                +
+                [
+                    trace.StringDetail(_INDENT + item)
+                    for item in self._dir_contents_err_msg_lines()
+                ]
+        )
+
+    def _dir_contents_err_msg_lines(self) -> List[str]:
+        paths_in_dir = [
+            f.relative_to_root_dir
+            for f in self._actual_contents
+        ]
+        if len(paths_in_dir) < 50:
+            paths_in_dir.sort()
+        num_files_to_display = 5
+        ret_val = [
+            str(p)
+            for p in paths_in_dir[:num_files_to_display]
+        ]
+        if len(self._actual_contents) > num_files_to_display:
+            ret_val.append('...')
+        return ret_val
 
 
 class _EmptinessExecutor:
@@ -146,3 +210,6 @@ class _ErrorMessageResolver(ErrorMessageResolver):
         if len(actual_files_in_dir) > num_files_to_display:
             ret_val.append('...')
         return ret_val
+
+
+_INDENT = '  '

@@ -9,8 +9,7 @@ from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult
-from exactly_lib.type_system.trace.impls import trace_renderers
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.file_utils import TmpDirFileSpace
@@ -54,6 +53,7 @@ class FilesMatcherModel(ABC):
 
 
 class FilesMatcher(MatcherWTrace[FilesMatcherModel], ABC):
+    @property
     def option_description(self) -> str:
         return 'todo'
 
@@ -69,18 +69,6 @@ class FilesMatcher(MatcherWTrace[FilesMatcherModel], ABC):
         :return: None iff match
         """
         pass
-
-    def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
-        mb_emr = self.matches_emr(model)
-
-        tb = self._new_tb()
-
-        if mb_emr is None:
-            return tb.build_result(True)
-        else:
-            tb.details.append(
-                trace_renderers.DetailRendererOfErrorMessageResolver(mb_emr))
-            return tb.build_result(False)
 
     def _new_tb(self) -> TraceBuilder:
         return TraceBuilder(self.name)

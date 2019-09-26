@@ -1,5 +1,6 @@
 from typing import TypeVar, Generic, Optional, Sequence, Callable
 
+from exactly_lib.definitions import expression
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -9,6 +10,10 @@ from exactly_lib.test_case_utils.matcher.matcher import Matcher, MatcherValue, M
 from exactly_lib.test_case_utils.matcher.object import ObjectValue, ObjectResolver
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.trace import trace
+from exactly_lib.type_system.trace.trace import Node
+from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util import logic_types
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -22,11 +27,13 @@ class ComparisonMatcher(Generic[T], Matcher[T]):
                  operator: comparators.ComparisonOperator,
                  rhs: T,
                  model_renderer: Callable[[T], str],
+                 name_of_lhs: str = 'actual',
                  ):
         self._model_renderer = model_renderer
         self._expectation_type = expectation_type
         self._rhs = rhs
         self._operator = operator
+        self._name_of_lhs = name_of_lhs
 
     @property
     def negation(self) -> Matcher:
@@ -51,11 +58,85 @@ class ComparisonMatcher(Generic[T], Matcher[T]):
 
         return None
 
+    def matches_w_trace(self, model: T) -> MatchingResult:
+        lhs = model
+        comparison_fun = self._operator.operator_fun
+        condition_is_satisfied = bool(comparison_fun(lhs,
+                                                     self._rhs))
+        result = (
+            condition_is_satisfied
+            if self._expectation_type is ExpectationType.POSITIVE
+            else
+            not condition_is_satisfied
+        )
+
+        return MatchingResult(
+            result,
+            _TraceRenderer(
+                self._expectation_type,
+                self._operator,
+                lhs,
+                self._rhs,
+                condition_is_satisfied,
+                self._model_renderer,
+                self._name_of_lhs,
+            ),
+        )
+
     def _failure(self, lhs: T) -> Failure[T]:
         return Failure(
             self._expectation_type,
             self._operator.name + ' ' + str(self._rhs),
             lhs,
+        )
+
+
+class _TraceRenderer(Generic[T], NodeRenderer[bool]):
+    def __init__(self,
+                 expectation_type: ExpectationType,
+                 operator: comparators.ComparisonOperator,
+                 lhs_from_model: T,
+                 rhs: T,
+                 result__wo_expectation_type: bool,
+                 model_renderer: Callable[[T], str],
+                 name_of_lhs: str,
+                 ):
+        self._expectation_type = expectation_type
+        self._rhs = rhs
+        self._lhs_from_model = lhs_from_model
+        self._operator = operator
+        self._result__wo_expectation_type = result__wo_expectation_type
+        self._model_renderer = model_renderer
+        self._name_of_lhs = name_of_lhs
+
+    def render(self) -> Node[bool]:
+        lhs_str = ''.join([
+            self._model_renderer(self._lhs_from_model),
+            ' (',
+            self._name_of_lhs,
+            ')',
+        ])
+
+        comparison_node = Node(
+            self._operator.name,
+            self._result__wo_expectation_type,
+            [
+                trace.StringDetail(lhs_str),
+                trace.StringDetail(self._model_renderer(self._rhs)),
+            ],
+            ()
+        )
+
+        return (
+            comparison_node
+            if self._expectation_type is ExpectationType.POSITIVE
+            else
+            Node(
+                expression.NOT_OPERATOR_NAME,
+                not self._result__wo_expectation_type,
+                (),
+                [comparison_node]
+            )
         )
 
 

@@ -14,6 +14,10 @@ from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher i
     resolver_validator_for_file_matcher
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.trace import trace
+from exactly_lib.type_system.trace.trace import Detail
+from exactly_lib.type_system.trace.trace_renderer import DetailRenderer
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -25,6 +29,7 @@ def sub_set_selection_matcher(selector: FileMatcherResolver,
 
 
 class _SubSetSelectorMatcher(FilesMatcher):
+    NAME = 'on ' + instruction_arguments.SELECTION_OPTION.name.long
     def __init__(self,
                  selector: FileMatcher,
                  matcher_on_selection: FilesMatcher):
@@ -33,7 +38,7 @@ class _SubSetSelectorMatcher(FilesMatcher):
 
     @property
     def name(self) -> str:
-        return instruction_arguments.SELECTION_OPTION.name.long
+        return self.NAME
 
     @property
     def negation(self) -> FilesMatcher:
@@ -47,6 +52,24 @@ class _SubSetSelectorMatcher(FilesMatcher):
         return self._matcher_on_selection.matches_emr(
             files_source.sub_set(self._selector),
         )
+
+    def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
+        result = self._matcher_on_selection.matches_w_trace(
+            model.sub_set(self._selector),
+        )
+
+        return self._new_tb() \
+            .append_detail(_SelectionDetailRenderer(self._selector)) \
+            .append_child(result.trace) \
+            .build_result(result.value)
+
+
+class _SelectionDetailRenderer(DetailRenderer):
+    def __init__(self, selector: FileMatcher):
+        self._selector = selector
+
+    def render(self) -> Detail:
+        return trace.StringDetail(self._selector.option_description)
 
 
 class _SubSetSelectorMatcherValue(FilesMatcherValue):

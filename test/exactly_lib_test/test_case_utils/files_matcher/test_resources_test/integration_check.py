@@ -20,6 +20,7 @@ from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
@@ -328,6 +329,22 @@ class _FilesMatcherThatAssertsModelsIsExpected(FilesMatcher):
 
         return None
 
+    def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
+        self.put.assertIsInstance(model, FilesMatcherModelForDir, 'model')
+        assert isinstance(model, FilesMatcherModelForDir)
+        actual = list(map(lambda fm: fm.path.primitive, model.files()))
+        actual.sort()
+
+        expected_model_dir = self.relativity.population_dir(self._tcds)
+
+        expected = list(expected_model_dir.iterdir())
+        expected.sort()
+
+        self.put.assertEqual(actual,
+                             expected)
+
+        return self._new_tb().build_result(True)
+
 
 class _FilesMatcherValueThatAssertsModelsIsExpected(FilesMatcherValue):
     def __init__(self,
@@ -358,6 +375,11 @@ class _FilesMatcherThatReportsHardError(FilesMatcher):
         raise NotImplementedError('unsupported')
 
     def matches_emr(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
+        raise HardErrorException(
+            new_single_string_text_for_test('unconditional hard error')
+        )
+
+    def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
         raise HardErrorException(
             new_single_string_text_for_test('unconditional hard error')
         )
