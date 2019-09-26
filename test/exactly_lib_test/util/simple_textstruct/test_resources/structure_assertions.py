@@ -11,8 +11,8 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 def matches_element_properties(
         indentation: ValueAssertion[int] = asrt.anything_goes(),
-        color: ValueAssertion[Optional[ForegroundColor]] = asrt.anything_goes(),
-        font_style: ValueAssertion[Optional[FontStyle]] = asrt.anything_goes(),
+        color: ValueAssertion[Optional[ForegroundColor]] = asrt.is_none_or_instance(ForegroundColor),
+        font_style: ValueAssertion[Optional[FontStyle]] = asrt.is_none_or_instance(FontStyle),
 ) -> ValueAssertion[ElementProperties]:
     return asrt.is_instance_with__many(ElementProperties,
                                        [
@@ -22,11 +22,11 @@ def matches_element_properties(
                                                               ),
                                            asrt.sub_component('color',
                                                               ElementProperties.color.fget,
-                                                              asrt.is_none_or_instance_with(ForegroundColor, color)
+                                                              color
                                                               ),
                                            asrt.sub_component('font_style',
                                                               ElementProperties.font_style.fget,
-                                                              asrt.is_none_or_instance_with(FontStyle, font_style)
+                                                              font_style
                                                               ),
                                        ])
 

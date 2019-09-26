@@ -36,7 +36,7 @@ class TestMatchesProperties(unittest.TestCase):
             NEA('indented',
                 expected=
                 sut.matches_element_properties(
-                    indentation=asrt.equals(True),
+                    indentation=asrt.equals(1),
                 ),
                 actual=
                 ElementProperties(1, None),
@@ -67,12 +67,12 @@ class TestMatchesProperties(unittest.TestCase):
             NEA('indentation',
                 expected=
                 sut.matches_element_properties(
-                    indentation=asrt.equals(True),
+                    indentation=asrt.equals(1),
                 ),
                 actual=
                 ElementProperties(0, None),
                 ),
-            NEA('color',
+            NEA('color - different values',
                 expected=
                 sut.matches_element_properties(
                     color=asrt.equals(ForegroundColor.GREEN),
@@ -80,13 +80,29 @@ class TestMatchesProperties(unittest.TestCase):
                 actual=
                 ElementProperties(0, ForegroundColor.RED),
                 ),
-            NEA('font_style',
+            NEA('color - actual is None',
+                expected=
+                sut.matches_element_properties(
+                    color=asrt.equals(ForegroundColor.GREEN),
+                ),
+                actual=
+                ElementProperties(0, None),
+                ),
+            NEA('font_style - different values',
                 expected=
                 sut.matches_element_properties(
                     font_style=asrt.equals(FontStyle.UNDERLINE),
                 ),
                 actual=
                 ElementProperties(0, None, FontStyle.BOLD),
+                ),
+            NEA('font_style - actual is None',
+                expected=
+                sut.matches_element_properties(
+                    font_style=asrt.equals(FontStyle.UNDERLINE),
+                ),
+                actual=
+                ElementProperties(0, None, None),
                 ),
         ]
         for case in cases:
