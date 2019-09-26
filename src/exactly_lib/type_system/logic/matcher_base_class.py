@@ -17,7 +17,7 @@ class Matcher(Generic[T], WithOptionDescription, ABC):
         pass
 
     def matches(self, model: T) -> bool:
-        raise NotImplementedError('abstract method')
+        return self.matches_emr(model) is None
 
     def matches_emr(self, model: T) -> ErrorMessageResolver:
         raise NotImplementedError('abstract method')
@@ -43,8 +43,10 @@ class MatchingResult:
 
 class MatcherWTrace(Generic[T], Matcher[T], ABC):
     @property
+    @abstractmethod
     def name(self) -> str:
         pass
 
+    @abstractmethod
     def matches_w_trace(self, model: T) -> MatchingResult:
         pass
