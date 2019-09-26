@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.type_system.trace.trace import Node, Detail, DetailVisitor, StringDetail, PreFormattedStringDetail
+from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, elements
@@ -9,6 +10,14 @@ from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock,
 
 
 class BoolTraceRenderer(Renderer[MajorBlock]):
+    def __init__(self, trace: NodeRenderer[bool]):
+        self._trace = trace
+
+    def render(self) -> MajorBlock:
+        return BoolNodeRenderer(self._trace.render()).render()
+
+
+class BoolNodeRenderer(Renderer[MajorBlock]):
     def __init__(self, trace: Node[bool]):
         self._trace = trace
 

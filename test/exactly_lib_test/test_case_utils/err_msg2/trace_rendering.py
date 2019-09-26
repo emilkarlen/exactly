@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.test_case_utils.err_msg2 import trace_rendering as sut
 from exactly_lib.type_system.trace.trace import Node, StringDetail, PreFormattedStringDetail
+from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -22,25 +23,19 @@ class TestBasicStructure(unittest.TestCase):
 
         for data in [False, True]:
             with self.subTest(data=data):
-                trace = Node('header', data, (), ())
-
-                renderer = sut.BoolTraceRenderer(trace)
-
-                # ACT #
-
-                actual = renderer.render()
-
-                # ASSERT #
+                root = Node('header', data, (), ())
 
                 expectation = asrt_struct.matches_major_block__w_plain_properties(
                     minor_blocks=asrt.matches_sequence([
                         asrt_struct.matches_minor_block__w_plain_properties(
-                            line_elements=asrt.matches_singleton_sequence(matches_header_line_element(trace)),
+                            line_elements=asrt.matches_singleton_sequence(matches_header_line_element(root)),
                         )
                     ])
                 )
 
-                expectation.apply_without_message(self, actual)
+                # ACT & ASSERT #
+
+                _check(self, root, expectation)
 
     def test_node_with_detail_and_child(self):
         # ARRANGE #
@@ -49,21 +44,13 @@ class TestBasicStructure(unittest.TestCase):
             with self.subTest(data=child_data):
                 child = Node('the child', child_data, (), ())
                 detail = StringDetail('the detail')
-                trace = Node('the root', False, [detail], [child])
-
-                renderer = sut.BoolTraceRenderer(trace)
-
-                # ACT #
-
-                actual = renderer.render()
-
-                # ASSERT #
+                root = Node('the root', False, [detail], [child])
 
                 expectation = asrt_struct.matches_major_block__w_plain_properties(
                     minor_blocks=asrt.matches_sequence([
                         asrt_struct.matches_minor_block__w_plain_properties(
                             line_elements=asrt.matches_sequence([
-                                matches_header_line_element(trace),
+                                matches_header_line_element(root),
                                 matches_string_detail_line_element(detail, level=1),
                             ]),
                         ),
@@ -74,7 +61,9 @@ class TestBasicStructure(unittest.TestCase):
                     ])
                 )
 
-                expectation.apply_without_message(self, actual)
+                # ACT & ASSERT #
+
+                _check(self, root, expectation)
 
     def test_node_with_2_details_and_2_children(self):
         for root_data in [False, True]:
@@ -91,21 +80,13 @@ class TestBasicStructure(unittest.TestCase):
                         detail_2 = StringDetail('the detail 2')
                         details = [detail_1, detail_2]
 
-                        trace = Node('the root', root_data, details, children)
-
-                        renderer = sut.BoolTraceRenderer(trace)
-
-                        # ACT #
-
-                        actual = renderer.render()
-
-                        # ASSERT #
+                        root = Node('the root', root_data, details, children)
 
                         expectation = asrt_struct.matches_major_block__w_plain_properties(
                             minor_blocks=asrt.matches_sequence([
                                 asrt_struct.matches_minor_block__w_plain_properties(
                                     line_elements=asrt.matches_sequence([
-                                        matches_header_line_element(trace),
+                                        matches_header_line_element(root),
                                         matches_string_detail_line_element(detail_1, level=1),
                                         matches_string_detail_line_element(detail_2, level=1),
                                     ]),
@@ -125,7 +106,9 @@ class TestBasicStructure(unittest.TestCase):
                             ])
                         )
 
-                        expectation.apply_without_message(self, actual)
+                        # ACT & ASSERT #
+
+                        _check(self, root, expectation)
 
     def test_node_with_child_with_child(self):
         # ARRANGE #
@@ -138,20 +121,12 @@ class TestBasicStructure(unittest.TestCase):
                                       child_11_data=child_11_data):
                         child_11 = Node('the child 11', child_11_data, (), ())
                         child_1 = Node('the child_1', child_1_data, (), [child_11])
-                        trace = Node('the root', root_data, [], [child_1])
-
-                        renderer = sut.BoolTraceRenderer(trace)
-
-                        # ACT #
-
-                        actual = renderer.render()
-
-                        # ASSERT #
+                        root = Node('the root', root_data, [], [child_1])
 
                         expectation = asrt_struct.matches_major_block__w_plain_properties(
                             minor_blocks=asrt.matches_sequence([
                                 asrt_struct.matches_minor_block__w_plain_properties(
-                                    line_elements=asrt.matches_singleton_sequence(matches_header_line_element(trace)),
+                                    line_elements=asrt.matches_singleton_sequence(matches_header_line_element(root)),
                                 ),
                                 asrt_struct.matches_minor_block(
                                     line_elements=asrt.matches_singleton_sequence(matches_header_line_element(child_1)),
@@ -167,7 +142,9 @@ class TestBasicStructure(unittest.TestCase):
                             ])
                         )
 
-                        expectation.apply_without_message(self, actual)
+                        # ACT & ASSERT #
+
+                        _check(self, root, expectation)
 
 
 class TestRenderingOfDetail(unittest.TestCase):
@@ -175,22 +152,16 @@ class TestRenderingOfDetail(unittest.TestCase):
         # ARRANGE #
 
         detail = StringDetail('the detail')
-        trace = Node('the root', False, [detail], ())
-
-        renderer = sut.BoolTraceRenderer(trace)
-
-        # ACT #
-
-        actual = renderer.render()
-
-        # ASSERT #
+        root = Node('the root', False, [detail], ())
 
         expectation = matches_trace_with_just_single_detail(
-            trace,
+            root,
             matches_string_detail_line_element(detail, level=1),
         )
 
-        expectation.apply_without_message(self, actual)
+        # ACT & ASSERT #
+
+        _check(self, root, expectation)
 
     def test_pre_formatted_string_detail(self):
         # ARRANGE #
@@ -199,22 +170,34 @@ class TestRenderingOfDetail(unittest.TestCase):
             with self.subTest(string_is_line_ended):
                 detail = PreFormattedStringDetail('the detail', string_is_line_ended)
 
-                trace = Node('the root', True, [detail], ())
-
-                renderer = sut.BoolTraceRenderer(trace)
-
-                # ACT #
-
-                actual = renderer.render()
-
-                # ASSERT #
+                root = Node('the root', True, [detail], ())
 
                 expectation = matches_trace_with_just_single_detail(
-                    trace,
+                    root,
                     matches_pre_formatted_string_detail_line_element(detail, level=1),
                 )
 
-                expectation.apply_without_message(self, actual)
+                # ACT & ASSERT #
+
+                _check(self, root, expectation)
+
+
+def _check(put: unittest.TestCase,
+           node: Node[bool],
+           expectation: ValueAssertion[s.MajorBlock],
+           ):
+    renderer_renderer = sut.BoolTraceRenderer(_ConstantRenderer(node))
+    renderer = sut.BoolNodeRenderer(node)
+
+    # ACT #
+
+    block__r = renderer.render()
+    block__rr = renderer_renderer.render()
+
+    # ASSERT #
+
+    expectation.apply_with_message(put, block__r, 'from node-renderer')
+    expectation.apply_with_message(put, block__rr, 'from trace-renderer')
 
 
 def matches_trace_with_just_single_detail(trace: Node[bool],
@@ -303,3 +286,11 @@ def expected_detail_properties(level: int) -> s.ElementProperties:
         None,
         None,
     )
+
+
+class _ConstantRenderer(NodeRenderer[bool]):
+    def __init__(self, constant: Node[bool]):
+        self._constant = constant
+
+    def render(self) -> Node[bool]:
+        return self._constant
