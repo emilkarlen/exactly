@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.type_system.trace.trace import DetailVisitor, RET
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -131,4 +132,5 @@ class TestAssertionOnChildren(unittest.TestCase):
 
 
 class DetailForTest(sut.Detail):
-    pass
+    def accept(self, visitor: DetailVisitor[RET]) -> RET:
+        raise NotImplementedError('unsupported')

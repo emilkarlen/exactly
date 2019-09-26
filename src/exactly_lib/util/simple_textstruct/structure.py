@@ -12,7 +12,7 @@ class ElementProperties:
                  indentation: int,
                  color: Optional[ForegroundColor],
                  font_style: Optional[FontStyle] = None):
-        self._indented = indentation
+        self._indentation = indentation
         if not isinstance(indentation, int):
             raise ValueError('indentation is not an int')
         self._color = color
@@ -20,7 +20,13 @@ class ElementProperties:
 
     @property
     def indentation(self) -> int:
-        return self._indented
+        return self._indentation
+
+    @property
+    def with_increased_indentation(self) -> 'ElementProperties':
+        return ElementProperties(self._indentation + 1,
+                                 self._color,
+                                 self._font_style)
 
     @property
     def color(self) -> Optional[ForegroundColor]:
@@ -31,9 +37,9 @@ class ElementProperties:
         return self._font_style
 
 
-PLAIN_ELEMENT_PROPERTIES = ElementProperties(0, None)
+PLAIN_ELEMENT_PROPERTIES = ElementProperties(0, None, None)
 
-INDENTED_ELEMENT_PROPERTIES = ElementProperties(1, None)
+INDENTED_ELEMENT_PROPERTIES = ElementProperties(1, None, None)
 
 
 def indentation_properties(indentation: int) -> ElementProperties:
@@ -41,12 +47,17 @@ def indentation_properties(indentation: int) -> ElementProperties:
 
 
 class Element(ABC):
+    """Mutable element with ElementProperties"""
+
     def __init__(self, properties: ElementProperties):
         self._properties = properties
 
     @property
     def properties(self) -> ElementProperties:
         return self._properties
+
+    def set_properties(self, properties: ElementProperties):
+        self._properties = properties
 
 
 class LineObject(ABC):
@@ -61,7 +72,11 @@ class LineObject(ABC):
 
 
 class LineElement(Element):
-    """Something that is displayed on one or more (whole) lines"""
+    """
+    Something that is displayed on one or more (whole) lines
+
+    Mutable container of a LineObject.
+    """
 
     def __init__(self,
                  line_object: LineObject,
@@ -144,6 +159,8 @@ class LineObjectVisitor(Generic[ENV, RET], ABC):
 
 
 class MinorBlock(Element):
+    """Mutable container of a sequence of LineElement"""
+
     def __init__(self,
                  parts: Sequence[LineElement],
                  properties: ElementProperties = PLAIN_ELEMENT_PROPERTIES):
@@ -156,6 +173,8 @@ class MinorBlock(Element):
 
 
 class MajorBlock(Element):
+    """Mutable container of a sequence of MinorBlock"""
+
     def __init__(self,
                  parts: Sequence[MinorBlock],
                  properties: ElementProperties = PLAIN_ELEMENT_PROPERTIES,

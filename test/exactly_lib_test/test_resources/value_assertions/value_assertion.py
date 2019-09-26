@@ -727,6 +727,10 @@ def matches_sequence(element_assertions: Sequence[ValueAssertion[T]]) -> ValueAs
     return _MatchesSequence(element_assertions)
 
 
+def matches_singleton_sequence(element: ValueAssertion[T]) -> ValueAssertion[Sequence[T]]:
+    return matches_sequence([element])
+
+
 def is_sub_class_with(expected_class: Type[T],
                       on_sub_class=ValueAssertion[U]) -> ValueAssertion[T]:
     return is_instance_with(expected_class, on_sub_class)
