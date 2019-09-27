@@ -2,7 +2,7 @@ from typing import Optional, List
 
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
-from exactly_lib.type_system.logic.impls import matcher_combinators
+from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult
 
 
@@ -36,7 +36,7 @@ class FileMatcherNot(FileMatcherDelegatedToMatcherWTrace):
 
     def __init__(self, matcher: FileMatcher):
         self._matcher = matcher
-        super().__init__(matcher_combinators.Negation(matcher))
+        super().__init__(combinator_matchers.Negation(matcher))
 
     @property
     def negation(self) -> FileMatcher:
@@ -48,7 +48,7 @@ class FileMatcherAnd(FileMatcherDelegatedToMatcherWTrace):
 
     def __init__(self, matchers: List[FileMatcher]):
         self._matchers = matchers
-        super().__init__(matcher_combinators.Conjunction(matchers))
+        super().__init__(combinator_matchers.Conjunction(matchers))
 
     @property
     def matchers(self) -> List[FileMatcher]:
@@ -60,7 +60,7 @@ class FileMatcherOr(FileMatcherDelegatedToMatcherWTrace):
 
     def __init__(self, matchers: List[FileMatcher]):
         self._matchers = matchers
-        super().__init__(matcher_combinators.Disjunction(matchers))
+        super().__init__(combinator_matchers.Disjunction(matchers))
 
     @property
     def matchers(self) -> List[FileMatcher]:

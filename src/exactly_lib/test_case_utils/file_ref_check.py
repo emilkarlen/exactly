@@ -39,8 +39,8 @@ def pre_sds_failure_message_or_none(file_ref_check: FileRefCheck,
         .resolve__with_cwd_as_cd(environment.symbols) \
         .value_pre_sds(environment.hds)
 
-    return _failure_message_or_none(file_ref_check.file_properties,
-                                    described_path)
+    return failure_message_or_none(file_ref_check.file_properties,
+                                   described_path)
 
 
 def post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
@@ -49,8 +49,8 @@ def post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
         .resolve__with_cwd_as_cd(environment.symbols) \
         .value_post_sds__wo_hds(environment.sds)
 
-    return _failure_message_or_none(file_ref_check.file_properties,
-                                    described_path)
+    return failure_message_or_none(file_ref_check.file_properties,
+                                   described_path)
 
 
 def pre_or_post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
@@ -60,8 +60,8 @@ def pre_or_post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
         .resolve__with_cwd_as_cd(environment.symbols) \
         .value_of_any_dependency(environment.home_and_sds)
 
-    return _failure_message_or_none(file_ref_check.file_properties,
-                                    described_path)
+    return failure_message_or_none(file_ref_check.file_properties,
+                                   described_path)
 
 
 def pre_sds_validate(file_ref_check: FileRefCheck,
@@ -80,8 +80,8 @@ def pre_or_post_sds_validate(file_ref_check: FileRefCheck,
     )
 
 
-def _failure_message_or_none(check: FilePropertiesCheck,
-                             path: DescribedPathPrimitive) -> Optional[TextRenderer]:
+def failure_message_or_none(check: FilePropertiesCheck,
+                            path: DescribedPathPrimitive) -> Optional[TextRenderer]:
     result = check.apply(path.primitive)
 
     return (

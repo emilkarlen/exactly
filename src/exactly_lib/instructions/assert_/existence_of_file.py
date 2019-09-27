@@ -17,6 +17,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.impl.path import described_path_resolvers
+from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -26,8 +27,10 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case.validation import pre_or_post_value_validation
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.test_case_utils import file_properties, negation_of_predicate
+from exactly_lib.test_case_utils import file_properties, negation_of_predicate, file_ref_check
 from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
+from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
+from exactly_lib.test_case_utils.err_msg2 import trace_rendering
 from exactly_lib.test_case_utils.err_msg2.env_dep_text import TextResolver
 from exactly_lib.test_case_utils.err_msg2.header_rendering import SimpleHeaderMinorBlockRenderer
 from exactly_lib.test_case_utils.err_msg2.path_rendering import HeaderAndPathMajorBlock, \
@@ -35,16 +38,16 @@ from exactly_lib.test_case_utils.err_msg2.path_rendering import HeaderAndPathMaj
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.file_matcher import resolvers  as fm_resolvers
-from exactly_lib.test_case_utils.file_properties import render_failure__wo_file_name
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic import hard_error
+from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.simple_textstruct import structure as text_struct
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, blocks
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, strings
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -165,7 +168,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 
     @staticmethod
     def _parse_optional_file_matcher(parser: token_stream_parser.TokenParser
-                                     ) -> Optional[parse_file_matcher.FileMatcherResolver]:
+                                     ) -> Optional[FileMatcherResolver]:
         file_matcher = None
 
         if not parser.is_at_eol:
@@ -182,7 +185,7 @@ class _Instruction(AssertPhaseInstruction):
     def __init__(self,
                  expectation_type: ExpectationType,
                  file_ref_resolver: FileRefResolver,
-                 file_matcher: Optional[parse_file_matcher.FileMatcherResolver]):
+                 file_matcher: Optional[FileMatcherResolver]):
         self._expectation_type = expectation_type
         self._file_ref_resolver = file_ref_resolver
         self._file_matcher = file_matcher
@@ -209,10 +212,13 @@ class _Instruction(AssertPhaseInstruction):
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return _Assertion(environment,
-                          self._expectation_type,
-                          self._file_ref_resolver,
-                          self._file_matcher).apply()
+        try:
+            return _Assertion(environment,
+                              self._expectation_type,
+                              self._file_ref_resolver,
+                              self._file_matcher).apply()
+        except HardErrorException as ex:
+            return pfh.new_pfh_hard_error(ex.error)
 
     def _validator(self, environment: InstructionEnvironmentForPreSdsStep
                    ) -> pre_or_post_value_validation.PreOrPostSdsValueValidator:
@@ -227,7 +233,7 @@ class _Assertion:
                  environment: i.InstructionEnvironmentForPostSdsStep,
                  expectation_type: ExpectationType,
                  file_ref_resolver: FileRefResolver,
-                 file_matcher: Optional[parse_file_matcher.FileMatcherResolver]
+                 file_matcher: Optional[FileMatcherResolver]
                  ):
         self.environment = environment
         self.expectation_type = expectation_type
@@ -239,17 +245,6 @@ class _Assertion:
             .value_of_any_dependency(self.environment.home_and_sds)
 
     def apply(self) -> pfh.PassOrFailOrHardError:
-        result = self._apply()
-        if result.is_error:
-            return pfh.new_pfh_non_pass(
-                result.status,
-                rend_comb.PrependR(self._path_renderer(),
-                                   result.failure_message)
-            )
-        else:
-            return result
-
-    def _apply(self) -> pfh.PassOrFailOrHardError:
         if self.file_matcher is None:
             return self._assert_without_file_matcher()
         else:
@@ -261,24 +256,26 @@ class _Assertion:
             PathRepresentationsRenderersForPrimitive(self.described_path.describer),
         )
 
-    def _assert_without_file_matcher(self) -> pfh.PassOrFailOrHardError:
+    def _assert_without_file_matcher(self) -> Optional[pfh.PassOrFailOrHardError]:
         check = _FILE_EXISTENCE_CHECK
         if self.expectation_type is ExpectationType.NEGATIVE:
             check = file_properties.negation_of(check)
 
-        result = check.apply(self.described_path.primitive)
+        mb_failure = file_ref_check.failure_message_or_none(check,
+                                                            self.described_path)
 
         return (
             pfh.new_pfh_pass()
-            if result.is_success
-            else pfh.new_pfh_fail(render_failure__wo_file_name(result.cause))
+            if mb_failure is None
+            else pfh.new_pfh_fail(mb_failure)
         )
 
     def _assert_with_file_matcher(self) -> pfh.PassOrFailOrHardError:
-        result_of_existence = _FILE_EXISTENCE_CHECK.apply(self.described_path.primitive)
+        mb_failure_of_existence = file_ref_check.failure_message_or_none(_FILE_EXISTENCE_CHECK,
+                                                                         self.described_path)
 
-        if not result_of_existence.is_success:
-            return (pfh.new_pfh_fail(render_failure__wo_file_name(result_of_existence.cause))
+        if mb_failure_of_existence is not None:
+            return (pfh.new_pfh_fail(mb_failure_of_existence)
                     if self._is_positive_check()
                     else pfh.new_pfh_pass()
                     )
@@ -286,20 +283,22 @@ class _Assertion:
         return self._file_exists_but_must_also_satisfy_file_matcher()
 
     def _file_exists_but_must_also_satisfy_file_matcher(self) -> pfh.PassOrFailOrHardError:
-        try:
-            failure_message_resolver = self._matches_file_matcher_for_expectation_type()
-            if failure_message_resolver is None:
-                return pfh.new_pfh_pass()
-            else:
-                err_msg = blocks.PrependFirstMinorBlockOfFirstMajorBlockR(
-                    _FILE_EXISTS_BUT_INVALID_PROPERTIES_ERR_MSG_HEADER,
-                    self._err_msg_for(failure_message_resolver)
-                )
-                return pfh.new_pfh_fail(err_msg)
-        except hard_error.HardErrorException as ex:
-            return pfh.new_pfh_hard_error(ex.error)
+        matching_result = self._matches_file_matcher_for_expectation_type()
+        if matching_result.value:
+            return pfh.new_pfh_pass()
+        else:
+            err_msg = rend_comb.SequenceR([
+                path_err_msgs.line_header_block__primitive(
+                    strings.FormatMap('Existing {PATH} does not satisfy {FILE_MATCHER}',
+                                      _EXISTING_PATH_FAILURE_FORMAT_MAP),
+                    self.described_path.describer,
+                ),
+                trace_rendering.BoolTraceRenderer(matching_result.trace),
+            ])
 
-    def _matches_file_matcher_for_expectation_type(self) -> Optional[ErrorMessageResolver]:
+            return pfh.new_pfh_fail(err_msg)
+
+    def _matches_file_matcher_for_expectation_type(self) -> MatchingResult:
         resolver = self._file_matcher_for_expectation_type()
 
         fm = resolver.resolve(self.environment.symbols).value_of_any_dependency(self.environment.home_and_sds)
@@ -308,9 +307,9 @@ class _Assertion:
             self.environment.phase_logging.space_for_instruction(),
             self.described_path)
 
-        return fm.matches_emr(model)
+        return fm.matches_w_trace(model)
 
-    def _file_matcher_for_expectation_type(self) -> parse_file_matcher.FileMatcherResolver:
+    def _file_matcher_for_expectation_type(self) -> FileMatcherResolver:
         return (self.file_matcher
                 if self._is_positive_check()
                 else fm_resolvers.FileMatcherNotResolver(self.file_matcher)
@@ -331,6 +330,11 @@ _ERROR_MESSAGE_HEADER = 'Failure for path:'
 _FILE_EXISTS_BUT_INVALID_PROPERTIES_ERR_MSG_HEADER = rend_comb.SingletonSequenceR(
     rend_comb.ConstantR(text_struct.LineElement(text_struct.StringLineObject('File exists, but:')))
 )
+
+_EXISTING_PATH_FAILURE_FORMAT_MAP = {
+    'PATH': syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
+    'FILE_MATCHER': syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
+}
 
 _PROPERTIES_DESCRIPTION = """\
 Applies a {FILE_MATCHER} on {PATH}, if it exists.
