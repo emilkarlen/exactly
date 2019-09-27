@@ -18,6 +18,14 @@ class PathDetailRenderer(DetailRenderer):
         return trace.StringDetail(self._path.describer.value.render())
 
 
+class PathValueAndPrimitiveDetailRenderer(DetailRenderer):
+    def __init__(self, path: DescribedPathPrimitive):
+        self._path = path
+
+    def render(self) -> Detail:
+        return trace.StringDetail(self._path.describer.value.render())
+
+
 class DetailRendererOfConstant(DetailRenderer):
     def __init__(self, detail: Detail):
         self._detail = detail

@@ -18,6 +18,7 @@ from exactly_lib.type_system.logic import string_matcher
 from exactly_lib.type_system.logic import string_transformer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -43,6 +44,17 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
         self._hard_error_if_not_regular_file(model)
         model = self._string_matcher_model(model)
         return self._string_matcher.matches_emr(model)
+
+    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
+        self._hard_error_if_not_regular_file(model)
+
+        sm_model = self._string_matcher_model(model)
+        sm_result = self._string_matcher.matches_w_trace(sm_model)
+        return (
+            self._new_tb()
+                .append_child(sm_result.trace)
+                .build_result(sm_result.value)
+        )
 
     def _hard_error_if_not_regular_file(self, model: FileMatcherModel):
         failure_info_properties = self._is_regular_file_check.resolve_failure_info(model.path.primitive)

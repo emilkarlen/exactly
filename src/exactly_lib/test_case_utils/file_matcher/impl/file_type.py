@@ -65,12 +65,12 @@ class FileMatcherType(FileMatcherImplBase):
             return self._result_for_exception(model.path, ex)
         actual_file_type = file_properties.lookup_file_type(stat_result)
         if actual_file_type is self._file_type:
-            return self.__tb().build_result(True)
+            return self.__tb_with_expected().build_result(True)
         else:
             return self._result_for_unexpected(actual_file_type)
 
     def _result_for_exception(self, path: DescribedPathPrimitive, ex: Exception) -> MatchingResult:
-        tb = self.__tb()
+        tb = self.__tb_with_expected()
         trace_details.append_header_and_value_details(
             tb,
             trace_details.constant_to_string_object(types.PATH_TYPE_INFO.singular_name.capitalize()),
@@ -90,14 +90,14 @@ class FileMatcherType(FileMatcherImplBase):
             if actual is None
             else file_properties.TYPE_INFO[actual].description
         )
-        tb = self.__tb()
+        tb = self.__tb_with_expected()
         trace_details.append_detail_for_actual(
             tb,
             trace_details.constant_to_string_object(actual_type_description),
         )
         return tb.build_result(False)
 
-    def __tb(self) -> TraceBuilder:
+    def __tb_with_expected(self) -> TraceBuilder:
         return trace_details.append_detail_for_expected(
             self._new_tb(),
             trace_details.constant_to_string_object(

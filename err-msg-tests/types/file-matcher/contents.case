@@ -1,0 +1,11 @@
+[setup]
+
+
+file non-empty.txt = 'contents'
+
+
+[assert]
+
+
+exists non-empty.txt : contents empty
+

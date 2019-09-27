@@ -1,0 +1,14 @@
+[setup]
+
+
+file actual.txt
+
+
+[assert]
+
+
+exists actual.txt :
+  type file &&
+  name *.txt &&
+  type dir &&
+  type file

@@ -1,0 +1,10 @@
+[setup]
+
+
+file a-file
+
+
+[assert]
+
+
+exists a-file : ! name a*

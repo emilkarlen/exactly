@@ -1,0 +1,13 @@
+[setup]
+
+
+file actual.txt
+
+
+[assert]
+
+
+exists actual.txt :
+  type dir ||
+  name *.png ||
+  name -regex [A-Z]
