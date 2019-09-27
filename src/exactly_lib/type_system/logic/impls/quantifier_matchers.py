@@ -3,10 +3,10 @@ from typing import TypeVar, Generic, Callable, Iterator, Optional
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.test_case_utils.err_msg2 import trace_details
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation
-from exactly_lib.type_system.trace.impls import trace_renderers
 from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
 from exactly_lib.type_system.trace.trace_renderer import DetailRenderer
 from exactly_lib.util.logic_types import Quantifier
@@ -73,12 +73,12 @@ class QuantifierBase(Generic[MODEL, ELEMENT], MatcherWTraceAndNegation[MODEL], A
         )
 
     def _matching_element_header(self) -> DetailRenderer:
-        return trace_renderers.constant_to_string_object(
+        return trace_details.constant_to_string_object(
             strings.Concatenate(['Matching ', self._element_setup.type_name])
         )
 
     def _non_matching_element_header(self) -> DetailRenderer:
-        return trace_renderers.constant_to_string_object(
+        return trace_details.constant_to_string_object(
             strings.Concatenate(['Non-matching ', self._element_setup.type_name])
         )
 
@@ -121,7 +121,7 @@ class Exists(Generic[MODEL, ELEMENT], QuantifierBase[MODEL, ELEMENT]):
     def _no_match(self, tb: TraceBuilder, tot_num_elements: int) -> MatchingResult:
         return (
             tb.append_detail(
-                trace_renderers.constant_to_string_object(
+                trace_details.constant_to_string_object(
                     strings.FormatPositional(
                         'No matching {} ({} tested)',
                         self._element_setup.type_name,
@@ -160,7 +160,7 @@ class ForAll(Generic[MODEL, ELEMENT], QuantifierBase[MODEL, ELEMENT]):
     def _all_match(self, tb: TraceBuilder, tot_num_elements: int) -> MatchingResult:
         return (
             tb.append_detail(
-                trace_renderers.constant_to_string_object(
+                trace_details.constant_to_string_object(
                     strings.FormatPositional(
                         'Every {} matches ({} tested)',
                         self._element_setup.type_name,

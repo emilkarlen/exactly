@@ -1,4 +1,4 @@
-from typing import Generic, Sequence, Any
+from typing import Generic, Sequence
 
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.trace import trace
@@ -31,15 +31,3 @@ class DetailRendererOfErrorMessageResolver(DetailRenderer):
 
     def render(self) -> Detail:
         return trace.PreFormattedStringDetail(self._message_resolver.resolve())
-
-
-class DetailRendererOfConstant(DetailRenderer):
-    def __init__(self, detail: Detail):
-        self._detail = detail
-
-    def render(self) -> Detail:
-        return self._detail
-
-
-def constant_to_string_object(to_string_object: Any) -> DetailRenderer:
-    return DetailRendererOfConstant(trace.StringDetail(str(to_string_object)))

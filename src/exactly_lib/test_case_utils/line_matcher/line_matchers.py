@@ -3,13 +3,13 @@ from typing import Pattern
 
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher
+from exactly_lib.test_case_utils.err_msg2 import trace_details
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.trace import trace
-from exactly_lib.type_system.trace.impls import trace_renderers
 
 
 class LineMatcherDelegatedToMatcherWTrace(LineMatcher):
@@ -97,7 +97,7 @@ class LineMatcherRegex(LineMatcher):
 
     def __init__(self, compiled_regular_expression: Pattern):
         self._compiled_regular_expression = compiled_regular_expression
-        self._regex_detail_renderer = trace_renderers.DetailRendererOfConstant(
+        self._regex_detail_renderer = trace_details.DetailRendererOfConstant(
             trace.StringDetail(self.option_description)
         )
 
@@ -127,7 +127,7 @@ class LineMatcherLineNumber(LineMatcher):
 
     def __init__(self, integer_matcher: IntegerMatcher):
         self._integer_matcher = integer_matcher
-        self._detail_renderer_of_expected = trace_renderers.DetailRendererOfConstant(
+        self._detail_renderer_of_expected = trace_details.DetailRendererOfConstant(
             trace.StringDetail(self.option_description)
         )
 

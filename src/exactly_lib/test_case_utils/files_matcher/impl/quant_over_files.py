@@ -12,7 +12,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.err_msg2 import path_rendering, path_trace_rendering
+from exactly_lib.test_case_utils.err_msg2 import path_rendering, trace_details
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForFileWithDescriptor
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherResolverBase
@@ -321,7 +321,7 @@ class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConst
 
 
 def _element_detail_renderer(element: FileMatcherModel) -> DetailRenderer:
-    return path_trace_rendering.PathDetailRenderer(element.path)
+    return trace_details.PathDetailRenderer(element.path)
 
 
 _NAMES = {
