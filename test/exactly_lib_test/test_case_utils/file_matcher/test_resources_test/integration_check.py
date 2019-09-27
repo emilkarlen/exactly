@@ -20,6 +20,7 @@ from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherCo
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromParts, no_resolving_dependencies
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue, FileMatcherModel
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
@@ -272,6 +273,10 @@ class FileMatcherTestImplBase(FileMatcherImplBase):
     def matches(self, model: FileMatcherModel) -> bool:
         self._matches_side_effects(model.path.primitive)
         return self._result
+
+    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
+        self._matches_side_effects(model.path.primitive)
+        return self._new_tb().build_result(self._result)
 
     def _matches_side_effects(self, model: pathlib.Path):
         pass

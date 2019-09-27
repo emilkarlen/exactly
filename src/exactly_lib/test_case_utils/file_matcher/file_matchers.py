@@ -5,6 +5,7 @@ from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMat
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.file_utils import TmpDirFileSpace
 
 
@@ -32,6 +33,9 @@ class FileMatcherConstant(FileMatcherImplBase):
 
     def matches(self, model: FileMatcherModel) -> bool:
         return self._result
+
+    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
+        return self._new_tb().build_result(self._result)
 
 
 MATCH_EVERY_FILE = FileMatcherConstant(True)

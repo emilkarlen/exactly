@@ -1,12 +1,17 @@
 import pathlib
 from typing import Optional
 
+from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.test_case_utils.err_msg2 import trace_details
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
+from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
 
 
 class FileMatcherType(FileMatcherImplBase):
@@ -51,6 +56,53 @@ class FileMatcherType(FileMatcherImplBase):
 
     def matches(self, model: FileMatcherModel) -> bool:
         return self._path_predicate(model.path.primitive)
+
+    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
+        path = model.path.primitive
+        try:
+            stat_result = self._stat_method(path)
+        except OSError as ex:
+            return self._result_for_exception(model.path, ex)
+        actual_file_type = file_properties.lookup_file_type(stat_result)
+        if actual_file_type is self._file_type:
+            return self.__tb().build_result(True)
+        else:
+            return self._result_for_unexpected(actual_file_type)
+
+    def _result_for_exception(self, path: DescribedPathPrimitive, ex: Exception) -> MatchingResult:
+        tb = self.__tb()
+        trace_details.append_header_and_value_details(
+            tb,
+            trace_details.constant_to_string_object(types.PATH_TYPE_INFO.singular_name.capitalize()),
+            trace_details.PathDetailRenderer(path),
+        )
+        trace_details.append_header_and_value_details(
+            tb,
+            trace_details.constant_to_string_object('Error'),
+            trace_details.constant_to_string_object(str(ex)),
+        )
+        return tb.build_result(False)
+
+    def _result_for_unexpected(self,
+                               actual: Optional[file_properties.FileType]) -> MatchingResult:
+        actual_type_description = (
+            'unknown'
+            if actual is None
+            else file_properties.TYPE_INFO[actual].description
+        )
+        tb = self.__tb()
+        trace_details.append_detail_for_actual(
+            tb,
+            trace_details.constant_to_string_object(actual_type_description),
+        )
+        return tb.build_result(False)
+
+    def __tb(self) -> TraceBuilder:
+        return trace_details.append_detail_for_expected(
+            self._new_tb(),
+            trace_details.constant_to_string_object(
+                file_properties.TYPE_INFO[self._file_type].description)
+        )
 
 
 class _FileTypeErrorMessageResolver(ErrorMessageResolver):

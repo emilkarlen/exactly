@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import ConstantResultMatcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.single_dir_checks import single_dir_setup
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir
@@ -59,6 +60,9 @@ class BaseNameMatcher(sut.FileMatcherImplBase):
 
     def matches(self, model: FileMatcherModel) -> bool:
         return model.path.primitive.name == self.base_name_that_matches
+
+    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
+        return self._new_tb().build_result(model.path.primitive.name == self.base_name_that_matches)
 
     @property
     def option_description(self) -> str:

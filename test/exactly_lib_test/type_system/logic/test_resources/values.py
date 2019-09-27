@@ -27,6 +27,9 @@ class FileMatcherTestImpl(FileMatcherImplBase):
     def matches(self, model: FileMatcherModel) -> bool:
         raise NotImplementedError('should never be used')
 
+    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
+        raise NotImplementedError('should never be used')
+
 
 class LineMatcherNotImplementedTestImpl(LineMatcher):
     @property

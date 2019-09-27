@@ -4,7 +4,8 @@ import unittest
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib.test_case_utils.file_matcher.impl import combinators
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as model
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as models
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import FileMatcherConstantWithName
 from exactly_lib_test.test_case_utils.test_resources import matcher_combinators_check
 
@@ -19,7 +20,7 @@ def suite() -> unittest.TestSuite:
 
 class FileMatcherConfiguration(matcher_combinators_check.MatcherConfiguration):
     def irrelevant_model(self) -> FileMatcherModel:
-        return model.with_dir_space_that_must_not_be_used(pathlib.Path('irrelevant path'))
+        return models.with_dir_space_that_must_not_be_used(pathlib.Path('irrelevant path'))
 
     def matcher_with_constant_result(self,
                                      name: str,
@@ -79,3 +80,7 @@ class FileMatcherThatRegistersModelArgument(sut.FileMatcherImplBase,
     def matches(self, model: FileMatcherModel) -> bool:
         self.register_argument(model)
         return self._constant_result
+
+    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
+        self.register_argument(model)
+        return self._new_tb().build_result(self._constant_result)

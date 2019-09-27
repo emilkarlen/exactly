@@ -9,6 +9,7 @@ from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import File
 from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import visitor
 
 
@@ -156,4 +157,7 @@ class UnknownFileMatcher(FileMatcherImplBase):
         return str(type(self))
 
     def matches(self, model: FileMatcherModel) -> bool:
+        raise NotImplementedError('this method should never be called')
+
+    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         raise NotImplementedError('this method should never be called')
