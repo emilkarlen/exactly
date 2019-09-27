@@ -3,11 +3,11 @@ from typing import Optional, List
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.impls import combinator_matchers
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
 
 
 class FileMatcherDelegatedToMatcherWTrace(FileMatcher):
-    def __init__(self, delegated: MatcherWTrace[FileMatcherModel]):
+    def __init__(self, delegated: MatcherWTraceAndNegation[FileMatcherModel]):
         self._delegated = delegated
 
     @property
