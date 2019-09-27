@@ -2,8 +2,10 @@ import pathlib
 import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
+from exactly_lib.test_case_utils.file_matcher.impl import combinators
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as model
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import FileMatcherConstantWithName
 from exactly_lib_test.test_case_utils.test_resources import matcher_combinators_check
 
 
@@ -22,7 +24,7 @@ class FileMatcherConfiguration(matcher_combinators_check.MatcherConfiguration):
     def matcher_with_constant_result(self,
                                      name: str,
                                      result: bool):
-        return sut.FileMatcherConstant(result)
+        return FileMatcherConstantWithName(name, result)
 
     def matcher_that_registers_model_argument_and_returns_constant(
             self, result: bool
@@ -38,7 +40,7 @@ class TestAnd(matcher_combinators_check.TestAndBase):
         return FileMatcherConfiguration()
 
     def new_combinator_to_check(self, constructor_argument):
-        return sut.FileMatcherAnd(constructor_argument)
+        return combinators.FileMatcherAnd(constructor_argument)
 
 
 class TestOr(matcher_combinators_check.TestOrBase):
@@ -49,7 +51,7 @@ class TestOr(matcher_combinators_check.TestOrBase):
         return FileMatcherConfiguration()
 
     def new_combinator_to_check(self, constructor_argument):
-        return sut.FileMatcherOr(constructor_argument)
+        return combinators.FileMatcherOr(constructor_argument)
 
 
 class TestNot(matcher_combinators_check.TestNotBase):
@@ -60,10 +62,10 @@ class TestNot(matcher_combinators_check.TestNotBase):
         return FileMatcherConfiguration()
 
     def new_combinator_to_check(self, constructor_argument):
-        return sut.FileMatcherNot(constructor_argument)
+        return combinators.FileMatcherNot(constructor_argument)
 
 
-class FileMatcherThatRegistersModelArgument(sut.FileMatcher,
+class FileMatcherThatRegistersModelArgument(sut.FileMatcherImplBase,
                                             matcher_combinators_check.MatcherThatRegistersModelArgument):
 
     @property

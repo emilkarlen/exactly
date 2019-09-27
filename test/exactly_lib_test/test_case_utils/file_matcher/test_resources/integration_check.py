@@ -13,6 +13,7 @@ from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMat
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.test_resources import resolver_assertions
@@ -24,6 +25,7 @@ from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import E
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def check(put: unittest.TestCase,
@@ -167,21 +169,28 @@ class Executor:
                       matcher: FileMatcher):
         model = self._new_model(tcds)
         try:
-            main_result = matcher.matches_emr(model)
-            self._check_main_result(main_result)
+            main_result__emr = matcher.matches_emr(model)
+            main_result__trace = matcher.matches_w_trace(model)
+
+            self._check_main_result(main_result__emr, main_result__trace)
         except HardErrorException as ex:
             self._check_hard_error(ex)
 
-    def _check_main_result(self, result: Optional[ErrorMessageResolver]):
+    def _check_main_result(self,
+                           result: Optional[ErrorMessageResolver],
+                           result__trace: MatchingResult,
+                           ):
         if self.expectation.is_hard_error is not None:
             self.put.fail('HARD_ERROR not reported (raised)')
 
         if self.expectation.main_result is None:
             self.put.assertIsNone(result,
                                   'result from main')
+            self._assert_is_matching_result_for(True, result__trace)
         else:
             self.put.assertIsNotNone(result,
                                      'result from main')
+            self._assert_is_matching_result_for(False, result__trace)
             err_msg = result.resolve()
             self.expectation.main_result.apply_with_message(self.put, err_msg,
                                                             'error result of main')
@@ -201,3 +210,11 @@ class Executor:
             TmpDirFileSpaceAsDirCreatedOnDemand(tcds.sds.internal_tmp_dir),
             self.model_constructor(tcds)
         )
+
+    def _assert_is_matching_result_for(self,
+                                       expected_value: bool,
+                                       actual: MatchingResult,
+                                       ):
+        asrt_matching_result.matches_value(expected_value).apply_with_message(self.put,
+                                                                              actual,
+                                                                              'matching result')

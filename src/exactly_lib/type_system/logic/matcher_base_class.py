@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Optional
 
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
@@ -19,7 +19,7 @@ class Matcher(Generic[T], WithOptionDescription, ABC):
     def matches(self, model: T) -> bool:
         return self.matches_emr(model) is None
 
-    def matches_emr(self, model: T) -> ErrorMessageResolver:
+    def matches_emr(self, model: T) -> Optional[ErrorMessageResolver]:
         raise NotImplementedError('abstract method')
 
 
@@ -52,4 +52,11 @@ class MatcherWTrace(Generic[T], Matcher[T], ABC):
 
     @abstractmethod
     def matches_w_trace(self, model: T) -> MatchingResult:
+        pass
+
+
+class MatcherWTraceAndNegation(Generic[T], MatcherWTrace[T], ABC):
+    @property
+    @abstractmethod
+    def negation(self) -> 'MatcherWTraceAndNegation[T]':
         pass

@@ -2,6 +2,7 @@ import re
 import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers
+from exactly_lib.test_case_utils.file_matcher.impl import combinators
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
 from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
 from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
@@ -42,28 +43,28 @@ class TestEquals(unittest.TestCase):
                 FileMatcherType(FileType.DIRECTORY),
             ),
             (
-                file_matchers.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
-                file_matchers.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
+                combinators.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
+                combinators.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
             ),
             (
-                file_matchers.FileMatcherAnd([]),
-                file_matchers.FileMatcherAnd([]),
+                combinators.FileMatcherAnd([]),
+                combinators.FileMatcherAnd([]),
             ),
             (
-                file_matchers.FileMatcherAnd([file_matchers.FileMatcherConstant(True)]),
-                file_matchers.FileMatcherAnd([file_matchers.FileMatcherConstant(True)]),
+                combinators.FileMatcherAnd([file_matchers.FileMatcherConstant(True)]),
+                combinators.FileMatcherAnd([file_matchers.FileMatcherConstant(True)]),
             ),
             (
-                file_matchers.FileMatcherOr([]),
-                file_matchers.FileMatcherOr([]),
+                combinators.FileMatcherOr([]),
+                combinators.FileMatcherOr([]),
             ),
             (
-                file_matchers.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
-                file_matchers.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
+                combinators.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
+                combinators.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
             ),
             (
-                file_matchers.FileMatcherAnd([file_matchers.FileMatcherConstant(False)]),
-                file_matchers.FileMatcherAnd([file_matchers.FileMatcherConstant(False)]),
+                combinators.FileMatcherAnd([file_matchers.FileMatcherConstant(False)]),
+                combinators.FileMatcherAnd([file_matchers.FileMatcherConstant(False)]),
             ),
         ]
         for expected, actual in cases:
@@ -82,10 +83,10 @@ class TestNotEquals(unittest.TestCase):
             FileMatcherBaseNameRegExPattern(re.compile('reg-ex pattern')),
             file_matchers.FileMatcherConstant(False),
             FileMatcherType(FileType.REGULAR),
-            file_matchers.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
-            file_matchers.FileMatcherAnd([]),
-            file_matchers.FileMatcherOr([]),
-            file_matchers.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
+            combinators.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
+            combinators.FileMatcherAnd([]),
+            combinators.FileMatcherOr([]),
+            combinators.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
         ]
         assertion_to_check = sut.equals_file_matcher(expected)
         for actual in cases:
@@ -102,10 +103,10 @@ class TestNotEquals(unittest.TestCase):
             FileMatcherBaseNameRegExPattern(re.compile('actual reg-ex pattern')),
             file_matchers.FileMatcherConstant(False),
             FileMatcherType(FileType.REGULAR),
-            file_matchers.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
-            file_matchers.FileMatcherAnd([]),
-            file_matchers.FileMatcherOr([]),
-            file_matchers.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
+            combinators.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
+            combinators.FileMatcherAnd([]),
+            combinators.FileMatcherOr([]),
+            combinators.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
         ]
         assertion_to_check = sut.equals_file_matcher(expected)
         for actual in cases:
@@ -122,10 +123,10 @@ class TestNotEquals(unittest.TestCase):
             FileMatcherNameGlobPattern('glob pattern'),
             FileMatcherBaseNameRegExPattern(re.compile('reg-ex pattern')),
             FileMatcherType(FileType.REGULAR),
-            file_matchers.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
-            file_matchers.FileMatcherAnd([]),
-            file_matchers.FileMatcherOr([]),
-            file_matchers.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
+            combinators.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
+            combinators.FileMatcherAnd([]),
+            combinators.FileMatcherOr([]),
+            combinators.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
         ]
         assertion_to_check = sut.equals_file_matcher(expected)
         for actual in cases:
@@ -144,10 +145,10 @@ class TestNotEquals(unittest.TestCase):
             FileMatcherNameGlobPattern('glob pattern'),
             FileMatcherBaseNameRegExPattern(re.compile('reg-ex pattern')),
             file_matchers.FileMatcherConstant(True),
-            file_matchers.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
-            file_matchers.FileMatcherAnd([]),
-            file_matchers.FileMatcherOr([]),
-            file_matchers.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
+            combinators.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
+            combinators.FileMatcherAnd([]),
+            combinators.FileMatcherOr([]),
+            combinators.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
         ]
         for actual in actual_matchers:
             with self.subTest(name=actual.option_description):
@@ -157,17 +158,17 @@ class TestNotEquals(unittest.TestCase):
 
     def test_not(self):
         # ARRANGE #
-        expected = file_matchers.FileMatcherNot(file_matchers.FileMatcherConstant(True))
+        expected = combinators.FileMatcherNot(file_matchers.FileMatcherConstant(True))
         cases = [
-            file_matchers.FileMatcherNot(file_matchers.FileMatcherConstant(False)),
-            file_matchers.FileMatcherAnd([file_matchers.FileMatcherConstant(False)]),
-            file_matchers.FileMatcherAnd([]),
+            combinators.FileMatcherNot(file_matchers.FileMatcherConstant(False)),
+            combinators.FileMatcherAnd([file_matchers.FileMatcherConstant(False)]),
+            combinators.FileMatcherAnd([]),
             file_matchers.FileMatcherConstant(True),
             FileMatcherNameGlobPattern('glob pattern'),
             FileMatcherBaseNameRegExPattern(re.compile('reg-ex pattern')),
             FileMatcherType(FileType.REGULAR),
-            file_matchers.FileMatcherOr([]),
-            file_matchers.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
+            combinators.FileMatcherOr([]),
+            combinators.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
         ]
         assertion_to_check = sut.equals_file_matcher(expected)
         for actual in cases:
@@ -178,17 +179,17 @@ class TestNotEquals(unittest.TestCase):
 
     def test_and(self):
         # ARRANGE #
-        expected = file_matchers.FileMatcherAnd([file_matchers.FileMatcherConstant(True)])
+        expected = combinators.FileMatcherAnd([file_matchers.FileMatcherConstant(True)])
         cases = [
-            file_matchers.FileMatcherAnd([file_matchers.FileMatcherConstant(False)]),
-            file_matchers.FileMatcherAnd([]),
+            combinators.FileMatcherAnd([file_matchers.FileMatcherConstant(False)]),
+            combinators.FileMatcherAnd([]),
             file_matchers.FileMatcherConstant(True),
             FileMatcherNameGlobPattern('glob pattern'),
             FileMatcherBaseNameRegExPattern(re.compile('reg-ex pattern')),
             FileMatcherType(FileType.REGULAR),
-            file_matchers.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
-            file_matchers.FileMatcherOr([]),
-            file_matchers.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
+            combinators.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
+            combinators.FileMatcherOr([]),
+            combinators.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
         ]
         assertion_to_check = sut.equals_file_matcher(expected)
         for actual in cases:
@@ -199,17 +200,17 @@ class TestNotEquals(unittest.TestCase):
 
     def test_or(self):
         # ARRANGE #
-        expected = file_matchers.FileMatcherOr([file_matchers.FileMatcherConstant(True)])
+        expected = combinators.FileMatcherOr([file_matchers.FileMatcherConstant(True)])
         cases = [
-            file_matchers.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
-            file_matchers.FileMatcherOr([]),
+            combinators.FileMatcherOr([file_matchers.FileMatcherConstant(False)]),
+            combinators.FileMatcherOr([]),
             file_matchers.FileMatcherConstant(True),
             FileMatcherNameGlobPattern('glob pattern'),
             FileMatcherBaseNameRegExPattern(re.compile('reg-ex pattern')),
             FileMatcherType(FileType.REGULAR),
-            file_matchers.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
-            file_matchers.FileMatcherAnd([]),
-            file_matchers.FileMatcherAnd([file_matchers.FileMatcherConstant(False)]),
+            combinators.FileMatcherNot(file_matchers.FileMatcherConstant(True)),
+            combinators.FileMatcherAnd([]),
+            combinators.FileMatcherAnd([file_matchers.FileMatcherConstant(False)]),
         ]
         assertion_to_check = sut.equals_file_matcher(expected)
         for actual in cases:

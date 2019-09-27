@@ -5,6 +5,7 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.file_matcher import file_matchers
+from exactly_lib.test_case_utils.file_matcher.impl import combinators
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
 from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
 from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
@@ -160,23 +161,26 @@ class _StructureChecker(FileMatcherStructureVisitor):
                              actual.file_type,
                              'file_type')
 
-    def visit_not(self, actual: file_matchers.FileMatcherNot):
+    def visit_not(self, actual: combinators.FileMatcherNot):
         self._common(actual)
-        assert isinstance(self.expected, file_matchers.FileMatcherNot)  # Type info for IDE
-        assertion_on_negated_matchers = equals_file_matcher(self.expected.negated_matcher)
-        assertion_on_negated_matchers.apply_with_message(self.put, actual.negated_matcher,
+        assert isinstance(self.expected,
+                          combinators.FileMatcherNot)  # Type info for IDE
+        assertion_on_negated_matchers = equals_file_matcher(self.expected.negation)
+        assertion_on_negated_matchers.apply_with_message(self.put, actual.negation,
                                                          'negated matcher')
 
-    def visit_and(self, actual: file_matchers.FileMatcherAnd):
+    def visit_and(self, actual: combinators.FileMatcherAnd):
         self._common(actual)
-        assert isinstance(self.expected, file_matchers.FileMatcherAnd)  # Type info for IDE
+        assert isinstance(self.expected,
+                          combinators.FileMatcherAnd)  # Type info for IDE
         assertion_on_sub_matchers = asrt.matches_sequence(list(map(equals_file_matcher, self.expected.matchers)))
         assertion_on_sub_matchers.apply_with_message(self.put, actual.matchers,
                                                      'sub matchers')
 
-    def visit_or(self, actual: file_matchers.FileMatcherOr):
+    def visit_or(self, actual: combinators.FileMatcherOr):
         self._common(actual)
-        assert isinstance(self.expected, file_matchers.FileMatcherOr)  # Type info for IDE
+        assert isinstance(self.expected,
+                          combinators.FileMatcherOr)  # Type info for IDE
         assertion_on_sub_matchers = asrt.matches_sequence(list(map(equals_file_matcher, self.expected.matchers)))
         assertion_on_sub_matchers.apply_with_message(self.put, actual.matchers,
                                                      'sub matchers')

@@ -4,11 +4,12 @@ from typing import Optional
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 
 
-class FileMatcherType(FileMatcher):
+class FileMatcherType(FileMatcherImplBase):
     """Matches the type of file."""
 
     def __init__(self, file_type: file_properties.FileType):

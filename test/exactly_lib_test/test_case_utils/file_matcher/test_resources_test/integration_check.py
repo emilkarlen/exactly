@@ -17,6 +17,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherValueFromPrimitiveValue
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
+from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromParts, no_resolving_dependencies
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue, FileMatcherModel
 from exactly_lib.util.symbol_table import SymbolTable
@@ -260,7 +261,9 @@ def file_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> FileMatc
     )
 
 
-class FileMatcherTestImplBase(FileMatcher):
+class FileMatcherTestImplBase(FileMatcherImplBase):
+    def __init__(self, result: bool = True):
+        self._result = result
 
     @property
     def name(self) -> str:
@@ -268,7 +271,7 @@ class FileMatcherTestImplBase(FileMatcher):
 
     def matches(self, model: FileMatcherModel) -> bool:
         self._matches_side_effects(model.path.primitive)
-        return True
+        return self._result
 
     def _matches_side_effects(self, model: pathlib.Path):
         pass
@@ -319,6 +322,7 @@ class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrP
 
 class FileMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(FileMatcherTestImplBase):
     def __init__(self, tcds: HomeAndSds):
+        super().__init__()
         self.tcds = tcds
 
     def _matches_side_effects(self, model: pathlib.Path):

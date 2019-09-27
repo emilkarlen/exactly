@@ -1,7 +1,8 @@
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
+from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 
 
-class FileMatcherThatSelectsAllFilesTestImpl(FileMatcher):
+class FileMatcherThatSelectsAllFilesTestImpl(FileMatcherImplBase):
 
     @property
     def name(self) -> str:

@@ -11,6 +11,7 @@ from exactly_lib.test_case.validation.pre_or_post_value_validators import ValueV
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_system_element_matcher import ErrorMessageResolverForFailingFileProperties2
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic import string_matcher
@@ -20,7 +21,7 @@ from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class RegularFileMatchesStringMatcher(FileMatcher):
+class RegularFileMatchesStringMatcher(FileMatcherImplBase):
     def __init__(self, string_matcher: string_matcher.StringMatcher):
         self._string_matcher = string_matcher
         self._expected_file_type = file_properties.FileType.REGULAR

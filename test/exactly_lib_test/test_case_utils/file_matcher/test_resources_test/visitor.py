@@ -2,11 +2,13 @@ import re
 import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
+from exactly_lib.test_case_utils.file_matcher.impl import combinators
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
+from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
 from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import visitor
 
 
@@ -65,36 +67,36 @@ class TestFileMatcherStructureVisitor(unittest.TestCase):
 
     def test_visit_and(self):
         # ARRANGE #
-        instance = sut.FileMatcherAnd([])
+        instance = combinators.FileMatcherAnd([])
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([sut.FileMatcherAnd],
+        self.assertEqual([combinators.FileMatcherAnd],
                          visitor.visited_types)
         self.assertIs(instance,
                       ret_val)
 
     def test_visit_not(self):
         # ARRANGE #
-        instance = sut.FileMatcherNot(sut.FileMatcherConstant(False))
+        instance = combinators.FileMatcherNot(sut.FileMatcherConstant(False))
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([sut.FileMatcherNot],
+        self.assertEqual([combinators.FileMatcherNot],
                          visitor.visited_types)
         self.assertIs(instance,
                       ret_val)
 
     def test_visit_or(self):
         # ARRANGE #
-        instance = sut.FileMatcherOr([])
+        instance = combinators.FileMatcherOr([])
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([sut.FileMatcherOr],
+        self.assertEqual([combinators.FileMatcherOr],
                          visitor.visited_types)
         self.assertIs(instance,
                       ret_val)
@@ -131,20 +133,20 @@ class AVisitorThatRecordsVisitedMethods(visitor.FileMatcherStructureVisitor):
         self.visited_types.append(FileMatcherType)
         return matcher
 
-    def visit_not(self, matcher: sut.FileMatcherNot):
-        self.visited_types.append(sut.FileMatcherNot)
+    def visit_not(self, matcher: combinators.FileMatcherNot):
+        self.visited_types.append(combinators.FileMatcherNot)
         return matcher
 
-    def visit_and(self, matcher: sut.FileMatcherAnd):
-        self.visited_types.append(sut.FileMatcherAnd)
+    def visit_and(self, matcher: combinators.FileMatcherAnd):
+        self.visited_types.append(combinators.FileMatcherAnd)
         return matcher
 
-    def visit_or(self, matcher: sut.FileMatcherOr):
-        self.visited_types.append(sut.FileMatcherOr)
+    def visit_or(self, matcher: combinators.FileMatcherOr):
+        self.visited_types.append(combinators.FileMatcherOr)
         return matcher
 
 
-class UnknownFileMatcher(FileMatcher):
+class UnknownFileMatcher(FileMatcherImplBase):
     @property
     def name(self) -> str:
         return str(type(self))

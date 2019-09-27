@@ -191,12 +191,12 @@ class TestCaseBase(unittest.TestCase):
         return asrt_trace.matches_node(
             header=asrt.equals(self.trace_operator_name),
             data=asrt.equals(expected_result),
-            details=asrt.is_empty_sequence,
+            details=asrt.anything_goes(),
             children=asrt.matches_sequence([
                 asrt_trace.matches_node(
                     header=asrt.equals(child_name),
                     data=asrt.equals(child_result),
-                    details=asrt.is_empty_sequence,
+                    details=asrt.anything_goes(),
                     children=asrt.is_empty_sequence,
                 )
                 for child_name, child_result in child_nodes

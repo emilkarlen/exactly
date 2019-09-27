@@ -6,7 +6,7 @@ from exactly_lib.symbol.logic.files_matcher import ErrorMessageInfo, FileModel, 
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
-from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherAnd
+from exactly_lib.test_case_utils.file_matcher.impl.combinators import FileMatcherAnd
 from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive

@@ -7,6 +7,7 @@ from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
+from exactly_lib.test_case_utils.file_matcher.impl import combinators
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
 from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
 from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
@@ -63,13 +64,13 @@ class Configuration(matcher_parse_check.Configuration):
         return file_matchers.FileMatcherConstant(result)
 
     def not_matcher(self, matcher: FileMatcher) -> FileMatcher:
-        return file_matchers.FileMatcherNot(matcher)
+        return combinators.FileMatcherNot(matcher)
 
     def and_matcher(self, matchers: list) -> FileMatcher:
-        return file_matchers.FileMatcherAnd(matchers)
+        return combinators.FileMatcherAnd(matchers)
 
     def or_matcher(self, matchers: list) -> FileMatcher:
-        return file_matchers.FileMatcherOr(matchers)
+        return combinators.FileMatcherOr(matchers)
 
 
 NON_MATCHER_ARGUMENTS = 'not_a_matcher argument'

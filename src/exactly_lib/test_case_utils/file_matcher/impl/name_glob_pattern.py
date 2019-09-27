@@ -7,6 +7,7 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromValueParts
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.data.string_value import StringValue
@@ -49,7 +50,7 @@ class _Value(FileMatcherValue):
         return FileMatcherNameGlobPattern(self._glob_pattern.value_of_any_dependency(home_and_sds))
 
 
-class FileMatcherNameGlobPattern(FileMatcher):
+class FileMatcherNameGlobPattern(FileMatcherImplBase):
     """Matches the name (whole path, not just base name) of a path on a shell glob pattern."""
 
     def __init__(self, glob_pattern: str):
