@@ -1,6 +1,6 @@
 import unittest
 
-import exactly_lib.definitions.primitives.files_matcher
+from exactly_lib.definitions.primitives import files_matcher as files_matcher_primitives
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -53,7 +53,7 @@ class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesChec
               condition_str: str,
               ) -> str:
         return '{num_files} {condition}'.format(
-            num_files=exactly_lib.definitions.primitives.files_matcher.NUM_FILES_CHECK_ARGUMENT,
+            num_files=files_matcher_primitives.NUM_FILES_CHECK_ARGUMENT,
             condition=condition_str)
 
 

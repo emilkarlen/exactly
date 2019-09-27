@@ -1,10 +1,9 @@
 from typing import Sequence, Optional, Iterator
 
-import exactly_lib.definitions.primitives.files_matcher
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.definitions.primitives.files_matcher import QUANTIFICATION_OVER_FILE_ARGUMENT
+from exactly_lib.definitions.primitives import files_matcher as files_matcher_primitives
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     FileModel, FilesMatcherModel, FilesMatcherValue, FilesMatcher, FilesMatcherConstructor
@@ -306,7 +305,7 @@ class _ErrorReportingHelper:
 
     def _description_of_expected(self):
         return ' '.join([instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier],
-                         exactly_lib.definitions.primitives.files_matcher.QUANTIFICATION_OVER_FILE_ARGUMENT,
+                         files_matcher_primitives.QUANTIFICATION_OVER_FILE_ARGUMENT,
                          _SATISFIES,
                          syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.singular_name])
 
@@ -328,7 +327,7 @@ class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConst
 _NAMES = {
     q: ' '.join([
         instruction_arguments.QUANTIFIER_ARGUMENTS[q],
-        QUANTIFICATION_OVER_FILE_ARGUMENT,
+        files_matcher_primitives.QUANTIFICATION_OVER_FILE_ARGUMENT,
     ])
     for q in Quantifier
 }

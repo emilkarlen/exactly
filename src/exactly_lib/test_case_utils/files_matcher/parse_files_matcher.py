@@ -1,6 +1,6 @@
-import exactly_lib.definitions.primitives.files_matcher
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements, concepts
+from exactly_lib.definitions.primitives import files_matcher as files_matcher_primitives
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -46,8 +46,8 @@ def parse_files_matcher(parser: TokenParser,
 class _SimpleMatcherParser:
     def __init__(self):
         self.matcher_parsers = {
-            exactly_lib.definitions.primitives.files_matcher.NUM_FILES_CHECK_ARGUMENT: self.parse_num_files_check,
-            exactly_lib.definitions.primitives.files_matcher.EMPTINESS_CHECK_ARGUMENT: self.parse_empty_check,
+            files_matcher_primitives.NUM_FILES_CHECK_ARGUMENT: self.parse_num_files_check,
+            files_matcher_primitives.EMPTINESS_CHECK_ARGUMENT: self.parse_empty_check,
             instruction_arguments.ALL_QUANTIFIER_ARGUMENT: self.parse_file_quantified_assertion__all,
             instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT: self.parse_file_quantified_assertion__exists,
         }
@@ -92,7 +92,7 @@ class _SimpleMatcherParser:
                                    quantifier: Quantifier,
                                    parser: TokenParser) -> FilesMatcherResolver:
         parser.consume_mandatory_constant_unquoted_string(
-            exactly_lib.definitions.primitives.files_matcher.QUANTIFICATION_OVER_FILE_ARGUMENT,
+            files_matcher_primitives.QUANTIFICATION_OVER_FILE_ARGUMENT,
             must_be_on_current_line=True)
         parser.consume_mandatory_constant_unquoted_string(
             instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,

@@ -1,6 +1,5 @@
 from typing import List
 
-import exactly_lib.definitions.primitives.files_matcher
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args, \
     SyntaxElementDescription, cli_argument_syntax_element_description
 from exactly_lib.definitions import instruction_arguments
@@ -8,6 +7,7 @@ from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
+from exactly_lib.definitions.primitives import files_matcher as files_matcher_primitives
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case_utils import negation_of_predicate
@@ -88,7 +88,7 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
                                   ])
         file_arg = a.Single(a.Multiplicity.MANDATORY,
                             a.Constant(
-                                exactly_lib.definitions.primitives.files_matcher.QUANTIFICATION_OVER_FILE_ARGUMENT))
+                                files_matcher_primitives.QUANTIFICATION_OVER_FILE_ARGUMENT))
 
         separator_arg = a.Single(a.Multiplicity.MANDATORY,
                                  a.Constant(
