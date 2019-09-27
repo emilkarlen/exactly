@@ -9,12 +9,14 @@ from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcher, LineMatcherLine
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 class Arrangement:
@@ -166,21 +168,28 @@ class _Checker:
 
     def _check_application(self, matcher: LineMatcher):
         try:
-            main_result = matcher.matches_emr(self.model)
-            self._check_application_result(main_result)
+            main_result__emr = matcher.matches_emr(self.model)
+            main_result__trace = matcher.matches_w_trace(self.model)
+
+            self._check_application_result(main_result__emr, main_result__trace)
         except HardErrorException as ex:
             self._check_hard_error(ex)
 
-    def _check_application_result(self, result: Optional[ErrorMessageResolver]):
+    def _check_application_result(self,
+                                  result: Optional[ErrorMessageResolver],
+                                  result__trace: MatchingResult,
+                                  ):
         if self.expectation.is_hard_error is not None:
             self.put.fail('HARD_ERROR not reported (raised)')
 
         if self.expectation.main_result is None:
             self.put.assertIsNone(result,
                                   'result from main')
+            self._assert_is_matching_result_for(True, result__trace)
         else:
             self.put.assertIsNotNone(result,
                                      'result from main')
+            self._assert_is_matching_result_for(False, result__trace)
             err_msg = result.resolve()
             self.expectation.main_result.apply_with_message(self.put, err_msg,
                                                             'error result of main')
@@ -193,3 +202,11 @@ class _Checker:
             assertion_on_text_renderer.apply_with_message(self.put, result.error,
                                                           'error message for hard error')
             raise _CheckIsDoneException()
+
+    def _assert_is_matching_result_for(self,
+                                       expected_value: bool,
+                                       actual: MatchingResult,
+                                       ):
+        asrt_matching_result.matches_value(expected_value).apply_with_message(self.put,
+                                                                              actual,
+                                                                              'matching result')
