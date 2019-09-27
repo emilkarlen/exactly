@@ -12,7 +12,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.err_msg2 import path_rendering
+from exactly_lib.test_case_utils.err_msg2 import path_rendering, path_trace_rendering
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForFileWithDescriptor
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherResolverBase
@@ -22,12 +22,11 @@ from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcherModel, FileMatcher
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.impls import quantifier_matchers
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
-from exactly_lib.type_system.trace.impls.trace_renderers import DetailRendererOfErrorMessageResolver
-from exactly_lib.type_system.trace.trace import Node
-from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
+from exactly_lib.type_system.trace.trace_renderer import DetailRenderer
 from exactly_lib.util import logic_types
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
@@ -79,42 +78,39 @@ class _QuantifiedMatcher(FilesMatcher):
         return checker.check()
 
     def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
-        checker = _Checker(self._expectation_type,
-                           self._quantifier,
-                           self._matcher_on_file,
-                           self._tmp_files_space,
-                           model)
-        mb_failure = checker.check()
+        matcher = self._matcher_w_trace()
+        if self._expectation_type is ExpectationType.NEGATIVE:
+            matcher = matcher.negation
+
+        return matcher.matches_w_trace(model)
+
+    def _matcher_w_trace(self) -> MatcherWTraceAndNegation[FilesMatcherModel]:
         return (
-            self._new_tb()
-                .append_child(_FileMatcherNodeRenderer(self._matcher_on_file, mb_failure))
-                .build_result(mb_failure is None)
-        )
-
-
-class _FileMatcherNodeRenderer(NodeRenderer[bool]):
-    def __init__(self,
-                 matcher_on_file: FileMatcher,
-                 result: Optional[ErrorMessageResolver],
-                 ):
-        self._matcher_on_file = matcher_on_file
-        self._result = result
-
-        self.matcher_on_file = matcher_on_file
-
-    def render(self) -> Node[bool]:
-        result = self._result is None
-        details = (
-            ()
-            if result
+            quantifier_matchers.ForAll(
+                self._element_setup(),
+                self._matcher_on_file,
+            )
+            if self._quantifier is Quantifier.ALL
             else
-            [DetailRendererOfErrorMessageResolver(self._result).render()]
+            quantifier_matchers.Exists(
+                self._element_setup(),
+                self._matcher_on_file,
+            )
+
         )
-        return Node(
-            self._matcher_on_file.option_description,
-            result,
-            details,
-            ()
+
+    def _element_setup(self) -> quantifier_matchers.ElementSetup:
+        return quantifier_matchers.ElementSetup(
+            files_matcher_primitives.QUANTIFICATION_OVER_FILE_ARGUMENT,
+            self._file_elements_from_model,
+            _element_detail_renderer,
+        )
+
+    def _file_elements_from_model(self, model: FilesMatcherModel) -> Iterator[FileMatcherModel]:
+        model_factory = _ModelsFactory(self._tmp_files_space)
+        return (
+            model_factory.file_matcher_model(file_element)
+            for file_element in model.files()
         )
 
 
@@ -322,6 +318,10 @@ class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConst
             self._file_in_dir.path.describer,
             True,
         )
+
+
+def _element_detail_renderer(element: FileMatcherModel) -> DetailRenderer:
+    return path_trace_rendering.PathDetailRenderer(element.path)
 
 
 _NAMES = {

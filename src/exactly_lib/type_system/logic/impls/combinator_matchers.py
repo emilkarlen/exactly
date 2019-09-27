@@ -27,7 +27,7 @@ class Negation(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
     def matches(self, model: MODEL) -> bool:
         return not self._negated.matches(model)
 
-    def matches_emr(self, model: MODEL) -> ErrorMessageResolver:
+    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
         mb_failure = self._negated.matches_emr(model)
         return (
             None
