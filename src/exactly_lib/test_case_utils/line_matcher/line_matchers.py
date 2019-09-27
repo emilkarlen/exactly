@@ -1,12 +1,73 @@
-from typing import Sequence, Pattern
+from typing import Optional, List
+from typing import Pattern
 
-from exactly_lib.definitions import expression
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher
+from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.trace import trace
 from exactly_lib.type_system.trace.impls import trace_renderers
+
+
+class LineMatcherDelegatedToMatcherWTrace(LineMatcher):
+    def __init__(self, delegated: MatcherWTraceAndNegation[LineMatcherLine]):
+        self._delegated = delegated
+
+    @property
+    def name(self) -> str:
+        return self._delegated.name
+
+    @property
+    def option_description(self) -> str:
+        return self._delegated.option_description
+
+    def matches(self, model: LineMatcherLine) -> bool:
+        return self._delegated.matches(model)
+
+    def matches_emr(self, model: LineMatcherLine) -> Optional[ErrorMessageResolver]:
+        return self._delegated.matches_emr(model)
+
+    def matches_w_trace(self, model: LineMatcherLine) -> MatchingResult:
+        return self._delegated.matches_w_trace(model)
+
+
+class LineMatcherNot(LineMatcherDelegatedToMatcherWTrace):
+    """Matcher that negates a given matcher."""
+
+    def __init__(self, matcher: LineMatcher):
+        self._matcher = matcher
+        super().__init__(combinator_matchers.Negation(matcher))
+
+    @property
+    def negated_matcher(self) -> LineMatcher:
+        return self._matcher
+
+
+class LineMatcherAnd(LineMatcherDelegatedToMatcherWTrace):
+    """Matcher that and:s a list of matchers."""
+
+    def __init__(self, matchers: List[LineMatcher]):
+        self._matchers = matchers
+        super().__init__(combinator_matchers.Conjunction(matchers))
+
+    @property
+    def matchers(self) -> List[LineMatcher]:
+        return self._matchers
+
+
+class LineMatcherOr(LineMatcherDelegatedToMatcherWTrace):
+    """Matcher that or:s a list of matchers."""
+
+    def __init__(self, matchers: List[LineMatcher]):
+        self._matchers = matchers
+        super().__init__(combinator_matchers.Disjunction(matchers))
+
+    @property
+    def matchers(self) -> List[LineMatcher]:
+        return self._matchers
 
 
 class LineMatcherConstant(LineMatcher):
@@ -87,105 +148,6 @@ class LineMatcherLineNumber(LineMatcher):
 
     def matches(self, line: LineMatcherLine) -> bool:
         return self._integer_matcher.matches(line[0])
-
-
-class LineMatcherNot(LineMatcher):
-    """Matcher that negates a given matcher."""
-
-    def __init__(self, matcher: LineMatcher):
-        self._matcher = matcher
-
-    @property
-    def name(self) -> str:
-        return expression.NOT_OPERATOR_NAME
-
-    @property
-    def option_description(self) -> str:
-        return expression.NOT_OPERATOR_NAME + ' ' + self._matcher.option_description
-
-    @property
-    def negated_matcher(self) -> LineMatcher:
-        return self._matcher
-
-    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
-        result = self._matcher.matches_w_trace(line)
-
-        return self._new_tb() \
-            .append_child(result.trace) \
-            .build_result(not result.value)
-
-    def matches(self, line: LineMatcherLine) -> bool:
-        return not self._matcher.matches(line)
-
-
-class LineMatcherAnd(LineMatcher):
-    """Matcher that and:s a list of matchers."""
-
-    def __init__(self, matchers: Sequence[LineMatcher]):
-        self._matchers = tuple(matchers)
-
-    @property
-    def name(self) -> str:
-        return expression.AND_OPERATOR_NAME
-
-    @property
-    def option_description(self) -> str:
-        op = ' ' + expression.AND_OPERATOR_NAME + ' '
-        return '({})'.format(op.join(map(lambda fm: fm.option_description, self.matchers)))
-
-    @property
-    def matchers(self) -> Sequence[LineMatcher]:
-        return list(self._matchers)
-
-    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
-        tb = self._new_tb()
-
-        for sub_matcher in self._matchers:
-            result = sub_matcher.matches_w_trace(line)
-            tb.append_child(result.trace)
-            if not result.value:
-                return tb.build_result(False)
-
-        return tb.build_result(True)
-
-    def matches(self, line: LineMatcherLine) -> bool:
-        return all((matcher.matches(line)
-                    for matcher in self._matchers))
-
-
-class LineMatcherOr(LineMatcher):
-    """Matcher that or:s a list of matchers."""
-
-    def __init__(self, matchers: Sequence[LineMatcher]):
-        self._matchers = tuple(matchers)
-
-    @property
-    def name(self) -> str:
-        return expression.OR_OPERATOR_NAME
-
-    @property
-    def option_description(self) -> str:
-        op = ' ' + expression.OR_OPERATOR_NAME + ' '
-        return '({})'.format(op.join(map(lambda fm: fm.option_description, self.matchers)))
-
-    @property
-    def matchers(self) -> Sequence[LineMatcher]:
-        return list(self._matchers)
-
-    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
-        tb = self._new_tb()
-
-        for sub_matcher in self._matchers:
-            result = sub_matcher.matches_w_trace(line)
-            tb.append_child(result.trace)
-            if result.value:
-                return tb.build_result(True)
-
-        return tb.build_result(False)
-
-    def matches(self, line: LineMatcherLine) -> bool:
-        return any((matcher.matches(line)
-                    for matcher in self._matchers))
 
 
 class LineMatcherStructureVisitor:
