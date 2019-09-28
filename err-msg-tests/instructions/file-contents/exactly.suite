@@ -1,8 +1,6 @@
 [suites]
 
 actual-file
-empty
-equals
 num-lines
 line-matches
 hard-error

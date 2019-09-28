@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Callable, Iterator, Optional
+from typing import TypeVar, Generic, Callable, Iterator, Optional, ContextManager
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
@@ -20,15 +20,15 @@ ELEMENT = TypeVar('ELEMENT')
 class ElementSetup(Generic[MODEL, ELEMENT]):
     def __init__(self,
                  type_name: str,
-                 getter: Callable[[MODEL], Iterator[ELEMENT]],
+                 elements_getter: Callable[[MODEL], ContextManager[Iterator[ELEMENT]]],
                  renderer: Callable[[ELEMENT], DetailsRenderer],
                  ):
         self.type_name = type_name
-        self.getter = getter
+        self.elements_getter = elements_getter
         self.renderer = renderer
 
 
-class QuantifierBase(Generic[MODEL, ELEMENT], MatcherWTraceAndNegation[MODEL], ABC):
+class _QuantifierBase(Generic[MODEL, ELEMENT], MatcherWTraceAndNegation[MODEL], ABC):
     def __init__(self,
                  quantifier: Quantifier,
                  element_setup: ElementSetup,
@@ -66,12 +66,13 @@ class QuantifierBase(Generic[MODEL, ELEMENT], MatcherWTraceAndNegation[MODEL], A
         )
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
-        return self._matches(
-            TraceBuilder(self.name),
-            self._element_setup.renderer,
-            self._predicate,
-            self._element_setup.getter(model),
-        )
+        with self._element_setup.elements_getter(model) as elements:
+            return self._matches(
+                TraceBuilder(self.name),
+                self._element_setup.renderer,
+                self._predicate,
+                elements,
+            )
 
     def _matching_element_header(self) -> ToStringObject:
         return strings.Concatenate(('Matching ', self._element_setup.type_name))
@@ -107,21 +108,21 @@ class QuantifierBase(Generic[MODEL, ELEMENT], MatcherWTraceAndNegation[MODEL], A
         pass
 
 
-class Exists(Generic[MODEL, ELEMENT], QuantifierBase[MODEL, ELEMENT]):
+class Exists(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
     def __init__(self,
                  element_setup: ElementSetup,
                  predicate: MatcherWTrace[ELEMENT],
                  ):
-        QuantifierBase.__init__(self,
-                                Quantifier.EXISTS,
-                                element_setup,
-                                predicate,
-                                )
+        _QuantifierBase.__init__(self,
+                                 Quantifier.EXISTS,
+                                 element_setup,
+                                 predicate,
+                                 )
 
     def _no_match(self, tb: TraceBuilder, tot_num_elements: int) -> MatchingResult:
         return (
             tb.append_details(
-                trace_details.ConstantString(
+                trace_details.String(
                     strings.FormatPositional(
                         'No matching {} ({} tested)',
                         self._element_setup.type_name,
@@ -146,21 +147,21 @@ class Exists(Generic[MODEL, ELEMENT], QuantifierBase[MODEL, ELEMENT]):
         return self._no_match(tb, num_elements)
 
 
-class ForAll(Generic[MODEL, ELEMENT], QuantifierBase[MODEL, ELEMENT]):
+class ForAll(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
     def __init__(self,
                  element_setup: ElementSetup,
                  predicate: MatcherWTrace[ELEMENT],
                  ):
-        QuantifierBase.__init__(self,
-                                Quantifier.ALL,
-                                element_setup,
-                                predicate,
-                                )
+        _QuantifierBase.__init__(self,
+                                 Quantifier.ALL,
+                                 element_setup,
+                                 predicate,
+                                 )
 
     def _all_match(self, tb: TraceBuilder, tot_num_elements: int) -> MatchingResult:
         return (
             tb.append_details(
-                trace_details.ConstantString(
+                trace_details.String(
                     strings.FormatPositional(
                         'Every {} matches ({} tested)',
                         self._element_setup.type_name,

@@ -1,0 +1,15 @@
+[setup]
+
+
+file checked-file = <<EOF
+1st line
+2nd line
+EOF
+
+
+[assert]
+
+
+contents checked-file
+  -transformed-by select line-num > 1
+  empty

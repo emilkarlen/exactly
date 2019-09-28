@@ -97,6 +97,6 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
     def __tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(
             trace_details.Expected(
-                trace_details.ConstantString(self._glob_pattern)
+                trace_details.String(self._glob_pattern)
             )
         )

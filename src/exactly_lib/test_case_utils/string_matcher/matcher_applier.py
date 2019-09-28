@@ -8,6 +8,7 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.test_case_utils.matcher.applier import MatcherApplier, MatcherApplierValue, MatcherApplierResolver
 from exactly_lib.test_case_utils.matcher.matcher import T, Failure
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherValue
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -36,6 +37,14 @@ class MaStringMatcher(Generic[T], StringMatcher):
             return None
 
         return self._err_msg_constructor(model, failure)
+
+    def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
+        result = self._applier.matches_w_trace(model)
+        return (
+            self._new_tb()
+                .append_child(result.trace)
+                .build_result(result.value)
+        )
 
 
 class MaStringMatcherValue(Generic[T], StringMatcherValue):

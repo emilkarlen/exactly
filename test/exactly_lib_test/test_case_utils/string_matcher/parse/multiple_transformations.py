@@ -2,9 +2,11 @@ import unittest
 from typing import Iterable, Optional
 
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.test_case_utils.err_msg2 import trace_details
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -45,7 +47,7 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
 
         equals_expected_matcher = NameAndValue('EQUALS_EXPECTED',
                                                StringMatcherResolverConstantTestImpl(
-                                                   EqualsMatcher(model_after_2_transformations)
+                                                   EqualsMatcherTestImpl(model_after_2_transformations)
                                                ))
 
         prepend_transformer_symbol = NameAndValue('PREPEND_TRANSFORMER',
@@ -104,7 +106,7 @@ class PrependStringToLinesTransformer(StringTransformer):
         return self.string_to_prepend + to
 
 
-class EqualsMatcher(StringMatcher):
+class EqualsMatcherTestImpl(StringMatcher):
     def __init__(self, expected: str):
         self.expected = expected
 
@@ -123,6 +125,18 @@ class EqualsMatcher(StringMatcher):
         else:
             err_msg = 'not eq to "{}": "{}"'.format(self.expected, actual)
             return err_msg_resolvers.constant(err_msg)
+
+    def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
+        actual = self._as_single_string(model)
+        if self.expected == actual:
+            return self._new_tb().build_result(True)
+        else:
+            err_msg = 'not eq to "{}": "{}"'.format(self.expected, actual)
+            return (
+                self._new_tb()
+                    .append_details(trace_details.String(err_msg))
+                    .build_result(False)
+            )
 
     @staticmethod
     def _as_single_string(model: FileToCheck) -> str:

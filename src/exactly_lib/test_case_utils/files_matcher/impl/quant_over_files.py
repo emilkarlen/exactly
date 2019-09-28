@@ -1,3 +1,4 @@
+import contextlib
 from typing import Sequence, Optional, Iterator
 
 from exactly_lib.definitions import actual_file_attributes
@@ -106,9 +107,10 @@ class _QuantifiedMatcher(FilesMatcher):
             _element_detail_renderer,
         )
 
+    @contextlib.contextmanager
     def _file_elements_from_model(self, model: FilesMatcherModel) -> Iterator[FileMatcherModel]:
         model_factory = _ModelsFactory(self._tmp_files_space)
-        return (
+        yield (
             model_factory.file_matcher_model(file_element)
             for file_element in model.files()
         )

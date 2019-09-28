@@ -7,6 +7,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import diff_msg
+from exactly_lib.test_case_utils.err_msg2 import trace_details
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.error_messages import ExpectedValueResolver, ErrorMessageResolverConstructor
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
@@ -14,7 +15,10 @@ from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromValueWithValidation, \
     StringMatcherValueWithValidation
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.impls import combinator_matchers
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
+from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -78,10 +82,16 @@ class MatchesRegexStringMatcher(StringMatcher):
         self._is_full_match = is_full_match
         self._pattern = pattern
         self._err_msg_constructor = error_message_constructor
+        self._expected_detail_renderer = trace_details.Expected(
+            trace_details.PatternRenderer(is_full_match, pattern)
+        )
 
     @property
     def name(self) -> str:
-        return matcher_options.MATCHES_ARGUMENT
+        return ' '.join((
+            matcher_options.MATCHES_ARGUMENT,
+            syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
+        ))
 
     @property
     def option_description(self) -> str:
@@ -101,7 +111,37 @@ class MatchesRegexStringMatcher(StringMatcher):
             else:
                 return self._err_msg_resolver(actual_contents)
 
-    def _find_match(self, actual_contents: str) -> Match:
+    def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
+        if self._expectation_type is ExpectationType.NEGATIVE:
+            positive_matcher = MatchesRegexStringMatcher(ExpectationType.POSITIVE,
+                                                         self._is_full_match,
+                                                         self._pattern,
+                                                         self._err_msg_constructor)
+            return combinator_matchers.Negation(positive_matcher).matches_w_trace(model)
+        else:
+            return self._matches_positive(model)
+
+    def _matches_positive(self, model: FileToCheck) -> MatchingResult:
+        actual_contents = self._actual_contents(model)
+
+        tb = self._new_tb_with_expected().append_details(
+            trace_details.Actual(
+                trace_details.StringAsSingleLineWithMaxLenDetailsRenderer(actual_contents))
+        )
+
+        match = self._find_match(actual_contents)
+
+        if match is not None:
+            tb.append_details(
+                trace_details.HeaderAndValue(
+                    'Match',
+                    trace_details.MatchRenderer(match),
+                )
+            )
+
+        return tb.build_result(match is not None)
+
+    def _find_match(self, actual_contents: str) -> Optional[Match]:
         if self._is_full_match:
             return self._pattern.fullmatch(actual_contents)
         else:
@@ -117,6 +157,9 @@ class MatchesRegexStringMatcher(StringMatcher):
                                      self._is_full_match,
                                      self._pattern,
                                      actual_contents)
+
+    def _new_tb_with_expected(self) -> TraceBuilder:
+        return self._new_tb().append_details(self._expected_detail_renderer)
 
 
 class _ErrorMessageResolver(ErrorMessageResolver):

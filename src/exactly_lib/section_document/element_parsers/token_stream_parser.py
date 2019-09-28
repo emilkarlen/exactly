@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict
+from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict, Optional
 
 from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -319,6 +319,14 @@ class TokenParser:
                                             option_name: OptionName,
                                             ) -> T:
         return self.consume_and_handle_optional_option(return_value_if_no_match,
+                                                       argument_parser,
+                                                       option_name)
+
+    def consume_and_handle_optional_option3(self,
+                                            argument_parser: Callable[[TokenParserType], T],
+                                            option_name: OptionName,
+                                            ) -> Optional[T]:
+        return self.consume_and_handle_optional_option(None,
                                                        argument_parser,
                                                        option_name)
 

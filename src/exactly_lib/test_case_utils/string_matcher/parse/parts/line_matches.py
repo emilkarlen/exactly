@@ -1,4 +1,5 @@
-from typing import Set, Optional, Sequence
+import contextlib
+from typing import Set, Optional, Sequence, Iterator, ContextManager
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
@@ -16,13 +17,17 @@ from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.test_case_utils.line_matcher.model_construction import model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
+from exactly_lib.test_case_utils.line_matcher.trace_rendering import LineMatcherLineRenderer
+from exactly_lib.test_case_utils.string_matcher import delegated_matcher
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_from_references
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
+from exactly_lib.type_system.logic.impls import quantifier_matchers, combinator_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
+from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -61,16 +66,14 @@ def matcher_for_any_line_matches(expectation_type: ExpectationType,
             .resolve(environment.symbols) \
             .value_of_any_dependency(environment.home_and_sds)
 
-        if expectation_type is ExpectationType.POSITIVE:
-            return _AnyLineMatchesStringMatcherForPositiveMatch(
-                instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
-                expectation_type,
-                line_matcher)
-        else:
-            return _AnyLineMatchesStringMatcherForNegativeMatch(
-                instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
-                expectation_type,
-                line_matcher)
+        matcher = quantifier_matchers.Exists(
+            _element_setup(),
+            line_matcher,
+        )
+        if expectation_type is ExpectationType.NEGATIVE:
+            matcher = combinator_matchers.Negation(matcher)
+
+        return delegated_matcher.StringMatcherDelegatedToMatcherWTrace(matcher)
 
     def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
         return resolving_dependencies_from_references(line_matcher_resolver.references, symbols)
@@ -90,16 +93,14 @@ def matcher_for_every_line_matches(expectation_type: ExpectationType,
             .resolve(environment.symbols) \
             .value_of_any_dependency(environment.home_and_sds)
 
-        if expectation_type is ExpectationType.POSITIVE:
-            return _EveryLineMatchesStringMatcherForPositiveMatch(
-                instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
-                expectation_type,
-                line_matcher)
-        else:
-            return _EveryLineMatchesStringMatcherForNegativeMatch(
-                instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
-                expectation_type,
-                line_matcher)
+        matcher = quantifier_matchers.ForAll(
+            _element_setup(),
+            line_matcher,
+        )
+        if expectation_type is ExpectationType.NEGATIVE:
+            matcher = combinator_matchers.Negation(matcher)
+
+        return delegated_matcher.StringMatcherDelegatedToMatcherWTrace(matcher)
 
     def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
         return resolving_dependencies_from_references(line_matcher_resolver.references, symbols)
@@ -117,6 +118,24 @@ def _validator_for_line_matcher(line_matcher_resolver: LineMatcherResolver) -> p
         return line_matcher_resolver.resolve(symbols).validator()
 
     return ppv.PreOrPostSdsValidatorFromValueValidator(get_validator)
+
+
+def _element_setup() -> quantifier_matchers.ElementSetup[FileToCheck, LineMatcherLine]:
+    return quantifier_matchers.ElementSetup(
+        matcher_options.LINE_ARGUMENT,
+        _get_line_elements,
+        _line_renderer,
+    )
+
+
+@contextlib.contextmanager
+def _get_line_elements(string_matcher_model: FileToCheck) -> ContextManager[Iterator[LineMatcherLine]]:
+    with string_matcher_model.lines() as lines:
+        yield model_iter_from_file_line_iter(lines)
+
+
+def _line_renderer(line: LineMatcherLine) -> DetailsRenderer:
+    return LineMatcherLineRenderer(line)
 
 
 class _StringMatcherBase(StringMatcher):

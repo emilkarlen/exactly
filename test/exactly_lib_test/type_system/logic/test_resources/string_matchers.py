@@ -1,6 +1,7 @@
 from typing import Optional
 
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
 
 
@@ -12,7 +13,7 @@ class StringMatcherConstant(StringMatcher):
 
     @property
     def name(self) -> str:
-        return str(type(self))
+        return 'any string' if self._result else 'no string'
 
     @property
     def option_description(self) -> str:
@@ -24,3 +25,6 @@ class StringMatcherConstant(StringMatcher):
 
     def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         return self._result
+
+    def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
+        return self._new_tb().build_result(self._result is None)

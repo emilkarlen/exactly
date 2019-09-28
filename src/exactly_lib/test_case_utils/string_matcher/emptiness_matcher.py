@@ -4,9 +4,12 @@ from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
+from exactly_lib.test_case_utils.err_msg2 import trace_details
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
+from exactly_lib.type_system.logic.impls import combinator_matchers
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.type_system.logic.string_matcher import StringMatcher
 from exactly_lib.util.logic_types import ExpectationType
@@ -38,6 +41,25 @@ class EmptinessStringMatcher(StringMatcher):
                                              model.describer,
                                              EMPTINESS_CHECK_EXPECTED_VALUE)
         return None
+
+    def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
+        if self.expectation_type is ExpectationType.NEGATIVE:
+            return combinator_matchers.Negation(EmptinessStringMatcher(ExpectationType.POSITIVE)).matches_w_trace(model)
+        else:
+            return self._matches_positive(model)
+
+    def _matches_positive(self, model: FileToCheck) -> MatchingResult:
+        first_line = self._first_line(model)
+        if first_line != '':
+            return (
+                self._new_tb()
+                    .append_details(
+                    trace_details.Actual(trace_details.String(repr(first_line) + '...'))
+                )
+                    .build_result(False)
+            )
+        else:
+            return self._new_tb().build_result(True)
 
     @staticmethod
     def _first_line(file_to_check: FileToCheck) -> str:

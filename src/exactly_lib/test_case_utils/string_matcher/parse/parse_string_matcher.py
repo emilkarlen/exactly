@@ -25,13 +25,18 @@ def string_matcher_parser() -> Parser[StringMatcherResolver]:
 
 
 def parse_string_matcher(parser: TokenParser) -> StringMatcherResolver:
-    model_transformer = parse_string_transformer.parse_optional_transformer_resolver_preceding_mandatory_element(
+    mb_model_transformer = parse_string_transformer.parse_optional_transformer_resolver_preceding_mandatory_element(
         parser,
         COMPARISON_OPERATOR,
     )
     expectation_type = parser.consume_optional_negation_operator()
     matcher_except_transformation = _StringMatcherParser(expectation_type).parse(parser)
-    return resolvers.new_with_transformation(model_transformer, matcher_except_transformation)
+    return (
+        resolvers.new_with_transformation(mb_model_transformer, matcher_except_transformation)
+        if mb_model_transformer
+        else
+        matcher_except_transformation
+    )
 
 
 class _StringMatcherParser:

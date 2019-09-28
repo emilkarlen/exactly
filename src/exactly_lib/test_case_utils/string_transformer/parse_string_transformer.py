@@ -1,3 +1,5 @@
+from typing import Optional
+
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.section_document.element_parsers import token_stream_parser
@@ -54,14 +56,20 @@ def parse_optional_transformer_resolver(token_parser: TokenParser) -> StringTran
         instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
-def parse_optional_transformer_resolver_preceding_mandatory_element(parser: TokenParser,
-                                                                    mandatory_element_name: str
-                                                                    ) -> StringTransformerResolver:
+def parse_optional_transformer_resolver2(token_parser: TokenParser) -> Optional[StringTransformerResolver]:
     """
     :return: The identity transformer, if transformer option is not given.
     """
+    return token_parser.consume_and_handle_optional_option3(
+        parse_string_transformer_from_token_parser,
+        instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
+
+
+def parse_optional_transformer_resolver_preceding_mandatory_element(parser: TokenParser,
+                                                                    mandatory_element_name: str
+                                                                    ) -> Optional[StringTransformerResolver]:
     parser.require_existing_valid_head_token(mandatory_element_name)
-    return parse_optional_transformer_resolver(parser)
+    return parse_optional_transformer_resolver2(parser)
 
 
 def parse_string_transformer_from_token_parser(parser: TokenParser) -> StringTransformerResolver:

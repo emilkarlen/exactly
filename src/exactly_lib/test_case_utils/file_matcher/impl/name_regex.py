@@ -86,7 +86,7 @@ class FileMatcherBaseNameRegExPattern(FileMatcherImplBase):
         regex_match = self._compiled_reg_ex.search(base_name)
         tb = self.__tb_with_expected().append_details(
             trace_details.Actual(
-                trace_details.ConstantString(base_name)
+                trace_details.String(base_name)
             )
 
         )
@@ -98,6 +98,6 @@ class FileMatcherBaseNameRegExPattern(FileMatcherImplBase):
     def __tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(
             trace_details.Expected(
-                trace_details.ConstantString(self._compiled_reg_ex.pattern)
+                trace_details.String(self._compiled_reg_ex.pattern)
             )
         )

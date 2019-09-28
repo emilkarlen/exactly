@@ -1,4 +1,7 @@
 [suites]
 
+empty
+equals
 matches
 line-matches
+transformed

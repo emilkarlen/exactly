@@ -1,7 +1,7 @@
 import pathlib
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
-from typing import Set, Optional
+from typing import Set, Optional, Iterable
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -94,7 +94,7 @@ class FileToCheck:
         return self._transformed_file_path
 
     @contextmanager
-    def lines(self) -> iter:
+    def lines(self) -> Iterable[str]:
         """
         Gives the lines of the file contents to check.
 

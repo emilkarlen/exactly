@@ -75,7 +75,7 @@ class FileMatcherType(FileMatcherImplBase):
                 .append_details(trace_details.HeaderAndValue(types.PATH_TYPE_INFO.singular_name.capitalize(),
                                                              trace_details.PathValueDetailsRenderer(path.describer)))
                 .append_details(trace_details.HeaderAndValue('Error',
-                                                             trace_details.ConstantString(ex)))
+                                                             trace_details.String(ex)))
 
         )
         return tb.build_result(False)
@@ -89,7 +89,7 @@ class FileMatcherType(FileMatcherImplBase):
         )
         tb = self.__tb_with_expected().append_details(
             trace_details.Actual(
-                trace_details.ConstantString(actual_type_description)
+                trace_details.String(actual_type_description)
             )
         )
         return tb.build_result(False)
@@ -97,7 +97,7 @@ class FileMatcherType(FileMatcherImplBase):
     def __tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(
             trace_details.Expected(
-                trace_details.ConstantString(
+                trace_details.String(
                     file_properties.TYPE_INFO[self._file_type].description)
             )
         )

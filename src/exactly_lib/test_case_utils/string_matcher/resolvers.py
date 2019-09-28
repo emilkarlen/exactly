@@ -1,6 +1,5 @@
-from typing import Sequence, Callable, Set, Optional
+from typing import Sequence, Callable, Set
 
-from exactly_lib.definitions import instruction_arguments, expression
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
@@ -13,11 +12,11 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.test_case_utils.string_matcher.delegated_matcher import StringMatcherDelegatedToMatcherWTrace
 from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherOnTransformedFileToCheck
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic import string_matcher_values
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
+from exactly_lib.type_system.logic.impls import combinator_matchers
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -240,7 +239,9 @@ class StringMatcherReferenceResolver(StringMatcherResolver):
     @staticmethod
     def _negated(original: StringMatcherValue) -> StringMatcherValue:
         def get_matcher(tcds: HomeAndSds) -> StringMatcher:
-            return _NegationStringMatcher(original.value_of_any_dependency(tcds))
+            return StringMatcherDelegatedToMatcherWTrace(
+                combinator_matchers.Negation(original.value_of_any_dependency(tcds))
+            )
 
         return StringMatcherValueFromParts(
             original.resolving_dependencies(),
@@ -249,29 +250,6 @@ class StringMatcherReferenceResolver(StringMatcherResolver):
 
     def __str__(self):
         return str(type(self)) + '\'' + str(self._name_of_referenced_resolver) + '\''
-
-
-class _NegationStringMatcher(StringMatcher):
-    def __init__(self, negated: StringMatcher):
-        self.negated = negated
-
-    @property
-    def name(self) -> str:
-        return expression.NOT_OPERATOR_NAME
-
-    @property
-    def option_description(self) -> str:
-        return instruction_arguments.NEGATION_ARGUMENT_STR + ' ' + self.negated.option_description
-
-    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        result = self.negated.matches_emr(model)
-        if result is None:
-            return self._failure_message_resolver()
-        else:
-            return None
-
-    def _failure_message_resolver(self) -> ErrorMessageResolver:
-        return err_msg_resolvers.constant(self.option_description)
 
 
 class _ValidatorOfReferredResolver(pre_or_post_validation.ValidatorOfReferredResolverBase):

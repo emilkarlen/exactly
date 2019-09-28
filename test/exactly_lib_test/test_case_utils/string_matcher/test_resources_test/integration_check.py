@@ -18,6 +18,7 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
 from exactly_lib.type_system.logic.string_matcher_values import StringMatcherConstantValue
 from exactly_lib.util.symbol_table import SymbolTable
@@ -300,6 +301,9 @@ class _StringMatcherThatReportsHardError(StringMatcher):
         return 'unconditional HARD ERROR'
 
     def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+        raise HardErrorException(new_single_string_text_for_test('unconditional hard error'))
+
+    def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
         raise HardErrorException(new_single_string_text_for_test('unconditional hard error'))
 
 
