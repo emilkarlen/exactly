@@ -6,6 +6,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import diff_msg
+from exactly_lib.test_case_utils.err_msg2 import trace_details
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
@@ -15,7 +16,7 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.trace import trace
 from exactly_lib.type_system.trace.trace import Node
 from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
-from exactly_lib.util import logic_types
+from exactly_lib.util import logic_types, strings
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -108,15 +109,14 @@ class _FailureTraceRenderer(NodeRenderer[bool]):
         )
 
     def _details(self) -> Sequence[trace.Detail]:
-        header = 'Actual contents ({} files):'.format(len(self._actual_contents))
-        return (
-                [trace.StringDetail(header)]
-                +
-                [
-                    trace.StringDetail(_INDENT + item)
-                    for item in self._dir_contents_err_msg_lines()
-                ]
+        renderer = trace_details.HeaderAndValue(
+            strings.FormatPositional(
+                'Actual contents ({} files)', len(self._actual_contents),
+            ),
+            trace_details.StringList(self._dir_contents_err_msg_lines()),
+
         )
+        return renderer.render()
 
     def _dir_contents_err_msg_lines(self) -> List[str]:
         paths_in_dir = [

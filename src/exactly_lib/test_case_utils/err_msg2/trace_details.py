@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Iterable
 
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForValue
 from exactly_lib.type_system.trace import trace
@@ -105,3 +105,14 @@ class Indented(DetailsRenderer, DetailVisitor[Detail]):
 
     def visit_pre_formatted_string(self, x: PreFormattedStringDetail) -> Detail:
         return x
+
+
+class StringList(DetailsRenderer):
+    def __init__(self, items: Iterable[ToStringObject]):
+        self._items = items
+
+    def render(self) -> Sequence[Detail]:
+        return [
+            trace.StringDetail(item)
+            for item in self._items
+        ]
