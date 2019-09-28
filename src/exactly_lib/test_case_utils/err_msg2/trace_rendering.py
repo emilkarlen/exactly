@@ -42,7 +42,7 @@ class _NodeRendererToMinorBlock(SequenceRenderer[MinorBlock]):
         )
 
     def _header_line(self) -> LineElement:
-        s = ' '.join([self._node.header, self._bool_header_tail()])
+        s = ' '.join([str(self._node.header), self._bool_header_tail()])
 
         return LineElement(
             structure.StringLineObject(s),
@@ -81,12 +81,12 @@ class _DetailRendererToLineElements(SequenceRenderer[LineElement],
 
     def visit_string(self, x: StringDetail) -> Sequence[LineElement]:
         return [
-            LineElement(structure.StringLineObject(x.string))
+            LineElement(structure.StringLineObject(str(x.string)))
         ]
 
     def visit_pre_formatted_string(self, x: PreFormattedStringDetail) -> Sequence[LineElement]:
         return [
-            LineElement(structure.PreFormattedStringLineObject(x.object_with_to_string,
+            LineElement(structure.PreFormattedStringLineObject(str(x.object_with_to_string),
                                                                x.string_is_line_ended))
         ]
 

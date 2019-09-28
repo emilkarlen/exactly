@@ -3,6 +3,9 @@ from typing import Sequence, TypeVar, Generic, Any
 
 RET = TypeVar('RET')
 
+# Object which is rendered to a string using str(object)
+ToStringObject = Any
+
 
 class Detail(ABC):
     @abstractmethod
@@ -13,31 +16,31 @@ class Detail(ABC):
 class StringDetail(Detail):
     """A detail that is a string without any special structure."""
 
-    def __init__(self, string: str):
-        self._string = string
+    def __init__(self, to_string_object: ToStringObject):
+        self._to_string_object = to_string_object
 
     def accept(self, visitor: 'DetailVisitor[RET]') -> RET:
         return visitor.visit_string(self)
 
     @property
-    def string(self) -> str:
-        return self._string
+    def string(self) -> ToStringObject:
+        return self._to_string_object
 
 
 class PreFormattedStringDetail(Detail):
     def __init__(self,
-                 object_with_to_string: Any,
+                 to_string_object: ToStringObject,
                  string_is_line_ended: bool = False
                  ):
-        self._object_with_to_string = object_with_to_string
+        self._to_string_object = to_string_object
         self._string_is_line_ended = string_is_line_ended
 
     def accept(self, visitor: 'DetailVisitor[RET]') -> RET:
         return visitor.visit_pre_formatted_string(self)
 
     @property
-    def object_with_to_string(self) -> str:
-        return self._object_with_to_string
+    def object_with_to_string(self) -> ToStringObject:
+        return self._to_string_object
 
     @property
     def string_is_line_ended(self) -> bool:

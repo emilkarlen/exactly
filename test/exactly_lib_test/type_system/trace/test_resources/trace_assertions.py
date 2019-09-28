@@ -1,10 +1,12 @@
 import unittest
-from typing import Sequence, Any
+from typing import Sequence
 
-from exactly_lib.type_system.trace.trace import Detail, Node, PreFormattedStringDetail, StringDetail, DetailVisitor
+from exactly_lib.type_system.trace.trace import Detail, Node, PreFormattedStringDetail, StringDetail, DetailVisitor, \
+    ToStringObject
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
+from exactly_lib_test.util.test_resources import to_string_assertions as asrt_to_string
 
 
 def matches_node(header: ValueAssertion[str] = asrt.anything_goes(),
@@ -14,28 +16,31 @@ def matches_node(header: ValueAssertion[str] = asrt.anything_goes(),
     return _MatchesNode(header, data, details, children)
 
 
-def is_string_detail(string: ValueAssertion[str] = asrt.anything_goes(),
+def is_string_detail(to_string_object: ValueAssertion[ToStringObject] = asrt.anything_goes(),
                      ) -> ValueAssertion[Detail]:
     return asrt.is_instance_with__many(
         StringDetail,
         [
             asrt.sub_component('string',
                                StringDetail.string.fget,
-                               asrt.is_instance_with(str, string)
+                               asrt.and_([
+                                   asrt_to_string.matches(asrt.anything_goes()),
+                                   to_string_object,
+                               ])
                                ),
         ],
     )
 
 
-def is_pre_formatted_string_detail(object_with_to_string: ValueAssertion[Any] = asrt.anything_goes(),
+def is_pre_formatted_string_detail(to_string_object: ValueAssertion[ToStringObject] = asrt.anything_goes(),
                                    string_is_line_ended: ValueAssertion[bool] = asrt.anything_goes(),
                                    ) -> ValueAssertion[Detail]:
     return asrt.is_instance_with__many(
         PreFormattedStringDetail,
         [
-            asrt.sub_component('object_with_to_string',
+            asrt.sub_component('to_string_object',
                                PreFormattedStringDetail.object_with_to_string.fget,
-                               object_with_to_string,
+                               to_string_object,
                                ),
             asrt.sub_component('string_is_line_ended',
                                PreFormattedStringDetail.string_is_line_ended.fget,

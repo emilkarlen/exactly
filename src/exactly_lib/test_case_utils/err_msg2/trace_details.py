@@ -1,10 +1,10 @@
-from typing import Any
-
 from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.trace import trace
 from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
-from exactly_lib.type_system.trace.trace import DetailVisitor, Detail, PreFormattedStringDetail, StringDetail
+from exactly_lib.type_system.trace.trace import DetailVisitor, Detail, PreFormattedStringDetail, StringDetail, \
+    ToStringObject
 from exactly_lib.type_system.trace.trace_renderer import DetailRenderer
+from exactly_lib.util.simple_textstruct.rendering import strings
 
 _EXPECTED = 'Expected'
 _ACTUAL = 'Actual'
@@ -34,8 +34,8 @@ class DetailRendererOfConstant(DetailRenderer):
         return self._detail
 
 
-def constant_to_string_object(to_string_object: Any) -> DetailRenderer:
-    return DetailRendererOfConstant(trace.StringDetail(str(to_string_object)))
+def constant_to_string_object(to_string_object: ToStringObject) -> DetailRenderer:
+    return DetailRendererOfConstant(trace.StringDetail(to_string_object))
 
 
 _EXPECTED_HEADER_RENDERER = constant_to_string_object(_EXPECTED)
@@ -82,7 +82,7 @@ class _IndentRenderer(DetailRenderer, DetailVisitor[Detail]):
         return self._detail.render().accept(self)
 
     def visit_string(self, x: StringDetail) -> Detail:
-        return StringDetail(self.INDENT + x.string)
+        return StringDetail(strings.Concatenate((self.INDENT, x.string)))
 
     def visit_pre_formatted_string(self, x: PreFormattedStringDetail) -> Detail:
         return x

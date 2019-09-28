@@ -6,6 +6,7 @@ from exactly_lib_test.test_resources.test_of_test_resources_util import assert_t
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import trace_assertions as sut
+from exactly_lib_test.util.test_resources import to_string_assertions as asrt_to_string
 
 
 def suite() -> unittest.TestSuite:
@@ -147,7 +148,7 @@ class TestIsStringDetail(unittest.TestCase):
                 ),
             NEA('string',
                 expected=
-                sut.is_string_detail(string=asrt.equals(expected_string)),
+                sut.is_string_detail(to_string_object=asrt_to_string.equals(expected_string)),
                 actual=
                 sut.StringDetail(expected_string)
                 ),
@@ -166,7 +167,7 @@ class TestIsStringDetail(unittest.TestCase):
                 ),
             NEA('string',
                 expected=
-                sut.is_string_detail(string=asrt.equals('expected')),
+                sut.is_string_detail(to_string_object=asrt_to_string.equals('expected')),
                 actual=
                 sut.StringDetail('actual'),
                 ),
@@ -194,7 +195,7 @@ class TestIsPreFormattedStringDetail(unittest.TestCase):
                 ),
             NEA('object_with_to_string',
                 expected=
-                sut.is_pre_formatted_string_detail(object_with_to_string=asrt.equals(expected_string)),
+                sut.is_pre_formatted_string_detail(to_string_object=asrt_to_string.equals(expected_string)),
                 actual=
                 sut.PreFormattedStringDetail(expected_string, True)
                 ),
@@ -219,7 +220,7 @@ class TestIsPreFormattedStringDetail(unittest.TestCase):
                 ),
             NEA('string',
                 expected=
-                sut.is_pre_formatted_string_detail(object_with_to_string=asrt.equals('expected')),
+                sut.is_pre_formatted_string_detail(to_string_object=asrt_to_string.equals('expected')),
                 actual=
                 sut.PreFormattedStringDetail('actual', True),
                 ),
