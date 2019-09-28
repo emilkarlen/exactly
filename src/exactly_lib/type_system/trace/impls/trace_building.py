@@ -3,7 +3,7 @@ from typing import List
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.trace.impls.trace_renderers import NodeRendererFromParts
 from exactly_lib.type_system.trace.trace import Node
-from exactly_lib.type_system.trace.trace_renderer import NodeRenderer, DetailRenderer, NODE_DATA
+from exactly_lib.type_system.trace.trace_renderer import NodeRenderer, DetailsRenderer, NODE_DATA
 
 
 class TraceBuilder:
@@ -13,10 +13,10 @@ class TraceBuilder:
         self._children = []
 
     @property
-    def details(self) -> List[DetailRenderer]:
+    def details(self) -> List[DetailsRenderer]:
         return self._details
 
-    def append_detail(self, detail: DetailRenderer) -> 'TraceBuilder':
+    def append_details(self, detail: DetailsRenderer) -> 'TraceBuilder':
         self._details.append(detail)
         return self
 

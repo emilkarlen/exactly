@@ -1,8 +1,9 @@
-from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
+from typing import Sequence
+
+from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForValue
 from exactly_lib.type_system.trace import trace
-from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
 from exactly_lib.type_system.trace.trace import DetailVisitor, Detail, PreFormattedStringDetail, StringDetail
-from exactly_lib.type_system.trace.trace_renderer import DetailRenderer
+from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
 from exactly_lib.util import strings
 from exactly_lib.util.strings import ToStringObject
 
@@ -10,76 +11,94 @@ _EXPECTED = 'Expected'
 _ACTUAL = 'Actual'
 
 
-class PathDetailRenderer(DetailRenderer):
-    def __init__(self, path: DescribedPathPrimitive):
+class PathValueDetailsRenderer(DetailsRenderer):
+    def __init__(self, path: PathDescriberForValue):
         self._path = path
 
-    def render(self) -> Detail:
-        return trace.StringDetail(self._path.describer.value.render())
+    def render(self) -> Sequence[Detail]:
+        return [
+            trace.StringDetail(self._path.value.render()),
+        ]
 
 
-class PathValueAndPrimitiveDetailRenderer(DetailRenderer):
-    def __init__(self, path: DescribedPathPrimitive):
+class PathValueAndPrimitiveDetailsRenderer(DetailsRenderer):
+    def __init__(self, path: PathDescriberForPrimitive):
         self._path = path
 
-    def render(self) -> Detail:
-        return trace.StringDetail(self._path.describer.value.render())
+    def render(self) -> Sequence[Detail]:
+        return [
+            trace.StringDetail(self._path.value.render()),
+            trace.StringDetail(self._path.primitive.render()),
+        ]
 
 
-class DetailRendererOfConstant(DetailRenderer):
+class DetailsRendererOfConstant(DetailsRenderer):
     def __init__(self, detail: Detail):
         self._detail = detail
 
-    def render(self) -> Detail:
-        return self._detail
+    def render(self) -> Sequence[Detail]:
+        return [self._detail]
 
 
-def constant_to_string_object(to_string_object: ToStringObject) -> DetailRenderer:
-    return DetailRendererOfConstant(trace.StringDetail(to_string_object))
+class ConstantString(DetailsRenderer):
+    def __init__(self, to_string_object: ToStringObject):
+        self._to_string_object = to_string_object
+
+    def render(self) -> Sequence[Detail]:
+        return [trace.StringDetail(self._to_string_object)]
 
 
-_EXPECTED_HEADER_RENDERER = constant_to_string_object(_EXPECTED)
-_ACTUAL_HEADER_RENDERER = constant_to_string_object(_ACTUAL)
+class HeaderAndValue(DetailsRenderer):
+    def __init__(self,
+                 header: ToStringObject,
+                 value: DetailsRenderer,
+                 ):
+        self._header = header
+        self._value = value
+
+    def render(self) -> Sequence[Detail]:
+        ret_val = [trace.StringDetail(self._header)]
+
+        ret_val += Indented(self._value).render()
+
+        return ret_val
 
 
-def append_header_and_value_details(tb: TraceBuilder,
-                                    header: DetailRenderer,
-                                    value: DetailRenderer) -> TraceBuilder:
-    tb.append_detail(header)
-    tb.append_detail(_IndentRenderer(value))
-    return tb
+class Expected(DetailsRenderer):
+    def __init__(self, expected: DetailsRenderer):
+        self._expected = expected
+
+    def render(self) -> Sequence[Detail]:
+        ret_val = [trace.StringDetail(_EXPECTED)]
+
+        ret_val += Indented(self._expected).render()
+
+        return ret_val
 
 
-def append_detail_for_expected(tb: TraceBuilder,
-                               expected: DetailRenderer) -> TraceBuilder:
-    return append_header_and_value_details(tb, _EXPECTED_HEADER_RENDERER, expected)
+class Actual(DetailsRenderer):
+    def __init__(self, actual: DetailsRenderer):
+        self._actual = actual
+
+    def render(self) -> Sequence[Detail]:
+        ret_val = [trace.StringDetail(_ACTUAL)]
+
+        ret_val += Indented(self._actual).render()
+
+        return ret_val
 
 
-def append_detail_for_actual(tb: TraceBuilder,
-                             actual: DetailRenderer) -> TraceBuilder:
-    return append_header_and_value_details(tb, _ACTUAL_HEADER_RENDERER, actual)
-
-
-def append_header_and_path(tb: TraceBuilder,
-                           header: DetailRenderer,
-                           path: DescribedPathPrimitive) -> TraceBuilder:
-    return append_header_and_value_details(
-        tb,
-        header,
-        PathDetailRenderer(path),
-    )
-
-
-class _IndentRenderer(DetailRenderer, DetailVisitor[Detail]):
-    # TODO Remove this when Detail structure supports indentation.
-
+class Indented(DetailsRenderer, DetailVisitor[Detail]):
     INDENT = '  '
 
-    def __init__(self, detail: DetailRenderer):
-        self._detail = detail
+    def __init__(self, details: DetailsRenderer):
+        self._details = details
 
-    def render(self) -> Detail:
-        return self._detail.render().accept(self)
+    def render(self) -> Sequence[Detail]:
+        return [
+            detail.accept(self)
+            for detail in self._details.render()
+        ]
 
     def visit_string(self, x: StringDetail) -> Detail:
         return StringDetail(strings.Concatenate((self.INDENT, x.string)))

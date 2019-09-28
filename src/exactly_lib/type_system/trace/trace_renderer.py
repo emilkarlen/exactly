@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Sequence
 
 from exactly_lib.type_system.trace.trace import Detail, Node
 
 
-class DetailRenderer(ABC):
+class DetailsRenderer(ABC):
     @abstractmethod
-    def render(self) -> Detail:
+    def render(self) -> Sequence[Detail]:
         pass
 
 

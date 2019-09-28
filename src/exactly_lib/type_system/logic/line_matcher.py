@@ -42,7 +42,7 @@ class LineMatcher(MatcherWTrace[LineMatcherLine]):
             return tb.build_result(True)
         else:
             tb.details.append(
-                trace_renderers.DetailRendererOfErrorMessageResolver(mb_fail))
+                trace_renderers.DetailsRendererOfErrorMessageResolver(mb_fail))
             return tb.build_result(False)
 
     def matches_emr(self, line: LineMatcherLine) -> Optional[ErrorMessageResolver]:

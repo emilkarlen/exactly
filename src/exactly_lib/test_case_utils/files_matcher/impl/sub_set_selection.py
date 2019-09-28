@@ -17,7 +17,7 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMat
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.trace import trace
 from exactly_lib.type_system.trace.trace import Detail
-from exactly_lib.type_system.trace.trace_renderer import DetailRenderer
+from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -30,6 +30,7 @@ def sub_set_selection_matcher(selector: FileMatcherResolver,
 
 class _SubSetSelectorMatcher(FilesMatcher):
     NAME = 'on ' + instruction_arguments.SELECTION_OPTION.name.long
+
     def __init__(self,
                  selector: FileMatcher,
                  matcher_on_selection: FilesMatcher):
@@ -59,17 +60,17 @@ class _SubSetSelectorMatcher(FilesMatcher):
         )
 
         return self._new_tb() \
-            .append_detail(_SelectionDetailRenderer(self._selector)) \
+            .append_details(_SelectionDetailsRenderer(self._selector)) \
             .append_child(result.trace) \
             .build_result(result.value)
 
 
-class _SelectionDetailRenderer(DetailRenderer):
+class _SelectionDetailsRenderer(DetailsRenderer):
     def __init__(self, selector: FileMatcher):
         self._selector = selector
 
-    def render(self) -> Detail:
-        return trace.StringDetail(self._selector.option_description)
+    def render(self) -> Sequence[Detail]:
+        return [trace.StringDetail(self._selector.option_description)]
 
 
 class _SubSetSelectorMatcherValue(FilesMatcherValue):

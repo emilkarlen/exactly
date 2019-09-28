@@ -26,7 +26,7 @@ from exactly_lib.type_system.logic.impls import quantifier_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
-from exactly_lib.type_system.trace.trace_renderer import DetailRenderer
+from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
 from exactly_lib.util import logic_types
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
@@ -320,8 +320,8 @@ class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConst
         )
 
 
-def _element_detail_renderer(element: FileMatcherModel) -> DetailRenderer:
-    return trace_details.PathDetailRenderer(element.path)
+def _element_detail_renderer(element: FileMatcherModel) -> DetailsRenderer:
+    return trace_details.PathValueDetailsRenderer(element.path.describer)
 
 
 _NAMES = {

@@ -70,16 +70,13 @@ class FileMatcherType(FileMatcherImplBase):
             return self._result_for_unexpected(actual_file_type)
 
     def _result_for_exception(self, path: DescribedPathPrimitive, ex: Exception) -> MatchingResult:
-        tb = self.__tb_with_expected()
-        trace_details.append_header_and_value_details(
-            tb,
-            trace_details.constant_to_string_object(types.PATH_TYPE_INFO.singular_name.capitalize()),
-            trace_details.PathDetailRenderer(path),
-        )
-        trace_details.append_header_and_value_details(
-            tb,
-            trace_details.constant_to_string_object('Error'),
-            trace_details.constant_to_string_object(str(ex)),
+        tb = (
+            self.__tb_with_expected()
+                .append_details(trace_details.HeaderAndValue(types.PATH_TYPE_INFO.singular_name.capitalize(),
+                                                             trace_details.PathValueDetailsRenderer(path.describer)))
+                .append_details(trace_details.HeaderAndValue('Error',
+                                                             trace_details.ConstantString(ex)))
+
         )
         return tb.build_result(False)
 
@@ -90,18 +87,19 @@ class FileMatcherType(FileMatcherImplBase):
             if actual is None
             else file_properties.TYPE_INFO[actual].description
         )
-        tb = self.__tb_with_expected()
-        trace_details.append_detail_for_actual(
-            tb,
-            trace_details.constant_to_string_object(actual_type_description),
+        tb = self.__tb_with_expected().append_details(
+            trace_details.Actual(
+                trace_details.ConstantString(actual_type_description)
+            )
         )
         return tb.build_result(False)
 
     def __tb_with_expected(self) -> TraceBuilder:
-        return trace_details.append_detail_for_expected(
-            self._new_tb(),
-            trace_details.constant_to_string_object(
-                file_properties.TYPE_INFO[self._file_type].description)
+        return self._new_tb().append_details(
+            trace_details.Expected(
+                trace_details.ConstantString(
+                    file_properties.TYPE_INFO[self._file_type].description)
+            )
         )
 
 

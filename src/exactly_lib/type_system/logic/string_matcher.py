@@ -134,7 +134,7 @@ class StringMatcher(MatcherWTrace[FileToCheck], ABC):
             return tb.build_result(True)
         else:
             tb.details.append(
-                trace_renderers.DetailRendererOfErrorMessageResolver(mb_emr))
+                trace_renderers.DetailsRendererOfErrorMessageResolver(mb_emr))
             return tb.build_result(False)
 
     def _new_tb(self) -> TraceBuilder:

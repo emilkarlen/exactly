@@ -97,7 +97,7 @@ class LineMatcherRegex(LineMatcher):
 
     def __init__(self, compiled_regular_expression: Pattern):
         self._compiled_regular_expression = compiled_regular_expression
-        self._regex_detail_renderer = trace_details.DetailRendererOfConstant(
+        self._regex_detail_renderer = trace_details.DetailsRendererOfConstant(
             trace.StringDetail(self.option_description)
         )
 
@@ -115,7 +115,7 @@ class LineMatcherRegex(LineMatcher):
 
     def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
         return self._new_tb() \
-            .append_detail(self._regex_detail_renderer) \
+            .append_details(self._regex_detail_renderer) \
             .build_result(self.matches(line))
 
     def matches(self, line: LineMatcherLine) -> bool:
@@ -127,7 +127,7 @@ class LineMatcherLineNumber(LineMatcher):
 
     def __init__(self, integer_matcher: IntegerMatcher):
         self._integer_matcher = integer_matcher
-        self._detail_renderer_of_expected = trace_details.DetailRendererOfConstant(
+        self._detail_renderer_of_expected = trace_details.DetailsRendererOfConstant(
             trace.StringDetail(self.option_description)
         )
 
@@ -143,7 +143,7 @@ class LineMatcherLineNumber(LineMatcher):
         is_match = self.matches(line)
 
         return self._new_tb() \
-            .append_detail(self._detail_renderer_of_expected) \
+            .append_details(self._detail_renderer_of_expected) \
             .build_result(is_match)
 
     def matches(self, line: LineMatcherLine) -> bool:

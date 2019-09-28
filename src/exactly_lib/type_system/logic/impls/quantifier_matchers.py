@@ -8,7 +8,7 @@ from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolve
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
-from exactly_lib.type_system.trace.trace_renderer import DetailRenderer
+from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
 from exactly_lib.util import strings
 from exactly_lib.util.logic_types import Quantifier
 
@@ -20,7 +20,7 @@ class ElementSetup(Generic[MODEL, ELEMENT]):
     def __init__(self,
                  type_name: str,
                  getter: Callable[[MODEL], Iterator[ELEMENT]],
-                 renderer: Callable[[ELEMENT], DetailRenderer],
+                 renderer: Callable[[ELEMENT], DetailsRenderer],
                  ):
         self.type_name = type_name
         self.getter = getter
@@ -72,13 +72,13 @@ class QuantifierBase(Generic[MODEL, ELEMENT], MatcherWTraceAndNegation[MODEL], A
             self._element_setup.getter(model),
         )
 
-    def _matching_element_header(self) -> DetailRenderer:
-        return trace_details.constant_to_string_object(
+    def _matching_element_header(self) -> DetailsRenderer:
+        return trace_details.ConstantString(
             strings.Concatenate(['Matching ', self._element_setup.type_name])
         )
 
-    def _non_matching_element_header(self) -> DetailRenderer:
-        return trace_details.constant_to_string_object(
+    def _non_matching_element_header(self) -> DetailsRenderer:
+        return trace_details.ConstantString(
             strings.Concatenate(['Non-matching ', self._element_setup.type_name])
         )
 
@@ -92,8 +92,8 @@ class QuantifierBase(Generic[MODEL, ELEMENT], MatcherWTraceAndNegation[MODEL], A
             else
             self._non_matching_element_header()
         )
-        tb.append_detail(header_renderer)
-        tb.append_detail(self._element_setup.renderer(element))
+        tb.append_details(header_renderer)
+        tb.append_details(self._element_setup.renderer(element))
         tb.append_child(result.trace)
 
         return tb.build_result(result.value)
@@ -101,7 +101,7 @@ class QuantifierBase(Generic[MODEL, ELEMENT], MatcherWTraceAndNegation[MODEL], A
     @abstractmethod
     def _matches(self,
                  tb: TraceBuilder,
-                 renderer: Callable[[ELEMENT], DetailRenderer],
+                 renderer: Callable[[ELEMENT], DetailsRenderer],
                  predicate: MatcherWTrace[ELEMENT],
                  elements: Iterator[ELEMENT]) -> MatchingResult:
         pass
@@ -120,8 +120,8 @@ class Exists(Generic[MODEL, ELEMENT], QuantifierBase[MODEL, ELEMENT]):
 
     def _no_match(self, tb: TraceBuilder, tot_num_elements: int) -> MatchingResult:
         return (
-            tb.append_detail(
-                trace_details.constant_to_string_object(
+            tb.append_details(
+                trace_details.ConstantString(
                     strings.FormatPositional(
                         'No matching {} ({} tested)',
                         self._element_setup.type_name,
@@ -133,7 +133,7 @@ class Exists(Generic[MODEL, ELEMENT], QuantifierBase[MODEL, ELEMENT]):
 
     def _matches(self,
                  tb: TraceBuilder,
-                 renderer: Callable[[ELEMENT], DetailRenderer],
+                 renderer: Callable[[ELEMENT], DetailsRenderer],
                  predicate: MatcherWTrace[ELEMENT],
                  elements: Iterator[ELEMENT]) -> MatchingResult:
         num_elements = 0
@@ -159,8 +159,8 @@ class ForAll(Generic[MODEL, ELEMENT], QuantifierBase[MODEL, ELEMENT]):
 
     def _all_match(self, tb: TraceBuilder, tot_num_elements: int) -> MatchingResult:
         return (
-            tb.append_detail(
-                trace_details.constant_to_string_object(
+            tb.append_details(
+                trace_details.ConstantString(
                     strings.FormatPositional(
                         'Every {} matches ({} tested)',
                         self._element_setup.type_name,
@@ -172,7 +172,7 @@ class ForAll(Generic[MODEL, ELEMENT], QuantifierBase[MODEL, ELEMENT]):
 
     def _matches(self,
                  tb: TraceBuilder,
-                 renderer: Callable[[ELEMENT], DetailRenderer],
+                 renderer: Callable[[ELEMENT], DetailsRenderer],
                  predicate: MatcherWTrace[ELEMENT],
                  elements: Iterator[ELEMENT]) -> MatchingResult:
         num_elements = 0

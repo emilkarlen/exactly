@@ -84,10 +84,11 @@ class FileMatcherBaseNameRegExPattern(FileMatcherImplBase):
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         base_name = model.path.primitive.name
         regex_match = self._compiled_reg_ex.search(base_name)
-        tb = self.__tb_with_expected()
-        trace_details.append_detail_for_actual(
-            tb,
-            trace_details.constant_to_string_object(base_name),
+        tb = self.__tb_with_expected().append_details(
+            trace_details.Actual(
+                trace_details.ConstantString(base_name)
+            )
+
         )
         if regex_match is not None:
             return tb.build_result(True)
@@ -95,8 +96,8 @@ class FileMatcherBaseNameRegExPattern(FileMatcherImplBase):
             return tb.build_result(False)
 
     def __tb_with_expected(self) -> TraceBuilder:
-        return trace_details.append_detail_for_expected(
-            self._new_tb(),
-            trace_details.constant_to_string_object(
-                self._compiled_reg_ex.pattern)
+        return self._new_tb().append_details(
+            trace_details.Expected(
+                trace_details.ConstantString(self._compiled_reg_ex.pattern)
+            )
         )

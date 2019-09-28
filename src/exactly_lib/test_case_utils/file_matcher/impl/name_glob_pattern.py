@@ -83,10 +83,11 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
         return model.path.primitive.match(self._glob_pattern)
 
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
-        tb = self.__tb_with_expected()
-        trace_details.append_detail_for_actual(
-            tb,
-            trace_details.PathValueAndPrimitiveDetailRenderer(model.path),
+        tb = self.__tb_with_expected().append_details(
+            trace_details.Actual(
+                trace_details.PathValueAndPrimitiveDetailsRenderer(model.path.describer)
+            )
+
         )
         if model.path.primitive.match(self._glob_pattern):
             return tb.build_result(True)
@@ -94,7 +95,8 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
             return tb.build_result(False)
 
     def __tb_with_expected(self) -> TraceBuilder:
-        return trace_details.append_detail_for_expected(
-            self._new_tb(),
-            trace_details.constant_to_string_object(self._glob_pattern)
+        return self._new_tb().append_details(
+            trace_details.Expected(
+                trace_details.ConstantString(self._glob_pattern)
+            )
         )
