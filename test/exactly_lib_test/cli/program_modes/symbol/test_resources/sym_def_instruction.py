@@ -21,7 +21,7 @@ from exactly_lib.test_case.actor import Actor, ActionToCheck, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.result import svh
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.simple_textstruct.rendering import strings
+from exactly_lib.util import strings
 from exactly_lib_test.cli.program_modes.test_resources import main_program_execution
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import MainProgramConfig
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for

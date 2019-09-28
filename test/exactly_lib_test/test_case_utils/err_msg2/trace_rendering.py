@@ -3,9 +3,9 @@ import unittest
 from exactly_lib.test_case_utils.err_msg2 import trace_rendering as sut
 from exactly_lib.type_system.trace.trace import Node, StringDetail, PreFormattedStringDetail
 from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
+from exactly_lib.util import strings
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.simple_textstruct import structure as s
-from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

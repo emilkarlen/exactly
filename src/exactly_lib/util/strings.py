@@ -1,14 +1,19 @@
 from abc import ABC
 from typing import Any, Mapping, Callable, TypeVar, Generic, Sequence
 
+# Object which is rendered to a string using str(object)
+ToStringObject = Any
+
 
 class StringConstructor(ABC):
+    """Base classes for some objects that are ToStringObject"""
+
     def __str__(self) -> str:
         pass
 
 
 class Concatenate(StringConstructor):
-    def __init__(self, elements: Sequence[Any]):
+    def __init__(self, elements: Sequence[ToStringObject]):
         """
         :param elements: List of elements that supports __str__
         """
@@ -22,7 +27,7 @@ class Concatenate(StringConstructor):
 
 
 class FormatMap(StringConstructor):
-    def __init__(self, format_str: str, format_map: Mapping[str, Any]):
+    def __init__(self, format_str: str, format_map: Mapping[str, ToStringObject]):
         self._format_str = format_str
         self._format_map = format_map
 
@@ -49,3 +54,11 @@ class Transformed(Generic[T], StringConstructor):
 
     def __str__(self) -> str:
         return self._transformer(self.x)
+
+
+class Function(StringConstructor):
+    def __init__(self, function: Callable[[], str]):
+        self._function = function
+
+    def __str__(self) -> str:
+        return self._function()

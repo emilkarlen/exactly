@@ -1,10 +1,10 @@
 from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.trace import trace
 from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
-from exactly_lib.type_system.trace.trace import DetailVisitor, Detail, PreFormattedStringDetail, StringDetail, \
-    ToStringObject
+from exactly_lib.type_system.trace.trace import DetailVisitor, Detail, PreFormattedStringDetail, StringDetail
 from exactly_lib.type_system.trace.trace_renderer import DetailRenderer
-from exactly_lib.util.simple_textstruct.rendering import strings
+from exactly_lib.util import strings
+from exactly_lib.util.strings import ToStringObject
 
 _EXPECTED = 'Expected'
 _ACTUAL = 'Actual'

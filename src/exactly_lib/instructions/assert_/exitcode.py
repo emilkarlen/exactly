@@ -27,8 +27,8 @@ from exactly_lib.test_case_utils.matcher.impls import err_msg
 from exactly_lib.test_case_utils.matcher.matcher import Failure
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.util import strings
 from exactly_lib.util.messages import expected_found
-from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 _OPERAND_DESCRIPTION = 'An integer in the interval [0, 255]'

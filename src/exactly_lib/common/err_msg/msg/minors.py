@@ -2,9 +2,10 @@ from typing import Any
 
 from exactly_lib.common.report_rendering.text_doc import MinorTextRenderer
 from exactly_lib.definitions import misc_texts
+from exactly_lib.util import strings
 from exactly_lib.util.name import Name
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, blocks, line_objects, \
-    component_renderers as comp_rend, strings, line_elements
+    component_renderers as comp_rend, line_elements
 from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import LineElement
 

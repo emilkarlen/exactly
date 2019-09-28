@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.condition.comparison_structures import OperandR
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import NotAnIntegerException, python_evaluate
 from exactly_lib.test_case_utils.condition.integer.integer_value import CustomIntegerValidator, IntegerValue
 from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
-from exactly_lib.util.simple_textstruct.rendering import strings
+from exactly_lib.util import strings
 from exactly_lib.util.symbol_table import SymbolTable
 
 

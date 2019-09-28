@@ -39,8 +39,8 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsC
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.value_type import DataValueType, ValueType
+from exactly_lib.util import strings
 from exactly_lib.util.parse.token import TokenType, Token
-from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.symbol_table import SymbolTable
 
 ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}

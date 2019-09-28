@@ -18,9 +18,9 @@ from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import parse_s
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
 from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
 from exactly_lib.type_system.data.string_value import StringValue
+from exactly_lib.util import strings
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.symbol_table import SymbolTable
 
 IGNORE_CASE_OPTION_NAME = a.OptionName(long_name='ignore-case')

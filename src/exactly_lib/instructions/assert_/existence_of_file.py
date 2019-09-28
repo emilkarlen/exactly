@@ -44,10 +44,11 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.util import strings
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.simple_textstruct import structure as text_struct
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, strings
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.textformat.structure.core import ParagraphItem

@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Sequence, TypeVar, Generic, Any
+from typing import Sequence, TypeVar, Generic
+
+from exactly_lib.util.strings import ToStringObject
 
 RET = TypeVar('RET')
-
-# Object which is rendered to a string using str(object)
-ToStringObject = Any
 
 
 class Detail(ABC):

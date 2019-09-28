@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.program.parse import parse_arguments
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 from exactly_lib.type_system.value_type import DataValueType
-from exactly_lib.util.simple_textstruct.rendering import strings
+from exactly_lib.util import strings
 
 
 def parse_as_command(parser: TokenParser) -> CommandResolver:

@@ -21,9 +21,9 @@ from exactly_lib.test_case_utils.condition.integer.integer_value import CustomIn
 from exactly_lib.test_case_utils.condition.parse import parse_comparison_operator
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.util import strings
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
-from exactly_lib.util.simple_textstruct.rendering import strings
 
 _NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'
 

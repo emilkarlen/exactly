@@ -1,8 +1,8 @@
 import unittest
 from typing import Sequence
 
-from exactly_lib.type_system.trace.trace import Detail, Node, PreFormattedStringDetail, StringDetail, DetailVisitor, \
-    ToStringObject
+from exactly_lib.type_system.trace.trace import Detail, Node, PreFormattedStringDetail, StringDetail, DetailVisitor
+from exactly_lib.util.strings import ToStringObject
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder

@@ -28,8 +28,8 @@ from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
+from exactly_lib.util import strings
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.simple_textstruct.rendering import strings
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
