@@ -3,6 +3,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.impl.path import described_path_resolvers
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
@@ -11,10 +12,15 @@ from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.err_msg import property_description
+from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers
+from exactly_lib.test_case_utils.err_msg2 import path_rendering, header_rendering
 from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.structure import MajorBlock
+from exactly_lib.util.strings import ToStringObject
 
 
 class ComparisonActualFile(tuple):
@@ -48,11 +54,15 @@ class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndValidation, A
                   os_services: OsServices) -> ComparisonActualFile:
         pass
 
+    @abstractmethod
+    def failure_message_header(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Renderer[MajorBlock]:
+        pass
+
 
 class ConstructorForPath(ComparisonActualFileConstructor):
     def __init__(self,
                  path: FileRefResolver,
-                 object_name: str,
+                 object_name: ToStringObject,
                  file_access_needs_to_be_verified: bool,
                  ):
         """
@@ -69,6 +79,14 @@ class ConstructorForPath(ComparisonActualFileConstructor):
         self._object_name = object_name
         self._file_access_needs_to_be_verified = file_access_needs_to_be_verified
 
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._path.references
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return pre_or_post_validation.ConstantSuccessValidator()
+
     def construct(self,
                   source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep,
@@ -80,17 +98,21 @@ class ConstructorForPath(ComparisonActualFileConstructor):
             described_path,
             ActualFilePropertyDescriptorConstructorForComparisonFile(
                 described_path.describer,
-                self._object_name),
+                str(self._object_name)),
             self._file_access_needs_to_be_verified,
         )
 
-    @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return pre_or_post_validation.ConstantSuccessValidator()
+    def failure_message_header(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Renderer[MajorBlock]:
+        described_path = described_path_resolvers.of(self._path) \
+            .resolve__with_cwd_as_cd(environment.symbols) \
+            .value_of_any_dependency(environment.home_and_sds)
 
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._path.references
+        return path_rendering.HeaderAndPathMajorBlock(
+            header_rendering.SimpleHeaderMinorBlockRenderer(
+                file_or_dir_contents_headers.unexpected(self._object_name)
+            ),
+            path_rendering.PathRepresentationsRenderersForPrimitive(described_path.describer),
+        )
 
 
 class ActualFilePropertyDescriptorConstructorForComparisonFile(FilePropertyDescriptorConstructor):

@@ -16,6 +16,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -23,6 +24,7 @@ from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
@@ -32,6 +34,9 @@ from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution import process_output_files
+from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 _SINGLE_LINE_DESCRIPTION = 'Tests the contents of {checked_file} from the {action_to_check}, or from a {program_type}'
@@ -84,7 +89,7 @@ class Parser(ComparisonActualFileParser):
         self._default = actual_files.ConstructorForPath(
             file_ref_resolvers.of_rel_option(RelOptionType.REL_RESULT,
                                              file_refs.constant_path_part(self._checked_file_name)),
-            self._checked_file_name,
+            file_or_dir_contents_headers.target_name_of_proc_output_file_from_act_phase(checked_file),
             False,
         )
 
@@ -104,6 +109,14 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
                  program: ProgramResolver):
         self._checked_output = checked_output
         self._program = program
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._program.references
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return self._program.validator
 
     def construct(self,
                   source_info: InstructionSourceInfo,
@@ -131,10 +144,11 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
             False
         )
 
-    @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return self._program.validator
+    def failure_message_header(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Renderer[MajorBlock]:
+        header = file_or_dir_contents_headers.unexpected(
+            file_or_dir_contents_headers.target_name_of_proc_output_file_from_program(self._checked_output)
+        )
 
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._program.references
+        return blocks.MajorBlockOfSingleLineObject(
+            line_objects.StringLineObject(header)
+        )

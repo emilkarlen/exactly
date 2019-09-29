@@ -1,0 +1,9 @@
+[act]
+
+
+[assert]
+
+
+stdout
+  -from $ exit
+  ! empty

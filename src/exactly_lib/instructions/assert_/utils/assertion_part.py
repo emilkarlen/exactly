@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Sequence, Any, Callable, TypeVar, Generic, List
+from typing import Sequence, Any, Callable, TypeVar, Generic, List, Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
@@ -9,10 +11,14 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import pfh, svh
+from exactly_lib.test_case.result.pfh import PassOrFailOrHardErrorEnum
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.test_case_utils.pfh_exception import translate_pfh_exception_to_pfh
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.structure import MajorBlock
 
 A = TypeVar('A')
 B = TypeVar('B')
@@ -164,6 +170,8 @@ class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
                  assertion_part: AssertionPart[A, Any],
                  custom_environment,
                  get_argument_to_part: Callable[[InstructionEnvironmentForPostSdsStep], A],
+                 failure_message_header:
+                 Optional[Callable[[PathResolvingEnvironmentPreOrPostSds], Renderer[MajorBlock]]] = None,
                  ):
         """
         :param get_argument_to_part: Returns the argument to give to
@@ -173,6 +181,7 @@ class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
         self._assertion_part = assertion_part
         self._get_argument_to_assertion_part = get_argument_to_part
         self._validator = PreOrPostSdsSvhValidationErrorValidator(assertion_part.validator)
+        self._failure_message_header = failure_message_header
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self._assertion_part.references
@@ -191,7 +200,25 @@ class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         argument_to_checker = self._get_argument_to_assertion_part(environment)
-        return self._assertion_part.check_and_return_pfh(environment,
-                                                         os_services,
-                                                         self._custom_environment,
-                                                         argument_to_checker)
+        result = self._assertion_part.check_and_return_pfh(environment,
+                                                           os_services,
+                                                           self._custom_environment,
+                                                           argument_to_checker)
+
+        if result.status is PassOrFailOrHardErrorEnum.FAIL:
+            return self._failure(environment, result.failure_message)
+        else:
+            return result
+
+    def _failure(self,
+                 environment: InstructionEnvironmentForPostSdsStep,
+                 err_msg_from_part: TextRenderer
+                 ) -> pfh.PassOrFailOrHardError:
+        err_msg = err_msg_from_part
+        if self._failure_message_header:
+            err_msg = rend_comb.PrependR(
+                self._failure_message_header(environment.path_resolving_environment_pre_or_post_sds),
+                err_msg_from_part,
+            )
+
+        return pfh.new_pfh_fail(err_msg)

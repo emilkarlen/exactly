@@ -52,5 +52,6 @@ class Parser(AssertPhaseInstructionTokenParser):
         return AssertionInstructionFromAssertionPart(
             assertion_part_sequence,
             source_info,
-            lambda env: actual_file_constructor
+            lambda env: actual_file_constructor,
+            actual_file_constructor.failure_message_header,
         )

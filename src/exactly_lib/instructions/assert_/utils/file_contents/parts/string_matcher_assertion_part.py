@@ -7,6 +7,8 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import pfh_exception
+from exactly_lib.test_case_utils.err_msg2 import trace_rendering
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
 
 
 class StringMatcherAssertionPart(FileContentsAssertionPart):
@@ -23,10 +25,9 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
                os_services: OsServices,
                custom_environment,
                file_to_check: FileToCheck):
-        value = self._string_matcher.resolve(environment.symbols)
-        matcher = value.value_of_any_dependency(environment.home_and_sds)
-        mb_error_message = matcher.matches_emr(file_to_check)
-        if mb_error_message is not None:
+        matcher = self._string_matcher.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        matching_result = matcher.matches_w_trace(file_to_check)
+        if not matching_result.value:
             raise pfh_exception.PfhFailException(
-                mb_error_message.resolve__tr()
+                rend_comb.SingletonSequenceR(trace_rendering.BoolTraceRenderer(matching_result.trace))
             )
