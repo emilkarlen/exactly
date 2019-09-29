@@ -78,7 +78,7 @@ class _Parser:
         else:
             mk_prefix_expr = self.consume_optional_prefix_operator()
             if mk_prefix_expr:
-                expression = self.parse_mandatory_simple(must_be_on_current_line=True)
+                expression = self.parse_mandatory_simple(must_be_on_current_line=False)
                 return mk_prefix_expr(expression)
             else:
                 return self.parser.parse_mandatory_string_that_must_be_unquoted(
@@ -97,9 +97,11 @@ class _Parser:
 
     def consume_optional_prefix_operator(self):
         prefix_operator_name = self.parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(
-            self.prefix_expressions_keys)
+            self.prefix_expressions_keys,
+            must_be_on_current_line=False
+        )
         if prefix_operator_name:
-            self.parser.require_is_not_at_eol(self.missing_expression + ' after ' + prefix_operator_name)
+            # self.parser.require_is_not_at_eol(self.missing_expression + ' after ' + prefix_operator_name)
             return self.grammar.prefix_expressions[prefix_operator_name].mk_expression
         else:
             return None

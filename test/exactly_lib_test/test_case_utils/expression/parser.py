@@ -382,6 +382,14 @@ class TestSinglePrefixExpression(TestCaseBase):
                         source_assertion=
                         asrt_source.is_at_end_of_line(1),
                     ),
+                    SourceCase(
+                        'no source after operator, but expr on following line',
+                        source=
+                        remaining_source(prefix_operator,
+                                         [ast.SIMPLE_SANS_ARG]),
+                        source_assertion=
+                        asrt_source.is_at_end_of_line(2),
+                    ),
                 ]
 
                 for case in cases:
@@ -447,11 +455,6 @@ class TestSinglePrefixExpression(TestCaseBase):
                     (
                         'no source after operator',
                         remaining_source(prefix_operator),
-                    ),
-                    (
-                        'no source after operator, but expr on following line',
-                        remaining_source(prefix_operator,
-                                         [ast.SIMPLE_SANS_ARG]),
                     ),
                     (
                         'operator followed by non-expression',
