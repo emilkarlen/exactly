@@ -36,8 +36,10 @@ class _Parser(Parser[LineMatcherResolver]):
 _PARSER = _Parser()
 
 
-def parse_line_matcher_from_token_parser(parser: TokenParser) -> LineMatcherResolver:
-    return parse_expression.parse(GRAMMAR, parser)
+def parse_line_matcher_from_token_parser(parser: TokenParser,
+                                         must_be_on_current_line: bool = True) -> LineMatcherResolver:
+    return parse_expression.parse(GRAMMAR, parser,
+                                  must_be_on_current_line=must_be_on_current_line)
 
 
 def parse_regex(parser: TokenParser) -> LineMatcherResolver:

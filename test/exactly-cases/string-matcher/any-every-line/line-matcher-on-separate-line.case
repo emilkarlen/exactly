@@ -9,6 +9,5 @@ EOF
 [assert]
 
 
-contents checked-file ! any line :
-                      matches 'contents' &&
+contents checked-file any line :
                       line-num == 1
