@@ -240,8 +240,8 @@ def matches_header_line_element(node: Node[bool]) -> ValueAssertion[s.LineElemen
 
 def matches_string_detail_line_element(detail: StringDetail, level: int) -> ValueAssertion[s.LineElement]:
     return asrt_struct.matches_line_element(
-        line_object=asrt_struct.is_string__not_line_ended(asrt.equals(str(detail.string))),
-        properties=asrt_struct.equals_element_properties(expected_detail_properties(level=level)),
+        line_object=asrt_struct.is_string__not_line_ended(asrt.equals(str(sut.DETAILS_INDENT + str(detail.string)))),
+        properties=asrt_struct.equals_element_properties(expected_detail_properties(level=level - 1)),
     )
 
 
@@ -253,7 +253,7 @@ def matches_pre_formatted_string_detail_line_element(detail: PreFormattedStringD
             string=asrt.equals(str(detail.object_with_to_string)),
             string_is_line_ended=asrt.equals(detail.string_is_line_ended),
         ),
-        properties=asrt_struct.equals_element_properties(expected_detail_properties(level=level)),
+        properties=asrt_struct.equals_element_properties(expected_detail_properties(level=level - 1)),
     )
 
 
@@ -268,8 +268,10 @@ def _expected_header_line(node: Node[bool]) -> str:
         else
         'F'
     )
-    return ' '.join([str(node.header),
-                     '(' + bool_val_str + ')'])
+    return ' '.join([
+        '(' + bool_val_str + ')',
+        str(node.header),
+    ])
 
 
 def _expected_header_properties(node: Node[bool]) -> s.ElementProperties:

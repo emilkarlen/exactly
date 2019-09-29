@@ -38,11 +38,14 @@ class _NodeRendererToMinorBlock(SequenceRenderer[MinorBlock]):
     def _root(self) -> MinorBlock:
         return MinorBlock(
             [self._header_line()] +
-            list(elements.IncreasedIndentRenderer(self._details_renderer()).render_sequence())
+            list(self._details_renderer().render_sequence())
         )
 
     def _header_line(self) -> LineElement:
-        s = ' '.join([str(self._node.header), self._bool_header_tail()])
+        s = ' '.join([
+            self._bool_header_string(),
+            str(self._node.header),
+        ])
 
         return LineElement(
             structure.StringLineObject(s),
@@ -65,7 +68,7 @@ class _NodeRendererToMinorBlock(SequenceRenderer[MinorBlock]):
             ]
         )
 
-    def _bool_header_tail(self) -> str:
+    def _bool_header_string(self) -> str:
         bool_char = 'T' if self._node.data else 'F'
 
         return ''.join(['(', bool_char, ')'])
@@ -81,7 +84,7 @@ class _DetailRendererToLineElements(SequenceRenderer[LineElement],
 
     def visit_string(self, x: StringDetail) -> Sequence[LineElement]:
         return [
-            LineElement(structure.StringLineObject(str(x.string)))
+            LineElement(structure.StringLineObject(DETAILS_INDENT + str(x.string)))
         ]
 
     def visit_pre_formatted_string(self, x: PreFormattedStringDetail) -> Sequence[LineElement]:
@@ -90,6 +93,9 @@ class _DetailRendererToLineElements(SequenceRenderer[LineElement],
                                                                x.string_is_line_ended))
         ]
 
+
+# Makes details appear 2 characters to the right of the node header
+DETAILS_INDENT = '      '
 
 _HEADER_PROPERTIES_FOR_F = ElementProperties(0, ForegroundColor.BRIGHT_RED, None)
 _HEADER_PROPERTIES_FOR_T = ElementProperties(0, ForegroundColor.BRIGHT_GREEN, None)
