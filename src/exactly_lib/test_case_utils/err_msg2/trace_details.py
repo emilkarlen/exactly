@@ -96,6 +96,10 @@ class HeaderAndValue(DetailsRenderer):
         return ret_val
 
 
+def match(matching_object: DetailsRenderer) -> DetailsRenderer:
+    return HeaderAndValue('Match', matching_object)
+
+
 class Expected(DetailsRenderer):
     def __init__(self, expected: DetailsRenderer):
         self._expected = expected

@@ -78,7 +78,7 @@ class TestRegex(unittest.TestCase):
                                  'pattern string')
 
                 self.assertEqual(expected_result,
-                                 actual_result,
+                                 actual_result is not None,
                                  'result')
 
 

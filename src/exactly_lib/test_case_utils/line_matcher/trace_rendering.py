@@ -15,7 +15,7 @@ class LineMatcherLineRenderer(DetailsRenderer):
         line = self._line
         return [
             trace.StringDetail(
-                strings.FormatPositional('Line {}: {}',
+                strings.FormatPositional('Line {}. {}',
                                          line[0],
                                          repr(line[1]))
             )

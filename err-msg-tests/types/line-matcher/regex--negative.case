@@ -1,0 +1,12 @@
+[setup]
+
+
+file checked-file = <<EOF
+expected line
+EOF
+
+
+[assert]
+
+
+contents checked-file ! any line : matches 'expected line'

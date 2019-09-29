@@ -1,6 +1,7 @@
 [suites]
 
 string-matcher
+line-matcher
 file-matcher
 files-matcher
 
