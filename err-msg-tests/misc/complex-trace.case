@@ -10,6 +10,7 @@ EOF
 
 
 dir-contents the-dir every file :
-                     contents ! any line :
-                              matches 'contents' &&
-                              line-num == 1
+                         contents
+                             -transformed-by TO_UPPER_CASE
+                                 ! any line :
+                                     matches 'CONTENTS' && ! line-num == 72
