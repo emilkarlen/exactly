@@ -11,6 +11,7 @@ from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
 from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
 from exactly_lib.util import strings
 from exactly_lib.util.logic_types import Quantifier
+from exactly_lib.util.strings import ToStringObject
 
 MODEL = TypeVar('MODEL')
 ELEMENT = TypeVar('ELEMENT')
@@ -72,28 +73,27 @@ class QuantifierBase(Generic[MODEL, ELEMENT], MatcherWTraceAndNegation[MODEL], A
             self._element_setup.getter(model),
         )
 
-    def _matching_element_header(self) -> DetailsRenderer:
-        return trace_details.ConstantString(
-            strings.Concatenate(['Matching ', self._element_setup.type_name])
-        )
+    def _matching_element_header(self) -> ToStringObject:
+        return strings.Concatenate(('Matching ', self._element_setup.type_name))
 
-    def _non_matching_element_header(self) -> DetailsRenderer:
-        return trace_details.ConstantString(
-            strings.Concatenate(['Non-matching ', self._element_setup.type_name])
-        )
+    def _non_matching_element_header(self) -> ToStringObject:
+        return strings.Concatenate(('Non-matching ', self._element_setup.type_name))
 
     def _report_final_element(self,
                               tb: TraceBuilder,
                               result: MatchingResult,
                               element: ELEMENT) -> MatchingResult:
-        header_renderer = (
+        header = (
             self._matching_element_header()
             if result.value
             else
             self._non_matching_element_header()
         )
-        tb.append_details(header_renderer)
-        tb.append_details(self._element_setup.renderer(element))
+        tb.append_details(trace_details.HeaderAndValue(
+            header,
+            self._element_setup.renderer(element),
+        ))
+
         tb.append_child(result.trace)
 
         return tb.build_result(result.value)
