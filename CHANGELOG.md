@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html),
 with exception of a "0." prefix until version 1 is released.
 
+## [next-release]
+
+### Changed
+
+ - Python compatibility: Increased to Python v 3.5.4
+ 
 ## [0.11.0.1] - 2019-05-02
 
 ### Fixed
