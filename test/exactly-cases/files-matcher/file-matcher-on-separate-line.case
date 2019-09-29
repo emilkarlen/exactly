@@ -1,0 +1,11 @@
+[setup]
+
+
+file checked-file.txt
+
+
+[assert]
+
+
+dir-contents . every file :
+               contents empty

@@ -97,7 +97,8 @@ class _SimpleMatcherParser:
         parser.consume_mandatory_constant_unquoted_string(
             instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
             must_be_on_current_line=True)
-        matcher_on_file = parse_file_matcher.parse_resolver(parser)
+        matcher_on_file = parse_file_matcher.parse_resolver(parser,
+                                                            must_be_on_current_line=False)
 
         return self._file_quantified_assertion_part(quantifier,
                                                     matcher_on_file)

@@ -1,0 +1,15 @@
+[setup]
+
+
+file the-dir/checked-file.txt = <<EOF
+actual contents
+EOF
+
+
+[assert]
+
+
+dir-contents the-dir every file :
+                     contents ! any line :
+                              matches 'contents' &&
+                              line-num == 1
