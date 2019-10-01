@@ -16,39 +16,7 @@ from exactly_lib.util.strings import ToStringObject
 
 _EXPECTED = 'Expected'
 _ACTUAL = 'Actual'
-
-
-class PathValueDetailsRenderer(DetailsRenderer):
-    def __init__(self, path: PathDescriberForValue):
-        self._path = path
-
-    def render(self) -> Sequence[Detail]:
-        return [
-            trace.StringDetail(self._path.value.render()),
-        ]
-
-
-class PathValueAndPrimitiveDetailsRenderer(DetailsRenderer):
-    def __init__(self, path: PathDescriberForPrimitive):
-        self._path = path
-
-    def render(self) -> Sequence[Detail]:
-        return [
-            trace.StringDetail(self._path.value.render()),
-            trace.StringDetail(self._path.primitive.render()),
-        ]
-
-
-class PathPrimitiveDetailsRenderer(DetailsRenderer):
-    def __init__(self, path: PathDescriberForPrimitive):
-        self._path = path
-
-    def render(self) -> Sequence[Detail]:
-        renderer = path_rendering.PathRepresentationsRenderersForPrimitive(self._path)
-        return [
-            trace.StringDetail(renderer.render())
-            for renderer in renderer.renders()
-        ]
+_MATCH = 'Match'
 
 
 class DetailsRendererOfConstant(DetailsRenderer):
@@ -97,7 +65,7 @@ class HeaderAndValue(DetailsRenderer):
 
 
 def match(matching_object: DetailsRenderer) -> DetailsRenderer:
-    return HeaderAndValue('Match', matching_object)
+    return HeaderAndValue(_MATCH, matching_object)
 
 
 class Expected(DetailsRenderer):
@@ -141,6 +109,39 @@ class Indented(DetailsRenderer, DetailVisitor[Detail]):
 
     def visit_pre_formatted_string(self, x: trace.PreFormattedStringDetail) -> Detail:
         return x
+
+
+class PathValueDetailsRenderer(DetailsRenderer):
+    def __init__(self, path: PathDescriberForValue):
+        self._path = path
+
+    def render(self) -> Sequence[Detail]:
+        return [
+            trace.StringDetail(self._path.value.render()),
+        ]
+
+
+class PathValueAndPrimitiveDetailsRenderer(DetailsRenderer):
+    def __init__(self, path: PathDescriberForPrimitive):
+        self._path = path
+
+    def render(self) -> Sequence[Detail]:
+        return [
+            trace.StringDetail(self._path.value.render()),
+            trace.StringDetail(self._path.primitive.render()),
+        ]
+
+
+class PathPrimitiveDetailsRenderer(DetailsRenderer):
+    def __init__(self, path: PathDescriberForPrimitive):
+        self._path = path
+
+    def render(self) -> Sequence[Detail]:
+        renderer = path_rendering.PathRepresentationsRenderersForPrimitive(self._path)
+        return [
+            trace.StringDetail(renderer.render())
+            for renderer in renderer.renders()
+        ]
 
 
 class StringList(DetailsRenderer):
@@ -197,7 +198,7 @@ class PatternRenderer(DetailsRenderer):
         ]
 
 
-class MatchRenderer(DetailsRenderer):
+class PatternMatchRenderer(DetailsRenderer):
     def __init__(self,
                  match: Match,
                  ):

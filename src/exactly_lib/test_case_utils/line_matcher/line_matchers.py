@@ -137,7 +137,7 @@ class LineMatcherRegex(_LineMatcherWExpectedAndActualBase):
         match = self.matches(line)
         if match is not None:
             tb.append_details(
-                trace_details.match(trace_details.MatchRenderer(match))
+                trace_details.match(trace_details.PatternMatchRenderer(match))
             )
 
         return tb.build_result(match is not None)
