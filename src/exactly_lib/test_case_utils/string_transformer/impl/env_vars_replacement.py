@@ -1,5 +1,5 @@
 import pathlib
-from typing import Iterable, Sequence
+from typing import Iterable, Sequence, Tuple
 
 from exactly_lib import program_info
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -19,16 +19,22 @@ HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE = environment_variables.ENV_VAR_HOME_CA
 
 
 class EnvVarReplacementStringTransformer(CustomStringTransformer):
-    def __init__(self, tcds: HomeAndSds):
+    def __init__(self,
+                 name: str,
+                 tcds: HomeAndSds,
+                 ):
+        super().__init__(name)
         self._name_and_value_list = _derive_name_and_value_list(tcds)
 
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return (_replace(self._name_and_value_list, line) for line in lines)
 
 
-def value() -> StringTransformerValue:
-    return string_transformer_values.DirDependentStringTransformerValue(DirectoryStructurePartition,
-                                                                        EnvVarReplacementStringTransformer)
+def value(name: str) -> StringTransformerValue:
+    return string_transformer_values.DirDependentStringTransformerValue(
+        DirectoryStructurePartition,
+        lambda tcds: EnvVarReplacementStringTransformer(name, tcds),
+    )
 
 
 def replace(home_and_sds: HomeAndSds,
@@ -37,7 +43,7 @@ def replace(home_and_sds: HomeAndSds,
     return _replace(name_and_value_list, contents)
 
 
-def _replace(name_and_value_list: list,
+def _replace(name_and_value_list: Iterable[Tuple[str, str]],
              contents: str) -> str:
     for var_name, var_value in name_and_value_list:
         contents = contents.replace(var_value, var_name)

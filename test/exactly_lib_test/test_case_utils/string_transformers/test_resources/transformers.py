@@ -22,5 +22,8 @@ def select_transformer(line_matcher: LineMatcher) -> SelectStringTransformer:
 
 
 class CustomStringTransformerTestImpl(CustomStringTransformer):
+    def __init__(self):
+        super().__init__(str(type(self)))
+
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         raise NotImplementedError('should not be used')

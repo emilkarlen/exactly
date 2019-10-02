@@ -4,13 +4,10 @@ from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMa
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
 
 
-class FakeStringTransformer(StringTransformer):
-    def __init__(self):
-        pass
-
+class FakeStringTransformer(StringTransformerTestImplBase):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         raise NotImplementedError('should never be used')
 

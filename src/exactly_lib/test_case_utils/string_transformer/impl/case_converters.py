@@ -4,6 +4,9 @@ from exactly_lib.type_system.logic.string_transformer import CustomStringTransfo
 
 
 class ToUpperCaseStringTransformer(CustomStringTransformer):
+    def __init__(self, name: str):
+        super().__init__(name)
+
     @property
     def is_identity_transformer(self) -> bool:
         return False
@@ -13,6 +16,9 @@ class ToUpperCaseStringTransformer(CustomStringTransformer):
 
 
 class ToLowerCaseStringTransformer(CustomStringTransformer):
+    def __init__(self, name: str):
+        super().__init__(name)
+
     @property
     def is_identity_transformer(self) -> bool:
         return False

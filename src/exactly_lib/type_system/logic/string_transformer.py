@@ -1,4 +1,5 @@
 import functools
+from abc import ABC, abstractmethod
 from typing import Set, Iterable, Sequence
 
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
@@ -6,15 +7,36 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils.err_msg2.trace_details import NodeRenderer
+from exactly_lib.type_system.trace.impls import trace_renderers
+from exactly_lib.type_system.trace.trace import Node
 from exactly_lib.util.functional import compose_first_and_second
 
 StringTransformerModel = Iterable[str]
 
 
-class StringTransformer:
+class StringTransformer(ABC):
     """
     Transforms a sequence of lines, where each line is a string.
     """
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        pass
+
+    @property
+    def structure(self) -> NodeRenderer[None]:
+        """
+        The structure of the object, that can be used in traced.
+
+        Given as a renderer, to ease implementations.
+        """
+        pass
+        return trace_renderers.Constant(Node(self.name,
+                                             None,
+                                             (),
+                                             ()))
 
     @property
     def is_identity_transformer(self) -> bool:
@@ -50,6 +72,10 @@ class StringTransformerValue(MultiDirDependentValue[StringTransformer]):
 
 class IdentityStringTransformer(StringTransformer):
     @property
+    def name(self) -> str:
+        return 'identity'
+
+    @property
     def is_identity_transformer(self) -> bool:
         return True
 
@@ -60,6 +86,10 @@ class IdentityStringTransformer(StringTransformer):
 class SequenceStringTransformer(StringTransformer):
     def __init__(self, transformers: Sequence[StringTransformer]):
         self._transformers = tuple(transformers)
+
+    @property
+    def name(self) -> str:
+        return 'sequence'
 
     @property
     def is_identity_transformer(self) -> bool:
@@ -86,10 +116,17 @@ class SequenceStringTransformer(StringTransformer):
                                ','.join(map(str, self._transformers)))
 
 
-class CustomStringTransformer(StringTransformer):
+class CustomStringTransformer(StringTransformer, ABC):
     """
     Base class for built in custom transformers.
     """
+
+    def __init__(self, name: str):
+        self._name = name
+
+    @property
+    def name(self) -> str:
+        return self._name
 
     def __str__(self):
         return str(type(self))

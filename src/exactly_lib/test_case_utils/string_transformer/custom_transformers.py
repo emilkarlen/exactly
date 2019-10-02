@@ -5,16 +5,16 @@ from exactly_lib.test_case_utils.symbol.custom_symbol import CustomSymbolDocumen
 from exactly_lib.util.textformat.structure import document
 
 
-def to_upper_case() -> StringTransformerResolver:
-    return resolvers.StringTransformerConstant(case_converters.ToUpperCaseStringTransformer())
+def to_upper_case(name: str) -> StringTransformerResolver:
+    return resolvers.StringTransformerConstant(case_converters.ToUpperCaseStringTransformer(name))
 
 
-def to_lower_case() -> StringTransformerResolver:
-    return resolvers.StringTransformerConstant(case_converters.ToLowerCaseStringTransformer())
+def to_lower_case(name: str) -> StringTransformerResolver:
+    return resolvers.StringTransformerConstant(case_converters.ToLowerCaseStringTransformer(name))
 
 
-def replace_env_vars() -> StringTransformerResolver:
-    return resolvers.StringTransformerConstantOfValue(env_vars_replacement.value())
+def replace_env_vars(name: str) -> StringTransformerResolver:
+    return resolvers.StringTransformerConstantOfValue(env_vars_replacement.value(name))
 
 
 def to_upper_case_doc() -> CustomSymbolDocumentation:

@@ -1,5 +1,6 @@
 import unittest
 
+import exactly_lib_test.type_system.logic.string_transformer.test_resources
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import resolver_assertions as sut
 from exactly_lib_test.type_system.logic.test_resources import string_transformers as sut
 
@@ -14,13 +15,13 @@ def suite() -> unittest.TestSuite:
 
 class TestDeleteEverythingTransformer(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = sut.DeleteEverythingTransformer()
+        transformer = exactly_lib_test.type_system.logic.string_transformer.test_resources.DeleteEverythingTransformer()
         self.assertFalse(transformer.is_identity_transformer)
 
     def test_no_lines(self):
         # ARRANGE #
 
-        transformer = sut.DeleteEverythingTransformer()
+        transformer = exactly_lib_test.type_system.logic.string_transformer.test_resources.DeleteEverythingTransformer()
 
         # ACT #
 
@@ -34,7 +35,7 @@ class TestDeleteEverythingTransformer(unittest.TestCase):
     def test_lines_SHOULD_be_removed(self):
         # ARRANGE #
 
-        transformer = sut.DeleteEverythingTransformer()
+        transformer = exactly_lib_test.type_system.logic.string_transformer.test_resources.DeleteEverythingTransformer()
         input_lines = [
             'something\n',
             ''

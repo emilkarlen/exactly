@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Optional
 
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.trace.impls import trace_renderers
+from exactly_lib.type_system.trace.trace import Node
 from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util.with_option_description import WithOptionDescription
 
@@ -45,6 +47,18 @@ class MatchingResult:
 
 
 class MatcherWTrace(Generic[T], Matcher[T], ABC):
+    @property
+    def structure(self) -> NodeRenderer[None]:
+        """
+        The structure of the object, that can be used in traced.
+
+        Given as a renderer, to ease implementations.
+        """
+        return trace_renderers.Constant(Node(self.name,
+                                             None,
+                                             (),
+                                             ()))
+
     @property
     @abstractmethod
     def name(self) -> str:

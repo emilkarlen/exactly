@@ -112,7 +112,7 @@ class AVisitorThatRecordsVisitedMethods(StringTransformerStructureVisitor):
 
 class MyCustomTransformer(string_transformer.CustomStringTransformer):
     def __init__(self):
-        super().__init__()
+        super().__init__(str(type(self)))
 
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return iter

@@ -16,9 +16,10 @@ from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_va
 from exactly_lib_test.symbol.test_resources.symbols_setup import ResolverSymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
 
 
-class StringTransformerConstantTestImpl(StringTransformer):
+class StringTransformerConstantTestImpl(StringTransformerTestImplBase):
     """Matcher with constant result."""
 
     def __init__(self, result: StringTransformerModel):
@@ -31,7 +32,7 @@ class StringTransformerConstantTestImpl(StringTransformer):
         return self._result
 
 
-class StringTransformerIdentityTestImpl(StringTransformer):
+class StringTransformerIdentityTestImpl(StringTransformerTestImplBase):
     """Matcher with no modification."""
 
     def is_identity_transformer(self) -> bool:
@@ -41,7 +42,7 @@ class StringTransformerIdentityTestImpl(StringTransformer):
         return lines
 
 
-class StringTransformerConstantSequenceTestImpl(StringTransformer):
+class StringTransformerConstantSequenceTestImpl(StringTransformerTestImplBase):
     """Matcher with constant result."""
 
     def __init__(self, result: Sequence[str]):

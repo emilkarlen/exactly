@@ -23,8 +23,8 @@ class TestEquals(unittest.TestCase):
                 IdentityStringTransformer()
             ),
             (
-                CustomStringTransformer(),
-                CustomStringTransformer()
+                CustomStringTransformer('arbitrary custom'),
+                CustomStringTransformer('arbitrary custom')
             ),
             (
                 ReplaceStringTransformer(re.compile('regex'), 'replacement'),
@@ -54,7 +54,7 @@ class TestEquals(unittest.TestCase):
         expected = IdentityStringTransformer()
 
         different_transformers = [
-            CustomStringTransformer(),
+            CustomStringTransformer('custom transformer'),
             SequenceStringTransformer([]),
             SelectStringTransformer(LineMatcherConstant(True)),
         ]
@@ -78,7 +78,7 @@ class TestEquals(unittest.TestCase):
 
         different_transformers = [
             IdentityStringTransformer(),
-            CustomStringTransformer(),
+            CustomStringTransformer('arbitrary custom'),
             SequenceStringTransformer([]),
             SelectStringTransformer(LineMatcherConstant(True)),
             ReplaceStringTransformer(unexpected_regex, expected_replacement),
@@ -100,7 +100,7 @@ class TestEquals(unittest.TestCase):
 
         different_transformers = [
             IdentityStringTransformer(),
-            CustomStringTransformer(),
+            CustomStringTransformer('arbitrary custom'),
             SequenceStringTransformer([]),
             ReplaceStringTransformer(re.compile('regex pattern'), 'replacement'),
             SelectStringTransformer(unexpected_line_matcher),
@@ -118,10 +118,10 @@ class TestEquals(unittest.TestCase):
 
         different_transformers = [
             IdentityStringTransformer(),
-            CustomStringTransformer(),
+            CustomStringTransformer('arbitrary custom'),
             SelectStringTransformer(LineMatcherConstant(False)),
             SequenceStringTransformer([]),
-            SequenceStringTransformer([CustomStringTransformer()]),
+            SequenceStringTransformer([CustomStringTransformer('arbitrary custom')]),
             SequenceStringTransformer([SelectStringTransformer(LineMatcherConstant(False))]),
             SequenceStringTransformer([IdentityStringTransformer(),
                                        IdentityStringTransformer()]),
@@ -135,7 +135,7 @@ class TestEquals(unittest.TestCase):
 
     def test_not_equals__custom(self):
         # ARRANGE #
-        expected = CustomStringTransformer()
+        expected = CustomStringTransformer('arbitrary custom')
 
         different_transformers = [
             IdentityStringTransformer(),

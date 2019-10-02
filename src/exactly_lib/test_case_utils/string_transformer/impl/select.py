@@ -6,6 +6,7 @@ from exactly_lib.symbol.logic.string_transformer import StringTransformerResolve
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.line_matcher.model_construction import original_and_model_iter_from_file_line_iter
+from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer.filter import SelectStringTransformerValue
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue, StringTransformer, \
@@ -38,6 +39,10 @@ class SelectStringTransformer(StringTransformer):
 
     def __init__(self, line_matcher: LineMatcher):
         self._line_matcher = line_matcher
+
+    @property
+    def name(self) -> str:
+        return names.SELECT_TRANSFORMER_NAME
 
     @property
     def line_matcher(self) -> LineMatcher:

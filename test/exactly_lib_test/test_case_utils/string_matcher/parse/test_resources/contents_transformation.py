@@ -1,9 +1,9 @@
 from typing import Iterable
 
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
 
 
-class ToUppercaseStringTransformer(StringTransformer):
+class ToUppercaseStringTransformer(StringTransformerTestImplBase):
     @property
     def is_identity_transformer(self) -> bool:
         return False

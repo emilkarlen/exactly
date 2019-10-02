@@ -1,4 +1,4 @@
-from typing import Sequence, Iterable, Pattern, Match
+from typing import Sequence, Iterable, Pattern, Match, Generic
 
 from exactly_lib.common.report_rendering import print
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -8,7 +8,7 @@ from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.type_system.data import string_or_file_ref_values
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForValue
 from exactly_lib.type_system.trace import trace
-from exactly_lib.type_system.trace.trace import DetailVisitor, Detail
+from exactly_lib.type_system.trace.trace import DetailVisitor, Detail, Node, NODE_DATA
 from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
 from exactly_lib.util import strings
 from exactly_lib.util.cli_syntax import option_syntax
@@ -109,6 +109,14 @@ class Indented(DetailsRenderer, DetailVisitor[Detail]):
 
     def visit_pre_formatted_string(self, x: trace.PreFormattedStringDetail) -> Detail:
         return x
+
+
+class NodeRenderer(Generic[NODE_DATA], DetailsRenderer):
+    def __init__(self, node: Node[NODE_DATA]):
+        self._node = node
+
+    def render(self) -> Sequence[Detail]:
+        raise NotImplementedError('todo')
 
 
 class PathValueDetailsRenderer(DetailsRenderer):

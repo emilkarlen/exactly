@@ -9,8 +9,7 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.string_transformer import StringTransformerModel, StringTransformerValue, \
-    StringTransformer
+from exactly_lib.type_system.logic.string_transformer import StringTransformerModel, StringTransformerValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
@@ -25,6 +24,7 @@ from exactly_lib_test.test_case_utils.test_resources import validation as asrt_v
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_hard_error
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
 
 
 def suite() -> unittest.TestSuite:
@@ -170,7 +170,7 @@ class TestFailingExpectations(TestCaseBase):
             )
 
 
-class _StringTransformerThatReportsHardError(StringTransformer):
+class _StringTransformerThatReportsHardError(StringTransformerTestImplBase):
     @property
     def option_description(self) -> str:
         return 'unconditional HARD ERROR'

@@ -1,8 +1,6 @@
 import unittest
-from typing import Iterable
 
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
@@ -20,6 +18,7 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import EveryLineEmptyStringTransformer
 
 
 def suite() -> unittest.TestSuite:
@@ -72,7 +71,7 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
         # ARRANGE #
         named_transformer = NameAndValue('the_transformer',
                                          StringTransformerConstant(
-                                             DeleteEverythingStringTransformer()))
+                                             EveryLineEmptyStringTransformer()))
 
         original_file_contents = 'some\ntext'
 
@@ -117,8 +116,3 @@ class StringTransformerShouldBeValidated(tc.TestWithNegationArgumentBase):
                         symbol_references=case.value.symbol_context.references_assertion
                     ),
                 )
-
-
-class DeleteEverythingStringTransformer(StringTransformer):
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
-        return map(lambda x: '', lines)

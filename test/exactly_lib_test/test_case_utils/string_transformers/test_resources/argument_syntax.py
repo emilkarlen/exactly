@@ -1,7 +1,7 @@
 from typing import List
 
+import exactly_lib.test_case_utils.string_transformer.names
 from exactly_lib.definitions import instruction_arguments
-from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 
 
@@ -22,7 +22,7 @@ def arguments_for_transformer_option(transformer_expression: str) -> List[str]:
 def syntax_for_replace_transformer(regex_token_str: str,
                                    replacement_token_str: str) -> str:
     return ' '.join([
-        parse_string_transformer.REPLACE_TRANSFORMER_NAME,
+        exactly_lib.test_case_utils.string_transformer.names.REPLACE_TRANSFORMER_NAME,
         regex_token_str,
         replacement_token_str,
     ])
@@ -30,13 +30,14 @@ def syntax_for_replace_transformer(regex_token_str: str,
 
 def syntax_for_select_transformer(line_matcher: str) -> str:
     return ' '.join([
-        parse_string_transformer.SELECT_TRANSFORMER_NAME,
+        exactly_lib.test_case_utils.string_transformer.names.SELECT_TRANSFORMER_NAME,
         line_matcher,
     ])
 
 
 def syntax_for_sequence_of_transformers(transformer_syntax_list: list) -> str:
-    return (' ' + parse_string_transformer.SEQUENCE_OPERATOR_NAME + ' ').join(transformer_syntax_list)
+    return (' ' + exactly_lib.test_case_utils.string_transformer.names.SEQUENCE_OPERATOR_NAME + ' ').join(
+        transformer_syntax_list)
 
 
 def arbitrary_value_on_single_line() -> str:

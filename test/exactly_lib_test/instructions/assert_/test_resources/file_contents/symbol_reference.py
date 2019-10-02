@@ -1,12 +1,10 @@
 import unittest
-from typing import Iterable
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.string_matcher.emptiness_matcher import EmptinessStringMatcher
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
@@ -25,6 +23,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.transf
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import EveryLineEmptyStringTransformer
 
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:
@@ -106,7 +105,7 @@ class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgum
         # ARRANGE #
         named_transformer = NameAndValue('the_transformer',
                                          StringTransformerConstant(
-                                             DeleteEverythingStringTransformer()))
+                                             EveryLineEmptyStringTransformer()))
 
         original_file_contents = 'some\ntext'
 
@@ -134,8 +133,3 @@ class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgum
                 main_result=self.maybe_not.pass__if_positive__fail__if_negative,
                 symbol_usages=expected_symbol_references),
         )
-
-
-class DeleteEverythingStringTransformer(StringTransformer):
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
-        return map(lambda x: '', lines)

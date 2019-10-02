@@ -23,7 +23,7 @@ def suite() -> unittest.TestSuite:
 
 
 def _transform_string_to_string(home_and_sds: HomeAndSds, string_input: str) -> str:
-    transformer = sut.EnvVarReplacementStringTransformer(home_and_sds)
+    transformer = sut.EnvVarReplacementStringTransformer('arbitrary custom', home_and_sds)
     lines = string_input.splitlines(keepends=True)
     output_lines = transformer.transform(lines)
     return ''.join(output_lines)
@@ -44,7 +44,8 @@ class TestMisc(unittest.TestCase):
                              actual)
 
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = sut.EnvVarReplacementStringTransformer(fake_home_and_sds())
+        transformer = sut.EnvVarReplacementStringTransformer('env-var-replacement',
+                                                             fake_home_and_sds())
         self.assertFalse(transformer.is_identity_transformer)
 
 

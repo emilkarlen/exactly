@@ -8,7 +8,6 @@ from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matche
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl, \
     is_reference_to_string_matcher
@@ -24,6 +23,7 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
 
 
 def suite() -> unittest.TestSuite:
@@ -95,7 +95,7 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
         )
 
 
-class PrependStringToLinesTransformer(StringTransformer):
+class PrependStringToLinesTransformer(StringTransformerTestImplBase):
     def __init__(self, string_to_prepend: str):
         self.string_to_prepend = string_to_prepend
 

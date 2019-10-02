@@ -13,6 +13,7 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
+from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
@@ -89,6 +90,10 @@ class ReplaceStringTransformer(StringTransformer):
                  replacement: str):
         self._compiled_regular_expression = compiled_regular_expression
         self._replacement = replacement
+
+    @property
+    def name(self) -> str:
+        return names.REPLACE_TRANSFORMER_NAME
 
     @property
     def regex_pattern_string(self) -> str:

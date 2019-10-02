@@ -1,5 +1,5 @@
 import unittest
-from typing import Iterable, List
+from typing import List
 
 from exactly_lib.definitions import expression
 from exactly_lib.definitions.test_case import file_check_properties
@@ -7,7 +7,6 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
@@ -28,6 +27,7 @@ from exactly_lib_test.test_resources.files.file_structure import empty_file, Fil
     FileSystemElement
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import EveryLineEmptyStringTransformer
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 
 
@@ -158,7 +158,7 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
 
         named_transformer = NameAndValue('the_transformer',
                                          StringTransformerConstant(
-                                             DeleteEverythingStringTransformer()))
+                                             EveryLineEmptyStringTransformer()))
 
         checked_file = File('actual.txt', 'some\ntext')
 
@@ -278,8 +278,3 @@ class TestEvaluationIsLazyFromLeftToRight(tc.TestCaseBase):
                 main_result=matcher_assertions.is_arbitrary_matching_failure()
             ),
         )
-
-
-class DeleteEverythingStringTransformer(StringTransformer):
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
-        return map(lambda x: '', lines)

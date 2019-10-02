@@ -4,7 +4,7 @@ import unittest
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
-from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel, \
+from exactly_lib.type_system.logic.string_transformer import StringTransformerModel, \
     IdentityStringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -20,6 +20,7 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources.integra
     Expectation
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
 
 
 def suite() -> unittest.TestSuite:
@@ -166,7 +167,7 @@ class ValidatorShouldValidateSequencedTransformers(integration_check.TestCaseWit
                     )
 
 
-class _AddLineTransformer(StringTransformer):
+class _AddLineTransformer(StringTransformerTestImplBase):
     def __init__(self, line_contents: str):
         self.line_to_add = line_contents + '\n'
 

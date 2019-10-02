@@ -12,7 +12,7 @@ def suite() -> unittest.TestSuite:
 
 class TestToUpper(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = sut.ToUpperCaseStringTransformer()
+        transformer = sut.ToUpperCaseStringTransformer('arbitrary custom')
         self.assertFalse(transformer.is_identity_transformer)
 
     def test_every_line_SHOULD_be_transformed(self):
@@ -23,7 +23,7 @@ class TestToUpper(unittest.TestCase):
             'Unidentified FLYING Object',
         ]
         input_lines_iter = iter(input_lines)
-        transformer = sut.ToUpperCaseStringTransformer()
+        transformer = sut.ToUpperCaseStringTransformer('arbitrary custom')
         # ACT #
 
         actual = transformer.transform(input_lines_iter)
@@ -45,7 +45,7 @@ class TestToUpper(unittest.TestCase):
         # ARRANGE #
         input_lines = []
         input_lines_iter = iter(input_lines)
-        transformer = sut.ToUpperCaseStringTransformer()
+        transformer = sut.ToUpperCaseStringTransformer('arbitrary custom')
         # ACT #
 
         actual = transformer.transform(input_lines_iter)
@@ -62,7 +62,7 @@ class TestToUpper(unittest.TestCase):
 
 class TestToLower(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = sut.ToLowerCaseStringTransformer()
+        transformer = sut.ToLowerCaseStringTransformer('arbitrary custom')
         self.assertFalse(transformer.is_identity_transformer)
 
     def test_every_line_SHOULD_be_transformed(self):
@@ -73,7 +73,7 @@ class TestToLower(unittest.TestCase):
             'Unidentified FLYING Object',
         ]
         input_lines_iter = iter(input_lines)
-        transformer = sut.ToLowerCaseStringTransformer()
+        transformer = sut.ToLowerCaseStringTransformer('arbitrary custom')
         # ACT #
 
         actual = transformer.transform(input_lines_iter)
@@ -95,7 +95,7 @@ class TestToLower(unittest.TestCase):
         # ARRANGE #
         input_lines = []
         input_lines_iter = iter(input_lines)
-        transformer = sut.ToLowerCaseStringTransformer()
+        transformer = sut.ToLowerCaseStringTransformer('arbitrary custom')
         # ACT #
 
         actual = transformer.transform(input_lines_iter)

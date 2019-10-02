@@ -12,17 +12,13 @@ from exactly_lib.test_case_utils.expression import grammar, parser as parse_expr
 from exactly_lib.test_case_utils.string_transformer import resolvers
 from exactly_lib.test_case_utils.string_transformer.impl import select, replace
 from exactly_lib.test_case_utils.string_transformer.impl.replace import REPLACE_REPLACEMENT_ARGUMENT
+from exactly_lib.test_case_utils.string_transformer.names import REPLACE_TRANSFORMER_NAME, SELECT_TRANSFORMER_NAME, \
+    SEQUENCE_OPERATOR_NAME
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 IDENTITY_TRANSFORMER_RESOLVER = resolvers.StringTransformerConstant(IdentityStringTransformer())
-
-REPLACE_TRANSFORMER_NAME = 'replace'
-
-SELECT_TRANSFORMER_NAME = 'select'
-
-SEQUENCE_OPERATOR_NAME = '|'
 
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 

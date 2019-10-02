@@ -4,7 +4,6 @@ from typing import Iterable
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
@@ -20,6 +19,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.transf
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
 
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:
@@ -128,6 +128,6 @@ class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgum
         )
 
 
-class DeleteEverythingStringTransformer(StringTransformer):
+class DeleteEverythingStringTransformer(StringTransformerTestImplBase):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(lambda x: '', lines)
