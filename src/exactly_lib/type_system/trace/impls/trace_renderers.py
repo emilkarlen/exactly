@@ -2,9 +2,9 @@ import itertools
 from typing import Generic, Sequence
 
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.trace import trace
-from exactly_lib.type_system.trace.trace import Node, Detail
 from exactly_lib.type_system.trace.trace_renderer import NODE_DATA, NodeRenderer, DetailsRenderer
+from exactly_lib.util.description_tree import tree
+from exactly_lib.util.description_tree.tree import Node, Detail
 
 
 class Constant(Generic[NODE_DATA], NodeRenderer[NODE_DATA]):
@@ -42,4 +42,4 @@ class DetailsRendererOfErrorMessageResolver(DetailsRenderer):
         self._message_resolver = message_resolver
 
     def render(self) -> Sequence[Detail]:
-        return [trace.PreFormattedStringDetail(self._message_resolver.resolve())]
+        return [tree.PreFormattedStringDetail(self._message_resolver.resolve())]

@@ -5,7 +5,7 @@ from typing import Pattern
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher
-from exactly_lib.test_case_utils.err_msg2 import trace_details
+from exactly_lib.test_case_utils.description_tree import details
 from exactly_lib.test_case_utils.line_matcher import trace_rendering
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
@@ -13,8 +13,8 @@ from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherL
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
-from exactly_lib.type_system.trace.trace import Detail
 from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
+from exactly_lib.util.description_tree.tree import Detail
 
 
 class LineMatcherDelegatedToMatcherWTrace(LineMatcher):
@@ -116,7 +116,7 @@ class LineMatcherRegex(_LineMatcherWExpectedAndActualBase):
     ))
 
     def __init__(self, compiled_regular_expression: Pattern):
-        super().__init__(trace_details.PatternRenderer(False, compiled_regular_expression))
+        super().__init__(details.PatternRenderer(False, compiled_regular_expression))
         self._compiled_regular_expression = compiled_regular_expression
 
     @property
@@ -137,7 +137,7 @@ class LineMatcherRegex(_LineMatcherWExpectedAndActualBase):
         match = self.matches(line)
         if match is not None:
             tb.append_details(
-                trace_details.match(trace_details.PatternMatchRenderer(match))
+                details.match(details.PatternMatchRenderer(match))
             )
 
         return tb.build_result(match is not None)
@@ -153,7 +153,7 @@ class LineMatcherLineNumber(_LineMatcherWExpectedAndActualBase):
     """Matches lines who's line number satisfy a given condition."""
 
     def __init__(self, integer_matcher: IntegerMatcher):
-        super().__init__(trace_details.String(integer_matcher.option_description))
+        super().__init__(details.String(integer_matcher.option_description))
         self._integer_matcher = integer_matcher
 
     @property
@@ -184,9 +184,9 @@ class _ExpectedAndActualRenderer(DetailsRenderer):
         self._actual = actual
 
     def render(self) -> Sequence[Detail]:
-        expected_renderer = trace_details.Expected(self._expected)
+        expected_renderer = details.Expected(self._expected)
 
-        actual_renderer = trace_details.Actual(
+        actual_renderer = details.Actual(
             trace_rendering.LineMatcherLineRenderer(self._actual)
         )
         ret_val = list(expected_renderer.render())

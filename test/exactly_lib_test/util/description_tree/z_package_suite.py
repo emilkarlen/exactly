@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.err_msg2 import trace_rendering
+from exactly_lib_test.util.description_tree import rendering
 
 
 def suite() -> unittest.TestSuite:
-    return trace_rendering.suite()
+    return rendering.suite()
 
 
 if __name__ == '__main__':

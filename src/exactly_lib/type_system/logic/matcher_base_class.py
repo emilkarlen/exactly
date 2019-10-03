@@ -3,8 +3,8 @@ from typing import TypeVar, Generic, Optional
 
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.trace.impls import trace_renderers
-from exactly_lib.type_system.trace.trace import Node
 from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
+from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.with_option_description import WithOptionDescription
 
 T = TypeVar('T')

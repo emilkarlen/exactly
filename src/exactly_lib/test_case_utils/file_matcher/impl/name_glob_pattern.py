@@ -6,8 +6,8 @@ from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils.description_tree import details
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.test_case_utils.err_msg2 import trace_details
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromValueParts
 from exactly_lib.test_case_utils.parse import parse_string
@@ -84,8 +84,8 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
 
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         tb = self.__tb_with_expected().append_details(
-            trace_details.Actual(
-                trace_details.PathValueAndPrimitiveDetailsRenderer(model.path.describer)
+            details.Actual(
+                details.PathValueAndPrimitiveDetailsRenderer(model.path.describer)
             )
 
         )
@@ -96,7 +96,7 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
 
     def __tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(
-            trace_details.Expected(
-                trace_details.String(self._glob_pattern)
+            details.Expected(
+                details.String(self._glob_pattern)
             )
         )

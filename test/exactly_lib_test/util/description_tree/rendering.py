@@ -1,10 +1,9 @@
 import unittest
 
-from exactly_lib.test_case_utils.err_msg2 import trace_rendering as sut
-from exactly_lib.type_system.trace.trace import Node, StringDetail, PreFormattedStringDetail
-from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util import strings
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
+from exactly_lib.util.description_tree import rendering as sut
+from exactly_lib.util.description_tree.tree import Node, StringDetail, PreFormattedStringDetail
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -203,18 +202,15 @@ def _check(put: unittest.TestCase,
            node: Node[bool],
            expectation: ValueAssertion[s.MajorBlock],
            ):
-    renderer_renderer = sut.BoolTraceRenderer(_ConstantRenderer(node))
-    renderer = sut.BoolNodeRenderer(node)
+    renderer = sut.TreeRenderer(node)
 
     # ACT #
 
-    block__r = renderer.render()
-    block__rr = renderer_renderer.render()
+    block = renderer.render()
 
     # ASSERT #
 
-    expectation.apply_with_message(put, block__r, 'from node-renderer')
-    expectation.apply_with_message(put, block__rr, 'from trace-renderer')
+    expectation.apply_with_message(put, block, 'from node-renderer')
 
 
 def matches_trace_with_just_single_detail(trace: Node[bool],
@@ -305,14 +301,6 @@ def expected_detail_properties(level: int) -> s.ElementProperties:
         None,
         None,
     )
-
-
-class _ConstantRenderer(NodeRenderer[bool]):
-    def __init__(self, constant: Node[bool]):
-        self._constant = constant
-
-    def render(self) -> Node[bool]:
-        return self._constant
 
 
 STRING_OBJECT_CASES = [

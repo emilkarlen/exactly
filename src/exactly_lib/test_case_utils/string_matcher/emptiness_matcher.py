@@ -2,9 +2,9 @@ from typing import Optional
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.primitives import file_or_dir_contents
+from exactly_lib.test_case_utils.description_tree import details
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
-from exactly_lib.test_case_utils.err_msg2 import trace_details
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
@@ -54,7 +54,7 @@ class EmptinessStringMatcher(StringMatcher):
             return (
                 self._new_tb()
                     .append_details(
-                    trace_details.Actual(trace_details.String(repr(first_line) + '...'))
+                    details.Actual(details.String(repr(first_line) + '...'))
                 )
                     .build_result(False)
             )

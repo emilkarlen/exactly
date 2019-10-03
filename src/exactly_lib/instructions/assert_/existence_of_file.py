@@ -28,9 +28,9 @@ from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case.validation import pre_or_post_value_validation
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate, file_ref_check
+from exactly_lib.test_case_utils.description_tree import bool_trace_renderer
 from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
-from exactly_lib.test_case_utils.err_msg2 import trace_rendering
 from exactly_lib.test_case_utils.err_msg2.env_dep_text import TextResolver
 from exactly_lib.test_case_utils.err_msg2.header_rendering import SimpleHeaderMinorBlockRenderer
 from exactly_lib.test_case_utils.err_msg2.path_rendering import HeaderAndPathMajorBlock, \
@@ -294,7 +294,7 @@ class _Assertion:
                                       _EXISTING_PATH_FAILURE_FORMAT_MAP),
                     self.described_path.describer,
                 ),
-                trace_rendering.BoolTraceRenderer(matching_result.trace),
+                bool_trace_renderer.BoolTraceRenderer(matching_result.trace),
             ])
 
             return pfh.new_pfh_fail(err_msg)

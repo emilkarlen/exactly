@@ -1,33 +1,24 @@
 from typing import Sequence
 
-from exactly_lib.type_system.trace.trace import Node, Detail, DetailVisitor, StringDetail, PreFormattedStringDetail
-from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
+from exactly_lib.util.description_tree.tree import Node, Detail, DetailVisitor, StringDetail, PreFormattedStringDetail
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, elements
 from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer, Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, ElementProperties
 
 
-class BoolTraceRenderer(Renderer[MajorBlock]):
-    def __init__(self, trace: NodeRenderer[bool]):
-        self._trace = trace
+class TreeRenderer(Renderer[MajorBlock]):
+    def __init__(self, tree: Node[bool]):
+        self._tree = tree
 
     def render(self) -> MajorBlock:
-        return BoolNodeRenderer(self._trace.render()).render()
+        return MajorBlock(_TreeRendererToMinorBlock(self._tree).render_sequence())
 
 
-class BoolNodeRenderer(Renderer[MajorBlock]):
-    def __init__(self, trace: Node[bool]):
-        self._trace = trace
-
-    def render(self) -> MajorBlock:
-        return MajorBlock(_NodeRendererToMinorBlock(self._trace).render_sequence())
-
-
-class _NodeRendererToMinorBlock(SequenceRenderer[MinorBlock]):
-    def __init__(self, node: Node[bool]):
-        self._node = node
+class _TreeRendererToMinorBlock(SequenceRenderer[MinorBlock]):
+    def __init__(self, tree: Node[bool]):
+        self._tree = tree
 
     def render_sequence(self) -> Sequence[MinorBlock]:
         return (
@@ -44,19 +35,19 @@ class _NodeRendererToMinorBlock(SequenceRenderer[MinorBlock]):
     def _header_line(self) -> LineElement:
         s = ' '.join([
             self._bool_header_string(),
-            str(self._node.header),
+            str(self._tree.header),
         ])
 
         return LineElement(
             structure.StringLineObject(s),
-            _HEADER_PROPERTIES_FOR_T if self._node.data else _HEADER_PROPERTIES_FOR_F,
+            _HEADER_PROPERTIES_FOR_T if self._tree.data else _HEADER_PROPERTIES_FOR_F,
         )
 
     def _children_renderer(self) -> SequenceRenderer[MinorBlock]:
         return rend_comb.ConcatenationR(
             [
-                _NodeRendererToMinorBlock(child)
-                for child in self._node.children
+                _TreeRendererToMinorBlock(child)
+                for child in self._tree.children
             ]
         )
 
@@ -64,12 +55,12 @@ class _NodeRendererToMinorBlock(SequenceRenderer[MinorBlock]):
         return rend_comb.ConcatenationR(
             [
                 _DetailRendererToLineElements(detail)
-                for detail in self._node.details
+                for detail in self._tree.details
             ]
         )
 
     def _bool_header_string(self) -> str:
-        bool_char = 'T' if self._node.data else 'F'
+        bool_char = 'T' if self._tree.data else 'F'
 
         return ''.join(['(', bool_char, ')'])
 

@@ -1,8 +1,8 @@
 import unittest
 from typing import Iterable, Optional
 
+from exactly_lib.test_case_utils.description_tree import details
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.test_case_utils.err_msg2 import trace_details
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -134,7 +134,7 @@ class EqualsMatcherTestImpl(StringMatcher):
             err_msg = 'not eq to "{}": "{}"'.format(self.expected, actual)
             return (
                 self._new_tb()
-                    .append_details(trace_details.String(err_msg))
+                    .append_details(details.String(err_msg))
                     .build_result(False)
             )
 

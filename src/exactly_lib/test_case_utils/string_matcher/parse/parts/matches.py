@@ -6,8 +6,8 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_utils.description_tree import details
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.test_case_utils.err_msg2 import trace_details
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.error_messages import ExpectedValueResolver, ErrorMessageResolverConstructor
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
@@ -82,8 +82,8 @@ class MatchesRegexStringMatcher(StringMatcher):
         self._is_full_match = is_full_match
         self._pattern = pattern
         self._err_msg_constructor = error_message_constructor
-        self._expected_detail_renderer = trace_details.Expected(
-            trace_details.PatternRenderer(is_full_match, pattern)
+        self._expected_detail_renderer = details.Expected(
+            details.PatternRenderer(is_full_match, pattern)
         )
 
     @property
@@ -125,15 +125,15 @@ class MatchesRegexStringMatcher(StringMatcher):
         actual_contents = self._actual_contents(model)
 
         tb = self._new_tb_with_expected().append_details(
-            trace_details.Actual(
-                trace_details.StringAsSingleLineWithMaxLenDetailsRenderer(actual_contents))
+            details.Actual(
+                details.StringAsSingleLineWithMaxLenDetailsRenderer(actual_contents))
         )
 
         match = self._find_match(actual_contents)
 
         if match is not None:
             tb.append_details(
-                trace_details.match(trace_details.PatternMatchRenderer(match))
+                details.match(details.PatternMatchRenderer(match))
             )
 
         return tb.build_result(match is not None)

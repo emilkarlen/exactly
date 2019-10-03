@@ -15,9 +15,9 @@ from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher i
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.trace import trace
-from exactly_lib.type_system.trace.trace import Detail
 from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
+from exactly_lib.util.description_tree import tree
+from exactly_lib.util.description_tree.tree import Detail
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -70,7 +70,7 @@ class _SelectionDetailsRenderer(DetailsRenderer):
         self._selector = selector
 
     def render(self) -> Sequence[Detail]:
-        return [trace.StringDetail(self._selector.option_description)]
+        return [tree.StringDetail(self._selector.option_description)]
 
 
 class _SubSetSelectorMatcherValue(FilesMatcherValue):

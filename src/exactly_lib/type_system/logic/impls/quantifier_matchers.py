@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Callable, Iterator, Optional, ContextManager
 
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.test_case_utils.description_tree import details
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.test_case_utils.err_msg2 import trace_details
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation
@@ -90,7 +90,7 @@ class _QuantifierBase(Generic[MODEL, ELEMENT], MatcherWTraceAndNegation[MODEL], 
             else
             self._non_matching_element_header()
         )
-        tb.append_details(trace_details.HeaderAndValue(
+        tb.append_details(details.HeaderAndValue(
             header,
             self._element_setup.renderer(element),
         ))
@@ -122,7 +122,7 @@ class Exists(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
     def _no_match(self, tb: TraceBuilder, tot_num_elements: int) -> MatchingResult:
         return (
             tb.append_details(
-                trace_details.String(
+                details.String(
                     strings.FormatPositional(
                         'No matching {} ({} tested)',
                         self._element_setup.type_name,
@@ -161,7 +161,7 @@ class ForAll(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
     def _all_match(self, tb: TraceBuilder, tot_num_elements: int) -> MatchingResult:
         return (
             tb.append_details(
-                trace_details.String(
+                details.String(
                     strings.FormatPositional(
                         'Every {} matches ({} tested)',
                         self._element_setup.type_name,

@@ -11,10 +11,10 @@ from exactly_lib.test_case_utils.matcher.object import ObjectValue, ObjectResolv
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.trace import trace
-from exactly_lib.type_system.trace.trace import Node
 from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util import logic_types
+from exactly_lib.util.description_tree import tree
+from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -121,8 +121,8 @@ class _TraceRenderer(Generic[T], NodeRenderer[bool]):
             self._operator.name,
             self._result__wo_expectation_type,
             [
-                trace.StringDetail(lhs_str),
-                trace.StringDetail(self._model_renderer(self._rhs)),
+                tree.StringDetail(lhs_str),
+                tree.StringDetail(self._model_renderer(self._rhs)),
             ],
             ()
         )

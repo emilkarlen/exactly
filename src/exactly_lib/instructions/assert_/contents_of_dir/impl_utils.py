@@ -9,7 +9,8 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, pfh_exception as pfh_ex_method
 from exactly_lib.test_case_utils import file_ref_check
-from exactly_lib.test_case_utils.err_msg2 import path_err_msgs, trace_rendering, file_or_dir_contents_headers
+from exactly_lib.test_case_utils.description_tree import bool_trace_renderer
+from exactly_lib.test_case_utils.err_msg2 import path_err_msgs, file_or_dir_contents_headers
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.logic.hard_error import HardErrorException
@@ -84,7 +85,7 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
                             file_or_dir_contents_headers.unexpected_of_file_type(FileType.DIRECTORY),
                             path_to_check.describer,
                         ),
-                        trace_rendering.BoolTraceRenderer(result.trace),
+                        bool_trace_renderer.BoolTraceRenderer(result.trace),
                     ]
                     )
                 )

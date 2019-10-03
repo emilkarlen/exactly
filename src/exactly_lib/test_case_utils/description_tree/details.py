@@ -7,11 +7,11 @@ from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.type_system.data import string_or_file_ref_values
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForValue
-from exactly_lib.type_system.trace import trace
-from exactly_lib.type_system.trace.trace import DetailVisitor, Detail, Node, NODE_DATA
 from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
 from exactly_lib.util import strings
 from exactly_lib.util.cli_syntax import option_syntax
+from exactly_lib.util.description_tree import tree
+from exactly_lib.util.description_tree.tree import DetailVisitor, Detail, Node, NODE_DATA
 from exactly_lib.util.strings import ToStringObject
 
 _EXPECTED = 'Expected'
@@ -32,7 +32,7 @@ class String(DetailsRenderer):
         self._to_string_object = to_string_object
 
     def render(self) -> Sequence[Detail]:
-        return [trace.StringDetail(self._to_string_object)]
+        return [tree.StringDetail(self._to_string_object)]
 
 
 class PreFormattedString(DetailsRenderer):
@@ -44,8 +44,8 @@ class PreFormattedString(DetailsRenderer):
         self._string_is_line_ended = string_is_line_ended
 
     def render(self) -> Sequence[Detail]:
-        return [trace.PreFormattedStringDetail(self._to_string_object,
-                                               self._string_is_line_ended)]
+        return [tree.PreFormattedStringDetail(self._to_string_object,
+                                              self._string_is_line_ended)]
 
 
 class HeaderAndValue(DetailsRenderer):
@@ -57,7 +57,7 @@ class HeaderAndValue(DetailsRenderer):
         self._value = value
 
     def render(self) -> Sequence[Detail]:
-        ret_val = [trace.StringDetail(self._header)]
+        ret_val = [tree.StringDetail(self._header)]
 
         ret_val += Indented(self._value).render()
 
@@ -73,7 +73,7 @@ class Expected(DetailsRenderer):
         self._expected = expected
 
     def render(self) -> Sequence[Detail]:
-        ret_val = [trace.StringDetail(_EXPECTED)]
+        ret_val = [tree.StringDetail(_EXPECTED)]
 
         ret_val += Indented(self._expected).render()
 
@@ -85,7 +85,7 @@ class Actual(DetailsRenderer):
         self._actual = actual
 
     def render(self) -> Sequence[Detail]:
-        ret_val = [trace.StringDetail(_ACTUAL)]
+        ret_val = [tree.StringDetail(_ACTUAL)]
 
         ret_val += Indented(self._actual).render()
 
@@ -104,10 +104,10 @@ class Indented(DetailsRenderer, DetailVisitor[Detail]):
             for detail in self._details.render()
         ]
 
-    def visit_string(self, x: trace.StringDetail) -> Detail:
-        return trace.StringDetail(strings.Concatenate((self.INDENT, x.string)))
+    def visit_string(self, x: tree.StringDetail) -> Detail:
+        return tree.StringDetail(strings.Concatenate((self.INDENT, x.string)))
 
-    def visit_pre_formatted_string(self, x: trace.PreFormattedStringDetail) -> Detail:
+    def visit_pre_formatted_string(self, x: tree.PreFormattedStringDetail) -> Detail:
         return x
 
 
@@ -125,7 +125,7 @@ class PathValueDetailsRenderer(DetailsRenderer):
 
     def render(self) -> Sequence[Detail]:
         return [
-            trace.StringDetail(self._path.value.render()),
+            tree.StringDetail(self._path.value.render()),
         ]
 
 
@@ -135,8 +135,8 @@ class PathValueAndPrimitiveDetailsRenderer(DetailsRenderer):
 
     def render(self) -> Sequence[Detail]:
         return [
-            trace.StringDetail(self._path.value.render()),
-            trace.StringDetail(self._path.primitive.render()),
+            tree.StringDetail(self._path.value.render()),
+            tree.StringDetail(self._path.primitive.render()),
         ]
 
 
@@ -147,7 +147,7 @@ class PathPrimitiveDetailsRenderer(DetailsRenderer):
     def render(self) -> Sequence[Detail]:
         renderer = path_rendering.PathRepresentationsRenderersForPrimitive(self._path)
         return [
-            trace.StringDetail(renderer.render())
+            tree.StringDetail(renderer.render())
             for renderer in renderer.renders()
         ]
 
@@ -158,7 +158,7 @@ class StringList(DetailsRenderer):
 
     def render(self) -> Sequence[Detail]:
         return [
-            trace.StringDetail(item)
+            tree.StringDetail(item)
             for item in self._items
         ]
 
@@ -202,7 +202,7 @@ class PatternRenderer(DetailsRenderer):
             s += option_syntax.option_syntax(matcher_options.FULL_MATCH_ARGUMENT_OPTION)
 
         return [
-            trace.StringDetail(s)
+            tree.StringDetail(s)
         ]
 
 
@@ -222,7 +222,7 @@ class OfTextRenderer(DetailsRenderer):
 
     def render(self) -> Sequence[Detail]:
         return [
-            trace.PreFormattedStringDetail(
+            tree.PreFormattedStringDetail(
                 print.print_to_str(self._text.render_sequence())
             )
         ]
@@ -240,5 +240,5 @@ class StringAsSingleLineWithMaxLenDetailsRenderer(DetailsRenderer):
         if len(s) != len(self._value):
             sr = sr + '...'
         return [
-            trace.StringDetail(sr)
+            tree.StringDetail(sr)
         ]

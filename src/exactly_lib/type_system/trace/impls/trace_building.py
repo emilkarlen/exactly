@@ -2,8 +2,8 @@ from typing import List
 
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.trace.impls.trace_renderers import NodeRendererFromParts
-from exactly_lib.type_system.trace.trace import Node
 from exactly_lib.type_system.trace.trace_renderer import NodeRenderer, DetailsRenderer, NODE_DATA
+from exactly_lib.util.description_tree.tree import Node
 
 
 class TraceBuilder:

@@ -3,6 +3,7 @@ import unittest
 from exactly_lib_test.util import functional, tables, \
     symbol_table, collection, value_lookup, name, file_utils, file_printables
 from exactly_lib_test.util.cli_syntax import z_package_suite as cli_syntax
+from exactly_lib_test.util.description_tree import z_package_suite as description_tree
 from exactly_lib_test.util.process_execution import z_package_suite as process_execution
 from exactly_lib_test.util.simple_textstruct import z_package_suite as simple_textstruct
 from exactly_lib_test.util.test_resources_test import z_package_suite as test_resources_test
@@ -19,6 +20,7 @@ def suite() -> unittest.TestSuite:
         tables.suite(),
         file_printables.suite(),
         simple_textstruct.suite(),
+        description_tree.suite(),
         textformat.suite(),
         cli_syntax.suite(),
         collection.suite(),

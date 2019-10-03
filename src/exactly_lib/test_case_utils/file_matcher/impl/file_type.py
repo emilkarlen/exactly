@@ -4,8 +4,8 @@ from typing import Optional
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils.description_tree import details
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.test_case_utils.err_msg2 import trace_details
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -72,10 +72,10 @@ class FileMatcherType(FileMatcherImplBase):
     def _result_for_exception(self, path: DescribedPathPrimitive, ex: Exception) -> MatchingResult:
         tb = (
             self.__tb_with_expected()
-                .append_details(trace_details.HeaderAndValue(types.PATH_TYPE_INFO.singular_name.capitalize(),
-                                                             trace_details.PathValueDetailsRenderer(path.describer)))
-                .append_details(trace_details.HeaderAndValue('Error',
-                                                             trace_details.String(ex)))
+                .append_details(details.HeaderAndValue(types.PATH_TYPE_INFO.singular_name.capitalize(),
+                                                       details.PathValueDetailsRenderer(path.describer)))
+                .append_details(details.HeaderAndValue('Error',
+                                                       details.String(ex)))
 
         )
         return tb.build_result(False)
@@ -88,16 +88,16 @@ class FileMatcherType(FileMatcherImplBase):
             else file_properties.TYPE_INFO[actual].description
         )
         tb = self.__tb_with_expected().append_details(
-            trace_details.Actual(
-                trace_details.String(actual_type_description)
+            details.Actual(
+                details.String(actual_type_description)
             )
         )
         return tb.build_result(False)
 
     def __tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(
-            trace_details.Expected(
-                trace_details.String(
+            details.Expected(
+                details.String(
                     file_properties.TYPE_INFO[self._file_type].description)
             )
         )

@@ -12,10 +12,11 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
     ValidationStep, \
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils.description_tree import details
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver, ExpectedValueResolver
-from exactly_lib.test_case_utils.err_msg2 import env_dep_texts, trace_details
+from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.string_matcher import matcher_options
@@ -112,8 +113,8 @@ class EqualityStringMatcher(StringMatcher):
         self._expected_contents = expected_contents
         self._validator = validator
         self._err_msg_constructor = error_message_constructor
-        self._expected_detail_renderer = trace_details.Expected(
-            trace_details.StringOrPath(expected_contents)
+        self._expected_detail_renderer = details.Expected(
+            details.StringOrPath(expected_contents)
         )
 
     @property
@@ -149,7 +150,7 @@ class EqualityStringMatcher(StringMatcher):
         if error_message:
             return (
                 self._new_tb_with_expected()
-                    .append_details(trace_details.OfTextRenderer(error_message))
+                    .append_details(details.OfTextRenderer(error_message))
                     .build_result(False)
             )
 
@@ -172,9 +173,9 @@ class EqualityStringMatcher(StringMatcher):
             return (
                 self._new_tb_with_expected()
                     .append_details(
-                    trace_details.HeaderAndValue(
+                    details.HeaderAndValue(
                         'Diff:',
-                        trace_details.PreFormattedString(_DiffString(diff_description), True)
+                        details.PreFormattedString(_DiffString(diff_description), True)
                     )
                 )
                     .build_result(False)

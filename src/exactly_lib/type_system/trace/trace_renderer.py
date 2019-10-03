@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Sequence
 
-from exactly_lib.type_system.trace.trace import Detail, Node
+from exactly_lib.util.description_tree.tree import Detail, Node
 
 
 class DetailsRenderer(ABC):
