@@ -7,8 +7,8 @@ from exactly_lib.util.description_tree.tree import Node
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
-from exactly_lib_test.type_system.trace.test_resources import trace_assertions as asrt_trace
 from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 
 class MatcherThatRegistersModelArgument(Matcher):
@@ -188,12 +188,12 @@ class TestCaseBase(unittest.TestCase):
                expected_result: bool,
                child_nodes: List[MatcherNameAndResult],
                ) -> ValueAssertion[Node[bool]]:
-        return asrt_trace.matches_node(
+        return asrt_d_tree.matches_node(
             header=asrt.equals(self.trace_operator_name),
             data=asrt.equals(expected_result),
             details=asrt.anything_goes(),
             children=asrt.matches_sequence([
-                asrt_trace.matches_node(
+                asrt_d_tree.matches_node(
                     header=asrt.equals(child_name),
                     data=asrt.equals(child_result),
                     details=asrt.anything_goes(),

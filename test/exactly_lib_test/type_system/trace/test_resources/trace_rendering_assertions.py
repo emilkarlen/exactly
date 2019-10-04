@@ -4,10 +4,10 @@ from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
-from exactly_lib_test.type_system.trace.test_resources import trace_assertions
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions
 
 
-def matches_node_renderer(rendered_node: ValueAssertion[Node] = trace_assertions.matches_node()
+def matches_node_renderer(rendered_node: ValueAssertion[Node] = described_tree_assertions.matches_node()
                           ) -> ValueAssertion[NodeRenderer]:
     return _MatchesNodeRendererAssertion(
         rendered_node,

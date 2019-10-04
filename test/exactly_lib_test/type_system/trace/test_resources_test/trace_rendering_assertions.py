@@ -4,8 +4,8 @@ from exactly_lib.util.description_tree.tree import Node, Detail, DetailVisitor, 
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.trace.test_resources import trace_assertions as asrt_trace
 from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as sut
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 
 def suite() -> unittest.TestSuite:
@@ -41,7 +41,7 @@ class TestDefaultAssertions(unittest.TestCase):
 class TestAssertionOnRenderedNode(unittest.TestCase):
     def test_fail(self):
         actual = sut.Node('actual header', None, [], [])
-        expectation = asrt_trace.matches_node(header=asrt.equals('expected header'))
+        expectation = asrt_d_tree.matches_node(header=asrt.equals('expected header'))
 
         assertion = sut.matches_node_renderer(rendered_node=expectation)
 
@@ -50,7 +50,7 @@ class TestAssertionOnRenderedNode(unittest.TestCase):
 
     def test_succeed(self):
         actual = sut.Node('expected header', None, [], [])
-        expectation = asrt_trace.matches_node(header=asrt.equals('expected header'))
+        expectation = asrt_d_tree.matches_node(header=asrt.equals('expected header'))
 
         assertion = sut.matches_node_renderer(rendered_node=expectation)
 
