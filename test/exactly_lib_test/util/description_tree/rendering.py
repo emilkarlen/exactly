@@ -1,10 +1,12 @@
 import unittest
 
 from exactly_lib.util import strings
-from exactly_lib.util.ansi_terminal_color import ForegroundColor
+from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
 from exactly_lib.util.description_tree import rendering as sut
+from exactly_lib.util.description_tree.rendering import RenderingConfiguration
 from exactly_lib.util.description_tree.tree import Node, StringDetail, PreFormattedStringDetail
 from exactly_lib.util.simple_textstruct import structure as s
+from exactly_lib.util.simple_textstruct.structure import ElementProperties
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -21,25 +23,23 @@ def suite() -> unittest.TestSuite:
 class TestBasicStructure(unittest.TestCase):
     def test_node_with_just_header(self):
         # ARRANGE #
-        for string_object_case in STRING_OBJECT_CASES:
-            for data in [False, True]:
-                with self.subTest(data=data,
-                                  string_object=string_object_case.name):
-                    root = Node(string_object_case.value, data, (), ())
+        for data in [False, True]:
+            with self.subTest(data=data):
+                root = Node('header', data, (), ())
 
-                    # EXPECTATION #
+                # EXPECTATION #
 
-                    expectation = asrt_struct.matches_major_block__w_plain_properties(
-                        minor_blocks=asrt.matches_sequence([
-                            asrt_struct.matches_minor_block__w_plain_properties(
-                                line_elements=asrt.matches_singleton_sequence(matches_header_line_element(root)),
-                            )
-                        ])
-                    )
+                expectation = asrt_struct.matches_major_block__w_plain_properties(
+                    minor_blocks=asrt.matches_sequence([
+                        asrt_struct.matches_minor_block__w_plain_properties(
+                            line_elements=asrt.matches_singleton_sequence(matches_header_line_element(root)),
+                        )
+                    ])
+                )
 
-                    # ACT & ASSERT #
+                # ACT & ASSERT #
 
-                    _check(self, root, expectation)
+                _check(self, root, expectation)
 
     def test_node_with_detail_and_child(self):
         # ARRANGE #
@@ -92,7 +92,7 @@ class TestBasicStructure(unittest.TestCase):
 
                         expectation = asrt_struct.matches_major_block__w_plain_properties(
                             minor_blocks=asrt.matches_sequence([
-                                asrt_struct.matches_minor_block__w_plain_properties(
+                                asrt_struct.matches_minor_block(
                                     line_elements=asrt.matches_sequence([
                                         matches_header_line_element(root),
                                         matches_string_detail_line_element(detail_1, level=1),
@@ -202,7 +202,7 @@ def _check(put: unittest.TestCase,
            node: Node[bool],
            expectation: ValueAssertion[s.MajorBlock],
            ):
-    renderer = sut.TreeRenderer(node)
+    renderer = sut.TreeRenderer(RENDERING_CONFIGURATION, node)
 
     # ACT #
 
@@ -211,6 +211,26 @@ def _check(put: unittest.TestCase,
     # ASSERT #
 
     expectation.apply_with_message(put, block, 'from node-renderer')
+
+
+def _get_header(node: Node[bool]) -> str:
+    return ':'.join([str(node.data), node.header])
+
+
+def _get_header_style(node: Node[bool]) -> ElementProperties:
+    return (
+        _HEADER_PROPERTIES_FOR_T
+        if node.data
+        else
+        _HEADER_PROPERTIES_FOR_F
+    )
+
+
+RENDERING_CONFIGURATION = RenderingConfiguration(
+    _get_header,
+    _get_header_style,
+    '<DETAIL-INDENT>',
+)
 
 
 def matches_trace_with_just_single_detail(trace: Node[bool],
@@ -230,13 +250,16 @@ def matches_trace_with_just_single_detail(trace: Node[bool],
 def matches_header_line_element(node: Node[bool]) -> ValueAssertion[s.LineElement]:
     return asrt_struct.matches_line_element(
         line_object=asrt_struct.is_string__not_line_ended(asrt.equals(_expected_header_line(node))),
-        properties=matches_header_properties(node),
+        properties=asrt_struct.equals_element_properties(
+            _get_header_style(node)
+        ),
     )
 
 
 def matches_string_detail_line_element(detail: StringDetail, level: int) -> ValueAssertion[s.LineElement]:
     return asrt_struct.matches_line_element(
-        line_object=asrt_struct.is_string__not_line_ended(asrt.equals(str(sut.DETAILS_INDENT + str(detail.string)))),
+        line_object=asrt_struct.is_string__not_line_ended(
+            asrt.equals(str(RENDERING_CONFIGURATION.detail_indent + str(detail.string)))),
         properties=asrt_struct.equals_element_properties(expected_detail_properties(level=level - 1)),
     )
 
@@ -258,23 +281,15 @@ def matches_header_properties(node: Node[bool]) -> ValueAssertion[s.ElementPrope
 
 
 def _expected_header_line(node: Node[bool]) -> str:
-    bool_val_str = (
-        'T'
-        if node.data
-        else
-        'F'
-    )
-    return ' '.join([
-        '(' + bool_val_str + ')',
-        str(node.header),
-    ])
+    return _get_header(node)
 
 
 def _expected_header_properties(node: Node[bool]) -> s.ElementProperties:
-    return s.ElementProperties(
-        0,
-        _expected_header_color(node),
-        None,
+    return (
+        _HEADER_PROPERTIES_FOR_F
+        if node.data
+        else
+        _HEADER_PROPERTIES_FOR_T
     )
 
 
@@ -311,3 +326,6 @@ STRING_OBJECT_CASES = [
                  strings.FormatPositional('{}', 'a string that is generated'),
                  ),
 ]
+
+_HEADER_PROPERTIES_FOR_F = ElementProperties(0, ForegroundColor.RED, FontStyle.BOLD)
+_HEADER_PROPERTIES_FOR_T = ElementProperties(0, ForegroundColor.GREEN, None)

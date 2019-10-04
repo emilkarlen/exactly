@@ -1,13 +1,12 @@
-from typing import Any
-
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering.components import LineObjectRenderer
 from exactly_lib.util.simple_textstruct.structure import LineObject
+from exactly_lib.util.strings import ToStringObject
 
 
 class PreFormattedString(LineObjectRenderer):
     def __init__(self,
-                 x: Any,
+                 x: ToStringObject,
                  string_is_line_ended: bool = False
                  ):
         """
@@ -21,7 +20,7 @@ class PreFormattedString(LineObjectRenderer):
 
 
 class StringLineObject(LineObjectRenderer):
-    def __init__(self, x: Any):
+    def __init__(self, x: ToStringObject):
         """
         :param x: str is accessed via __str__
         """

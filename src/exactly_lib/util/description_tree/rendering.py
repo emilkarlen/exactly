@@ -1,24 +1,43 @@
-from typing import Sequence
+from typing import Sequence, Generic, Callable
 
-from exactly_lib.util.ansi_terminal_color import ForegroundColor
-from exactly_lib.util.description_tree.tree import Node, Detail, DetailVisitor, StringDetail, PreFormattedStringDetail
+from exactly_lib.util.description_tree.tree import Node, Detail, DetailVisitor, StringDetail, PreFormattedStringDetail, \
+    NODE_DATA
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, elements
 from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer, Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, ElementProperties
 
 
-class TreeRenderer(Renderer[MajorBlock]):
-    def __init__(self, tree: Node[bool]):
+class RenderingConfiguration(Generic[NODE_DATA]):
+    def __init__(self,
+                 header: Callable[[Node[NODE_DATA]], str],
+                 header_style: Callable[[Node[NODE_DATA]], ElementProperties],
+                 detail_indent: str,
+                 ):
+        self.header = header
+        self.header_style = header_style
+        self.detail_indent = detail_indent
+
+
+class TreeRenderer(Generic[NODE_DATA], Renderer[MajorBlock]):
+    def __init__(self,
+                 configuration: RenderingConfiguration[NODE_DATA],
+                 tree: Node[NODE_DATA],
+                 ):
         self._tree = tree
+        self._configuration = configuration
 
     def render(self) -> MajorBlock:
-        return MajorBlock(_TreeRendererToMinorBlock(self._tree).render_sequence())
+        return MajorBlock(_TreeRendererToMinorBlock(self._configuration, self._tree).render_sequence())
 
 
-class _TreeRendererToMinorBlock(SequenceRenderer[MinorBlock]):
-    def __init__(self, tree: Node[bool]):
+class _TreeRendererToMinorBlock(Generic[NODE_DATA], SequenceRenderer[MinorBlock]):
+    def __init__(self,
+                 setup: RenderingConfiguration[NODE_DATA],
+                 tree: Node[NODE_DATA],
+                 ):
         self._tree = tree
+        self._setup = setup
 
     def render_sequence(self) -> Sequence[MinorBlock]:
         return (
@@ -33,20 +52,18 @@ class _TreeRendererToMinorBlock(SequenceRenderer[MinorBlock]):
         )
 
     def _header_line(self) -> LineElement:
-        s = ' '.join([
-            self._bool_header_string(),
-            str(self._tree.header),
-        ])
+        node = self._tree
+        s = self._setup.header(node)
 
         return LineElement(
             structure.StringLineObject(s),
-            _HEADER_PROPERTIES_FOR_T if self._tree.data else _HEADER_PROPERTIES_FOR_F,
+            self._setup.header_style(self._tree),
         )
 
     def _children_renderer(self) -> SequenceRenderer[MinorBlock]:
         return rend_comb.ConcatenationR(
             [
-                _TreeRendererToMinorBlock(child)
+                _TreeRendererToMinorBlock(self._setup, child)
                 for child in self._tree.children
             ]
         )
@@ -54,28 +71,27 @@ class _TreeRendererToMinorBlock(SequenceRenderer[MinorBlock]):
     def _details_renderer(self) -> SequenceRenderer[LineElement]:
         return rend_comb.ConcatenationR(
             [
-                _DetailRendererToLineElements(detail)
+                _DetailRendererToLineElements(self._setup, detail)
                 for detail in self._tree.details
             ]
         )
 
-    def _bool_header_string(self) -> str:
-        bool_char = 'T' if self._tree.data else 'F'
-
-        return ''.join(['(', bool_char, ')'])
-
 
 class _DetailRendererToLineElements(SequenceRenderer[LineElement],
                                     DetailVisitor[Sequence[LineElement]]):
-    def __init__(self, detail: Detail):
+    def __init__(self,
+                 setup: RenderingConfiguration,
+                 detail: Detail,
+                 ):
         self._detail = detail
+        self._setup = setup
 
     def render_sequence(self) -> Sequence[LineElement]:
         return self._detail.accept(self)
 
     def visit_string(self, x: StringDetail) -> Sequence[LineElement]:
         return [
-            LineElement(structure.StringLineObject(DETAILS_INDENT + str(x.string)))
+            LineElement(structure.StringLineObject(self._setup.detail_indent + str(x.string)))
         ]
 
     def visit_pre_formatted_string(self, x: PreFormattedStringDetail) -> Sequence[LineElement]:
@@ -83,10 +99,3 @@ class _DetailRendererToLineElements(SequenceRenderer[LineElement],
             LineElement(structure.PreFormattedStringLineObject(str(x.object_with_to_string),
                                                                x.string_is_line_ended))
         ]
-
-
-# Makes details appear 2 characters to the right of the node header
-DETAILS_INDENT = '      '
-
-_HEADER_PROPERTIES_FOR_F = ElementProperties(0, ForegroundColor.BRIGHT_RED, None)
-_HEADER_PROPERTIES_FOR_T = ElementProperties(0, ForegroundColor.BRIGHT_GREEN, None)

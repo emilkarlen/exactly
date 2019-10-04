@@ -1,0 +1,43 @@
+from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
+from exactly_lib.util.ansi_terminal_color import ForegroundColor
+from exactly_lib.util.description_tree.rendering import TreeRenderer, RenderingConfiguration
+from exactly_lib.util.description_tree.tree import Node
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.structure import MajorBlock, ElementProperties
+
+
+class BoolTraceRenderer(Renderer[MajorBlock]):
+    def __init__(self, trace: NodeRenderer[bool]):
+        self._trace = trace
+
+    def render(self) -> MajorBlock:
+        return TreeRenderer(_RENDERING_CONFIGURATION, self._trace.render()).render()
+
+
+def _make_header(node: Node[bool]) -> str:
+    bool_char = 'T' if node.data else 'F'
+
+    return '({}) {}'.format(bool_char, node.header)
+
+
+# Makes details appear 2 characters to the right of the node header
+DETAILS_INDENT = '      '
+
+_HEADER_PROPERTIES_FOR_F = ElementProperties(0, ForegroundColor.BRIGHT_RED, None)
+_HEADER_PROPERTIES_FOR_T = ElementProperties(0, ForegroundColor.BRIGHT_GREEN, None)
+
+
+def _get_header_style(node: Node[bool]) -> ElementProperties:
+    return (
+        _HEADER_PROPERTIES_FOR_T
+        if node.data
+        else
+        _HEADER_PROPERTIES_FOR_F
+    )
+
+
+_RENDERING_CONFIGURATION = RenderingConfiguration(
+    _make_header,
+    _get_header_style,
+    DETAILS_INDENT,
+)
