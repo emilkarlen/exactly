@@ -20,8 +20,8 @@ def _make_header(node: Node[bool]) -> str:
     return '({}) {}'.format(bool_char, node.header)
 
 
-# Makes details appear 2 characters to the right of the node header
-DETAILS_INDENT = '      '
+# Makes details at level 0 appear aligned with the node header
+DETAILS_INDENT = ' ' * len('(B) ')
 
 _HEADER_PROPERTIES_FOR_F = ElementProperties(INDENTATION__NEUTRAL, TextStyle(color=ForegroundColor.BRIGHT_RED))
 _HEADER_PROPERTIES_FOR_T = ElementProperties(INDENTATION__NEUTRAL, TextStyle(color=ForegroundColor.BRIGHT_GREEN))

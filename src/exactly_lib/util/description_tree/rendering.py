@@ -33,11 +33,11 @@ class TreeRenderer(Generic[NODE_DATA], Renderer[MajorBlock]):
 
 class _TreeRendererToMinorBlock(Generic[NODE_DATA], SequenceRenderer[MinorBlock]):
     def __init__(self,
-                 setup: RenderingConfiguration[NODE_DATA],
+                 configuration: RenderingConfiguration[NODE_DATA],
                  tree: Node[NODE_DATA],
                  ):
         self._tree = tree
-        self._setup = setup
+        self._configuration = configuration
 
     def render_sequence(self) -> Sequence[MinorBlock]:
         return (
@@ -53,17 +53,17 @@ class _TreeRendererToMinorBlock(Generic[NODE_DATA], SequenceRenderer[MinorBlock]
 
     def _header_line(self) -> LineElement:
         node = self._tree
-        s = self._setup.header(node)
+        s = self._configuration.header(node)
 
         return LineElement(
             structure.StringLineObject(s),
-            self._setup.header_style(self._tree),
+            self._configuration.header_style(self._tree),
         )
 
     def _children_renderer(self) -> SequenceRenderer[MinorBlock]:
         return rend_comb.ConcatenationR(
             [
-                _TreeRendererToMinorBlock(self._setup, child)
+                _TreeRendererToMinorBlock(self._configuration, child)
                 for child in self._tree.children
             ]
         )
@@ -71,7 +71,7 @@ class _TreeRendererToMinorBlock(Generic[NODE_DATA], SequenceRenderer[MinorBlock]
     def _details_renderer(self) -> SequenceRenderer[LineElement]:
         return rend_comb.ConcatenationR(
             [
-                _DetailRendererToLineElements(self._setup, detail)
+                _DetailRendererToLineElements(self._configuration, detail)
                 for detail in self._tree.details
             ]
         )
@@ -80,22 +80,26 @@ class _TreeRendererToMinorBlock(Generic[NODE_DATA], SequenceRenderer[MinorBlock]
 class _DetailRendererToLineElements(SequenceRenderer[LineElement],
                                     DetailVisitor[Sequence[LineElement]]):
     def __init__(self,
-                 setup: RenderingConfiguration,
+                 configuration: RenderingConfiguration,
                  detail: Detail,
                  ):
         self._detail = detail
-        self._setup = setup
+        self._element_properties = ElementProperties(
+            structure.Indentation(1, configuration.detail_indent)
+        )
 
     def render_sequence(self) -> Sequence[LineElement]:
         return self._detail.accept(self)
 
     def visit_string(self, x: StringDetail) -> Sequence[LineElement]:
         return [
-            LineElement(structure.StringLineObject(self._setup.detail_indent + str(x.string)))
+            LineElement(structure.StringLineObject(str(x.string)),
+                        self._element_properties)
         ]
 
     def visit_pre_formatted_string(self, x: PreFormattedStringDetail) -> Sequence[LineElement]:
         return [
             LineElement(structure.PreFormattedStringLineObject(str(x.object_with_to_string),
-                                                               x.string_is_line_ended))
+                                                               x.string_is_line_ended),
+                        self._element_properties)
         ]

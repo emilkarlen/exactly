@@ -54,7 +54,7 @@ class Test(unittest.TestCase):
                     minor_blocks=asrt.matches_singleton_sequence(asrt_struct.matches_minor_block__w_plain_properties(
                         line_elements=asrt.matches_sequence([
                             _matches_header_line_element(root),
-                            _matches_string_detail_line_element(detail, level=1),
+                            _matches_string_detail_line_element(detail, depth=0),
                         ]),
                     ))
                 )
@@ -96,12 +96,12 @@ def _expected_header_style(node: Node[bool]) -> ElementProperties:
                              )
 
 
-def _matches_string_detail_line_element(detail: StringDetail, level: int) -> ValueAssertion[s.LineElement]:
+def _matches_string_detail_line_element(detail: StringDetail, depth: int) -> ValueAssertion[s.LineElement]:
     return asrt_struct.matches_line_element(
         line_object=asrt_struct.is_string__not_line_ended(
-            asrt.equals(_EXPECTED_DETAIL_INDENT + str(detail.string))),
+            asrt.equals(str(detail.string))),
         properties=asrt_struct.equals_element_properties(
-            expected_detail_properties(level=level - 1)
+            expected_detail_properties(level=depth + 1)
         ),
     )
 
@@ -128,7 +128,7 @@ def _expected_header_color(node: Node[bool]) -> ForegroundColor:
 def expected_detail_properties(level: int) -> s.ElementProperties:
     return s.ElementProperties(
         Indentation(level,
-                    ''),
+                    _EXPECTED_DETAIL_INDENT_SUFFIX),
         TEXT_STYLE__NEUTRAL,
     )
 
@@ -141,4 +141,4 @@ class _ConstantNodeRenderer(NodeRenderer[bool]):
         return self._constant
 
 
-_EXPECTED_DETAIL_INDENT = ' ' * len(''.join(['(B)', ' ', '  ']))
+_EXPECTED_DETAIL_INDENT_SUFFIX = ' ' * len('(B) ')

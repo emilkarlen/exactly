@@ -32,8 +32,9 @@ class TestBasicStructure(unittest.TestCase):
 
                 expectation = asrt_struct.matches_major_block__w_plain_properties(
                     minor_blocks=asrt.matches_sequence([
-                        asrt_struct.matches_minor_block__w_plain_properties(
+                        asrt_struct.matches_minor_block(
                             line_elements=asrt.matches_singleton_sequence(matches_header_line_element(root)),
+                            properties=matches_node_properties(depth=0),
                         )
                     ])
                 )
@@ -55,15 +56,18 @@ class TestBasicStructure(unittest.TestCase):
 
                 expectation = asrt_struct.matches_major_block__w_plain_properties(
                     minor_blocks=asrt.matches_sequence([
-                        asrt_struct.matches_minor_block__w_plain_properties(
+                        asrt_struct.matches_minor_block(
                             line_elements=asrt.matches_sequence([
                                 matches_header_line_element(root),
-                                matches_string_detail_line_element(detail, level=1),
+                                matches_string_detail_line_element(detail, depth=0),
                             ]),
+                            properties=matches_node_properties(depth=0),
                         ),
                         asrt_struct.matches_minor_block(
-                            line_elements=asrt.matches_singleton_sequence(matches_header_line_element(child)),
-                            properties=asrt_struct.equals_element_properties(expected_child_properties(level=1)),
+                            line_elements=asrt.matches_singleton_sequence(
+                                matches_header_line_element(child)
+                            ),
+                            properties=matches_node_properties(depth=1),
                         ),
                     ])
                 )
@@ -96,21 +100,24 @@ class TestBasicStructure(unittest.TestCase):
                                 asrt_struct.matches_minor_block(
                                     line_elements=asrt.matches_sequence([
                                         matches_header_line_element(root),
-                                        matches_string_detail_line_element(detail_1, level=1),
-                                        matches_string_detail_line_element(detail_2, level=1),
+                                        matches_string_detail_line_element(detail_1, depth=0),
+                                        matches_string_detail_line_element(detail_2, depth=0),
                                     ]),
+                                    properties=matches_node_properties(depth=0),
                                 ),
                                 asrt_struct.matches_minor_block(
                                     line_elements=
-                                    asrt.matches_singleton_sequence(matches_header_line_element(child_1)),
+                                    asrt.matches_singleton_sequence(
+                                        matches_header_line_element(child_1)
+                                    ),
                                     properties=
-                                    asrt_struct.equals_element_properties(expected_child_properties(level=1)),
+                                    matches_node_properties(depth=1),
                                 ),
                                 asrt_struct.matches_minor_block(
                                     line_elements=
                                     asrt.matches_singleton_sequence(matches_header_line_element(child_2)),
                                     properties=
-                                    asrt_struct.equals_element_properties(expected_child_properties(level=1)),
+                                    matches_node_properties(depth=1),
                                 ),
                             ])
                         )
@@ -136,19 +143,18 @@ class TestBasicStructure(unittest.TestCase):
 
                         expectation = asrt_struct.matches_major_block__w_plain_properties(
                             minor_blocks=asrt.matches_sequence([
-                                asrt_struct.matches_minor_block__w_plain_properties(
+                                asrt_struct.matches_minor_block(
                                     line_elements=asrt.matches_singleton_sequence(matches_header_line_element(root)),
+                                    properties=matches_node_properties(depth=0)
                                 ),
                                 asrt_struct.matches_minor_block(
                                     line_elements=asrt.matches_singleton_sequence(matches_header_line_element(child_1)),
-                                    properties=asrt_struct.equals_element_properties(
-                                        expected_child_properties(level=1)),
-                                ),
+                                    properties=matches_node_properties(depth=1)),
                                 asrt_struct.matches_minor_block(
                                     line_elements=asrt.matches_singleton_sequence(
-                                        matches_header_line_element(child_11)),
-                                    properties=asrt_struct.equals_element_properties(
-                                        expected_child_properties(level=2)),
+                                        matches_header_line_element(child_11)
+                                    ),
+                                    properties=matches_node_properties(depth=2),
                                 ),
                             ])
                         )
@@ -170,7 +176,7 @@ class TestRenderingOfDetail(unittest.TestCase):
 
                 expectation = matches_trace_with_just_single_detail(
                     root,
-                    matches_string_detail_line_element(detail, level=1),
+                    matches_string_detail_line_element(detail, depth=0),
                 )
 
                 # ACT & ASSERT #
@@ -191,7 +197,7 @@ class TestRenderingOfDetail(unittest.TestCase):
 
                     expectation = matches_trace_with_just_single_detail(
                         root,
-                        matches_pre_formatted_string_detail_line_element(detail, level=1),
+                        matches_pre_formatted_string_detail_line_element(detail, depth=0),
                     )
 
                     # ACT & ASSERT #
@@ -239,11 +245,12 @@ def matches_trace_with_just_single_detail(trace: Node[bool],
                                           ) -> ValueAssertion[s.MajorBlock]:
     return asrt_struct.matches_major_block__w_plain_properties(
         minor_blocks=asrt.matches_singleton_sequence(
-            asrt_struct.matches_minor_block__w_plain_properties(
+            asrt_struct.matches_minor_block(
                 line_elements=asrt.matches_sequence([
                     matches_header_line_element(trace),
                     detail,
                 ]),
+                properties=matches_node_properties(depth=0),
             ))
     )
 
@@ -257,23 +264,23 @@ def matches_header_line_element(node: Node[bool]) -> ValueAssertion[s.LineElemen
     )
 
 
-def matches_string_detail_line_element(detail: StringDetail, level: int) -> ValueAssertion[s.LineElement]:
+def matches_string_detail_line_element(detail: StringDetail, depth: int) -> ValueAssertion[s.LineElement]:
     return asrt_struct.matches_line_element(
         line_object=asrt_struct.is_string__not_line_ended(
-            asrt.equals(str(RENDERING_CONFIGURATION.detail_indent + str(detail.string)))),
-        properties=asrt_struct.equals_element_properties(expected_detail_properties(level=level - 1)),
+            asrt.equals(str(detail.string))),
+        properties=matches_detail_properties(depth=depth),
     )
 
 
 def matches_pre_formatted_string_detail_line_element(detail: PreFormattedStringDetail,
-                                                     level: int,
+                                                     depth: int,
                                                      ) -> ValueAssertion[s.LineElement]:
     return asrt_struct.matches_line_element(
         line_object=asrt_struct.is_pre_formatted_string(
             string=asrt.equals(str(detail.object_with_to_string)),
             string_is_line_ended=asrt.equals(detail.string_is_line_ended),
         ),
-        properties=asrt_struct.equals_element_properties(expected_detail_properties(level=level - 1)),
+        properties=matches_detail_properties(depth=depth),
     )
 
 
@@ -303,20 +310,28 @@ def _expected_header_color(node: Node[bool]) -> ForegroundColor:
     )
 
 
-def expected_child_properties(level: int) -> s.ElementProperties:
+def expected_node_properties(depth: int) -> s.ElementProperties:
     return s.ElementProperties(
-        Indentation(level,
+        Indentation(depth,
                     ''),
         TEXT_STYLE__NEUTRAL,
     )
 
 
-def expected_detail_properties(level: int) -> s.ElementProperties:
+def matches_node_properties(depth: int) -> ValueAssertion[s.ElementProperties]:
+    return asrt_struct.equals_element_properties(expected_node_properties(depth))
+
+
+def expected_detail_properties(depth: int) -> s.ElementProperties:
     return s.ElementProperties(
-        Indentation(level,
-                    ''),
+        Indentation(depth + 1,
+                    RENDERING_CONFIGURATION.detail_indent),
         TEXT_STYLE__NEUTRAL,
     )
+
+
+def matches_detail_properties(depth: int) -> ValueAssertion[s.ElementProperties]:
+    return asrt_struct.equals_element_properties(expected_detail_properties(depth))
 
 
 STRING_OBJECT_CASES = [
