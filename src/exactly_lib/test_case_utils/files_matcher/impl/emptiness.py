@@ -13,9 +13,9 @@ from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherResolverBase
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util import logic_types, strings
 from exactly_lib.util.description_tree import tree
+from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
+from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder

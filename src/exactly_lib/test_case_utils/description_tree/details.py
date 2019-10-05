@@ -7,9 +7,9 @@ from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.type_system.data import string_or_file_ref_values
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForValue
-from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.description_tree import tree
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail, Node, NODE_DATA
 from exactly_lib.util.strings import ToStringObject
 

@@ -8,8 +8,8 @@ from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolve
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
-from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
 from exactly_lib.util import strings
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.logic_types import Quantifier
 from exactly_lib.util.strings import ToStringObject
 

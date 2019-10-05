@@ -3,8 +3,8 @@ from typing import Sequence
 
 from exactly_lib.util import strings
 from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
-from exactly_lib.util.description_tree import rendering as sut
-from exactly_lib.util.description_tree.rendering import RenderingConfiguration
+from exactly_lib.util.description_tree import simple_textstruct_rendering as sut
+from exactly_lib.util.description_tree.simple_textstruct_rendering import RenderingConfiguration
 from exactly_lib.util.description_tree.tree import Node, StringDetail, PreFormattedStringDetail, HeaderAndValueDetail, \
     TreeDetail
 from exactly_lib.util.simple_textstruct import structure as s

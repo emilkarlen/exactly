@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.description_tree.details import NodeRenderer
-from exactly_lib.type_system.trace.impls import trace_renderers
+from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.functional import compose_first_and_second
 
@@ -33,10 +33,10 @@ class StringTransformer(ABC):
         Given as a renderer, to ease implementations.
         """
         pass
-        return trace_renderers.Constant(Node(self.name,
-                                             None,
-                                             (),
-                                             ()))
+        return renderers.Constant(Node(self.name,
+                                       None,
+                                       (),
+                                       ()))
 
     @property
     def is_identity_transformer(self) -> bool:

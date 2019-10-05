@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering as sut
-from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
+from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node, StringDetail
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib.util.simple_textstruct.structure import ElementProperties, INDENTATION__NEUTRAL, TextStyle, \

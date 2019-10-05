@@ -13,7 +13,7 @@ from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherL
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
-from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
 
 

@@ -28,8 +28,8 @@ from exactly_lib.type_system.logic.impls import quantifier_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
-from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
 from exactly_lib.util import logic_types
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable

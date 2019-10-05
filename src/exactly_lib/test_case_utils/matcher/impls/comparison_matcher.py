@@ -11,9 +11,9 @@ from exactly_lib.test_case_utils.matcher.object import ObjectValue, ObjectResolv
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util import logic_types
 from exactly_lib.util.description_tree import tree
+from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable

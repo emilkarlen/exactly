@@ -27,7 +27,7 @@ from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorCon
 from exactly_lib.type_system.logic.impls import quantifier_matchers, combinator_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
-from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
