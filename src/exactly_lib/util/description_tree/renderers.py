@@ -33,3 +33,19 @@ class NodeRendererFromParts(Generic[NODE_DATA], NodeRenderer[NODE_DATA]):
                     list(itertools.chain.from_iterable(d.render() for d in self._details)),
                     [c.render() for c in self._children],
                     )
+
+
+class CachedSingleInvokation(Generic[NODE_DATA], NodeRenderer[NODE_DATA]):
+    """Result is that of the given renderer, which is invoked at most once."""
+
+    def __init__(self,
+                 renderer: NodeRenderer[NODE_DATA],
+                 ):
+        self._renderer = renderer
+        self._cache = None
+
+    def render(self) -> Node[NODE_DATA]:
+        if self._cache is None:
+            self._cache = self._renderer.render()
+
+        return self._cache
