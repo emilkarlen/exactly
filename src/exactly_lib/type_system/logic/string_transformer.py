@@ -7,8 +7,8 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.description_tree.details import NodeRenderer
 from exactly_lib.util.description_tree import renderers
+from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.functional import compose_first_and_second
 
@@ -32,7 +32,6 @@ class StringTransformer(ABC):
 
         Given as a renderer, to ease implementations.
         """
-        pass
         return renderers.Constant(Node(self.name,
                                        None,
                                        (),

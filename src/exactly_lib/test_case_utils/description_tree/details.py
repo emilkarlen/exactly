@@ -1,4 +1,4 @@
-from typing import Sequence, Iterable, Pattern, Match, Generic
+from typing import Sequence, Iterable, Pattern, Match
 
 from exactly_lib.common.report_rendering import print
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -10,7 +10,7 @@ from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitiv
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
-from exactly_lib.util.description_tree.tree import Detail, Node, NODE_DATA
+from exactly_lib.util.description_tree.tree import Detail
 from exactly_lib.util.strings import ToStringObject
 
 _EXPECTED = 'Expected'
@@ -74,14 +74,6 @@ def actual(value: DetailsRenderer) -> DetailsRenderer:
 
 def match(matching_object: DetailsRenderer) -> DetailsRenderer:
     return HeaderAndValue(_MATCH, matching_object)
-
-
-class NodeRenderer(Generic[NODE_DATA], DetailsRenderer):
-    def __init__(self, node: Node[NODE_DATA]):
-        self._node = node
-
-    def render(self) -> Sequence[Detail]:
-        raise NotImplementedError('todo')
 
 
 class PathValueDetailsRenderer(DetailsRenderer):
