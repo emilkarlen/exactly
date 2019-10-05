@@ -2,7 +2,8 @@ import unittest
 
 from exactly_lib.util import strings
 from exactly_lib.util.description_tree import tree as sut
-from exactly_lib.util.description_tree.tree import PreFormattedStringDetail, HeaderAndValueDetail, StringDetail
+from exactly_lib.util.description_tree.tree import PreFormattedStringDetail, HeaderAndValueDetail, StringDetail, \
+    TreeDetail
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -13,6 +14,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestStringDetail),
         unittest.makeSuite(TestPreFormattedStringDetail),
         unittest.makeSuite(TestHeaderAndValueDetail),
+        unittest.makeSuite(TestTreeDetail),
     ])
 
 
@@ -75,18 +77,15 @@ class TestStringDetail(unittest.TestCase):
     def test_accept_visitor(self):
         # ARRANGE #
 
-        visitor = _VisitorThatRegistersVisitedClassesAndReturnsConstant(72)
+        visitor = _VisitorThatRegistersVisitedClassesAndReturnsConstant()
 
         detail = sut.StringDetail('the string')
 
         # ACT #
 
-        ret_val_from_visitor = detail.accept(visitor)
+        detail.accept(visitor)
 
         # ASSERT #
-        self.assertEqual(visitor.ret_val,
-                         ret_val_from_visitor,
-                         'return value')
 
         self.assertEqual(visitor.visited_classes,
                          [sut.StringDetail],
@@ -125,18 +124,15 @@ class TestPreFormattedStringDetail(unittest.TestCase):
     def test_accept_visitor(self):
         # ARRANGE #
 
-        visitor = _VisitorThatRegistersVisitedClassesAndReturnsConstant(69)
+        visitor = _VisitorThatRegistersVisitedClassesAndReturnsConstant()
 
         detail = sut.PreFormattedStringDetail('the string', False)
 
         # ACT #
 
-        ret_val_from_visitor = detail.accept(visitor)
+        detail.accept(visitor)
 
         # ASSERT #
-        self.assertEqual(visitor.ret_val,
-                         ret_val_from_visitor,
-                         'return value')
 
         self.assertEqual(visitor.visited_classes,
                          [sut.PreFormattedStringDetail],
@@ -165,37 +161,63 @@ class TestHeaderAndValueDetail(unittest.TestCase):
     def test_accept_visitor(self):
         # ARRANGE #
 
-        visitor = _VisitorThatRegistersVisitedClassesAndReturnsConstant(69)
+        visitor = _VisitorThatRegistersVisitedClassesAndReturnsConstant()
 
         detail = sut.HeaderAndValueDetail('the header', [])
 
         # ACT #
 
-        ret_val_from_visitor = detail.accept(visitor)
+        detail.accept(visitor)
 
         # ASSERT #
-        self.assertEqual(visitor.ret_val,
-                         ret_val_from_visitor,
-                         'return value')
 
         self.assertEqual(visitor.visited_classes,
                          [sut.HeaderAndValueDetail],
                          'visited classes')
 
 
-class _VisitorThatRegistersVisitedClassesAndReturnsConstant(sut.DetailVisitor[int]):
-    def __init__(self, ret_val: int):
+class TestTreeDetail(unittest.TestCase):
+    def test_attributes(self):
+        # ARRANGE #
+
+        tree = sut.Node('header', 'data', (), ())
+        detail = sut.TreeDetail(tree)
+
+        # ACT & ASSERT #
+
+        self.assertIs(tree,
+                      detail.tree)
+
+    def test_accept_visitor(self):
+        # ARRANGE #
+
+        visitor = _VisitorThatRegistersVisitedClassesAndReturnsConstant()
+
+        node = sut.Node('header', 'data', (), ())
+        detail = sut.TreeDetail(node)
+
+        # ACT #
+
+        detail.accept(visitor)
+
+        # ASSERT #
+        self.assertEqual(visitor.visited_classes,
+                         [sut.TreeDetail],
+                         'visited classes')
+
+
+class _VisitorThatRegistersVisitedClassesAndReturnsConstant(sut.DetailVisitor[None]):
+    def __init__(self):
         self.visited_classes = []
-        self.ret_val = ret_val
 
-    def visit_string(self, x: StringDetail) -> int:
+    def visit_string(self, x: StringDetail) -> None:
         self.visited_classes.append(StringDetail)
-        return self.ret_val
 
-    def visit_pre_formatted_string(self, x: PreFormattedStringDetail) -> int:
+    def visit_pre_formatted_string(self, x: PreFormattedStringDetail) -> None:
         self.visited_classes.append(PreFormattedStringDetail)
-        return self.ret_val
 
-    def visit_header_and_value(self, x: HeaderAndValueDetail) -> int:
+    def visit_header_and_value(self, x: HeaderAndValueDetail) -> None:
         self.visited_classes.append(HeaderAndValueDetail)
-        return self.ret_val
+
+    def visit_tree(self, x: TreeDetail) -> None:
+        self.visited_classes.append(TreeDetail)

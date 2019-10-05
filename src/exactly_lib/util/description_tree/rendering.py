@@ -1,7 +1,7 @@
 from typing import Sequence, Generic, Callable
 
 from exactly_lib.util.description_tree.tree import Node, Detail, DetailVisitor, StringDetail, PreFormattedStringDetail, \
-    NODE_DATA, HeaderAndValueDetail
+    NODE_DATA, HeaderAndValueDetail, TreeDetail
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, elements
 from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer, Renderer
@@ -71,13 +71,13 @@ class _TreeRendererToMinorBlock(Generic[NODE_DATA], SequenceRenderer[MinorBlock]
     def _details_renderer(self) -> SequenceRenderer[LineElement]:
         return rend_comb.ConcatenationR(
             [
-                _DetailRendererToLineElements(self._configuration, 0, detail)
+                _LineElementRendererForDetail(self._configuration, 0, detail)
                 for detail in self._tree.details
             ]
         )
 
 
-class _DetailRendererToLineElements(SequenceRenderer[LineElement],
+class _LineElementRendererForDetail(SequenceRenderer[LineElement],
                                     DetailVisitor[Sequence[LineElement]]):
     def __init__(self,
                  configuration: RenderingConfiguration,
@@ -110,9 +110,7 @@ class _DetailRendererToLineElements(SequenceRenderer[LineElement],
 
     def visit_header_and_value(self, x: HeaderAndValueDetail) -> Sequence[LineElement]:
         value_elements_renderer = rend_comb.ConcatenationR([
-            _DetailRendererToLineElements(self._configuration,
-                                          self._depth + 1,
-                                          value)
+            self._renderer_for_next_depth(value)
             for value in x.values
         ])
 
@@ -124,3 +122,28 @@ class _DetailRendererToLineElements(SequenceRenderer[LineElement],
         ret_val += value_elements_renderer.render_sequence()
 
         return ret_val
+
+    def visit_tree(self, x: TreeDetail) -> Sequence[LineElement]:
+        tree = x.tree
+
+        details_renderer = rend_comb.ConcatenationR([
+            self._renderer_for_next_depth(detail)
+            for detail in tree.details
+        ])
+
+        children_renderer = rend_comb.ConcatenationR([
+            self._renderer_for_next_depth(TreeDetail(child))
+            for child in tree.children
+        ])
+
+        ret_val = [
+            LineElement(structure.StringLineObject(str(tree.header)),
+                        self._root_element_properties)
+        ]
+        ret_val += details_renderer.render_sequence()
+        ret_val += children_renderer.render_sequence()
+
+        return ret_val
+
+    def _renderer_for_next_depth(self, detail: Detail) -> SequenceRenderer[LineElement]:
+        return _LineElementRendererForDetail(self._configuration, self._depth + 1, detail)

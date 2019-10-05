@@ -5,7 +5,8 @@ from exactly_lib.util import strings
 from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
 from exactly_lib.util.description_tree import rendering as sut
 from exactly_lib.util.description_tree.rendering import RenderingConfiguration
-from exactly_lib.util.description_tree.tree import Node, StringDetail, PreFormattedStringDetail, HeaderAndValueDetail
+from exactly_lib.util.description_tree.tree import Node, StringDetail, PreFormattedStringDetail, HeaderAndValueDetail, \
+    TreeDetail
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib.util.simple_textstruct.structure import ElementProperties, TEXT_STYLE__NEUTRAL, Indentation, \
     INDENTATION__NEUTRAL, TextStyle
@@ -19,6 +20,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestBasicStructure),
         unittest.makeSuite(TestRenderingOfDetail),
+        unittest.makeSuite(TestTreeDetail),
     ])
 
 
@@ -216,8 +218,166 @@ class TestRenderingOfDetail(unittest.TestCase):
         expectation = matches_trace_with_details(
             root,
             [
-                matches_string_detail_line_element(StringDetail(header_and_value_detail.header), depth=0),
+                matches_detail_line_element(header_and_value_detail.header, depth=0),
                 matches_string_detail_line_element(value_detail, depth=1),
+            ],
+        )
+
+        # ACT & ASSERT #
+
+        _check(self, root, expectation)
+
+
+class TestTreeDetail(unittest.TestCase):
+    def test_node_with_no_details_or_children(self):
+        # ARRANGE #
+
+        tree_in_detail = Node('the contained tree root', None, (), ())
+        tree_detail = TreeDetail(tree_in_detail)
+        root = Node('the root', False, [tree_detail], ())
+
+        # EXPECTATION #
+
+        expectation = matches_trace_with_details(
+            root,
+            [
+                matches_detail_line_element(tree_in_detail.header, depth=0),
+            ],
+        )
+
+        # ACT & ASSERT #
+
+        _check(self, root, expectation)
+
+    def test_node_with_detail(self):
+        # ARRANGE #
+
+        string_detail = StringDetail('the string detail')
+        tree_in_detail = Node('the contained tree root', None, (string_detail,), ())
+
+        tree_detail = TreeDetail(tree_in_detail)
+
+        root = Node('the root', False, [tree_detail], ())
+
+        # EXPECTATION #
+
+        expectation = matches_trace_with_details(
+            root,
+            [
+                matches_detail_line_element(tree_in_detail.header, depth=0),
+                matches_string_detail_line_element(string_detail, depth=1),
+            ],
+        )
+
+        # ACT & ASSERT #
+
+        _check(self, root, expectation)
+
+    def test_node_with_child(self):
+        # ARRANGE #
+
+        child = Node('the child', None, (), ())
+        tree_in_detail = Node('the contained tree root', None, (), (child,))
+
+        tree_detail = TreeDetail(tree_in_detail)
+
+        root = Node('the root', False, [tree_detail], ())
+
+        # EXPECTATION #
+
+        expectation = matches_trace_with_details(
+            root,
+            [
+                matches_detail_line_element(tree_in_detail.header, depth=0),
+                matches_detail_line_element(child.header, depth=1),
+            ],
+        )
+
+        # ACT & ASSERT #
+
+        _check(self, root, expectation)
+
+    def test_node_with_detail_and_child(self):
+        # ARRANGE #
+
+        child = Node('the child', None, (), ())
+        string_detail = StringDetail('the string detail')
+        tree_in_detail = Node('the contained tree root', None, (string_detail,), (child,))
+
+        tree_detail = TreeDetail(tree_in_detail)
+
+        root = Node('the root', False, [tree_detail], ())
+
+        # EXPECTATION #
+
+        expectation = matches_trace_with_details(
+            root,
+            [
+                matches_detail_line_element(tree_in_detail.header, depth=0),
+                matches_string_detail_line_element(string_detail, depth=1),
+                matches_detail_line_element(child.header, depth=1),
+            ],
+        )
+
+        # ACT & ASSERT #
+
+        _check(self, root, expectation)
+
+    def test_node_with_child_with_child(self):
+        # ARRANGE #
+
+        child_11 = Node('the child 11', None, (), ())
+        child_1 = Node('the child 1', None, (), (child_11,))
+        tree_in_detail = Node('the contained tree root', None, (), (child_1,))
+
+        tree_detail = TreeDetail(tree_in_detail)
+
+        root = Node('the root', False, [tree_detail], ())
+
+        # EXPECTATION #
+
+        expectation = matches_trace_with_details(
+            root,
+            [
+                matches_detail_line_element(tree_in_detail.header, depth=0),
+                matches_detail_line_element(child_1.header, depth=1),
+                matches_detail_line_element(child_11.header, depth=2),
+            ],
+        )
+
+        # ACT & ASSERT #
+
+        _check(self, root, expectation)
+
+    def test_complex(self):
+        # ARRANGE #
+
+        child_11_detail = StringDetail('string detail 11')
+        child_11 = Node('the child 11', None, (child_11_detail,), ())
+        child_1_detail_1 = StringDetail('string detail 1-1')
+        child_1_detail_2 = StringDetail('string detail 1-2')
+        child_1 = Node('the child 1', None,
+                       (child_1_detail_1, child_1_detail_2),
+                       (child_11,))
+        child_2 = Node('the child 2', None, (), ())
+        tree_in_detail = Node('the contained tree root', None, (), (child_1, child_2))
+
+        tree_detail = TreeDetail(tree_in_detail)
+
+        root = Node('the root', False, [tree_detail], ())
+
+        # EXPECTATION #
+
+        expectation = matches_trace_with_details(
+            root,
+            [
+                matches_detail_line_element(tree_in_detail.header, depth=0),
+                matches_detail_line_element(child_1.header, depth=1),
+                matches_string_detail_line_element(child_1_detail_1, depth=2),
+                matches_string_detail_line_element(child_1_detail_2, depth=2),
+                matches_detail_line_element(child_11.header, depth=2),
+                matches_string_detail_line_element(child_11_detail, depth=3),
+                matches_detail_line_element(child_2.header, depth=1),
             ],
         )
 
@@ -296,6 +456,14 @@ def matches_string_detail_line_element(detail: StringDetail, depth: int) -> Valu
     return asrt_struct.matches_line_element(
         line_object=asrt_struct.is_string__not_line_ended(
             asrt.equals(str(detail.string))),
+        properties=matches_detail_properties(depth=depth),
+    )
+
+
+def matches_detail_line_element(string: str, depth: int) -> ValueAssertion[s.LineElement]:
+    return asrt_struct.matches_line_element(
+        line_object=asrt_struct.is_string__not_line_ended(
+            asrt.equals(string)),
         properties=matches_detail_properties(depth=depth),
     )
 

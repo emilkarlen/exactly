@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.util.description_tree.tree import DetailVisitor, RET, StringDetail
+from exactly_lib.util.description_tree.tree import StringDetail, DetailVisitor, RET
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
@@ -19,6 +19,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestIsStringDetail),
         unittest.makeSuite(TestIsPreFormattedStringDetail),
         unittest.makeSuite(TestIsHeaderAndValueDetail),
+        unittest.makeSuite(TestIsTreeDetail),
         unittest.makeSuite(TestIsAnyDetail),
     ])
 
@@ -287,12 +288,42 @@ class TestIsHeaderAndValueDetail(unittest.TestCase):
                 assert_that_assertion_fails(case.expected, case.actual)
 
 
+class TestIsTreeDetail(unittest.TestCase):
+    def test_matches(self):
+        # ARRANGE #
+
+        node = sut.Node('node header', None, (), ())
+        tree_detail = sut.TreeDetail(node)
+
+        satisfied_assertion = asrt.sub_component('header',
+                                                 lambda tree: tree.header,
+                                                 asrt.equals(node.header))
+        # ACT #
+
+        sut.is_tree_detail(satisfied_assertion).apply_without_message(self, tree_detail)
+
+    def test_not_matches(self):
+        # ARRANGE #
+
+        node = sut.Node('actual header', None, (), ())
+        tree_detail = sut.TreeDetail(node)
+
+        unsatisfied_assertion = asrt.sub_component('header',
+                                                   lambda tree: tree.header,
+                                                   asrt.equals(node.header + ' with extra'))
+
+        # ACT #
+
+        assert_that_assertion_fails(sut.is_tree_detail(unsatisfied_assertion), tree_detail)
+
+
 class TestIsAnyDetail(unittest.TestCase):
     def test_matches(self):
         cases = [
             sut.StringDetail('s'),
             sut.PreFormattedStringDetail('pre-formatted', True),
             sut.HeaderAndValueDetail('header', ()),
+            sut.TreeDetail(sut.Node('header', None, (), ())),
         ]
         for line_object in cases:
             with self.subTest(str(type(line_object))):

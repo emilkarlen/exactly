@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Sequence, TypeVar, Generic
+from typing import Sequence, TypeVar, Generic, Any
 
 from exactly_lib.util.strings import ToStringObject
 
@@ -97,6 +97,20 @@ class HeaderAndValueDetail(Detail):
         return self._values
 
 
+class TreeDetail(Detail):
+    """Makes a Detail of a Node."""
+
+    def __init__(self, tree: Node[Any]):
+        self._tree = tree
+
+    @property
+    def tree(self) -> Node[Any]:
+        return self._tree
+
+    def accept(self, visitor: 'DetailVisitor[RET]') -> RET:
+        return visitor.visit_tree(self)
+
+
 class DetailVisitor(Generic[RET], ABC):
     @abstractmethod
     def visit_string(self, x: StringDetail) -> RET:
@@ -108,4 +122,8 @@ class DetailVisitor(Generic[RET], ABC):
 
     @abstractmethod
     def visit_header_and_value(self, x: HeaderAndValueDetail) -> RET:
+        pass
+
+    @abstractmethod
+    def visit_tree(self, x: TreeDetail) -> RET:
         pass
