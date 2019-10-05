@@ -24,6 +24,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 class RegularFileMatchesStringMatcher(FileMatcherImplBase):
     def __init__(self, string_matcher: string_matcher.StringMatcher):
+        super().__init__()
         self._string_matcher = string_matcher
         self._expected_file_type = file_properties.FileType.REGULAR
         self._is_regular_file_check = file_properties.ActualFilePropertiesResolver(self._expected_file_type,

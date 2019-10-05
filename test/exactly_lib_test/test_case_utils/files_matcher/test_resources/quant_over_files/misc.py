@@ -4,8 +4,8 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 
 
 class FileMatcherThatMatchesAnyFileWhosNameStartsWith(FileMatcherImplBase):
-
     def __init__(self, prefix_of_name_for_match: str):
+        super().__init__()
         self._prefix_of_name_for_match = prefix_of_name_for_match
 
     @property

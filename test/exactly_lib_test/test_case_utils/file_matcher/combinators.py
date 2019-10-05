@@ -68,6 +68,9 @@ class TestNot(matcher_combinators_check.TestNotBase):
 
 class FileMatcherThatRegistersModelArgument(sut.FileMatcherImplBase,
                                             matcher_combinators_check.MatcherThatRegistersModelArgument):
+    def __init__(self, constant_result: bool):
+        sut.FileMatcherImplBase.__init__(self)
+        matcher_combinators_check.MatcherThatRegistersModelArgument.__init__(self, constant_result)
 
     @property
     def name(self) -> str:

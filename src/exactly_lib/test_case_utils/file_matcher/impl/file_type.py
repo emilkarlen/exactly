@@ -18,6 +18,7 @@ class FileMatcherType(FileMatcherImplBase):
     """Matches the type of file."""
 
     def __init__(self, file_type: file_properties.FileType):
+        super().__init__()
         self._file_type = file_type
         self._path_predicate = file_properties.TYPE_INFO[self._file_type].pathlib_path_predicate
         self._stat_method = (pathlib.Path.lstat

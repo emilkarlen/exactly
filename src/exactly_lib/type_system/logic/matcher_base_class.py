@@ -53,6 +53,8 @@ class MatcherWTrace(Generic[T], Matcher[T], ABC):
         The structure of the object, that can be used in traced.
 
         Given as a renderer, to ease implementations.
+
+        The returned renderer is constant - it render the same tree every time.
         """
         return renderers.Constant(Node(self.name,
                                        None,

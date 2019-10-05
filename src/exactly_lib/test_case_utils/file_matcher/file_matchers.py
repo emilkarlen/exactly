@@ -13,6 +13,7 @@ class FileMatcherConstant(FileMatcherImplBase):
     """Selects files from a directory according the a file condition."""
 
     def __init__(self, result: bool):
+        super().__init__()
         self._result = result
 
     @property

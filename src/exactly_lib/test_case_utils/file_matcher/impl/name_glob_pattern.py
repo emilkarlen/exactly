@@ -59,6 +59,7 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
     NAME = 'name matches ' + syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument.name
 
     def __init__(self, glob_pattern: str):
+        super().__init__()
         self._glob_pattern = glob_pattern
 
     @property

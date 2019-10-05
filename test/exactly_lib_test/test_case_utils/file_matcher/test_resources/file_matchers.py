@@ -8,6 +8,7 @@ from exactly_lib_test.common.test_resources.text_doc_assertions import new_singl
 
 class ConstantResultMatcher(sut.FileMatcherImplBase):
     def __init__(self, result: bool):
+        super().__init__()
         self.result = result
 
     @property
@@ -30,6 +31,7 @@ class ConstantResultMatcher(sut.FileMatcherImplBase):
 
 class FileMatcherConstantWithName(FileMatcherImplBase):
     def __init__(self, name: str, result: bool):
+        super().__init__()
         self._name = name
         self._result = result
 
@@ -59,6 +61,7 @@ class FileMatcherConstantWithName(FileMatcherImplBase):
 
 class FileMatcherThatReportsHardError(FileMatcherImplBase):
     def __init__(self, error_message: str = 'unconditional hard error'):
+        super().__init__()
         self.error_message = error_message
 
     @property

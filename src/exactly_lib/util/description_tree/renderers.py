@@ -1,5 +1,5 @@
 import itertools
-from typing import Generic, Sequence
+from typing import Generic, Sequence, Callable
 
 from exactly_lib.util.description_tree.renderer import NODE_DATA, NodeRenderer, DetailsRenderer
 from exactly_lib.util.description_tree.tree import Node
@@ -49,3 +49,13 @@ class CachedSingleInvokation(Generic[NODE_DATA], NodeRenderer[NODE_DATA]):
             self._cache = self._renderer.render()
 
         return self._cache
+
+
+class FromFunction(Generic[NODE_DATA], NodeRenderer[NODE_DATA]):
+    def __init__(self,
+                 renderer: Callable[[], NodeRenderer[NODE_DATA]],
+                 ):
+        self._renderer = renderer
+
+    def render(self) -> Node[NODE_DATA]:
+        return self._renderer().render()

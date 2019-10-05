@@ -264,6 +264,7 @@ def file_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> FileMatc
 
 class FileMatcherTestImplBase(FileMatcherImplBase):
     def __init__(self, result: bool = True):
+        super().__init__()
         self._result = result
 
     @property

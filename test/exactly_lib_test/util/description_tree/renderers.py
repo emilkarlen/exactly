@@ -9,7 +9,32 @@ from exactly_lib_test.util.description_tree.test_resources import described_tree
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestCachedSingleInvokation)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestFromFunction),
+        unittest.makeSuite(TestCachedSingleInvokation),
+    ])
+
+
+class TestFromFunction(unittest.TestCase):
+    def test(self):
+        # ARRANGE #
+
+        node = Node('header', None, (), ())
+
+        def f() -> NodeRenderer[None]:
+            return sut.Constant(node)
+
+        renderer = sut.FromFunction(f)
+
+        # ACT #
+
+        actual = renderer.render()
+
+        # ASSERT #
+
+        expectation = _equals_empty_node(node)
+
+        expectation.apply_without_message(self, actual)
 
 
 class TestCachedSingleInvokation(unittest.TestCase):

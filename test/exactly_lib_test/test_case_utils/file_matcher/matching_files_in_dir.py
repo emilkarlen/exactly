@@ -52,6 +52,7 @@ class TestMatchingFilesInDir(unittest.TestCase):
 
 class BaseNameMatcher(sut.FileMatcherImplBase):
     def __init__(self, base_name_that_matches: str):
+        super().__init__()
         self.base_name_that_matches = base_name_that_matches
 
     @property

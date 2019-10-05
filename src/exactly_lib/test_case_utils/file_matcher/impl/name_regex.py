@@ -58,6 +58,7 @@ class FileMatcherBaseNameRegExPattern(FileMatcherImplBase):
     """Matches the base name of a path on a regular expression."""
 
     def __init__(self, compiled_reg_ex: Pattern):
+        super().__init__()
         self._compiled_reg_ex = compiled_reg_ex
 
     @property
