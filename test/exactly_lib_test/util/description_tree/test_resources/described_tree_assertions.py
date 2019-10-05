@@ -1,7 +1,8 @@
 import unittest
 from typing import Sequence
 
-from exactly_lib.util.description_tree.tree import Detail, Node, PreFormattedStringDetail, StringDetail, DetailVisitor
+from exactly_lib.util.description_tree.tree import Detail, Node, PreFormattedStringDetail, StringDetail, DetailVisitor, \
+    HeaderAndValueDetail
 from exactly_lib.util.strings import ToStringObject
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
@@ -50,6 +51,24 @@ def is_pre_formatted_string_detail(to_string_object: ValueAssertion[ToStringObje
     )
 
 
+def is_header_and_value_detail(header: ValueAssertion[ToStringObject] = asrt.anything_goes(),
+                               values: ValueAssertion[Sequence[Detail]] = asrt.is_sequence_of(asrt.is_instance(Detail)),
+                               ) -> ValueAssertion[Detail]:
+    return asrt.is_instance_with__many(
+        HeaderAndValueDetail,
+        [
+            asrt.sub_component('header',
+                               HeaderAndValueDetail.header.fget,
+                               asrt.is_not_none_and(header),
+                               ),
+            asrt.sub_component('values',
+                               HeaderAndValueDetail.values.fget,
+                               asrt.is_not_none_and(values),
+                               ),
+        ],
+    )
+
+
 def is_any_detail() -> ValueAssertion[Detail]:
     return _IS_ANY_DETAIL
 
@@ -77,6 +96,8 @@ class _IsAnyDetail(asrt.ValueAssertionBase[Detail]):
             return
         if isinstance(value, PreFormattedStringDetail):
             return
+        if isinstance(value, HeaderAndValueDetail):
+            return
         msg = 'Not a know sub class of {}: {}'.format(Detail, value)
         put.fail(message_builder.apply(msg))
 
@@ -90,6 +111,9 @@ class _DetailChecker(DetailVisitor[None]):
 
     def visit_string(self, x: StringDetail) -> None:
         is_string_detail().apply_without_message(self._put, x)
+
+    def visit_header_and_value(self, x: HeaderAndValueDetail) -> None:
+        is_header_and_value_detail().apply_without_message(self._put, x)
 
 
 _IS_ANY_DETAIL = _IsAnyDetail()

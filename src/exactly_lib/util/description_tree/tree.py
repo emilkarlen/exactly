@@ -77,6 +77,26 @@ class PreFormattedStringDetail(Detail):
         return self._string_is_line_ended
 
 
+class HeaderAndValueDetail(Detail):
+    def __init__(self,
+                 header: ToStringObject,
+                 values: Sequence[Detail],
+                 ):
+        self._header = header
+        self._values = values
+
+    def accept(self, visitor: 'DetailVisitor[RET]') -> RET:
+        return visitor.visit_header_and_value(self)
+
+    @property
+    def header(self) -> ToStringObject:
+        return self._header
+
+    @property
+    def values(self) -> Sequence[Detail]:
+        return self._values
+
+
 class DetailVisitor(Generic[RET], ABC):
     @abstractmethod
     def visit_string(self, x: StringDetail) -> RET:
@@ -84,4 +104,8 @@ class DetailVisitor(Generic[RET], ABC):
 
     @abstractmethod
     def visit_pre_formatted_string(self, x: PreFormattedStringDetail) -> RET:
+        pass
+
+    @abstractmethod
+    def visit_header_and_value(self, x: HeaderAndValueDetail) -> RET:
         pass

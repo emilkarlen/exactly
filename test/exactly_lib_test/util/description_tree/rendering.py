@@ -1,10 +1,11 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.util import strings
 from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
 from exactly_lib.util.description_tree import rendering as sut
 from exactly_lib.util.description_tree.rendering import RenderingConfiguration
-from exactly_lib.util.description_tree.tree import Node, StringDetail, PreFormattedStringDetail
+from exactly_lib.util.description_tree.tree import Node, StringDetail, PreFormattedStringDetail, HeaderAndValueDetail
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib.util.simple_textstruct.structure import ElementProperties, TEXT_STYLE__NEUTRAL, Indentation, \
     INDENTATION__NEUTRAL, TextStyle
@@ -204,6 +205,26 @@ class TestRenderingOfDetail(unittest.TestCase):
 
                     _check(self, root, expectation)
 
+    def test_header_and_value_detail(self):
+        # ARRANGE #
+        value_detail = StringDetail('the value detail')
+        header_and_value_detail = HeaderAndValueDetail('the header', [value_detail])
+        root = Node('the root', False, [header_and_value_detail], ())
+
+        # EXPECTATION #
+
+        expectation = matches_trace_with_details(
+            root,
+            [
+                matches_string_detail_line_element(StringDetail(header_and_value_detail.header), depth=0),
+                matches_string_detail_line_element(value_detail, depth=1),
+            ],
+        )
+
+        # ACT & ASSERT #
+
+        _check(self, root, expectation)
+
 
 def _check(put: unittest.TestCase,
            node: Node[bool],
@@ -243,13 +264,20 @@ RENDERING_CONFIGURATION = RenderingConfiguration(
 def matches_trace_with_just_single_detail(trace: Node[bool],
                                           detail: ValueAssertion[s.LineElement],
                                           ) -> ValueAssertion[s.MajorBlock]:
+    return matches_trace_with_details(trace, [detail])
+
+
+def matches_trace_with_details(tree: Node[bool],
+                               details: Sequence[ValueAssertion[s.LineElement]],
+                               ) -> ValueAssertion[s.MajorBlock]:
+    expected_line_elements = asrt.matches_sequence(
+        [matches_header_line_element(tree)] +
+        list(details)
+    )
     return asrt_struct.matches_major_block__w_plain_properties(
         minor_blocks=asrt.matches_singleton_sequence(
             asrt_struct.matches_minor_block(
-                line_elements=asrt.matches_sequence([
-                    matches_header_line_element(trace),
-                    detail,
-                ]),
+                line_elements=expected_line_elements,
                 properties=matches_node_properties(depth=0),
             ))
     )

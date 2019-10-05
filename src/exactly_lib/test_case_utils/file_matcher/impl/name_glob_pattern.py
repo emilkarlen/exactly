@@ -84,7 +84,7 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
 
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         tb = self.__tb_with_expected().append_details(
-            details.Actual(
+            details.actual(
                 details.PathValueAndPrimitiveDetailsRenderer(model.path.describer)
             )
 
@@ -96,7 +96,7 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
 
     def __tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(
-            details.Expected(
+            details.expected(
                 details.String(self._glob_pattern)
             )
         )

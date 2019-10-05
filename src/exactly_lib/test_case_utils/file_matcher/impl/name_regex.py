@@ -85,7 +85,7 @@ class FileMatcherBaseNameRegExPattern(FileMatcherImplBase):
         base_name = model.path.primitive.name
         regex_match = self._compiled_reg_ex.search(base_name)
         tb = self.__tb_with_expected().append_details(
-            details.Actual(
+            details.actual(
                 details.String(base_name)
             )
 
@@ -97,7 +97,7 @@ class FileMatcherBaseNameRegExPattern(FileMatcherImplBase):
 
     def __tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(
-            details.Expected(
+            details.expected(
                 details.String(self._compiled_reg_ex.pattern)
             )
         )

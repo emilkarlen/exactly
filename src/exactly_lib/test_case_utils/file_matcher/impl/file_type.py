@@ -88,7 +88,7 @@ class FileMatcherType(FileMatcherImplBase):
             else file_properties.TYPE_INFO[actual].description
         )
         tb = self.__tb_with_expected().append_details(
-            details.Actual(
+            details.actual(
                 details.String(actual_type_description)
             )
         )
@@ -96,7 +96,7 @@ class FileMatcherType(FileMatcherImplBase):
 
     def __tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(
-            details.Expected(
+            details.expected(
                 details.String(
                     file_properties.TYPE_INFO[self._file_type].description)
             )

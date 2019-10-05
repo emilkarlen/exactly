@@ -82,7 +82,7 @@ class MatchesRegexStringMatcher(StringMatcher):
         self._is_full_match = is_full_match
         self._pattern = pattern
         self._err_msg_constructor = error_message_constructor
-        self._expected_detail_renderer = details.Expected(
+        self._expected_detail_renderer = details.expected(
             details.PatternRenderer(is_full_match, pattern)
         )
 
@@ -125,7 +125,7 @@ class MatchesRegexStringMatcher(StringMatcher):
         actual_contents = self._actual_contents(model)
 
         tb = self._new_tb_with_expected().append_details(
-            details.Actual(
+            details.actual(
                 details.StringAsSingleLineWithMaxLenDetailsRenderer(actual_contents))
         )
 

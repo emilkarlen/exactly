@@ -113,7 +113,7 @@ class EqualityStringMatcher(StringMatcher):
         self._expected_contents = expected_contents
         self._validator = validator
         self._err_msg_constructor = error_message_constructor
-        self._expected_detail_renderer = details.Expected(
+        self._expected_detail_renderer = details.expected(
             details.StringOrPath(expected_contents)
         )
 

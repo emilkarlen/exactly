@@ -54,7 +54,7 @@ class EmptinessStringMatcher(StringMatcher):
             return (
                 self._new_tb()
                     .append_details(
-                    details.Actual(details.String(repr(first_line) + '...'))
+                    details.actual(details.String(repr(first_line) + '...'))
                 )
                     .build_result(False)
             )

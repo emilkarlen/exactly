@@ -18,7 +18,8 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestAssertionOnChildren),
         unittest.makeSuite(TestIsStringDetail),
         unittest.makeSuite(TestIsPreFormattedStringDetail),
-        unittest.makeSuite(TestAnyDetail),
+        unittest.makeSuite(TestIsHeaderAndValueDetail),
+        unittest.makeSuite(TestIsAnyDetail),
     ])
 
 
@@ -236,11 +237,62 @@ class TestIsPreFormattedStringDetail(unittest.TestCase):
                 assert_that_assertion_fails(case.expected, case.actual)
 
 
-class TestAnyDetail(unittest.TestCase):
+class TestIsHeaderAndValueDetail(unittest.TestCase):
+    def test_matches(self):
+        header = 'the header'
+        value = StringDetail('the string detail')
+        cases = [
+            NEA('header',
+                expected=
+                sut.is_header_and_value_detail(header=asrt.equals(header)),
+                actual=
+                sut.HeaderAndValueDetail(header, ()),
+                ),
+            NEA('values',
+                expected=
+                sut.is_header_and_value_detail(
+                    values=asrt.matches_singleton_sequence(asrt.is_(value))
+                ),
+                actual=
+                sut.HeaderAndValueDetail(header, (value,))
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                case.expected.apply_without_message(self, case.actual)
+
+    def test_not_matches(self):
+        cases = [
+            NEA('unexpected object type',
+                expected=
+                sut.is_header_and_value_detail(),
+                actual=
+                sut.PreFormattedStringDetail('s'),
+                ),
+            NEA('header',
+                expected=
+                sut.is_header_and_value_detail(header=asrt.equals('expected header')),
+                actual=
+                sut.HeaderAndValueDetail('actual header', ()),
+                ),
+            NEA('values',
+                expected=
+                sut.is_header_and_value_detail(values=asrt.is_empty_sequence),
+                actual=
+                sut.HeaderAndValueDetail('header', (StringDetail('a value'),)),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assert_that_assertion_fails(case.expected, case.actual)
+
+
+class TestIsAnyDetail(unittest.TestCase):
     def test_matches(self):
         cases = [
             sut.StringDetail('s'),
             sut.PreFormattedStringDetail('pre-formatted', True),
+            sut.HeaderAndValueDetail('header', ()),
         ]
         for line_object in cases:
             with self.subTest(str(type(line_object))):

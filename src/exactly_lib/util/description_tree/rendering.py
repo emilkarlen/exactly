@@ -1,7 +1,7 @@
 from typing import Sequence, Generic, Callable
 
 from exactly_lib.util.description_tree.tree import Node, Detail, DetailVisitor, StringDetail, PreFormattedStringDetail, \
-    NODE_DATA
+    NODE_DATA, HeaderAndValueDetail
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, elements
 from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer, Renderer
@@ -71,7 +71,7 @@ class _TreeRendererToMinorBlock(Generic[NODE_DATA], SequenceRenderer[MinorBlock]
     def _details_renderer(self) -> SequenceRenderer[LineElement]:
         return rend_comb.ConcatenationR(
             [
-                _DetailRendererToLineElements(self._configuration, detail)
+                _DetailRendererToLineElements(self._configuration, 0, detail)
                 for detail in self._tree.details
             ]
         )
@@ -81,11 +81,15 @@ class _DetailRendererToLineElements(SequenceRenderer[LineElement],
                                     DetailVisitor[Sequence[LineElement]]):
     def __init__(self,
                  configuration: RenderingConfiguration,
+                 depth: int,
                  detail: Detail,
                  ):
+        self._configuration = configuration
+        self._depth = depth
         self._detail = detail
-        self._element_properties = ElementProperties(
-            structure.Indentation(1, configuration.detail_indent)
+        self._indent_suffix = configuration.detail_indent
+        self._root_element_properties = ElementProperties(
+            structure.Indentation(depth + 1, self._indent_suffix)
         )
 
     def render_sequence(self) -> Sequence[LineElement]:
@@ -94,12 +98,29 @@ class _DetailRendererToLineElements(SequenceRenderer[LineElement],
     def visit_string(self, x: StringDetail) -> Sequence[LineElement]:
         return [
             LineElement(structure.StringLineObject(str(x.string)),
-                        self._element_properties)
+                        self._root_element_properties)
         ]
 
     def visit_pre_formatted_string(self, x: PreFormattedStringDetail) -> Sequence[LineElement]:
         return [
             LineElement(structure.PreFormattedStringLineObject(str(x.object_with_to_string),
                                                                x.string_is_line_ended),
-                        self._element_properties)
+                        self._root_element_properties)
         ]
+
+    def visit_header_and_value(self, x: HeaderAndValueDetail) -> Sequence[LineElement]:
+        value_elements_renderer = rend_comb.ConcatenationR([
+            _DetailRendererToLineElements(self._configuration,
+                                          self._depth + 1,
+                                          value)
+            for value in x.values
+        ])
+
+        ret_val = [
+            LineElement(structure.StringLineObject(str(x.header)),
+                        self._root_element_properties)
+        ]
+
+        ret_val += value_elements_renderer.render_sequence()
+
+        return ret_val

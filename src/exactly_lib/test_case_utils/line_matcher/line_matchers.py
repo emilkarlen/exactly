@@ -184,9 +184,9 @@ class _ExpectedAndActualRenderer(DetailsRenderer):
         self._actual = actual
 
     def render(self) -> Sequence[Detail]:
-        expected_renderer = details.Expected(self._expected)
+        expected_renderer = details.expected(self._expected)
 
-        actual_renderer = details.Actual(
+        actual_renderer = details.actual(
             trace_rendering.LineMatcherLineRenderer(self._actual)
         )
         ret_val = list(expected_renderer.render())

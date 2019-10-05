@@ -8,10 +8,9 @@ from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.type_system.data import string_or_file_ref_values
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForValue
 from exactly_lib.type_system.trace.trace_renderer import DetailsRenderer
-from exactly_lib.util import strings
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.description_tree import tree
-from exactly_lib.util.description_tree.tree import DetailVisitor, Detail, Node, NODE_DATA
+from exactly_lib.util.description_tree.tree import Detail, Node, NODE_DATA
 from exactly_lib.util.strings import ToStringObject
 
 _EXPECTED = 'Expected'
@@ -57,58 +56,24 @@ class HeaderAndValue(DetailsRenderer):
         self._value = value
 
     def render(self) -> Sequence[Detail]:
-        ret_val = [tree.StringDetail(self._header)]
+        return [
+            tree.HeaderAndValueDetail(
+                self._header,
+                self._value.render()
+            )
+        ]
 
-        ret_val += Indented(self._value).render()
 
-        return ret_val
+def expected(value: DetailsRenderer) -> DetailsRenderer:
+    return HeaderAndValue(_EXPECTED, value)
+
+
+def actual(value: DetailsRenderer) -> DetailsRenderer:
+    return HeaderAndValue(_ACTUAL, value)
 
 
 def match(matching_object: DetailsRenderer) -> DetailsRenderer:
     return HeaderAndValue(_MATCH, matching_object)
-
-
-class Expected(DetailsRenderer):
-    def __init__(self, expected: DetailsRenderer):
-        self._expected = expected
-
-    def render(self) -> Sequence[Detail]:
-        ret_val = [tree.StringDetail(_EXPECTED)]
-
-        ret_val += Indented(self._expected).render()
-
-        return ret_val
-
-
-class Actual(DetailsRenderer):
-    def __init__(self, actual: DetailsRenderer):
-        self._actual = actual
-
-    def render(self) -> Sequence[Detail]:
-        ret_val = [tree.StringDetail(_ACTUAL)]
-
-        ret_val += Indented(self._actual).render()
-
-        return ret_val
-
-
-class Indented(DetailsRenderer, DetailVisitor[Detail]):
-    INDENT = '  '
-
-    def __init__(self, details: DetailsRenderer):
-        self._details = details
-
-    def render(self) -> Sequence[Detail]:
-        return [
-            detail.accept(self)
-            for detail in self._details.render()
-        ]
-
-    def visit_string(self, x: tree.StringDetail) -> Detail:
-        return tree.StringDetail(strings.Concatenate((self.INDENT, x.string)))
-
-    def visit_pre_formatted_string(self, x: tree.PreFormattedStringDetail) -> Detail:
-        return x
 
 
 class NodeRenderer(Generic[NODE_DATA], DetailsRenderer):
