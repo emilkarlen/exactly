@@ -7,12 +7,12 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
+from exactly_lib.type_system.description import trace_renderers
+from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
-from exactly_lib.type_system.trace.impls import trace_renderers
-from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist, TmpDirFileSpace
 
 

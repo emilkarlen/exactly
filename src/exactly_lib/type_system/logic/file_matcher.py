@@ -8,11 +8,11 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
+from exactly_lib.type_system.description import trace_renderers
+from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
-from exactly_lib.type_system.trace.impls import trace_renderers
-from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
 from exactly_lib.util.file_utils import TmpDirFileSpace
 
 

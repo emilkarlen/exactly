@@ -4,10 +4,10 @@ from typing import TypeVar, Generic, Callable, Iterator, Optional, ContextManage
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.test_case_utils.description_tree import details
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation
-from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
 from exactly_lib.util import strings
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.logic_types import Quantifier

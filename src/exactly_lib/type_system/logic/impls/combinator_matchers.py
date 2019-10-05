@@ -2,9 +2,9 @@ from typing import TypeVar, Generic, Sequence, Optional
 
 from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation
-from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
 
 MODEL = TypeVar('MODEL')
 

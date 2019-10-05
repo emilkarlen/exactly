@@ -12,10 +12,10 @@ from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMa
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromValueParts
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.data.string_value import StringValue
+from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.trace.impls.trace_building import TraceBuilder
 from exactly_lib.util.symbol_table import SymbolTable
 
 

@@ -70,7 +70,7 @@ class _SelectionDetailsRenderer(DetailsRenderer):
         self._selector = selector
 
     def render(self) -> Sequence[Detail]:
-        return [tree.StringDetail(self._selector.option_description)]
+        return [tree.TreeDetail(self._selector.structure.render())]
 
 
 class _SubSetSelectorMatcherValue(FilesMatcherValue):
