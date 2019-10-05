@@ -1,6 +1,7 @@
 from typing import Sequence, Optional
 
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     FilesMatcherModel, FilesMatcherValue, FilesMatcher, FilesMatcherConstructor
@@ -15,6 +16,7 @@ from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher i
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
@@ -29,7 +31,10 @@ def sub_set_selection_matcher(selector: FileMatcherResolver,
 
 
 class _SubSetSelectorMatcher(FilesMatcher):
-    NAME = 'on ' + instruction_arguments.SELECTION_OPTION.name.long
+    NAME = ' '.join([
+        option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name),
+        syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
+    ])
 
     def __init__(self,
                  selector: FileMatcher,

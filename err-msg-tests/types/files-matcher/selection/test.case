@@ -1,0 +1,11 @@
+[setup]
+
+dir checked-dir
+file checked-dir/a-file
+
+[assert]
+
+
+dir-contents -rel-act checked-dir
+             -selection type file
+             empty

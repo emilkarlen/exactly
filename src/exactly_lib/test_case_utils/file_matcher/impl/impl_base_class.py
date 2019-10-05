@@ -1,4 +1,5 @@
 from exactly_lib.test_case_utils.file_matcher.impl.combinators import FileMatcherNot
+from exactly_lib.type_system.description.structure_building import StructureBuilder
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import NodeRenderer
@@ -26,3 +27,6 @@ class FileMatcherImplBase(FileMatcher):
                  (),
                  ()),
         )
+
+    def _new_structure_builder(self) -> StructureBuilder:
+        return StructureBuilder(self.name)

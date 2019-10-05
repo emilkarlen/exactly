@@ -12,6 +12,7 @@ from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.util.description_tree.renderer import NodeRenderer
 
 
 class FileMatcherType(FileMatcherImplBase):
@@ -24,6 +25,10 @@ class FileMatcherType(FileMatcherImplBase):
         self._stat_method = (pathlib.Path.lstat
                              if file_type is file_properties.FileType.SYMLINK
                              else pathlib.Path.stat)
+        self._renderer_of_expected = details.expected(
+            details.String(
+                file_properties.TYPE_INFO[self._file_type].description)
+        )
 
     @property
     def file_type(self) -> file_properties.FileType:
@@ -36,6 +41,13 @@ class FileMatcherType(FileMatcherImplBase):
     @property
     def option_description(self) -> str:
         return 'type is ' + file_properties.TYPE_INFO[self._file_type].description
+
+    def _structure(self) -> NodeRenderer[None]:
+        return (
+            self._new_structure_builder()
+                .append_details(self._renderer_of_expected)
+                .as_render()
+        )
 
     def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
         path = model.path.primitive
@@ -96,12 +108,7 @@ class FileMatcherType(FileMatcherImplBase):
         return tb.build_result(False)
 
     def __tb_with_expected(self) -> TraceBuilder:
-        return self._new_tb().append_details(
-            details.expected(
-                details.String(
-                    file_properties.TYPE_INFO[self._file_type].description)
-            )
-        )
+        return self._new_tb().append_details(self._renderer_of_expected)
 
 
 class _FileTypeErrorMessageResolver(ErrorMessageResolver):
