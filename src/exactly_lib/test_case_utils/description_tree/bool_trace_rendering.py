@@ -3,7 +3,7 @@ from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.description_tree.rendering import TreeRenderer, RenderingConfiguration
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
-from exactly_lib.util.simple_textstruct.structure import MajorBlock, ElementProperties
+from exactly_lib.util.simple_textstruct.structure import MajorBlock, ElementProperties, INDENTATION__NEUTRAL, TextStyle
 
 
 class BoolTraceRenderer(Renderer[MajorBlock]):
@@ -23,8 +23,8 @@ def _make_header(node: Node[bool]) -> str:
 # Makes details appear 2 characters to the right of the node header
 DETAILS_INDENT = '      '
 
-_HEADER_PROPERTIES_FOR_F = ElementProperties(0, ForegroundColor.BRIGHT_RED, None)
-_HEADER_PROPERTIES_FOR_T = ElementProperties(0, ForegroundColor.BRIGHT_GREEN, None)
+_HEADER_PROPERTIES_FOR_F = ElementProperties(INDENTATION__NEUTRAL, TextStyle(color=ForegroundColor.BRIGHT_RED))
+_HEADER_PROPERTIES_FOR_T = ElementProperties(INDENTATION__NEUTRAL, TextStyle(color=ForegroundColor.BRIGHT_GREEN))
 
 
 def _get_header_style(node: Node[bool]) -> ElementProperties:

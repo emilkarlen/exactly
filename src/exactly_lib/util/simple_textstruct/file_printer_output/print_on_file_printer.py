@@ -4,7 +4,7 @@ from exactly_lib.util.simple_textstruct.file_printer_output import printables as
 from exactly_lib.util.simple_textstruct.file_printer_output.printer import Printable, Printer
 from exactly_lib.util.simple_textstruct.structure import ElementProperties, MajorBlock, MinorBlock, \
     LineObjectVisitor, PreFormattedStringLineObject, Document, LineObject, LineElement, StringLineObject, \
-    StringLinesObject
+    StringLinesObject, Indentation, TextStyle
 
 
 class BlockSettings:
@@ -88,17 +88,36 @@ class PrintablesFactory:
     def _element(properties: ElementProperties,
                  indent_delta: str,
                  contents: Printable) -> Printable:
-        ret_val = contents
-        if properties.indentation:
-            ret_val = ps.IncreasedIndentPrintable(indent_delta * properties.indentation,
-                                                  ret_val)
+        return PrintablesFactory._text_style_printable(
+            properties.text_style,
+            PrintablesFactory._indentation_printable(
+                properties.indentation,
+                indent_delta,
+                contents,
+            )
+        )
 
-        if properties.color is not None:
-            ret_val = ps.ColoredPrintable(properties.color,
+    @staticmethod
+    def _indentation_printable(indentation: Indentation,
+                               indent_delta: str,
+                               contents: Printable) -> Printable:
+        if indentation.level > 0 or indentation.suffix:
+            return ps.IncreasedIndentPrintable(indent_delta * indentation.level + indentation.suffix,
+                                               contents)
+        else:
+            return contents
+
+    @staticmethod
+    def _text_style_printable(style: TextStyle,
+                              contents: Printable) -> Printable:
+        ret_val = contents
+
+        if style.color is not None:
+            ret_val = ps.ColoredPrintable(style.color,
                                           ret_val)
 
-        if properties.font_style is not None:
-            ret_val = ps.FontStyledPrintable(properties.font_style,
+        if style.font_style is not None:
+            ret_val = ps.FontStyledPrintable(style.font_style,
                                              ret_val)
 
         return ret_val

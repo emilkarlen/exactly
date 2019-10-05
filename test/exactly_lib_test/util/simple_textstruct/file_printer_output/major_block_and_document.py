@@ -2,13 +2,14 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.util.simple_textstruct import structure as s
+from exactly_lib.util.simple_textstruct.structure import TEXT_STYLE__NEUTRAL, ElementProperties, Indentation
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.util.simple_textstruct.file_printer_output.test_resources import MINOR_BLOCK_INDENT, \
     LINE_ELEMENT_INDENT, MINOR_BLOCKS_SEPARATOR, check_major_block, \
     MAJOR_BLOCK_INDENT, MAJOR_BLOCKS_SEPARATOR, check_major_blocks, check_document, indentation_cases, \
-    single_line_element_w_plain_properties
+    single_line_element_w_plain_properties, LAYOUT_SETTINGS
 
 
 def suite() -> unittest.TestSuite:
@@ -25,11 +26,11 @@ class TestMajorBlock(unittest.TestCase):
         cases = [
             NameAndValue(
                 'plain properties',
-                s.PLAIN_ELEMENT_PROPERTIES,
+                s.ELEMENT_PROPERTIES__NEUTRAL,
             ),
             NameAndValue(
                 'indent properties',
-                s.INDENTED_ELEMENT_PROPERTIES,
+                s.ELEMENT_PROPERTIES__INDENTED,
             ),
         ]
 
@@ -55,13 +56,13 @@ class TestMajorBlock(unittest.TestCase):
                     s.MinorBlock([
                         s.LineElement(
                             s.StringLineObject(single_line_string),
-                            s.INDENTED_ELEMENT_PROPERTIES,
+                            s.ELEMENT_PROPERTIES__INDENTED,
                         )
                     ],
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__INDENTED,
                     ),
                 ],
-                    s.INDENTED_ELEMENT_PROPERTIES,
+                    s.ELEMENT_PROPERTIES__INDENTED,
                 ),
             ),
             NEA(
@@ -71,13 +72,13 @@ class TestMajorBlock(unittest.TestCase):
                     s.MinorBlock([
                         s.LineElement(
                             s.PreFormattedStringLineObject(single_line_string, False),
-                            s.INDENTED_ELEMENT_PROPERTIES,
+                            s.ELEMENT_PROPERTIES__INDENTED,
                         )
                     ],
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__INDENTED,
                     )
                 ],
-                    s.INDENTED_ELEMENT_PROPERTIES,
+                    s.ELEMENT_PROPERTIES__INDENTED,
                 ),
             ),
             NEA(
@@ -91,13 +92,13 @@ class TestMajorBlock(unittest.TestCase):
                         s.LineElement(
                             s.StringLinesObject([single_line_string,
                                                  single_line_string_2]),
-                            s.INDENTED_ELEMENT_PROPERTIES,
+                            s.ELEMENT_PROPERTIES__INDENTED,
                         )
                     ],
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__INDENTED,
                     ),
                 ],
-                    s.INDENTED_ELEMENT_PROPERTIES,
+                    s.ELEMENT_PROPERTIES__INDENTED,
                 ),
             ),
         ]
@@ -130,29 +131,29 @@ class TestMajorBlock(unittest.TestCase):
                     s.MinorBlock([
                         s.LineElement(
                             s.StringLineObject(string_1),
-                            s.PLAIN_ELEMENT_PROPERTIES,
+                            s.ELEMENT_PROPERTIES__NEUTRAL,
                         ),
                     ],
-                        s.PLAIN_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__NEUTRAL,
                     ),
                     s.MinorBlock([
                         s.LineElement(
                             s.StringLineObject(string_2),
-                            s.INDENTED_ELEMENT_PROPERTIES,
+                            s.ELEMENT_PROPERTIES__INDENTED,
                         ),
                     ],
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__INDENTED,
                     ),
                     s.MinorBlock([
                         s.LineElement(
                             s.PreFormattedStringLineObject(string_3, False),
-                            s.INDENTED_ELEMENT_PROPERTIES,
+                            s.ELEMENT_PROPERTIES__INDENTED,
                         ),
                     ],
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__INDENTED,
                     )
                 ],
-                    s.INDENTED_ELEMENT_PROPERTIES,
+                    s.ELEMENT_PROPERTIES__INDENTED,
                 ),
             ),
         ]
@@ -176,9 +177,10 @@ class TestMajorBlock(unittest.TestCase):
                     self,
                     to_render=
                     s.MajorBlock([
-                        s.MinorBlock([s.LineElement(line_object)], s.PLAIN_ELEMENT_PROPERTIES)
+                        s.MinorBlock([s.LineElement(line_object)], s.ELEMENT_PROPERTIES__NEUTRAL)
                     ],
-                        case.actual,
+                        ElementProperties(case.actual,
+                                          TEXT_STYLE__NEUTRAL),
                     ),
                     expectation=
                     lines_content(
@@ -187,6 +189,53 @@ class TestMajorBlock(unittest.TestCase):
                         ]
                     ),
                 )
+
+    def test_indentation_element_properties_SHOULD_be_accumulated(self):
+        # ARRANGE #
+
+        line_object = s.StringLineObject('the string')
+        major_block_properties = ElementProperties(
+            Indentation(2, '<major block indent suffix>'),
+            TEXT_STYLE__NEUTRAL,
+        )
+        minor_block_properties = ElementProperties(
+            Indentation(3, '<minor block indent suffix>'),
+            TEXT_STYLE__NEUTRAL,
+        )
+        line_element_properties = ElementProperties(
+            Indentation(4, '<line element indent suffix>'),
+            TEXT_STYLE__NEUTRAL,
+        )
+
+        # ACT & ASSERT #
+
+        check_major_block(
+            self,
+            to_render=
+            s.MajorBlock([
+                s.MinorBlock(
+                    [s.LineElement(line_object,
+                                   line_element_properties)],
+                    minor_block_properties)
+            ],
+                major_block_properties,
+            ),
+            expectation=
+            lines_content(
+                [
+                    (
+                            (LAYOUT_SETTINGS.major_block.indent * major_block_properties.indentation.level) +
+                            major_block_properties.indentation.suffix +
+                            (LAYOUT_SETTINGS.minor_block.indent * minor_block_properties.indentation.level) +
+                            minor_block_properties.indentation.suffix +
+                            (LAYOUT_SETTINGS.line_element_indent * line_element_properties.indentation.level) +
+                            line_element_properties.indentation.suffix +
+                            line_object.string
+                    )
+
+                ]
+            ),
+        )
 
 
 class TestMajorBlocksAndDocument(unittest.TestCase):
@@ -201,16 +250,16 @@ class TestMajorBlocksAndDocument(unittest.TestCase):
 
         empty_block = s.MajorBlock([
             s.MinorBlock([],
-                         s.PLAIN_ELEMENT_PROPERTIES,
+                         s.ELEMENT_PROPERTIES__NEUTRAL,
                          ),
         ],
-            s.PLAIN_ELEMENT_PROPERTIES
+            s.ELEMENT_PROPERTIES__NEUTRAL
         )
 
         non_empty_block = s.MajorBlock([
             single_line_minor_block_w_plain_properties(string_1),
         ],
-            s.PLAIN_ELEMENT_PROPERTIES,
+            s.ELEMENT_PROPERTIES__NEUTRAL,
         )
         cases = [
             NEA(
@@ -266,19 +315,19 @@ class TestMajorBlocksAndDocument(unittest.TestCase):
                     s.MajorBlock([
                         single_line_minor_block_w_plain_properties(string_1),
                     ],
-                        s.PLAIN_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__NEUTRAL,
                     ),
                     s.MajorBlock([
                         s.MinorBlock([
                             s.LineElement(
                                 s.StringLineObject(string_2),
-                                s.INDENTED_ELEMENT_PROPERTIES,
+                                s.ELEMENT_PROPERTIES__INDENTED,
                             ),
                         ],
-                            s.INDENTED_ELEMENT_PROPERTIES,
+                            s.ELEMENT_PROPERTIES__INDENTED,
                         ),
                     ],
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__INDENTED,
                     ),
                 ],
             ),
@@ -308,7 +357,7 @@ class TestMajorBlocksAndDocument(unittest.TestCase):
                     s.MajorBlock([
                         single_line_minor_block_w_plain_properties(string_2),
                     ],
-                        s.PLAIN_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__NEUTRAL,
                     ),
                 ],
             ),
@@ -343,7 +392,7 @@ def single_line_minor_block_w_plain_properties(line_contents: str) -> s.MinorBlo
     return s.MinorBlock([
         single_line_element_w_plain_properties(line_contents),
     ],
-        s.PLAIN_ELEMENT_PROPERTIES,
+        s.ELEMENT_PROPERTIES__NEUTRAL,
     )
 
 

@@ -6,7 +6,8 @@ from exactly_lib.util.description_tree import rendering as sut
 from exactly_lib.util.description_tree.rendering import RenderingConfiguration
 from exactly_lib.util.description_tree.tree import Node, StringDetail, PreFormattedStringDetail
 from exactly_lib.util.simple_textstruct import structure as s
-from exactly_lib.util.simple_textstruct.structure import ElementProperties
+from exactly_lib.util.simple_textstruct.structure import ElementProperties, TEXT_STYLE__NEUTRAL, Indentation, \
+    INDENTATION__NEUTRAL, TextStyle
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -304,17 +305,17 @@ def _expected_header_color(node: Node[bool]) -> ForegroundColor:
 
 def expected_child_properties(level: int) -> s.ElementProperties:
     return s.ElementProperties(
-        level,
-        None,
-        None,
+        Indentation(level,
+                    ''),
+        TEXT_STYLE__NEUTRAL,
     )
 
 
 def expected_detail_properties(level: int) -> s.ElementProperties:
     return s.ElementProperties(
-        level,
-        None,
-        None,
+        Indentation(level,
+                    ''),
+        TEXT_STYLE__NEUTRAL,
     )
 
 
@@ -327,5 +328,10 @@ STRING_OBJECT_CASES = [
                  ),
 ]
 
-_HEADER_PROPERTIES_FOR_F = ElementProperties(0, ForegroundColor.RED, FontStyle.BOLD)
-_HEADER_PROPERTIES_FOR_T = ElementProperties(0, ForegroundColor.GREEN, None)
+_HEADER_PROPERTIES_FOR_F = ElementProperties(INDENTATION__NEUTRAL,
+                                             TextStyle(color=ForegroundColor.RED,
+                                                       font_style=FontStyle.BOLD),
+                                             )
+_HEADER_PROPERTIES_FOR_T = ElementProperties(INDENTATION__NEUTRAL,
+                                             TextStyle(color=ForegroundColor.GREEN),
+                                             )

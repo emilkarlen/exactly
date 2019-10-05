@@ -6,7 +6,8 @@ from exactly_lib.util.simple_textstruct.file_printer_output import printables as
 from exactly_lib.util.simple_textstruct.file_printer_output.print_on_file_printer import LayoutSettings, BlockSettings, \
     PrintablesFactory
 from exactly_lib.util.simple_textstruct.file_printer_output.printer import Printable, Printer
-from exactly_lib.util.simple_textstruct.structure import LineElement, MinorBlock, MajorBlock, ElementProperties
+from exactly_lib.util.simple_textstruct.structure import LineElement, MinorBlock, MajorBlock, \
+    ELEMENT_PROPERTIES__NEUTRAL
 
 
 def lines_str(x: Sequence[str]) -> str:
@@ -42,7 +43,7 @@ def print_line_element(line_element: LineElement) -> str:
 
 
 def print_line_elements(line_element: Sequence[LineElement]) -> str:
-    block = MinorBlock(line_element, NO_INDENT_NO_COLOR_PROPERTIES)
+    block = MinorBlock(line_element, ELEMENT_PROPERTIES__NEUTRAL)
     printable = PrintablesFactory(LAYOUT).minor_block(block)
     return print_to_str(printable)
 
@@ -64,6 +65,3 @@ def print_to_str(printable: Printable) -> str:
     printable.print_on(printer)
 
     return output_file.getvalue()
-
-
-NO_INDENT_NO_COLOR_PROPERTIES = ElementProperties(0, None)

@@ -17,7 +17,7 @@ class DocumentR(DocumentRenderer):
 class MajorBlockR(MajorBlockRenderer):
     def __init__(self,
                  contents: SequenceRenderer[MinorBlock],
-                 properties: ElementProperties = structure.PLAIN_ELEMENT_PROPERTIES):
+                 properties: ElementProperties = structure.ELEMENT_PROPERTIES__NEUTRAL):
         self._properties = properties
         self._contents = contents
 
@@ -30,7 +30,7 @@ class MajorBlockR(MajorBlockRenderer):
 class MinorBlockR(MinorBlockRenderer):
     def __init__(self,
                  contents: SequenceRenderer[LineElement],
-                 properties: ElementProperties = structure.PLAIN_ELEMENT_PROPERTIES):
+                 properties: ElementProperties = structure.ELEMENT_PROPERTIES__NEUTRAL):
         self._properties = properties
         self._contents = contents
 
@@ -44,7 +44,7 @@ class MinorBlockR(MinorBlockRenderer):
 class LineElementR(LineElementRenderer):
     def __init__(self,
                  line_object: Renderer[LineObject],
-                 properties: ElementProperties = structure.PLAIN_ELEMENT_PROPERTIES):
+                 properties: ElementProperties = structure.ELEMENT_PROPERTIES__NEUTRAL):
         self.line_object = line_object
         self.properties = properties
 

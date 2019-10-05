@@ -13,7 +13,7 @@ class PrependFirstMinorBlockR(SequenceRenderer[MinorBlock]):
                  to_prepend: SequenceRenderer[LineElement],
                  to_prepend_to: SequenceRenderer[MinorBlock],
                  properties_if_to_prepend_to_is_empty: ElementProperties =
-                 structure.PLAIN_ELEMENT_PROPERTIES,
+                 structure.ELEMENT_PROPERTIES__NEUTRAL,
                  ):
         self.to_prepend = to_prepend
         self.to_prepend_to = to_prepend_to
@@ -46,7 +46,7 @@ class PrependFirstMinorBlockOfFirstMajorBlockR(SequenceRenderer[MajorBlock]):
                  to_prepend: SequenceRenderer[LineElement],
                  to_prepend_to: SequenceRenderer[MajorBlock],
                  properties_if_to_prepend_to_is_empty: ElementProperties =
-                 structure.PLAIN_ELEMENT_PROPERTIES,
+                 structure.ELEMENT_PROPERTIES__NEUTRAL,
                  ):
         self.to_prepend = to_prepend
         self.to_prepend_to = to_prepend_to

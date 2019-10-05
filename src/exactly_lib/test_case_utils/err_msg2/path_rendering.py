@@ -98,7 +98,7 @@ class PathMinorBlock(Renderer[MinorBlock]):
             )
             for line in self._path.renders()
         ],
-            text_struct.INDENTED_ELEMENT_PROPERTIES,
+            text_struct.ELEMENT_PROPERTIES__INDENTED,
         )
 
 
@@ -111,7 +111,7 @@ class ExplanationMinorBlock(Renderer[MinorBlock]):
     def render(self) -> MinorBlock:
         return MinorBlock(
             self._explanation.render_sequence(),
-            text_struct.INDENTED_ELEMENT_PROPERTIES,
+            text_struct.ELEMENT_PROPERTIES__INDENTED,
         )
 
 

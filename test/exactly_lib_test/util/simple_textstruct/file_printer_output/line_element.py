@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
 from exactly_lib.util.simple_textstruct import structure as s
+from exactly_lib.util.simple_textstruct.structure import Indentation, TextStyle, ElementProperties, TEXT_STYLE__NEUTRAL
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.util.simple_textstruct.file_printer_output.test_resources import LINE_ELEMENT_INDENT, \
@@ -48,7 +49,7 @@ class TestLineElementOfPreFormattedString(unittest.TestCase):
 
     def test_with_plain_element_properties(self):
         # ARRANGE #
-        element_properties = s.PLAIN_ELEMENT_PROPERTIES
+        element_properties = s.ELEMENT_PROPERTIES__NEUTRAL
 
         for case in self.cases:
             with self.subTest(case.name):
@@ -61,9 +62,10 @@ class TestLineElementOfPreFormattedString(unittest.TestCase):
 
     def test_element_properties_SHOULD_be_ignored(self):
         # ARRANGE #
-        ep_with_indent = s.ElementProperties(1,
-                                             ForegroundColor.BLUE,
-                                             FontStyle.UNDERLINE)
+        ep_with_indent = s.ElementProperties(Indentation(1),
+                                             TextStyle(color=ForegroundColor.BLUE,
+                                                       font_style=FontStyle.UNDERLINE),
+                                             )
 
         for case in self.cases:
             with self.subTest(case.name):
@@ -107,7 +109,7 @@ class TestLineElementOfStringLine(unittest.TestCase):
 
     def test_with_plain_element_properties(self):
         # ARRANGE #
-        element_properties = s.PLAIN_ELEMENT_PROPERTIES
+        element_properties = s.ELEMENT_PROPERTIES__NEUTRAL
 
         for case in self.cases:
             with self.subTest(case.name):
@@ -127,7 +129,9 @@ class TestLineElementOfStringLine(unittest.TestCase):
                     # ACT & ASSERT #
                     check_line_element(
                         self,
-                        s.LineElement(case.actual, indentation_case.actual),
+                        s.LineElement(case.actual,
+                                      ElementProperties(indentation_case.actual,
+                                                        TEXT_STYLE__NEUTRAL)),
                         indentation_case.expected + case.expected,
                     )
 
@@ -169,7 +173,7 @@ class TestLineElementOfStringLines(unittest.TestCase):
 
     def test_with_plain_element_properties(self):
         # ARRANGE #
-        element_properties = s.PLAIN_ELEMENT_PROPERTIES
+        element_properties = s.ELEMENT_PROPERTIES__NEUTRAL
 
         for case in self.cases:
             with self.subTest(case.name):
@@ -189,7 +193,9 @@ class TestLineElementOfStringLines(unittest.TestCase):
                     # ACT & ASSERT #
                     check_line_element(
                         self,
-                        s.LineElement(case.actual, indentation_case.actual),
+                        s.LineElement(case.actual,
+                                      ElementProperties(indentation_case.actual,
+                                                        TEXT_STYLE__NEUTRAL)),
                         lines_content(
                             [
                                 indentation_case.expected + l

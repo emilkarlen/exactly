@@ -4,38 +4,80 @@ from typing import Sequence, Optional
 from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, Document, \
     ElementProperties, LineObject, PreFormattedStringLineObject, StringLineObject, StringLinesObject, \
-    PLAIN_ELEMENT_PROPERTIES, LineObjectVisitor
+    ELEMENT_PROPERTIES__NEUTRAL, LineObjectVisitor, Indentation, TextStyle
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder
 
 
-def matches_element_properties(
-        indentation: ValueAssertion[int] = asrt.anything_goes(),
+def matches_indentation(
+        level: ValueAssertion[int] = asrt.anything_goes(),
+        suffix: ValueAssertion[str] = asrt.anything_goes(),
+) -> ValueAssertion[Indentation]:
+    return asrt.is_instance_with__many(Indentation,
+                                       [
+                                           asrt.sub_component('level',
+                                                              Indentation.level.fget,
+                                                              asrt.is_instance_with(int, level)
+                                                              ),
+                                           asrt.sub_component('suffix',
+                                                              Indentation.suffix.fget,
+                                                              asrt.is_instance_with(str, suffix),
+                                                              ),
+                                       ])
+
+
+def equals_indentation(expected: Indentation) -> ValueAssertion[Indentation]:
+    return matches_indentation(
+        level=asrt.equals(expected.level),
+        suffix=asrt.equals(expected.suffix),
+    )
+
+
+def matches_text_style(
         color: ValueAssertion[Optional[ForegroundColor]] = asrt.is_none_or_instance(ForegroundColor),
         font_style: ValueAssertion[Optional[FontStyle]] = asrt.is_none_or_instance(FontStyle),
+) -> ValueAssertion[TextStyle]:
+    return asrt.is_instance_with__many(TextStyle,
+                                       [
+                                           asrt.sub_component('color',
+                                                              TextStyle.color.fget,
+                                                              asrt.is_optional_instance_with(ForegroundColor, color),
+                                                              ),
+                                           asrt.sub_component('font_style',
+                                                              TextStyle.font_style.fget,
+                                                              asrt.is_optional_instance_with(FontStyle, font_style),
+                                                              ),
+                                       ])
+
+
+def equals_text_style(expected: TextStyle) -> ValueAssertion[TextStyle]:
+    return matches_text_style(
+        color=asrt.equals(expected.color),
+        font_style=asrt.equals(expected.font_style),
+    )
+
+
+def matches_element_properties(
+        indentation: ValueAssertion[Indentation] = matches_indentation(),
+        text_style: ValueAssertion[Optional[TextStyle]] = matches_text_style(),
 ) -> ValueAssertion[ElementProperties]:
     return asrt.is_instance_with__many(ElementProperties,
                                        [
                                            asrt.sub_component('indentation',
                                                               ElementProperties.indentation.fget,
-                                                              asrt.is_instance_with(int, indentation)
+                                                              indentation
                                                               ),
-                                           asrt.sub_component('color',
-                                                              ElementProperties.color.fget,
-                                                              color
-                                                              ),
-                                           asrt.sub_component('font_style',
-                                                              ElementProperties.font_style.fget,
-                                                              font_style
+                                           asrt.sub_component('text_style',
+                                                              ElementProperties.text_style.fget,
+                                                              text_style
                                                               ),
                                        ])
 
 
 def equals_element_properties(expected: ElementProperties) -> ValueAssertion[ElementProperties]:
     return matches_element_properties(
-        indentation=asrt.equals(expected.indentation),
-        color=asrt.equals(expected.color),
-        font_style=asrt.equals(expected.font_style),
+        indentation=equals_indentation(expected.indentation),
+        text_style=equals_text_style(expected.text_style),
     )
 
 
@@ -73,7 +115,7 @@ def matches_major_block__w_plain_properties(minor_blocks: ValueAssertion[Sequenc
                                             ) -> ValueAssertion[MajorBlock]:
     return matches_major_block(
         minor_blocks=minor_blocks,
-        properties=equals_element_properties(PLAIN_ELEMENT_PROPERTIES),
+        properties=equals_element_properties(ELEMENT_PROPERTIES__NEUTRAL),
     )
 
 
@@ -101,7 +143,7 @@ def matches_minor_block__w_plain_properties(line_elements: ValueAssertion[Sequen
                                             ) -> ValueAssertion[MinorBlock]:
     return matches_minor_block(
         line_elements=line_elements,
-        properties=equals_element_properties(PLAIN_ELEMENT_PROPERTIES),
+        properties=equals_element_properties(ELEMENT_PROPERTIES__NEUTRAL),
     )
 
 
@@ -126,7 +168,7 @@ def matches_line_element__w_plain_properties(line_object: ValueAssertion[LineObj
                                              ) -> ValueAssertion[LineElement]:
     return matches_line_element(
         line_object=line_object,
-        properties=equals_element_properties(PLAIN_ELEMENT_PROPERTIES)
+        properties=equals_element_properties(ELEMENT_PROPERTIES__NEUTRAL)
     )
 
 

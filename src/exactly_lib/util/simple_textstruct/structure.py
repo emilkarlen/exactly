@@ -7,43 +7,91 @@ RET = TypeVar('RET')
 ENV = TypeVar('ENV')
 
 
-class ElementProperties:
-    def __init__(self,
-                 indentation: int,
-                 color: Optional[ForegroundColor],
-                 font_style: Optional[FontStyle] = None):
-        self._indentation = indentation
-        if not isinstance(indentation, int):
-            raise ValueError('indentation is not an int')
-        self._color = color
-        self._font_style = font_style
+class Indentation(tuple):
+    def __new__(cls,
+                level: int = 0,
+                suffix: str = '',
+                ):
+        return tuple.__new__(cls, (level, suffix))
 
     @property
-    def indentation(self) -> int:
-        return self._indentation
+    def level(self) -> int:
+        return self[0]
 
     @property
-    def with_increased_indentation(self) -> 'ElementProperties':
-        return ElementProperties(self._indentation + 1,
-                                 self._color,
-                                 self._font_style)
+    def suffix(self) -> str:
+        return self[1]
+
+
+INDENTATION__NEUTRAL = Indentation(0, '')
+
+
+class TextStyle(tuple):
+    def __new__(cls,
+                color: Optional[ForegroundColor] = None,
+                font_style: Optional[FontStyle] = None,
+                ):
+        return tuple.__new__(cls, (color, font_style))
 
     @property
     def color(self) -> Optional[ForegroundColor]:
-        return self._color
+        return self[0]
 
     @property
     def font_style(self) -> Optional[FontStyle]:
-        return self._font_style
+        return self[1]
 
 
-PLAIN_ELEMENT_PROPERTIES = ElementProperties(0, None, None)
-
-INDENTED_ELEMENT_PROPERTIES = ElementProperties(1, None, None)
+TEXT_STYLE__NEUTRAL = TextStyle(None, None)
 
 
-def indentation_properties(indentation: int) -> ElementProperties:
-    return ElementProperties(indentation, None, None)
+class ElementProperties(tuple):
+    def __new__(cls,
+                indentation: Indentation = INDENTATION__NEUTRAL,
+                text_style: TextStyle = TEXT_STYLE__NEUTRAL,
+                ):
+        return tuple.__new__(cls, (indentation, text_style))
+
+    @property
+    def indentation(self) -> Indentation:
+        return self[0]
+
+    @property
+    def text_style(self) -> TextStyle:
+        return self[1]
+
+    @property
+    def indentation_level(self) -> int:
+        return self[0].level
+
+    @property
+    def with_increased_indentation_level(self) -> 'ElementProperties':
+        i = self[0]
+        return ElementProperties(
+            Indentation(i.level + 1,
+                        i.suffix),
+            self[1],
+        )
+
+    @property
+    def color(self) -> Optional[ForegroundColor]:
+        return self[1].color
+
+    @property
+    def font_style(self) -> Optional[FontStyle]:
+        return self[1].font_style
+
+
+ELEMENT_PROPERTIES__NEUTRAL = ElementProperties(INDENTATION__NEUTRAL,
+                                                TEXT_STYLE__NEUTRAL)
+
+ELEMENT_PROPERTIES__INDENTED = ElementProperties(Indentation(1, ''),
+                                                 TEXT_STYLE__NEUTRAL)
+
+
+def indentation_properties(level: int) -> ElementProperties:
+    return ElementProperties(Indentation(level, ''),
+                             TEXT_STYLE__NEUTRAL)
 
 
 class Element(ABC):
@@ -80,7 +128,7 @@ class LineElement(Element):
 
     def __init__(self,
                  line_object: LineObject,
-                 properties: ElementProperties = PLAIN_ELEMENT_PROPERTIES):
+                 properties: ElementProperties = ELEMENT_PROPERTIES__NEUTRAL):
         super().__init__(properties)
         self._line_object = line_object
 
@@ -163,7 +211,7 @@ class MinorBlock(Element):
 
     def __init__(self,
                  parts: Sequence[LineElement],
-                 properties: ElementProperties = PLAIN_ELEMENT_PROPERTIES):
+                 properties: ElementProperties = ELEMENT_PROPERTIES__NEUTRAL):
         super().__init__(properties)
         self._parts = parts
 
@@ -177,7 +225,7 @@ class MajorBlock(Element):
 
     def __init__(self,
                  parts: Sequence[MinorBlock],
-                 properties: ElementProperties = PLAIN_ELEMENT_PROPERTIES,
+                 properties: ElementProperties = ELEMENT_PROPERTIES__NEUTRAL,
                  ):
         super().__init__(properties)
         self._parts = parts
@@ -197,7 +245,7 @@ class Document:
 
 
 def minor_block_from_lines(lines: Sequence[LineObject],
-                           block_properties: ElementProperties = PLAIN_ELEMENT_PROPERTIES) -> MinorBlock:
+                           block_properties: ElementProperties = ELEMENT_PROPERTIES__NEUTRAL) -> MinorBlock:
     return MinorBlock(
         [
             LineElement(line_object)

@@ -2,8 +2,9 @@ import unittest
 
 from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
 from exactly_lib.util.simple_textstruct.structure import LineElement, MinorBlock, LineObjectVisitor, ENV, RET, \
-    LineObject, PLAIN_ELEMENT_PROPERTIES, ElementProperties, MajorBlock, PreFormattedStringLineObject, StringLineObject, \
-    StringLinesObject
+    LineObject, ELEMENT_PROPERTIES__NEUTRAL, ElementProperties, MajorBlock, PreFormattedStringLineObject, \
+    StringLineObject, \
+    StringLinesObject, Indentation, TextStyle, TEXT_STYLE__NEUTRAL, INDENTATION__NEUTRAL
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
@@ -13,6 +14,8 @@ from exactly_lib_test.util.simple_textstruct.test_resources import structure_ass
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestIndentation),
+        unittest.makeSuite(TestMatchesTextStyle),
         unittest.makeSuite(TestMatchesProperties),
         unittest.makeSuite(TestMatchesLineElement),
         unittest.makeSuite(TestMatchesMinorBlock),
@@ -31,31 +34,24 @@ class TestMatchesProperties(unittest.TestCase):
                 expected=
                 sut.matches_element_properties(),
                 actual=
-                ElementProperties(1, None),
+                ElementProperties(Indentation(1, ''), TEXT_STYLE__NEUTRAL),
                 ),
-            NEA('indented',
+            NEA('indentation',
                 expected=
                 sut.matches_element_properties(
-                    indentation=asrt.equals(1),
+                    indentation=sut.matches_indentation(level=asrt.equals(69)),
                 ),
                 actual=
-                ElementProperties(1, None),
+                ElementProperties(Indentation(69, ''), TEXT_STYLE__NEUTRAL),
                 ),
-            NEA('color',
+            NEA('text_style',
                 expected=
                 sut.matches_element_properties(
-                    color=asrt.equals(ForegroundColor.GREEN),
+                    text_style=sut.matches_text_style(color=asrt.equals(ForegroundColor.GREEN)),
                 ),
                 actual=
-                ElementProperties(1, ForegroundColor.GREEN),
-                ),
-            NEA('font_style',
-                expected=
-                sut.matches_element_properties(
-                    font_style=asrt.equals(FontStyle.BOLD),
-                ),
-                actual=
-                ElementProperties(0, None, FontStyle.BOLD),
+                ElementProperties(INDENTATION__NEUTRAL,
+                                  TextStyle(ForegroundColor.GREEN, None)),
                 ),
         ]
         for case in cases:
@@ -67,42 +63,156 @@ class TestMatchesProperties(unittest.TestCase):
             NEA('indentation',
                 expected=
                 sut.matches_element_properties(
-                    indentation=asrt.equals(1),
+                    indentation=sut.matches_indentation(level=asrt.equals(1)),
                 ),
                 actual=
-                ElementProperties(0, None),
+                ElementProperties(Indentation(0, ''),
+                                  TEXT_STYLE__NEUTRAL),
                 ),
-            NEA('color - different values',
+            NEA('text_style',
                 expected=
                 sut.matches_element_properties(
+                    text_style=sut.matches_text_style(color=asrt.equals(ForegroundColor.GREEN)),
+                ),
+                actual=
+                ElementProperties(INDENTATION__NEUTRAL,
+                                  TextStyle(ForegroundColor.RED, None)),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assert_that_assertion_fails(case.expected, case.actual)
+
+
+class TestIndentation(unittest.TestCase):
+    def test_matches(self):
+        cases = [
+            NEA('default',
+                expected=
+                sut.matches_indentation(),
+                actual=
+                Indentation(1, 'a suffix'),
+                ),
+            NEA('level',
+                expected=
+                sut.matches_indentation(
+                    level=asrt.equals(1),
+                ),
+                actual=
+                Indentation(1, ''),
+                ),
+            NEA('suffix',
+                expected=
+                sut.matches_indentation(
+                    suffix=asrt.equals('a suffix'),
+                ),
+                actual=
+                Indentation(1, 'a suffix'),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                case.expected.apply_without_message(self, case.actual)
+
+    def test_not_matches(self):
+        cases = [
+            NEA('level',
+                expected=
+                sut.matches_indentation(
+                    level=asrt.equals(1),
+                ),
+                actual=
+                Indentation(0, ''),
+                ),
+            NEA('suffix',
+                expected=
+                sut.matches_indentation(
+                    suffix=asrt.equals('expected'),
+                ),
+                actual=
+                Indentation(0, 'actual'),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assert_that_assertion_fails(case.expected, case.actual)
+
+
+class TestMatchesTextStyle(unittest.TestCase):
+    def test_matches(self):
+        cases = [
+            NEA('default 1',
+                expected=
+                sut.matches_text_style(),
+                actual=
+                TextStyle(None, None),
+                ),
+            NEA('default/w color',
+                expected=
+                sut.matches_text_style(),
+                actual=
+                TextStyle(ForegroundColor.GREEN, None),
+                ),
+            NEA('default/w style',
+                expected=
+                sut.matches_text_style(),
+                actual=
+                TextStyle(None, FontStyle.BOLD),
+                ),
+            NEA('color',
+                expected=
+                sut.matches_text_style(
                     color=asrt.equals(ForegroundColor.GREEN),
                 ),
                 actual=
-                ElementProperties(0, ForegroundColor.RED),
+                TextStyle(ForegroundColor.GREEN, None),
+                ),
+            NEA('font_style',
+                expected=
+                sut.matches_text_style(
+                    font_style=asrt.equals(FontStyle.BOLD),
+                ),
+                actual=
+                TextStyle(None, FontStyle.BOLD),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                case.expected.apply_without_message(self, case.actual)
+
+    def test_not_matches(self):
+        cases = [
+            NEA('color - different values',
+                expected=
+                sut.matches_text_style(
+                    color=asrt.equals(ForegroundColor.GREEN),
+                ),
+                actual=
+                TextStyle(ForegroundColor.RED, None),
                 ),
             NEA('color - actual is None',
                 expected=
-                sut.matches_element_properties(
+                sut.matches_text_style(
                     color=asrt.equals(ForegroundColor.GREEN),
                 ),
                 actual=
-                ElementProperties(0, None),
+                TextStyle(None, None),
                 ),
             NEA('font_style - different values',
                 expected=
-                sut.matches_element_properties(
+                sut.matches_text_style(
                     font_style=asrt.equals(FontStyle.UNDERLINE),
                 ),
                 actual=
-                ElementProperties(0, None, FontStyle.BOLD),
+                TextStyle(None, FontStyle.BOLD),
                 ),
             NEA('font_style - actual is None',
                 expected=
-                sut.matches_element_properties(
+                sut.matches_text_style(
                     font_style=asrt.equals(FontStyle.UNDERLINE),
                 ),
                 actual=
-                ElementProperties(0, None, None),
+                TextStyle(None, None),
                 ),
         ]
         for case in cases:
@@ -137,7 +247,7 @@ class TestMatchesLineElement(unittest.TestCase):
                 ),
                 actual=
                 LineElement(LineObjectForTest(),
-                            PLAIN_ELEMENT_PROPERTIES),
+                            ELEMENT_PROPERTIES__NEUTRAL),
                 ),
         ]
         for case in cases:
@@ -162,7 +272,7 @@ class TestMatchesLineElement(unittest.TestCase):
                 ),
                 actual=
                 LineElement(LineObjectForTest(),
-                            PLAIN_ELEMENT_PROPERTIES),
+                            ELEMENT_PROPERTIES__NEUTRAL),
                 ),
         ]
         for case in cases:
@@ -194,12 +304,13 @@ class TestMatchesMinorBlock(unittest.TestCase):
                 sut.matches_minor_block(
                     asrt.anything_goes(),
                     properties=sut.matches_element_properties(
-                        indentation=asrt.is_instance(int)
+                        indentation=sut.matches_indentation(level=asrt.equals(72))
                     ),
                 ),
                 actual=
                 MinorBlock([],
-                           PLAIN_ELEMENT_PROPERTIES),
+                           ElementProperties(Indentation(72, ''),
+                                             TEXT_STYLE__NEUTRAL)),
                 ),
         ]
         for case in cases:
@@ -232,7 +343,7 @@ class TestMatchesMinorBlock(unittest.TestCase):
                 ),
                 actual=
                 MinorBlock([LineElement(LineObjectForTest(),
-                                        PLAIN_ELEMENT_PROPERTIES)]),
+                                        ELEMENT_PROPERTIES__NEUTRAL)]),
                 ),
         ]
         for case in cases:
@@ -264,12 +375,13 @@ class TestMatchesMajorBlock(unittest.TestCase):
                 sut.matches_major_block(
                     asrt.anything_goes(),
                     properties=sut.matches_element_properties(
-                        indentation=asrt.is_instance(int)
+                        indentation=sut.matches_indentation(level=asrt.equals(72))
                     ),
                 ),
                 actual=
                 MajorBlock([],
-                           PLAIN_ELEMENT_PROPERTIES),
+                           ElementProperties(Indentation(72, ''),
+                                             TEXT_STYLE__NEUTRAL)),
                 ),
         ]
         for case in cases:
@@ -302,7 +414,7 @@ class TestMatchesMajorBlock(unittest.TestCase):
                 ),
                 actual=
                 MajorBlock([MinorBlock([],
-                                       PLAIN_ELEMENT_PROPERTIES)]),
+                                       ELEMENT_PROPERTIES__NEUTRAL)]),
                 ),
         ]
         for case in cases:

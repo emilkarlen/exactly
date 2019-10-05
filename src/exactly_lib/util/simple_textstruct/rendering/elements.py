@@ -13,6 +13,6 @@ class IncreasedIndentRenderer(SequenceRenderer[ELEMENT]):
     def render_sequence(self) -> Sequence[ELEMENT]:
         ret_val = self._renderer.render_sequence()
         for element in ret_val:
-            element.set_properties(element.properties.with_increased_indentation)
+            element.set_properties(element.properties.with_increased_indentation_level)
 
         return ret_val

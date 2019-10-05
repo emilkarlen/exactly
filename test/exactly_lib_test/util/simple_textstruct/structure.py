@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.util.simple_textstruct import structure as sut
+from exactly_lib.util.simple_textstruct.structure import Indentation
 
 
 def suite() -> unittest.TestSuite:
@@ -129,7 +130,7 @@ class TestMinorBlock(unittest.TestCase):
         # ARRANGE #
 
         parts_arg = []
-        properties_arg = sut.ElementProperties(0, None)
+        properties_arg = sut.ElementProperties(Indentation(0))
         block = sut.MinorBlock(parts_arg, properties_arg)
 
         # ACT && ASSERT #
@@ -147,7 +148,7 @@ class TestMajorBlock(unittest.TestCase):
         # ARRANGE #
 
         parts = []
-        properties_arg = sut.ElementProperties(0, None)
+        properties_arg = sut.ElementProperties(Indentation(0))
         block = sut.MajorBlock(parts, properties_arg)
 
         # ACT && ASSERT #

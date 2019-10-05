@@ -472,6 +472,28 @@ class _IsInstanceWith(Generic[T], ValueAssertionBase[Any]):
         self.value_assertion.apply(put, value, message_builder)
 
 
+class _IsOptionalInstanceWith(Generic[T], ValueAssertionBase[Any]):
+    def __init__(self,
+                 expected_type: Type[T],
+                 value_assertion: ValueAssertion[Optional[T]],
+                 description: str):
+        self.expected_type = expected_type
+        self.value_assertion = value_assertion
+        self.description = description
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: Any,
+               message_builder: MessageBuilder):
+        if self.description:
+            message_builder = message_builder.with_description(self.description)
+        if value is not None:
+            put.assertIsInstance(value,
+                                 self.expected_type,
+                                 message_builder.msg_for_sub_component('type'))
+        self.value_assertion.apply(put, value, message_builder)
+
+
 class _IsNotNoneAndInstanceWith(Generic[T], ValueAssertionBase[Any]):
     def __init__(self,
                  expected_type: Type[T],
@@ -511,6 +533,12 @@ def is_instance_with(expected_type: Type[T],
                      value_assertion: ValueAssertion[T],
                      description: str = '') -> ValueAssertion[Any]:
     return _IsInstanceWith(expected_type, value_assertion, description)
+
+
+def is_optional_instance_with(expected_type: Type[T],
+                              value_assertion: ValueAssertion[Optional[T]],
+                              description: str = '') -> ValueAssertion[Optional[Any]]:
+    return _IsOptionalInstanceWith(expected_type, value_assertion, description)
 
 
 def is_instance_with__many(expected_type: Type[T],

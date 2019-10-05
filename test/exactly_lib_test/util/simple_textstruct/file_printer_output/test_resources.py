@@ -8,7 +8,7 @@ from exactly_lib.util.simple_textstruct.file_printer_output.print_on_file_printe
     PrintablesFactory
 from exactly_lib.util.simple_textstruct.file_printer_output.printer import Printable, Printer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, Document, \
-    indentation_properties, ElementProperties
+    Indentation
 from exactly_lib_test.test_resources.test_utils import NEA
 
 T = TypeVar('T')
@@ -94,14 +94,35 @@ MINOR_BLOCKS_SEPARATOR = '<MINOR_BLOCKS_SEPARATOR>'
 MAJOR_BLOCKS_SEPARATOR = '<MAJOR_BLOCKS_SEPARATOR>'
 
 
-def indentation_cases(indent_str: str) -> List[NEA[str, ElementProperties]]:
-    return [
-        NEA('indentation of ' + str(indentation),
-            expected=indent_str * indentation,
-            actual=indentation_properties(indentation),
+def indentation_cases(indent_str: str) -> List[NEA[str, Indentation]]:
+    level_cases = [
+        NEA('indentation level of ' + str(level),
+            expected=indent_str * level,
+            actual=Indentation(level, ''),
             )
-        for indentation in [0, 1, 2]
+        for level in [0, 1, 2]
     ]
+
+    suffix_value = '<indent suffix>'
+
+    suffix_cases = [
+        NEA('indentation suffix of ' + suffix_value,
+            expected=suffix_value,
+            actual=Indentation(0, suffix_value),
+            )
+
+    ]
+    level_value = 2
+
+    mixed_cases = [
+        NEA('indentation level {} and suffix of {}'.format(level_value, suffix_value),
+            expected=indent_str * level_value + suffix_value,
+            actual=Indentation(level_value, suffix_value),
+            )
+
+    ]
+
+    return level_cases + suffix_cases + mixed_cases
 
 
 class MajorBlocksSeparator(Printable):
@@ -164,5 +185,5 @@ def _print_to_str(printable: Printable) -> str:
 def single_line_element_w_plain_properties(line_contents):
     return s.LineElement(
         s.StringLineObject(line_contents),
-        s.PLAIN_ELEMENT_PROPERTIES,
+        s.ELEMENT_PROPERTIES__NEUTRAL,
     )

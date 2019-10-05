@@ -1,12 +1,13 @@
 import unittest
 
 from exactly_lib.util.simple_textstruct import structure as s
+from exactly_lib.util.simple_textstruct.structure import TEXT_STYLE__NEUTRAL, ElementProperties, Indentation
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.util.simple_textstruct.file_printer_output.test_resources import check_minor_block, \
     MINOR_BLOCK_INDENT, LINE_ELEMENT_INDENT, check_minor_blocks, MINOR_BLOCKS_SEPARATOR, indentation_cases, \
-    single_line_element_w_plain_properties
+    single_line_element_w_plain_properties, LAYOUT_SETTINGS
 
 
 def suite() -> unittest.TestSuite:
@@ -23,11 +24,11 @@ class TestMinorBlock(unittest.TestCase):
         cases = [
             NameAndValue(
                 'plain properties',
-                s.PLAIN_ELEMENT_PROPERTIES,
+                s.ELEMENT_PROPERTIES__NEUTRAL,
             ),
             NameAndValue(
                 'indent properties',
-                s.INDENTED_ELEMENT_PROPERTIES,
+                s.ELEMENT_PROPERTIES__INDENTED,
             ),
         ]
 
@@ -52,10 +53,10 @@ class TestMinorBlock(unittest.TestCase):
                 s.MinorBlock([
                     s.LineElement(
                         s.StringLineObject(single_line_string),
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__INDENTED,
                     )
                 ],
-                    s.INDENTED_ELEMENT_PROPERTIES,
+                    s.ELEMENT_PROPERTIES__INDENTED,
                 ),
             ),
             NEA(
@@ -64,10 +65,10 @@ class TestMinorBlock(unittest.TestCase):
                 s.MinorBlock([
                     s.LineElement(
                         s.PreFormattedStringLineObject(single_line_string, False),
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__INDENTED,
                     )
                 ],
-                    s.INDENTED_ELEMENT_PROPERTIES,
+                    s.ELEMENT_PROPERTIES__INDENTED,
                 ),
             ),
             NEA(
@@ -76,10 +77,10 @@ class TestMinorBlock(unittest.TestCase):
                 s.MinorBlock([
                     s.LineElement(
                         s.PreFormattedStringLineObject(single_line_string + '\n', True),
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__INDENTED,
                     )
                 ],
-                    s.INDENTED_ELEMENT_PROPERTIES,
+                    s.ELEMENT_PROPERTIES__INDENTED,
                 ),
             ),
             NEA(
@@ -92,10 +93,10 @@ class TestMinorBlock(unittest.TestCase):
                     s.LineElement(
                         s.StringLinesObject([single_line_string,
                                              single_line_string_2]),
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__INDENTED,
                     )
                 ],
-                    s.INDENTED_ELEMENT_PROPERTIES,
+                    s.ELEMENT_PROPERTIES__INDENTED,
                 ),
             ),
         ]
@@ -127,7 +128,7 @@ class TestMinorBlock(unittest.TestCase):
                 s.MinorBlock([
                     s.LineElement(
                         s.StringLineObject(string_1),
-                        s.PLAIN_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__NEUTRAL,
                     ),
                     s.LineElement(
                         s.StringLineObject(string_2),
@@ -139,10 +140,10 @@ class TestMinorBlock(unittest.TestCase):
                     ),
                     s.LineElement(
                         s.PreFormattedStringLineObject(string_4, False),
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__INDENTED,
                     ),
                 ],
-                    s.PLAIN_ELEMENT_PROPERTIES,
+                    s.ELEMENT_PROPERTIES__NEUTRAL,
                 ),
             ),
             NEA(
@@ -155,18 +156,18 @@ class TestMinorBlock(unittest.TestCase):
                 s.MinorBlock([
                     s.LineElement(
                         s.StringLineObject(string_1),
-                        s.PLAIN_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__NEUTRAL,
                     ),
                     s.LineElement(
                         s.StringLineObject(string_2),
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__INDENTED,
                     ),
                     s.LineElement(
                         s.PreFormattedStringLineObject(string_3, False),
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__INDENTED,
                     ),
                 ],
-                    s.INDENTED_ELEMENT_PROPERTIES,
+                    s.ELEMENT_PROPERTIES__INDENTED,
                 ),
             ),
         ]
@@ -193,7 +194,8 @@ class TestMinorBlock(unittest.TestCase):
                         [
                             s.LineElement(line_object)
                         ],
-                        case.actual,
+                        ElementProperties(case.actual,
+                                          TEXT_STYLE__NEUTRAL),
                     ),
                     expectation=
                     lines_content(
@@ -202,6 +204,45 @@ class TestMinorBlock(unittest.TestCase):
                         ]
                     ),
                 )
+
+    def test_indentation_element_properties_SHOULD_be_accumulated(self):
+        # ARRANGE #
+
+        line_object = s.StringLineObject('the string')
+        block_properties = ElementProperties(
+            Indentation(2, '<block indent suffix>'),
+            TEXT_STYLE__NEUTRAL,
+        )
+        line_element_properties = ElementProperties(
+            Indentation(3, '<line element indent suffix>'),
+            TEXT_STYLE__NEUTRAL,
+        )
+
+        # ACT & ASSERT #
+
+        check_minor_block(
+            self,
+            to_render=
+            s.MinorBlock(
+                [
+                    s.LineElement(line_object, line_element_properties)
+                ],
+                block_properties,
+            ),
+            expectation=
+            lines_content(
+                [
+                    (
+                            (LAYOUT_SETTINGS.minor_block.indent * block_properties.indentation.level) +
+                            block_properties.indentation.suffix +
+                            (LAYOUT_SETTINGS.line_element_indent * line_element_properties.indentation.level) +
+                            line_element_properties.indentation.suffix +
+                            line_object.string
+                    )
+
+                ]
+            ),
+        )
 
 
 class TestMinorBlocks(unittest.TestCase):
@@ -213,14 +254,14 @@ class TestMinorBlocks(unittest.TestCase):
 
         # ARRANGE #
         string_1 = 'the 1st string'
-        empty_block = s.MinorBlock([], s.PLAIN_ELEMENT_PROPERTIES, )
+        empty_block = s.MinorBlock([], s.ELEMENT_PROPERTIES__NEUTRAL, )
         non_empty_block = s.MinorBlock(
             [
                 s.LineElement(
-                    s.StringLineObject(string_1), s.PLAIN_ELEMENT_PROPERTIES,
+                    s.StringLineObject(string_1), s.ELEMENT_PROPERTIES__NEUTRAL,
                 ),
             ],
-            s.PLAIN_ELEMENT_PROPERTIES,
+            s.ELEMENT_PROPERTIES__NEUTRAL,
         )
         cases = [
             NEA(
@@ -282,18 +323,18 @@ class TestMinorBlocks(unittest.TestCase):
                     s.MinorBlock([
                         s.LineElement(
                             s.StringLineObject(string_1),
-                            s.PLAIN_ELEMENT_PROPERTIES,
+                            s.ELEMENT_PROPERTIES__NEUTRAL,
                         ),
                     ],
-                        s.PLAIN_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__NEUTRAL,
                     ),
                     s.MinorBlock([
                         s.LineElement(
                             s.StringLineObject(string_2),
-                            s.INDENTED_ELEMENT_PROPERTIES,
+                            s.ELEMENT_PROPERTIES__INDENTED,
                         ),
                     ],
-                        s.INDENTED_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__INDENTED,
                     ),
                 ],
             ),
@@ -329,7 +370,7 @@ class TestMinorBlocks(unittest.TestCase):
                     s.MinorBlock([
                         single_line_element_w_plain_properties(string_2),
                     ],
-                        s.PLAIN_ELEMENT_PROPERTIES,
+                        s.ELEMENT_PROPERTIES__NEUTRAL,
                     ),
                 ],
             ),

@@ -5,7 +5,8 @@ from exactly_lib.type_system.trace.trace_renderer import NodeRenderer
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.description_tree.tree import Node, StringDetail
 from exactly_lib.util.simple_textstruct import structure as s
-from exactly_lib.util.simple_textstruct.structure import ElementProperties
+from exactly_lib.util.simple_textstruct.structure import ElementProperties, INDENTATION__NEUTRAL, TextStyle, \
+    Indentation, TEXT_STYLE__NEUTRAL
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct
@@ -90,7 +91,9 @@ def _matches_header_line_element(node: Node[bool]) -> ValueAssertion[s.LineEleme
 
 
 def _expected_header_style(node: Node[bool]) -> ElementProperties:
-    return ElementProperties(0, _expected_header_color(node), None)
+    return ElementProperties(INDENTATION__NEUTRAL,
+                             TextStyle(color=_expected_header_color(node)),
+                             )
 
 
 def _matches_string_detail_line_element(detail: StringDetail, level: int) -> ValueAssertion[s.LineElement]:
@@ -124,9 +127,9 @@ def _expected_header_color(node: Node[bool]) -> ForegroundColor:
 
 def expected_detail_properties(level: int) -> s.ElementProperties:
     return s.ElementProperties(
-        level,
-        None,
-        None,
+        Indentation(level,
+                    ''),
+        TEXT_STYLE__NEUTRAL,
     )
 
 
