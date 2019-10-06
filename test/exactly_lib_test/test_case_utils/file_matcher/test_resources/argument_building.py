@@ -1,8 +1,8 @@
 from abc import ABC
 from typing import List
 
-import exactly_lib.definitions.primitives.file_matcher
 from exactly_lib.definitions import expression
+from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.util.cli_syntax import option_syntax
@@ -43,7 +43,7 @@ class Type(FileMatcherArg):
     @property
     def elements(self) -> List:
         return [
-            exactly_lib.definitions.primitives.file_matcher.TYPE_MATCHER_NAME,
+            file_matcher.TYPE_MATCHER_NAME,
             file_properties.TYPE_INFO[self.file_type].type_argument,
         ]
 
@@ -77,7 +77,7 @@ class Name(FileMatcherArg):
 
     @property
     def elements(self) -> List:
-        return [exactly_lib.definitions.primitives.file_matcher.NAME_MATCHER_NAME] + self.name_matcher.elements
+        return [file_matcher.NAME_MATCHER_NAME] + self.name_matcher.elements
 
 
 class Contents(FileMatcherArg):
