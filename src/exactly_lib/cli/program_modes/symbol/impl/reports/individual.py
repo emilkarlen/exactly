@@ -9,9 +9,7 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.section_document.source_location import SourceLocationInfo, SourceLocationPath
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.util.simple_textstruct import structure as struct
-from exactly_lib.util.simple_textstruct.rendering import component_renderers as rend, renderer_combinators as rend_comb, \
-    blocks, line_objects
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.rendering import component_renderers as rend, blocks, line_objects
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock
 from exactly_lib.util.string import inside_parens
 
@@ -66,32 +64,21 @@ class IndividualReportGenerator(ReportGenerator):
 class _DefinitionReport(_SuccessfulReportBase):
     def blocks(self) -> Sequence[ReportBlock]:
         return [
-            DefinitionBlock(self.definition)
+            DefinitionShortInfoBlock(self.definition),
+            DefinitionSourceBlock(self.definition),
         ]
 
 
-class DefinitionBlock(ReportBlock):
+class DefinitionShortInfoBlock(ReportBlock):
     def __init__(self, definition: SymbolDefinitionInfo):
-        self.phase = definition.phase
         self.definition = definition
 
     def render(self) -> MajorBlock:
-        renderer = rend.MajorBlockR(
-            rend_comb.ConcatenationR([
-                rend_comb.SingletonSequenceR(self._single_line_info_minor_block()),
-                source_location.location_minor_blocks_renderer(
-                    self._get_source_location_path(self.definition.definition.resolver_container.source_location),
-                    self.phase.section_name,
-                    None,
-                )])
-        )
-
-        return renderer.render()
-
-    def _single_line_info_minor_block(self) -> Renderer[MinorBlock]:
-        return rend_comb.ConstantR(
-            MinorBlock([struct.LineElement(struct.StringLineObject(self._single_line_info_str()))])
-        )
+        return MajorBlock([
+            MinorBlock([
+                struct.LineElement(struct.StringLineObject(self._single_line_info_str())),
+            ])
+        ])
 
     def _single_line_info_str(self) -> str:
         definition = self.definition
@@ -101,6 +88,20 @@ class DefinitionBlock(ReportBlock):
             inside_parens(len(definition.references)),
             definition.name(),
         ])
+
+
+class DefinitionSourceBlock(ReportBlock):
+    def __init__(self, definition: SymbolDefinitionInfo):
+        self.definition = definition
+
+    def render(self) -> MajorBlock:
+        definition = self.definition
+        renderer = source_location.location_block_renderer(
+            self._get_source_location_path(definition.definition.resolver_container.source_location),
+            definition.phase.section_name,
+            None,
+        )
+        return renderer.render()
 
     @staticmethod
     def _get_source_location_path(sli: Optional[SourceLocationInfo]) -> Optional[SourceLocationPath]:
