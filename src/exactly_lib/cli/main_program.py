@@ -219,10 +219,12 @@ class MainProgram:
                                          self._default_case_sandbox_root_dir_name_resolver,
                                          command_line_arguments,
                                          common_cli_options.COMMAND_DESCRIPTIONS)
-        return execution.execute(request,
-                                 self._test_case_definition,
-                                 self._test_suite_definition.configuration_section_parser,
-                                 output)
+        executor = execution.Executor(
+            self._test_case_definition,
+            self._test_suite_definition.configuration_section_parser,
+        )
+
+        return executor.execute(request, output)
 
     def _parse_and_execute_help(self,
                                 help_command_arguments: List[str],

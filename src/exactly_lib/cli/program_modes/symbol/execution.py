@@ -1,172 +1,92 @@
-from abc import ABC, abstractmethod
 from typing import Tuple
 
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.cli.program_modes.symbol.impl import symbol_usage_resolving
-from exactly_lib.cli.program_modes.symbol.impl.parse_error_reporter import ParseErrorReporter
-from exactly_lib.cli.program_modes.symbol.report import ReportGenerator
+from exactly_lib.cli.program_modes.symbol.impl.parse import Parser, ParserForTestSuite, ParserForTestCase
+from exactly_lib.cli.program_modes.symbol.impl.report import ReportGenerator, Report
 from exactly_lib.cli.program_modes.symbol.request import SymbolInspectionRequest, RequestVariantVisitor, \
     RequestVariantList, RequestVariantIndividual
-from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.common import result_reporting
-from exactly_lib.processing import test_case_processing, exit_values
-from exactly_lib.processing.act_phase import ActPhaseSetup
+from exactly_lib.processing import exit_values
 from exactly_lib.processing.processors import TestCaseDefinition
-from exactly_lib.processing.standalone.accessor_resolver import AccessorResolver
-from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
+from exactly_lib.processing.standalone import result_reporting as processing_result_reporting
 from exactly_lib.processing.test_case_processing import AccessorError
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
+from exactly_lib.test_case import actor
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.actor import ParseException, ActionToCheck
+from exactly_lib.test_case.actor import ActionToCheck, ParseException
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError
 from exactly_lib.util import file_printer
+from exactly_lib.util.file_printer import file_printer_with_color_if_terminal
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
 from exactly_lib.util.std import StdOutputFiles
 
 
-class _Parser(ABC):
-    def __init__(self, completion_reporter: ParseErrorReporter):
-        self.completion_reporter = completion_reporter
-
-    @abstractmethod
-    def parse(self) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheck]:
-        pass
-
-    def _from_test_case(self,
-                        test_case: test_case_doc.TestCase,
-                        act_phase_setup: ActPhaseSetup) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheck]:
-
-        test_case_with_instructions = test_case.as_test_case_of_instructions()
-        act_phase_instructions = [
-            element.value
-            for element in test_case_with_instructions.act_phase
-        ]
-        try:
-            action_to_check = act_phase_setup.actor.parse(act_phase_instructions)
-        except ParseException as ex:
-            raise _ParseError(self.completion_reporter.report_act_phase_parse_error(ex))
-
-        return (test_case_with_instructions,
-                action_to_check)
-
-
-def execute(request: SymbolInspectionRequest,
-            test_case_definition: TestCaseDefinition,
-            suite_configuration_section_parser: SectionElementParser,
-            output: StdOutputFiles,
-            ) -> int:
-    def parser_for_request() -> _Parser:
-        error_reporter = ParseErrorReporter(output)
-        if request.is_inspect_test_case:
-            return _ParserForTestCase(request.case_settings,
-                                      test_case_definition,
-                                      suite_configuration_section_parser,
-                                      error_reporter)
-        else:
-            return _ParserForTestSuite(request.suite_settings,
-                                       test_case_definition,
-                                       suite_configuration_section_parser,
-                                       error_reporter)
-
-    parser = parser_for_request()
-    try:
-        test_case, action_to_check = parser.parse()
-    except _ParseError as ex:
-        return ex.exit_code
-
-    definitions_resolver = symbol_usage_resolving.DefinitionsInfoResolverFromTestCase(
-        test_case,
-        action_to_check.symbol_usages()
-    )
-    report_generator = _RequestHandler().visit(request.variant)
-
-    report = report_generator.generate(definitions_resolver)
-
-    major_blocks_renderer = rend_comb.ConstantSequenceR([block.render() for block in report.blocks()])
-
-    output_file, exit_code = (
-        (output.out, exit_codes.EXIT_OK)
-        if report.is_success
-        else
-        (output.err, exit_values.EXECUTION__HARD_ERROR.exit_code)
-    )
-
-    result_reporting.print_major_blocks(major_blocks_renderer,
-                                        file_printer.file_printer_with_color_if_terminal(output_file))
-    return exit_code
-
-
-class _ParseError(Exception):
-    def __init__(self, exit_code: int):
-        self.exit_code = exit_code
-
-
-class _ParserForTestSuite(_Parser):
+class Executor:
     def __init__(self,
-                 execution_settings: TestSuiteExecutionSettings,
                  test_case_definition: TestCaseDefinition,
                  suite_configuration_section_parser: SectionElementParser,
-                 completion_reporter: ParseErrorReporter,
                  ):
-        super().__init__(completion_reporter)
-        self.suite_configuration_section_parser = suite_configuration_section_parser
-        self.test_case_definition = test_case_definition
-        self.execution_settings = execution_settings
+        self._suite_configuration_section_parser = suite_configuration_section_parser
+        self._test_case_definition = test_case_definition
 
-    def parse(self) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheck]:
-        from exactly_lib.test_suite.file_reading import suite_file_reading
+    def execute(self, request: SymbolInspectionRequest, output: StdOutputFiles) -> int:
+        parse_error_reporter = _ParseErrorReporter(output)
 
         try:
-            suite_doc = suite_file_reading.read_suite_document(self.execution_settings.suite_root_file_path,
-                                                               self.suite_configuration_section_parser,
-                                                               self.test_case_definition.parsing_setup)
-
+            test_case, action_to_check = self._parse(request)
         except SuiteParseError as ex:
-            raise _ParseError(self.completion_reporter.report_suite_error(ex))
-
-        conf_env = suite_file_reading.derive_conf_section_environment(suite_doc,
-                                                                      self.execution_settings.handling_setup)
-
-        return self._from_test_case(suite_doc.case_phases, conf_env.act_phase_setup)
-
-
-class _ParserForTestCase(_Parser):
-    def __init__(self,
-                 execution_settings: TestCaseExecutionSettings,
-                 test_case_definition: TestCaseDefinition,
-                 suite_configuration_section_parser: SectionElementParser,
-                 completion_reporter: ParseErrorReporter,
-                 ):
-        super().__init__(completion_reporter)
-        self.suite_configuration_section_parser = suite_configuration_section_parser
-        self.test_case_definition = test_case_definition
-        self.execution_settings = execution_settings
-
-    def parse(self) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheck]:
-        try:
-            accessor, act_phase_setup = self._accessor()
-        except SuiteParseError as ex:
-            raise _ParseError(self.completion_reporter.report_suite_error(ex))
-
-        try:
-            test_case = accessor.apply(self._test_case_file_ref())
+            return parse_error_reporter.report_suite_error(ex)
         except AccessorError as ex:
-            raise _ParseError(self.completion_reporter.report_access_error(ex))
+            return parse_error_reporter.report_access_error(ex)
+        except actor.ParseException as ex:
+            return parse_error_reporter.report_act_phase_parse_error(ex)
 
-        return self._from_test_case(test_case, act_phase_setup)
+        report = self._generate_report(test_case, action_to_check, request)
 
-    def _accessor(self) -> Tuple[test_case_processing.Accessor, ActPhaseSetup]:
-        case_execution_settings = self.execution_settings
+        output_file, exit_code = (
+            (output.out, exit_codes.EXIT_OK)
+            if report.is_success
+            else
+            (output.err, exit_values.EXECUTION__HARD_ERROR.exit_code)
+        )
 
-        accessor_resolver = AccessorResolver(self.test_case_definition.parsing_setup,
-                                             self.suite_configuration_section_parser,
-                                             case_execution_settings.handling_setup)
-        return accessor_resolver.resolve(case_execution_settings.test_case_file_path,
-                                         case_execution_settings.run_as_part_of_explicit_suite)
+        self._print_report(report, output_file)
 
-    def _test_case_file_ref(self) -> test_case_processing.TestCaseFileReference:
-        return test_case_processing.test_case_reference_of_source_file(
-            self.execution_settings.test_case_file_path)
+        return exit_code
+
+    def _parse(self, request: SymbolInspectionRequest) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheck]:
+        return self._parser_for_request(request).parse()
+
+    def _parser_for_request(self, request: SymbolInspectionRequest) -> Parser:
+        if request.is_inspect_test_case:
+            return ParserForTestCase(request.case_settings,
+                                     self._test_case_definition,
+                                     self._suite_configuration_section_parser)
+        else:
+            return ParserForTestSuite(request.suite_settings,
+                                      self._test_case_definition,
+                                      self._suite_configuration_section_parser)
+
+    @staticmethod
+    def _generate_report(test_case: test_case_doc.TestCaseOfInstructions,
+                         action_to_check: ActionToCheck,
+                         request: SymbolInspectionRequest,
+                         ) -> Report:
+        definitions_resolver = symbol_usage_resolving.DefinitionsInfoResolverFromTestCase(
+            test_case,
+            action_to_check.symbol_usages()
+        )
+        report_generator = _RequestHandler().visit(request.variant)
+
+        return report_generator.generate(definitions_resolver)
+
+    @staticmethod
+    def _print_report(report: Report, output_file):
+        major_blocks_renderer = rend_comb.ConstantSequenceR([block.render() for block in report.blocks()])
+
+        result_reporting.print_major_blocks(major_blocks_renderer,
+                                            file_printer.file_printer_with_color_if_terminal(output_file))
 
 
 class _RequestHandler(RequestVariantVisitor[ReportGenerator]):
@@ -180,3 +100,28 @@ class _RequestHandler(RequestVariantVisitor[ReportGenerator]):
 
         return IndividualReportGenerator(individual_variant.name,
                                          individual_variant.list_references)
+
+
+class _ParseErrorReporter:
+    def __init__(self, output: StdOutputFiles):
+        self.output = output
+        self.out_printer = file_printer_with_color_if_terminal(output.out)
+        self.err_printer = file_printer_with_color_if_terminal(output.err)
+
+    def report_suite_error(self, ex: SuiteParseError) -> int:
+        err_only_output = StdOutputFiles(self.output.err,
+                                         self.output.err)
+        reporter = processing_result_reporting.TestSuiteParseErrorReporter(err_only_output)
+        return reporter.report(ex)
+
+    def report_access_error(self, error: AccessorError) -> int:
+        exit_value = exit_values.from_access_error(error.error)
+        self.err_printer.write_colored_line(exit_value.exit_identifier,
+                                            exit_value.color)
+        return exit_value.exit_code
+
+    def report_act_phase_parse_error(self, error: ParseException) -> int:
+        exit_value = exit_values.EXECUTION__VALIDATION_ERROR
+        self.err_printer.write_colored_line(exit_value.exit_identifier,
+                                            exit_value.color)
+        return exit_value.exit_code
