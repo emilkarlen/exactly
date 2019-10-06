@@ -1,6 +1,5 @@
 [assert]
 
-
 dir-contents .
-             -selection type file
+             -selection name -regex [a-z]+
              ! empty

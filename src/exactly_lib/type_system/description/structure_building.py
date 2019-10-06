@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.util.description_tree.renderer import NodeRenderer, DetailsRenderer, NODE_DATA
 from exactly_lib.util.description_tree.renderers import NodeRendererFromParts
@@ -25,6 +25,10 @@ class StructureBuilder:
 
     def append_child(self, child: NodeRenderer[None]) -> 'StructureBuilder':
         self._children.append(child)
+        return self
+
+    def append_children(self, children: Sequence[NodeRenderer[None]]) -> 'StructureBuilder':
+        self._children += children
         return self
 
     def build(self) -> NodeRenderer[None]:

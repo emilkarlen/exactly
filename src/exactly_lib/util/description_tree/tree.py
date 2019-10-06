@@ -102,6 +102,8 @@ class TreeDetail(Detail):
 
     def __init__(self, tree: Node[Any]):
         self._tree = tree
+        if not isinstance(tree, Node):
+            raise ValueError('not a node')
 
     @property
     def tree(self) -> Node[Any]:

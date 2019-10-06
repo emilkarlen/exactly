@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Optional
 
+from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import NodeRenderer
-from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.with_option_description import WithOptionDescription
 
 T = TypeVar('T')
@@ -46,26 +45,7 @@ class MatchingResult:
         return self._trace
 
 
-class MatcherWTrace(Generic[T], Matcher[T], ABC):
-    @property
-    def structure(self) -> NodeRenderer[None]:
-        """
-        The structure of the object, that can be used in traced.
-
-        Given as a renderer, to ease implementations.
-
-        The returned renderer is constant - it render the same tree every time.
-        """
-        return renderers.Constant(Node(self.name,
-                                       None,
-                                       (),
-                                       ()))
-
-    @property
-    @abstractmethod
-    def name(self) -> str:
-        pass
-
+class MatcherWTrace(Generic[T], Matcher[T], WithTreeStructureDescription, ABC):
     @abstractmethod
     def matches_w_trace(self, model: T) -> MatchingResult:
         pass

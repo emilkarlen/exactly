@@ -10,6 +10,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation as validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
     resolver_validator_for_file_matcher
@@ -17,9 +18,7 @@ from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolve
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.cli_syntax import option_syntax
-from exactly_lib.util.description_tree import tree
-from exactly_lib.util.description_tree.renderer import DetailsRenderer
-from exactly_lib.util.description_tree.tree import Detail
+from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -30,7 +29,7 @@ def sub_set_selection_matcher(selector: FileMatcherResolver,
                                           matcher_on_selection)
 
 
-class _SubSetSelectorMatcher(FilesMatcher):
+class _SubSetSelectorMatcher(WithCachedTreeStructureDescriptionBase, FilesMatcher):
     NAME = ' '.join([
         option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name),
         syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
@@ -39,6 +38,7 @@ class _SubSetSelectorMatcher(FilesMatcher):
     def __init__(self,
                  selector: FileMatcher,
                  matcher_on_selection: FilesMatcher):
+        WithCachedTreeStructureDescriptionBase.__init__(self)
         self._selector = selector
         self._matcher_on_selection = matcher_on_selection
 
@@ -64,18 +64,20 @@ class _SubSetSelectorMatcher(FilesMatcher):
             model.sub_set(self._selector),
         )
 
-        return self._new_tb() \
-            .append_details(_SelectionDetailsRenderer(self._selector)) \
-            .append_child(result.trace) \
-            .build_result(result.value)
+        return (
+            self._new_tb()
+                .append_details(self._details_renderer_of(self._selector))
+                .append_child(result.trace)
+                .build_result(result.value)
+        )
 
-
-class _SelectionDetailsRenderer(DetailsRenderer):
-    def __init__(self, selector: FileMatcher):
-        self._selector = selector
-
-    def render(self) -> Sequence[Detail]:
-        return [tree.TreeDetail(self._selector.structure.render())]
+    def _structure(self) -> NodeRenderer[None]:
+        return (
+            self._new_structure_builder()
+                .append_details(self._details_renderer_of(self._selector))
+                .append_child(self._node_renderer_of(self._matcher_on_selection))
+                .build()
+        )
 
 
 class _SubSetSelectorMatcherValue(FilesMatcherValue):

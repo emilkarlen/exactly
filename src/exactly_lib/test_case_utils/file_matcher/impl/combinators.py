@@ -4,6 +4,7 @@ from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolve
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
+from exactly_lib.util.description_tree.tree import Node
 
 
 class FileMatcherDelegatedToMatcherWTrace(FileMatcher):
@@ -17,6 +18,9 @@ class FileMatcherDelegatedToMatcherWTrace(FileMatcher):
     @property
     def option_description(self) -> str:
         return self._delegated.option_description
+
+    def structure(self) -> Node[None]:
+        return self._delegated.structure()
 
     def negation(self) -> FileMatcher:
         return FileMatcherDelegatedToMatcherWTrace(self._delegated.negation)

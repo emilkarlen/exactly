@@ -2,6 +2,7 @@ from typing import List, Set, Optional
 
 from exactly_lib.common.report_rendering import text_docs__old
 from exactly_lib.definitions import actual_file_attributes
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
@@ -19,10 +20,15 @@ from exactly_lib.type_system.logic import string_transformer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
 class RegularFileMatchesStringMatcher(FileMatcherImplBase):
+    NAME = ' '.join((file_check_properties.REGULAR_FILE_CONTENTS,
+                     syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.singular_name)
+                    )
+
     def __init__(self, string_matcher: string_matcher.StringMatcher):
         super().__init__()
         self._string_matcher = string_matcher
@@ -32,7 +38,7 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
 
     @property
     def name(self) -> str:
-        return file_check_properties.REGULAR_FILE_CONTENTS
+        return self.NAME
 
     @property
     def option_description(self) -> str:
@@ -78,6 +84,13 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
             model.tmp_file_space,
             string_transformer.IdentityStringTransformer(),
             string_matcher.DestinationFilePathGetter(),
+        )
+
+    def _structure(self) -> NodeRenderer[None]:
+        return (
+            self._new_structure_builder()
+                .append_details(self._details_renderer_of(self._string_matcher))
+                .build()
         )
 
 

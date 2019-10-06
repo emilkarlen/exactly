@@ -1,6 +1,7 @@
 from typing import Set, Optional
 
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
@@ -16,6 +17,8 @@ from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.util import strings
+from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -57,10 +60,16 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
     """Matches the name (whole path, not just base name) of a path on a shell glob pattern."""
 
     NAME = 'name matches ' + syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument.name
+    VARIANT_NAME = 'matches ' + syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument.name
 
     def __init__(self, glob_pattern: str):
         super().__init__()
         self._glob_pattern = glob_pattern
+        self._renderer_of_variant = details.HeaderAndValue(
+            self.VARIANT_NAME,
+            details.String(strings.Repr(glob_pattern))
+        )
+        self._renderer_of_expected = details.expected(self._renderer_of_variant)
 
     @property
     def glob_pattern(self) -> str:
@@ -68,7 +77,7 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
 
     @property
     def name(self) -> str:
-        return self.NAME
+        return file_matcher.NAME_MATCHER_NAME
 
     @property
     def option_description(self) -> str:
@@ -95,9 +104,12 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
         else:
             return tb.build_result(False)
 
-    def __tb_with_expected(self) -> TraceBuilder:
-        return self._new_tb().append_details(
-            details.expected(
-                details.String(self._glob_pattern)
-            )
+    def _structure(self) -> NodeRenderer[None]:
+        return (
+            self._new_structure_builder()
+                .append_details(self._renderer_of_variant)
+                .build()
         )
+
+    def __tb_with_expected(self) -> TraceBuilder:
+        return self._new_tb().append_details(self._renderer_of_expected)

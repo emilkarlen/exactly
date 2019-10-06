@@ -1,16 +1,40 @@
+from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Sequence, Optional
 
 from exactly_lib.definitions import expression
+from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation
+from exactly_lib.util.description_tree.renderer import NodeRenderer
 
 MODEL = TypeVar('MODEL')
 
 
-class Negation(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
+class _CombinatorBase(Generic[MODEL], WithCachedTreeStructureDescriptionBase, MatcherWTraceAndNegation[MODEL], ABC):
+    def __init__(self):
+        WithCachedTreeStructureDescriptionBase.__init__(self)
+
+    @abstractmethod
+    def _children(self) -> Sequence[MatcherWTrace[MODEL]]:
+        pass
+
+    def _structure(self) -> NodeRenderer[None]:
+        children = [
+            self._node_renderer_of(part)
+            for part in self._children()
+        ]
+        return (
+            self._new_structure_builder()
+                .append_children(children)
+                .build()
+        )
+
+
+class Negation(_CombinatorBase[MODEL]):
     def __init__(self, negated: MatcherWTrace[MODEL]):
+        _CombinatorBase.__init__(self)
         self._negated = negated
 
     @property
@@ -44,9 +68,13 @@ class Negation(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
                 .build_result(not result_to_negate.value)
         )
 
+    def _children(self) -> Sequence[MatcherWTrace[MODEL]]:
+        return self._negated,
 
-class Conjunction(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
+
+class Conjunction(_CombinatorBase[MODEL]):
     def __init__(self, parts: Sequence[MatcherWTrace[MODEL]]):
+        _CombinatorBase.__init__(self)
         self._parts = parts
 
     @property
@@ -85,9 +113,13 @@ class Conjunction(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
 
         return tb.build_result(True)
 
+    def _children(self) -> Sequence[MatcherWTrace[MODEL]]:
+        return self._parts
 
-class Disjunction(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
+
+class Disjunction(_CombinatorBase[MODEL]):
     def __init__(self, parts: Sequence[MatcherWTrace[MODEL]]):
+        _CombinatorBase.__init__(self)
         self._parts = parts
 
     @property
@@ -125,3 +157,6 @@ class Disjunction(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
                 return tb.build_result(True)
 
         return tb.build_result(False)
+
+    def _children(self) -> Sequence[MatcherWTrace[MODEL]]:
+        return self._parts

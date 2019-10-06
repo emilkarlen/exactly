@@ -1,6 +1,7 @@
 from typing import Set, Pattern, Optional
 
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
@@ -16,6 +17,8 @@ from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.util import strings
+from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -57,13 +60,20 @@ class _Value(FileMatcherValue):
 class FileMatcherBaseNameRegExPattern(FileMatcherImplBase):
     """Matches the base name of a path on a regular expression."""
 
+    VARIANT_NAME = 'matches ' + syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name
+
     def __init__(self, compiled_reg_ex: Pattern):
         super().__init__()
         self._compiled_reg_ex = compiled_reg_ex
+        self._renderer_of_variant = details.HeaderAndValue(
+            self.VARIANT_NAME,
+            details.String(strings.Repr(compiled_reg_ex.pattern))
+        )
+        self._renderer_of_expected = details.expected(self._renderer_of_variant)
 
     @property
     def name(self) -> str:
-        return 'base name matches ' + syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name
+        return file_matcher.NAME_MATCHER_NAME
 
     @property
     def reg_ex_pattern(self) -> str:
@@ -96,9 +106,12 @@ class FileMatcherBaseNameRegExPattern(FileMatcherImplBase):
         else:
             return tb.build_result(False)
 
-    def __tb_with_expected(self) -> TraceBuilder:
-        return self._new_tb().append_details(
-            details.expected(
-                details.String(self._compiled_reg_ex.pattern)
-            )
+    def _structure(self) -> NodeRenderer[None]:
+        return (
+            self._new_structure_builder()
+                .append_details(self._renderer_of_variant)
+                .build()
         )
+
+    def __tb_with_expected(self) -> TraceBuilder:
+        return self._new_tb().append_details(self._renderer_of_expected)

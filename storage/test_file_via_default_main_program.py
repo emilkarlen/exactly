@@ -6,7 +6,7 @@ from exactly_lib.default.default_main_program_setup import default_main_program,
 
 SRC_DIR = '/Users/emil/vcs/exactly/0/err_msg_tests/symbols/validation/illegal-type/'
 
-TEST_CASE_FILE = '/Users/emil/vcs/exactly/0/err-msg-tests/instructions/file-contents/equals/program--positive.case'
+TEST_CASE_FILE = '/Users/emil/vcs/exactly/0/err-msg-tests/types/files-matcher/selection/'
 CWD = str(pathlib.Path(TEST_CASE_FILE).parent)
 
 # TEST_CASE_FILE = SRC_DIR + 'instruction-error-in-stand-alone-case.case'

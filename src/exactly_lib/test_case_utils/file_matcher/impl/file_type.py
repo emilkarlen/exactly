@@ -25,10 +25,10 @@ class FileMatcherType(FileMatcherImplBase):
         self._stat_method = (pathlib.Path.lstat
                              if file_type is file_properties.FileType.SYMLINK
                              else pathlib.Path.stat)
-        self._renderer_of_expected = details.expected(
-            details.String(
-                file_properties.TYPE_INFO[self._file_type].description)
-        )
+        self._renderer_of_expected_value = details.String(
+            file_properties.TYPE_INFO[self._file_type].description)
+
+        self._renderer_of_expected = details.expected(self._renderer_of_expected_value)
 
     @property
     def file_type(self) -> file_properties.FileType:
@@ -45,7 +45,7 @@ class FileMatcherType(FileMatcherImplBase):
     def _structure(self) -> NodeRenderer[None]:
         return (
             self._new_structure_builder()
-                .append_details(self._renderer_of_expected)
+                .append_details(self._renderer_of_expected_value)
                 .as_render()
         )
 

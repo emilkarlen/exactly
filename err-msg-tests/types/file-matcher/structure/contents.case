@@ -1,0 +1,5 @@
+[assert]
+
+dir-contents .
+             -selection contents equals 'expected'
+             ! empty

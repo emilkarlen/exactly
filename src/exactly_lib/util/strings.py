@@ -62,3 +62,11 @@ class Function(StringConstructor):
 
     def __str__(self) -> str:
         return self._function()
+
+
+class Repr(StringConstructor):
+    def __init__(self, x: ToStringObject):
+        self._x = x
+
+    def __str__(self) -> str:
+        return repr(str(self._x))
