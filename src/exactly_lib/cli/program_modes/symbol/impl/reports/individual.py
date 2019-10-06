@@ -1,28 +1,29 @@
-from abc import ABC, abstractmethod
-from typing import Optional
+from abc import ABC
+from typing import Optional, Sequence
 
-from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
-from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo, ContextAnd
-from exactly_lib.common import result_reporting
+from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo, ContextAnd, \
+    DefinitionsResolver
+from exactly_lib.cli.program_modes.symbol.report import ReportGenerator, Report, ReportBlock
 from exactly_lib.common.report_rendering.parts import source_location
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.section_document.source_location import SourceLocationInfo, SourceLocationPath
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.util.simple_textstruct import structure as struct
-from exactly_lib.util.simple_textstruct.rendering import component_renderers as rend, renderer_combinators as comb
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
+from exactly_lib.util.simple_textstruct.rendering import component_renderers as rend, renderer_combinators as rend_comb, \
+    blocks, line_objects
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock
 from exactly_lib.util.string import inside_parens
 
 
-class _Presenter(ABC):
+class _SuccessfulReportBase(Report, ABC):
     def __init__(self, definition: SymbolDefinitionInfo):
         self.phase = definition.phase
         self.definition = definition
 
-    @abstractmethod
-    def present2(self) -> SequenceRenderer[MajorBlock]:
-        pass
+    @property
+    def is_success(self) -> bool:
+        return True
 
     def _single_line_info_str(self) -> str:
         definition = self.definition
@@ -34,96 +35,151 @@ class _Presenter(ABC):
         ])
 
 
-class ReportGenerator:
+class IndividualReportGenerator(ReportGenerator):
     def __init__(self,
-                 environment: Environment,
                  symbol_name: str,
                  list_references: bool
                  ):
         self._symbol_name = symbol_name
         self._list_references = list_references
-        self._output = environment.output
-        self._completion_reporter = environment.completion_reporter
-        self._definitions_resolver = environment.definitions_resolver
 
-    def generate(self) -> int:
-        mb_definition = self._lookup()
+    def generate(self, definitions_resolver: DefinitionsResolver) -> Report:
+        mb_definition = self._lookup(definitions_resolver)
 
         if mb_definition is None:
-            return self._not_found()
+            return SymbolNotFoundReport(self._symbol_name)
         else:
-            result_reporting.print_major_blocks(self._presenter(mb_definition).present2(),
-                                                self._completion_reporter.out_printer)
+            if self._list_references:
+                return _ReferencesReport(mb_definition)
+            else:
+                return _DefinitionReport(mb_definition)
 
-        return self._completion_reporter.report_success()
-
-    def _presenter(self, definition: SymbolDefinitionInfo) -> _Presenter:
-        if self._list_references:
-            return _ReferencesPresenter(definition)
-        else:
-            return _DefinitionPresenter(definition)
-
-    def _lookup(self) -> Optional[SymbolDefinitionInfo]:
+    def _lookup(self, definitions_resolver: DefinitionsResolver) -> Optional[SymbolDefinitionInfo]:
         name = self._symbol_name
-        for definition in self._definitions_resolver.definitions():
+        for definition in definitions_resolver.definitions():
             if name == definition.name():
                 return definition
 
         return None
 
-    def _not_found(self) -> int:
-        header = concepts.SYMBOL_CONCEPT_INFO.singular_name.capitalize() + ' not in test case: '
-        self._completion_reporter.err_printer.write_line(header + self._symbol_name)
-        return self._completion_reporter.symbol_not_found()
+
+class _DefinitionReport(_SuccessfulReportBase):
+    def blocks(self) -> Sequence[ReportBlock]:
+        return [
+            DefinitionBlock(self.definition)
+        ]
 
 
-class _DefinitionPresenter(_Presenter):
-    def present2(self) -> SequenceRenderer[MajorBlock]:
-        major_block = rend.MajorBlockR(
-            comb.ConcatenationR([
-                comb.SingletonSequenceR(self._single_line_info_minor_block()),
+class DefinitionBlock(ReportBlock):
+    def __init__(self, definition: SymbolDefinitionInfo):
+        self.phase = definition.phase
+        self.definition = definition
+
+    def render(self) -> MajorBlock:
+        renderer = rend.MajorBlockR(
+            rend_comb.ConcatenationR([
+                rend_comb.SingletonSequenceR(self._single_line_info_minor_block()),
                 source_location.location_minor_blocks_renderer(
                     self._get_source_location_path(self.definition.definition.resolver_container.source_location),
                     self.phase.section_name,
                     None,
                 )])
         )
-        return comb.SingletonSequenceR(major_block)
+
+        return renderer.render()
 
     def _single_line_info_minor_block(self) -> Renderer[MinorBlock]:
-        return comb.ConstantR(
+        return rend_comb.ConstantR(
             MinorBlock([struct.LineElement(struct.StringLineObject(self._single_line_info_str()))])
         )
+
+    def _single_line_info_str(self) -> str:
+        definition = self.definition
+
+        return ' '.join([
+            definition.type_identifier(),
+            inside_parens(len(definition.references)),
+            definition.name(),
+        ])
 
     @staticmethod
     def _get_source_location_path(sli: Optional[SourceLocationInfo]) -> Optional[SourceLocationPath]:
         return None if sli is None else sli.source_location_path
 
 
-class _ReferencesPresenter(_Presenter):
-    def present2(self) -> SequenceRenderer[MajorBlock]:
-        return comb.ConcatenationR([
-            self._blocks_renderer(reference)
-            for reference in self.definition.references
-        ])
+class _ReferencesReport(_SuccessfulReportBase):
+    def blocks(self) -> Sequence[ReportBlock]:
+        ret_val = []
+        for reference in self.definition.references:
+            ret_val += self._blocks_renderer(reference)
 
-    @staticmethod
-    def _blocks_renderer(reference: ContextAnd[SymbolReference]) -> SequenceRenderer[MajorBlock]:
+        return ret_val
+
+    def _blocks_renderer(self, reference: ContextAnd[SymbolReference]) -> Sequence[ReportBlock]:
+        source_info = reference.source_info()
+        source_location_info = source_info.source_location_info
+        if source_location_info is not None or source_info.source_lines is not None:
+            return [
+                SourceLocationBlock(self.definition, reference)
+            ]
+        else:
+            return []
+
+
+class SourceLocationBlock(ReportBlock):
+    def __init__(self,
+                 definition: SymbolDefinitionInfo,
+                 reference: ContextAnd[SymbolReference],
+                 ):
+        self.phase = definition.phase
+        self.definition = definition
+        self._reference = reference
+
+    def render(self) -> MajorBlock:
+        reference = self._reference
         source_info = reference.source_info()
         source_location_info = source_info.source_location_info
         if source_location_info is not None:
-            return source_location.location_blocks_renderer(
+            return source_location.location_block_renderer(
                 source_location_info.source_location_path,
                 reference.phase().section_name,
                 None,
-            )
+            ).render()
         elif source_info.source_lines is not None:
-            return comb.SingletonSequenceR(
-                rend.MajorBlockR(
-                    source_location.source_lines_in_section_block_renderer(
-                        reference.phase().section_name,
-                        source_info.source_lines,
-                    ))
-            )
+            return rend.MajorBlockR(
+                source_location.source_lines_in_section_block_renderer(
+                    reference.phase().section_name,
+                    source_info.source_lines,
+                )).render()
         else:
-            return comb.SequenceR([])
+            raise ValueError('inconsistency')
+
+
+class SymbolNotFoundBlock(ReportBlock):
+    def __init__(self,
+                 symbol_name: str,
+                 ):
+        self._symbol_name = symbol_name
+
+    def render(self) -> MajorBlock:
+        header = concepts.SYMBOL_CONCEPT_INFO.singular_name.capitalize() + ' not in test case: '
+        s = header + self._symbol_name
+        return blocks.MajorBlockOfSingleLineObject(
+            line_objects.StringLineObject(s)
+        ).render()
+
+
+class SymbolNotFoundReport(Report):
+    def __init__(self,
+                 symbol_name: str,
+                 ):
+        self._symbol_name = symbol_name
+
+    @property
+    def is_success(self) -> bool:
+        return False
+
+    def blocks(self) -> Sequence[ReportBlock]:
+        return [
+            SymbolNotFoundBlock(self._symbol_name)
+        ]

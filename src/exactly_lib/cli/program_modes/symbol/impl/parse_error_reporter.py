@@ -1,4 +1,3 @@
-from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.standalone import result_reporting
 from exactly_lib.processing.test_case_processing import AccessorError
@@ -8,9 +7,8 @@ from exactly_lib.util.file_printer import file_printer_with_color_if_terminal
 from exactly_lib.util.std import StdOutputFiles
 
 
-class CompletionReporter:
-    def __init__(self,
-                 output: StdOutputFiles):
+class ParseErrorReporter:
+    def __init__(self, output: StdOutputFiles):
         self.output = output
         self.out_printer = file_printer_with_color_if_terminal(output.out)
         self.err_printer = file_printer_with_color_if_terminal(output.err)
@@ -32,9 +30,3 @@ class CompletionReporter:
         self.err_printer.write_colored_line(exit_value.exit_identifier,
                                             exit_value.color)
         return exit_value.exit_code
-
-    def symbol_not_found(self) -> int:
-        return exit_values.EXECUTION__HARD_ERROR.exit_code
-
-    def report_success(self) -> int:
-        return exit_codes.EXIT_OK

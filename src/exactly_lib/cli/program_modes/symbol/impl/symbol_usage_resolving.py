@@ -14,9 +14,9 @@ from exactly_lib.test_case.test_case_doc import TestCaseOfInstructions, ElementW
 class DefinitionsInfoResolverFromTestCase(DefinitionsResolver):
     def __init__(self,
                  test_case: TestCaseOfInstructions,
-                 act_phase: Sequence[SymbolUsage]):
+                 action_to_check: Sequence[SymbolUsage]):
         self.test_case = test_case
-        self.act_phase = act_phase
+        self.action_to_check = action_to_check
 
     def definitions(self) -> Iterator[SymbolDefinitionInfo]:
         usages = list(self.symbol_usages())
@@ -54,16 +54,16 @@ class DefinitionsInfoResolverFromTestCase(DefinitionsResolver):
         usages_extractor = _UsagesExtractor()
         source_info = self._act_phase_source_info()
 
-        def mk_act_phase_sym_usage(usage: SymbolUsage) -> ContextAnd[SymbolUsage]:
+        def mk_atc_sym_usage(usage: SymbolUsage) -> ContextAnd[SymbolUsage]:
             return ContextAnd(phase_identifier.ACT,
                               source_info,
                               usage)
 
         return map(
-            mk_act_phase_sym_usage,
+            mk_atc_sym_usage,
             itertools.chain.from_iterable([
                 usages_extractor.visit(symbol_usage)
-                for symbol_usage in self.act_phase
+                for symbol_usage in self.action_to_check
             ])
         )
 

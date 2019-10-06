@@ -1,11 +1,13 @@
 import functools
-from typing import Callable, List, Iterator
+from typing import Callable, List, Iterator, Sequence
 
-from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
-from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo
+from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo, DefinitionsResolver
+from exactly_lib.cli.program_modes.symbol.report import ReportGenerator, Report, ReportBlock
 from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYPE_INFO_DICT
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.string import lines_content, inside_parens
+from exactly_lib.util.simple_textstruct import structure
+from exactly_lib.util.simple_textstruct.structure import MajorBlock
+from exactly_lib.util.string import inside_parens
 
 
 class _SingleDefinitionReportInfo:
@@ -41,6 +43,38 @@ class _SingleDefinitionReportInfo:
         return len(self._num_refs_str)
 
 
+class ListReport(Report):
+    def __init__(self, definitions: Sequence[SymbolDefinitionInfo]):
+        self.definitions = definitions
+
+    @property
+    def is_success(self) -> bool:
+        return True
+
+    def blocks(self) -> Sequence[ReportBlock]:
+        return [
+            ListReportBlock(self.definitions)
+        ]
+
+
+class ListReportBlock(ReportBlock):
+    def __init__(self, definitions: Sequence[SymbolDefinitionInfo]):
+        self.definitions = definitions
+
+    def render(self) -> MajorBlock:
+        def_report_infos = map(mk_single_def_report_info, self.definitions)
+
+        definition_lines = _get_list_lines(def_report_infos)
+
+        return MajorBlock([
+            structure.MinorBlock([
+                structure.LineElement(
+                    structure.StringLinesObject(definition_lines)
+                )
+            ])
+        ])
+
+
 def mk_single_def_report_info(definition: SymbolDefinitionInfo) -> _SingleDefinitionReportInfo:
     return _SingleDefinitionReportInfo(definition.name(),
                                        definition.value_type(),
@@ -51,20 +85,9 @@ def format_num_refs_info(num_refs: int) -> str:
     return inside_parens(num_refs)
 
 
-class ReportGenerator:
-    def __init__(self, environment: Environment):
-        self._output = environment.output
-        self._completion_reporter = environment.completion_reporter
-        self.definitions_resolver = environment.definitions_resolver
-
-    def generate(self) -> int:
-        definitions = self.definitions_resolver.definitions()
-        def_report_infos = map(mk_single_def_report_info, definitions)
-
-        output_lines = _get_list_lines(def_report_infos)
-
-        self._output.out.write(lines_content(output_lines))
-        return self._completion_reporter.report_success()
+class ListReportGenerator(ReportGenerator):
+    def generate(self, definitions_resolver: DefinitionsResolver) -> Report:
+        return ListReport(list(definitions_resolver.definitions()))
 
 
 def _get_list_lines(symbols: Iterator[_SingleDefinitionReportInfo]) -> List[str]:

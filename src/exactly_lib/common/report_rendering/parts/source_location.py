@@ -147,15 +147,23 @@ def _files_and_source_path_leading_to_final_source(referrer_location: Path,
     return MinorBlock(lines)
 
 
+def location_block_renderer(source_location: Optional[SourceLocationPath],
+                            section_name: Optional[str],
+                            description: Optional[str]) -> Renderer[MajorBlock]:
+    return rend.MajorBlockR(
+        location_minor_blocks_renderer(source_location,
+                                       section_name,
+                                       description)
+    )
+
+
 def location_blocks_renderer(source_location: Optional[SourceLocationPath],
                              section_name: Optional[str],
                              description: Optional[str]) -> SequenceRenderer[MajorBlock]:
     return comb.SingletonSequenceR(
-        rend.MajorBlockR(
-            location_minor_blocks_renderer(source_location,
-                                           section_name,
-                                           description)
-        )
+        location_block_renderer(source_location,
+                                section_name,
+                                description)
     )
 
 

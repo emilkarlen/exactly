@@ -1,14 +1,15 @@
 from abc import ABC, abstractmethod
 from typing import Tuple
 
+from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.cli.program_modes.symbol.impl import symbol_usage_resolving
-from exactly_lib.cli.program_modes.symbol.impl.completion_reporter import CompletionReporter
-from exactly_lib.cli.program_modes.symbol.impl.reports import report_environment
-from exactly_lib.cli.program_modes.symbol.impl.reports.report_environment import Environment
+from exactly_lib.cli.program_modes.symbol.impl.parse_error_reporter import ParseErrorReporter
+from exactly_lib.cli.program_modes.symbol.report import ReportGenerator
 from exactly_lib.cli.program_modes.symbol.request import SymbolInspectionRequest, RequestVariantVisitor, \
     RequestVariantList, RequestVariantIndividual
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
-from exactly_lib.processing import test_case_processing
+from exactly_lib.common import result_reporting
+from exactly_lib.processing import test_case_processing, exit_values
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.standalone.accessor_resolver import AccessorResolver
@@ -18,11 +19,13 @@ from exactly_lib.section_document.section_element_parsing import SectionElementP
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import ParseException, ActionToCheck
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError
+from exactly_lib.util import file_printer
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
 from exactly_lib.util.std import StdOutputFiles
 
 
 class _Parser(ABC):
-    def __init__(self, completion_reporter: CompletionReporter):
+    def __init__(self, completion_reporter: ParseErrorReporter):
         self.completion_reporter = completion_reporter
 
     @abstractmethod
@@ -39,12 +42,12 @@ class _Parser(ABC):
             for element in test_case_with_instructions.act_phase
         ]
         try:
-            atc_executor = act_phase_setup.actor.parse(act_phase_instructions)
+            action_to_check = act_phase_setup.actor.parse(act_phase_instructions)
         except ParseException as ex:
             raise _ParseError(self.completion_reporter.report_act_phase_parse_error(ex))
 
         return (test_case_with_instructions,
-                atc_executor)
+                action_to_check)
 
 
 def execute(request: SymbolInspectionRequest,
@@ -52,37 +55,45 @@ def execute(request: SymbolInspectionRequest,
             suite_configuration_section_parser: SectionElementParser,
             output: StdOutputFiles,
             ) -> int:
-    completion_reporter = CompletionReporter(output)
-
     def parser_for_request() -> _Parser:
+        error_reporter = ParseErrorReporter(output)
         if request.is_inspect_test_case:
             return _ParserForTestCase(request.case_settings,
                                       test_case_definition,
                                       suite_configuration_section_parser,
-                                      completion_reporter)
+                                      error_reporter)
         else:
             return _ParserForTestSuite(request.suite_settings,
                                        test_case_definition,
                                        suite_configuration_section_parser,
-                                       completion_reporter)
+                                       error_reporter)
 
     parser = parser_for_request()
     try:
-        test_case, atc_executor = parser.parse()
+        test_case, action_to_check = parser.parse()
     except _ParseError as ex:
         return ex.exit_code
 
     definitions_resolver = symbol_usage_resolving.DefinitionsInfoResolverFromTestCase(
         test_case,
-        atc_executor.symbol_usages()
+        action_to_check.symbol_usages()
     )
-    environment = report_environment.Environment(
-        output,
-        completion_reporter,
-        definitions_resolver
+    report_generator = _RequestHandler().visit(request.variant)
+
+    report = report_generator.generate(definitions_resolver)
+
+    major_blocks_renderer = rend_comb.ConstantSequenceR([block.render() for block in report.blocks()])
+
+    output_file, exit_code = (
+        (output.out, exit_codes.EXIT_OK)
+        if report.is_success
+        else
+        (output.err, exit_values.EXECUTION__HARD_ERROR.exit_code)
     )
 
-    return _RequestHandler(environment).visit(request.variant)
+    result_reporting.print_major_blocks(major_blocks_renderer,
+                                        file_printer.file_printer_with_color_if_terminal(output_file))
+    return exit_code
 
 
 class _ParseError(Exception):
@@ -95,7 +106,7 @@ class _ParserForTestSuite(_Parser):
                  execution_settings: TestSuiteExecutionSettings,
                  test_case_definition: TestCaseDefinition,
                  suite_configuration_section_parser: SectionElementParser,
-                 completion_reporter: CompletionReporter,
+                 completion_reporter: ParseErrorReporter,
                  ):
         super().__init__(completion_reporter)
         self.suite_configuration_section_parser = suite_configuration_section_parser
@@ -124,7 +135,7 @@ class _ParserForTestCase(_Parser):
                  execution_settings: TestCaseExecutionSettings,
                  test_case_definition: TestCaseDefinition,
                  suite_configuration_section_parser: SectionElementParser,
-                 completion_reporter: CompletionReporter,
+                 completion_reporter: ParseErrorReporter,
                  ):
         super().__init__(completion_reporter)
         self.suite_configuration_section_parser = suite_configuration_section_parser
@@ -158,20 +169,14 @@ class _ParserForTestCase(_Parser):
             self.execution_settings.test_case_file_path)
 
 
-class _RequestHandler(RequestVariantVisitor[int]):
-    def __init__(self, environment: Environment):
-        self._environment = environment
+class _RequestHandler(RequestVariantVisitor[ReportGenerator]):
+    def visit_list(self, list_variant: RequestVariantList) -> ReportGenerator:
+        from exactly_lib.cli.program_modes.symbol.impl.reports.list_all import ListReportGenerator
 
-    def visit_list(self, list_variant: RequestVariantList) -> int:
-        from exactly_lib.cli.program_modes.symbol.impl.reports.list_all import ReportGenerator
+        return ListReportGenerator()
 
-        report_generator = ReportGenerator(self._environment)
-        return report_generator.generate()
+    def visit_individual(self, individual_variant: RequestVariantIndividual) -> ReportGenerator:
+        from exactly_lib.cli.program_modes.symbol.impl.reports.individual import IndividualReportGenerator
 
-    def visit_individual(self, individual_variant: RequestVariantIndividual) -> int:
-        from exactly_lib.cli.program_modes.symbol.impl.reports.individual import ReportGenerator
-
-        report_generator = ReportGenerator(self._environment,
-                                           individual_variant.name,
-                                           individual_variant.list_references)
-        return report_generator.generate()
+        return IndividualReportGenerator(individual_variant.name,
+                                         individual_variant.list_references)
