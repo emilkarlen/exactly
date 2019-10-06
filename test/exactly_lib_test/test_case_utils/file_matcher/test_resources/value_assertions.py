@@ -26,7 +26,7 @@ def value_equals_file_matcher(expected: FileMatcher,
     return _EqualsAssertionValue(expected, description)
 
 
-def matches_file_matcher_value(
+def matches_file_matcher_value__deep(
         primitive_value: ValueAssertion[FileMatcher] = asrt.anything_goes(),
         resolving_dependencies: ValueAssertion[Set[DirectoryStructurePartition]] = asrt.anything_goes(),
         validator: ValueAssertion[PreOrPostSdsValueValidator] = asrt.anything_goes(),
@@ -57,6 +57,37 @@ def matches_file_matcher_value(
                 resolve_primitive_value,
                 asrt.is_instance_with(FileMatcher,
                                       primitive_value)
+            ),
+            asrt.sub_component(
+                'validator',
+                get_validator,
+                asrt.is_instance_with(PreOrPostSdsValueValidator,
+                                      validator)
+            ),
+        ]
+    )
+
+
+def matches_file_matcher_value(
+        resolving_dependencies: ValueAssertion[Set[DirectoryStructurePartition]] = asrt.anything_goes(),
+        validator: ValueAssertion[PreOrPostSdsValueValidator] = asrt.anything_goes(),
+) -> ValueAssertion[FileMatcherValue]:
+    def get_resolving_dependencies(value: FileMatcherValue):
+        return value.resolving_dependencies()
+
+    def get_validator(value: FileMatcherValue):
+        return value.validator()
+
+    return asrt.is_instance_with__many(
+        FileMatcherValue,
+        [
+            asrt.sub_component_many(
+                'resolving dependencies',
+                get_resolving_dependencies,
+                [
+                    asrt.is_set_of(asrt.is_instance(DirectoryStructurePartition)),
+                    resolving_dependencies,
+                ]
             ),
             asrt.sub_component(
                 'validator',

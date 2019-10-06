@@ -1,7 +1,8 @@
 import os
 import unittest
-from typing import Optional, Tuple
+from typing import Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
@@ -19,8 +20,8 @@ from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_t
 from exactly_lib_test.symbol.test_resources import resolver_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import value_assertions as asrt_file_matcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.model_construction import ModelConstructor
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.value_assertions import matches_file_matcher_value
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
@@ -82,7 +83,7 @@ class Executor:
                 tcds,
                 self.arrangement.symbols)
 
-            matcher_value, matcher = self._resolve(resolver, environment)
+            matcher_value = self._resolve_value(resolver, environment)
 
             with preserved_cwd():
                 os.chdir(str(tcds.hds.case_dir))
@@ -106,6 +107,8 @@ class Executor:
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(tcds))
             write_act_result(tcds.sds, act_result)
 
+            matcher = self._resolve_primitive(matcher_value, environment)
+
             self._execute_main(tcds, matcher)
 
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
@@ -126,14 +129,12 @@ class Executor:
         assert isinstance(resolver, FileMatcherResolver)
         return resolver
 
-    def _resolve(self,
-                 resolver: FileMatcherResolver,
-                 environment: PathResolvingEnvironmentPreOrPostSds) -> Tuple[FileMatcherValue, FileMatcher]:
+    def _resolve_value(self,
+                       resolver: FileMatcherResolver,
+                       environment: PathResolvingEnvironmentPreOrPostSds) -> FileMatcherValue:
 
         resolver_health_check = resolver_assertions.matches_resolver_of_file_matcher(
-            resolved_value=matches_file_matcher_value(
-                tcds=environment.home_and_sds
-            ),
+            resolved_value=asrt_file_matcher.matches_file_matcher_value(),
             references=asrt.is_sequence_of(asrt.is_instance(SymbolReference)),
             symbols=environment.symbols)
 
@@ -143,14 +144,20 @@ class Executor:
         matcher_value = resolver.resolve(environment.symbols)
         assert isinstance(matcher_value, FileMatcherValue)
 
+        return matcher_value
+
+    @staticmethod
+    def _resolve_primitive(matcher_value: FileMatcherValue,
+                           environment: PathResolvingEnvironmentPreOrPostSds) -> FileMatcher:
+
         matcher = matcher_value.value_of_any_dependency(environment.home_and_sds)
         assert isinstance(matcher, FileMatcher)
 
-        return matcher_value, matcher
+        return matcher
 
     def _execute_validate_pre_sds(self,
                                   environment: PathResolvingEnvironmentPreOrPostSds,
-                                  value: FileMatcherValue) -> Optional[str]:
+                                  value: FileMatcherValue) -> Optional[TextRenderer]:
         result = value.validator().validate_pre_sds_if_applicable(environment.hds)
         self.expectation.validation_pre_sds.apply(self.put, result,
                                                   asrt.MessageBuilder('result of validate/pre sds'))
@@ -158,7 +165,7 @@ class Executor:
 
     def _execute_validate_post_setup(self,
                                      environment: PathResolvingEnvironmentPreOrPostSds,
-                                     value: FileMatcherValue) -> Optional[str]:
+                                     value: FileMatcherValue) -> Optional[TextRenderer]:
         result = value.validator().validate_post_sds_if_applicable(environment.home_and_sds)
         self.expectation.validation_post_sds.apply(self.put, result,
                                                    asrt.MessageBuilder('result of validate/post setup'))
