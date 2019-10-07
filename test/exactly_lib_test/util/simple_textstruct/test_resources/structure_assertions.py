@@ -91,7 +91,7 @@ def matches_document(major_blocks: ValueAssertion[Sequence[MajorBlock]]) -> Valu
                                  )
 
 
-def matches_major_block(minor_blocks: ValueAssertion[Sequence[MinorBlock]],
+def matches_major_block(minor_blocks: ValueAssertion[Sequence[MinorBlock]] = asrt.anything_goes(),
                         properties: ValueAssertion[ElementProperties] = matches_element_properties()
                         ) -> ValueAssertion[MajorBlock]:
     return asrt.is_instance_with__many(MajorBlock, [

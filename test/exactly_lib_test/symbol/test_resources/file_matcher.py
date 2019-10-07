@@ -11,6 +11,13 @@ from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_va
 from exactly_lib_test.symbol.test_resources.symbols_setup import ResolverSymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.logic.test_resources import file_matchers
+
+
+def arbitrary_file_matcher_resolver() -> FileMatcherResolver:
+    return FileMatcherResolverConstantTestImpl(
+        file_matchers.arbitrary_file_matcher()
+    )
 
 
 class FileMatcherResolverConstantTestImpl(FileMatcherResolver):

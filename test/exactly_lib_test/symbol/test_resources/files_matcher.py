@@ -19,6 +19,10 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
+def arbitrary_files_matcher_resolver() -> FilesMatcherResolver:
+    return FilesMatcherResolverConstantTestImpl(True)
+
+
 class FilesMatcherTestImpl(FilesMatcher):
     def __init__(self,
                  result: bool = True):

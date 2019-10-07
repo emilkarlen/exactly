@@ -1,5 +1,4 @@
 import unittest
-from typing import Sequence
 
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
@@ -7,10 +6,9 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.data.concrete_string_values import ConstantFragment
-from exactly_lib.type_system.data.string_value import StringValue
-from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources import concrete_value_assertions as sut
+from exactly_lib_test.symbol.data.test_resources.string_resolvers import StringResolverTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 
 
@@ -203,8 +201,8 @@ class TestNotEquals3(unittest.TestCase):
         actual_references = [
             SymbolReference('actual_symbol_name',
                             ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))]
-        expected = _StringResolverTestImpl(expected_string, expected_references)
-        actual = _StringResolverTestImpl(expected_string, actual_references)
+        expected = StringResolverTestImpl(expected_string, expected_references)
+        actual = StringResolverTestImpl(expected_string, actual_references)
         assertion = sut.equals_string_resolver(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -214,8 +212,8 @@ class TestNotEquals3(unittest.TestCase):
         expected_string = 'expected value'
         expected_fragments = (string_resolvers.str_fragment('value'),)
         actual_fragments = ()
-        expected = _StringResolverTestImpl(expected_string, [], expected_fragments)
-        actual = _StringResolverTestImpl(expected_string, [], actual_fragments)
+        expected = StringResolverTestImpl(expected_string, [], expected_fragments)
+        actual = StringResolverTestImpl(expected_string, [], actual_fragments)
         assertion = sut.equals_string_resolver(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -225,8 +223,8 @@ class TestNotEquals3(unittest.TestCase):
         expected_string = 'expected value'
         expected_fragments = (string_resolvers.str_fragment('value 1'),)
         actual_fragments = (string_resolvers.str_fragment('value 2'),)
-        expected = _StringResolverTestImpl(expected_string, [], expected_fragments)
-        actual = _StringResolverTestImpl(expected_string, [], actual_fragments)
+        expected = StringResolverTestImpl(expected_string, [], expected_fragments)
+        actual = StringResolverTestImpl(expected_string, [], actual_fragments)
         assertion = sut.equals_string_resolver(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -236,21 +234,3 @@ def resolver_with_references(symbol_references: list) -> StringResolver:
     fragment_resolvers = tuple([string_resolvers.symbol_fragment(sym_ref)
                                 for sym_ref in symbol_references])
     return StringResolver(fragment_resolvers)
-
-
-class _StringResolverTestImpl(StringResolver):
-    def __init__(self,
-                 value: str,
-                 explicit_references: list,
-                 fragment_resolvers: tuple = ()):
-        super().__init__(fragment_resolvers)
-        self.value = value
-        self.explicit_references = explicit_references
-        self._fragments = fragment_resolvers
-
-    def resolve(self, symbols: SymbolTable) -> StringValue:
-        return StringValue((ConstantFragment(self.value),))
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self.explicit_references

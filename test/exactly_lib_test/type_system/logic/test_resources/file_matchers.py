@@ -4,6 +4,10 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
 
 
+def arbitrary_file_matcher() -> FileMatcher:
+    return ConstantResultMatcher(True)
+
+
 class ConstantResultMatcher(FileMatcher):
     def __init__(self, result: bool):
         super().__init__()

@@ -99,17 +99,14 @@ class DefinitionSourceBlock(ReportBlock):
         return None if sli is None else sli.source_location_path
 
 
-class SourceLocationBlock(ReportBlock):
+class ReferenceSourceLocationBlock(ReportBlock):
     def __init__(self,
-                 definition: SymbolDefinitionInfo,
                  reference: ContextAnd[SymbolReference],
                  ):
-        self.phase = definition.phase
-        self.definition = definition
-        self._reference = reference
+        self.reference = reference
 
     def render(self) -> MajorBlock:
-        reference = self._reference
+        reference = self.reference
         source_info = reference.source_info()
         source_location_info = source_info.source_location_info
         if source_location_info is not None:
@@ -171,12 +168,13 @@ class _ReferencesReport(_SuccessfulReportBase):
 
         return ret_val
 
-    def _blocks_renderer(self, reference: ContextAnd[SymbolReference]) -> Sequence[ReportBlock]:
+    @staticmethod
+    def _blocks_renderer(reference: ContextAnd[SymbolReference]) -> Sequence[ReportBlock]:
         source_info = reference.source_info()
         source_location_info = source_info.source_location_info
         if source_location_info is not None or source_info.source_lines is not None:
             return [
-                SourceLocationBlock(self.definition, reference)
+                ReferenceSourceLocationBlock(reference)
             ]
         else:
             return []

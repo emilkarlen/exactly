@@ -101,6 +101,14 @@ def matches_source_location_info(
         ])
 
 
+def equals_source_location_info(expected: SourceLocationInfo,
+                                ) -> ValueAssertion[SourceLocationInfo]:
+    return matches_source_location_info(
+        abs_path_of_dir_containing_first_file_path=asrt.equals(expected.abs_path_of_dir_containing_first_file_path),
+        source_location_path=equals_source_location_path(expected.source_location_path)
+    )
+
+
 def matches_source_location_info2(
         source: ValueAssertion[LineSequence] = asrt.anything_goes(),
         file_path_rel_referrer: ValueAssertion[pathlib.Path] = asrt.anything_goes(),
