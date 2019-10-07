@@ -2,19 +2,18 @@ import datetime
 import pathlib
 from typing import Callable, List
 
+from exactly_lib.common.process_result_reporter import ProcessResultReporter, Environment
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing
 from exactly_lib.section_document.source_location import source_location_path_of
 from exactly_lib.test_case import error_description
-from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.enumeration import SuiteEnumerator
 from exactly_lib.test_suite.file_reading.exception import SuiteReadError
 from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import SuiteHierarchyReader
 from exactly_lib.test_suite.reporting import RootSuiteReporter, TestCaseProcessingInfo
-from exactly_lib.util.file_printer import file_printer_with_color_if_terminal
-from exactly_lib.util.std import StdOutputFiles
+from exactly_lib.test_suite.result_reporters import SuiteReadErrorReporter
 
 TestCaseProcessorConstructor = Callable[[case_processing.Configuration], test_case_processing.Processor]
 
@@ -36,39 +35,50 @@ class Processor:
         self._reporter = reporter
         self._test_case_processor_constructor = test_case_processor_constructor
 
-    def process(self, suite_root_file_path: pathlib.Path, output: StdOutputFiles) -> int:
+    def process(self, suite_root_file_path: pathlib.Path, reporting_environment: Environment) -> int:
+        reporter = self.process_reporter(suite_root_file_path)
+        return reporter.report(reporting_environment)
+
+    def process_reporter(self, suite_root_file_path: pathlib.Path) -> ProcessResultReporter:
         try:
             root_suite = self._suite_hierarchy_reader.apply(suite_root_file_path)
         except SuiteReadError as ex:
-            return self._report_read_error(ex, output)
+            return SuiteReadErrorReporter(ex, self._reporter)
 
-        suits_in_processing_order = self._suite_enumerator.apply(root_suite)
-        executor = SuitesExecutor(self._reporter.execution_reporter(root_suite,
-                                                                    output,
-                                                                    suite_root_file_path),
+        return _SuiteExecutionReporter(
+            self._default_case_configuration,
+            self._reporter,
+            self._suite_enumerator,
+            self._test_case_processor_constructor,
+            root_suite,
+            suite_root_file_path,
+        )
+
+
+class _SuiteExecutionReporter(ProcessResultReporter):
+    def __init__(self,
+                 default_case_configuration: case_processing.Configuration,
+                 suite_processing_reporter: reporting.RootSuiteProcessingReporter,
+                 suite_enumerator: SuiteEnumerator,
+                 test_case_processor_constructor: TestCaseProcessorConstructor,
+                 root_suite: structure.TestSuiteHierarchy,
+                 suite_root_file_path: pathlib.Path,
+                 ):
+        self._root_suite = root_suite
+        self._suite_root_file_path = suite_root_file_path
+        self._suite_processing_reporter = suite_processing_reporter
+        self._suite_enumerator = suite_enumerator
+        self._default_case_configuration = default_case_configuration
+        self._test_case_processor_constructor = test_case_processor_constructor
+
+    def report(self, environment: Environment) -> int:
+        suits_in_processing_order = self._suite_enumerator.apply(self._root_suite)
+        executor = SuitesExecutor(self._suite_processing_reporter.execution_reporter(self._root_suite,
+                                                                                     environment,
+                                                                                     self._suite_root_file_path),
                                   self._default_case_configuration,
                                   self._test_case_processor_constructor)
         return executor.execute_and_report(suits_in_processing_order)
-
-    def _report_read_error(self,
-                           ex: SuiteReadError,
-                           output: StdOutputFiles,
-                           ) -> int:
-        exit_value = exit_values.INVALID_SUITE
-        self._reporter.report_invalid_suite(exit_value, output)
-        output.out.flush()
-        self._print_error_message(ex, output)
-        return exit_value.exit_code
-
-    @staticmethod
-    def _print_error_message(ex: SuiteReadError,
-                             output: StdOutputFiles,
-                             ):
-        from exactly_lib.test_suite import error_reporting
-
-        printer = file_printer_with_color_if_terminal(output.err)
-
-        error_reporting.print_suite_read_error(ex, printer)
 
 
 class SuitesExecutor:

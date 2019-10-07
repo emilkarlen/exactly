@@ -25,7 +25,7 @@ from exactly_lib.test_suite.processing import Processor
 from exactly_lib.util.file_utils import resolved_path
 from exactly_lib_test.processing.test_resources.test_case_setup import instruction_set_with_no_instructions
 from exactly_lib_test.test_resources.files.file_structure import DirContents
-from exactly_lib_test.test_resources.files.str_std_out_files import null_output_files
+from exactly_lib_test.test_resources.files.str_std_out_files import null_output_reporting_environment
 from exactly_lib_test.test_suite.instruction_set.sections.configuration import \
     test_resources as conf_section_test_resources
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingProcessingReporter, \
@@ -80,7 +80,7 @@ def check(setup: Setup,
                               reporter,
                               DepthFirstEnumerator(),
                               case_processing.new_processor_that_is_allowed_to_pollute_current_process)
-        exit_code = processor.process(setup.root_suite_based_at(tmp_dir_path), null_output_files())
+        exit_code = processor.process(setup.root_suite_based_at(tmp_dir_path), null_output_reporting_environment())
         setup.assertions(put,
                          reporter.complete_suite_reporter,
                          exit_code)

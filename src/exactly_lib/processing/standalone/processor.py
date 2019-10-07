@@ -1,3 +1,4 @@
+from exactly_lib.common.process_result_reporter import ProcessResultReporter, Environment
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing import test_case_processing, processors, processing_utils
@@ -10,7 +11,6 @@ from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError
-from exactly_lib.util.std import StdOutputFiles
 
 
 class Processor:
@@ -23,15 +23,15 @@ class Processor:
         self._suite_configuration_section_parser = suite_configuration_section_parser
 
     def process(self,
-                std_output_files: StdOutputFiles,
+                reporting_environment: Environment,
                 settings: TestCaseExecutionSettings,
                 ) -> int:
-        result_reporter = self._get_reporter(std_output_files, settings.reporting_option)
+        result_reporter = self._get_reporter(reporting_environment, settings.reporting_option)
 
         try:
             processor = self._processor(settings, result_reporter)
         except SuiteParseError as ex:
-            reporter = result_reporting.TestSuiteParseErrorReporter(std_output_files)
+            reporter = result_reporting.TestSuiteParseErrorReporter(reporting_environment)
             return reporter.report(ex)
 
         test_case_file_ref = test_case_processing.test_case_reference_of_source_file(settings.test_case_file_path)
@@ -41,9 +41,9 @@ class Processor:
         return result_reporter.report(result)
 
     @staticmethod
-    def _get_reporter(std_output_files: StdOutputFiles,
+    def _get_reporter(reporting_environment: Environment,
                       reporting_option: ReportingOption) -> result_reporting.TestCaseResultReporter:
-        return result_reporting.RESULT_REPORTERS[reporting_option](std_output_files)
+        return result_reporting.RESULT_REPORTERS[reporting_option](reporting_environment)
 
     def _processor(self,
                    settings: TestCaseExecutionSettings,
@@ -82,3 +82,15 @@ class Processor:
         return processors.new_executor_that_may_pollute_current_processes2(exe_conf,
                                                                            act_phase_setup,
                                                                            is_keep_sandbox)
+
+
+class ProcessorExecutionReporter(ProcessResultReporter):
+    def __init__(self,
+                 processor: Processor,
+                 settings: TestCaseExecutionSettings,
+                 ):
+        self._processor = processor
+        self._settings = settings
+
+    def report(self, environment: Environment) -> int:
+        return self._processor.process(environment, self._settings)

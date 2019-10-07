@@ -4,6 +4,7 @@ import pathlib
 from typing import Dict, List, Tuple
 
 from exactly_lib.common.exit_value import ExitValue
+from exactly_lib.common.process_result_reporter import Environment
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.processing import test_case_processing, exit_values as test_case_exit_values
 from exactly_lib.processing.test_case_processing import Status, TestCaseFileReference
@@ -64,17 +65,16 @@ class _RelPathPresenter:
 class SimpleProgressRootSuiteProcessingReporter(reporting.RootSuiteProcessingReporter):
     def report_invalid_suite(self,
                              exit_value: ExitValue,
-                             output: StdOutputFiles,
+                             reporting_environment: Environment,
                              ):
-        printer = file_printer_with_color_if_terminal(output.out)
-        printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
+        reporting_environment.out_printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
 
     def execution_reporter(self,
                            root_suite: structure.TestSuiteHierarchy,
-                           std_output_files: StdOutputFiles,
+                           reporting_environment: Environment,
                            root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         root_suite_dir_abs_path = root_suite_file.resolve().parent
-        return SimpleProgressRootSuiteReporter(std_output_files,
+        return SimpleProgressRootSuiteReporter(reporting_environment.std_files,
                                                root_suite_dir_abs_path)
 
 

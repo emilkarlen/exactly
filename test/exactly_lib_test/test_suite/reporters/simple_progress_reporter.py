@@ -56,7 +56,7 @@ class TestInvalidSuite(unittest.TestCase):
         exit_value = ExitValue(1, 'IDENTIFIER', ForegroundColor.BLACK)
         # ACT #
         reporter.report_invalid_suite(exit_value,
-                                      str_std_out_files.stdout_files)
+                                      str_std_out_files.reporting_environment)
         # ASSERT #
         str_std_out_files.finish()
         self.assertEqual(exit_value.exit_identifier + os.linesep,
@@ -332,7 +332,7 @@ def _suite_executor_for_case_processing_that_unconditionally(execution_result: F
                                                              std_output_files: StringStdOutFiles,
                                                              root_file_path: Path) -> SuitesExecutor:
     factory = sut.SimpleProgressRootSuiteProcessingReporter()
-    execution_reporter = factory.execution_reporter(root_suite, std_output_files.stdout_files, root_file_path)
+    execution_reporter = factory.execution_reporter(root_suite, std_output_files.reporting_environment, root_file_path)
     case_result = test_case_processing.new_executed(execution_result)
     return processing.SuitesExecutor(execution_reporter, DUMMY_CASE_PROCESSING,
                                      lambda conf: TestCaseProcessorThatGivesConstant(case_result))

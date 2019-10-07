@@ -1,5 +1,6 @@
 import io
 
+from exactly_lib.common.process_result_reporter import Environment
 from exactly_lib.processing.standalone import processor as standalone_processor
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.util.std import StdOutputFiles
@@ -15,7 +16,7 @@ def capture_output_from_processor(processor: standalone_processor.Processor,
                                       stderr_file=stderr_file)
 
     # ACT #
-    actual_exit_code = processor.process(std_output_files, settings)
+    actual_exit_code = processor.process(Environment.new_plain(std_output_files), settings)
 
     ret_val = SubProcessResult(actual_exit_code,
                                stdout=stdout_file.getvalue(),

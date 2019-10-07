@@ -5,6 +5,7 @@ from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.common.process_result_reporter import Environment, ProcessResultReporter
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.execution import sandbox_dir_resolving
 from exactly_lib.execution.configuration import PredefinedProperties
@@ -144,29 +145,30 @@ class MainProgram:
     def execute(self,
                 command_line_arguments: List[str],
                 output: StdOutputFiles) -> int:
+        reporter = self._get_reporter(command_line_arguments)
+        return reporter.report(Environment.new_with_color_if_supported_by_terminal(output))
+
+    def _get_reporter(self,
+                      command_line_arguments: List[str]) -> ProcessResultReporter:
         if len(command_line_arguments) > 0:
             if command_line_arguments[0] in self._commands:
                 return _parse_and_exit_on_error(self._commands[command_line_arguments[0]],
-                                                command_line_arguments[1:],
-                                                output)
+                                                command_line_arguments[1:])
         return _parse_and_exit_on_error(self._parse_and_execute_test_case,
-                                        command_line_arguments,
-                                        output)
+                                        command_line_arguments)
 
     def execute_test_case(self,
                           settings: TestCaseExecutionSettings,
-                          output: StdOutputFiles,
-                          ) -> int:
+                          ) -> ProcessResultReporter:
         from exactly_lib.processing.standalone import processor
-        processor = processor.Processor(self._test_case_definition,
-                                        self._atc_os_process_executor,
-                                        self._test_suite_definition.configuration_section_parser)
-        return processor.process(output, settings)
+        the_processor = processor.Processor(self._test_case_definition,
+                                            self._atc_os_process_executor,
+                                            self._test_suite_definition.configuration_section_parser)
+        return processor.ProcessorExecutionReporter(the_processor, settings)
 
     def execute_test_suite(self,
                            settings: TestSuiteExecutionSettings,
-                           output: StdOutputFiles,
-                           ) -> int:
+                           ) -> ProcessResultReporter:
         from exactly_lib.processing import processors
         from exactly_lib.test_suite import enumeration
         from exactly_lib.test_suite.file_reading import suite_hierarchy_reading
@@ -186,33 +188,30 @@ class MainProgram:
                                          settings.processing_reporter,
                                          enumeration.DepthFirstEnumerator(),
                                          processors.new_processor_that_should_not_pollute_current_process)
-        return processor.process(settings.suite_root_file_path, output)
+        return processor.process_reporter(settings.suite_root_file_path)
 
     def _parse_and_execute_test_case(self,
                                      command_line_arguments: List[str],
-                                     output: StdOutputFiles,
-                                     ) -> int:
+                                     ) -> ProcessResultReporter:
         from exactly_lib.cli.program_modes.test_case import argument_parsing
 
         settings = argument_parsing.parse(self._default_test_case_handling_setup,
                                           self._default_case_sandbox_root_dir_name_resolver,
                                           command_line_arguments,
                                           common_cli_options.COMMAND_DESCRIPTIONS)
-        return self.execute_test_case(settings, output)
+        return self.execute_test_case(settings)
 
     def _parse_and_execute_test_suite(self,
                                       command_line_arguments: List[str],
-                                      output: StdOutputFiles,
-                                      ) -> int:
+                                      ) -> ProcessResultReporter:
         from exactly_lib.cli.program_modes.test_suite import argument_parsing
         settings = argument_parsing.parse(self._default_test_case_handling_setup,
                                           command_line_arguments)
-        return self.execute_test_suite(settings, output)
+        return self.execute_test_suite(settings)
 
     def _parse_and_execute_symbol_inspection(self,
                                              command_line_arguments: List[str],
-                                             output: StdOutputFiles,
-                                             ) -> int:
+                                             ) -> ProcessResultReporter:
         from exactly_lib.cli.program_modes.symbol import argument_parsing, execution
 
         request = argument_parsing.parse(self._default_test_case_handling_setup,
@@ -224,14 +223,13 @@ class MainProgram:
             self._test_suite_definition.configuration_section_parser,
         )
 
-        return executor.execute(request, output)
+        return executor.execution_reporter(request)
 
     def _parse_and_execute_help(self,
                                 help_command_arguments: List[str],
-                                output: StdOutputFiles,
-                                ) -> int:
+                                ) -> ProcessResultReporter:
         from exactly_lib.cli.program_modes.help import argument_parsing
-        from exactly_lib.cli.program_modes.help.request_handling.resolving_and_handling import handle_help_request
+        from exactly_lib.cli.program_modes.help.request_handling.resolving_and_handling import handle_help_request_rr
         from exactly_lib.help.the_application_help import new_application_help
         from exactly_lib.cli.program_modes.help.error import HelpError
 
@@ -248,23 +246,27 @@ class MainProgram:
             help_request = argument_parsing.parse(application_help,
                                                   help_command_arguments)
         except HelpError as ex:
-            return _exit_invalid_usage(output, ex.msg)
-        handle_help_request(output, application_help, help_request)
-        return 0
+            return _InvalidUsageReporter(ex.msg)
+
+        return handle_help_request_rr(application_help, help_request)
 
 
-def _parse_and_exit_on_error(parse_arguments_and_execute_callable: Callable[[List[str], StdOutputFiles], int],
+def _parse_and_exit_on_error(parse_arguments_and_execute_callable: Callable[[List[str]], ProcessResultReporter],
                              arguments: List[str],
-                             output: StdOutputFiles,
-                             ) -> int:
+                             ) -> ProcessResultReporter:
     try:
-        return parse_arguments_and_execute_callable(arguments, output)
+        return parse_arguments_and_execute_callable(arguments)
     except argument_parsing_utils.ArgumentParsingError as ex:
-        return _exit_invalid_usage(output, ex.error_message)
+        return _InvalidUsageReporter(ex.error_message)
 
 
-def _exit_invalid_usage(output: StdOutputFiles,
-                        error_message: str) -> int:
-    output.err.write(error_message)
-    output.err.write(os.linesep)
-    return exit_codes.EXIT_INVALID_USAGE
+class _InvalidUsageReporter(ProcessResultReporter):
+    def __init__(self, error_message: str):
+        self._error_message = error_message
+
+    def report(self, environment: Environment) -> int:
+        output_file = environment.std_files.err
+
+        output_file.write(self._error_message)
+        output_file.write(os.linesep)
+        return exit_codes.EXIT_INVALID_USAGE

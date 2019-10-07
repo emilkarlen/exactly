@@ -1,31 +1,33 @@
-from typing import Optional
+from typing import Optional, Callable
 
+from exactly_lib.common import process_result_reporter
 from exactly_lib.common import result_reporting as reporting
 from exactly_lib.common.exit_value import ExitValue
+from exactly_lib.common.process_result_reporter import Environment, ProcessResultReporter
+from exactly_lib.common.process_result_reporters import ProcessResultReporterWithInitialExitValueOutput
 from exactly_lib.execution.full_execution.result import FullExeResultStatus, FullExeResult
 from exactly_lib.processing import test_case_processing, exit_values
 from exactly_lib.processing.standalone.settings import ReportingOption
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError
-from exactly_lib.util.file_printer import FilePrinter, file_printer_with_color_if_terminal
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.std import StdOutputFiles
 
 
 class ResultReporter:
     """Reports the result of the execution via exitcode, stdout, stderr."""
 
-    def __init__(self, output_files: StdOutputFiles):
-        self._std = output_files
-        self._out_printer = file_printer_with_color_if_terminal(output_files.out)
-        self._err_printer = file_printer_with_color_if_terminal(output_files.err)
+    def __init__(self, reporting_environment: process_result_reporter.Environment):
+        self._reporting_environment = reporting_environment
 
 
 class TestSuiteParseErrorReporter(ResultReporter):
     def report(self, ex: SuiteParseError) -> int:
+        file_printers = self._reporting_environment.std_file_printers
         from exactly_lib.test_suite import error_reporting
         return error_reporting.report_suite_parse_error(ex,
-                                                        self._out_printer,
-                                                        self._err_printer)
+                                                        file_printers.out,
+                                                        file_printers.err)
 
 
 class TestCaseResultReporter(ResultReporter):
@@ -40,11 +42,26 @@ class TestCaseResultReporter(ResultReporter):
     def depends_on_result_in_sandbox(self) -> bool:
         raise NotImplementedError('abstract method')
 
-    def _exit_identifier_printer(self) -> FilePrinter:
+    def _exit_identifier_printer(self) -> ProcOutputFile:
         raise NotImplementedError('abstract method')
 
     def execute_atc_and_skip_assertions(self) -> Optional[StdOutputFiles]:
         return None
+
+    def _process_reporter_with_exit_value_output(self,
+                                                 exit_value: ExitValue,
+                                                 output_rest: Callable[[Environment], None]) -> ProcessResultReporter:
+        return ProcessResultReporterWithInitialExitValueOutput(
+            exit_value,
+            self._exit_identifier_printer(),
+            output_rest,
+        )
+
+    def _report_with_exit_value_output(self,
+                                       exit_value: ExitValue,
+                                       output_rest: Callable[[Environment], None]) -> int:
+        reporter = self._process_reporter_with_exit_value_output(exit_value, output_rest)
+        return reporter.report(self._reporting_environment)
 
     def _report_execution(self,
                           exit_value: ExitValue,
@@ -54,27 +71,28 @@ class TestCaseResultReporter(ResultReporter):
     def _report_full_exe_result(self,
                                 exit_value: ExitValue,
                                 result: FullExeResult) -> int:
-        self._exit_identifier_printer().write_colored_line(exit_value.exit_identifier,
-                                                           exit_value.color)
-        self._exit_identifier_printer().flush()
-        reporting.print_error_message_for_full_result(self._err_printer, result)
-        return exit_value.exit_code
+        def output_rest(reporting_environment: Environment):
+            reporting.print_error_message_for_full_result(reporting_environment.std_file_printers.err,
+                                                          result)
+
+        return self._report_with_exit_value_output(exit_value, output_rest)
 
     def __report_unable_to_execute(self,
                                    exit_value: ExitValue,
                                    error_info: ErrorInfo) -> int:
-        self._exit_identifier_printer().write_colored_line(exit_value.exit_identifier,
-                                                           exit_value.color)
-        reporting.print_error_info(self._err_printer, error_info)
-        return exit_value.exit_code
+        def output_rest(reporting_environment: Environment):
+            reporting.print_error_info(reporting_environment.std_file_printers.err,
+                                       error_info)
+
+        return self._report_with_exit_value_output(exit_value, output_rest)
 
 
 class _ResultReporterForNormalOutput(TestCaseResultReporter):
     def depends_on_result_in_sandbox(self) -> bool:
         return False
 
-    def _exit_identifier_printer(self) -> FilePrinter:
-        return self._out_printer
+    def _exit_identifier_printer(self) -> ProcOutputFile:
+        return ProcOutputFile.STDOUT
 
     def _report_execution(self,
                           exit_value: ExitValue,
@@ -86,14 +104,14 @@ class _ResultReporterForPreserveAndPrintSandboxDir(TestCaseResultReporter):
     def depends_on_result_in_sandbox(self) -> bool:
         return True
 
-    def _exit_identifier_printer(self) -> FilePrinter:
-        return self._err_printer
+    def _exit_identifier_printer(self) -> ProcOutputFile:
+        return ProcOutputFile.STDERR
 
     def _report_execution(self,
                           exit_value: ExitValue,
                           result: FullExeResult) -> int:
         if result.has_sds:
-            self._out_printer.write_line(str(result.sds.root_dir))
+            self._reporting_environment.std_file_printers.out.write_line(str(result.sds.root_dir))
 
         return self._report_full_exe_result(exit_value, result)
 
@@ -102,11 +120,11 @@ class _ResultReporterForActPhaseOutput(TestCaseResultReporter):
     def depends_on_result_in_sandbox(self) -> bool:
         return False
 
-    def _exit_identifier_printer(self) -> FilePrinter:
-        return self._err_printer
+    def _exit_identifier_printer(self) -> ProcOutputFile:
+        return ProcOutputFile.STDERR
 
     def execute_atc_and_skip_assertions(self) -> Optional[StdOutputFiles]:
-        return self._std
+        return self._reporting_environment.std_files
 
     def _report_execution(self,
                           exit_value: ExitValue,

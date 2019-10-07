@@ -1,5 +1,6 @@
 import io
 
+from exactly_lib.common.process_result_reporter import Environment
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib_test.test_resources.files.file_utils import NULL_FILE
 
@@ -7,6 +8,11 @@ from exactly_lib_test.test_resources.files.file_utils import NULL_FILE
 def null_output_files() -> StdOutputFiles:
     return StdOutputFiles(NULL_FILE,
                           NULL_FILE)
+
+
+def null_output_reporting_environment() -> Environment:
+    return Environment.new_plain(StdOutputFiles(NULL_FILE,
+                                                NULL_FILE))
 
 
 class StringStdOutFiles:
@@ -35,3 +41,7 @@ class StringStdOutFiles:
     @property
     def stderr_contents(self) -> str:
         return self._stderr_contents
+
+    @property
+    def reporting_environment(self) -> Environment:
+        return Environment.new_plain(self.stdout_files)

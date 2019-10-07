@@ -1,3 +1,4 @@
+from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpRequest, EntityHelpRequestRendererResolver
 from exactly_lib.cli.program_modes.help.html_doc.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.html_doc.request_rendering import HtmlGenerationRequestHandler
@@ -14,6 +15,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_suite.request_renderi
     TestSuiteHelpConstructorResolver
 from exactly_lib.cli.program_modes.help.request_handling.console_help import ConsoleHelpRequestHandler
 from exactly_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
+from exactly_lib.common.process_result_reporter import ProcessResultReporter, Environment
 from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.util.std import StdOutputFiles
@@ -27,6 +29,23 @@ def handle_help_request(output: StdOutputFiles,
     handler = _resolve_handler(application_help,
                                help_request)
     handler.handle(output)
+
+
+def handle_help_request_rr(application_help: ApplicationHelp,
+                           help_request: HelpRequest) -> ProcessResultReporter:
+    handler = _resolve_handler(application_help,
+                               help_request)
+    return _ReporterOfHandler(handler)
+
+
+class _ReporterOfHandler(ProcessResultReporter):
+    def __init__(self, handler: RequestHandler):
+        self._handler = handler
+
+    def report(self, environment: Environment) -> int:
+        self._handler.handle(environment.std_files)
+
+        return exit_codes.EXIT_OK
 
 
 def _resolve_handler(application_help: ApplicationHelp,

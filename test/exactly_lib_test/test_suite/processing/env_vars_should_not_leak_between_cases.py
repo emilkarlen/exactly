@@ -87,7 +87,7 @@ class Test(unittest.TestCase):
                                                                case_processor_case.value)
                     # ACT #
 
-                    return_value = processor.process(suite_file_path, StringStdOutFiles().stdout_files)
+                    return_value = processor.process(suite_file_path, StringStdOutFiles().reporting_environment)
 
                     # ASSERT #
 

@@ -1,6 +1,8 @@
 import subprocess
 import sys
 
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
+
 
 class StdOutputFiles:
     def __init__(self,
@@ -16,6 +18,14 @@ class StdOutputFiles:
     @property
     def err(self):
         return self._stderr_file
+
+    def get(self, file: ProcOutputFile):
+        return (
+            self.out
+            if file is ProcOutputFile.STDOUT
+            else
+            self.err
+        )
 
 
 class StdOutputFilesContents:

@@ -30,7 +30,7 @@ from exactly_lib_test.section_document.test_resources.misc import space_separato
 from exactly_lib_test.section_document.test_resources.source_location_assertions import matches_file_location_info
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
-from exactly_lib_test.test_resources.files.str_std_out_files import null_output_files
+from exactly_lib_test.test_resources.files.str_std_out_files import null_output_reporting_environment
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -350,7 +350,7 @@ class TestBase(unittest.TestCase):
                                                     case_processor_case.value)
                     # ACT #
 
-                    return_value = processor.process(suite_file_path, null_output_files())
+                    return_value = processor.process(suite_file_path, null_output_reporting_environment())
 
                     # ASSERT #
 

@@ -85,7 +85,7 @@ class TestSuiteReadError(unittest.TestCase):
                               DepthFirstEnumerator(),
                               lambda x: TestCaseProcessorThatRaisesUnconditionally())
         # ACT #
-        exit_code = processor.process(suite_root_file_path, str_std_out_files.stdout_files)
+        exit_code = processor.process(suite_root_file_path, str_std_out_files.reporting_environment)
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
                                          exit_values.INVALID_SUITE.exit_code,
@@ -115,7 +115,7 @@ class TestOtherError(unittest.TestCase):
                               DepthFirstEnumerator(),
                               lambda config: TestCaseProcessorThatRaisesUnconditionally())
         # ACT #
-        exit_code = processor.process(pathlib.Path('root-suite-file'), str_std_out_files.stdout_files)
+        exit_code = processor.process(pathlib.Path('root-suite-file'), str_std_out_files.reporting_environment)
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
                                          ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
@@ -159,7 +159,7 @@ class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
                              DepthFirstEnumerator(),
                              lambda config: TestCaseProcessorThatGivesConstant(result))
         # ACT #
-        exit_code = executor.process(pathlib.Path('root-suite-file'), str_std_out_files.stdout_files)
+        exit_code = executor.process(pathlib.Path('root-suite-file'), str_std_out_files.reporting_environment)
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
                                          ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
@@ -208,7 +208,7 @@ class TestComplexSuite(unittest.TestCase):
                               DepthFirstEnumerator(),
                               lambda config: test_case_processor)
         # ACT #
-        exit_code = processor.process(pathlib.Path('root-suite-file'), str_std_out_files.stdout_files)
+        exit_code = processor.process(pathlib.Path('root-suite-file'), str_std_out_files.reporting_environment)
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
                                          ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
@@ -245,7 +245,7 @@ class TestComplexSuite(unittest.TestCase):
                               DepthFirstEnumerator(),
                               lambda config: TestCaseProcessorThatGivesConstantPerCase({}))
         # ACT #
-        exit_code = processor.process(pathlib.Path('root-suite-file'), str_std_out_files.stdout_files)
+        exit_code = processor.process(pathlib.Path('root-suite-file'), str_std_out_files.reporting_environment)
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
                                          ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
@@ -312,7 +312,7 @@ class TestComplexSuite(unittest.TestCase):
                               DepthFirstEnumerator(),
                               lambda config: test_case_processor)
         # ACT #
-        exit_code = processor.process(pathlib.Path('root-suite-file'), str_std_out_files.stdout_files)
+        exit_code = processor.process(pathlib.Path('root-suite-file'), str_std_out_files.reporting_environment)
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
                                          ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,

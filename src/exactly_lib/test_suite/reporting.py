@@ -3,9 +3,9 @@ import pathlib
 from typing import Tuple, List
 
 from exactly_lib.common.exit_value import ExitValue
+from exactly_lib.common.process_result_reporter import Environment
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
-from exactly_lib.util.std import StdOutputFiles
 from . import structure
 
 
@@ -108,12 +108,12 @@ class RootSuiteReporter:
 class RootSuiteProcessingReporter:
     def report_invalid_suite(self,
                              exit_value: ExitValue,
-                             output: StdOutputFiles,
+                             reporting_environment: Environment,
                              ):
         raise NotImplementedError('abstract method')
 
     def execution_reporter(self,
                            root_suite: structure.TestSuiteHierarchy,
-                           std_output_files: StdOutputFiles,
+                           reporting_environment: Environment,
                            root_suite_file: pathlib.Path) -> RootSuiteReporter:
         raise NotImplementedError()

@@ -93,3 +93,7 @@ def file_printer_with_color_if_terminal(file_object) -> FilePrinter:
     return (FilePrinterWithAnsiColor(file_object)
             if ansi.is_file_object_with_color(file_object)
             else FilePrinter(file_object))
+
+
+def plain(file_object) -> FilePrinter:
+    return FilePrinter(file_object)

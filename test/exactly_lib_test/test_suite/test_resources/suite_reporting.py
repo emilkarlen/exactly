@@ -3,14 +3,13 @@ import pathlib
 from typing import List
 
 from exactly_lib.common.exit_value import ExitValue
+from exactly_lib.common.process_result_reporter import Environment
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.test_case.test_case_doc import TestCase
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
 from exactly_lib.test_suite.structure import TestSuiteHierarchy
-from exactly_lib.util import std
-from exactly_lib.util.std import StdOutputFiles
 
 
 class ExecutionTracingProcessingReporter(reporting.RootSuiteProcessingReporter):
@@ -20,13 +19,13 @@ class ExecutionTracingProcessingReporter(reporting.RootSuiteProcessingReporter):
 
     def report_invalid_suite(self,
                              exit_value: ExitValue,
-                             output: StdOutputFiles,
+                             reporting_environment: Environment,
                              ):
         self._report_invalid_suite_invocations.append(exit_value)
 
     def execution_reporter(self,
                            root_suite: TestSuiteHierarchy,
-                           std_output_files: std.StdOutputFiles,
+                           reporting_environment: Environment,
                            root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         return self.complete_suite_reporter
 
@@ -40,13 +39,13 @@ class ProcessingReporterThatDoesNothing(reporting.RootSuiteProcessingReporter):
 
     def report_invalid_suite(self,
                              exit_value: ExitValue,
-                             output: StdOutputFiles,
+                             reporting_environment: Environment,
                              ):
         pass
 
     def execution_reporter(self,
                            root_suite: TestSuiteHierarchy,
-                           std_output_files: std.StdOutputFiles,
+                           reporting_environment: Environment,
                            root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         return RootSuiteReporterThatDoesNothing()
 

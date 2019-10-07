@@ -5,6 +5,7 @@ import platform
 from xml.etree import ElementTree as ET
 
 from exactly_lib.common.exit_value import ExitValue
+from exactly_lib.common.process_result_reporter import Environment
 from exactly_lib.common.result_reporting import error_message_for_full_result, error_message_for_error_info
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.processing.test_case_processing import Status, TestCaseFileReference, Result
@@ -34,16 +35,16 @@ TEST_SUITES_ELEMENT_NAME = 'testsuites'
 class JUnitRootSuiteProcessingReporter(reporting.RootSuiteProcessingReporter):
     def report_invalid_suite(self,
                              exit_value: ExitValue,
-                             output: StdOutputFiles,
+                             reporting_environment: Environment,
                              ):
         pass
 
     def execution_reporter(self,
                            root_suite: structure.TestSuiteHierarchy,
-                           std_output_files: StdOutputFiles,
+                           reporting_environment: Environment,
                            root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         root_suite_dir_abs_path = root_suite_file.resolve().parent
-        return JUnitRootSuiteReporter(root_suite, std_output_files, root_suite_dir_abs_path)
+        return JUnitRootSuiteReporter(root_suite, reporting_environment.std_files, root_suite_dir_abs_path)
 
 
 class JUnitRootSuiteReporter(reporting.RootSuiteReporter):

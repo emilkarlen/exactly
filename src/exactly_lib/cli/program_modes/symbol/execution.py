@@ -6,7 +6,8 @@ from exactly_lib.cli.program_modes.symbol.impl.parse import Parser, ParserForTes
 from exactly_lib.cli.program_modes.symbol.impl.report import ReportGenerator, Report
 from exactly_lib.cli.program_modes.symbol.request import SymbolInspectionRequest, RequestVariantVisitor, \
     RequestVariantList, RequestVariantIndividual
-from exactly_lib.common import result_reporting
+from exactly_lib.common.process_result_reporter import ProcessResultReporter, Environment, StdOutputFilePrinters
+from exactly_lib.common.process_result_reporters import ProcessResultReporterOfMajorBlocksBase
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.standalone import result_reporting as processing_result_reporting
@@ -14,11 +15,12 @@ from exactly_lib.processing.test_case_processing import AccessorError
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case import actor
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.actor import ActionToCheck, ParseException
+from exactly_lib.test_case.actor import ActionToCheck
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError
-from exactly_lib.util import file_printer
-from exactly_lib.util.file_printer import file_printer_with_color_if_terminal
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
+from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
+from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.std import StdOutputFiles
 
 
@@ -30,30 +32,19 @@ class Executor:
         self._suite_configuration_section_parser = suite_configuration_section_parser
         self._test_case_definition = test_case_definition
 
-    def execute(self, request: SymbolInspectionRequest, output: StdOutputFiles) -> int:
-        parse_error_reporter = _ParseErrorReporter(output)
-
+    def execution_reporter(self, request: SymbolInspectionRequest) -> ProcessResultReporter:
         try:
             test_case, action_to_check = self._parse(request)
         except SuiteParseError as ex:
-            return parse_error_reporter.report_suite_error(ex)
+            return _SuiteErrorReporter(ex)
         except AccessorError as ex:
-            return parse_error_reporter.report_access_error(ex)
-        except actor.ParseException as ex:
-            return parse_error_reporter.report_act_phase_parse_error(ex)
+            return _AccessErrorReporter(ex)
+        except actor.ParseException:
+            return _ActPhaseErrorReporter()
 
-        report = self._generate_report(test_case, action_to_check, request)
-
-        output_file, exit_code = (
-            (output.out, exit_codes.EXIT_OK)
-            if report.is_success
-            else
-            (output.err, exit_values.EXECUTION__HARD_ERROR.exit_code)
+        return _ReporterOfRequestReport(
+            self._generate_report(test_case, action_to_check, request)
         )
-
-        self._print_report(report, output_file)
-
-        return exit_code
 
     def _parse(self, request: SymbolInspectionRequest) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheck]:
         return self._parser_for_request(request).parse()
@@ -81,13 +72,6 @@ class Executor:
 
         return report_generator.generate(definitions_resolver)
 
-    @staticmethod
-    def _print_report(report: Report, output_file):
-        major_blocks_renderer = rend_comb.ConstantSequenceR([block.render() for block in report.blocks()])
-
-        result_reporting.print_major_blocks(major_blocks_renderer,
-                                            file_printer.file_printer_with_color_if_terminal(output_file))
-
 
 class _RequestHandler(RequestVariantVisitor[ReportGenerator]):
     def visit_list(self, list_variant: RequestVariantList) -> ReportGenerator:
@@ -102,26 +86,55 @@ class _RequestHandler(RequestVariantVisitor[ReportGenerator]):
                                          individual_variant.list_references)
 
 
-class _ParseErrorReporter:
-    def __init__(self, output: StdOutputFiles):
-        self.output = output
-        self.out_printer = file_printer_with_color_if_terminal(output.out)
-        self.err_printer = file_printer_with_color_if_terminal(output.err)
+class _SuiteErrorReporter(ProcessResultReporter):
+    def __init__(self, ex: SuiteParseError):
+        self._ex = ex
 
-    def report_suite_error(self, ex: SuiteParseError) -> int:
-        err_only_output = StdOutputFiles(self.output.err,
-                                         self.output.err)
+    def report(self, environment: Environment) -> int:
+        output_files = environment.std_files
+        output_printers = environment.std_file_printers
+        err_only_output = Environment(
+            StdOutputFiles(output_files.err, output_files.err),
+            StdOutputFilePrinters(output_printers.err, output_printers.err)
+        )
+
         reporter = processing_result_reporting.TestSuiteParseErrorReporter(err_only_output)
-        return reporter.report(ex)
 
-    def report_access_error(self, error: AccessorError) -> int:
-        exit_value = exit_values.from_access_error(error.error)
-        self.err_printer.write_colored_line(exit_value.exit_identifier,
-                                            exit_value.color)
+        return reporter.report(self._ex)
+
+
+class _AccessErrorReporter(ProcessResultReporter):
+    def __init__(self, ex: AccessorError):
+        self._ex = ex
+
+    def report(self, environment: Environment) -> int:
+        exit_value = exit_values.from_access_error(self._ex.error)
+        environment.err_printer.write_colored_line(exit_value.exit_identifier,
+                                                   exit_value.color)
         return exit_value.exit_code
 
-    def report_act_phase_parse_error(self, error: ParseException) -> int:
+
+class _ActPhaseErrorReporter(ProcessResultReporter):
+    def report(self, environment: Environment) -> int:
         exit_value = exit_values.EXECUTION__VALIDATION_ERROR
-        self.err_printer.write_colored_line(exit_value.exit_identifier,
-                                            exit_value.color)
+        environment.err_printer.write_colored_line(exit_value.exit_identifier,
+                                                   exit_value.color)
         return exit_value.exit_code
+
+
+class _ReporterOfRequestReport(ProcessResultReporterOfMajorBlocksBase):
+    def __init__(self, report: Report):
+        output_file, exit_code = (
+            (ProcOutputFile.STDOUT, exit_codes.EXIT_OK)
+            if report.is_success
+            else
+            (ProcOutputFile.STDERR, exit_values.EXECUTION__HARD_ERROR.exit_code)
+        )
+        super().__init__(exit_code, output_file)
+        self._report = report
+
+    def _blocks(self) -> SequenceRenderer[MajorBlock]:
+        return rend_comb.ConstantSequenceR([
+            block.render()
+            for block in self._report.blocks()
+        ])

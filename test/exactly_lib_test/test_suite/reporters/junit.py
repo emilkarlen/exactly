@@ -424,7 +424,9 @@ def execute_with_case_processing_with_constant_processor(processor: tcp.Processo
                                                          test_suites: list) -> ExitCodeAndStdOut:
     std_output_files = StringStdOutFiles()
     reporter = sut.JUnitRootSuiteProcessingReporter()
-    execution_reporter = reporter.execution_reporter(root_suite, std_output_files.stdout_files, root_file_path)
+    execution_reporter = reporter.execution_reporter(root_suite,
+                                                     std_output_files.reporting_environment,
+                                                     root_file_path)
     executor = processing.SuitesExecutor(execution_reporter,
                                          DUMMY_CASE_PROCESSING,
                                          lambda conf: processor)
