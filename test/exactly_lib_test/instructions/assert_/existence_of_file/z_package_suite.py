@@ -33,7 +33,6 @@ from exactly_lib_test.test_case_file_structure.test_resources.arguments_building
     file_ref_argument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import FileMatcherThatReportsHardError
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.validation_cases import failing_validation_cases__svh
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -51,6 +50,7 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
+from exactly_lib_test.type_system.logic.test_resources.file_matchers import FileMatcherThatReportsHardError
 
 
 def suite() -> unittest.TestSuite:

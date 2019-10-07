@@ -3,9 +3,9 @@ import unittest
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import ConstantResultMatcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.single_dir_checks import single_dir_setup
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir
+from exactly_lib_test.type_system.logic.test_resources.file_matchers import ConstantResultMatcher
 
 
 def suite() -> unittest.TestSuite:

@@ -31,7 +31,6 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_home_po
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check as sut
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import FileMatcherThatReportsHardError
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.model_construction import ModelConstructor, \
     constant_relative_file_name
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
@@ -41,6 +40,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, em
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     sds_2_home_and_sds_assertion
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.logic.test_resources.file_matchers import FileMatcherThatReportsHardError
 
 
 def suite() -> unittest.TestSuite:

@@ -6,8 +6,8 @@ from exactly_lib.test_case_utils.file_matcher.impl import combinators
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as models
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import FileMatcherConstantWithName
 from exactly_lib_test.test_case_utils.test_resources import matcher_combinators_check
+from exactly_lib_test.type_system.logic.test_resources.file_matchers import FileMatcherConstantWithName
 
 
 def suite() -> unittest.TestSuite:
