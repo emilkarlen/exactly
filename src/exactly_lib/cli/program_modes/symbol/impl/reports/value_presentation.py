@@ -3,7 +3,9 @@ from abc import ABC
 from typing import Sequence, List
 
 from exactly_lib.cli.program_modes.symbol.impl.report import ReportBlock
-from exactly_lib.definitions import file_ref
+from exactly_lib.definitions import file_ref, type_system
+from exactly_lib.definitions.entity import types
+from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.impl.path import described_path_resolvers
@@ -31,6 +33,7 @@ from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.description_tree import simple_textstruct_rendering as rendering
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
+from exactly_lib.util.name import NumberOfItemsString
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
 from exactly_lib.util.simple_textstruct.rendering.components import MajorBlockRenderer, LineObjectRenderer
@@ -78,7 +81,7 @@ class _DataTypeBlockConstructor(DataValueResolverPseudoVisitor[ResolvedValuePres
 
     def visit_string(self, value: StringResolver) -> ResolvedValuePresentationBlock:
         string = value.resolve(self.symbols).value_of_any_dependency(self.tcds)
-        return _of_single_line_object(line_objects.PreFormattedString(string, False))
+        return _BlockForCustomRenderer(_StringRenderer(string))
 
     def visit_file_ref(self, value: FileRefResolver) -> ResolvedValuePresentationBlock:
         describer = described_path_resolvers.of(value).resolve__with_unknown_cd(self.symbols).describer
@@ -124,11 +127,21 @@ class _LogicTypeBlockConstructor(LogicValueResolverPseudoVisitor[ResolvedValuePr
 
 
 class _BlockForTree(ResolvedValuePresentationBlock):
+    HEADER_PROPERTIES = rendering.ElementProperties(
+        text_style=text_struct.TextStyle(color=ForegroundColor.CYAN)
+    )
+
+    TREE_LAYOUT = rendering.RenderingConfiguration(
+        Node.header.fget,
+        lambda node_data: _BlockForTree.HEADER_PROPERTIES,
+        '',
+    )
+
     def __init__(self, tree: Node[None]):
         self._tree = tree
 
     def render(self) -> text_struct.MajorBlock:
-        renderer = rendering.TreeRenderer(_TREE_LAYOUT, self._tree)
+        renderer = rendering.TreeRenderer(self.TREE_LAYOUT, self._tree)
         return renderer.render()
 
 
@@ -148,18 +161,67 @@ def _of_single_line_object(line_renderer: LineObjectRenderer) -> ResolvedValuePr
     )
 
 
+class _StringRenderer(MajorBlockRenderer):
+    def __init__(self, x: str):
+        self._x = x
+
+    def render(self) -> MajorBlock:
+        header = _type_of_x_elements_header(len(self._x),
+                                            types.STRING_TYPE_INFO,
+                                            type_system.NUMBER_OF_STRING_CHARACTERS)
+
+        if len(self._x) == 0:
+            return _header_only(header)
+        else:
+            return _header_and_value(
+                header,
+                [text_struct.LineElement(
+                    text_struct.PreFormattedStringLineObject(self._x, False)
+                )
+                ],
+                text_struct.ELEMENT_PROPERTIES__NEUTRAL,
+            )
+
+
 class _ListRenderer(MajorBlockRenderer):
     def __init__(self, the_list: List[str]):
         self._list = the_list
 
     def render(self) -> MajorBlock:
-        return text_struct.MajorBlock([
-            text_struct.MinorBlock([
-                text_struct.LineElement(
-                    text_struct.StringLinesObject(self._list)
-                )
-            ])
-        ])
+        header = _type_of_x_elements_header(len(self._list),
+                                            types.LIST_TYPE_INFO,
+                                            type_system.NUMBER_OF_LIST_ELEMENTS)
+        if len(self._list) == 0:
+            return _header_only(header)
+
+        num_formatter = (
+            self._format_lt_10
+            if len(self._list) < 10
+            else
+            self._format_gte_10
+        )
+
+        value_list = [
+            text_struct.LineElement(
+                text_struct.StringLineObject(
+                    '  '.join([num_formatter(n), elem, ]))
+            )
+            for n, elem in enumerate(self._list, 1)
+        ]
+
+        return _header_and_value(
+            header,
+            value_list,
+            text_struct.ELEMENT_PROPERTIES__INDENTED,
+        )
+
+    @staticmethod
+    def _format_lt_10(n: int) -> str:
+        return str(n)
+
+    @staticmethod
+    def _format_gte_10(n: int) -> str:
+        return '{: >2d}'.format(n)
 
 
 class _ProgramRenderer(MajorBlockRenderer):
@@ -176,12 +238,38 @@ class _ProgramRenderer(MajorBlockRenderer):
         ])
 
 
-_TREE_LAYOUT = rendering.RenderingConfiguration(
-    Node.header.fget,
-    lambda node_data: _HEADER_PROPERTIES,
-    '',
-)
+def _type_of_x_elements_header(num_elements: int,
+                               type_name: TypeNameAndCrossReferenceId,
+                               element_name: NumberOfItemsString) -> str:
+    return ' '.join([
+        type_name.singular_name.capitalize(),
+        'of',
+        element_name.of(num_elements),
+    ])
 
-_HEADER_PROPERTIES = rendering.ElementProperties(
-    text_style=text_struct.TextStyle(color=ForegroundColor.CYAN)
-)
+
+def _header_and_value(header: str,
+                      value: Sequence[text_struct.LineElement],
+                      value_block_properties: text_struct.ElementProperties,
+                      ) -> text_struct.MajorBlock:
+    return text_struct.MajorBlock([
+        text_struct.MinorBlock([
+            text_struct.LineElement(
+                text_struct.StringLineObject(header)
+            )
+        ]),
+        text_struct.MinorBlock(
+            value,
+            value_block_properties,
+        ),
+    ])
+
+
+def _header_only(header: str) -> text_struct.MajorBlock:
+    return text_struct.MajorBlock([
+        text_struct.MinorBlock([
+            text_struct.LineElement(
+                text_struct.StringLineObject(header)
+            )
+        ]),
+    ])

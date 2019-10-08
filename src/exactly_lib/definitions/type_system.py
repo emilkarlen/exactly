@@ -1,5 +1,6 @@
 from exactly_lib.definitions.entity import types
 from exactly_lib.type_system.value_type import ValueType, DataValueType, TypeCategory, LogicValueType
+from exactly_lib.util.name import NumberOfItemsString, Name
 
 DATA_TYPE_CATEGORY_NAME = 'data'
 LOGIC_TYPE_CATEGORY_NAME = 'logic'
@@ -10,6 +11,9 @@ def _type_identifier(type_name: str) -> str:
 
 
 LIST_ELEMENT = 'ELEMENT'
+NUMBER_OF_LIST_ELEMENTS = NumberOfItemsString(Name.new_with_plural_s('element'))
+
+NUMBER_OF_STRING_CHARACTERS = NumberOfItemsString(Name.new_with_plural_s('character'))
 
 DATA_TYPE_INFO_DICT = {
     DataValueType.STRING: types.STRING_TYPE_INFO,

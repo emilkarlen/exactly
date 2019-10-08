@@ -8,6 +8,11 @@ class Name:
         self._plural = plural
         self._singular = singular
 
+    @staticmethod
+    def new_with_plural_s(singular: str) -> 'Name':
+        return Name(singular,
+                    singular + 's')
+
     @property
     def singular(self) -> str:
         return self._singular

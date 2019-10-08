@@ -1,8 +1,19 @@
 [setup]
 
-def string-matcher STRING_MATCHER = equals -file expected.txt
+def string EMPTY_STRING     = ''
+def string NON_EMPTY_STRING = string-contents
 
+
+def list EMPTY_LIST     =
+def list NON_EMPTY_LIST = 1st 2nd 3rd
+
+
+def line-matcher LINE_MATCHER = line-num < 2 || matches .+
+
+def string-matcher STRING_MATCHER = equals -file expected.txt
 
 def file-matcher FILE_MATCHER__CONTENTS = contents STRING_MATCHER
 
 def file-matcher FILE_MATCHER = type file || type dir && ! FILE_MATCHER__CONTENTS
+
+def files-matcher FILES_MATCHER = every file : FILE_MATCHER
