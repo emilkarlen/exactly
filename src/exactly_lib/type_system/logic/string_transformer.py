@@ -7,15 +7,15 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.util.description_tree import renderers
-from exactly_lib.util.description_tree.renderer import NodeRenderer
+from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
+from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.functional import compose_first_and_second
 
 StringTransformerModel = Iterable[str]
 
 
-class StringTransformer(ABC):
+class StringTransformer(WithTreeStructureDescription, ABC):
     """
     Transforms a sequence of lines, where each line is a string.
     """
@@ -25,17 +25,13 @@ class StringTransformer(ABC):
     def name(self) -> str:
         pass
 
-    @property
-    def structure(self) -> NodeRenderer[None]:
-        """
-        The structure of the object, that can be used in traced.
-
-        Given as a renderer, to ease implementations.
-        """
-        return renderers.Constant(Node(self.name,
-                                       None,
-                                       (),
-                                       ()))
+    def structure(self) -> Node[None]:
+        return tree.Node(
+            self.name,
+            None,
+            (),
+            (),
+        )
 
     @property
     def is_identity_transformer(self) -> bool:

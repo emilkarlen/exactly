@@ -6,11 +6,11 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util import symbol_table
+from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
 from exactly_lib_test.symbol.test_resources.resolver_assertions import is_resolver_of_logic_type
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.util.test_resources.file_utils import TmpDirFileSpaceThatMustNoBeUsed
 
 
 def matches_files_matcher_resolver(references: ValueAssertion = asrt.is_empty_sequence,

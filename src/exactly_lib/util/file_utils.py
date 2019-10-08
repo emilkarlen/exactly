@@ -177,3 +177,11 @@ class TmpDirFileSpaceAsDirCreatedOnDemand(TmpDirFileSpace):
             self._existing_root_dir_path.mkdir(parents=True,
                                                exist_ok=True)
         return self._existing_root_dir_path
+
+
+class TmpDirFileSpaceThatMustNoBeUsed(TmpDirFileSpace):
+    def new_path(self) -> pathlib.Path:
+        raise NotImplementedError('must not be used')
+
+    def new_path_as_existing_dir(self) -> pathlib.Path:
+        raise NotImplementedError('must not be used')

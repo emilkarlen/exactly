@@ -1,5 +1,5 @@
 import unittest
-from typing import Iterator, Sequence, Optional, List
+from typing import Iterator, Sequence, Optional
 
 from exactly_lib.cli.program_modes.symbol.impl.report import ReportBlock
 from exactly_lib.cli.program_modes.symbol.impl.reports import individual as sut, symbol_info
@@ -35,26 +35,12 @@ def suite() -> unittest.TestSuite:
 
 
 class TestDefinition(unittest.TestCase):
-    def test_types_without_structure_reporting(self):
-        self._check(
-            _TYPES_WITHOUT_STRUCTURE_REPORTING,
-            non_mandatory_blocks=[],
-        )
-
-    def test_types_with_structure_reporting(self):
-        self._check(
-            _TYPES_WITH_STRUCTURE_REPORTING,
-            non_mandatory_blocks=[_is_resolved_value_presentation_block()],
-        )
-
-    def _check(self,
-               cases: Sequence[SymbolValueResolver],
-               non_mandatory_blocks: List[ValueAssertion[ReportBlock]],
-               ):
+    def test(self):
         # ARRANGE #
 
         symbol_name = 'the_symbol_name'
 
+        cases = _RESOLVERS_OF_EVERY_TYPE
         for resolver in cases:
             with self.subTest(str(resolver.value_type)):
                 symbol_definition = _symbol_definition(symbol_name, resolver)
@@ -71,15 +57,11 @@ class TestDefinition(unittest.TestCase):
 
                 self.assertTrue(report.is_success, 'is success')
 
-                expected_blocks = (
-                        [
-                            _matches_definition_short_info_block(symbol_definition),
-                            _matches_definition_source_block(symbol_definition),
-                        ] +
-                        non_mandatory_blocks
-                )
-
-                expected_blocks_assertion = asrt.matches_sequence(expected_blocks)
+                expected_blocks_assertion = asrt.matches_sequence([
+                    _matches_definition_short_info_block(symbol_definition),
+                    _matches_definition_source_block(symbol_definition),
+                    _is_resolved_value_presentation_block(),
+                ])
 
                 expected_blocks_assertion.apply_with_message(self, blocks, 'blocks')
 
@@ -266,19 +248,17 @@ _SOURCE_INFO_WITH_SOURCE = symbol_info.SourceInfo.of_lines(
 
 _ARBITRARY_STRING_RESOLVER = string_resolvers.arbitrary_resolver()
 
-_TYPES_WITHOUT_STRUCTURE_REPORTING = [
+_RESOLVERS_OF_EVERY_TYPE = [
     _ARBITRARY_STRING_RESOLVER,
-    list_resolvers.arbitrary_resolver(),
     path_resolvers.arbitrary_resolver(),
+    list_resolvers.arbitrary_resolver(),
 
     program_resolvers.arbitrary_resolver(),
+
+    file_matcher.arbitrary_resolver(),
     string_transformer.arbitrary_resolver(),
 
     line_matcher.arbitrary_resolver(),
     string_matcher.arbitrary_resolver(),
     files_matcher.arbitrary_resolver(),
-]
-
-_TYPES_WITH_STRUCTURE_REPORTING = [
-    file_matcher.arbitrary_resolver(),
 ]

@@ -126,7 +126,7 @@ class ReferenceSourceLocationBlock(ReportBlock):
                     source_info.source_lines,
                 )).render()
         else:
-            raise ValueError('inconsistency')
+            raise ValueError('inconsistency of source info: ' + str(source_info))
 
 
 class _SymbolNotFoundReport(Report):
@@ -164,18 +164,14 @@ class _DefinitionReport(_SuccessfulReportBase):
 
     def blocks(self) -> Sequence[ReportBlock]:
         definition = self.definition
-        ret_val = [
+        return [
             DefinitionShortInfoBlock(definition),
             DefinitionSourceBlock(definition.phase,
                                   definition.definition.resolver_container.source_location),
+            self._get_resolved_value_presentation(),
         ]
-        resolved_value_presentation = self._get_resolved_value_presentation()
-        if resolved_value_presentation is not None:
-            ret_val.append(resolved_value_presentation)
 
-        return ret_val
-
-    def _get_resolved_value_presentation(self) -> Optional[value_presentation.ResolvedValuePresentationBlock]:
+    def _get_resolved_value_presentation(self) -> value_presentation.ResolvedValuePresentationBlock:
         resolver = self.definition.definition.resolver_container.resolver
         definitions = [
             definition_info.definition
