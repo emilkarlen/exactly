@@ -14,7 +14,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_system.logic.test_resources import file_matchers
 
 
-def arbitrary_file_matcher_resolver() -> FileMatcherResolver:
+def arbitrary_resolver() -> FileMatcherResolver:
     return FileMatcherResolverConstantTestImpl(
         file_matchers.arbitrary_file_matcher()
     )

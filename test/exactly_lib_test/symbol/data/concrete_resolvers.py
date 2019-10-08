@@ -83,20 +83,20 @@ class TestValueVisitor(unittest.TestCase):
             visitor.visit(_UnknownDataValueResolver())
 
 
-class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.DataValueResolverVisitor):
+class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.DataValueResolverPseudoVisitor):
     def __init__(self, ret_val):
         self.ret_val = ret_val
         self.visited_classes = []
 
-    def _visit_file_ref(self, value: pr.FileRefResolver):
+    def visit_file_ref(self, value: pr.FileRefResolver):
         self.visited_classes.append(pr.FileRefResolver)
         return self.ret_val
 
-    def _visit_string(self, value: sr.StringResolver):
+    def visit_string(self, value: sr.StringResolver):
         self.visited_classes.append(sr.StringResolver)
         return self.ret_val
 
-    def _visit_list(self, value: lr.ListResolver):
+    def visit_list(self, value: lr.ListResolver):
         self.visited_classes.append(lr.ListResolver)
         return self.ret_val
 

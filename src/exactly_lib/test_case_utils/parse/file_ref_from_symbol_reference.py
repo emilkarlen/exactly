@@ -5,7 +5,7 @@ from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver, PathPartResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.data.visitor import DataValueResolverVisitor
+from exactly_lib.symbol.data.visitor import DataValueResolverPseudoVisitor
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -44,7 +44,7 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
         return [self._file_ref_or_string_symbol] + self._suffix_resolver.references
 
 
-class _DataValueSymbol2FileRefResolverVisitor(DataValueResolverVisitor):
+class _DataValueSymbol2FileRefResolverVisitor(DataValueResolverPseudoVisitor):
     def __init__(self,
                  suffix_resolver: PathPartResolver,
                  default_relativity: RelOptionType,
@@ -53,7 +53,7 @@ class _DataValueSymbol2FileRefResolverVisitor(DataValueResolverVisitor):
         self.symbols = symbols
         self.default_relativity = default_relativity
 
-    def _visit_file_ref(self, value: FileRefResolver) -> FileRef:
+    def visit_file_ref(self, value: FileRefResolver) -> FileRef:
         file_ref = value.resolve(self.symbols)
         suffix_str = self.suffix_resolver.resolve(self.symbols).value()
         if not suffix_str:
@@ -61,7 +61,7 @@ class _DataValueSymbol2FileRefResolverVisitor(DataValueResolverVisitor):
         suffix_str = suffix_str.lstrip('/')
         return file_refs.stacked(file_ref, file_refs.constant_path_part(suffix_str))
 
-    def _visit_string(self, value: StringResolver) -> FileRef:
+    def visit_string(self, value: StringResolver) -> FileRef:
         sv = value.resolve(self.symbols)
         first_suffix_str = sv.value_when_no_dir_dependencies()
         following_suffix_str = self.suffix_resolver.resolve(self.symbols).value()
@@ -73,5 +73,5 @@ class _DataValueSymbol2FileRefResolverVisitor(DataValueResolverVisitor):
             return file_refs.of_rel_option(self.default_relativity,
                                            file_refs.constant_path_part(path_str))
 
-    def _visit_list(self, value: ListResolver) -> FileRef:
+    def visit_list(self, value: ListResolver) -> FileRef:
         raise ValueError('Impossible to convert a list to a file ref')

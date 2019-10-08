@@ -19,6 +19,10 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
 
 
+def arbitrary_resolver() -> StringTransformerResolver:
+    return StringTransformerResolverConstantTestImpl(StringTransformerConstantTestImpl(()))
+
+
 class StringTransformerConstantTestImpl(StringTransformerTestImplBase):
     """Matcher with constant result."""
 

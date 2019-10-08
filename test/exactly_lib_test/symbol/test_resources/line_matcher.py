@@ -18,6 +18,12 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
+def arbitrary_resolver() -> LineMatcherResolver:
+    return LineMatcherResolverConstantTestImpl(
+        LineMatcherConstantTestImpl(True)
+    )
+
+
 class LineMatcherConstantTestImpl(LineMatcher):
     """Matcher with constant result."""
 

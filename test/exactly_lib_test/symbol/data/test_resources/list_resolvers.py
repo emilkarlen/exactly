@@ -6,6 +6,10 @@ from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.util.symbol_table import SymbolTable
 
 
+def arbitrary_resolver() -> ListResolver:
+    return ListResolverTestImplForConstantListValue(ListValue.empty())
+
+
 class ListResolverTestImplForConstantListValue(ListResolver):
     def __init__(self, list_value: ListValue):
         super().__init__([])
@@ -13,7 +17,7 @@ class ListResolverTestImplForConstantListValue(ListResolver):
 
     @property
     def elements(self) -> Sequence[Element]:
-        raise ValueError('this method is not supported')
+        return ()
 
     @property
     def references(self) -> Sequence[SymbolReference]:

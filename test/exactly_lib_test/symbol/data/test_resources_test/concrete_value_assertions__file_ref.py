@@ -1,5 +1,4 @@
 import unittest
-from typing import Sequence
 
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
@@ -12,8 +11,10 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources import concrete_value_assertions as sut
+from exactly_lib_test.symbol.data.test_resources.path_resolvers import \
+    FileRefResolverTestImplWithConstantFileRefAndSymbolReferences
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import FileRefTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -55,8 +56,8 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
             for path_suffix in _PATH_SUFFIX_VARIANTS:
                 for symbol_references in _SYMBOL_REFERENCES:
                     file_ref = FileRefTestImpl(relativity, path_suffix)
-                    file_ref_resolver = _FileRefResolverWithConstantFileRefAndSymbolReferences(file_ref,
-                                                                                               symbol_references)
+                    file_ref_resolver = FileRefResolverTestImplWithConstantFileRefAndSymbolReferences(file_ref,
+                                                                                                      symbol_references)
                     test_case_descr = 'relativity:{}, path-suffix: {}'.format(relativity, type(path_suffix))
                     with self.subTest(msg=sut.equals_file_ref_resolver.__name__ + ' :: ' + test_case_descr):
                         assertion = sut.equals_file_ref_resolver(file_ref_resolver)
@@ -205,7 +206,7 @@ class Test2NotEquals(unittest.TestCase):
     def test_differs__symbol_references(self):
         # ARRANGE #
         file_ref = FileRefTestImpl(RelOptionType.REL_ACT, file_refs.constant_path_part('file-name'))
-        actual = _FileRefResolverWithConstantFileRefAndSymbolReferences(
+        actual = FileRefResolverTestImplWithConstantFileRefAndSymbolReferences(
             file_ref,
             [SymbolReference('symbol_name',
                              ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))])
@@ -229,19 +230,4 @@ def _relativity_restriction(rel_option_types: set, absolute_is_valid: bool) -> F
 
 
 def resolver_from_constants(file_ref: FileRef, references: list) -> FileRefResolver:
-    return _FileRefResolverWithConstantFileRefAndSymbolReferences(file_ref, references)
-
-
-class _FileRefResolverWithConstantFileRefAndSymbolReferences(FileRefResolver):
-    def __init__(self,
-                 file_ref: FileRef,
-                 references: Sequence[SymbolReference]):
-        self._file_ref = file_ref
-        self._references = references
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._references
-
-    def resolve(self, symbols: SymbolTable) -> FileRef:
-        return self._file_ref
+    return FileRefResolverTestImplWithConstantFileRefAndSymbolReferences(file_ref, references)

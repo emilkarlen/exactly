@@ -7,6 +7,10 @@ from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.util.symbol_table import SymbolTable
 
 
+def arbitrary_resolver() -> StringResolver:
+    return StringResolverTestImpl('arbitrary value')
+
+
 class StringResolverTestImpl(StringResolver):
     def __init__(self,
                  value: str,

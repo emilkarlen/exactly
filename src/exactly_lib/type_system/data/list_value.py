@@ -11,6 +11,10 @@ class ListValue(MultiDirDependentValue[List[str]]):
     def __init__(self, string_value_elements: List[StringValue]):
         self._string_value_elements = tuple(string_value_elements)
 
+    @staticmethod
+    def empty() -> 'ListValue':
+        return ListValue([])
+
     @property
     def string_value_elements(self) -> Sequence[StringValue]:
         return self._string_value_elements
@@ -35,8 +39,3 @@ class ListValue(MultiDirDependentValue[List[str]]):
     def __str__(self):
         return '{}([{}])'.format('ListValue',
                                  ','.join(map(str, self._string_value_elements)))
-
-
-def empty() -> ListValue:
-    return ListValue([]
-                     )

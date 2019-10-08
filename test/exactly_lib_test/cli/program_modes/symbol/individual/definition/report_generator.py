@@ -12,15 +12,12 @@ from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import PhaseEnum
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
-from exactly_lib.type_system.data import string_value, list_value, file_refs
-from exactly_lib.type_system.value_type import DataValueType, ValueType
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.section_document.test_resources import source_location_assertions as asrt_source_loc
-from exactly_lib_test.symbol.data.test_resources import string_resolvers
-from exactly_lib_test.symbol.data.test_resources.value_resolvers import ConstantValueResolver
+from exactly_lib_test.symbol.data.test_resources import string_resolvers, list_resolvers, path_resolvers
 from exactly_lib_test.symbol.test_resources import symbol_utils, line_matcher, string_matcher, file_matcher, \
-    files_matcher
+    files_matcher, string_transformer
 from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -267,43 +264,21 @@ _SOURCE_INFO_WITH_SOURCE = symbol_info.SourceInfo.of_lines(
     ['the reference source line']
 )
 
-_ARBITRARY_STRING_RESOLVER = ConstantValueResolver(DataValueType.STRING, string_value.StringValue(()))
-
-_ARBITRARY_LIST_RESOLVER = ConstantValueResolver(DataValueType.LIST, list_value.empty())
-
-_ARBITRARY_PATH_RESOLVER = ConstantValueResolver(DataValueType.PATH,
-                                                 file_refs.simple_of_rel_option(RelOptionType.REL_ACT, 'base-name'))
-
-_ARBITRARY_PROGRAM_RESOLVER = program_resolvers.with_ref_to_program(
-    string_resolvers.StringResolverTestImpl('the string'))
-
-_ARBITRARY_STRING_TRANSFORMER_RESOLVER = StringTransformerConstant(MyToUppercaseTransformer())
-
-_ARBITRARY_LINE_MATCHER_RESOLVER = line_matcher.LineMatcherResolverConstantTestImpl(
-    line_matcher.LineMatcherConstantTestImpl(True)
-)
-
-_ARBITRARY_STRING_MATCHER_RESOLVER = string_matcher.StringMatcherResolverConstantTestImpl(
-    string_matchers.StringMatcherConstant(None)
-)
-
-_ARBITRARY_FILE_MATCHER_RESOLVER = file_matcher.arbitrary_file_matcher_resolver()
-
-_ARBITRARY_FILES_MATCHER_RESOLVER = files_matcher.arbitrary_files_matcher_resolver()
+_ARBITRARY_STRING_RESOLVER = string_resolvers.arbitrary_resolver()
 
 _TYPES_WITHOUT_STRUCTURE_REPORTING = [
     _ARBITRARY_STRING_RESOLVER,
-    _ARBITRARY_LIST_RESOLVER,
-    _ARBITRARY_PATH_RESOLVER,
+    list_resolvers.arbitrary_resolver(),
+    path_resolvers.arbitrary_resolver(),
 
-    _ARBITRARY_PROGRAM_RESOLVER,
-    _ARBITRARY_STRING_TRANSFORMER_RESOLVER,
+    program_resolvers.arbitrary_resolver(),
+    string_transformer.arbitrary_resolver(),
 
-    _ARBITRARY_LINE_MATCHER_RESOLVER,
-    _ARBITRARY_STRING_MATCHER_RESOLVER,
-    _ARBITRARY_FILES_MATCHER_RESOLVER,
+    line_matcher.arbitrary_resolver(),
+    string_matcher.arbitrary_resolver(),
+    files_matcher.arbitrary_resolver(),
 ]
 
 _TYPES_WITH_STRUCTURE_REPORTING = [
-    _ARBITRARY_FILE_MATCHER_RESOLVER,
+    file_matcher.arbitrary_resolver(),
 ]

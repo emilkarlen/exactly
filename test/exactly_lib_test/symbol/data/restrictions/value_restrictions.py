@@ -11,7 +11,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.data.test_resources.list_values import ListResolverTestImplForConstantListValue
+from exactly_lib_test.symbol.data.test_resources.list_resolvers import ListResolverTestImplForConstantListValue
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl

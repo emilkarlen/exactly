@@ -45,7 +45,7 @@ from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions impor
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import \
     symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value, symbol_table_with_string_values, \
     entry
-from exactly_lib_test.symbol.data.test_resources.list_values import ListResolverTestImplForConstantListValue
+from exactly_lib_test.symbol.data.test_resources.list_resolvers import ListResolverTestImplForConstantListValue
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference, is_reference_to_string_made_up_of_just_plain_strings
 from exactly_lib_test.symbol.test_resources import symbol_utils
