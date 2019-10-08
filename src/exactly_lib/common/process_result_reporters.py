@@ -4,6 +4,7 @@ from typing import Callable
 from exactly_lib.common import result_reporting
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.common.process_result_reporter import ProcessResultReporter, Environment
+from exactly_lib.util.file_printer import FilePrinter
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
@@ -32,6 +33,27 @@ class ProcessResultReporterWithInitialExitValueOutput(ProcessResultReporter):
         exit_value_printer.flush()
 
 
+class ProcessResultReporterWithInitialExitValueOutputBase(ProcessResultReporter, ABC):
+    def __init__(self,
+                 exit_value_printer: ProcOutputFile,
+                 ):
+        self._exit_value_printer = exit_value_printer
+
+    def report(self, environment: Environment) -> int:
+        exit_value = self._exit_value()
+        _output_exit_value(environment.std_file_printers.get(self._exit_value_printer), exit_value)
+        self._output_rest(environment)
+        return exit_value.exit_code
+
+    @abstractmethod
+    def _exit_value(self) -> ExitValue:
+        pass
+
+    @abstractmethod
+    def _output_rest(self, environment: Environment):
+        pass
+
+
 class ProcessResultReporterOfMajorBlocksBase(ProcessResultReporter, ABC):
     def __init__(self,
                  exit_code: int,
@@ -48,3 +70,35 @@ class ProcessResultReporterOfMajorBlocksBase(ProcessResultReporter, ABC):
     @abstractmethod
     def _blocks(self) -> SequenceRenderer[MajorBlock]:
         pass
+
+
+class ProcessResultReporterOfExitCodeAndMajorBlocksBase(ProcessResultReporter, ABC):
+    def __init__(self,
+                 exit_value_file: ProcOutputFile,
+                 blocks_file: ProcOutputFile,
+                 ):
+        self._exit_value_file = exit_value_file
+        self._blocks_file = blocks_file
+
+    @abstractmethod
+    def _exit_value(self) -> ExitValue:
+        pass
+
+    def report(self, environment: Environment) -> int:
+        exit_value = self._exit_value()
+        _output_exit_value(environment.std_file_printers.get(self._exit_value_file), exit_value)
+
+        result_reporting.print_major_blocks(self._blocks(),
+                                            environment.std_file_printers.get(self._blocks_file))
+
+        return exit_value.exit_code
+
+    @abstractmethod
+    def _blocks(self) -> SequenceRenderer[MajorBlock]:
+        pass
+
+
+def _output_exit_value(printer: FilePrinter, exit_value: ExitValue):
+    printer.write_colored_line(exit_value.exit_identifier,
+                               exit_value.color)
+    printer.flush()

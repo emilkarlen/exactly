@@ -6,10 +6,13 @@ from exactly_lib.cli.program_modes.symbol.impl.parse import Parser, ParserForTes
 from exactly_lib.cli.program_modes.symbol.impl.report import ReportGenerator, Report
 from exactly_lib.cli.program_modes.symbol.request import SymbolInspectionRequest, RequestVariantVisitor, \
     RequestVariantList, RequestVariantIndividual
+from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.common.process_result_reporter import ProcessResultReporter, Environment, StdOutputFilePrinters
-from exactly_lib.common.process_result_reporters import ProcessResultReporterOfMajorBlocksBase
+from exactly_lib.common.process_result_reporters import ProcessResultReporterOfMajorBlocksBase, \
+    ProcessResultReporterOfExitCodeAndMajorBlocksBase
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.processors import TestCaseDefinition
+from exactly_lib.processing.standalone import result_reporting
 from exactly_lib.processing.standalone import result_reporting as processing_result_reporting
 from exactly_lib.processing.test_case_processing import AccessorError
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
@@ -38,9 +41,9 @@ class Executor:
         except SuiteParseError as ex:
             return _SuiteErrorReporter(ex)
         except AccessorError as ex:
-            return _AccessErrorReporter(ex)
-        except actor.ParseException:
-            return _ActPhaseErrorReporter()
+            return _reporter_of_access_error(ex)
+        except actor.ParseException as ex:
+            return _ActPhaseErrorReporter(ex)
 
         return _ReporterOfRequestReport(
             self._generate_report(test_case, action_to_check, request)
@@ -103,23 +106,25 @@ class _SuiteErrorReporter(ProcessResultReporter):
         return reporter.report(self._ex)
 
 
-class _AccessErrorReporter(ProcessResultReporter):
-    def __init__(self, ex: AccessorError):
+def _reporter_of_access_error(ex: AccessorError) -> ProcessResultReporter:
+    return result_reporting.reporter_of_unable_to_execute(
+        ProcOutputFile.STDERR,
+        exit_values.from_access_error(ex.error),
+        ex.error_info,
+    )
+
+
+class _ActPhaseErrorReporter(ProcessResultReporterOfExitCodeAndMajorBlocksBase):
+    def __init__(self, ex: actor.ParseException):
+        super().__init__(ProcOutputFile.STDERR,
+                         ProcOutputFile.STDERR)
         self._ex = ex
 
-    def report(self, environment: Environment) -> int:
-        exit_value = exit_values.from_access_error(self._ex.error)
-        environment.err_printer.write_colored_line(exit_value.exit_identifier,
-                                                   exit_value.color)
-        return exit_value.exit_code
+    def _exit_value(self) -> ExitValue:
+        return exit_values.EXECUTION__VALIDATION_ERROR
 
-
-class _ActPhaseErrorReporter(ProcessResultReporter):
-    def report(self, environment: Environment) -> int:
-        exit_value = exit_values.EXECUTION__VALIDATION_ERROR
-        environment.err_printer.write_colored_line(exit_value.exit_identifier,
-                                                   exit_value.color)
-        return exit_value.exit_code
+    def _blocks(self) -> SequenceRenderer[MajorBlock]:
+        return self._ex.cause.failure_message
 
 
 class _ReporterOfRequestReport(ProcessResultReporterOfMajorBlocksBase):

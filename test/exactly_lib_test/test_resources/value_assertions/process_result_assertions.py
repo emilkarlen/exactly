@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
@@ -10,9 +11,18 @@ def is_result_for_exit_value(expected: ExitValue) -> ValueAssertion[SubProcessRe
     return SubProcessExitValueAssertion(expected)
 
 
-def is_result_for_exit_value_on_stderr_and_empty_stdout(expected: ExitValue) -> ValueAssertion[SubProcessResult]:
+def is_result_for_exit_value_on_stderr_and_empty_stdout(expected: ExitValue,
+                                                        contents_after_exit_value_allowed: bool = False
+                                                        ) -> ValueAssertion[SubProcessResult]:
+    exit_value_string = expected.exit_identifier + '\n'
+    stderr_expectation = (
+        asrt_str.begins_with(exit_value_string)
+        if contents_after_exit_value_allowed
+        else
+        asrt.equals(exit_value_string)
+    )
     return sub_process_result(exitcode=asrt.equals(expected.exit_code),
-                              stderr=asrt.equals(expected.exit_identifier + '\n'),
+                              stderr=stderr_expectation,
                               stdout=asrt.equals(''))
 
 

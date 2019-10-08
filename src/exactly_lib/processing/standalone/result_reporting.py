@@ -80,11 +80,28 @@ class TestCaseResultReporter(ResultReporter):
     def __report_unable_to_execute(self,
                                    exit_value: ExitValue,
                                    error_info: ErrorInfo) -> int:
-        def output_rest(reporting_environment: Environment):
-            reporting.print_error_info(reporting_environment.std_file_printers.err,
-                                       error_info)
+        reporter = reporter_of_unable_to_execute(
+            self._exit_identifier_printer(),
+            exit_value,
+            error_info,
+        )
 
-        return self._report_with_exit_value_output(exit_value, output_rest)
+        return reporter.report(self._reporting_environment)
+
+
+def reporter_of_unable_to_execute(
+        exit_value_printer: ProcOutputFile,
+        exit_value: ExitValue,
+        error_info: ErrorInfo) -> ProcessResultReporter:
+    def output_rest(reporting_environment: Environment):
+        reporting.print_error_info(reporting_environment.std_file_printers.err,
+                                   error_info)
+
+    return ProcessResultReporterWithInitialExitValueOutput(
+        exit_value,
+        exit_value_printer,
+        output_rest,
+    )
 
 
 class _ResultReporterForNormalOutput(TestCaseResultReporter):

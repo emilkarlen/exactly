@@ -26,7 +26,8 @@ class TestFailingScenarios(unittest.TestCase):
             ),
             expectation=
             asrt_proc_result.is_result_for_exit_value_on_stderr_and_empty_stdout(
-                exit_values.NO_EXECUTION__FILE_ACCESS_ERROR
+                exit_values.NO_EXECUTION__FILE_ACCESS_ERROR,
+                contents_after_exit_value_allowed=True,
             )
         )
 
