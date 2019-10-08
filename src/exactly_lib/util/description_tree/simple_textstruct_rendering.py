@@ -28,10 +28,10 @@ class TreeRenderer(Generic[NODE_DATA], Renderer[MajorBlock]):
         self._configuration = configuration
 
     def render(self) -> MajorBlock:
-        return MajorBlock(_TreeRendererToMinorBlock(self._configuration, self._tree).render_sequence())
+        return MajorBlock(TreeRendererToMinorBlocks(self._configuration, self._tree).render_sequence())
 
 
-class _TreeRendererToMinorBlock(Generic[NODE_DATA], SequenceRenderer[MinorBlock]):
+class TreeRendererToMinorBlocks(Generic[NODE_DATA], SequenceRenderer[MinorBlock]):
     def __init__(self,
                  configuration: RenderingConfiguration[NODE_DATA],
                  tree: Node[NODE_DATA],
@@ -63,7 +63,7 @@ class _TreeRendererToMinorBlock(Generic[NODE_DATA], SequenceRenderer[MinorBlock]
     def _children_renderer(self) -> SequenceRenderer[MinorBlock]:
         return rend_comb.ConcatenationR(
             [
-                _TreeRendererToMinorBlock(self._configuration, child)
+                TreeRendererToMinorBlocks(self._configuration, child)
                 for child in self._tree.children
             ]
         )

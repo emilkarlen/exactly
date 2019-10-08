@@ -1,7 +1,8 @@
 from abc import ABC
-from typing import Optional, Sequence
+from typing import Optional, Sequence, List
 
 from exactly_lib.cli.program_modes.symbol.impl.report import ReportGenerator, Report, ReportBlock
+from exactly_lib.cli.program_modes.symbol.impl.reports import value_presentation
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo, ContextAnd, \
     DefinitionsResolver
 from exactly_lib.common.report_rendering.parts import source_location
@@ -24,7 +25,9 @@ class IndividualReportGenerator(ReportGenerator):
         self._list_references = list_references
 
     def generate(self, definitions_resolver: DefinitionsResolver) -> Report:
-        mb_definition = self._lookup(definitions_resolver)
+        definitions = list(definitions_resolver.definitions())
+
+        mb_definition = self._lookup(definitions)
 
         if mb_definition is None:
             return _SymbolNotFoundReport(self._symbol_name)
@@ -32,11 +35,11 @@ class IndividualReportGenerator(ReportGenerator):
             if self._list_references:
                 return _ReferencesReport(mb_definition)
             else:
-                return _DefinitionReport(mb_definition)
+                return _DefinitionReport(mb_definition, definitions)
 
-    def _lookup(self, definitions_resolver: DefinitionsResolver) -> Optional[SymbolDefinitionInfo]:
+    def _lookup(self, definitions: List[SymbolDefinitionInfo]) -> Optional[SymbolDefinitionInfo]:
         name = self._symbol_name
-        for definition in definitions_resolver.definitions():
+        for definition in definitions:
             if name == definition.name():
                 return definition
 
@@ -50,10 +53,11 @@ class SymbolNotFoundBlock(ReportBlock):
         self._symbol_name = symbol_name
 
     def render(self) -> MajorBlock:
-        header = concepts.SYMBOL_CONCEPT_INFO.singular_name.capitalize() + ' not in test case: '
-        s = header + self._symbol_name
+        header = ' '.join([concepts.SYMBOL_CONCEPT_INFO.singular_name.capitalize(),
+                           'not in test case:',
+                           self._symbol_name])
         return blocks.MajorBlockOfSingleLineObject(
-            line_objects.StringLineObject(s)
+            line_objects.StringLineObject(header)
         ).render()
 
 
@@ -151,13 +155,33 @@ class _SuccessfulReportBase(Report, ABC):
 
 
 class _DefinitionReport(_SuccessfulReportBase):
+    def __init__(self,
+                 definition: SymbolDefinitionInfo,
+                 all_definitions: List[SymbolDefinitionInfo],
+                 ):
+        super().__init__(definition)
+        self.all_definitions = all_definitions
+
     def blocks(self) -> Sequence[ReportBlock]:
         definition = self.definition
-        return [
+        ret_val = [
             DefinitionShortInfoBlock(definition),
             DefinitionSourceBlock(definition.phase,
                                   definition.definition.resolver_container.source_location),
         ]
+        resolved_value_presentation = self._get_resolved_value_presentation()
+        if resolved_value_presentation is not None:
+            ret_val.append(resolved_value_presentation)
+
+        return ret_val
+
+    def _get_resolved_value_presentation(self) -> Optional[value_presentation.ResolvedValuePresentationBlock]:
+        resolver = self.definition.definition.resolver_container.resolver
+        definitions = [
+            definition_info.definition
+            for definition_info in self.all_definitions
+        ]
+        return value_presentation.PresentationBlockConstructor(definitions).block_for(resolver)
 
 
 class _ReferencesReport(_SuccessfulReportBase):

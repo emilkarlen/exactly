@@ -127,7 +127,7 @@ def matches_minor_block(line_elements: ValueAssertion[Sequence[LineElement]],
             'line elements',
             MinorBlock.parts.fget,
             asrt.and_([
-                asrt.is_sequence_of(matches_line_element(asrt.anything_goes())),
+                asrt.is_sequence_of(matches_line_element(is_any_line_object())),
                 line_elements,
             ]),
         ),

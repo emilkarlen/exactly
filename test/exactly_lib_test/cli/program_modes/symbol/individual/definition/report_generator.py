@@ -1,10 +1,9 @@
 import unittest
-from typing import Iterator, Sequence, Optional
+from typing import Iterator, Sequence, Optional, List
 
 from exactly_lib.cli.program_modes.symbol.impl.report import ReportBlock
 from exactly_lib.cli.program_modes.symbol.impl.reports import individual as sut, symbol_info
-from exactly_lib.cli.program_modes.symbol.impl.reports.individual import DefinitionSourceBlock, \
-    DefinitionShortInfoBlock, ReferenceSourceLocationBlock
+from exactly_lib.cli.program_modes.symbol.impl.reports import value_presentation
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import DefinitionsResolver, SymbolDefinitionInfo
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol import restriction
@@ -40,21 +39,28 @@ def suite() -> unittest.TestSuite:
 
 class TestDefinition(unittest.TestCase):
     def test_types_without_structure_reporting(self):
+        self._check(
+            _TYPES_WITHOUT_STRUCTURE_REPORTING,
+            non_mandatory_blocks=[],
+        )
+
+    def test_types_with_structure_reporting(self):
+        self._check(
+            _TYPES_WITH_STRUCTURE_REPORTING,
+            non_mandatory_blocks=[_is_resolved_value_presentation_block()],
+        )
+
+    def _check(self,
+               cases: Sequence[SymbolValueResolver],
+               non_mandatory_blocks: List[ValueAssertion[ReportBlock]],
+               ):
         # ARRANGE #
 
         symbol_name = 'the_symbol_name'
 
-        cases = [
-            NameAndValue(
-                str(resolver.value_type),
-                resolver
-            )
-            for resolver in _TYPES_WITHOUT_STRUCTURE_REPORTING
-        ]
-
-        for case in cases:
-            with self.subTest(case.name):
-                symbol_definition = _symbol_definition(symbol_name, case.value)
+        for resolver in cases:
+            with self.subTest(str(resolver.value_type)):
+                symbol_definition = _symbol_definition(symbol_name, resolver)
                 definitions_resolver = _ConstantDefinitionsResolver([symbol_definition])
 
                 report_generator = sut.IndividualReportGenerator(symbol_name, False)
@@ -68,12 +74,17 @@ class TestDefinition(unittest.TestCase):
 
                 self.assertTrue(report.is_success, 'is success')
 
-                expected_blocks = asrt.matches_sequence([
-                    _matches_definition_short_info_block(symbol_definition),
-                    _matches_definition_source_block(symbol_definition),
-                ])
+                expected_blocks = (
+                        [
+                            _matches_definition_short_info_block(symbol_definition),
+                            _matches_definition_source_block(symbol_definition),
+                        ] +
+                        non_mandatory_blocks
+                )
 
-                expected_blocks.apply_with_message(self, blocks, 'blocks')
+                expected_blocks_assertion = asrt.matches_sequence(expected_blocks)
+
+                expected_blocks_assertion.apply_with_message(self, blocks, 'blocks')
 
                 _rendered_blocks_are_major_blocks(self, blocks)
 
@@ -190,9 +201,13 @@ def _symbol_definition(name: str,
     )
 
 
+def _is_resolved_value_presentation_block() -> ValueAssertion[ReportBlock]:
+    return asrt.is_instance(value_presentation.ResolvedValuePresentationBlock)
+
+
 def _matches_reference_source_location_block(expected_name: str) -> ValueAssertion[ReportBlock]:
     return asrt.is_instance_with__many(
-        ReferenceSourceLocationBlock,
+        sut.ReferenceSourceLocationBlock,
         [
             asrt.sub_component('name',
                                _get_reference_block_symbol_name,
@@ -203,7 +218,7 @@ def _matches_reference_source_location_block(expected_name: str) -> ValueAsserti
 
 def _matches_definition_short_info_block(expected: SymbolDefinitionInfo) -> ValueAssertion[ReportBlock]:
     return asrt.is_instance_with__many(
-        DefinitionShortInfoBlock,
+        sut.DefinitionShortInfoBlock,
         [
             asrt.sub_component('name',
                                _get_short_info_name,
@@ -214,7 +229,7 @@ def _matches_definition_short_info_block(expected: SymbolDefinitionInfo) -> Valu
 
 def _matches_definition_source_block(expected: SymbolDefinitionInfo) -> ValueAssertion[ReportBlock]:
     return asrt.is_instance_with__many(
-        DefinitionSourceBlock,
+        sut.DefinitionSourceBlock,
         [
             asrt.sub_component(
                 'phase',
@@ -230,19 +245,19 @@ def _matches_definition_source_block(expected: SymbolDefinitionInfo) -> ValueAss
     )
 
 
-def _get_short_info_name(block: DefinitionShortInfoBlock) -> str:
+def _get_short_info_name(block: sut.DefinitionShortInfoBlock) -> str:
     return block.definition.name()
 
 
-def _get_source_block_source_location_info(block: DefinitionSourceBlock) -> Optional[SourceLocationInfo]:
+def _get_source_block_source_location_info(block: sut.DefinitionSourceBlock) -> Optional[SourceLocationInfo]:
     return block.source_location
 
 
-def _get_source_block_phase_enum(block: DefinitionSourceBlock) -> PhaseEnum:
+def _get_source_block_phase_enum(block: sut.DefinitionSourceBlock) -> PhaseEnum:
     return block.phase.the_enum
 
 
-def _get_reference_block_symbol_name(block: ReferenceSourceLocationBlock) -> str:
+def _get_reference_block_symbol_name(block: sut.ReferenceSourceLocationBlock) -> str:
     return block.reference.value().name
 
 
@@ -286,6 +301,9 @@ _TYPES_WITHOUT_STRUCTURE_REPORTING = [
 
     _ARBITRARY_LINE_MATCHER_RESOLVER,
     _ARBITRARY_STRING_MATCHER_RESOLVER,
-    _ARBITRARY_FILE_MATCHER_RESOLVER,
     _ARBITRARY_FILES_MATCHER_RESOLVER,
+]
+
+_TYPES_WITH_STRUCTURE_REPORTING = [
+    _ARBITRARY_FILE_MATCHER_RESOLVER,
 ]

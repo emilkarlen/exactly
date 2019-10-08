@@ -297,7 +297,7 @@ class TestMatchesMinorBlock(unittest.TestCase):
                     asrt.matches_sequence([asrt.is_instance(LineElement)])
                 ),
                 actual=
-                MinorBlock([LineElement(LineObjectForTest())]),
+                MinorBlock([LineElement(StringLineObject('the string'))]),
                 ),
             NEA('test of element properties',
                 expected=

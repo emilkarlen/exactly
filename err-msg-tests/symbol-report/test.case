@@ -1,0 +1,8 @@
+[setup]
+
+def string-matcher STRING_MATCHER = equals -file expected.txt
+
+
+def file-matcher FILE_MATCHER__CONTENTS = contents STRING_MATCHER
+
+def file-matcher FILE_MATCHER = type file || type dir && ! FILE_MATCHER__CONTENTS
