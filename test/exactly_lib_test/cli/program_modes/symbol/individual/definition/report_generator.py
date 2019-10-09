@@ -60,7 +60,7 @@ class TestDefinition(unittest.TestCase):
                 expected_blocks_assertion = asrt.matches_sequence([
                     _matches_definition_short_info_block(symbol_definition),
                     _matches_definition_source_block(symbol_definition),
-                    _is_resolved_value_presentation_block(),
+                    # _is_resolved_value_presentation_block(), TODO restore after refactoring of value presentation
                 ])
 
                 expected_blocks_assertion.apply_with_message(self, blocks, 'blocks')

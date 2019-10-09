@@ -168,7 +168,7 @@ class _DefinitionReport(_SuccessfulReportBase):
             DefinitionShortInfoBlock(definition),
             DefinitionSourceBlock(definition.phase,
                                   definition.definition.resolver_container.source_location),
-            self._get_resolved_value_presentation(),
+            # self._get_resolved_value_presentation(),  TODO restore after refactoring of value presentation
         ]
 
     def _get_resolved_value_presentation(self) -> value_presentation.ResolvedValuePresentationBlock:
