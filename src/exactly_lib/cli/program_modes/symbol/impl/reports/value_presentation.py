@@ -8,7 +8,6 @@ from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.data.visitor import DataValueResolverPseudoVisitor
@@ -27,6 +26,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import path_description
+from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
@@ -84,7 +84,7 @@ class _DataTypeBlockConstructor(DataValueResolverPseudoVisitor[ResolvedValuePres
         return _BlockForCustomRenderer(_StringRenderer(string))
 
     def visit_file_ref(self, value: FileRefResolver) -> ResolvedValuePresentationBlock:
-        describer = described_path_resolvers.of(value).resolve__with_unknown_cd(self.symbols).describer
+        describer = described_path_ddv.new__with_unknown_cd(value.resolve(self.symbols)).describer
         return _of_single_line_object(line_objects.StringLineObject(describer.value.render()))
 
     def visit_list(self, value: ListResolver) -> ResolvedValuePresentationBlock:

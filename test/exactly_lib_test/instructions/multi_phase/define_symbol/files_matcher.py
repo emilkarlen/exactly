@@ -5,12 +5,12 @@ from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol import lookups
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherModel, FilesMatcher
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
+from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -265,8 +265,8 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
 
         return FilesMatcherModelForDir(
             environment.phase_logging.space_for_instruction(),
-            described_path_resolvers.of(rel_opt_conf.file_ref_resolver_for_root_dir())
-                .resolve__with_cwd_as_cd(environment.symbols)
+            described_path_ddv.new__with_cwd_as_cd(
+                rel_opt_conf.file_ref_resolver_for_root_dir().resolve(environment.symbols))
                 .value_of_any_dependency(environment.home_and_sds),
         )
 

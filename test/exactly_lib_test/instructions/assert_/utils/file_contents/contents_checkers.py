@@ -3,18 +3,17 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.file_contents.parts import contents_checkers as sut
-from exactly_lib.symbol.data import file_ref_resolvers
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.err_msg.property_description import property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.pfh_exception import PfhFailException
 from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.err_msg import prop_descr
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
-from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.err_msg.test_resources import described_path
@@ -40,10 +39,9 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
         with tmp_dir(DirContents([existing_regular_file])) as path_of_existing_directory:
             path_of_existing_regular_file = path_of_existing_directory / existing_regular_file.name
             path_value = file_refs.absolute_path(path_of_existing_regular_file)
-            path_resolver = file_ref_resolvers.constant(path_value)
-            described_path = described_path_resolvers.of(path_resolver) \
-                .resolve__with_cwd_as_cd(empty_symbol_table()) \
-                .value_of_any_dependency(fake_tcds())
+            described_path = (described_path_ddv.new__with_cwd_as_cd(path_value)
+                              .value_of_any_dependency(fake_tcds())
+                              )
             model = sut.ComparisonActualFile(described_path,
                                              FilePropertyDescriptorConstructorTestImpl(),
                                              True)

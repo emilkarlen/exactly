@@ -1,15 +1,12 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from exactly_lib.symbol.data.described_path import DescribedPathResolver
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.type_system.data.described_path import DescribedPathPrimitive, DescribedPathValue
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.data.path_describer import PathDescriberForResolver, PathDescriberForValue, \
+from exactly_lib.type_system.data.path_describer import PathDescriberForValue, \
     PathDescriberForPrimitive
-from exactly_lib.util.symbol_table import SymbolTable
 
 
 class PathDescriberHandlerForPrimitive(ABC):
@@ -49,21 +46,6 @@ class PathDescriberHandlerForValue(ABC):
 
     @abstractmethod
     def value_of_any_dependency(self, primitive: Path, tcds: HomeAndSds) -> PathDescriberHandlerForPrimitive:
-        pass
-
-
-class PathDescriberHandlerForResolver(ABC):
-    @property
-    @abstractmethod
-    def describer(self) -> PathDescriberForResolver:
-        pass
-
-    @abstractmethod
-    def resolve__with_cwd_as_cd(self, resolved_value: FileRef, symbols: SymbolTable) -> PathDescriberHandlerForValue:
-        pass
-
-    @abstractmethod
-    def resolve__with_unknown_cd(self, resolved_value: FileRef, symbols: SymbolTable) -> PathDescriberHandlerForValue:
         pass
 
 
@@ -140,34 +122,4 @@ class DescribedPathValueWHandler(DescribedPathValue):
         return DescribedPathPrimitiveWHandler(
             primitive,
             self._describer_handler.value_of_any_dependency(primitive, tcds),
-        )
-
-
-class DescribedPathResolverWHandler(DescribedPathResolver):
-    def __init__(self,
-                 path: FileRefResolver,
-                 describer_handler: PathDescriberHandlerForResolver):
-        self._path = path
-        self._describer_handler = describer_handler
-
-    @property
-    def resolver(self) -> FileRefResolver:
-        return self._path
-
-    @property
-    def describer(self) -> PathDescriberForResolver:
-        return self._describer_handler.describer
-
-    def resolve__with_cwd_as_cd(self, symbols: SymbolTable) -> DescribedPathValue:
-        value = self._path.resolve(symbols)
-        return DescribedPathValueWHandler(
-            value,
-            self._describer_handler.resolve__with_cwd_as_cd(value, symbols),
-        )
-
-    def resolve__with_unknown_cd(self, symbols: SymbolTable) -> DescribedPathValue:
-        value = self._path.resolve(symbols)
-        return DescribedPathValueWHandler(
-            value,
-            self._describer_handler.resolve__with_unknown_cd(value, symbols),
         )

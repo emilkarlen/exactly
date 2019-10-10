@@ -16,7 +16,6 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
     InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
@@ -41,6 +40,7 @@ from exactly_lib.test_case_utils.file_matcher import resolvers  as fm_resolvers
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
+from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
@@ -241,9 +241,11 @@ class _Assertion:
         self.file_ref_resolver = file_ref_resolver
         self.file_matcher = file_matcher
 
-        self.described_path = described_path_resolvers.of(self.file_ref_resolver) \
-            .resolve__with_cwd_as_cd(self.environment.symbols) \
-            .value_of_any_dependency(self.environment.home_and_sds)
+        self.described_path = (
+            described_path_ddv
+                .new__with_cwd_as_cd(self.file_ref_resolver.resolve(self.environment.symbols))
+                .value_of_any_dependency(self.environment.home_and_sds)
+        )
 
     def apply(self) -> pfh.PassOrFailOrHardError:
         if self.file_matcher is None:

@@ -2,7 +2,6 @@ from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.result import svh
@@ -10,6 +9,7 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FilePropertiesCheck
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
 from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
+from exactly_lib.type_system.data.impl.path import described_path_ddv
 
 
 class FileRefCheck:
@@ -35,9 +35,11 @@ class FileRefCheckValidator(FileRefValidatorBase):
 
 def pre_sds_failure_message_or_none(file_ref_check: FileRefCheck,
                                     environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
-    described_path = described_path_resolvers.of(file_ref_check.file_ref_resolver) \
-        .resolve__with_cwd_as_cd(environment.symbols) \
-        .value_pre_sds(environment.hds)
+    described_path = (
+        described_path_ddv
+            .new__with_cwd_as_cd(file_ref_check.file_ref_resolver.resolve(environment.symbols))
+            .value_pre_sds(environment.hds)
+    )
 
     return failure_message_or_none(file_ref_check.file_properties,
                                    described_path)
@@ -45,9 +47,11 @@ def pre_sds_failure_message_or_none(file_ref_check: FileRefCheck,
 
 def post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
                                      environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
-    described_path = described_path_resolvers.of(file_ref_check.file_ref_resolver) \
-        .resolve__with_cwd_as_cd(environment.symbols) \
-        .value_post_sds__wo_hds(environment.sds)
+    described_path = (
+        described_path_ddv
+            .new__with_cwd_as_cd(file_ref_check.file_ref_resolver.resolve(environment.symbols))
+            .value_post_sds__wo_hds(environment.sds)
+    )
 
     return failure_message_or_none(file_ref_check.file_properties,
                                    described_path)
@@ -56,9 +60,11 @@ def post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
 def pre_or_post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
                                             environment: PathResolvingEnvironmentPreOrPostSds
                                             ) -> Optional[TextRenderer]:
-    described_path = described_path_resolvers.of(file_ref_check.file_ref_resolver) \
-        .resolve__with_cwd_as_cd(environment.symbols) \
-        .value_of_any_dependency(environment.home_and_sds)
+    described_path = (
+        described_path_ddv
+            .new__with_cwd_as_cd(file_ref_check.file_ref_resolver.resolve(environment.symbols))
+            .value_of_any_dependency(environment.home_and_sds)
+    )
 
     return failure_message_or_none(file_ref_check.file_properties,
                                    described_path)

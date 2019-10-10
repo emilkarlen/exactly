@@ -17,7 +17,6 @@ from exactly_lib.instructions.multi_phase.utils.instruction_parts import Instruc
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
@@ -27,6 +26,7 @@ from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
+from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
@@ -95,9 +95,11 @@ class InstructionEmbryo(embryo.InstructionEmbryo):
         :return: None iff success. Otherwise an error message.
         """
 
-        path = (described_path_resolvers.of(self.destination)
-                .resolve__with_cwd_as_cd(environment.symbols)
-                .value_post_sds__wo_hds(environment.sds))
+        path = (
+            described_path_ddv
+                .new__with_cwd_as_cd(self.destination.resolve(environment.symbols))
+                .value_post_sds__wo_hds(environment.sds)
+        )
 
         def error(header: str) -> TextRenderer:
             return path_err_msgs.line_header__primitive(

@@ -14,7 +14,6 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
 from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import file_ref_resolvers
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -32,6 +31,7 @@ from exactly_lib.test_case_utils.program.execution.store_result_in_instruction_t
     make_transformed_file_from_output_in_instruction_tmp_dir
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution import process_output_files
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
@@ -132,9 +132,11 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
             file_refs.absolute_path(result.path_of_file_with_transformed_contents)
         )
 
-        path_with_transformed_contents = described_path_resolvers.of(file_with_transformed_contents) \
-            .resolve__with_cwd_as_cd(environment.symbols) \
-            .value_of_any_dependency(environment.home_and_sds)
+        path_with_transformed_contents = (
+            described_path_ddv
+                .new__with_cwd_as_cd(file_with_transformed_contents.resolve(environment.symbols))
+                .value_of_any_dependency(environment.home_and_sds)
+        )
 
         return ComparisonActualFile(
             path_with_transformed_contents,

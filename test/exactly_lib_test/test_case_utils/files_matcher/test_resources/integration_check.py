@@ -6,12 +6,12 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, FilesMatcherValue, FilesMatcherModel, \
     FilesMatcher
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
+from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
@@ -206,8 +206,7 @@ class _Executor:
             tmp_file_space,
             FilesMatcherModelForDir(
                 tmp_file_space,
-                described_path_resolvers.of(self.model.dir_path_resolver)
-                    .resolve__with_cwd_as_cd(environment.symbols)
+                described_path_ddv.new__with_cwd_as_cd(self.model.dir_path_resolver.resolve(environment.symbols))
                     .value_of_any_dependency(environment.home_and_sds),
                 self.model.files_selection,
             ),

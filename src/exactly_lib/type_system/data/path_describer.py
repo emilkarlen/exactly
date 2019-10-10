@@ -1,18 +1,11 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import Optional
 
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 
 
-class PathDescriberForResolver(ABC):
-    @property
-    @abstractmethod
-    def resolver(self) -> Renderer[str]:
-        pass
-
-
-class PathDescriberForValue(PathDescriberForResolver):
+class PathDescriberForValue:
     @property
     @abstractmethod
     def value(self) -> Renderer[str]:

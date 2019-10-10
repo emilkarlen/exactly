@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from typing import Sequence
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.data.impl.path import described_path_resolvers
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -16,6 +15,7 @@ from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers
 from exactly_lib.test_case_utils.err_msg2 import path_rendering, header_rendering
 from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
+from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
@@ -91,9 +91,11 @@ class ConstructorForPath(ComparisonActualFileConstructor):
                   source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices) -> ComparisonActualFile:
-        described_path = described_path_resolvers.of(self._path) \
-            .resolve__with_cwd_as_cd(environment.symbols) \
-            .value_of_any_dependency(environment.home_and_sds)
+        described_path = (
+            described_path_ddv
+                .new__with_cwd_as_cd(self._path.resolve(environment.symbols))
+                .value_of_any_dependency(environment.home_and_sds)
+        )
         return ComparisonActualFile(
             described_path,
             ActualFilePropertyDescriptorConstructorForComparisonFile(
@@ -103,9 +105,11 @@ class ConstructorForPath(ComparisonActualFileConstructor):
         )
 
     def failure_message_header(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Renderer[MajorBlock]:
-        described_path = described_path_resolvers.of(self._path) \
-            .resolve__with_cwd_as_cd(environment.symbols) \
-            .value_of_any_dependency(environment.home_and_sds)
+        described_path = (
+            described_path_ddv
+                .new__with_cwd_as_cd(self._path.resolve(environment.symbols))
+                .value_of_any_dependency(environment.home_and_sds)
+        )
 
         return path_rendering.HeaderAndPathMajorBlock(
             header_rendering.SimpleHeaderMinorBlockRenderer(
