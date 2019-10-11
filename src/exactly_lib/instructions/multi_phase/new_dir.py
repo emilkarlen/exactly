@@ -80,8 +80,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
         :return: None iff success. Otherwise an error message.
         """
         described_path = (
-            described_path_ddv
-                .new__with_cwd_as_cd(self.dir_path_resolver.resolve(environment.symbols))
+            described_path_ddv.of(self.dir_path_resolver.resolve(environment.symbols))
                 .value_post_sds__wo_hds(environment.sds)
         )
 

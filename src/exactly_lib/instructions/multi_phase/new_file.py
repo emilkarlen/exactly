@@ -121,8 +121,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
              logging_paths: PhaseLoggingPaths,
              os_services: OsServices) -> Optional[TextRenderer]:
         described_path = (
-            described_path_ddv
-                .new__with_cwd_as_cd(self._path_to_create.resolve(environment.symbols))
+            described_path_ddv.of(self._path_to_create.resolve(environment.symbols))
                 .value_of_any_dependency(environment.home_and_sds)
         )
         return self._file_maker.make(environment, os_services, described_path)
@@ -159,7 +158,7 @@ class _DstFileNameValidator(PreOrPostSdsValidator):
         self._path_to_create = path_to_create
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
-        path_value__d = described_path_ddv.new__with_unknown_cd(self._path_to_create.resolve(environment.symbols))
+        path_value__d = described_path_ddv.of(self._path_to_create.resolve(environment.symbols))
         path_value = path_value__d.value
         suffix = path_value.path_suffix()
         suffix_path = path_value.path_suffix_path()

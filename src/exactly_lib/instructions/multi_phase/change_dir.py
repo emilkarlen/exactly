@@ -96,8 +96,7 @@ class InstructionEmbryo(embryo.InstructionEmbryo):
         """
 
         path = (
-            described_path_ddv
-                .new__with_cwd_as_cd(self.destination.resolve(environment.symbols))
+            described_path_ddv.of(self.destination.resolve(environment.symbols))
                 .value_post_sds__wo_hds(environment.sds)
         )
 

@@ -54,7 +54,7 @@ class StringOrFileRefResolver(DirDepValueResolver[StringOrFileRefValue]):
         if self.is_file_ref:
             return StringOrFileRefValue(self._source_type,
                                         None,
-                                        described_path_ddv.new__with_unknown_cd(self._file_ref.resolve(symbols)))
+                                        described_path_ddv.of(self._file_ref.resolve(symbols)))
         else:
             return StringOrFileRefValue(self._source_type,
                                         self._string.resolve(symbols),

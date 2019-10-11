@@ -25,7 +25,7 @@ class FileRefValidatorBase(PreOrPostSdsValidator):
         raise NotImplementedError()
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
-        described_path_value = described_path_ddv.new__with_unknown_cd(
+        described_path_value = described_path_ddv.of(
             self._file_ref_resolver.resolve(environment.symbols)
         )
 
@@ -34,7 +34,7 @@ class FileRefValidatorBase(PreOrPostSdsValidator):
         return None
 
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
-        described_path_value = described_path_ddv.new__with_cwd_as_cd(
+        described_path_value = described_path_ddv.of(
             self._file_ref_resolver.resolve(environment.symbols)
         )
 

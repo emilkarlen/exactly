@@ -39,9 +39,10 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
         with tmp_dir(DirContents([existing_regular_file])) as path_of_existing_directory:
             path_of_existing_regular_file = path_of_existing_directory / existing_regular_file.name
             path_value = file_refs.absolute_path(path_of_existing_regular_file)
-            described_path = (described_path_ddv.new__with_cwd_as_cd(path_value)
-                              .value_of_any_dependency(fake_tcds())
-                              )
+            described_path = (
+                described_path_ddv.of(path_value)
+                    .value_of_any_dependency(fake_tcds())
+            )
             model = sut.ComparisonActualFile(described_path,
                                              FilePropertyDescriptorConstructorTestImpl(),
                                              True)

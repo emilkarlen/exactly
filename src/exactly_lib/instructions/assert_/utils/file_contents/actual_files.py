@@ -92,8 +92,7 @@ class ConstructorForPath(ComparisonActualFileConstructor):
                   environment: i.InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices) -> ComparisonActualFile:
         described_path = (
-            described_path_ddv
-                .new__with_cwd_as_cd(self._path.resolve(environment.symbols))
+            described_path_ddv.of(self._path.resolve(environment.symbols))
                 .value_of_any_dependency(environment.home_and_sds)
         )
         return ComparisonActualFile(
@@ -106,8 +105,7 @@ class ConstructorForPath(ComparisonActualFileConstructor):
 
     def failure_message_header(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Renderer[MajorBlock]:
         described_path = (
-            described_path_ddv
-                .new__with_cwd_as_cd(self._path.resolve(environment.symbols))
+            described_path_ddv.of(self._path.resolve(environment.symbols))
                 .value_of_any_dependency(environment.home_and_sds)
         )
 

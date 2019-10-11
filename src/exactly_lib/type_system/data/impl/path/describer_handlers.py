@@ -57,15 +57,9 @@ class PathManipulationFunctionalityForFixedValue(PathDescriberForValue, ABC):
 
 
 class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
-    def __init__(self,
-                 path_value: FileRef,
-                 cd_is_current_dir: bool,
-                 ):
-        self._cwd = None
+    def __init__(self, path_value: FileRef):
         self._path_value = path_value
         self._relativity_type = path_value.relativity().relativity_type
-        if self._relativity_type is RelOptionType.REL_CWD and cd_is_current_dir:
-            self._cwd = Path().cwd()
 
     @property
     def describer(self) -> PathDescriberForValue:
@@ -110,7 +104,7 @@ class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
             return PathManipulationFunctionalityForFixedValueForRelCwd(
                 self._path_value,
                 tcds,
-                self._cwd,
+                Path().cwd(),
             )
         else:
             return PathManipulationFunctionalityForFixedValueForNotRelCwd(
@@ -121,18 +115,11 @@ class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
         relativity_type = self._relativity_type
 
         if relativity_type is RelOptionType.REL_CWD:
-            return (
-                value_str_renderers.PathValueRelUnknownCwd(self._path_value)
-                if self._cwd is None
-                else
-                value_str_renderers.PathValueRelJustCwd(self._path_value,
-                                                        self._cwd)
-            )
-
-        if relativity_type is None:
+            return value_str_renderers.PathValueRelUnknownCwd(self._path_value)
+        elif relativity_type is None:
             return value_str_renderers.PathValuePlainAbsolute(self._path_value)
-
-        return value_str_renderers.PathValueRelTcdsDir(self._path_value)
+        else:
+            return value_str_renderers.PathValueRelTcdsDir(self._path_value)
 
 
 class PathManipulationFunctionalityForFixedValueForNotRelCwd(PathManipulationFunctionalityForFixedValue):

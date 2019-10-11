@@ -32,18 +32,6 @@ class PathValueRelCwd(Renderer[str]):
         )
 
 
-class PathValueRelJustCwd(Renderer[str]):
-    def __init__(self,
-                 path_value: FileRef,
-                 cwd: pathlib.Path,
-                 ):
-        self._path_value = path_value
-        self._cwd = cwd
-
-    def render(self) -> str:
-        return str(self._cwd / self._path_value.path_suffix_path())
-
-
 class PathValueRelUnknownCwd(Renderer[str]):
     def __init__(self,
                  path_value: FileRef,

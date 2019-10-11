@@ -67,8 +67,7 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
               files_source: FilesSource) -> FilesSource:
 
         path_to_check = (
-            described_path_ddv
-                .new__with_cwd_as_cd(files_source.path_of_dir.resolve(environment.symbols))
+            described_path_ddv.of(files_source.path_of_dir.resolve(environment.symbols))
                 .value_of_any_dependency(environment.home_and_sds)
         )
 

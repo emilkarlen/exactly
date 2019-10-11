@@ -242,8 +242,7 @@ class _Assertion:
         self.file_matcher = file_matcher
 
         self.described_path = (
-            described_path_ddv
-                .new__with_cwd_as_cd(self.file_ref_resolver.resolve(self.environment.symbols))
+            described_path_ddv.of(self.file_ref_resolver.resolve(self.environment.symbols))
                 .value_of_any_dependency(self.environment.home_and_sds)
         )
 
