@@ -14,7 +14,7 @@ from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers
 from exactly_lib.test_case_utils.err_msg2 import path_rendering, header_rendering
 from exactly_lib.type_system.data import path_description
-from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
+from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
 from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor

@@ -84,7 +84,7 @@ class _DataTypeBlockConstructor(DataValueResolverPseudoVisitor[ResolvedValuePres
         return _BlockForCustomRenderer(_StringRenderer(string))
 
     def visit_file_ref(self, value: FileRefResolver) -> ResolvedValuePresentationBlock:
-        describer = described_path_ddv.of(value.resolve(self.symbols)).describer
+        describer = described_path_ddv.of(value.resolve(self.symbols)).value.describer()
         return _of_single_line_object(line_objects.StringLineObject(describer.value.render()))
 
     def visit_list(self, value: ListResolver) -> ResolvedValuePresentationBlock:

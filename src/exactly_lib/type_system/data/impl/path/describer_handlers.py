@@ -16,6 +16,7 @@ from exactly_lib.type_system.data.impl.path import value_str_renderers, primitiv
     describer_from_str as _from_str
 from exactly_lib.type_system.data.impl.path.described_w_handler import PathDescriberHandlerForValue, \
     PathDescriberHandlerForPrimitive
+from exactly_lib.type_system.data.impl.path.file_ref_base import FileRefWithDescriptionBase
 from exactly_lib.type_system.data.path_describer import PathDescriberForValue, PathDescriberForPrimitive
 from exactly_lib.type_system.data.path_part import PathPart
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
@@ -210,7 +211,7 @@ class PathDescriberHandlerForPrimitiveWithPrimitive(PathDescriberHandlerForPrimi
         )
 
 
-class _ParentFileRef(FileRef):
+class _ParentFileRef(FileRefWithDescriptionBase):
     def __init__(self, original: FileRef):
         self._original = original
         self._value = None

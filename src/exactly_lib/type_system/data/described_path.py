@@ -5,29 +5,8 @@ from exactly_lib.definitions import file_ref
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForValue
-
-
-class DescribedPathPrimitive(ABC):
-    @property
-    @abstractmethod
-    def primitive(self) -> Path:
-        pass
-
-    @property
-    @abstractmethod
-    def describer(self) -> PathDescriberForPrimitive:
-        pass
-
-    @abstractmethod
-    def child(self, child_path_component: str) -> 'DescribedPathPrimitive':
-        pass
-
-    @abstractmethod
-    def parent(self) -> 'DescribedPathPrimitive':
-        """Gives a path with the last component removed"""
-        pass
+from exactly_lib.type_system.data.file_ref import FileRef, DescribedPathPrimitive
+from exactly_lib.type_system.data.path_describer import PathDescriberForValue
 
 
 class DescribedPathValue(ABC):

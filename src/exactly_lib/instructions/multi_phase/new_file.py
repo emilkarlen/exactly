@@ -167,14 +167,14 @@ class _DstFileNameValidator(PreOrPostSdsValidator):
         if suffix_value == '' or suffix_path.name == '':
             return path_err_msgs.line_header__value(
                 _PATH_IS_DIR,
-                path_value__d.describer
+                path_value.describer()
             )
 
         (head, tail) = os.path.split(suffix_value)
         if tail in _RELATIVE_DIR_NAMES:
             return path_err_msgs.line_header__value(
                 _PATH_IS_RELATIVE_DIR,
-                path_value__d.describer,
+                path_value.describer(),
             )
 
         return None

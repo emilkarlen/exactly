@@ -1,4 +1,5 @@
 import pathlib
+from abc import ABC
 
 from exactly_lib.test_case_file_structure import relativity_root, relative_path_options
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencyError
@@ -9,8 +10,8 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.type_system.data import concrete_path_parts
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.data.file_ref_base import FileRefWithPathSuffixBase, \
-    FileRefWithPathSuffixAndIsNotAbsoluteBase
+from exactly_lib.type_system.data.impl.path.file_ref_base import FileRefWithPathSuffixBase, \
+    FileRefWithPathSuffixAndIsNotAbsoluteBase, FileRefWithDescriptionBase
 from exactly_lib.type_system.data.path_part import PathPart
 
 
@@ -94,7 +95,7 @@ def stacked(base_file_ref: FileRef, path_suffix: PathPart) -> FileRef:
     return _StackedFileRef(base_file_ref, path_suffix)
 
 
-class _FileRefWithConstantLocationBase(FileRefWithPathSuffixAndIsNotAbsoluteBase):
+class _FileRefWithConstantLocationBase(FileRefWithPathSuffixAndIsNotAbsoluteBase, ABC):
     """
     Base class for `FileRef`s who's "relativity" is constant.
     """
@@ -173,7 +174,7 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
         return rel_any_from_rel_home(self._rel_option)
 
 
-class _StackedFileRef(FileRef):
+class _StackedFileRef(FileRefWithDescriptionBase):
     def __init__(self, base_file_ref: FileRef, path_suffix: PathPart):
         self._stacked_path_suffix = path_suffix
         self._combined_path_suffix = self._combine(base_file_ref.path_suffix(), path_suffix)

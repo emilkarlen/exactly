@@ -2,7 +2,7 @@ from typing import List
 
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
-from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
+from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.err_msg import prop_descr
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel

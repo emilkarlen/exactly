@@ -4,7 +4,8 @@ from typing import Optional, Set
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system.data.described_path import DescribedPathPrimitive, DescribedPathValue
+from exactly_lib.type_system.data.described_path import DescribedPathValue
+from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.type_system.value_type import DataValueType
 

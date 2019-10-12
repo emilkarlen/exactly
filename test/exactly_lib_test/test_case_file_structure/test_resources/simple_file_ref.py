@@ -7,7 +7,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.data.file_ref_base import FileRefWithPathSuffixAndIsNotAbsoluteBase
+from exactly_lib.type_system.data.impl.path.file_ref_base import FileRefWithPathSuffixAndIsNotAbsoluteBase
 from exactly_lib.type_system.data.path_part import PathPart
 
 

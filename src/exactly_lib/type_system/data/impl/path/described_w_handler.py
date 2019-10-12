@@ -3,8 +3,8 @@ from pathlib import Path
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.type_system.data.described_path import DescribedPathPrimitive, DescribedPathValue
-from exactly_lib.type_system.data.file_ref import FileRef
+from exactly_lib.type_system.data.described_path import DescribedPathValue
+from exactly_lib.type_system.data.file_ref import FileRef, DescribedPathPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForValue, \
     PathDescriberForPrimitive
 

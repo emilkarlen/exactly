@@ -8,7 +8,7 @@ from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FilePropertiesCheck
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
-from exactly_lib.type_system.data.described_path import DescribedPathPrimitive
+from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
 from exactly_lib.type_system.data.impl.path import described_path_ddv
 
 
