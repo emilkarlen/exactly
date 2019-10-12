@@ -40,7 +40,6 @@ from exactly_lib.test_case_utils.file_matcher import resolvers  as fm_resolvers
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
@@ -242,8 +241,8 @@ class _Assertion:
         self.file_matcher = file_matcher
 
         self.described_path = (
-            described_path_ddv.of(self.file_ref_resolver.resolve(self.environment.symbols))
-                .value_of_any_dependency(self.environment.home_and_sds)
+            self.file_ref_resolver.resolve(self.environment.symbols)
+                .value_of_any_dependency__d(environment.home_and_sds)
         )
 
     def apply(self) -> pfh.PassOrFailOrHardError:

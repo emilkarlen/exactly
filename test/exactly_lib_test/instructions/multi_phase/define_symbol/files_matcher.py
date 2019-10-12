@@ -10,7 +10,6 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
-from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -265,9 +264,8 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
 
         return FilesMatcherModelForDir(
             environment.phase_logging.space_for_instruction(),
-            described_path_ddv.of(
-                rel_opt_conf.file_ref_resolver_for_root_dir().resolve(environment.symbols))
-                .value_of_any_dependency(environment.home_and_sds),
+            rel_opt_conf.file_ref_resolver_for_root_dir().resolve(environment.symbols)
+                .value_of_any_dependency__d(environment.home_and_sds),
         )
 
     def _populate_root_dir(self,

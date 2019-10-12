@@ -12,7 +12,6 @@ from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
 from exactly_lib.test_case_utils.err_msg2 import path_err_msgs, file_or_dir_contents_headers
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
-from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
 
@@ -67,8 +66,8 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
               files_source: FilesSource) -> FilesSource:
 
         path_to_check = (
-            described_path_ddv.of(files_source.path_of_dir.resolve(environment.symbols))
-                .value_of_any_dependency(environment.home_and_sds)
+            files_source.path_of_dir.resolve(environment.symbols)
+                .value_of_any_dependency__d(environment.home_and_sds)
         )
 
         model = FilesMatcherModelForDir(

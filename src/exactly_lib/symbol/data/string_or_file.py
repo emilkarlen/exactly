@@ -7,7 +7,6 @@ from exactly_lib.symbol.utils import DirDepValueResolver
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.file_properties import FileType, must_exist_as
-from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.data.string_or_file_ref_values import StringOrFileRefValue, SourceType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -54,7 +53,7 @@ class StringOrFileRefResolver(DirDepValueResolver[StringOrFileRefValue]):
         if self.is_file_ref:
             return StringOrFileRefValue(self._source_type,
                                         None,
-                                        described_path_ddv.of(self._file_ref.resolve(symbols)))
+                                        self._file_ref.resolve(symbols))
         else:
             return StringOrFileRefValue(self._source_type,
                                         self._string.resolve(symbols),

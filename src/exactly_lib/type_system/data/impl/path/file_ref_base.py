@@ -9,26 +9,47 @@ from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRel
     RelOptionType, RESOLVING_DEPENDENCY_OF, DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data.file_ref import FileRef, DescribedPathPrimitive
-from exactly_lib.type_system.data.impl.path import described_path_ddv
+from exactly_lib.type_system.data.impl.path import described_w_handler
+from exactly_lib.type_system.data.impl.path import describer_handlers
+from exactly_lib.type_system.data.impl.path.described_w_handler import PathDescriberHandlerForValue
 from exactly_lib.type_system.data.path_describer import PathDescriberForValue
 from exactly_lib.type_system.data.path_part import PathPart
 
 
 class FileRefWithDescriptionBase(FileRef, ABC):
     def describer(self) -> PathDescriberForValue:
-        return described_path_ddv.of(self).describer
+        return self._describer_handler().describer
 
     def value_when_no_dir_dependencies__d(self) -> DescribedPathPrimitive:
-        return described_path_ddv.of(self).value_when_no_dir_dependencies()
+        primitive = self.value_when_no_dir_dependencies()
+        return described_w_handler.DescribedPathPrimitiveWHandler(
+            primitive,
+            self._describer_handler().value_when_no_dir_dependencies(primitive),
+        )
 
     def value_pre_sds__d(self, hds: HomeDirectoryStructure) -> DescribedPathPrimitive:
-        return described_path_ddv.of(self).value_pre_sds(hds)
+        primitive = self.value_pre_sds(hds)
+        return described_w_handler.DescribedPathPrimitiveWHandler(
+            primitive,
+            self._describer_handler().value_pre_sds(primitive, hds),
+        )
 
     def value_post_sds__d(self, sds: SandboxDirectoryStructure) -> DescribedPathPrimitive:
-        return described_path_ddv.of(self).value_post_sds__wo_hds(sds)
+        primitive = self.value_post_sds(sds)
+        return described_w_handler.DescribedPathPrimitiveWHandler(
+            primitive,
+            self._describer_handler().value_post_sds__wo_hds(primitive, sds),
+        )
 
     def value_of_any_dependency__d(self, tcds: HomeAndSds) -> DescribedPathPrimitive:
-        return described_path_ddv.of(self).value_of_any_dependency(tcds)
+        primitive = self.value_of_any_dependency(tcds)
+        return described_w_handler.DescribedPathPrimitiveWHandler(
+            primitive,
+            self._describer_handler().value_of_any_dependency(primitive, tcds),
+        )
+
+    def _describer_handler(self) -> PathDescriberHandlerForValue:
+        return describer_handlers.PathDescriberHandlerForValueWithValue(self)
 
 
 class FileRefWithPathSuffixBase(FileRefWithDescriptionBase, ABC):

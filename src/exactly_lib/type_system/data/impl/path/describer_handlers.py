@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Optional
 
+from exactly_lib.definitions import file_ref
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, DirectoryStructurePartition, \
@@ -11,12 +12,12 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import concrete_path_parts
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.file_ref import FileRef
+from exactly_lib.type_system.data.file_ref import FileRef, DescribedPathPrimitive
+from exactly_lib.type_system.data.impl.path import described_w_handler
 from exactly_lib.type_system.data.impl.path import value_str_renderers, primitive_str_renderers, \
     describer_from_str as _from_str
 from exactly_lib.type_system.data.impl.path.described_w_handler import PathDescriberHandlerForValue, \
     PathDescriberHandlerForPrimitive
-from exactly_lib.type_system.data.impl.path.file_ref_base import FileRefWithDescriptionBase
 from exactly_lib.type_system.data.path_describer import PathDescriberForValue, PathDescriberForPrimitive
 from exactly_lib.type_system.data.path_part import PathPart
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
@@ -84,6 +85,10 @@ class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
                 self._path_value,
             ),
         )
+
+    def value_post_sds__wo_hds(self, primitive: Path,
+                               sds: SandboxDirectoryStructure) -> PathDescriberHandlerForPrimitive:
+        return self.value_post_sds(primitive, HomeAndSds(_DUMMY_HDS, sds))
 
     def value_post_sds(self, primitive: Path, tcds: HomeAndSds) -> PathDescriberHandlerForPrimitive:
         return PathDescriberHandlerForPrimitiveWithPrimitive(
@@ -211,7 +216,7 @@ class PathDescriberHandlerForPrimitiveWithPrimitive(PathDescriberHandlerForPrimi
         )
 
 
-class _ParentFileRef(FileRefWithDescriptionBase):
+class _ParentFileRef(FileRef):
     def __init__(self, original: FileRef):
         self._original = original
         self._value = None
@@ -237,6 +242,40 @@ class _ParentFileRef(FileRefWithDescriptionBase):
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return self._get_value().value_post_sds(sds)
 
+    def describer(self) -> PathDescriberForValue:
+        return self._describer_handler().describer
+
+    def value_when_no_dir_dependencies__d(self) -> DescribedPathPrimitive:
+        primitive = self.value_when_no_dir_dependencies()
+        return described_w_handler.DescribedPathPrimitiveWHandler(
+            primitive,
+            self._describer_handler().value_when_no_dir_dependencies(primitive),
+        )
+
+    def value_pre_sds__d(self, hds: HomeDirectoryStructure) -> DescribedPathPrimitive:
+        primitive = self.value_pre_sds(hds)
+        return described_w_handler.DescribedPathPrimitiveWHandler(
+            primitive,
+            self._describer_handler().value_pre_sds(primitive, hds),
+        )
+
+    def value_post_sds__d(self, sds: SandboxDirectoryStructure) -> DescribedPathPrimitive:
+        primitive = self.value_post_sds(sds)
+        return described_w_handler.DescribedPathPrimitiveWHandler(
+            primitive,
+            self._describer_handler().value_post_sds__wo_hds(primitive, sds),
+        )
+
+    def value_of_any_dependency__d(self, tcds: HomeAndSds) -> DescribedPathPrimitive:
+        primitive = self.value_of_any_dependency(tcds)
+        return described_w_handler.DescribedPathPrimitiveWHandler(
+            primitive,
+            self._describer_handler().value_of_any_dependency(primitive, tcds),
+        )
+
+    def _describer_handler(self) -> PathDescriberHandlerForValue:
+        return PathDescriberHandlerForValueWithValue(self)
+
     def _get_value(self) -> FileRef:
         if self._value is None:
             value = self._value
@@ -260,3 +299,9 @@ class _ParentFileRef(FileRefWithDescriptionBase):
         (head, tail) = os.path.split(path_suffix)
 
         return file_refs.constant_path_part(head)
+
+
+_DUMMY_HDS = HomeDirectoryStructure(
+    pathlib.Path(file_ref.EXACTLY_DIR__REL_HOME_CASE),
+    pathlib.Path(file_ref.EXACTLY_DIR__REL_HOME_ACT),
+)

@@ -26,7 +26,6 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import path_description
-from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
@@ -84,7 +83,7 @@ class _DataTypeBlockConstructor(DataValueResolverPseudoVisitor[ResolvedValuePres
         return _BlockForCustomRenderer(_StringRenderer(string))
 
     def visit_file_ref(self, value: FileRefResolver) -> ResolvedValuePresentationBlock:
-        describer = described_path_ddv.of(value.resolve(self.symbols)).value.describer()
+        describer = value.resolve(self.symbols).describer()
         return _of_single_line_object(line_objects.StringLineObject(describer.value.render()))
 
     def visit_list(self, value: ListResolver) -> ResolvedValuePresentationBlock:

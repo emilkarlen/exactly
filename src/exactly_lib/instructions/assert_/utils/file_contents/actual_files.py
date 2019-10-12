@@ -15,7 +15,6 @@ from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers
 from exactly_lib.test_case_utils.err_msg2 import path_rendering, header_rendering
 from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
-from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
 from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
@@ -92,8 +91,8 @@ class ConstructorForPath(ComparisonActualFileConstructor):
                   environment: i.InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices) -> ComparisonActualFile:
         described_path = (
-            described_path_ddv.of(self._path.resolve(environment.symbols))
-                .value_of_any_dependency(environment.home_and_sds)
+            self._path.resolve(environment.symbols)
+                .value_of_any_dependency__d(environment.home_and_sds)
         )
         return ComparisonActualFile(
             described_path,
@@ -105,8 +104,8 @@ class ConstructorForPath(ComparisonActualFileConstructor):
 
     def failure_message_header(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Renderer[MajorBlock]:
         described_path = (
-            described_path_ddv.of(self._path.resolve(environment.symbols))
-                .value_of_any_dependency(environment.home_and_sds)
+            self._path.resolve(environment.symbols)
+                .value_of_any_dependency__d(environment.home_and_sds)
         )
 
         return path_rendering.HeaderAndPathMajorBlock(

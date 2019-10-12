@@ -3,8 +3,8 @@ from pathlib import Path
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.type_system.data.described_path import DescribedPathValue
-from exactly_lib.type_system.data.file_ref import FileRef, DescribedPathPrimitive
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForValue, \
     PathDescriberForPrimitive
 
@@ -38,6 +38,11 @@ class PathDescriberHandlerForValue(ABC):
 
     @abstractmethod
     def value_pre_sds(self, primitive: Path, hds: HomeDirectoryStructure) -> PathDescriberHandlerForPrimitive:
+        pass
+
+    @abstractmethod
+    def value_post_sds__wo_hds(self, primitive: Path,
+                               sds: SandboxDirectoryStructure) -> PathDescriberHandlerForPrimitive:
         pass
 
     @abstractmethod
@@ -77,49 +82,4 @@ class DescribedPathPrimitiveWHandler(DescribedPathPrimitive):
         return DescribedPathPrimitiveWHandler(
             parent_path,
             self._describer_handler.parent(parent_path)
-        )
-
-
-class DescribedPathValueWHandler(DescribedPathValue):
-    def __init__(self,
-                 path_value: FileRef,
-                 describer_handler: PathDescriberHandlerForValue
-                 ):
-        self._path_value = path_value
-        self._describer_handler = describer_handler
-
-    @property
-    def value(self) -> FileRef:
-        return self._path_value
-
-    @property
-    def describer(self) -> PathDescriberForValue:
-        return self._describer_handler.describer
-
-    def value_when_no_dir_dependencies(self) -> DescribedPathPrimitive:
-        primitive = self._path_value.value_when_no_dir_dependencies()
-        return DescribedPathPrimitiveWHandler(
-            primitive,
-            self._describer_handler.value_when_no_dir_dependencies(primitive),
-        )
-
-    def value_pre_sds(self, hds: HomeDirectoryStructure) -> DescribedPathPrimitive:
-        primitive = self._path_value.value_pre_sds(hds)
-        return DescribedPathPrimitiveWHandler(
-            primitive,
-            self._describer_handler.value_pre_sds(primitive, hds),
-        )
-
-    def value_post_sds(self, tcds: HomeAndSds) -> DescribedPathPrimitive:
-        primitive = self._path_value.value_post_sds(tcds.sds)
-        return DescribedPathPrimitiveWHandler(
-            primitive,
-            self._describer_handler.value_post_sds(primitive, tcds),
-        )
-
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> DescribedPathPrimitive:
-        primitive = self._path_value.value_of_any_dependency(tcds)
-        return DescribedPathPrimitiveWHandler(
-            primitive,
-            self._describer_handler.value_of_any_dependency(primitive, tcds),
         )

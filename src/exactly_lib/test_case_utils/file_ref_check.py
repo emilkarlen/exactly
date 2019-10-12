@@ -9,7 +9,6 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FilePropertiesCheck
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
 from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
-from exactly_lib.type_system.data.impl.path import described_path_ddv
 
 
 class FileRefCheck:
@@ -36,8 +35,8 @@ class FileRefCheckValidator(FileRefValidatorBase):
 def pre_sds_failure_message_or_none(file_ref_check: FileRefCheck,
                                     environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
     described_path = (
-        described_path_ddv.of(file_ref_check.file_ref_resolver.resolve(environment.symbols))
-            .value_pre_sds(environment.hds)
+        file_ref_check.file_ref_resolver.resolve(environment.symbols)
+            .value_pre_sds__d(environment.hds)
     )
 
     return failure_message_or_none(file_ref_check.file_properties,
@@ -47,8 +46,8 @@ def pre_sds_failure_message_or_none(file_ref_check: FileRefCheck,
 def post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
                                      environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
     described_path = (
-        described_path_ddv.of(file_ref_check.file_ref_resolver.resolve(environment.symbols))
-            .value_post_sds__wo_hds(environment.sds)
+        file_ref_check.file_ref_resolver.resolve(environment.symbols)
+            .value_post_sds__d(environment.sds)
     )
 
     return failure_message_or_none(file_ref_check.file_properties,
@@ -59,8 +58,8 @@ def pre_or_post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
                                             environment: PathResolvingEnvironmentPreOrPostSds
                                             ) -> Optional[TextRenderer]:
     described_path = (
-        described_path_ddv.of(file_ref_check.file_ref_resolver.resolve(environment.symbols))
-            .value_of_any_dependency(environment.home_and_sds)
+        file_ref_check.file_ref_resolver.resolve(environment.symbols)
+            .value_of_any_dependency__d(environment.home_and_sds)
     )
 
     return failure_message_or_none(file_ref_check.file_properties,

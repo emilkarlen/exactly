@@ -4,8 +4,7 @@ from typing import Optional, Set
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system.data.described_path import DescribedPathValue
-from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
+from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive, FileRef
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.type_system.value_type import DataValueType
 
@@ -72,7 +71,7 @@ class StringOrFileRefValue(MultiDirDependentValue[StringOrPath]):
     def __init__(self,
                  source_type: SourceType,
                  string_value: Optional[StringValue],
-                 file_value: Optional[DescribedPathValue]):
+                 file_value: Optional[FileRef]):
         self._source_type = source_type
         self._value_type = DataValueType.STRING if string_value is not None else DataValueType.PATH
         self._string_value = string_value
@@ -104,16 +103,9 @@ class StringOrFileRefValue(MultiDirDependentValue[StringOrPath]):
         """
         return self._string_value
 
-    @property
-    def file_ref_value(self) -> DescribedPathValue:
-        """
-        :return: Not None iff :class:`DataValueType` is `DataValueType.PATH`
-        """
-        return self._file_ref_value
-
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         if self.is_file_ref:
-            return self.file_ref_value.value.resolving_dependencies()
+            return self._file_ref_value.resolving_dependencies()
         else:
             return self.string_value.resolving_dependencies()
 
@@ -121,7 +113,7 @@ class StringOrFileRefValue(MultiDirDependentValue[StringOrPath]):
         if self.is_file_ref:
             return StringOrPath(self._source_type,
                                 None,
-                                self._file_ref_value.value_when_no_dir_dependencies())
+                                self._file_ref_value.value_when_no_dir_dependencies__d())
         else:
             return StringOrPath(self._source_type,
                                 self._string_value.value_when_no_dir_dependencies(),
@@ -131,7 +123,7 @@ class StringOrFileRefValue(MultiDirDependentValue[StringOrPath]):
         if self.is_file_ref:
             return StringOrPath(self._source_type,
                                 None,
-                                self._file_ref_value.value_of_any_dependency(home_and_sds))
+                                self._file_ref_value.value_of_any_dependency__d(home_and_sds))
         else:
             return StringOrPath(self._source_type,
                                 self._string_value.value_of_any_dependency(home_and_sds),

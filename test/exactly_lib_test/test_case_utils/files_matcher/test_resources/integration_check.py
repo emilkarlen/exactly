@@ -11,7 +11,6 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, FilesMa
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
-from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
@@ -206,8 +205,8 @@ class _Executor:
             tmp_file_space,
             FilesMatcherModelForDir(
                 tmp_file_space,
-                described_path_ddv.of(self.model.dir_path_resolver.resolve(environment.symbols))
-                    .value_of_any_dependency(environment.home_and_sds),
+                self.model.dir_path_resolver.resolve(environment.symbols)
+                    .value_of_any_dependency__d(environment.home_and_sds),
                 self.model.files_selection,
             ),
         )

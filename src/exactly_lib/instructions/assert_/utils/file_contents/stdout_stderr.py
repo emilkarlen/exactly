@@ -31,7 +31,6 @@ from exactly_lib.test_case_utils.program.execution.store_result_in_instruction_t
     make_transformed_file_from_output_in_instruction_tmp_dir
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution import process_output_files
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
@@ -133,8 +132,8 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
         )
 
         path_with_transformed_contents = (
-            described_path_ddv.of(file_with_transformed_contents.resolve(environment.symbols))
-                .value_of_any_dependency(environment.home_and_sds)
+            file_with_transformed_contents.resolve(environment.symbols)
+                .value_of_any_dependency__d(environment.home_and_sds)
         )
 
         return ComparisonActualFile(

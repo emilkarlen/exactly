@@ -26,7 +26,6 @@ from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
-from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
@@ -95,10 +94,7 @@ class InstructionEmbryo(embryo.InstructionEmbryo):
         :return: None iff success. Otherwise an error message.
         """
 
-        path = (
-            described_path_ddv.of(self.destination.resolve(environment.symbols))
-                .value_post_sds__wo_hds(environment.sds)
-        )
+        path = self.destination.resolve(environment.symbols).value_post_sds__d(environment.sds)
 
         def error(header: str) -> TextRenderer:
             return path_err_msgs.line_header__primitive(

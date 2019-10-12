@@ -38,7 +38,6 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
 from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
-from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -121,8 +120,8 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
              logging_paths: PhaseLoggingPaths,
              os_services: OsServices) -> Optional[TextRenderer]:
         described_path = (
-            described_path_ddv.of(self._path_to_create.resolve(environment.symbols))
-                .value_of_any_dependency(environment.home_and_sds)
+            self._path_to_create.resolve(environment.symbols)
+                .value_of_any_dependency__d(environment.home_and_sds)
         )
         return self._file_maker.make(environment, os_services, described_path)
 
@@ -158,8 +157,7 @@ class _DstFileNameValidator(PreOrPostSdsValidator):
         self._path_to_create = path_to_create
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
-        path_value__d = described_path_ddv.of(self._path_to_create.resolve(environment.symbols))
-        path_value = path_value__d.value
+        path_value = self._path_to_create.resolve(environment.symbols)
         suffix = path_value.path_suffix()
         suffix_path = path_value.path_suffix_path()
 

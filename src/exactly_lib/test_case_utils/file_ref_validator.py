@@ -6,7 +6,6 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
     PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
-from exactly_lib.type_system.data.impl.path import described_path_ddv
 
 
 class FileRefValidatorBase(PreOrPostSdsValidator):
@@ -25,19 +24,13 @@ class FileRefValidatorBase(PreOrPostSdsValidator):
         raise NotImplementedError()
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
-        described_path_value = described_path_ddv.of(
-            self._file_ref_resolver.resolve(environment.symbols)
-        )
-
-        if described_path_value.value.exists_pre_sds():
-            return self._validate_path(described_path_value.value_pre_sds(environment.hds))
+        path_value = self._file_ref_resolver.resolve(environment.symbols)
+        if path_value.exists_pre_sds():
+            return self._validate_path(path_value.value_pre_sds__d(environment.hds))
         return None
 
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
-        described_path_value = described_path_ddv.of(
-            self._file_ref_resolver.resolve(environment.symbols)
-        )
-
-        if not described_path_value.value.exists_pre_sds():
-            return self._validate_path(described_path_value.value_post_sds__wo_hds(environment.sds))
+        described_path_value = self._file_ref_resolver.resolve(environment.symbols)
+        if not described_path_value.exists_pre_sds():
+            return self._validate_path(described_path_value.value_post_sds__d(environment.sds))
         return None

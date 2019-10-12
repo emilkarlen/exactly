@@ -9,7 +9,6 @@ from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.err_msg.property_description import property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.pfh_exception import PfhFailException
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.type_system.err_msg import prop_descr
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
@@ -39,11 +38,8 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
         with tmp_dir(DirContents([existing_regular_file])) as path_of_existing_directory:
             path_of_existing_regular_file = path_of_existing_directory / existing_regular_file.name
             path_value = file_refs.absolute_path(path_of_existing_regular_file)
-            described_path = (
-                described_path_ddv.of(path_value)
-                    .value_of_any_dependency(fake_tcds())
-            )
-            model = sut.ComparisonActualFile(described_path,
+            path = path_value.value_of_any_dependency__d(fake_tcds())
+            model = sut.ComparisonActualFile(path,
                                              FilePropertyDescriptorConstructorTestImpl(),
                                              True)
             # ACT #

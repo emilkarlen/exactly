@@ -24,7 +24,6 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
-from exactly_lib.type_system.data.impl.path import described_path_ddv
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
@@ -80,8 +79,8 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
         :return: None iff success. Otherwise an error message.
         """
         described_path = (
-            described_path_ddv.of(self.dir_path_resolver.resolve(environment.symbols))
-                .value_post_sds__wo_hds(environment.sds)
+            self.dir_path_resolver.resolve(environment.symbols)
+                .value_post_sds__d(environment.sds)
         )
 
         def error(header: str) -> TextRenderer:
