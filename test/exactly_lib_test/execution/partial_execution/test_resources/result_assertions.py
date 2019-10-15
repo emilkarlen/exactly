@@ -5,7 +5,7 @@ ValueAssertion:s on PartialExeResult
 from typing import Optional
 
 from exactly_lib.execution.failure_info import FailureInfo
-from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
+from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus, PartialExeResult
 from exactly_lib.execution.result import ActionToCheckOutcome
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.execution.test_resources import result_assertions as asrt_atc
@@ -18,7 +18,7 @@ def is_pass(sds: ValueAssertion[Optional[SandboxDirectoryStructure]] =
             action_to_check_outcome: ValueAssertion[Optional[ActionToCheckOutcome]] =
             asrt.is_instance(ActionToCheckOutcome)
             ) -> ValueAssertion[PartialExeResult]:
-    return matches(status=asrt.is_(PartialExeResultStatus.PASS),
+    return matches(status=asrt.is_(None),
                    failure_info=asrt.is_none,
                    has_sds=asrt.equals(True),
                    sds=sds,
@@ -27,7 +27,7 @@ def is_pass(sds: ValueAssertion[Optional[SandboxDirectoryStructure]] =
                    )
 
 
-def is_failure(status: PartialExeResultStatus,
+def is_failure(status: ExecutionFailureStatus,
                failure_info: ValueAssertion[Optional[FailureInfo]] = asrt.is_instance(FailureInfo),
                sds: ValueAssertion[Optional[SandboxDirectoryStructure]] = asrt.anything_goes(),
                has_sds: ValueAssertion[bool] = asrt.anything_goes(),
@@ -42,7 +42,7 @@ def is_failure(status: PartialExeResultStatus,
                    failure_info=failure_info)
 
 
-def status_is(expected: PartialExeResultStatus) -> ValueAssertion[PartialExeResult]:
+def status_is(expected: ExecutionFailureStatus) -> ValueAssertion[PartialExeResult]:
     return matches(status=asrt.is_(expected))
 
 
@@ -80,7 +80,7 @@ def has_action_to_check_outcome_with_exit_code(exit_code: int) -> ValueAssertion
     return has_action_to_check_outcome(asrt_atc.is_exit_code(exit_code))
 
 
-def matches2(status: PartialExeResultStatus,
+def matches2(status: Optional[ExecutionFailureStatus],
              sds: ValueAssertion[PartialExeResult],
              action_to_check_outcome: ValueAssertion[PartialExeResult],
              failure_info: ValueAssertion[Optional[FailureInfo]] = asrt.anything_goes()
@@ -94,7 +94,7 @@ def matches2(status: PartialExeResultStatus,
 
 
 def matches(
-        status: ValueAssertion[PartialExeResultStatus] = asrt.anything_goes(),
+        status: ValueAssertion[Optional[ExecutionFailureStatus]] = asrt.anything_goes(),
         has_sds: ValueAssertion[bool] = asrt.anything_goes(),
         sds: ValueAssertion[Optional[SandboxDirectoryStructure]] = asrt.anything_goes(),
         has_action_to_check_outcome: ValueAssertion[bool] = asrt.anything_goes(),

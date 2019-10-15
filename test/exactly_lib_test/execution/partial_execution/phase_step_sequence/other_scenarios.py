@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.execution import phase_step_simple as phase_step
-from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
+from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
@@ -33,7 +33,7 @@ class Test(TestCaseBase):
             Arrangement(test_case),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.HARD_ERROR,
+                    ExecutionFailureStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForInstructionFailure.new_with_message(
@@ -60,7 +60,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                    ExecutionFailureStatus.IMPLEMENTATION_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForInstructionFailure.new_with_exception(
@@ -88,7 +88,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_exit_code(0)),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.HARD_ERROR,
+                    ExecutionFailureStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(0),
                     ExpectedFailureForInstructionFailure.new_with_message(
@@ -130,7 +130,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_exit_code(12)),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                    ExecutionFailureStatus.IMPLEMENTATION_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(12),
                     ExpectedFailureForInstructionFailure.new_with_exception(
@@ -172,7 +172,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.FAIL,
+                    ExecutionFailureStatus.FAIL,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(5),
                     ExpectedFailureForInstructionFailure.new_with_message(
@@ -216,7 +216,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_exit_code(72)),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.HARD_ERROR,
+                    ExecutionFailureStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(72),
                     ExpectedFailureForInstructionFailure.new_with_message(
@@ -260,7 +260,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                    ExecutionFailureStatus.IMPLEMENTATION_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(5),
                     ExpectedFailureForInstructionFailure.new_with_exception(
@@ -304,7 +304,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_exit_code(3)),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.HARD_ERROR,
+                    ExecutionFailureStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(3),
                     ExpectedFailureForInstructionFailure.new_with_message(
@@ -348,7 +348,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                    ExecutionFailureStatus.IMPLEMENTATION_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(5),
                     ExpectedFailureForInstructionFailure.new_with_exception(

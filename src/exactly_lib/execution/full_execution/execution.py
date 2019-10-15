@@ -6,10 +6,9 @@ from exactly_lib.execution.full_execution.result import FullExeResult, FullExeRe
     new_from_result_of_partial_execution
 from exactly_lib.execution.full_execution.result import new_skipped
 from exactly_lib.execution.impl import phase_step_executors, phase_step_execution
-from exactly_lib.execution.impl.result import PhaseStepFailure
 from exactly_lib.execution.partial_execution import execution
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
-from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
+from exactly_lib.execution.result import ExecutionFailureStatus, PhaseStepFailure
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases import setup
@@ -69,7 +68,7 @@ def _execute_configuration_phase(phase_environment: ConfigurationBuilder,
 
 def new_configuration_phase_failure_from(phase_result: PhaseStepFailure) -> FullExeResult:
     full_status = FullExeResultStatus.HARD_ERROR
-    if phase_result.status is PartialExeResultStatus.IMPLEMENTATION_ERROR:
+    if phase_result.status is ExecutionFailureStatus.IMPLEMENTATION_ERROR:
         full_status = FullExeResultStatus.IMPLEMENTATION_ERROR
     return FullExeResult(full_status,
                          None,

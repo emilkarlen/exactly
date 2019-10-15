@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.execution import phase_step_simple as phase_step
-from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
+from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.result import svh
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
@@ -31,7 +31,7 @@ class Test(TestCaseBase):
                         act_executor_validate_pre_sds=validate_action_that_returns(
                             svh.new_svh_hard_error__str('error in act/validate-pre-sds'))),
             Expectation(
-                asrt_result.matches2(PartialExeResultStatus.HARD_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.HARD_ERROR,
                                      asrt_result.has_no_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_message(
@@ -54,7 +54,7 @@ class Test(TestCaseBase):
                             svh.new_svh_validation_error__str('error in act/validate-pre-sds'))),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.VALIDATION_ERROR,
+                    ExecutionFailureStatus.VALIDATION_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForPhaseFailure.new_with_message(
@@ -76,7 +76,7 @@ class Test(TestCaseBase):
                         act_executor_validate_pre_sds=validate_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(
-                asrt_result.matches2(PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
                                      asrt_result.has_no_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_exception(
@@ -97,7 +97,7 @@ class Test(TestCaseBase):
                         act_executor_validate_post_setup=validate_action_that_returns(
                             svh.new_svh_validation_error__str('error in act/validate-post-setup'))),
             Expectation(
-                asrt_result.matches2(PartialExeResultStatus.VALIDATION_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.VALIDATION_ERROR,
                                      asrt_result.has_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_message(
@@ -124,7 +124,7 @@ class Test(TestCaseBase):
                         act_executor_validate_post_setup=validate_action_that_returns(
                             svh.new_svh_hard_error__str('error in act/validate-post-setup'))),
             Expectation(
-                asrt_result.matches2(PartialExeResultStatus.HARD_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.HARD_ERROR,
                                      asrt_result.has_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_message(
@@ -151,7 +151,7 @@ class Test(TestCaseBase):
                         act_executor_validate_post_setup=validate_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(
-                asrt_result.matches2(PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
                                      asrt_result.has_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_exception(
@@ -178,7 +178,7 @@ class Test(TestCaseBase):
                         act_executor_prepare=prepare_action_that_returns_hard_error_with_message(
                             'error in act/prepare')),
             Expectation(
-                asrt_result.matches2(PartialExeResultStatus.HARD_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.HARD_ERROR,
                                      asrt_result.has_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_message(
@@ -208,7 +208,7 @@ class Test(TestCaseBase):
                         act_executor_prepare=execute_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(
-                asrt_result.matches2(PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
                                      asrt_result.has_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_exception(
@@ -238,7 +238,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_hard_error_with_message(
                             'error in execute')),
             Expectation(
-                asrt_result.matches2(PartialExeResultStatus.HARD_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.HARD_ERROR,
                                      asrt_result.has_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_message(
@@ -269,7 +269,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(
-                asrt_result.matches2(PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
                                      asrt_result.has_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_exception(

@@ -9,7 +9,7 @@ from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
-from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
+from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus, PartialExeResult
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.actor import ActionToCheck, Actor, ParseException, AtcOsProcessExecutor
@@ -81,7 +81,7 @@ class TestExecutionSequence(unittest.TestCase):
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   actor=actor)
         # ASSERT #
-        expectation = Expectation(phase_result=asrt_result.status_is(PartialExeResultStatus.VALIDATION_ERROR))
+        expectation = Expectation(phase_result=asrt_result.status_is(ExecutionFailureStatus.VALIDATION_ERROR))
         # APPLY #
         execute_and_check(self, arrangement, expectation)
         self.assertEqual([],
@@ -101,7 +101,7 @@ class TestExecutionSequence(unittest.TestCase):
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   actor=actor)
         # ASSERT #
-        expectation = Expectation(phase_result=asrt_result.status_is(PartialExeResultStatus.IMPLEMENTATION_ERROR))
+        expectation = Expectation(phase_result=asrt_result.status_is(ExecutionFailureStatus.IMPLEMENTATION_ERROR))
         # APPLY #
         execute_and_check(self, arrangement, expectation)
         self.assertEqual([],

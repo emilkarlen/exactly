@@ -5,7 +5,7 @@ import unittest
 from exactly_lib.execution.impl.single_instruction_executor import execute_element, \
     ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum, SingleInstructionExecutionFailure
-from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
+from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.section_document.source_location import FileLocationInfo
@@ -83,11 +83,11 @@ class Test(unittest.TestCase):
 
     def test_when_the_executor_returns__fail__then_this_failure_should_be_returned(self):
         self._executor_that_returns_failure_helper(PartialControlledFailureEnum.FAIL,
-                                                   PartialExeResultStatus.FAIL)
+                                                   ExecutionFailureStatus.FAIL)
 
     def test_when_the_executor_returns__hard_error__then_this_failure_should_be_returned(self):
         self._executor_that_returns_failure_helper(PartialControlledFailureEnum.HARD_ERROR,
-                                                   PartialExeResultStatus.HARD_ERROR)
+                                                   ExecutionFailureStatus.HARD_ERROR)
 
     def test_when_the_executor__raises_exception__then_an_error_should_be_returned(self):
         # ARRANGE #
@@ -100,13 +100,13 @@ class Test(unittest.TestCase):
             element,
             element.instruction_info)
         # ASSERT #
-        self._check_failure_result(PartialExeResultStatus.IMPLEMENTATION_ERROR,
+        self._check_failure_result(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
                                    result,
                                    asrt_failure_details.matches_exception(asrt.equals(exception)))
 
     def _executor_that_returns_failure_helper(self,
                                               failure_status_of_executor: PartialControlledFailureEnum,
-                                              expected_status: PartialExeResultStatus):
+                                              expected_status: ExecutionFailureStatus):
         # ARRANGE #
         element = new_dummy_instruction_element()
         # ACT #
@@ -125,7 +125,7 @@ class Test(unittest.TestCase):
                                    asrt_failure_details.is_failure_message_of('error message'))
 
     def _check_failure_result(self,
-                              expected_status: PartialExeResultStatus,
+                              expected_status: ExecutionFailureStatus,
                               result: SingleInstructionExecutionFailure,
                               expected_failure_details: ValueAssertion[FailureDetails]):
         self.assertIsNotNone(result,

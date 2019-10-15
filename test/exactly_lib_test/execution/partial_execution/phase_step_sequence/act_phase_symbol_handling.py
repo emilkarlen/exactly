@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.execution import phase_step_simple as phase_step
-from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
+from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
@@ -46,7 +46,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_exit_code(128)),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.PASS,
+                    None,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(128),
                     ExpectedFailureForNoFailure(),
@@ -82,7 +82,7 @@ class TestFailingScenarios(TestCaseBase):
                         act_executor_symbol_usages=do_return(symbol_usages_with_ref_to_undefined_symbol)),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.VALIDATION_ERROR,
+                    ExecutionFailureStatus.VALIDATION_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
@@ -100,7 +100,7 @@ class TestFailingScenarios(TestCaseBase):
             Arrangement(test_case,
                         act_executor_symbol_usages=do_raise(test.ImplementationErrorTestException())),
             Expectation(
-                asrt_result.matches2(PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
                                      asrt_result.has_no_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_exception(
@@ -129,7 +129,7 @@ class TestFailingScenarios(TestCaseBase):
                         act_executor_symbol_usages=do_return(symbol_usages)),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.VALIDATION_ERROR,
+                    ExecutionFailureStatus.VALIDATION_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),

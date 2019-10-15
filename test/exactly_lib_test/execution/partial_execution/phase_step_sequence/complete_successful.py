@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.execution import phase_step_simple as phase_step
-from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
@@ -28,7 +27,7 @@ class Test(TestCaseBase):
                                 act_executor_execute=execute_action_that_returns_exit_code(expected_exit_code)),
                     Expectation(
                         asrt_result.matches2(
-                            PartialExeResultStatus.PASS,
+                            None,
                             asrt_result.has_sds(),
                             asrt_result.has_action_to_check_outcome_with_exit_code(expected_exit_code),
                             ExpectedFailureForNoFailure(),

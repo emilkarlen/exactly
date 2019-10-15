@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
+from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result import svh
@@ -50,7 +50,7 @@ class TestValidationError(TestCaseBase):
             Arrangement(test_case),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.VALIDATION_ERROR,
+                    ExecutionFailureStatus.VALIDATION_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForInstructionFailure.new_with_message(
@@ -74,7 +74,7 @@ class TestHardError(TestCaseBase):
             Arrangement(test_case),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.HARD_ERROR,
+                    ExecutionFailureStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForInstructionFailure.new_with_message(
@@ -97,7 +97,7 @@ class TestImplementationError(TestCaseBase):
             Arrangement(test_case),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                    ExecutionFailureStatus.IMPLEMENTATION_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForInstructionFailure.new_with_exception(

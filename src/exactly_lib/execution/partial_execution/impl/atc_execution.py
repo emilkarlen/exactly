@@ -3,8 +3,9 @@ import subprocess
 from contextlib import contextmanager
 from typing import Optional, Callable
 
-from exactly_lib.execution.impl.result import PhaseStepFailure, ActionWithFailureAsResult
-from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
+from exactly_lib.execution.impl.result import PhaseStepFailure, ActionThatRaisesPhaseStepFailureException, \
+    PhaseStepFailureException
+from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus
 from exactly_lib.execution.result import ActionToCheckOutcome
 from exactly_lib.test_case.actor import ActionToCheck, AtcOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -15,7 +16,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import std
 from exactly_lib.util.file_utils import open_and_make_read_only_on_close, write_new_text_file
 from exactly_lib.util.std import StdFiles, StdOutputFiles
 
-PhaseStepFailureConstructorType = Callable[[PartialExeResultStatus, FailureDetails], PhaseStepFailure]
+PhaseStepFailureConstructorType = Callable[[ExecutionFailureStatus, FailureDetails], PhaseStepFailure]
 
 
 class ActionToCheckExecutor:
@@ -56,38 +57,39 @@ class ActionToCheckExecutor:
         """
         return self._action_to_check_outcome
 
-    def validate_post_setup(self, failure_con: PhaseStepFailureConstructorType) -> ActionWithFailureAsResult:
-        def action() -> Optional[PhaseStepFailure]:
+    def validate_post_setup(self,
+                            failure_con: PhaseStepFailureConstructorType) -> ActionThatRaisesPhaseStepFailureException:
+        def action():
             res = self.atc.validate_post_setup(self.environment_for_validate_post_setup)
-            if res.is_success:
-                return None
-            else:
-                return failure_con(PartialExeResultStatus(res.status.value),
-                                   FailureDetails.new_message(res.failure_message))
+            if not res.is_success:
+                raise PhaseStepFailureException(
+                    failure_con(ExecutionFailureStatus(res.status.value),
+                                FailureDetails.new_message(res.failure_message))
+                )
 
         return action
 
-    def prepare(self, failure_con: PhaseStepFailureConstructorType) -> ActionWithFailureAsResult:
-        def action() -> Optional[PhaseStepFailure]:
+    def prepare(self, failure_con: PhaseStepFailureConstructorType) -> ActionThatRaisesPhaseStepFailureException:
+        def action():
             res = self.atc.prepare(self.environment_for_other_steps,
                                    self.os_process_executor,
                                    self.script_output_dir_path)
-            if res.is_success:
-                return None
-            else:
-                return failure_con(PartialExeResultStatus.HARD_ERROR,
-                                   FailureDetails.new_message(res.failure_message))
+            if not res.is_success:
+                raise PhaseStepFailureException(
+                    failure_con(ExecutionFailureStatus.HARD_ERROR,
+                                FailureDetails.new_message(res.failure_message))
+                )
 
         return action
 
-    def execute(self, failure_con: PhaseStepFailureConstructorType) -> ActionWithFailureAsResult:
-        def action() -> Optional[PhaseStepFailure]:
+    def execute(self, failure_con: PhaseStepFailureConstructorType) -> ActionThatRaisesPhaseStepFailureException:
+        def action():
             exit_code_or_hard_error = self._execute_with_stdin_handling()
-            if exit_code_or_hard_error.is_exit_code:
-                return None
-            else:
-                return failure_con(PartialExeResultStatus.HARD_ERROR,
-                                   exit_code_or_hard_error.failure_details)
+            if not exit_code_or_hard_error.is_exit_code:
+                raise PhaseStepFailureException(
+                    failure_con(ExecutionFailureStatus.HARD_ERROR,
+                                exit_code_or_hard_error.failure_details)
+                )
 
         return action
 

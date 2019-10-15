@@ -7,7 +7,7 @@ from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues
-from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
+from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus, PartialExeResult
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
@@ -137,7 +137,7 @@ class TestSuccess(TestCaseBase):
                     ),
                     Expectation(
                         asrt_result.matches2(
-                            PartialExeResultStatus.PASS,
+                            None,
                             asrt_result.has_sds(),
                             asrt_result.has_action_to_check_outcome_with_exit_code(py_pgm_setup.exit_code),
                             ExpectedFailureForNoFailure(),
@@ -185,7 +185,7 @@ class TestFailure(TestCaseBase):
             arr_for_py3_source(test_case),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.HARD_ERROR,
+                    ExecutionFailureStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForInstructionFailure.new_with_message(
@@ -213,7 +213,7 @@ class TestFailure(TestCaseBase):
                             execute_action=execute_action_that_raises(
                                 test.ImplementationErrorTestException()))),
             Expectation(
-                asrt_result.matches2(PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
                                      asrt_result.has_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_exception(
@@ -257,7 +257,7 @@ class TestFailure(TestCaseBase):
             arr_for_py3_source(test_case,
                                timeout_in_seconds=1),
             Expectation(
-                asrt_result.matches2(PartialExeResultStatus.HARD_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.HARD_ERROR,
                                      asrt_result.has_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure(
@@ -300,7 +300,7 @@ class TestFailure(TestCaseBase):
             arr_for_py3_source(test_case),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.HARD_ERROR,
+                    ExecutionFailureStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(py_pgm_setup.exit_code),
                     ExpectedFailureForInstructionFailure.new_with_message(

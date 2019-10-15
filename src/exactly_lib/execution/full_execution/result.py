@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Optional
 
 from exactly_lib.execution.failure_info import FailureInfo
-from exactly_lib.execution.partial_execution.result import PartialExeResult, PartialExeResultStatus
+from exactly_lib.execution.partial_execution.result import PartialExeResult, ExecutionFailureStatus
 from exactly_lib.execution.result import ResultBase, ActionToCheckOutcome
 from exactly_lib.test_case.test_case_status import TestCaseStatus
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -62,13 +62,17 @@ def new_from_result_of_partial_execution(execution_mode: TestCaseStatus,
 
 
 def translate_status(execution_mode: TestCaseStatus,
-                     ps: PartialExeResultStatus) -> FullExeResultStatus:
+                     ps: Optional[ExecutionFailureStatus]) -> FullExeResultStatus:
     """
     :param execution_mode: Must not be ExecutionMode.SKIPPED
     """
     if execution_mode is TestCaseStatus.FAIL:
-        if ps is PartialExeResultStatus.FAIL:
+        if ps is ExecutionFailureStatus.FAIL:
             return FullExeResultStatus.XFAIL
-        elif ps is PartialExeResultStatus.PASS:
+        elif ps is None:
             return FullExeResultStatus.XPASS
-    return FullExeResultStatus(ps.value)
+
+    if ps is None:
+        return FullExeResultStatus.PASS
+    else:
+        return FullExeResultStatus(ps.value)

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
+from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
@@ -76,7 +76,7 @@ class TestValidationErrorDueToReferenceToUndefinedSymbol(TestCaseBase):
             Arrangement(test_case),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.VALIDATION_ERROR,
+                    ExecutionFailureStatus.VALIDATION_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForInstructionFailure.new_with_message_assertion__td(
@@ -110,7 +110,7 @@ class TestValidationErrorDueToFailedReferenceRestrictions(TestCaseBase):
             Arrangement(test_case),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.VALIDATION_ERROR,
+                    ExecutionFailureStatus.VALIDATION_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForInstructionFailure.new_with_phase_and_message_assertion__td(
@@ -133,7 +133,7 @@ class TestImplementationError(TestCaseBase):
             Arrangement(test_case),
             Expectation(
                 asrt_result.matches2(
-                    PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                    ExecutionFailureStatus.IMPLEMENTATION_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForInstructionFailure.new_with_exception(
