@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.execution.impl.phase_step_executors import ValidateSymbolsExecutor
 from exactly_lib.execution.impl.single_instruction_executor import PartialControlledFailureEnum, \
     PartialInstructionControlledFailureInfo
+from exactly_lib.execution.partial_execution.impl.symbol_validation import ValidateSymbolsExecutor
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
@@ -216,7 +216,7 @@ def _check(put: unittest.TestCase,
     # ARRANGE
     instruction = phase_configuration.instruction_with_usage(arrangement.symbol_usages)
     environment = arrangement.environment
-    executor = ValidateSymbolsExecutor(environment)
+    executor = ValidateSymbolsExecutor(environment.symbols)
     # ACT #
     return_value = executor.apply(instruction)
     # ASSERT #

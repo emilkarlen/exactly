@@ -3,6 +3,8 @@ from typing import Tuple
 
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.execution.full_execution import execution as full_execution
+from exactly_lib.execution.partial_execution import configuration as partial_exe_conf
+from exactly_lib.execution.partial_execution import execution as partial_execution
 from exactly_lib.execution.result import PhaseStepFailureException
 from exactly_lib.processing import processors
 from exactly_lib.processing import test_case_processing
@@ -13,15 +15,19 @@ from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import ActionToCheck
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 class Resolver(ABC):
+    def __init__(self, predefined_symbols: SymbolTable):
+        self._predefined_symbols = predefined_symbols
+
     @abstractmethod
     def resolve(self) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheck]:
         pass
 
-    @staticmethod
-    def _from_test_case(test_case: test_case_doc.TestCase,
+    def _from_test_case(self,
+                        test_case: test_case_doc.TestCase,
                         conf_phase_configuration_builder: full_execution.ConfigurationBuilder,
                         ) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheck]:
         mb_failure = full_execution.execute_configuration_phase(conf_phase_configuration_builder,
@@ -29,12 +35,19 @@ class Resolver(ABC):
         if mb_failure is not None:
             raise PhaseStepFailureException(mb_failure)
 
+        partial_exe_test_case = partial_exe_conf.TestCase(
+            test_case.setup_phase,
+            test_case.act_phase,
+            test_case.before_assert_phase,
+            test_case.assert_phase,
+            test_case.cleanup_phase,
+        )
+        action_to_check, symbols = partial_execution.parse_atc_and_validate_symbols(
+            conf_phase_configuration_builder.actor,
+            self._predefined_symbols,
+            partial_exe_test_case)
+
         test_case_with_instructions = test_case.as_test_case_of_instructions()
-        act_phase_instructions = [
-            element.value
-            for element in test_case_with_instructions.act_phase
-        ]
-        action_to_check = conf_phase_configuration_builder.actor.parse(act_phase_instructions)
 
         return (test_case_with_instructions,
                 action_to_check)
@@ -46,6 +59,7 @@ class ResolverForTestSuite(Resolver):
                  test_case_definition: TestCaseDefinition,
                  suite_configuration_section_parser: SectionElementParser,
                  ):
+        super().__init__(test_case_definition.predefined_properties.predefined_symbols)
         self.suite_configuration_section_parser = suite_configuration_section_parser
         self.test_case_definition = test_case_definition
         self.execution_settings = execution_settings
@@ -75,6 +89,7 @@ class ResolverForTestCase(Resolver):
                  test_case_definition: TestCaseDefinition,
                  suite_configuration_section_parser: SectionElementParser,
                  ):
+        super().__init__(test_case_definition.predefined_properties.predefined_symbols)
         self.suite_configuration_section_parser = suite_configuration_section_parser
         self.test_case_definition = test_case_definition
         self.execution_settings = execution_settings

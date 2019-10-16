@@ -1,12 +1,26 @@
 import shutil
+from typing import Tuple
 
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution.configuration import TestCase, ConfPhaseValues
 from exactly_lib.execution.partial_execution.impl import executor
-from exactly_lib.execution.partial_execution.impl.executor import Configuration
 from exactly_lib.execution.partial_execution.result import PartialExeResult
+from exactly_lib.test_case.actor import Actor, ActionToCheck
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.util.file_utils import preserved_cwd
+from exactly_lib.util.symbol_table import SymbolTable
+
+
+def parse_atc_and_validate_symbols(actor: Actor,
+                                   predefined_symbols: SymbolTable,
+                                   test_case: TestCase,
+                                   ) -> Tuple[ActionToCheck, SymbolTable]:
+    """
+    :raises PhaseStepFailureException
+    """
+    return executor.parse_atc_and_validate_symbols(actor,
+                                                   predefined_symbols,
+                                                   test_case)
 
 
 def execute(test_case: TestCase,
@@ -32,10 +46,12 @@ def execute(test_case: TestCase,
     ret_val = None
     try:
         with preserved_cwd():
-            ret_val = executor.execute(Configuration(full_exe_input_conf,
-                                                     conf_phase_values,
-                                                     initial_setup_settings),
-                                       test_case)
+            ret_val = executor.execute(
+                executor.Configuration(full_exe_input_conf,
+                                       conf_phase_values,
+                                       initial_setup_settings),
+                test_case,
+            )
             return ret_val
     finally:
         if not is_keep_sandbox:

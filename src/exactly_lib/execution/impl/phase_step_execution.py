@@ -1,12 +1,13 @@
-from typing import Optional
+from typing import Optional, TypeVar, Callable
 
-from exactly_lib.execution.failure_info import InstructionFailureInfo
+from exactly_lib.execution.failure_info import InstructionFailureInfo, PhaseFailureInfo
 from exactly_lib.execution.impl.result import Failure
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     execute_element
 from exactly_lib.execution.phase_step import PhaseStep
-from exactly_lib.execution.result import PhaseStepFailure
+from exactly_lib.execution.result import PhaseStepFailure, ExecutionFailureStatus, PhaseStepFailureException
 from exactly_lib.section_document.model import SectionContents, SectionContentElement, ElementType
+from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util import line_source
 
 
@@ -93,3 +94,56 @@ def execute_phase_prim(phase_contents: SectionContents,
                                failure_info.failure_details,
                                instruction_info.description)
     return None
+
+
+class PhaseStepFailureResultConstructor:
+    def __init__(self, step: PhaseStep):
+        self.step = step
+
+    def apply(self,
+              status: ExecutionFailureStatus,
+              failure_details: FailureDetails) -> PhaseStepFailure:
+        return PhaseStepFailure(status,
+                                PhaseFailureInfo(self.step,
+                                                 failure_details))
+
+    def implementation_error(self, ex: Exception) -> PhaseStepFailure:
+        return self.apply(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+                          FailureDetails.new_exception(ex))
+
+    def implementation_error_msg(self, msg: str) -> PhaseStepFailure:
+        return self.apply(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+                          FailureDetails.new_constant_message(msg))
+
+
+def run_instructions_phase_step(step: PhaseStep,
+                                instruction_executor: ControlledInstructionExecutor,
+                                phase_contents: SectionContents):
+    """
+    :raises PhaseStepFailureException
+    """
+    res = execute_phase(phase_contents,
+                        ElementHeaderExecutorThatDoesNothing(),
+                        ElementHeaderExecutorThatDoesNothing(),
+                        instruction_executor,
+                        step)
+    if res is not None:
+        raise PhaseStepFailureException(res)
+
+
+T = TypeVar('T')
+
+
+def execute_action_and_catch_implementation_exception(action_that_raises_phase_step_failure_exception: Callable[[], T],
+                                                      failure_con: PhaseStepFailureResultConstructor
+                                                      ) -> T:
+    """
+    :raises PhaseStepFailureException
+    """
+    # return action()  # DEBUG IMPLEMENTATION EXCEPTION
+    try:
+        return action_that_raises_phase_step_failure_exception()
+    except PhaseStepFailureException:
+        raise
+    except Exception as ex:
+        raise PhaseStepFailureException(failure_con.implementation_error(ex))

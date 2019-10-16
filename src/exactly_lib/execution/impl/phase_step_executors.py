@@ -7,12 +7,10 @@ from exactly_lib.test_case.phases import common as instr
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
-from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, \
     ConfigurationBuilder
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import pfh, sh, svh
-from .symbol_validation import validate_symbol_usages
 
 
 def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidationErrorOrHardError) \
@@ -57,16 +55,6 @@ class ConfigurationMainExecutor(ControlledInstructionExecutor):
     def apply(self, instruction: ConfigurationPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
             instruction.main(self.__phase_environment))
-
-
-class ValidateSymbolsExecutor(ControlledInstructionExecutor):
-    def __init__(self,
-                 instruction_environment: instr.InstructionEnvironmentForPreSdsStep):
-        self.__instruction_environment = instruction_environment
-
-    def apply(self, symbol_user: SymbolUser) -> PartialInstructionControlledFailureInfo:
-        return validate_symbol_usages(symbol_user.symbol_usages(),
-                                      self.__instruction_environment.symbols)
 
 
 class SetupValidatePreSdsExecutor(ControlledInstructionExecutor):

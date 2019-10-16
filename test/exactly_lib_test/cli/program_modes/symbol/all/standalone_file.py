@@ -126,6 +126,31 @@ class TestFailingScenarios(unittest.TestCase):
             )
         )
 
+    def test_invalid_symbol_reference(self):
+        file_with_invalid_case = File(
+            'invalid-symbol-reference.xly',
+            lines_content([
+                phase_names.SETUP.syntax,
+                sym_def.reference_to('UNDEFINED_SYMBOL', ValueType.STRING),
+            ]))
+
+        check_case_and_suite(
+            self,
+            symbol_command_arguments=
+            [file_with_invalid_case.name],
+            arrangement=
+            Arrangement(
+                main_program_config=sym_def.main_program_config(),
+                cwd_contents=DirContents([
+                    file_with_invalid_case,
+                ])
+            ),
+            expectation=
+            asrt_proc_result.is_result_for_empty_stdout(
+                exit_values.EXECUTION__VALIDATION_ERROR.exit_code
+            )
+        )
+
 
 class TestSuccessfulScenarios(unittest.TestCase):
     def test_empty_file(self):
