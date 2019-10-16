@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus
 from exactly_lib.execution.phase_step import SimplePhaseStep
+from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect

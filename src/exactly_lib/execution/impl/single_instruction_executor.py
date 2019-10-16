@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus
+from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.section_document.model import SectionContentElement, InstructionInfo
 from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case.phases.common import TestCaseInstruction

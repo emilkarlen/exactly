@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus
 from exactly_lib.execution.phase_step import SimplePhaseStep
+from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result import svh
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result

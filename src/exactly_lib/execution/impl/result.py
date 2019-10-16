@@ -1,7 +1,6 @@
 from typing import Callable
 
-from exactly_lib.execution.failure_info import FailureInfo
-from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus
+from exactly_lib.execution.result import ExecutionFailureStatus, PhaseStepFailure
 from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case.result.failure_details import FailureDetails
 
@@ -38,25 +37,6 @@ class Failure(tuple):
         :return: May be None
         """
         return self[3]
-
-
-class PhaseStepFailure:
-    def __init__(self,
-                 status: ExecutionFailureStatus,
-                 failure_info: FailureInfo):
-        """
-        :param failure_info:
-        """
-        self.__failure_info = failure_info
-        self.__status = status
-
-    @property
-    def status(self) -> ExecutionFailureStatus:
-        return self.__status
-
-    @property
-    def failure_info(self) -> FailureInfo:
-        return self.__failure_info
 
 
 class PhaseStepFailureException(Exception):

@@ -9,8 +9,9 @@ from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
-from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus, PartialExeResult
+from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.phase_step import SimplePhaseStep
+from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.actor import ActionToCheck, Actor, ParseException, AtcOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ATC_OS_PROCESS_EXECUTOR

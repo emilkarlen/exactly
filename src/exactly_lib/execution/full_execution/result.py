@@ -2,8 +2,8 @@ from enum import Enum
 from typing import Optional
 
 from exactly_lib.execution.failure_info import FailureInfo
-from exactly_lib.execution.partial_execution.result import PartialExeResult, ExecutionFailureStatus
-from exactly_lib.execution.result import ResultBase, ActionToCheckOutcome
+from exactly_lib.execution.partial_execution.result import PartialExeResult
+from exactly_lib.execution.result import ResultBase, ActionToCheckOutcome, ExecutionFailureStatus
 from exactly_lib.test_case.test_case_status import TestCaseStatus
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 

@@ -5,13 +5,14 @@ from exactly_lib.execution import phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.failure_info import PhaseFailureInfo
 from exactly_lib.execution.impl import phase_step_executors, phase_step_execution
-from exactly_lib.execution.impl.result import PhaseStepFailure, ActionThatRaisesPhaseStepFailureException, \
+from exactly_lib.execution.impl.result import ActionThatRaisesPhaseStepFailureException, \
     PhaseStepFailureException
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.impl.atc_execution import ActionToCheckExecutor
-from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus, PartialExeResult
+from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.phase_step import PhaseStep
+from exactly_lib.execution.result import ExecutionFailureStatus, PhaseStepFailure
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.actor import ParseException

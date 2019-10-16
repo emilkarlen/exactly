@@ -5,7 +5,7 @@ import unittest
 from exactly_lib.execution.impl.single_instruction_executor import execute_element, \
     ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum, SingleInstructionExecutionFailure
-from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus
+from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.section_document.source_location import FileLocationInfo

@@ -2,7 +2,7 @@ import unittest
 from typing import Optional
 
 from exactly_lib.execution.impl.result import Failure
-from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus
+from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

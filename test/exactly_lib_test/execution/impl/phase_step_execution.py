@@ -5,7 +5,7 @@ from exactly_lib.execution.impl.phase_step_execution import execute_phase_prim
 from exactly_lib.execution.impl.result import Failure
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus
+from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc

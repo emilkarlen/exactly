@@ -5,8 +5,8 @@ ValueAssertion:s on PartialExeResult
 from typing import Optional
 
 from exactly_lib.execution.failure_info import FailureInfo
-from exactly_lib.execution.partial_execution.result import ExecutionFailureStatus, PartialExeResult
-from exactly_lib.execution.result import ActionToCheckOutcome
+from exactly_lib.execution.partial_execution.result import PartialExeResult
+from exactly_lib.execution.result import ActionToCheckOutcome, ExecutionFailureStatus
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.execution.test_resources import result_assertions as asrt_atc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
