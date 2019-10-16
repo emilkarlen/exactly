@@ -44,6 +44,19 @@ class TestCaseDefinition:
         return self._predefined_properties
 
 
+def default_conf_phase_configuration__of_home_dir(initial_home_dir_path: pathlib.Path,
+                                                  actor: Actor) -> ConfigurationBuilder:
+    return ConfigurationBuilder(initial_home_dir_path,
+                                initial_home_dir_path,
+                                actor)
+
+
+def default_conf_phase_configuration__of_file(test_case_file_path: pathlib.Path,
+                                              actor: Actor) -> ConfigurationBuilder:
+    return default_conf_phase_configuration__of_home_dir(test_case_file_path.parent.resolve(),
+                                                         actor)
+
+
 class Configuration:
     def __init__(self,
                  test_case_definition: TestCaseDefinition,
@@ -183,11 +196,9 @@ class _Executor(processing_utils.Executor):
     def apply(self,
               test_case_file_path: pathlib.Path,
               test_case: test_case_doc.TestCase) -> FullExeResult:
-        dir_containing_test_case_file = test_case_file_path.parent.resolve()
         return execution.execute(self._exe_conf_that_may_be_updated(),
-                                 ConfigurationBuilder(dir_containing_test_case_file,
-                                                      dir_containing_test_case_file,
-                                                      actor_for_setup(self.default_act_phase_setup)),
+                                 default_conf_phase_configuration__of_file(test_case_file_path,
+                                                                           self.default_act_phase_setup.actor),
                                  self._is_keep_sandbox,
                                  test_case)
 

@@ -25,8 +25,8 @@ def execute(conf: ExecutionConfiguration,
     """
     The main method for executing a Test Case.
     """
-    conf_phase_failure = _execute_configuration_phase(configuration_builder,
-                                                      test_case.configuration_phase)
+    conf_phase_failure = execute_configuration_phase(configuration_builder,
+                                                     test_case.configuration_phase)
     if conf_phase_failure is not None:
         return new_configuration_phase_failure_from(conf_phase_failure)
     if configuration_builder.test_case_status is TestCaseStatus.SKIP:
@@ -51,19 +51,19 @@ def execute(conf: ExecutionConfiguration,
                                                 partial_result)
 
 
-def _prepare_environment_variables(environ: Dict[str, str]):
-    for ev in environment_variables.ALL_ENV_VARS:
-        if ev in environ:
-            del environ[ev]
-
-
-def _execute_configuration_phase(phase_environment: ConfigurationBuilder,
-                                 configuration_phase: SectionContents) -> Optional[PhaseStepFailure]:
+def execute_configuration_phase(phase_environment: ConfigurationBuilder,
+                                configuration_phase: SectionContents) -> Optional[PhaseStepFailure]:
     return phase_step_execution.execute_phase(configuration_phase,
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_executors.ConfigurationMainExecutor(phase_environment),
                                               phase_step.CONFIGURATION__MAIN)
+
+
+def _prepare_environment_variables(environ: Dict[str, str]):
+    for ev in environment_variables.ALL_ENV_VARS:
+        if ev in environ:
+            del environ[ev]
 
 
 def new_configuration_phase_failure_from(phase_result: PhaseStepFailure) -> FullExeResult:

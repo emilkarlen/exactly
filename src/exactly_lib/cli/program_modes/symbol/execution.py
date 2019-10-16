@@ -2,14 +2,17 @@ from typing import Tuple
 
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.cli.program_modes.symbol.impl import symbol_usage_resolving
-from exactly_lib.cli.program_modes.symbol.impl.parse import Parser, ParserForTestSuite, ParserForTestCase
 from exactly_lib.cli.program_modes.symbol.impl.report import ReportGenerator, Report
+from exactly_lib.cli.program_modes.symbol.impl.resolve import Resolver, ResolverForTestSuite, ResolverForTestCase
 from exactly_lib.cli.program_modes.symbol.request import SymbolInspectionRequest, RequestVariantVisitor, \
     RequestVariantList, RequestVariantIndividual
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.common.process_result_reporter import ProcessResultReporter, Environment, StdOutputFilePrinters
 from exactly_lib.common.process_result_reporters import ProcessResultReporterOfMajorBlocksBase, \
     ProcessResultReporterOfExitCodeAndMajorBlocksBase
+from exactly_lib.common.report_rendering.parts import failure_info as failure_info_rendering
+from exactly_lib.execution.full_execution import result
+from exactly_lib.execution.result import PhaseStepFailureException, PhaseStepFailure
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.standalone import result_reporting
@@ -19,6 +22,7 @@ from exactly_lib.section_document.section_element_parsing import SectionElementP
 from exactly_lib.test_case import actor
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import ActionToCheck
+from exactly_lib.test_case.test_case_status import TestCaseStatus
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
@@ -37,30 +41,32 @@ class Executor:
 
     def execution_reporter(self, request: SymbolInspectionRequest) -> ProcessResultReporter:
         try:
-            test_case, action_to_check = self._parse(request)
+            test_case, action_to_check = self._resolve(request)
         except SuiteParseError as ex:
             return _SuiteErrorReporter(ex)
         except AccessorError as ex:
             return _reporter_of_access_error(ex)
         except actor.ParseException as ex:
             return _ActPhaseErrorReporter(ex)
+        except PhaseStepFailureException as ex:
+            return _PhaseStepErrorReporter(ex.failure)
 
         return _ReporterOfRequestReport(
             self._generate_report(test_case, action_to_check, request)
         )
 
-    def _parse(self, request: SymbolInspectionRequest) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheck]:
-        return self._parser_for_request(request).parse()
+    def _resolve(self, request: SymbolInspectionRequest) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheck]:
+        return self._resolver_for_request(request).resolve()
 
-    def _parser_for_request(self, request: SymbolInspectionRequest) -> Parser:
+    def _resolver_for_request(self, request: SymbolInspectionRequest) -> Resolver:
         if request.is_inspect_test_case:
-            return ParserForTestCase(request.case_settings,
-                                     self._test_case_definition,
-                                     self._suite_configuration_section_parser)
+            return ResolverForTestCase(request.case_settings,
+                                       self._test_case_definition,
+                                       self._suite_configuration_section_parser)
         else:
-            return ParserForTestSuite(request.suite_settings,
-                                      self._test_case_definition,
-                                      self._suite_configuration_section_parser)
+            return ResolverForTestSuite(request.suite_settings,
+                                        self._test_case_definition,
+                                        self._suite_configuration_section_parser)
 
     @staticmethod
     def _generate_report(test_case: test_case_doc.TestCaseOfInstructions,
@@ -125,6 +131,22 @@ class _ActPhaseErrorReporter(ProcessResultReporterOfExitCodeAndMajorBlocksBase):
 
     def _blocks(self) -> SequenceRenderer[MajorBlock]:
         return self._ex.cause.failure_message
+
+
+class _PhaseStepErrorReporter(ProcessResultReporterOfExitCodeAndMajorBlocksBase):
+    def __init__(self, failure: PhaseStepFailure):
+        super().__init__(ProcOutputFile.STDERR,
+                         ProcOutputFile.STDERR)
+        self._failure = failure
+
+    def _exit_value(self) -> ExitValue:
+        return exit_values.from_full_result(
+            result.translate_status(TestCaseStatus.PASS,
+                                    self._failure.status)
+        )
+
+    def _blocks(self) -> SequenceRenderer[MajorBlock]:
+        return failure_info_rendering.FailureInfoRenderer(self._failure.failure_info)
 
 
 class _ReporterOfRequestReport(ProcessResultReporterOfMajorBlocksBase):

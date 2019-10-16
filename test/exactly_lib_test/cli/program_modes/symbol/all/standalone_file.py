@@ -74,6 +74,31 @@ class TestFailingScenarios(unittest.TestCase):
             )
         )
 
+    def test_hard_error_from_instruction_in_conf_phase(self):
+        file_with_failing_conf_phase_instruction = File(
+            'hard-error.xly',
+            lines_content([
+                phase_names.CONFIGURATION.syntax,
+                sym_def.UNCONDITIONALLY_HARD_ERROR_CONF_PHASE_INSTRUCTION_NAME,
+            ]))
+
+        check_case_and_suite(
+            self,
+            symbol_command_arguments=
+            [file_with_failing_conf_phase_instruction.name],
+            arrangement=
+            Arrangement(
+                main_program_config=sym_def.main_program_config(),
+                cwd_contents=DirContents([
+                    file_with_failing_conf_phase_instruction,
+                ])
+            ),
+            expectation=
+            asrt_proc_result.is_result_for_empty_stdout(
+                exit_values.EXECUTION__HARD_ERROR.exit_code
+            )
+        )
+
     def test_invalid_syntax_of_act_phase(self):
         file_with_invalid_syntax = File(
             'invalid-syntax.xly',
@@ -200,6 +225,46 @@ class TestSuccessfulScenarios(unittest.TestCase):
                     case_with_single_def,
                 ]),
                 main_program_config=sym_def.main_program_config(),
+            ),
+            expectation=
+            asrt_proc_result.sub_process_result(
+                exitcode=asrt.equals(exit_codes.EXIT_OK),
+                stdout=asrt.equals(output.list_of([
+                    output.SymbolReport(symbol_name, ValueType.STRING, num_refs=1),
+                ])),
+            )
+        )
+
+    def test_single_definition_with_single_reference_in_act_phase__with_actor_set_in_conf(self):
+        symbol_name = 'STRING_SYMBOL'
+        case_with_single_def = File(
+            'test.xly',
+            lines_content([
+                phase_names.CONFIGURATION.syntax,
+
+                sym_def.SET_ACTOR_THAT_PARSES_REFERENCES_INSTRUCTION_NAME,
+
+                phase_names.SETUP.syntax,
+
+                sym_def.define_string(symbol_name, 'value'),
+
+                phase_names.ACT.syntax,
+
+                sym_def.reference_to(symbol_name, ValueType.STRING),
+            ]))
+
+        check_case_and_suite(
+            self,
+            symbol_command_arguments=
+            [case_with_single_def.name],
+            arrangement=
+            Arrangement(
+                main_program_config=sym_def.main_program_config(
+                    ActorThatRaisesParseException()
+                ),
+                cwd_contents=DirContents([
+                    case_with_single_def,
+                ]),
             ),
             expectation=
             asrt_proc_result.sub_process_result(

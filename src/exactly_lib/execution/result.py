@@ -79,3 +79,8 @@ class PhaseStepFailure:
     @property
     def failure_info(self) -> FailureInfo:
         return self.__failure_info
+
+
+class PhaseStepFailureException(Exception):
+    def __init__(self, failure: PhaseStepFailure):
+        self.failure = failure

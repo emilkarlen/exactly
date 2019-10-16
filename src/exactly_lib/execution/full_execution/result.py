@@ -64,7 +64,7 @@ def new_from_result_of_partial_execution(execution_mode: TestCaseStatus,
 def translate_status(execution_mode: TestCaseStatus,
                      ps: Optional[ExecutionFailureStatus]) -> FullExeResultStatus:
     """
-    :param execution_mode: Must not be ExecutionMode.SKIPPED
+    :param execution_mode: Must not be TestCaseStatus.SKIPPED
     """
     if execution_mode is TestCaseStatus.FAIL:
         if ps is ExecutionFailureStatus.FAIL:

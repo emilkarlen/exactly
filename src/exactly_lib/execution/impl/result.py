@@ -1,6 +1,6 @@
 from typing import Callable
 
-from exactly_lib.execution.result import ExecutionFailureStatus, PhaseStepFailure
+from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case.result.failure_details import FailureDetails
 
@@ -37,11 +37,6 @@ class Failure(tuple):
         :return: May be None
         """
         return self[3]
-
-
-class PhaseStepFailureException(Exception):
-    def __init__(self, failure: PhaseStepFailure):
-        self.failure = failure
 
 
 ActionThatRaisesPhaseStepFailureException = Callable[[], None]

@@ -3,9 +3,9 @@ import subprocess
 from contextlib import contextmanager
 from typing import Optional, Callable
 
-from exactly_lib.execution.impl.result import ActionThatRaisesPhaseStepFailureException, \
+from exactly_lib.execution.impl.result import ActionThatRaisesPhaseStepFailureException
+from exactly_lib.execution.result import ActionToCheckOutcome, ExecutionFailureStatus, PhaseStepFailure, \
     PhaseStepFailureException
-from exactly_lib.execution.result import ActionToCheckOutcome, ExecutionFailureStatus, PhaseStepFailure
 from exactly_lib.test_case.actor import ActionToCheck, AtcOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import StdinConfiguration

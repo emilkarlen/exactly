@@ -19,15 +19,18 @@ from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case.actor import Actor, ActionToCheck, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.result import svh
+from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
+from exactly_lib.test_case.result import svh, sh
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util import strings
 from exactly_lib_test.cli.program_modes.test_resources import main_program_execution
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import MainProgramConfig
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
+from exactly_lib_test.common.test_resources import instruction_documentation
 from exactly_lib_test.common.test_resources import instruction_setup
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_pre_formatted_str_for_test
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instrs
+from exactly_lib_test.execution.test_resources.instruction_test_resources import configuration_phase_instruction_that
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatRunsConstantActions
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
@@ -35,6 +38,8 @@ from exactly_lib_test.test_resources.actions import do_return
 
 DEF_INSTRUCTION_NAME = 'define'
 REF_INSTRUCTION_NAME = 'reference'
+SET_ACTOR_THAT_PARSES_REFERENCES_INSTRUCTION_NAME = 'set-source-interpreter-actor'
+UNCONDITIONALLY_HARD_ERROR_CONF_PHASE_INSTRUCTION_NAME = 'unconditionally-hard-error'
 
 
 def define_string(symbol_name: str, value: str) -> str:
@@ -93,7 +98,46 @@ def _ref_instruction_setup(instruction_name: str,
                                                                  _ReferenceParser(mk_instruction))
 
 
+def _setup_for_actor_that_parses_references(instruction_name: str) -> SingleInstructionSetup:
+    return SingleInstructionSetup(
+        _SetActorThatParsesReferences(),
+        instruction_documentation.instruction_documentation(instruction_name),
+    )
+
+
+def _setup_hard_error_conf_phase_instruction(instruction_name: str) -> SingleInstructionSetup:
+    return SingleInstructionSetup(
+        _ParserOfConfPhaseInstructionThatCausesHardError(),
+        instruction_documentation.instruction_documentation(instruction_name),
+    )
+
+
+class _SetActorThatParsesReferences(InstructionParserThatConsumesCurrentLine):
+    def _parse(self, rest_of_line: str) -> model.Instruction:
+        return _InstructionThatSetsInterpreterActor()
+
+
+class _ParserOfConfPhaseInstructionThatCausesHardError(InstructionParserThatConsumesCurrentLine):
+    def _parse(self, rest_of_line: str) -> model.Instruction:
+        return configuration_phase_instruction_that(
+            main=do_return(sh.new_sh_hard_error__str('unconditional hard error'))
+        )
+
+
+class _InstructionThatSetsInterpreterActor(ConfigurationPhaseInstruction):
+    def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+        configuration_builder.set_actor(_ActorThatParsesReferences(REF_INSTRUCTION_NAME))
+        return sh.new_sh_success()
+
+
 INSTRUCTION_SETUP = InstructionsSetup(
+    config_instruction_set={
+        SET_ACTOR_THAT_PARSES_REFERENCES_INSTRUCTION_NAME:
+            _setup_for_actor_that_parses_references(SET_ACTOR_THAT_PARSES_REFERENCES_INSTRUCTION_NAME),
+
+        UNCONDITIONALLY_HARD_ERROR_CONF_PHASE_INSTRUCTION_NAME:
+            _setup_hard_error_conf_phase_instruction(UNCONDITIONALLY_HARD_ERROR_CONF_PHASE_INSTRUCTION_NAME),
+    },
     setup_instruction_set={
         DEF_INSTRUCTION_NAME: define_symbol__setup.setup(DEF_INSTRUCTION_NAME),
         REF_INSTRUCTION_NAME: _ref_instruction_setup(
