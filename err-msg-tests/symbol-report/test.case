@@ -1,16 +1,57 @@
 [setup]
 
+
+########################################
+# - string -
+########################################
+
+
 def string EMPTY_STRING     = ''
 def string NON_EMPTY_STRING = string-contents
+
+
+########################################
+# - list -
+########################################
 
 
 def list EMPTY_LIST     =
 def list NON_EMPTY_LIST = 1st 2nd 3rd
 
 
+########################################
+# - path -
+########################################
+
+
+def string SUB_DIRS        = dir1/dir2
+
+def path PATH_REL_HERE     = -rel-here @[SUB_DIRS]@/file-rel-here
+def path PATH_REL_HDS_CASE = -rel-home @[SUB_DIRS]@/file-rel-hds-case
+def path PATH_REL_SDS_ACT  = -rel-act  @[SUB_DIRS]@/file-rel-sds-act
+def path PATH_REL_CD       = -rel-cd   @[SUB_DIRS]@/file-rel-cd
+
+
+########################################
+# - line-matcher -
+########################################
+
+
 def line-matcher LINE_MATCHER = line-num < 2 || matches .+
 
+
+########################################
+# - string-matcher -
+########################################
+
+
 def string-matcher STRING_MATCHER = equals -file expected.txt
+
+
+########################################
+# - files-matcher -
+########################################
+
 
 def file-matcher FILE_MATCHER__CONTENTS = contents STRING_MATCHER
 

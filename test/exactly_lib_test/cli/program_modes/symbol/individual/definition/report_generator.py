@@ -35,12 +35,14 @@ def suite() -> unittest.TestSuite:
 
 
 class TestDefinition(unittest.TestCase):
-    def test(self):
+    def _check(self,
+               cases: Sequence[SymbolValueResolver],
+               non_standard_blocks: Sequence[ValueAssertion[ReportBlock]],
+               ):
         # ARRANGE #
 
         symbol_name = 'the_symbol_name'
 
-        cases = _RESOLVERS_OF_EVERY_TYPE
         for resolver in cases:
             with self.subTest(str(resolver.value_type)):
                 symbol_definition = _symbol_definition(symbol_name, resolver)
@@ -57,15 +59,26 @@ class TestDefinition(unittest.TestCase):
 
                 self.assertTrue(report.is_success, 'is success')
 
-                expected_blocks_assertion = asrt.matches_sequence([
+                expected_blocks = [
                     _matches_definition_short_info_block(symbol_definition),
                     _matches_definition_source_block(symbol_definition),
-                    # _is_resolved_value_presentation_block(), TODO restore after refactoring of value presentation
-                ])
+                ]
+                if non_standard_blocks:
+                    expected_blocks += non_standard_blocks
+
+                expected_blocks_assertion = asrt.matches_sequence(expected_blocks)
 
                 expected_blocks_assertion.apply_with_message(self, blocks, 'blocks')
 
                 _rendered_blocks_are_major_blocks(self, blocks)
+
+    def test_type_without_rendering_of_resolved_value(self):
+        self._check(_RESOLVERS_OF_TYPES_WITHOUT_RENDERING_OF_RESOLVED_VALUE,
+                    non_standard_blocks=[])
+
+    def test_type_with_rendering_of_resolved_value(self):
+        self._check(_RESOLVERS_OF_TYPES_WITH_RENDERING_OF_RESOLVED_VALUE,
+                    non_standard_blocks=[_is_resolved_value_presentation_block()])
 
 
 class TestReferences(unittest.TestCase):
@@ -248,9 +261,8 @@ _SOURCE_INFO_WITH_SOURCE = symbol_info.SourceInfo.of_lines(
 
 _ARBITRARY_STRING_RESOLVER = string_resolvers.arbitrary_resolver()
 
-_RESOLVERS_OF_EVERY_TYPE = [
+_RESOLVERS_OF_TYPES_WITHOUT_RENDERING_OF_RESOLVED_VALUE = [
     _ARBITRARY_STRING_RESOLVER,
-    path_resolvers.arbitrary_resolver(),
     list_resolvers.arbitrary_resolver(),
 
     program_resolvers.arbitrary_resolver(),
@@ -261,4 +273,8 @@ _RESOLVERS_OF_EVERY_TYPE = [
     line_matcher.arbitrary_resolver(),
     string_matcher.arbitrary_resolver(),
     files_matcher.arbitrary_resolver(),
+]
+
+_RESOLVERS_OF_TYPES_WITH_RENDERING_OF_RESOLVED_VALUE = [
+    path_resolvers.arbitrary_resolver(),
 ]

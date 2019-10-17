@@ -1,6 +1,6 @@
 import pathlib
 from abc import ABC
-from typing import Sequence, List
+from typing import Sequence, List, Optional
 
 from exactly_lib.cli.program_modes.symbol.impl.report import ReportBlock
 from exactly_lib.definitions import file_ref, type_system
@@ -59,8 +59,9 @@ class PresentationBlockConstructor:
             SandboxDirectoryStructure(path_description.EXACTLY_SANDBOX_ROOT_DIR_NAME)
         )
 
-    def block_for(self, resolver: SymbolValueResolver) -> ResolvedValuePresentationBlock:
+    def block_for(self, resolver: SymbolValueResolver) -> Optional[ResolvedValuePresentationBlock]:
         if isinstance(resolver, LogicValueResolver):
+            return None  # FIXME Restore when DDV logic types can report structure
             constructor = _LogicTypeBlockConstructor(self._symbol_table, self._tcds)
             return constructor.visit(resolver)
         elif isinstance(resolver, DataValueResolver):
@@ -70,7 +71,7 @@ class PresentationBlockConstructor:
             raise TypeError('Unknown resolver type: ' + str(resolver))
 
 
-class _DataTypeBlockConstructor(DataValueResolverPseudoVisitor[ResolvedValuePresentationBlock]):
+class _DataTypeBlockConstructor(DataValueResolverPseudoVisitor[Optional[ResolvedValuePresentationBlock]]):
     def __init__(self,
                  symbols: SymbolTable,
                  tcds: HomeAndSds,
@@ -78,15 +79,17 @@ class _DataTypeBlockConstructor(DataValueResolverPseudoVisitor[ResolvedValuePres
         self.symbols = symbols
         self.tcds = tcds
 
-    def visit_string(self, value: StringResolver) -> ResolvedValuePresentationBlock:
+    def visit_string(self, value: StringResolver) -> Optional[ResolvedValuePresentationBlock]:
+        return None  # FIXME Restore when DDV object can report structure
         string = value.resolve(self.symbols).value_of_any_dependency(self.tcds)
         return _BlockForCustomRenderer(_StringRenderer(string))
 
-    def visit_file_ref(self, value: FileRefResolver) -> ResolvedValuePresentationBlock:
+    def visit_file_ref(self, value: FileRefResolver) -> Optional[ResolvedValuePresentationBlock]:
         describer = value.resolve(self.symbols).describer()
         return _of_single_line_object(line_objects.StringLineObject(describer.value.render()))
 
-    def visit_list(self, value: ListResolver) -> ResolvedValuePresentationBlock:
+    def visit_list(self, value: ListResolver) -> Optional[ResolvedValuePresentationBlock]:
+        return None  # FIXME Restore when DDV object can report structure
         the_list = value.resolve(self.symbols).value_of_any_dependency(self.tcds)
         return _BlockForCustomRenderer(_ListRenderer(the_list))
 
