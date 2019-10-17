@@ -35,7 +35,7 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                                                                         home_and_sds,
                                                                         None)
                     # ASSERT #
-                    expected = _expected_str(rpo.REL_HDS_OPTIONS_MAP[rel_home_option].directory_variable_name,
+                    expected = _expected_str(rpo.REL_HDS_OPTIONS_MAP[rel_home_option].directory_variable_sym_ref,
                                              path_suffix)
                     self.assertEqual(expected, actual)
 
@@ -52,7 +52,7 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                                                                         home_and_sds,
                                                                         None)
                     # ASSERT #
-                    expected = _expected_str(rpo.REL_SDS_OPTIONS_MAP[rel_sds_option].directory_variable_name,
+                    expected = _expected_str(rpo.REL_SDS_OPTIONS_MAP[rel_sds_option].directory_variable_sym_ref,
                                              path_suffix)
                     self.assertEqual(expected, actual)
 
@@ -77,7 +77,7 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                 for rel_home_opt in rpo.RelHomeOptionType:
                     rel_home_option_info = rpo.REL_HDS_OPTIONS_MAP[rel_home_opt]
                     self._check_cwd_for_single_rel_option_type(rel_home_option_info,
-                                                               rel_home_option_info.directory_variable_name,
+                                                               rel_home_option_info.directory_variable_sym_ref,
                                                                path_suffix,
                                                                path_value,
                                                                home_and_sds)
@@ -86,7 +86,7 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                 for rel_sds_opt in rpo.RelSdsOptionType:
                     rel_sds_option_info = rpo.REL_SDS_OPTIONS_MAP[rel_sds_opt]
                     self._check_cwd_for_single_rel_option_type(rel_sds_option_info,
-                                                               rel_sds_option_info.directory_variable_name,
+                                                               rel_sds_option_info.directory_variable_sym_ref,
                                                                path_suffix,
                                                                path_value,
                                                                home_and_sds)

@@ -70,12 +70,12 @@ def path_value_with_relativity_name_prefix__rel_tcds_dir(path_value: FileRef) ->
 
     rel_home_opt = pr.rel_home_from_rel_any(relativity_type)
     if rel_home_opt is not None:
-        return _with_prefix(rpo.REL_HDS_OPTIONS_MAP[rel_home_opt].directory_variable_name,
+        return _with_prefix(rpo.REL_HDS_OPTIONS_MAP[rel_home_opt].directory_variable_sym_ref,
                             path_value)
 
     rel_sds_opt = pr.rel_sds_from_rel_any(relativity_type)
     if rel_sds_opt is not None:
-        return _with_prefix(rpo.REL_SDS_OPTIONS_MAP[rel_sds_opt].directory_variable_name,
+        return _with_prefix(rpo.REL_SDS_OPTIONS_MAP[rel_sds_opt].directory_variable_sym_ref,
                             path_value)
 
     raise ValueError(
@@ -101,7 +101,7 @@ def path_value_with_relativity_name_prefix(path_value: FileRef,
             try:
                 return value_if_cwd_is_relative_root_dir(
                     rel_sds_option_info.root_resolver.from_home_and_sds(tcds),
-                    rel_sds_option_info.directory_variable_name)
+                    rel_sds_option_info.directory_variable_sym_ref)
             except ValueError:
                 continue
 
@@ -109,7 +109,7 @@ def path_value_with_relativity_name_prefix(path_value: FileRef,
             try:
                 return value_if_cwd_is_relative_root_dir(
                     rel_home_option_info.root_resolver.from_home_and_sds(tcds),
-                    rel_home_option_info.directory_variable_name)
+                    rel_home_option_info.directory_variable_sym_ref)
             except ValueError:
                 continue
 

@@ -4,6 +4,7 @@ from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import conf_params as cp
 from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInfo
+from exactly_lib.symbol import symbol_syntax
 from exactly_lib.test_case_file_structure import relativity_root
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelNonHomeOptionType, \
     RelHomeOptionType
@@ -62,6 +63,10 @@ class RelOptionInfoCorrespondingToTcDir(RelOptionInfo):
     @property
     def directory_variable_name(self) -> str:
         return self._directory_name
+
+    @property
+    def directory_variable_sym_ref(self) -> str:
+        return symbol_syntax.symbol_reference_syntax_for_name(self._directory_name)
 
 
 class RelHomeOptionInfo(RelOptionInfoCorrespondingToTcDir):
