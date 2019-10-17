@@ -5,6 +5,8 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system import utils
 from exactly_lib.type_system.data.string_value import StringValue
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
+from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
 
 
 class ListValue(MultiDirDependentValue[List[str]]):
@@ -14,6 +16,12 @@ class ListValue(MultiDirDependentValue[List[str]]):
     @staticmethod
     def empty() -> 'ListValue':
         return ListValue([])
+
+    def describer(self) -> SequenceRenderer[str]:
+        return rend_comb.SequenceR([
+            element.describer()
+            for element in self._string_value_elements
+        ])
 
     @property
     def string_value_elements(self) -> Sequence[StringValue]:

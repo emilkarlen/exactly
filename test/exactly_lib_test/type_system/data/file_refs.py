@@ -4,8 +4,9 @@ import types
 import unittest
 from typing import Callable
 
+from exactly_lib.test_case_file_structure import relative_path_options as rpo
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition, RelOptionType, \
-    RESOLVING_DEPENDENCY_OF, RelHomeOptionType
+    RESOLVING_DEPENDENCY_OF, RelHomeOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.type_system.data import file_refs as sut
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
@@ -15,6 +16,7 @@ from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
+from exactly_lib_test.test_resources.test_utils import NEA
 
 
 def suite() -> unittest.TestSuite:
@@ -53,6 +55,7 @@ def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     for config in all_configs:
         ret_val.addTest(_suite_for_config(config))
+    ret_val.addTest(TestDescription())
     return ret_val
 
 
@@ -192,6 +195,46 @@ class TestFilePath(TestForFixedRelativityBase):
                 self.assertEqual(str(expected_path),
                                  str(actual_path_pre_or_post_sds),
                                  'file_path_pre_or_post_sds')
+
+
+class TestDescription(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        abs_path = pathlib.Path().resolve()
+        path_part_component = 'path-part'
+        cases = [
+            NEA('rel-hds wo path suffix',
+                expected=rpo.REL_HDS_OPTIONS_MAP[RelHomeOptionType.REL_HOME_CASE].directory_variable_name,
+                actual=sut.of_rel_option(sut.RelOptionType.REL_HOME_CASE,
+                                         sut.PathPartAsNothing()),
+                ),
+            NEA('rel-hds w path suffix',
+                expected=
+                str(pathlib.Path(rpo.REL_HDS_OPTIONS_MAP[
+                                     RelHomeOptionType.REL_HOME_CASE].directory_variable_name) / path_part_component),
+                actual=sut.of_rel_option(sut.RelOptionType.REL_HOME_CASE,
+                                         PathPartAsFixedPath(path_part_component)),
+                ),
+            NEA('rel-sds',
+                expected=rpo.REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_ACT].directory_variable_name,
+                actual=sut.of_rel_option(sut.RelOptionType.REL_ACT,
+                                         sut.PathPartAsNothing()),
+                ),
+            NEA('absolute',
+                expected=str(abs_path),
+                actual=sut.absolute_file_name(str(abs_path)),
+                ),
+        ]
+
+        for case in cases:
+            with self.subTest(case.name):
+                # ACT #
+
+                actual = case.actual.describer().value.render()
+
+                # ASSERT #
+
+                self.assertEqual(case.expected, actual)
 
 
 if __name__ == '__main__':

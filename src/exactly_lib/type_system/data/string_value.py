@@ -1,20 +1,27 @@
+from abc import ABC, abstractmethod
 from typing import Sequence, Set
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system import utils
+from exactly_lib.util.simple_textstruct.rendering import strings
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 
 
 class StringWithDirDependency(MultiDirDependentValue[str]):
     pass
 
 
-class StringFragment(StringWithDirDependency):
+class StringFragment(StringWithDirDependency, ABC):
     """
     A fragment that, together with other fragments, makes up a `StringValue`
     """
-    pass
+
+    @abstractmethod
+    def describer(self) -> Renderer[str]:
+        """Rendition for presentation in error messages etc"""
+        pass
 
 
 class StringValue(StringWithDirDependency):
@@ -24,6 +31,12 @@ class StringValue(StringWithDirDependency):
     @property
     def fragments(self) -> Sequence[StringFragment]:
         return self._fragments
+
+    def describer(self) -> Renderer[str]:
+        return strings.JoiningOfElementRenderers([
+            fragment.describer()
+            for fragment in self._fragments
+        ])
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return utils.resolving_dependencies_from_sequence(self._fragments)

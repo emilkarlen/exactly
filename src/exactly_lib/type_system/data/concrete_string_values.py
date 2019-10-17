@@ -6,6 +6,8 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringFragment, StringValue
+from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, strings
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 
 
 class ConstantFragment(StringFragment):
@@ -26,6 +28,9 @@ class ConstantFragment(StringFragment):
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> str:
         return self.string_constant
+
+    def describer(self) -> Renderer[str]:
+        return rend_comb.ConstantR(self.string_constant)
 
     def __str__(self):
         return '{}({})'.format('ConstantFragment',
@@ -58,6 +63,10 @@ class _StringFragmentFromDirDependentValue(StringFragment):
 class StringValueFragment(_StringFragmentFromDirDependentValue):
     def __init__(self, string_value: StringValue):
         super().__init__(string_value)
+        self._string_value = string_value
+
+    def describer(self) -> Renderer[str]:
+        return self._string_value.describer()
 
     def _to_string(self, value) -> str:
         return value
@@ -70,6 +79,11 @@ class StringValueFragment(_StringFragmentFromDirDependentValue):
 class ListValueFragment(_StringFragmentFromDirDependentValue):
     def __init__(self, list_value: ListValue):
         super().__init__(list_value)
+        self._list_value = list_value
+
+    def describer(self) -> Renderer[str]:
+        return strings.JoiningOfElementsRenderer(self._list_value.describer(),
+                                                 rend_comb.ConstantR(' '))
 
     def _to_string(self, value) -> str:
         return ' '.join(value)
@@ -82,6 +96,10 @@ class ListValueFragment(_StringFragmentFromDirDependentValue):
 class FileRefFragment(_StringFragmentFromDirDependentValue):
     def __init__(self, file_ref: FileRef):
         super().__init__(file_ref)
+        self._file_ref = file_ref
+
+    def describer(self) -> Renderer[str]:
+        return self._file_ref.describer().value
 
     def _to_string(self, value) -> str:
         return str(value)
@@ -119,6 +137,10 @@ class TransformedStringFragment(StringFragment):
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> str:
         return self._transformer(self._string_fragment.value_of_any_dependency(home_and_sds))
 
+    def describer(self) -> Renderer[str]:
+        return _TransformedStringRenderer(self._string_fragment,
+                                          self._transformer)
+
 
 def string_value_of_single_string(value: str) -> StringValue:
     return StringValue((ConstantFragment(value),))
@@ -126,3 +148,15 @@ def string_value_of_single_string(value: str) -> StringValue:
 
 def string_value_of_single_file_ref(value: FileRef) -> StringValue:
     return StringValue((FileRefFragment(value),))
+
+
+class _TransformedStringRenderer(Renderer[str]):
+    def __init__(self,
+                 string_fragment: StringFragment,
+                 transformer: StrValueTransformer):
+        self._string_fragment = string_fragment
+        self._transformer = transformer
+
+    def render(self) -> str:
+        un_transformed = self._string_fragment.describer().render()
+        return self._transformer(un_transformed)

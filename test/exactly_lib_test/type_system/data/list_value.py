@@ -3,10 +3,12 @@ import unittest
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.data import concrete_string_values as sv, file_refs, list_value as sut
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
+from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     matches_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 from exactly_lib_test.test_resources.actions import do_return
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
 def suite() -> unittest.TestSuite:
@@ -14,7 +16,7 @@ def suite() -> unittest.TestSuite:
 
 
 class TestListValue(unittest.TestCase):
-    def test(self):
+    def test_dependence_and_resolving(self):
         string_fragment_1 = 'string fragment 1'
         string_fragment_2 = 'string fragment 2'
         file_ref_rel_home = file_refs.of_rel_option(file_refs.RelOptionType.REL_HOME_CASE,
@@ -82,3 +84,36 @@ class TestListValue(unittest.TestCase):
             assertion = matches_multi_dir_dependent_value(expected)
             with self.subTest(name=test_case_name):
                 assertion.apply_without_message(self, actual)
+
+    def test_description(self):
+        # ARRANGE #
+
+        s1 = 'string1'
+        s2 = 'string2'
+
+        cases = [
+            NameAndValue('empty',
+                         [],
+                         ),
+            NameAndValue('singleton element',
+                         [s1],
+                         ),
+            NameAndValue('multiple elements',
+                         [s1, s2],
+                         ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                elements = [
+                    string_value_of_single_string(s)
+                    for s in case.value
+                ]
+                list_value_fragment = sut.ListValue(elements)
+
+                # ACT #
+
+                actual = list_value_fragment.describer().render_sequence()
+
+                # ASSERT #
+
+                self.assertEqual(case.value, actual)
