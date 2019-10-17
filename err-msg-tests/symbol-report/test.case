@@ -9,6 +9,10 @@
 def string EMPTY_STRING     = ''
 def string NON_EMPTY_STRING = string-contents
 
+def path   PATH_FRAGMENT          = -rel-act act-file.txt
+def list   LIST_FRAGMENT          = element1 element2
+def string STRING_W_PATH_AND_LIST = :@[PATH_FRAGMENT]@:@[LIST_FRAGMENT]@:
+
 
 ########################################
 # - list -
@@ -16,7 +20,7 @@ def string NON_EMPTY_STRING = string-contents
 
 
 def list EMPTY_LIST     =
-def list NON_EMPTY_LIST = 1st 2nd 3rd
+def list NON_EMPTY_LIST = 1st 2nd @[PATH_FRAGMENT]@ @[LIST_FRAGMENT]@
 
 
 ########################################

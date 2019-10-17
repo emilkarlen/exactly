@@ -1,6 +1,6 @@
 import pathlib
 from abc import ABC
-from typing import Sequence, List, Optional
+from typing import Sequence, Optional
 
 from exactly_lib.cli.program_modes.symbol.impl.report import ReportBlock
 from exactly_lib.definitions import file_ref, type_system
@@ -36,7 +36,7 @@ from exactly_lib.util.name import NumberOfItemsString
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
 from exactly_lib.util.simple_textstruct.rendering.components import MajorBlockRenderer, LineObjectRenderer
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -51,21 +51,21 @@ class PresentationBlockConstructor:
             definition.name: definition.resolver_container
             for definition in all_definitions
         })
-        self._tcds = HomeAndSds(
-            HomeDirectoryStructure(
-                pathlib.Path(symbol_reference_syntax_for_name(file_ref.EXACTLY_DIR__REL_HOME_CASE)),
-                pathlib.Path(symbol_reference_syntax_for_name(file_ref.EXACTLY_DIR__REL_HOME_CASE)),
-            ),
-            SandboxDirectoryStructure(path_description.EXACTLY_SANDBOX_ROOT_DIR_NAME)
-        )
 
     def block_for(self, resolver: SymbolValueResolver) -> Optional[ResolvedValuePresentationBlock]:
         if isinstance(resolver, LogicValueResolver):
             return None  # FIXME Restore when DDV logic types can report structure
-            constructor = _LogicTypeBlockConstructor(self._symbol_table, self._tcds)
+            tcds = HomeAndSds(
+                HomeDirectoryStructure(
+                    pathlib.Path(symbol_reference_syntax_for_name(file_ref.EXACTLY_DIR__REL_HOME_CASE)),
+                    pathlib.Path(symbol_reference_syntax_for_name(file_ref.EXACTLY_DIR__REL_HOME_CASE)),
+                ),
+                SandboxDirectoryStructure(path_description.EXACTLY_SANDBOX_ROOT_DIR_NAME)
+            )
+            constructor = _LogicTypeBlockConstructor(self._symbol_table, tcds)
             return constructor.visit(resolver)
         elif isinstance(resolver, DataValueResolver):
-            constructor = _DataTypeBlockConstructor(self._symbol_table, self._tcds)
+            constructor = _DataTypeBlockConstructor(self._symbol_table)
             return constructor.visit(resolver)
         else:
             raise TypeError('Unknown resolver type: ' + str(resolver))
@@ -74,24 +74,18 @@ class PresentationBlockConstructor:
 class _DataTypeBlockConstructor(DataValueResolverPseudoVisitor[Optional[ResolvedValuePresentationBlock]]):
     def __init__(self,
                  symbols: SymbolTable,
-                 tcds: HomeAndSds,
                  ):
         self.symbols = symbols
-        self.tcds = tcds
 
     def visit_string(self, value: StringResolver) -> Optional[ResolvedValuePresentationBlock]:
-        return None  # FIXME Restore when DDV object can report structure
-        string = value.resolve(self.symbols).value_of_any_dependency(self.tcds)
-        return _BlockForCustomRenderer(_StringRenderer(string))
+        return _BlockForCustomRenderer(_StringRenderer(value.resolve(self.symbols).describer()))
 
     def visit_file_ref(self, value: FileRefResolver) -> Optional[ResolvedValuePresentationBlock]:
         describer = value.resolve(self.symbols).describer()
         return _of_single_line_object(line_objects.StringLineObject(describer.value.render()))
 
     def visit_list(self, value: ListResolver) -> Optional[ResolvedValuePresentationBlock]:
-        return None  # FIXME Restore when DDV object can report structure
-        the_list = value.resolve(self.symbols).value_of_any_dependency(self.tcds)
-        return _BlockForCustomRenderer(_ListRenderer(the_list))
+        return _BlockForCustomRenderer(_ListRenderer(value.resolve(self.symbols).describer()))
 
 
 class _LogicTypeBlockConstructor(LogicValueResolverPseudoVisitor[ResolvedValuePresentationBlock]):
@@ -164,21 +158,22 @@ def _of_single_line_object(line_renderer: LineObjectRenderer) -> ResolvedValuePr
 
 
 class _StringRenderer(MajorBlockRenderer):
-    def __init__(self, x: str):
+    def __init__(self, x: Renderer[str]):
         self._x = x
 
     def render(self) -> MajorBlock:
-        header = _type_of_x_elements_header(len(self._x),
+        s = self._x.render()
+        header = _type_of_x_elements_header(len(s),
                                             types.STRING_TYPE_INFO,
                                             type_system.NUMBER_OF_STRING_CHARACTERS)
 
-        if len(self._x) == 0:
+        if len(s) == 0:
             return _header_only(header)
         else:
             return _header_and_value(
                 header,
                 [text_struct.LineElement(
-                    text_struct.PreFormattedStringLineObject(self._x, False)
+                    text_struct.PreFormattedStringLineObject(s, False)
                 )
                 ],
                 text_struct.ELEMENT_PROPERTIES__NEUTRAL,
@@ -186,19 +181,20 @@ class _StringRenderer(MajorBlockRenderer):
 
 
 class _ListRenderer(MajorBlockRenderer):
-    def __init__(self, the_list: List[str]):
+    def __init__(self, the_list: SequenceRenderer[str]):
         self._list = the_list
 
     def render(self) -> MajorBlock:
-        header = _type_of_x_elements_header(len(self._list),
+        the_list = self._list.render_sequence()
+        header = _type_of_x_elements_header(len(the_list),
                                             types.LIST_TYPE_INFO,
                                             type_system.NUMBER_OF_LIST_ELEMENTS)
-        if len(self._list) == 0:
+        if len(the_list) == 0:
             return _header_only(header)
 
         num_formatter = (
             self._format_lt_10
-            if len(self._list) < 10
+            if len(the_list) < 10
             else
             self._format_gte_10
         )
@@ -208,7 +204,7 @@ class _ListRenderer(MajorBlockRenderer):
                 text_struct.StringLineObject(
                     '  '.join([num_formatter(n), elem, ]))
             )
-            for n, elem in enumerate(self._list, 1)
+            for n, elem in enumerate(the_list, 1)
         ]
 
         return _header_and_value(

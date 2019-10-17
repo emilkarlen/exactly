@@ -262,9 +262,6 @@ _SOURCE_INFO_WITH_SOURCE = symbol_info.SourceInfo.of_lines(
 _ARBITRARY_STRING_RESOLVER = string_resolvers.arbitrary_resolver()
 
 _RESOLVERS_OF_TYPES_WITHOUT_RENDERING_OF_RESOLVED_VALUE = [
-    _ARBITRARY_STRING_RESOLVER,
-    list_resolvers.arbitrary_resolver(),
-
     program_resolvers.arbitrary_resolver(),
 
     file_matcher.arbitrary_resolver(),
@@ -276,5 +273,7 @@ _RESOLVERS_OF_TYPES_WITHOUT_RENDERING_OF_RESOLVED_VALUE = [
 ]
 
 _RESOLVERS_OF_TYPES_WITH_RENDERING_OF_RESOLVED_VALUE = [
+    _ARBITRARY_STRING_RESOLVER,
+    list_resolvers.arbitrary_resolver(),
     path_resolvers.arbitrary_resolver(),
 ]
