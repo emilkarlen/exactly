@@ -12,7 +12,7 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
     ValidationStep, \
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.description_tree import details
+from exactly_lib.test_case_utils.description_tree import details as custom_details
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
@@ -31,6 +31,7 @@ from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util import file_utils
+from exactly_lib.util.description_tree import details
 from exactly_lib.util.file_utils import tmp_text_file_containing, TmpDirFileSpace
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.strings import StringConstructor
@@ -116,8 +117,8 @@ class EqualityStringMatcher(WithCachedTreeStructureDescriptionBase, StringMatche
         self._expected_contents = expected_contents
         self._validator = validator
         self._err_msg_constructor = error_message_constructor
-        self._renderer_of_expected_value = details.StringOrPath(expected_contents)
-        self._expected_detail_renderer = details.expected(self._renderer_of_expected_value)
+        self._renderer_of_expected_value = custom_details.StringOrPath(expected_contents)
+        self._expected_detail_renderer = custom_details.expected(self._renderer_of_expected_value)
 
     @property
     def name(self) -> str:
@@ -152,7 +153,7 @@ class EqualityStringMatcher(WithCachedTreeStructureDescriptionBase, StringMatche
         if error_message:
             return (
                 self._new_tb_with_expected()
-                    .append_details(details.OfTextRenderer(error_message))
+                    .append_details(custom_details.OfTextRenderer(error_message))
                     .build_result(False)
             )
 

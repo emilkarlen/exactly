@@ -5,7 +5,7 @@ from typing import Pattern
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher
-from exactly_lib.test_case_utils.description_tree import details
+from exactly_lib.test_case_utils.description_tree import details as custom_details
 from exactly_lib.test_case_utils.line_matcher import trace_rendering
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -13,6 +13,7 @@ from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
 
@@ -116,7 +117,7 @@ class LineMatcherRegex(_LineMatcherWExpectedAndActualBase):
     ))
 
     def __init__(self, compiled_regular_expression: Pattern):
-        super().__init__(details.PatternRenderer(False, compiled_regular_expression))
+        super().__init__(custom_details.PatternRenderer(False, compiled_regular_expression))
         self._compiled_regular_expression = compiled_regular_expression
 
     @property
@@ -137,7 +138,7 @@ class LineMatcherRegex(_LineMatcherWExpectedAndActualBase):
         match = self.matches(line)
         if match is not None:
             tb.append_details(
-                details.match(details.PatternMatchRenderer(match))
+                custom_details.match(custom_details.PatternMatchRenderer(match))
             )
 
         return tb.build_result(match is not None)
@@ -184,9 +185,9 @@ class _ExpectedAndActualRenderer(DetailsRenderer):
         self._actual = actual
 
     def render(self) -> Sequence[Detail]:
-        expected_renderer = details.expected(self._expected)
+        expected_renderer = custom_details.expected(self._expected)
 
-        actual_renderer = details.actual(
+        actual_renderer = custom_details.actual(
             trace_rendering.LineMatcherLineRenderer(self._actual)
         )
         ret_val = list(expected_renderer.render())

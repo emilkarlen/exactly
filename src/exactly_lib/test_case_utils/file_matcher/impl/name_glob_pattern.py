@@ -7,7 +7,7 @@ from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.description_tree import details
+from exactly_lib.test_case_utils.description_tree import details as custom_details
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromValueParts
@@ -19,6 +19,7 @@ from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolve
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util import strings
+from exactly_lib.util.description_tree import details
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -69,7 +70,7 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
             self.VARIANT_NAME,
             details.String(strings.Repr(glob_pattern))
         )
-        self._renderer_of_expected = details.expected(self._renderer_of_variant)
+        self._renderer_of_expected = custom_details.expected(self._renderer_of_variant)
 
     @property
     def glob_pattern(self) -> str:
@@ -94,8 +95,8 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
 
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         tb = self.__tb_with_expected().append_details(
-            details.actual(
-                details.PathValueAndPrimitiveDetailsRenderer(model.path.describer)
+            custom_details.actual(
+                custom_details.PathValueAndPrimitiveDetailsRenderer(model.path.describer)
             )
 
         )

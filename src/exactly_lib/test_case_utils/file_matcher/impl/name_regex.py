@@ -7,7 +7,7 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.description_tree import details
+from exactly_lib.test_case_utils.description_tree import details as custom_details
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromValueParts
@@ -19,6 +19,7 @@ from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolve
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util import strings
+from exactly_lib.util.description_tree import details
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -69,7 +70,7 @@ class FileMatcherBaseNameRegExPattern(FileMatcherImplBase):
             self.VARIANT_NAME,
             details.String(strings.Repr(compiled_reg_ex.pattern))
         )
-        self._renderer_of_expected = details.expected(self._renderer_of_variant)
+        self._renderer_of_expected = custom_details.expected(self._renderer_of_variant)
 
     @property
     def name(self) -> str:
@@ -96,7 +97,7 @@ class FileMatcherBaseNameRegExPattern(FileMatcherImplBase):
         base_name = model.path.primitive.name
         regex_match = self._compiled_reg_ex.search(base_name)
         tb = self.__tb_with_expected().append_details(
-            details.actual(
+            custom_details.actual(
                 details.String(base_name)
             )
 

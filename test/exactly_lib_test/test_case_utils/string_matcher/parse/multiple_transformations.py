@@ -8,6 +8,7 @@ from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matche
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
+from exactly_lib.util.description_tree import details
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl, \
     is_reference_to_string_matcher

@@ -2,7 +2,7 @@ from typing import Optional
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.primitives import file_or_dir_contents
-from exactly_lib.test_case_utils.description_tree import details
+from exactly_lib.test_case_utils.description_tree import details as custom_details
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
@@ -12,6 +12,7 @@ from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.type_system.logic.string_matcher import StringMatcher
+from exactly_lib.util.description_tree import details
 from exactly_lib.util.logic_types import ExpectationType
 
 
@@ -54,7 +55,7 @@ class EmptinessStringMatcher(StringMatcher):
             return (
                 self._new_tb()
                     .append_details(
-                    details.actual(details.String(repr(first_line) + '...'))
+                    custom_details.actual(details.String(repr(first_line) + '...'))
                 )
                     .build_result(False)
             )

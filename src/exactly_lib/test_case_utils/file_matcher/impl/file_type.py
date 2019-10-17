@@ -4,7 +4,7 @@ from typing import Optional
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.description_tree import details
+from exactly_lib.test_case_utils.description_tree import details as custom_details
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
@@ -13,6 +13,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.util.description_tree import details
 
 
 class FileMatcherType(FileMatcherImplBase):
@@ -28,7 +29,7 @@ class FileMatcherType(FileMatcherImplBase):
         self._renderer_of_expected_value = details.String(
             file_properties.TYPE_INFO[self._file_type].description)
 
-        self._renderer_of_expected = details.expected(self._renderer_of_expected_value)
+        self._renderer_of_expected = custom_details.expected(self._renderer_of_expected_value)
 
     @property
     def file_type(self) -> file_properties.FileType:
@@ -86,7 +87,7 @@ class FileMatcherType(FileMatcherImplBase):
         tb = (
             self.__tb_with_expected()
                 .append_details(details.HeaderAndValue(types.PATH_TYPE_INFO.singular_name.capitalize(),
-                                                       details.PathValueDetailsRenderer(path.describer)))
+                                                       custom_details.PathValueDetailsRenderer(path.describer)))
                 .append_details(details.HeaderAndValue('Error',
                                                        details.String(ex)))
 
@@ -101,7 +102,7 @@ class FileMatcherType(FileMatcherImplBase):
             else file_properties.TYPE_INFO[actual].description
         )
         tb = self.__tb_with_expected().append_details(
-            details.actual(
+            custom_details.actual(
                 details.String(actual_type_description)
             )
         )

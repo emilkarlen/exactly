@@ -5,7 +5,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     FileModel, FilesMatcherModel, FilesMatcherValue, FilesMatcher, FilesMatcherConstructor
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_utils.description_tree import details
+from exactly_lib.test_case_utils.description_tree import details as custom_details
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.test_case_utils.files_matcher import config
@@ -14,6 +14,7 @@ from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesM
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util import logic_types, strings
+from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
@@ -113,7 +114,7 @@ class _FailureTraceRenderer(NodeRenderer[bool]):
             strings.FormatPositional(
                 'Actual contents ({} files)', len(self._actual_contents),
             ),
-            details.StringList(self._dir_contents_err_msg_lines()),
+            custom_details.StringList(self._dir_contents_err_msg_lines()),
 
         )
         return renderer.render()
