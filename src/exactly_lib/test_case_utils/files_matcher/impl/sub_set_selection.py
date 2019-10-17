@@ -14,11 +14,11 @@ from exactly_lib.test_case_utils.description_tree.tree_structured import WithCac
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
     resolver_validator_for_file_matcher
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.cli_syntax import option_syntax
-from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -71,7 +71,7 @@ class _SubSetSelectorMatcher(WithCachedTreeStructureDescriptionBase, FilesMatche
                 .build_result(result.value)
         )
 
-    def _structure(self) -> NodeRenderer[None]:
+    def _structure(self) -> StructureRenderer:
         return (
             self._new_structure_builder()
                 .append_details(self._details_renderer_of(self._selector))

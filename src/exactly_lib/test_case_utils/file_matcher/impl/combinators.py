@@ -1,10 +1,10 @@
 from typing import Optional, List
 
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
-from exactly_lib.util.description_tree.tree import Node
 
 
 class FileMatcherDelegatedToMatcherWTrace(FileMatcher):
@@ -19,7 +19,7 @@ class FileMatcherDelegatedToMatcherWTrace(FileMatcher):
     def option_description(self) -> str:
         return self._delegated.option_description
 
-    def structure(self) -> Node[None]:
+    def structure(self) -> StructureRenderer:
         return self._delegated.structure()
 
     def negation(self) -> FileMatcher:

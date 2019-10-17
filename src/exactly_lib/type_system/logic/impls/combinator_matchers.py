@@ -5,9 +5,9 @@ from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation
-from exactly_lib.util.description_tree.renderer import NodeRenderer
 
 MODEL = TypeVar('MODEL')
 
@@ -20,7 +20,7 @@ class _CombinatorBase(Generic[MODEL], WithCachedTreeStructureDescriptionBase, Ma
     def _children(self) -> Sequence[MatcherWTrace[MODEL]]:
         pass
 
-    def _structure(self) -> NodeRenderer[None]:
+    def _structure(self) -> StructureRenderer:
         children = [
             self._node_renderer_of(part)
             for part in self._children()

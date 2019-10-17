@@ -119,7 +119,7 @@ class _LogicTypeBlockConstructor(LogicValueResolverPseudoVisitor[ResolvedValuePr
 
     @staticmethod
     def _of_tree_structured(x: WithTreeStructureDescription) -> ResolvedValuePresentationBlock:
-        return _BlockForTree(x.structure())
+        return _BlockForTree(x.structure().render())
 
 
 class _BlockForTree(ResolvedValuePresentationBlock):

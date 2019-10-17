@@ -9,10 +9,10 @@ from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
 from exactly_lib.type_system.description.trace_building import TraceBuilder
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.util.description_tree.renderer import NodeRenderer
 
 
 class FileMatcherType(FileMatcherImplBase):
@@ -42,7 +42,7 @@ class FileMatcherType(FileMatcherImplBase):
     def option_description(self) -> str:
         return 'type is ' + file_properties.TYPE_INFO[self._file_type].description
 
-    def _structure(self) -> NodeRenderer[None]:
+    def _structure(self) -> StructureRenderer:
         return (
             self._new_structure_builder()
                 .append_details(self._renderer_of_expected_value)

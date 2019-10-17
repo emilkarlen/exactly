@@ -24,13 +24,13 @@ from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.type_system.data.string_or_file_ref_values import StringOrPath
 from exactly_lib.type_system.description.trace_building import TraceBuilder
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util import file_utils
-from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.file_utils import tmp_text_file_containing, TmpDirFileSpace
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.strings import StringConstructor
@@ -238,7 +238,7 @@ class EqualityStringMatcher(WithCachedTreeStructureDescriptionBase, StringMatche
     def _new_tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(self._expected_detail_renderer)
 
-    def _structure(self) -> NodeRenderer[None]:
+    def _structure(self) -> StructureRenderer:
         return (
             self._new_structure_builder()
                 .append_details(self._renderer_of_expected_value)

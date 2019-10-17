@@ -14,13 +14,13 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_system_element_matcher import ErrorMessageResolverForFailingFileProperties2
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic import string_matcher
 from exactly_lib.type_system.logic import string_transformer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -86,7 +86,7 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
             string_matcher.DestinationFilePathGetter(),
         )
 
-    def _structure(self) -> NodeRenderer[None]:
+    def _structure(self) -> StructureRenderer:
         return (
             self._new_structure_builder()
                 .append_details(self._details_renderer_of(self._string_matcher))

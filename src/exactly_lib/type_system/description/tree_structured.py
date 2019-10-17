@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
-from exactly_lib.util.description_tree import tree
-from exactly_lib.util.description_tree.tree import Node
+from exactly_lib.util.description_tree import renderers
+from exactly_lib.util.description_tree.renderer import NodeRenderer
+
+StructureRenderer = NodeRenderer[None]
 
 
 class WithTreeStructureDescription(ABC):
@@ -10,16 +12,13 @@ class WithTreeStructureDescription(ABC):
     def name(self) -> str:
         pass
 
-    def structure(self) -> Node[None]:
+    def structure(self) -> StructureRenderer:
         """
         The structure of the object, that can be used in traced.
 
         The returned tree is constant.
-
-        Implementations may be heavy.
-
         """
-        return tree.Node(
+        return renderers.NodeRendererFromParts(
             self.name,
             None,
             (),
