@@ -9,3 +9,5 @@ def line-matcher NOT      = ! LINE_NUM
 def line-matcher AND      = REGEX && NOT
 
 def line-matcher OR       = REGEX || NOT || AND
+
+def line-matcher SYM_REF  = OR

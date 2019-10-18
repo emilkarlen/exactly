@@ -3,3 +3,13 @@
 def line-matcher LINE_NUM = line-num > 2
 
 def string-matcher QUANT_LINE = any line : LINE_NUM
+
+def string-matcher EMPTY       = empty
+def string-matcher EQUALS      = equals 'hello'
+def string-matcher NOT_EQUALS  = ! equals 'negated'
+def string-matcher MATCHES     = matches [a-z]+
+def string-matcher NUM_LINES   = num-lines == 4+1
+def string-matcher NOT         = ! NUM_LINES
+def string-matcher TRANSFORMED = -transformed-by select line-num == 1 NUM_LINES
+
+def string-matcher SYM_REF     = NUM_LINES
