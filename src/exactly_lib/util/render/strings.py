@@ -4,6 +4,14 @@ from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 
 
+class AsToStringObject:
+    def __init__(self, renderer: Renderer[str]):
+        self._renderer = renderer
+
+    def __str__(self) -> str:
+        return self._renderer.render()
+
+
 class JoiningOfElementRenderers(Renderer[str]):
     def __init__(self,
                  elements: Iterable[Renderer[str]],

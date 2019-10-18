@@ -7,9 +7,28 @@ from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestAsToString),
         unittest.makeSuite(TestJoiningOfElementRenderers),
         unittest.makeSuite(TestJoiningOfElementsRenderer),
     ])
+
+
+class TestAsToString(unittest.TestCase):
+    def test(self):
+        # ARRANGE #
+
+        renderer = ConstantR('the rendered string')
+        to_string_object = sut.AsToStringObject(renderer)
+
+        # ACT #
+
+        actual = str(to_string_object)
+
+        # ASSERT #
+
+        expected = renderer.render()
+        self.assertEqual(expected,
+                         actual)
 
 
 class TestJoiningOfElementRenderers(unittest.TestCase):
