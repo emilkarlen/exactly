@@ -13,7 +13,7 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver, ExpectedValueResolver
@@ -105,14 +105,14 @@ class _ErrorMessageResolverConstructor:
                                      actual_info)
 
 
-class EqualityStringMatcher(WithCachedTreeStructureDescriptionBase, StringMatcher):
+class EqualityStringMatcher(WithCachedNameAndTreeStructureDescriptionBase, StringMatcher):
     def __init__(self,
                  expectation_type: ExpectationType,
                  expected_contents: StringOrPath,
                  error_message_constructor: _ErrorMessageResolverConstructor,
                  validator: PreOrPostSdsValidatorPrimitive,
                  ):
-        WithCachedTreeStructureDescriptionBase.__init__(self)
+        WithCachedNameAndTreeStructureDescriptionBase.__init__(self)
         self._expectation_type = expectation_type
         self._expected_contents = expected_contents
         self._validator = validator

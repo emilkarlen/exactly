@@ -10,7 +10,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation as validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
     resolver_validator_for_file_matcher
@@ -29,7 +29,7 @@ def sub_set_selection_matcher(selector: FileMatcherResolver,
                                           matcher_on_selection)
 
 
-class _SubSetSelectorMatcher(WithCachedTreeStructureDescriptionBase, FilesMatcher):
+class _SubSetSelectorMatcher(WithCachedNameAndTreeStructureDescriptionBase, FilesMatcher):
     NAME = ' '.join([
         option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name),
         syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
@@ -38,7 +38,7 @@ class _SubSetSelectorMatcher(WithCachedTreeStructureDescriptionBase, FilesMatche
     def __init__(self,
                  selector: FileMatcher,
                  matcher_on_selection: FilesMatcher):
-        WithCachedTreeStructureDescriptionBase.__init__(self)
+        WithCachedNameAndTreeStructureDescriptionBase.__init__(self)
         self._selector = selector
         self._matcher_on_selection = matcher_on_selection
 

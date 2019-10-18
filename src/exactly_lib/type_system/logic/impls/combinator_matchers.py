@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Sequence, Optional
 
 from exactly_lib.definitions import expression
-from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -15,11 +15,11 @@ MODEL = TypeVar('MODEL')
 
 
 class _CombinatorBase(Generic[MODEL],
-                      WithCachedTreeStructureDescriptionBase,
+                      WithCachedNameAndTreeStructureDescriptionBase,
                       MatcherWTraceAndNegation[MODEL],
                       ABC):
     def __init__(self):
-        WithCachedTreeStructureDescriptionBase.__init__(self)
+        WithCachedNameAndTreeStructureDescriptionBase.__init__(self)
 
     @abstractmethod
     def _children(self) -> Sequence[MatcherWTrace[MODEL]]:
