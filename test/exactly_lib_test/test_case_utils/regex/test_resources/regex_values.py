@@ -5,7 +5,9 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
     ConstantPreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -18,6 +20,9 @@ class RegexConstantValueTestImpl(RegexValue):
         self._value = value
         self._validator = validator
         self._resolving_dependencies = set() if resolving_dependencies is None else resolving_dependencies
+
+    def describer(self) -> DetailsRenderer:
+        return custom_details.PatternRenderer(False, self._value)
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self._resolving_dependencies

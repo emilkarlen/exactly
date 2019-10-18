@@ -7,6 +7,7 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.line_matcher.line_matcher_values import LineMatcherValueFromPrimitiveValue
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherValue, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.value_type import ValueType
@@ -57,6 +58,9 @@ class LineMatcherValueTestImpl(LineMatcherValue):
         self._primitive_value = primitive_value
         self._validator = validator
         self._resolving_dependencies = resolving_dependencies
+
+    def structure(self) -> StructureRenderer:
+        return self._primitive_value.structure()
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self._resolving_dependencies

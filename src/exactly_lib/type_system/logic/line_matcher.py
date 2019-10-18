@@ -9,6 +9,7 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.description import trace_renderers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
+from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult
 
@@ -58,7 +59,7 @@ class LineMatcher(MatcherWTrace[LineMatcherLine]):
         raise NotImplementedError('abstract method of ' + str(type(self)))
 
 
-class LineMatcherValue(MultiDirDependentValue[LineMatcher], ABC):
+class LineMatcherValue(MultiDirDependentValue[LineMatcher], WithTreeStructureDescription, ABC):
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return set()
 

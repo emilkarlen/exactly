@@ -8,12 +8,13 @@ from exactly_lib.test_case_utils.condition.integer.integer_matcher import Intege
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.line_matcher import trace_rendering
 from exactly_lib.type_system.description.trace_building import TraceBuilder
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.util.description_tree import details
+from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
 
@@ -116,6 +117,15 @@ class LineMatcherRegex(_LineMatcherWExpectedAndActualBase):
         syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
     ))
 
+    @staticmethod
+    def new_structure_tree(regex: DetailsRenderer) -> StructureRenderer:
+        return renderers.NodeRendererFromParts(
+            LineMatcherRegex.NAME,
+            None,
+            (regex,),
+            (),
+        )
+
     def __init__(self, compiled_regular_expression: Pattern):
         super().__init__(custom_details.PatternRenderer(False, compiled_regular_expression))
         self._compiled_regular_expression = compiled_regular_expression
@@ -153,13 +163,25 @@ class LineMatcherRegex(_LineMatcherWExpectedAndActualBase):
 class LineMatcherLineNumber(_LineMatcherWExpectedAndActualBase):
     """Matches lines who's line number satisfy a given condition."""
 
+    NAME = ' '.join((line_matcher.LINE_NUMBER_MATCHER_NAME,
+                     syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name))
+
+    @staticmethod
+    def new_structure_tree(line_number_matcher: DetailsRenderer) -> StructureRenderer:
+        return renderers.NodeRendererFromParts(
+            LineMatcherLineNumber.NAME,
+            None,
+            (line_number_matcher,),
+            (),
+        )
+
     def __init__(self, integer_matcher: IntegerMatcher):
         super().__init__(details.String(integer_matcher.option_description))
         self._integer_matcher = integer_matcher
 
     @property
     def name(self) -> str:
-        return line_matcher.LINE_NUMBER_MATCHER_NAME
+        return self.NAME
 
     @property
     def option_description(self) -> str:

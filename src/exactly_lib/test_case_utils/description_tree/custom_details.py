@@ -3,6 +3,7 @@ from typing import Sequence, Iterable, Pattern, Match
 from exactly_lib.common.report_rendering import print
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.type_system.data import string_or_file_ref_values
@@ -12,6 +13,7 @@ from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.details import HeaderAndValue
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
+from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.strings import ToStringObject
 
 _EXPECTED = 'Expected'
@@ -153,4 +155,21 @@ class StringAsSingleLineWithMaxLenDetailsRenderer(DetailsRenderer):
             sr = sr + '...'
         return [
             tree.StringDetail(sr)
+        ]
+
+
+class ComparatorExpression(DetailsRenderer):
+    def __init__(self,
+                 comparator: comparators.ComparisonOperator,
+                 rhs: Renderer[str],
+                 ):
+        self._comparator = comparator
+        self._rhs = rhs
+
+    def render(self) -> Sequence[Detail]:
+        return [
+            tree.StringDetail(' '.join([
+                self._comparator.name,
+                self._rhs.render(),
+            ]))
         ]

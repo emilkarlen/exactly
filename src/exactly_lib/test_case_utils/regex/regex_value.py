@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import Sequence, Set, Pattern
 
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -5,10 +6,15 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class RegexValue(MultiDirDependentValue[Pattern]):
+class RegexValue(MultiDirDependentValue[Pattern], ABC):
+    @abstractmethod
+    def describer(self) -> DetailsRenderer:
+        pass
+
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         raise NotImplementedError('abstract method')
 

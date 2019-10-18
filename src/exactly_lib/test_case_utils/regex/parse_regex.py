@@ -21,6 +21,9 @@ from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.util import strings
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.description_tree import details
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
+from exactly_lib.util.render import strings as string_rendering
 from exactly_lib.util.symbol_table import SymbolTable
 
 IGNORE_CASE_OPTION_NAME = a.OptionName(long_name='ignore-case')
@@ -136,8 +139,13 @@ class _ValidatorWhichCreatesRegex(PreOrPostSdsValueValidator):
 class _RegexValue(RegexValue):
     def __init__(self,
                  is_ignore_case: bool,
-                 string: StringValue):
+                 string: StringValue,
+                 ):
+        self._describer = details.String(string_rendering.AsToStringObject(string.describer()))
         self._validator = _ValidatorWhichCreatesRegex(is_ignore_case, string)
+
+    def describer(self) -> DetailsRenderer:
+        return self._describer
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self._validator.resolving_dependencies()

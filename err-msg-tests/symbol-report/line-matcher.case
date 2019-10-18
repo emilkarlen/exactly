@@ -1,0 +1,11 @@
+[setup]
+
+def line-matcher REGEX    = matches [a-z]+b?c
+
+def line-matcher LINE_NUM = line-num > 2
+
+def line-matcher NOT      = ! LINE_NUM
+
+def line-matcher AND      = REGEX && NOT
+
+def line-matcher OR       = REGEX || NOT || AND

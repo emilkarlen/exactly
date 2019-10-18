@@ -10,6 +10,7 @@ from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRe
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherResolverFromParts
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherValue
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -35,6 +36,9 @@ def resolver(regex_resolver: RegexResolver) -> LineMatcherResolver:
 class _Value(LineMatcherValue):
     def __init__(self, regex: RegexValue):
         self._regex = regex
+
+    def structure(self) -> StructureRenderer:
+        return LineMatcherRegex.new_structure_tree(self._regex.describer())
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self._regex.resolving_dependencies()

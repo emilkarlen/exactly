@@ -17,6 +17,7 @@ from exactly_lib_test.test_case_utils.test_resources.validation import Validatio
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
 
 
 class Arrangement:
@@ -103,6 +104,11 @@ class _Checker:
                                                               'reference')
 
         matcher_value = self._resolve_value(matcher_resolver)
+
+        structure_tree_renderer = matcher_value.structure()
+        asrt_trace_rendering.matches_node_renderer().apply_with_message(self.put,
+                                                                        structure_tree_renderer,
+                                                                        'structure')
 
         self._check_validation_pre_sds(matcher_value)
         self._check_validation_post_sds(matcher_value)

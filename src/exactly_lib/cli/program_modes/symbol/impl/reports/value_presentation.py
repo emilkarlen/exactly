@@ -26,7 +26,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import path_description
-from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription
+from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.description_tree import simple_textstruct_rendering as rendering
@@ -54,7 +54,6 @@ class PresentationBlockConstructor:
 
     def block_for(self, resolver: SymbolValueResolver) -> Optional[ResolvedValuePresentationBlock]:
         if isinstance(resolver, LogicValueResolver):
-            return None  # FIXME Restore when DDV logic types can report structure
             tcds = HomeAndSds(
                 HomeDirectoryStructure(
                     pathlib.Path(symbol_reference_syntax_for_name(file_ref.EXACTLY_DIR__REL_HOME_CASE)),
@@ -88,7 +87,7 @@ class _DataTypeBlockConstructor(DataValueResolverPseudoVisitor[Optional[Resolved
         return _BlockForCustomRenderer(_ListRenderer(value.resolve(self.symbols).describer()))
 
 
-class _LogicTypeBlockConstructor(LogicValueResolverPseudoVisitor[ResolvedValuePresentationBlock]):
+class _LogicTypeBlockConstructor(LogicValueResolverPseudoVisitor[Optional[ResolvedValuePresentationBlock]]):
     def __init__(self,
                  symbols: SymbolTable,
                  tcds: HomeAndSds,
@@ -96,29 +95,34 @@ class _LogicTypeBlockConstructor(LogicValueResolverPseudoVisitor[ResolvedValuePr
         self.symbols = symbols
         self.tcds = tcds
 
-    def visit_file_matcher(self, value: FileMatcherResolver) -> ResolvedValuePresentationBlock:
+    def visit_file_matcher(self, value: FileMatcherResolver) -> Optional[ResolvedValuePresentationBlock]:
+        return None  # FIXME Restore when DDV can report structure
         return self._of_tree_structured(value.resolve(self.symbols).value_of_any_dependency(self.tcds))
 
-    def visit_files_matcher(self, value: FilesMatcherResolver) -> ResolvedValuePresentationBlock:
+    def visit_files_matcher(self, value: FilesMatcherResolver) -> Optional[ResolvedValuePresentationBlock]:
+        return None  # FIXME Restore when DDV can report structure
         matcher_constructor = value.resolve(self.symbols).value_of_any_dependency(self.tcds)
         matcher = matcher_constructor.construct(TmpDirFileSpaceThatMustNoBeUsed())
         return self._of_tree_structured(matcher)
 
-    def visit_line_matcher(self, value: LineMatcherResolver) -> ResolvedValuePresentationBlock:
+    def visit_line_matcher(self, value: LineMatcherResolver) -> Optional[ResolvedValuePresentationBlock]:
+        return self._of_tree_structured(value.resolve(self.symbols))
+
+    def visit_string_matcher(self, value: StringMatcherResolver) -> Optional[ResolvedValuePresentationBlock]:
+        return None  # FIXME Restore when DDV can report structure
         return self._of_tree_structured(value.resolve(self.symbols).value_of_any_dependency(self.tcds))
 
-    def visit_string_matcher(self, value: StringMatcherResolver) -> ResolvedValuePresentationBlock:
+    def visit_string_transformer(self, value: StringTransformerResolver) -> Optional[ResolvedValuePresentationBlock]:
+        return None  # FIXME Restore when DDV can report structure
         return self._of_tree_structured(value.resolve(self.symbols).value_of_any_dependency(self.tcds))
 
-    def visit_string_transformer(self, value: StringTransformerResolver) -> ResolvedValuePresentationBlock:
-        return self._of_tree_structured(value.resolve(self.symbols).value_of_any_dependency(self.tcds))
-
-    def visit_program(self, value: ProgramResolver) -> ResolvedValuePresentationBlock:
+    def visit_program(self, value: ProgramResolver) -> Optional[ResolvedValuePresentationBlock]:
+        return None  # FIXME Restore when DDV can report structure
         program = value.resolve(self.symbols).value_of_any_dependency(self.tcds)
         return _BlockForCustomRenderer(_ProgramRenderer(program))
 
     @staticmethod
-    def _of_tree_structured(x: WithNameAndTreeStructureDescription) -> ResolvedValuePresentationBlock:
+    def _of_tree_structured(x: WithTreeStructureDescription) -> ResolvedValuePresentationBlock:
         return _BlockForTree(x.structure().render())
 
 

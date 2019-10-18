@@ -1,6 +1,5 @@
 from typing import Set
 
-import exactly_lib.test_case_utils.condition.integer.integer_value
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
@@ -9,11 +8,14 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcherFromComparisonOperator
+from exactly_lib.test_case_utils.condition.integer.integer_value import IntegerValue
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
     IntegerComparisonOperatorAndRightOperandResolver
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import validator_for_non_negative
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherLineNumber
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherResolverFromParts
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcher
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -39,9 +41,16 @@ def resolver(condition: IntegerComparisonOperatorAndRightOperandResolver) -> Lin
 class _Value(LineMatcherValue):
     def __init__(self,
                  operator: comparators.ComparisonOperator,
-                 int_expression: exactly_lib.test_case_utils.condition.integer.integer_value.IntegerValue):
+                 int_expression: IntegerValue,
+                 ):
         self._operator = operator
         self._int_expression = int_expression
+
+    def structure(self) -> StructureRenderer:
+        return LineMatcherLineNumber.new_structure_tree(
+            custom_details.ComparatorExpression(self._operator,
+                                                self._int_expression.describer()),
+        )
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self._int_expression.resolving_dependencies()

@@ -6,13 +6,18 @@ from exactly_lib.test_case_utils.description_tree.tree_structured import WithCac
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation
+from exactly_lib.util.description_tree import renderers
 
 MODEL = TypeVar('MODEL')
 
 
-class _CombinatorBase(Generic[MODEL], WithCachedTreeStructureDescriptionBase, MatcherWTraceAndNegation[MODEL], ABC):
+class _CombinatorBase(Generic[MODEL],
+                      WithCachedTreeStructureDescriptionBase,
+                      MatcherWTraceAndNegation[MODEL],
+                      ABC):
     def __init__(self):
         WithCachedTreeStructureDescriptionBase.__init__(self)
 
@@ -33,13 +38,24 @@ class _CombinatorBase(Generic[MODEL], WithCachedTreeStructureDescriptionBase, Ma
 
 
 class Negation(_CombinatorBase[MODEL]):
+    NAME = expression.NOT_OPERATOR_NAME
+
+    @staticmethod
+    def new_structure_tree(negated: WithTreeStructureDescription) -> StructureRenderer:
+        return renderers.NodeRendererFromParts(
+            Negation.NAME,
+            None,
+            (),
+            (negated.structure(),),
+        )
+
     def __init__(self, negated: MatcherWTrace[MODEL]):
         _CombinatorBase.__init__(self)
         self._negated = negated
 
     @property
     def name(self) -> str:
-        return expression.NOT_OPERATOR_NAME
+        return self.NAME
 
     @property
     def option_description(self) -> str:
@@ -73,13 +89,24 @@ class Negation(_CombinatorBase[MODEL]):
 
 
 class Conjunction(_CombinatorBase[MODEL]):
+    NAME = expression.AND_OPERATOR_NAME
+
+    @staticmethod
+    def new_structure_tree(operands: Sequence[WithTreeStructureDescription]) -> StructureRenderer:
+        return renderers.NodeRendererFromParts(
+            Conjunction.NAME,
+            None,
+            (),
+            [operand.structure() for operand in operands],
+        )
+
     def __init__(self, parts: Sequence[MatcherWTrace[MODEL]]):
         _CombinatorBase.__init__(self)
         self._parts = parts
 
     @property
     def name(self) -> str:
-        return expression.AND_OPERATOR_NAME
+        return self.NAME
 
     @property
     def option_description(self) -> str:
@@ -118,13 +145,24 @@ class Conjunction(_CombinatorBase[MODEL]):
 
 
 class Disjunction(_CombinatorBase[MODEL]):
+    NAME = expression.OR_OPERATOR_NAME
+
+    @staticmethod
+    def new_structure_tree(operands: Sequence[WithTreeStructureDescription]) -> StructureRenderer:
+        return renderers.NodeRendererFromParts(
+            Disjunction.NAME,
+            None,
+            (),
+            [operand.structure() for operand in operands],
+        )
+
     def __init__(self, parts: Sequence[MatcherWTrace[MODEL]]):
         _CombinatorBase.__init__(self)
         self._parts = parts
 
     @property
     def name(self) -> str:
-        return expression.OR_OPERATOR_NAME
+        return self.NAME
 
     @property
     def option_description(self) -> str:
