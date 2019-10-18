@@ -2,7 +2,7 @@ import unittest
 from typing import Sequence, Any
 
 from exactly_lib.util.description_tree.tree import Detail, Node, PreFormattedStringDetail, StringDetail, DetailVisitor, \
-    HeaderAndValueDetail, TreeDetail
+    HeaderAndValueDetail, TreeDetail, NODE_DATA
 from exactly_lib.util.strings import ToStringObject
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
@@ -15,6 +15,17 @@ def matches_node(header: ValueAssertion[str] = asrt.anything_goes(),
                  details: ValueAssertion[Sequence[Detail]] = asrt.anything_goes(),
                  children: ValueAssertion[Sequence[Node]] = asrt.anything_goes()) -> ValueAssertion[Node]:
     return _MatchesNode(header, data, details, children)
+
+
+def header_data_and_children_equal_as(node: Node[NODE_DATA]) -> ValueAssertion[Node[NODE_DATA]]:
+    return matches_node(
+        header=asrt.equals(node.header),
+        data=asrt.equals(node.data),
+        children=asrt.matches_sequence([
+            header_data_and_children_equal_as(child)
+            for child in node.children
+        ])
+    )
 
 
 def is_string_detail(to_string_object: ValueAssertion[ToStringObject] = asrt.anything_goes(),

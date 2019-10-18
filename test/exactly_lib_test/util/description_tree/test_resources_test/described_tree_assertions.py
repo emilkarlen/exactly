@@ -21,7 +21,56 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestIsHeaderAndValueDetail),
         unittest.makeSuite(TestIsTreeDetail),
         unittest.makeSuite(TestIsAnyDetail),
+        unittest.makeSuite(TestHeaderDataAndChildrenEquals),
     ])
+
+
+class TestHeaderDataAndChildrenEquals(unittest.TestCase):
+    def test_matches(self):
+        # ARRANGE #
+        cases = [
+            NameAndValue(
+                'empty',
+                sut.Node('the header', 'the data', (), ()),
+            ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assertion = sut.header_data_and_children_equal_as(case.value)
+                # ACT & ASSERT #
+                assertion.apply_without_message(self, case.value)
+
+    def test_not_matches(self):
+        # ARRANGE #
+        cases = [
+            NEA(
+                'different header',
+                expected=sut.Node('the expected header', None, (), ()),
+                actual=sut.Node('the actual header', None, (), ()),
+            ),
+            NEA(
+                'different data',
+                expected=sut.Node('', 'expected', (), ()),
+                actual=sut.Node('', 'actual', (), ()),
+            ),
+            NEA(
+                'different number of children',
+                expected=sut.Node('', None, (), (sut.Node('child', None, (), ()),)),
+                actual=sut.Node('', None, (), ()),
+            ),
+            NEA(
+                'different child',
+                expected=
+                sut.Node('', None, (), (sut.Node('expected child', None, (), ()),)),
+                actual=
+                sut.Node('', None, (), (sut.Node('actual child', None, (), ()),)),
+            ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assertion = sut.header_data_and_children_equal_as(case.expected)
+                # ACT & ASSERT #
+                assert_that_assertion_fails(assertion, case.actual)
 
 
 class TestDefaultAssertions(unittest.TestCase):
