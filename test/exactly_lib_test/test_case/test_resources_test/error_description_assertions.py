@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case import error_description as err_descr
 from exactly_lib.test_case.error_description import ExternalProcessError
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
+from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib_test.test_case.test_resources import error_description_assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails

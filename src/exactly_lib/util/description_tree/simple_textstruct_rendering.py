@@ -2,9 +2,10 @@ from typing import Sequence, Generic, Callable
 
 from exactly_lib.util.description_tree.tree import Node, Detail, DetailVisitor, StringDetail, PreFormattedStringDetail, \
     NODE_DATA, HeaderAndValueDetail, TreeDetail
+from exactly_lib.util.render import combinators as rend_comb
+from exactly_lib.util.render.renderer import SequenceRenderer, Renderer
 from exactly_lib.util.simple_textstruct import structure
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, elements
-from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer, Renderer
+from exactly_lib.util.simple_textstruct.rendering import elements
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, ElementProperties
 
 

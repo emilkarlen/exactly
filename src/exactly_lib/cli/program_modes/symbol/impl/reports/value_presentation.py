@@ -33,10 +33,10 @@ from exactly_lib.util.description_tree import simple_textstruct_rendering as ren
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.name import NumberOfItemsString
+from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
 from exactly_lib.util.simple_textstruct.rendering.components import MajorBlockRenderer, LineObjectRenderer
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.symbol_table import SymbolTable
 

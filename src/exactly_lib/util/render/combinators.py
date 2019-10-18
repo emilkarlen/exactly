@@ -1,7 +1,6 @@
 from typing import Sequence, Generic, TypeVar
 
-from exactly_lib.util.simple_textstruct.rendering.components import ELEMENT
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
+from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 
 T = TypeVar('T')
 
@@ -22,11 +21,11 @@ class ConstantSequenceR(Generic[T], SequenceRenderer[T]):
         return self._elements
 
 
-class ConcatenationR(Generic[ELEMENT], SequenceRenderer[ELEMENT]):
-    def __init__(self, elements: Sequence[SequenceRenderer[ELEMENT]]):
+class ConcatenationR(Generic[T], SequenceRenderer[T]):
+    def __init__(self, elements: Sequence[SequenceRenderer[T]]):
         self._elements = elements
 
-    def render_sequence(self) -> Sequence[ELEMENT]:
+    def render_sequence(self) -> Sequence[T]:
         ret_val = []
         for element in self._elements:
             ret_val += element.render_sequence()
@@ -34,63 +33,63 @@ class ConcatenationR(Generic[ELEMENT], SequenceRenderer[ELEMENT]):
         return ret_val
 
 
-class PrependR(Generic[ELEMENT], SequenceRenderer[ELEMENT]):
+class PrependR(Generic[T], SequenceRenderer[T]):
     def __init__(self,
-                 first: Renderer[ELEMENT],
-                 following: SequenceRenderer[ELEMENT]):
+                 first: Renderer[T],
+                 following: SequenceRenderer[T]):
         self._first = first
         self._following = following
 
-    def render_sequence(self) -> Sequence[ELEMENT]:
+    def render_sequence(self) -> Sequence[T]:
         ret_val = [self._first.render()]
         ret_val += self._following.render_sequence()
 
         return ret_val
 
 
-class AppendR(Generic[ELEMENT], SequenceRenderer[ELEMENT]):
+class AppendR(Generic[T], SequenceRenderer[T]):
     def __init__(self,
-                 first: SequenceRenderer[ELEMENT],
-                 last: Renderer[ELEMENT],
+                 first: SequenceRenderer[T],
+                 last: Renderer[T],
                  ):
         self._first = first
         self._last = last
 
-    def render_sequence(self) -> Sequence[ELEMENT]:
+    def render_sequence(self) -> Sequence[T]:
         ret_val = list(self._first.render_sequence())
         ret_val.append(self._last.render())
 
         return ret_val
 
 
-class SequenceR(Generic[ELEMENT], SequenceRenderer[ELEMENT]):
+class SequenceR(Generic[T], SequenceRenderer[T]):
     """
     Renders a sequence.
 
     Special name of the class to avoid clash with builtin name.
     """
 
-    def __init__(self, elements: Sequence[Renderer[ELEMENT]]):
+    def __init__(self, elements: Sequence[Renderer[T]]):
         self._elements = elements
 
-    def render_sequence(self) -> Sequence[ELEMENT]:
+    def render_sequence(self) -> Sequence[T]:
         return [
             element.render()
             for element in self._elements
         ]
 
 
-class SingletonSequenceR(Generic[ELEMENT], SequenceRenderer[ELEMENT]):
+class SingletonSequenceR(Generic[T], SequenceRenderer[T]):
     """
     Renders a sequence.
 
     Special name of the class to avoid clash with builtin name.
     """
 
-    def __init__(self, element: Renderer[ELEMENT]):
+    def __init__(self, element: Renderer[T]):
         self._element = element
 
-    def render_sequence(self) -> Sequence[ELEMENT]:
+    def render_sequence(self) -> Sequence[T]:
         return [
             self._element.render()
         ]

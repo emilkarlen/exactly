@@ -11,8 +11,8 @@ from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.util import strings
+from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, MajorBlock
 
 

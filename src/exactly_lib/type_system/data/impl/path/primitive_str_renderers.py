@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.render.renderer import Renderer
 
 
 class Constant(Renderer[str]):

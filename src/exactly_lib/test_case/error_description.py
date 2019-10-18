@@ -2,8 +2,8 @@ from typing import Optional, TypeVar, Generic
 
 from exactly_lib.common.err_msg.msg import minors
 from exactly_lib.common.report_rendering.text_doc import MinorTextRenderer
+from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.rendering import line_objects, blocks
-from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import LineElement
 
 

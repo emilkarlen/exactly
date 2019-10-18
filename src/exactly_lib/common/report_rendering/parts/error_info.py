@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.common.report_rendering.parts import error_description, source_location
 from exactly_lib.processing.test_case_processing import ErrorInfo
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as comb
+from exactly_lib.util.render import combinators as comb
 from exactly_lib.util.simple_textstruct.rendering.components import MajorBlocksRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 

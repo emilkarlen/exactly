@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.util.simple_textstruct.rendering import strings as sut
-from exactly_lib.util.simple_textstruct.rendering.renderer_combinators import ConstantR, ConstantSequenceR
+from exactly_lib.util.render import strings as sut
+from exactly_lib.util.render.combinators import ConstantR, ConstantSequenceR
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 

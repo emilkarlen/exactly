@@ -6,8 +6,8 @@ from exactly_lib.common.report_rendering.parts.error_info import ErrorInfoRender
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.util.file_printer import FilePrinter
+from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.rendering import component_renderers as rend
-from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 
 

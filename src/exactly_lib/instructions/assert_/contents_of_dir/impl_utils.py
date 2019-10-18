@@ -13,7 +13,7 @@ from exactly_lib.test_case_utils.err_msg2 import path_err_msgs, file_or_dir_cont
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
+from exactly_lib.util.render import combinators as rend_comb
 
 
 class FilesSource:

@@ -1,7 +1,7 @@
 from typing import Iterable
 
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
+from exactly_lib.util.render import combinators as rend_comb
+from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 
 
 class JoiningOfElementRenderers(Renderer[str]):

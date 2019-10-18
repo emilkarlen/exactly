@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import TypeVar
 
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
+from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, LineObject, Document
 
 ELEMENT = TypeVar('ELEMENT')

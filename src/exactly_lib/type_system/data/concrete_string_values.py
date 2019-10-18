@@ -6,8 +6,8 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringFragment, StringValue
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb, strings
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.render import strings, combinators as rend_comb
+from exactly_lib.util.render.renderer import Renderer
 
 
 class ConstantFragment(StringFragment):

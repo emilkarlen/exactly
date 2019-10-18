@@ -3,8 +3,8 @@ from typing import Optional, Any, Sequence, List
 
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForValue
+from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement
 
 

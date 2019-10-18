@@ -1,7 +1,7 @@
 from typing import Any
 
+from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, LineElement
 
 

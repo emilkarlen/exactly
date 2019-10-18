@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic
 
-from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
+from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 
 T = TypeVar('T')

@@ -2,7 +2,7 @@ from abc import abstractmethod
 from typing import Optional
 
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.render.renderer import Renderer
 
 
 class PathDescriberForValue:

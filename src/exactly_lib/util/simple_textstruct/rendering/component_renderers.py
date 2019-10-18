@@ -1,7 +1,7 @@
+from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering.components import MajorBlockRenderer, MinorBlockRenderer, \
     LineElementRenderer, DocumentRenderer
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, Document, ElementProperties, \
     LineElement, LineObject
 

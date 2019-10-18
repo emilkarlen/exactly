@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.render.renderer import Renderer
 
 
 class PathValueRelTcdsDir(Renderer[str]):

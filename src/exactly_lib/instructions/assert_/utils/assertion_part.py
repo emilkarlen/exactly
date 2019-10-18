@@ -16,8 +16,8 @@ from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.test_case_utils.pfh_exception import translate_pfh_exception_to_pfh
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.render import combinators as rend_comb
+from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 
 A = TypeVar('A')

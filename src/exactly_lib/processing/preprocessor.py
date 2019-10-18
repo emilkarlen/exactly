@@ -8,8 +8,9 @@ from exactly_lib.common.report_rendering.text_doc import MinorTextRenderer
 from exactly_lib.processing.test_case_processing import Preprocessor, ProcessError, ErrorInfo
 from exactly_lib.section_document.source_location import source_location_path_of
 from exactly_lib.test_case import error_description
+from exactly_lib.util.render import combinators as comb
 from exactly_lib.util.simple_textstruct import structure
-from exactly_lib.util.simple_textstruct.rendering import blocks, renderer_combinators as comb
+from exactly_lib.util.simple_textstruct.rendering import blocks
 
 
 class IdentityPreprocessor(Preprocessor):

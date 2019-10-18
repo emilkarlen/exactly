@@ -1,8 +1,8 @@
 from typing import Sequence, List
 
 from exactly_lib.test_case.result.failure_details import FailureDetails
+from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as struct
-from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 
 

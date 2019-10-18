@@ -12,8 +12,8 @@ from exactly_lib.symbol.lookups import lookup_container
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.restriction import Failure, InvalidTypeCategoryFailure, InvalidValueTypeFailure
 from exactly_lib.type_system.value_type import TYPE_CATEGORY_2_VALUE_TYPE_SEQUENCE
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators
-from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
+from exactly_lib.util.render import combinators
+from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -95,7 +95,7 @@ def _of_indirect(failing_symbol: str,
     if error.how_to_fix is not None:
         major_blocks_sequence.append(error.how_to_fix)
 
-    return renderer_combinators.ConcatenationR(major_blocks_sequence)
+    return combinators.ConcatenationR(major_blocks_sequence)
 
 
 def _path_to_failing_symbol(failing_symbol: str,

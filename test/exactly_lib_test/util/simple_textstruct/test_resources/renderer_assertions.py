@@ -1,7 +1,7 @@
 import unittest
 from typing import Sequence, TypeVar, Generic
 
-from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
+from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder

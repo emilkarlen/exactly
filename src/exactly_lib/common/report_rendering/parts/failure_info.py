@@ -2,8 +2,8 @@ from typing import Sequence
 
 from exactly_lib.common.report_rendering.parts import failure_details, source_location
 from exactly_lib.execution.failure_info import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo, FailureInfo
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
-from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
+from exactly_lib.util.render import combinators as rend_comb
+from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 
 

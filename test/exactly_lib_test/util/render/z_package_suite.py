@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.util.simple_textstruct.rendering import strings
+from exactly_lib_test.util.render import strings
 
 
 def suite() -> unittest.TestSuite:

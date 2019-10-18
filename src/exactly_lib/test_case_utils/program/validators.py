@@ -5,8 +5,8 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
 from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
+from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
-from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import LineElement
 
 

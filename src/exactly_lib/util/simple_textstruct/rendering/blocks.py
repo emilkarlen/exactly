@@ -1,10 +1,10 @@
 from typing import Sequence
 
+from exactly_lib.util.render import combinators as rend_comb
+from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering import component_renderers as comp_rend
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
 from exactly_lib.util.simple_textstruct.rendering.components import LineObjectRenderer
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, LineElement, ElementProperties, MajorBlock
 
 

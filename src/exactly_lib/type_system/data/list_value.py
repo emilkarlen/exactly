@@ -5,8 +5,8 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system import utils
 from exactly_lib.type_system.data.string_value import StringValue
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
-from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
+from exactly_lib.util.render import combinators as rend_comb
+from exactly_lib.util.render.renderer import SequenceRenderer
 
 
 class ListValue(MultiDirDependentValue[List[str]]):

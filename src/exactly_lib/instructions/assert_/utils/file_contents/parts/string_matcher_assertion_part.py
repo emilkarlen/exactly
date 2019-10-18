@@ -8,7 +8,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
+from exactly_lib.util.render import combinators as rend_comb
 
 
 class StringMatcherAssertionPart(FileContentsAssertionPart):

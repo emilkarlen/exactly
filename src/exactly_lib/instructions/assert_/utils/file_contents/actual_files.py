@@ -17,7 +17,7 @@ from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.strings import ToStringObject
 

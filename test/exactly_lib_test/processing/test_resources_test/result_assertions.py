@@ -6,7 +6,7 @@ from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.test_case_processing import ErrorInfo, AccessErrorType
 from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case import error_description
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
+from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib_test.execution.full_execution.test_resources import result_assertions as asrt_full_exe_result
 from exactly_lib_test.processing.test_resources import result_assertions as sut
 from exactly_lib_test.section_document.test_resources.source_elements import ARBITRARY_SOURCE_LOCATION_PATH

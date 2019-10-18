@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.test_case import error_description
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as rend_comb
+from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib_test.processing.test_resources import test_case_processing_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA

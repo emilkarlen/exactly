@@ -6,11 +6,12 @@ from typing import Sequence, Tuple, List, Optional
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationPath
 from exactly_lib.util.ansi_terminal_color import FontStyle
+from exactly_lib.util.render import combinators as comb
+from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure
-from exactly_lib.util.simple_textstruct.rendering import renderer_combinators as comb, component_renderers as rend, \
+from exactly_lib.util.simple_textstruct.rendering import component_renderers as rend, \
     blocks
 from exactly_lib.util.simple_textstruct.rendering.components import LineObjectRenderer
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import StringLinesObject, LineElement, MinorBlock, StringLineObject, \
     MajorBlock, PreFormattedStringLineObject, LineObject
 

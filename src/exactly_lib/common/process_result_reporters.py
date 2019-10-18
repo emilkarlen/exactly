@@ -6,7 +6,7 @@ from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.common.process_result_reporter import ProcessResultReporter, Environment
 from exactly_lib.util.file_printer import FilePrinter
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
-from exactly_lib.util.simple_textstruct.rendering.renderer import SequenceRenderer
+from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 
 

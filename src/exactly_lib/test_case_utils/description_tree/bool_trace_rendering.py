@@ -2,7 +2,7 @@ from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.simple_textstruct_rendering import TreeRenderer, RenderingConfiguration
 from exactly_lib.util.description_tree.tree import Node
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, ElementProperties, INDENTATION__NEUTRAL, TextStyle
 
 

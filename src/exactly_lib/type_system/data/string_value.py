@@ -5,8 +5,8 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system import utils
-from exactly_lib.util.simple_textstruct.rendering import strings
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.render import strings
+from exactly_lib.util.render.renderer import Renderer
 
 
 class StringWithDirDependency(MultiDirDependentValue[str]):

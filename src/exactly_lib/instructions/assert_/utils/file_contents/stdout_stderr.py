@@ -33,8 +33,8 @@ from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution import process_output_files
+from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 

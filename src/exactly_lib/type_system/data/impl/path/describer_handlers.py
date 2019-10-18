@@ -20,7 +20,7 @@ from exactly_lib.type_system.data.impl.path.described_w_handler import PathDescr
     PathDescriberHandlerForPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForValue, PathDescriberForPrimitive
 from exactly_lib.type_system.data.path_part import PathPart
-from exactly_lib.util.simple_textstruct.rendering.renderer import Renderer
+from exactly_lib.util.render.renderer import Renderer
 
 
 class PathManipulationFunctionalityForFixedValue(PathDescriberForValue, ABC):
