@@ -15,6 +15,15 @@ class Constant(Generic[NODE_DATA], NodeRenderer[NODE_DATA]):
         return self._constant
 
 
+def header_only(header: str) -> NodeRenderer[None]:
+    return NodeRendererFromParts(header, None, (), ())
+
+
+def header_and_detail(header: str,
+                      detail: DetailsRenderer) -> NodeRenderer[None]:
+    return NodeRendererFromParts(header, None, (detail,), ())
+
+
 class NodeRendererFromParts(Generic[NODE_DATA], NodeRenderer[NODE_DATA]):
     def __init__(self,
                  header: str,

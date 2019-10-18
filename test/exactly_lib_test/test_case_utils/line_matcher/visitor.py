@@ -4,6 +4,7 @@ import unittest
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcherFromComparisonOperator
 from exactly_lib.test_case_utils.line_matcher import line_matchers as sut
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 
@@ -135,6 +136,9 @@ class UnknownLineMatcher(sut.LineMatcher):
     @property
     def name(self) -> str:
         return str(type(self))
+
+    def _structure(self) -> StructureRenderer:
+        raise NotImplementedError('this method should never be called')
 
     @property
     def option_description(self) -> str:

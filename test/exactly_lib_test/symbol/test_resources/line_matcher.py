@@ -17,6 +17,7 @@ from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_va
 from exactly_lib_test.symbol.test_resources.symbols_setup import ResolverSymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.util.render.test_resources import renderers
 
 
 def arbitrary_resolver() -> LineMatcherResolver:
@@ -29,11 +30,15 @@ class LineMatcherConstantTestImpl(LineMatcher):
     """Matcher with constant result."""
 
     def __init__(self, result: bool):
+        super().__init__()
         self._result = result
 
     @property
     def name(self) -> str:
         return self.option_description
+
+    def _structure(self) -> StructureRenderer:
+        return renderers.structure_renderer_for_arbitrary_object(self)
 
     @property
     def option_description(self) -> str:

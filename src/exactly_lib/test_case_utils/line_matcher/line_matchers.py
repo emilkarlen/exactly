@@ -5,7 +5,7 @@ from typing import Pattern
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher
-from exactly_lib.test_case_utils.description_tree import custom_details
+from exactly_lib.test_case_utils.description_tree import custom_details, bool_trace_rendering
 from exactly_lib.test_case_utils.line_matcher import trace_rendering
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -21,11 +21,15 @@ from exactly_lib.util.description_tree.tree import Detail
 
 class LineMatcherDelegatedToMatcherWTrace(LineMatcher):
     def __init__(self, delegated: MatcherWTraceAndNegation[LineMatcherLine]):
+        super().__init__()
         self._delegated = delegated
 
     @property
     def name(self) -> str:
         return self._delegated.name
+
+    def _structure(self) -> StructureRenderer:
+        return self._delegated.structure()
 
     @property
     def option_description(self) -> str:
@@ -81,7 +85,14 @@ class LineMatcherConstant(LineMatcher):
     """Matcher with constant result."""
 
     def __init__(self, result: bool):
+        super().__init__()
         self._result = result
+
+    def _structure(self) -> StructureRenderer:
+        return renderers.header_and_detail(
+            'constant',
+            details.String(bool_trace_rendering.bool_string(self._result))
+        )
 
     @property
     def option_description(self) -> str:
@@ -101,7 +112,14 @@ class LineMatcherConstant(LineMatcher):
 
 class _LineMatcherWExpectedAndActualBase(LineMatcher, ABC):
     def __init__(self, expected: DetailsRenderer):
+        super().__init__()
         self._expected = expected
+
+    def _structure(self) -> StructureRenderer:
+        return renderers.header_and_detail(
+            self.name,
+            self._expected,
+        )
 
     def _tb_for_line(self, line: LineMatcherLine) -> TraceBuilder:
         return TraceBuilder(self.name).append_details(

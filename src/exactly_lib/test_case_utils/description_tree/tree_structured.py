@@ -1,8 +1,9 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Sequence
 
 from exactly_lib.type_system.description.structure_building import StructureBuilder
-from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription, StructureRenderer
+from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription, StructureRenderer, \
+    WithTreeStructureDescription
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
@@ -31,6 +32,20 @@ class WithCachedNameAndTreeStructureDescriptionBase(WithNameAndTreeStructureDesc
     @staticmethod
     def _details_renderer_of(tree_structured: WithNameAndTreeStructureDescription) -> DetailsRenderer:
         return _DetailsRendererFromTreeStructured(tree_structured)
+
+
+class WithCachedTreeStructureDescriptionBase(WithTreeStructureDescription, ABC):
+    def __init__(self):
+        self._structure_renderer = renderers.CachedSingleInvokation(
+            renderers.FromFunction(self._structure)
+        )
+
+    def structure(self) -> StructureRenderer:
+        return self._structure_renderer
+
+    @abstractmethod
+    def _structure(self) -> StructureRenderer:
+        pass
 
 
 class _DetailsRendererFromTreeStructured(DetailsRenderer):

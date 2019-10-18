@@ -17,7 +17,7 @@ from exactly_lib_test.test_case_utils.test_resources.validation import Validatio
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
-from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 
 class Arrangement:
@@ -105,15 +105,27 @@ class _Checker:
 
         matcher_value = self._resolve_value(matcher_resolver)
 
-        structure_tree_renderer = matcher_value.structure()
-        asrt_trace_rendering.matches_node_renderer().apply_with_message(self.put,
-                                                                        structure_tree_renderer,
-                                                                        'structure')
+        structure_tree_of_ddv = matcher_value.structure().render()
+
+        asrt_d_tree.matches_node().apply_with_message(self.put,
+                                                      structure_tree_of_ddv,
+                                                      'structure of ddv')
 
         self._check_validation_pre_sds(matcher_value)
         self._check_validation_post_sds(matcher_value)
 
         matcher = self._resolve_primitive_value(matcher_value)
+        structure_tree_of_primitive = matcher.structure().render()
+
+        asrt_d_tree.matches_node().apply_with_message(self.put,
+                                                      structure_tree_of_primitive,
+                                                      'structure of primitive')
+
+        structure_equals_ddv = asrt_d_tree.header_data_and_children_equal_as(structure_tree_of_ddv)
+        structure_equals_ddv.apply_with_message(
+            self.put,
+            structure_tree_of_primitive,
+            'structure of primitive should be same as that of ddv')
 
         self._check_application(matcher)
 

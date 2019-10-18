@@ -1,10 +1,13 @@
 from typing import Iterable, Callable
 
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
+from exactly_lib_test.util.render.test_resources import renderers
+from exactly_lib_test.util.render.test_resources.renderers import structure_renderer_for_arbitrary_object
 
 
 class FakeStringTransformer(StringTransformerTestImplBase):
@@ -33,6 +36,9 @@ class LineMatcherNotImplementedTestImpl(LineMatcher):
     def name(self) -> str:
         return str(type(self))
 
+    def _structure(self) -> StructureRenderer:
+        return structure_renderer_for_arbitrary_object(self)
+
     @property
     def option_description(self) -> str:
         return str(type(self))
@@ -53,12 +59,16 @@ class LineMatcherFromPredicates(LineMatcher):
     def __init__(self,
                  line_num_predicate: Callable[[int], bool] = lambda x: True,
                  line_contents_predicate: Callable[[str], bool] = lambda x: True):
+        super().__init__()
         self.line_num = line_num_predicate
         self.line_contents = line_contents_predicate
 
     @property
     def name(self) -> str:
         return str(type(self))
+
+    def _structure(self) -> StructureRenderer:
+        return renderers.structure_renderer_for_arbitrary_object(self)
 
     @property
     def option_description(self) -> str:

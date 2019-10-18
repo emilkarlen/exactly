@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import TypeVar, Generic, Sequence, Optional
 
 from exactly_lib.definitions import expression
@@ -21,21 +21,6 @@ class _CombinatorBase(Generic[MODEL],
     def __init__(self):
         WithCachedNameAndTreeStructureDescriptionBase.__init__(self)
 
-    @abstractmethod
-    def _children(self) -> Sequence[MatcherWTrace[MODEL]]:
-        pass
-
-    def _structure(self) -> StructureRenderer:
-        children = [
-            self._node_renderer_of(part)
-            for part in self._children()
-        ]
-        return (
-            self._new_structure_builder()
-                .append_children(children)
-                .build()
-        )
-
 
 class Negation(_CombinatorBase[MODEL]):
     NAME = expression.NOT_OPERATOR_NAME
@@ -56,6 +41,9 @@ class Negation(_CombinatorBase[MODEL]):
     @property
     def name(self) -> str:
         return self.NAME
+
+    def _structure(self) -> StructureRenderer:
+        return self.new_structure_tree(self._negated)
 
     @property
     def option_description(self) -> str:
@@ -107,6 +95,9 @@ class Conjunction(_CombinatorBase[MODEL]):
     @property
     def name(self) -> str:
         return self.NAME
+
+    def _structure(self) -> StructureRenderer:
+        return self.new_structure_tree(self._parts)
 
     @property
     def option_description(self) -> str:
@@ -163,6 +154,9 @@ class Disjunction(_CombinatorBase[MODEL]):
     @property
     def name(self) -> str:
         return self.NAME
+
+    def _structure(self) -> StructureRenderer:
+        return self.new_structure_tree(self._parts)
 
     @property
     def option_description(self) -> str:

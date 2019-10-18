@@ -15,9 +15,13 @@ class BoolTraceRenderer(Renderer[MajorBlock]):
 
 
 def _make_header(node: Node[bool]) -> str:
-    bool_char = 'T' if node.data else 'F'
+    bool_char = bool_string(node.data)
 
     return '({}) {}'.format(bool_char, node.header)
+
+
+def bool_string(b: bool) -> str:
+    return 'T' if b else 'F'
 
 
 # Makes details at level 0 appear aligned with the node header

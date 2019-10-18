@@ -1,6 +1,8 @@
 import unittest
 
 from exactly_lib.test_case_utils.line_matcher import line_matchers as sut
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.util.description_tree import renderers
 from exactly_lib_test.test_case_utils.test_resources import matcher_combinators_check
 
 
@@ -73,4 +75,6 @@ class TestNot(matcher_combinators_check.TestNotBase):
 
 class LineMatcherThatRegistersModelArgument(matcher_combinators_check.MatcherWTraceThatRegistersModelArgument,
                                             sut.LineMatcher):
-    pass
+
+    def _structure(self) -> StructureRenderer:
+        return renderers.header_only(self.name)

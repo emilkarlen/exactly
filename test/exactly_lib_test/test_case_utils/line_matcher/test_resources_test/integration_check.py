@@ -8,6 +8,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine, LineMatcherValue
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
@@ -25,6 +26,7 @@ from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_hard_error
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.util.render.test_resources import renderers
 
 
 def suite() -> unittest.TestSuite:
@@ -178,6 +180,9 @@ class _LineMatcherThatReportsHardError(LineMatcher):
     @property
     def option_description(self) -> str:
         return 'unconditional HARD ERROR'
+
+    def _structure(self) -> StructureRenderer:
+        return renderers.structure_renderer_for_arbitrary_object(self)
 
     def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
         raise HardErrorException(new_single_string_text_for_test('unconditional hard error'))

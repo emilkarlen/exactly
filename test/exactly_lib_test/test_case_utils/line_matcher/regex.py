@@ -150,3 +150,6 @@ class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
 
 
 ARBITRARY = (1, 'arbitrary line contents')
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

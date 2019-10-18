@@ -6,6 +6,7 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.description import trace_renderers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
@@ -18,7 +19,9 @@ LineMatcherLine = Tuple[int, str]
 FIRST_LINE_NUMBER = 1
 
 
-class LineMatcher(MatcherWTrace[LineMatcherLine]):
+class LineMatcher(WithCachedTreeStructureDescriptionBase,
+                  MatcherWTrace[LineMatcherLine],
+                  ABC):
     """
     Matches text lines.
 
