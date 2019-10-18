@@ -1,7 +1,6 @@
 import unittest
 from typing import Iterable, Optional
 
-from exactly_lib.test_case_utils.description_tree import details
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut

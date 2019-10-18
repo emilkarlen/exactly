@@ -10,7 +10,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, \
     FileModel, FilesMatcherModel, FilesMatcherValue, FilesMatcher, FilesMatcherConstructor
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_utils.description_tree import details
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.err_msg import property_description
@@ -324,7 +324,7 @@ class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConst
 
 
 def _element_detail_renderer(element: FileMatcherModel) -> DetailsRenderer:
-    return details.PathValueDetailsRenderer(element.path.describer)
+    return custom_details.PathValueDetailsRenderer(element.path.describer)
 
 
 _NAMES = {

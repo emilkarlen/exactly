@@ -5,7 +5,7 @@ from typing import Pattern
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher
-from exactly_lib.test_case_utils.description_tree import details as custom_details
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.line_matcher import trace_rendering
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
