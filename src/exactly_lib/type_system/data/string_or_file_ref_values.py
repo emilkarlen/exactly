@@ -103,6 +103,13 @@ class StringOrFileRefValue(MultiDirDependentValue[StringOrPath]):
         """
         return self._string_value
 
+    @property
+    def path_value(self) -> FileRef:
+        """
+        :return: Not None iff :class:`DataValueType` is NOT `DataValueType.PATH`
+        """
+        return self._file_ref_value
+
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         if self.is_file_ref:
             return self._file_ref_value.resolving_dependencies()

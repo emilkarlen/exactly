@@ -1,5 +1,6 @@
 from typing import Sequence, Callable, Set
 
+from exactly_lib.definitions import expression
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
@@ -14,10 +15,12 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.string_matcher.delegated_matcher import StringMatcherDelegatedToMatcherWTrace
 from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherOnTransformedFileToCheck
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic import string_matcher_values
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue
 from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -99,7 +102,8 @@ class _StringMatcherWithTransformationResolver(StringMatcherResolver):
                                                          original_value.value_of_any_dependency(tcds),
                                                          )
 
-        return StringMatcherValueFromParts(resolving_dependencies,
+        return StringMatcherValueFromParts(original_value.structure,
+                                           resolving_dependencies,
                                            get_matcher)
 
     @property
@@ -125,13 +129,44 @@ class StringMatcherResolverFromParts(StringMatcherResolver):
         self._validator = validator
         self._references = references
 
+    @staticmethod
+    def get_structure() -> StructureRenderer:
+        return renderers.header_only('from-parts TODO')
+
     def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
         def get_matcher(tcds: HomeAndSds) -> StringMatcher:
             environment = PathResolvingEnvironmentPreOrPostSds(tcds, symbols)
             return self._matcher(environment)
 
-        return StringMatcherValueFromParts(self._resolving_dependencies(symbols),
+        return StringMatcherValueFromParts(self.get_structure,
+                                           self._resolving_dependencies(symbols),
                                            get_matcher)
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._references
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return self._validator
+
+    def __str__(self):
+        return str(type(self))
+
+
+class StringMatcherResolverFromParts2(StringMatcherResolver):
+    def __init__(self,
+                 references: Sequence[SymbolReference],
+                 validator: PreOrPostSdsValidator,
+                 resolving_dependencies: Callable[[SymbolTable], Set[DirectoryStructurePartition]],
+                 get_matcher_value: Callable[[SymbolTable], StringMatcherValue]):
+        self._get_matcher_value = get_matcher_value
+        self._resolving_dependencies = resolving_dependencies
+        self._validator = validator
+        self._references = references
+
+    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
+        return self._get_matcher_value(symbols)
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -147,10 +182,15 @@ class StringMatcherResolverFromParts(StringMatcherResolver):
 
 class StringMatcherValueFromParts(StringMatcherValue):
     def __init__(self,
+                 structure_getter: Callable[[], StructureRenderer],
                  resolving_dependencies: Set[DirectoryStructurePartition],
                  matcher: Callable[[HomeAndSds], StringMatcher]):
+        self._structure_getter = structure_getter
         self._matcher = matcher
         self._resolving_dependencies = resolving_dependencies
+
+    def structure(self) -> StructureRenderer:
+        return self._structure_getter()
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self._resolving_dependencies
@@ -238,12 +278,21 @@ class StringMatcherReferenceResolver(StringMatcherResolver):
 
     @staticmethod
     def _negated(original: StringMatcherValue) -> StringMatcherValue:
+        def get_structure() -> StructureRenderer:
+            return renderers.NodeRendererFromParts(
+                expression.NOT_OPERATOR_NAME,
+                None,
+                (),
+                (original.structure(),)
+            )
+
         def get_matcher(tcds: HomeAndSds) -> StringMatcher:
             return StringMatcherDelegatedToMatcherWTrace(
                 combinator_matchers.Negation(original.value_of_any_dependency(tcds))
             )
 
         return StringMatcherValueFromParts(
+            get_structure,
             original.resolving_dependencies(),
             get_matcher,
         )

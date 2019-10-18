@@ -6,17 +6,24 @@ from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.type_system.logic.string_matcher import StringMatcher
-from exactly_lib.util.description_tree import details
+from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.logic_types import ExpectationType
 
 
 class EmptinessStringMatcher(StringMatcher):
+    NAME = file_or_dir_contents.EMPTINESS_CHECK_ARGUMENT
+
+    @staticmethod
+    def new_structure_tree() -> StructureRenderer:
+        return renderers.header_only(EmptinessStringMatcher.NAME)
+
     def __init__(self, expectation_type: ExpectationType):
         super().__init__()
         self.expectation_type = expectation_type
@@ -24,6 +31,9 @@ class EmptinessStringMatcher(StringMatcher):
     @property
     def name(self) -> str:
         return file_or_dir_contents.EMPTINESS_CHECK_ARGUMENT
+
+    def _structure(self) -> StructureRenderer:
+        return self.new_structure_tree()
 
     @property
     def option_description(self) -> str:

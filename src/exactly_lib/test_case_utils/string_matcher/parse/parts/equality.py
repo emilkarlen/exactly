@@ -1,8 +1,9 @@
 import difflib
 import filecmp
 import pathlib
-from typing import List, Set, Optional, Iterable
+from typing import List, Set, Optional, Iterable, Callable
 
+from exactly_lib.definitions import expression
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.string_or_file import StringOrFileRefResolver
@@ -11,6 +12,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, SingleStepValidator, \
     ValidationStep, \
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.err_msg import diff_msg
@@ -20,17 +22,18 @@ from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
-from exactly_lib.type_system.data.string_or_file_ref_values import StringOrPath
+from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts2
+from exactly_lib.type_system.data.string_or_file_ref_values import StringOrPath, StringOrFileRefValue
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher, StringMatcherValue
 from exactly_lib.util import file_utils
 from exactly_lib.util.description_tree import details, renderers
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.file_utils import tmp_text_file_containing, TmpDirFileSpace
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.strings import StringConstructor
@@ -61,29 +64,27 @@ def value_resolver(expectation_type: ExpectationType,
                    expected_contents: StringOrFileRefResolver) -> StringMatcherResolver:
     validator = _validator_of_expected(expected_contents)
 
-    def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
-        expected_contents_primitive = expected_contents.resolve(environment.symbols).value_of_any_dependency(
-            environment.home_and_sds)
-        return EqualityStringMatcher(
+    def get_matcher_value(symbols: SymbolTable) -> StringMatcherValue:
+        def get_validator(tcds: HomeAndSds) -> FixedPreOrPostSdsValidator:
+            return FixedPreOrPostSdsValidator(PathResolvingEnvironmentPreOrPostSds(tcds, symbols),
+                                              validator)
+
+        expected_contents_value = expected_contents.resolve(symbols)
+        return EqualityStringMatcherValue(
             expectation_type,
-            expected_contents_primitive,
-            _ErrorMessageResolverConstructor(
-                expectation_type,
-                parse_here_doc_or_file_ref.ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
-                                                                 expected_contents_primitive)
-            ),
-            FixedPreOrPostSdsValidator(environment, validator)
+            expected_contents_value,
+            get_validator,
         )
 
     def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
         return expected_contents.resolve(symbols).resolving_dependencies()
 
-    return StringMatcherResolverFromParts(
+    return StringMatcherResolverFromParts2(
         expected_contents.references,
         SingleStepValidator(ValidationStep.PRE_SDS,
                             validator),
         get_resolving_dependencies,
-        get_matcher,
+        get_matcher_value,
     )
 
 
@@ -104,7 +105,65 @@ class _ErrorMessageResolverConstructor:
                                      actual_info)
 
 
+class EqualityStringMatcherValue(StringMatcherValue):
+    def __init__(self,
+                 expectation_type: ExpectationType,
+                 expected_contents: StringOrFileRefValue,
+                 get_validator: Callable[[HomeAndSds], PreOrPostSdsValidatorPrimitive],
+                 ):
+        super().__init__()
+        self._expectation_type = expectation_type
+        self._expected_contents = expected_contents
+        self._get_validator = get_validator
+        self._renderer_of_expected_value = custom_details.StringOrPath(expected_contents)
+        self._expected_detail_renderer = custom_details.expected(self._renderer_of_expected_value)
+
+    def structure(self) -> StructureRenderer:
+        return EqualityStringMatcher.new_structure_tree(
+            self._expectation_type,
+            custom_details.StringOrPathValue(self._expected_contents),
+        )
+
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
+        return self._expected_contents.resolving_dependencies()
+
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
+        expected_contents = self._expected_contents.value_of_any_dependency(home_and_sds)
+        return EqualityStringMatcher(
+            self._expectation_type,
+            expected_contents,
+            _ErrorMessageResolverConstructor(
+                self._expectation_type,
+                parse_here_doc_or_file_ref.ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
+                                                                 expected_contents)
+            ),
+            self._get_validator(home_and_sds),
+        )
+
+
 class EqualityStringMatcher(StringMatcher):
+    NAME = matcher_options.EQUALS_ARGUMENT
+
+    @staticmethod
+    def new_structure_tree(expectation_type: ExpectationType,
+                           expected_contents: DetailsRenderer) -> StructureRenderer:
+        equality_node = renderers.header_and_detail(
+            EqualityStringMatcher.NAME,
+            expected_contents,
+        )
+
+        return (
+            equality_node
+            if expectation_type is ExpectationType.POSITIVE
+            else
+            renderers.NodeRendererFromParts(
+                expression.NOT_OPERATOR_NAME,
+                None,
+                (),
+                (equality_node,),
+            )
+        )
+
     def __init__(self,
                  expectation_type: ExpectationType,
                  expected_contents: StringOrPath,
@@ -122,6 +181,12 @@ class EqualityStringMatcher(StringMatcher):
     @property
     def name(self) -> str:
         return matcher_options.EQUALS_ARGUMENT
+
+    def _structure(self) -> StructureRenderer:
+        return EqualityStringMatcher.new_structure_tree(
+            self._expectation_type,
+            custom_details.StringOrPath(self._expected_contents),
+        )
 
     def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         error_from_validation = self._do_post_setup_validation__old()

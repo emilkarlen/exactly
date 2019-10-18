@@ -102,6 +102,29 @@ class StringOrPath(DetailsRenderer):
             )
 
 
+class StringOrPathValue(DetailsRenderer):
+    def __init__(self,
+                 string_or_path: string_or_file_ref_values.StringOrFileRefValue,
+                 ):
+        self._string_or_path = string_or_path
+
+    def render(self) -> Sequence[Detail]:
+        return self._renderer().render()
+
+    def _renderer(self) -> DetailsRenderer:
+        x = self._string_or_path
+        if x.is_file_ref:
+            return HeaderAndValue(
+                syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
+                PathValueDetailsRenderer(x.path_value.describer())
+            )
+        else:
+            return HeaderAndValue(
+                syntax_elements.STRING_SYNTAX_ELEMENT.singular_name,
+                StringAsSingleLineWithMaxLenDetailsRenderer(x.string_value.describer().render())
+            )
+
+
 class PatternRenderer(DetailsRenderer):
     def __init__(self,
                  is_full_match: bool,
