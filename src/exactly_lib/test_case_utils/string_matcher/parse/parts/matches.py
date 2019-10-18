@@ -78,6 +78,7 @@ class MatchesRegexStringMatcher(StringMatcher):
                  pattern: Pattern[str],
                  error_message_constructor: ErrorMessageResolverConstructor,
                  ):
+        super().__init__()
         self._expectation_type = expectation_type
         self._is_full_match = is_full_match
         self._pattern = pattern

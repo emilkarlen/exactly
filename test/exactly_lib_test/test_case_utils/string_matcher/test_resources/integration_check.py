@@ -26,6 +26,7 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 
 class TestCaseBase(unittest.TestCase):
@@ -150,8 +151,20 @@ class Executor:
         matcher_value = resolver.resolve(environment.symbols)
         assert isinstance(matcher_value, StringMatcherValue)
 
+        structure_tree_of_ddv = matcher_value.structure().render()
+
+        asrt_d_tree.matches_node().apply_with_message(self.put,
+                                                      structure_tree_of_ddv,
+                                                      'structure of ddv')
+
         matcher = matcher_value.value_of_any_dependency(environment.home_and_sds)
         assert isinstance(matcher, StringMatcher)
+
+        structure_tree_of_primitive = matcher.structure().render()
+
+        asrt_d_tree.matches_node().apply_with_message(self.put,
+                                                      structure_tree_of_primitive,
+                                                      'structure of primitive')
 
         return matcher
 

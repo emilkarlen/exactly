@@ -1,0 +1,5 @@
+[setup]
+
+def line-matcher LINE_NUM = line-num > 2
+
+def string-matcher QUANT_LINE = any line : LINE_NUM

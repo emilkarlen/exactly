@@ -6,13 +6,16 @@ from typing import Set, Optional, Iterable
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
 from exactly_lib.type_system.description import trace_renderers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
+from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist, TmpDirFileSpace
 
 
@@ -116,7 +119,13 @@ class FileToCheck:
                     dst_file.write(line)
 
 
-class StringMatcher(MatcherWTrace[FileToCheck], ABC):
+class StringMatcher(WithCachedTreeStructureDescriptionBase,
+                    MatcherWTrace[FileToCheck],
+                    ABC):
+
+    def _structure(self) -> StructureRenderer:
+        return renderers.header_only(self.name)
+
     @abstractmethod
     def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         """
@@ -141,7 +150,11 @@ class StringMatcher(MatcherWTrace[FileToCheck], ABC):
         return TraceBuilder(self.name)
 
 
-class StringMatcherValue(MultiDirDependentValue[StringMatcher]):
+class StringMatcherValue(MultiDirDependentValue[StringMatcher],
+                         WithTreeStructureDescription):
+    def structure(self) -> StructureRenderer:
+        return renderers.header_only('string-matcher TODO')
+
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return set()
 

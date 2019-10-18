@@ -13,7 +13,6 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver, ExpectedValueResolver
@@ -31,7 +30,7 @@ from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
 from exactly_lib.util import file_utils
-from exactly_lib.util.description_tree import details
+from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.file_utils import tmp_text_file_containing, TmpDirFileSpace
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.strings import StringConstructor
@@ -105,14 +104,14 @@ class _ErrorMessageResolverConstructor:
                                      actual_info)
 
 
-class EqualityStringMatcher(WithCachedNameAndTreeStructureDescriptionBase, StringMatcher):
+class EqualityStringMatcher(StringMatcher):
     def __init__(self,
                  expectation_type: ExpectationType,
                  expected_contents: StringOrPath,
                  error_message_constructor: _ErrorMessageResolverConstructor,
                  validator: PreOrPostSdsValidatorPrimitive,
                  ):
-        WithCachedNameAndTreeStructureDescriptionBase.__init__(self)
+        super().__init__()
         self._expectation_type = expectation_type
         self._expected_contents = expected_contents
         self._validator = validator
@@ -240,10 +239,9 @@ class EqualityStringMatcher(WithCachedNameAndTreeStructureDescriptionBase, Strin
         return self._new_tb().append_details(self._expected_detail_renderer)
 
     def _structure(self) -> StructureRenderer:
-        return (
-            self._new_structure_builder()
-                .append_details(self._renderer_of_expected_value)
-                .build()
+        return renderers.header_and_detail(
+            self.name,
+            self._renderer_of_expected_value,
         )
 
 

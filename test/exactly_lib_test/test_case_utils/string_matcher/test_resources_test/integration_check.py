@@ -372,6 +372,7 @@ class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrP
 
 class StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(StringMatcherTestImplBase):
     def __init__(self, tcds: HomeAndSds):
+        super().__init__()
         self.tcds = tcds
 
     @property
@@ -386,6 +387,7 @@ class StringMatcherThatAssertsModelsIsExpected(StringMatcherTestImplBase):
     def __init__(self,
                  put: unittest.TestCase,
                  expected_model_string_contents: str):
+        super().__init__()
         self.put = put
         self.expected_model_string_contents = expected_model_string_contents
 

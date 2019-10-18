@@ -109,8 +109,7 @@ class _LogicTypeBlockConstructor(LogicValueResolverPseudoVisitor[Optional[Resolv
         return self._of_tree_structured(value.resolve(self.symbols))
 
     def visit_string_matcher(self, value: StringMatcherResolver) -> Optional[ResolvedValuePresentationBlock]:
-        return None  # FIXME Restore when DDV can report structure
-        return self._of_tree_structured(value.resolve(self.symbols).value_of_any_dependency(self.tcds))
+        return self._of_tree_structured(value.resolve(self.symbols))
 
     def visit_string_transformer(self, value: StringTransformerResolver) -> Optional[ResolvedValuePresentationBlock]:
         return None  # FIXME Restore when DDV can report structure

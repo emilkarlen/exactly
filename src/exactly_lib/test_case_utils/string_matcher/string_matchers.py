@@ -14,6 +14,7 @@ class StringMatcherOnTransformedFileToCheck(StringMatcher):
     def __init__(self,
                  transformer: StringTransformer,
                  on_transformed: StringMatcher):
+        super().__init__()
         self._transformer = transformer
         self._on_transformed = on_transformed
 

@@ -267,7 +267,6 @@ _RESOLVERS_OF_TYPES_WITHOUT_RENDERING_OF_RESOLVED_VALUE = [
     file_matcher.arbitrary_resolver(),
     string_transformer.arbitrary_resolver(),
 
-    string_matcher.arbitrary_resolver(),
     files_matcher.arbitrary_resolver(),
 ]
 
@@ -277,4 +276,5 @@ _RESOLVERS_OF_TYPES_WITH_RENDERING_OF_RESOLVED_VALUE = [
     path_resolvers.arbitrary_resolver(),
 
     line_matcher.arbitrary_resolver(),
+    string_matcher.arbitrary_resolver(),
 ]

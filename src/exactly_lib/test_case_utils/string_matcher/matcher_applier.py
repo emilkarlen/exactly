@@ -19,6 +19,7 @@ class MaStringMatcher(Generic[T], StringMatcher):
                  applier: MatcherApplier[FileToCheck, T],
                  err_msg_constructor: Callable[[FileToCheck, Failure[T]], ErrorMessageResolver],
                  ):
+        super().__init__()
         self._name = name
         self._applier = applier
         self._err_msg_constructor = err_msg_constructor

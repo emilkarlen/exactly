@@ -108,6 +108,7 @@ class PrependStringToLinesTransformer(StringTransformerTestImplBase):
 
 class EqualsMatcherTestImpl(StringMatcher):
     def __init__(self, expected: str):
+        super().__init__()
         self.expected = expected
 
     @property

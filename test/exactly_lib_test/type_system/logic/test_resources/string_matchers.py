@@ -9,6 +9,7 @@ class StringMatcherConstant(StringMatcher):
     """Matcher with constant result."""
 
     def __init__(self, result: Optional[ErrorMessageResolver]):
+        super().__init__()
         self._result = result
 
     @property

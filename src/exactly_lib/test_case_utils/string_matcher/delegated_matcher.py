@@ -1,5 +1,6 @@
 from typing import Optional
 
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
@@ -7,11 +8,15 @@ from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCh
 
 class StringMatcherDelegatedToMatcherWTrace(StringMatcher):
     def __init__(self, delegated: MatcherWTrace[FileToCheck]):
+        super().__init__()
         self._delegated = delegated
 
     @property
     def name(self) -> str:
         return self._delegated.name
+
+    def _structure(self) -> StructureRenderer:
+        return self._delegated.structure()
 
     @property
     def option_description(self) -> str:
