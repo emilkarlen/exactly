@@ -7,6 +7,17 @@ StructureRenderer = NodeRenderer[None]
 
 
 class WithTreeStructureDescription(ABC):
+    @abstractmethod
+    def structure(self) -> StructureRenderer:
+        """
+        The structure of the object, that can be used in traced.
+
+        The returned tree is constant.
+        """
+        pass
+
+
+class WithNameAndTreeStructureDescription(WithTreeStructureDescription, ABC):
     @property
     @abstractmethod
     def name(self) -> str:

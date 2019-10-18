@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Optional
 
-from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
+from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.with_option_description import WithOptionDescription
@@ -45,7 +45,7 @@ class MatchingResult:
         return self._trace
 
 
-class MatcherWTrace(Generic[T], Matcher[T], WithTreeStructureDescription, ABC):
+class MatcherWTrace(Generic[T], Matcher[T], WithNameAndTreeStructureDescription, ABC):
     @abstractmethod
     def matches_w_trace(self, model: T) -> MatchingResult:
         pass

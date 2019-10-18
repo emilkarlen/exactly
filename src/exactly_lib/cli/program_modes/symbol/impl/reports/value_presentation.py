@@ -26,7 +26,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import path_description
-from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
+from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.description_tree import simple_textstruct_rendering as rendering
@@ -118,7 +118,7 @@ class _LogicTypeBlockConstructor(LogicValueResolverPseudoVisitor[ResolvedValuePr
         return _BlockForCustomRenderer(_ProgramRenderer(program))
 
     @staticmethod
-    def _of_tree_structured(x: WithTreeStructureDescription) -> ResolvedValuePresentationBlock:
+    def _of_tree_structured(x: WithNameAndTreeStructureDescription) -> ResolvedValuePresentationBlock:
         return _BlockForTree(x.structure().render())
 
 

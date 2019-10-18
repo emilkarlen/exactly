@@ -2,13 +2,13 @@ from abc import ABC
 from typing import Sequence
 
 from exactly_lib.type_system.description.structure_building import StructureBuilder
-from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription, StructureRenderer
+from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription, StructureRenderer
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
 
 
-class WithCachedTreeStructureDescriptionBase(WithTreeStructureDescription, ABC):
+class WithCachedTreeStructureDescriptionBase(WithNameAndTreeStructureDescription, ABC):
     def __init__(self):
         self._structure_renderer = renderers.CachedSingleInvokation(
             renderers.FromFunction(self._structure)
@@ -29,12 +29,12 @@ class WithCachedTreeStructureDescriptionBase(WithTreeStructureDescription, ABC):
         return StructureBuilder(self.name)
 
     @staticmethod
-    def _details_renderer_of(tree_structured: WithTreeStructureDescription) -> DetailsRenderer:
+    def _details_renderer_of(tree_structured: WithNameAndTreeStructureDescription) -> DetailsRenderer:
         return _DetailsRendererFromTreeStructured(tree_structured)
 
 
 class _DetailsRendererFromTreeStructured(DetailsRenderer):
-    def __init__(self, tree_structured: WithTreeStructureDescription):
+    def __init__(self, tree_structured: WithNameAndTreeStructureDescription):
         self._tree_structured = tree_structured
 
     def render(self) -> Sequence[Detail]:
