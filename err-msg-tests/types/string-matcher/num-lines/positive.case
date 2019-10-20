@@ -1,0 +1,7 @@
+[setup]
+
+file actual.txt
+
+[assert]
+
+contents actual.txt num-lines == 1

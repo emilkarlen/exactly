@@ -3,5 +3,6 @@
 empty
 equals
 matches
+num-lines
 line-matches
 transformed
