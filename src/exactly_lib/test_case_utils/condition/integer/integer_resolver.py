@@ -4,7 +4,7 @@ from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironmentPostSds
+    PathResolvingEnvironmentPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils import svh_exception
@@ -59,18 +59,6 @@ class IntegerResolver(OperandResolver[int]):
 
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         self._validator.validate_pre_sds(environment)
-
-    def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> int:
-        try:
-            return self._int_resolver.resolve(environment)
-        except NotAnIntegerException as ex:
-            msg = text_docs.single_pre_formatted_line_object(
-                strings.FormatPositional(
-                    'Argument is not an integer,'
-                    ' even though this should have been checked by the validation: `{}\'',
-                    ex.value_string)
-            )
-            raise svh_exception.SvhHardErrorException(msg)
 
     def resolve(self, symbols: SymbolTable) -> IntegerValue:
         return IntegerValue(self._value_resolver.resolve(symbols),

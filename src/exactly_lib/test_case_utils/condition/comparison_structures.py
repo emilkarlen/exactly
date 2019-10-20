@@ -2,8 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence, TypeVar, Generic, Set, Optional, Callable
 
 from exactly_lib.common.report_rendering import text_docs
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -12,7 +11,6 @@ from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_from_references
 from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
@@ -116,7 +114,7 @@ class OperandValue(ABC, Generic[T], MultiDirDependentValue[T]):
         pass
 
 
-class OperandResolver(Generic[T]):
+class OperandResolver(Generic[T], ABC):
     """Resolves an operand used in a comparision"""
 
     @property
@@ -129,32 +127,9 @@ class OperandResolver(Generic[T]):
         """
         pass
 
-    def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> T:
-        """
-        Reports errors by raising exceptions from `return_pfh_via_exceptions`
-        
-        :returns The value that can be used as one of the operands in a comparision.
-        """
-        raise NotImplementedError('abstract method')
-
+    @abstractmethod
     def resolve(self, symbols: SymbolTable) -> OperandValue[T]:
-        return OperandValueFromOperandResolver(self, symbols)
-
-
-class OperandValueFromOperandResolver(Generic[T], OperandValue[T]):
-    def __init__(self,
-                 operand_resolver: OperandResolver[T],
-                 symbols: SymbolTable):
-        self._operand_resolver = operand_resolver
-        self._symbols = symbols
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return resolving_dependencies_from_references(self._operand_resolver.references,
-                                                      self._symbols)
-
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> T:
-        environment = PathResolvingEnvironmentPreOrPostSds(tcds, self._symbols)
-        return self._operand_resolver.resolve_value_of_any_dependency(environment)
+        pass
 
 
 class ComparisonHandlerValue(Generic[T]):

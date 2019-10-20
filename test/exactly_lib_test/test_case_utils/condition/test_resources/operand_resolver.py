@@ -1,17 +1,20 @@
-from typing import Sequence, Callable, Optional
+from typing import Sequence, Callable, Optional, Generic
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver, T
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver, T, OperandValue
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_resources import actions
 
 
-def operand_resolver_that(validate_pre_sds=actions.do_nothing__single_arg,
-                          resolve_return_value_action=actions.do_nothing,
-                          resolve_initial_action=None,
-                          symbol_usages: Optional[Sequence[SymbolReference]] = None,
-                          ) -> OperandResolver:
+def operand_resolver_that(
+        validate_pre_sds=actions.do_nothing__single_arg,
+        resolve_return_value_action: Callable[[PathResolvingEnvironmentPreOrPostSds], T] = actions.do_nothing,
+        resolve_initial_action=None,
+        symbol_usages: Optional[Sequence[SymbolReference]] = None,
+) -> OperandResolver:
     return _OperandResolverThat(
         validate_pre_sds,
         actions.action_of(resolve_initial_action, resolve_return_value_action),
@@ -36,5 +39,18 @@ class _OperandResolverThat(OperandResolver[T]):
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         self._validate_pre_sds(environment)
 
-    def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> T:
-        return self._resolve(environment)
+    def resolve(self, symbols: SymbolTable) -> OperandValue[T]:
+        return _OperandValue(self._resolve, symbols)
+
+
+class _OperandValue(Generic[T], OperandValue[T]):
+    def __init__(self,
+                 resolve: Callable[[PathResolvingEnvironmentPreOrPostSds], T],
+                 symbols: SymbolTable,
+                 ):
+        self._resolve = resolve
+        self._symbols = symbols
+
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> T:
+        env = PathResolvingEnvironmentPreOrPostSds(tcds, self._symbols)
+        return self._resolve(env)
