@@ -1,7 +1,7 @@
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.test_case_utils.matcher.matcher import Failure
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
+from exactly_lib.type_system.logic.matcher_base_class import Failure
 
 
 class ErrorMessageResolverForFailure(ErrorMessageResolver):

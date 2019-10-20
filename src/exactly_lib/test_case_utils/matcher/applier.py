@@ -5,8 +5,8 @@ from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.matcher.element_getter import ElementGetter, ElementGetterValue, ElementGetterResolver
-from exactly_lib.test_case_utils.matcher.matcher import T, Matcher, MatcherValue, MatcherResolver, Failure
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.test_case_utils.matcher.matcher import T, MatcherValue, MatcherResolver
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, Failure
 from exactly_lib.util.symbol_table import SymbolTable
 
 MODEL = TypeVar('MODEL')
@@ -14,17 +14,17 @@ MODEL = TypeVar('MODEL')
 
 class MatcherApplier(Generic[MODEL, T]):
     def __init__(self,
-                 matcher: Matcher[T],
+                 matcher: MatcherWTrace[T],
                  model_adapter: ElementGetter[MODEL, T],
                  ):
         self._matcher = matcher
         self._model_adapter = model_adapter
 
-    def apply(self, model: MODEL) -> Optional[Failure[T]]:
+    def matches_w_failure(self, model: MODEL) -> Optional[Failure[T]]:
         """
         :raises HardErrorException
         """
-        return self._matcher.matches(
+        return self._matcher.matches_w_failure(
             self._model_adapter.get_from(model),
         )
 

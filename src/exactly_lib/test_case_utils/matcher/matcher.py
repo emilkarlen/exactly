@@ -1,51 +1,19 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar, Sequence, Optional
+from typing import Generic, TypeVar, Sequence
 
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.util.symbol_table import SymbolTable
 
 T = TypeVar('T')
 
 
-class Failure(Generic[T]):
-    def __init__(self,
-                 expectation_type: ExpectationType,
-                 expected: str,
-                 actual: T):
-        self.expectation_type = expectation_type
-        self.expected = expected
-        self.actual = actual
-
-
-class Matcher(Generic[T], ABC):
-    @abstractmethod
-    def matches(self, model: T) -> Optional[Failure[T]]:
-        """
-        :raises HardErrorException
-        """
-        pass
-
-    @abstractmethod
-    def matches_w_trace(self, model: T) -> MatchingResult:
-        """
-        :raises HardErrorException
-        """
-        pass
-
-    @property
-    @abstractmethod
-    def negation(self) -> 'Matcher':
-        pass
-
-
 class MatcherValue(Generic[T], ABC):
     @abstractmethod
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> Matcher[T]:
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
         pass
 
 

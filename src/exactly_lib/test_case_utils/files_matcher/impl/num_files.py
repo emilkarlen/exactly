@@ -11,9 +11,9 @@ from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesM
 from exactly_lib.test_case_utils.matcher.applier import MatcherApplier
 from exactly_lib.test_case_utils.matcher.element_getter import ElementGetter
 from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
-from exactly_lib.test_case_utils.matcher.matcher import MatcherResolver, MatcherValue, Matcher
+from exactly_lib.test_case_utils.matcher.matcher import MatcherResolver, MatcherValue
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
 from exactly_lib.util import logic_types
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -26,7 +26,7 @@ def resolver(matcher: MatcherResolver[int]) -> FilesMatcherResolver:
 class _FilesMatcher(FilesMatcher):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 matcher: Matcher[int]):
+                 matcher: MatcherWTrace[int]):
         self._expectation_type = expectation_type
         self._matcher = matcher
 
@@ -44,7 +44,7 @@ class _FilesMatcher(FilesMatcher):
     def matches_emr(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
         matcher_applier = self._matcher_applier()
 
-        failure = matcher_applier.apply(files_source)
+        failure = matcher_applier.matches_w_failure(files_source)
 
         return (
             ErrorMessageResolverForFailure(

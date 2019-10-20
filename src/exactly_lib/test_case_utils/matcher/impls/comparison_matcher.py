@@ -6,11 +6,12 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.test_case_utils.matcher.matcher import Matcher, MatcherValue, MatcherResolver, Failure
+from exactly_lib.test_case_utils.matcher.matcher import MatcherValue, MatcherResolver
 from exactly_lib.test_case_utils.matcher.object import ObjectValue, ObjectResolver
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import Failure
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.util import logic_types
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderer import NodeRenderer
@@ -21,7 +22,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 T = TypeVar('T')
 
 
-class ComparisonMatcher(Generic[T], Matcher[T]):
+class ComparisonMatcher(Generic[T], MatcherWTraceAndNegation[T]):
     def __init__(self,
                  expectation_type: ExpectationType,
                  operator: comparators.ComparisonOperator,
@@ -36,7 +37,11 @@ class ComparisonMatcher(Generic[T], Matcher[T]):
         self._name_of_lhs = name_of_lhs
 
     @property
-    def negation(self) -> Matcher:
+    def option_description(self) -> str:
+        return self._operator.name
+
+    @property
+    def negation(self) -> MatcherWTraceAndNegation[T]:
         return ComparisonMatcher(
             logic_types.negation(self._expectation_type),
             self._operator,
@@ -44,7 +49,7 @@ class ComparisonMatcher(Generic[T], Matcher[T]):
             self._model_renderer,
         )
 
-    def matches(self, model: T) -> Optional[Failure[T]]:
+    def matches_w_failure(self, model: T) -> Optional[Failure[T]]:
         lhs = model
         comparison_fun = self._operator.operator_fun
         condition_is_satisfied = bool(comparison_fun(lhs,
@@ -152,7 +157,7 @@ class ComparisonMatcherValue(Generic[T], MatcherValue[T]):
         self._operator = operator
         self._model_renderer = model_renderer
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> Matcher[T]:
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
         return ComparisonMatcher(
             self._expectation_type,
             self._operator,

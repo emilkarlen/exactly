@@ -5,9 +5,9 @@ from exactly_lib.test_case_utils.matcher import applier
 from exactly_lib.test_case_utils.matcher.element_getter import ElementGetter, ElementGetterResolver
 from exactly_lib.test_case_utils.matcher.impls import element_getters, parse_integer_matcher
 from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
-from exactly_lib.test_case_utils.matcher.matcher import Failure
 from exactly_lib.test_case_utils.string_matcher import matcher_applier, matcher_options
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.matcher_base_class import Failure
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.logic_types import ExpectationType
 

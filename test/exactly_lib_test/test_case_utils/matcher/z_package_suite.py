@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.condition.integer import integer_resolver
+from exactly_lib_test.test_case_utils.matcher import parse_integer_matcher
 
 
 def suite() -> unittest.TestSuite:
-    return integer_resolver.suite()
+    return parse_integer_matcher.suite()
 
 
 if __name__ == '__main__':

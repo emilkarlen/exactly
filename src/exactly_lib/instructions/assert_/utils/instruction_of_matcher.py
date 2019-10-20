@@ -7,9 +7,9 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_utils.matcher.applier import MatcherApplierResolver
-from exactly_lib.test_case_utils.matcher.matcher import Failure
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.type_system.logic.matcher_base_class import Failure
 
 T = TypeVar('T')
 
@@ -49,7 +49,7 @@ class Instruction(Generic[T], AssertPhaseInstruction):
 
     def _execute(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pfh.PassOrFailOrHardError:
         applier = self._applier.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
-        failure = applier.apply(None)
+        failure = applier.matches_w_failure(None)
         return (
             pfh.new_pfh_fail(self._err_msg_constructor(failure).resolve__tr())
             if failure
