@@ -14,7 +14,32 @@ from exactly_lib.util.render.renderer import Renderer
 CustomIntegerValidator = Callable[[int], Optional[TextRenderer]]
 
 
-class PrimitiveValueComputer:
+class IntegerValue(OperandValue[int]):
+    def __init__(self,
+                 int_expression: StringValue,
+                 custom_integer_validator: Optional[CustomIntegerValidator] = None):
+        self._describer = int_expression.describer()
+        self._primitive_value_computer = _PrimitiveValueComputer(int_expression)
+        self._validator = _IntegerValueValidator(self._primitive_value_computer,
+                                                 custom_integer_validator)
+
+    def describer(self) -> Renderer[str]:
+        return self._describer
+
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
+        return self._primitive_value_computer.resolving_dependencies()
+
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return self._validator
+
+    def value_when_no_dir_dependencies(self) -> int:
+        return self._primitive_value_computer.value_when_no_dir_dependencies()
+
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> int:
+        return self._primitive_value_computer.value_of_any_dependency(tcds)
+
+
+class _PrimitiveValueComputer:
     """Computes the primitive value"""
 
     def __init__(self, int_expression: StringValue):
@@ -44,34 +69,9 @@ class PrimitiveValueComputer:
             raise NotAnIntegerException(msg)
 
 
-class IntegerValue(OperandValue[int]):
-    def __init__(self,
-                 int_expression: StringValue,
-                 custom_integer_validator: Optional[CustomIntegerValidator] = None):
-        self._describer = int_expression.describer()
-        self._primitive_value_computer = PrimitiveValueComputer(int_expression)
-        self._validator = _IntegerValueValidator(self._primitive_value_computer,
-                                                 custom_integer_validator)
-
-    def describer(self) -> Renderer[str]:
-        return self._describer
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._primitive_value_computer.resolving_dependencies()
-
-    def validator(self) -> PreOrPostSdsValueValidator:
-        return self._validator
-
-    def value_when_no_dir_dependencies(self) -> int:
-        return self._primitive_value_computer.value_when_no_dir_dependencies()
-
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> int:
-        return self._primitive_value_computer.value_of_any_dependency(tcds)
-
-
 class _IntegerValueValidator(PreOrPostSdsValueValidator):
     def __init__(self,
-                 value_computer: PrimitiveValueComputer,
+                 value_computer: _PrimitiveValueComputer,
                  custom_validator: Optional[CustomIntegerValidator]):
         self._value_computer = value_computer
         self._custom_validator = (custom_validator
