@@ -10,6 +10,7 @@ from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -57,6 +58,10 @@ class _FailureReporter(Generic[T]):
 
 
 class OperandValue(ABC, Generic[T], MultiDirDependentValue[T]):
+    @abstractmethod
+    def describer(self) -> DetailsRenderer:
+        pass
+
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return set()
 

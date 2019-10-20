@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, TypeVar, Callable
 
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
@@ -43,3 +43,18 @@ class JoiningOfElementsRenderer(Renderer[str]):
 
     def render(self) -> str:
         return self._separator.render().join(self._elements.render_sequence())
+
+
+T = TypeVar('T')
+
+
+class OfObjectAndRenderingFunction(Renderer[str]):
+    def __init__(self,
+                 x: T,
+                 renderer: Callable[[T], str],
+                 ):
+        self._x = x
+        self._renderer = renderer
+
+    def render(self) -> str:
+        return self._renderer(self._x)

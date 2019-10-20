@@ -10,6 +10,7 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver, OperandValue
 from exactly_lib.test_case_utils.matcher.object import ObjectResolver, ObjectValue
 from exactly_lib.test_case_utils.svh_exception import SvhException
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 
 T = TypeVar('T')
@@ -18,6 +19,9 @@ T = TypeVar('T')
 class ObjectValueOfOperandValue(Generic[T], ObjectValue[T]):
     def __init__(self, operand: OperandValue[T]):
         self._operand = operand
+
+    def describer(self) -> DetailsRenderer:
+        return self._operand.describer()
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self._operand.resolving_dependencies()

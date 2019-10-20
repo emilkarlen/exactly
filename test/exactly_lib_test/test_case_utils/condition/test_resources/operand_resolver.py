@@ -5,6 +5,8 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver, T, OperandValue
+from exactly_lib.util.description_tree import details
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_resources import actions
 
@@ -50,6 +52,9 @@ class _OperandValue(Generic[T], OperandValue[T]):
                  ):
         self._resolve = resolve
         self._symbols = symbols
+
+    def describer(self) -> DetailsRenderer:
+        return details.String(type(self))
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> T:
         env = PathResolvingEnvironmentPreOrPostSds(tcds, self._symbols)

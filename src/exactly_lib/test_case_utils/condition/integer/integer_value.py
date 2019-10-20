@@ -9,7 +9,9 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandValue
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import python_evaluate, NotAnIntegerException
 from exactly_lib.type_system.data.string_value import StringValue
-from exactly_lib.util.render.renderer import Renderer
+from exactly_lib.util.description_tree import details
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
+from exactly_lib.util.render import strings
 
 CustomIntegerValidator = Callable[[int], Optional[TextRenderer]]
 
@@ -18,12 +20,12 @@ class IntegerValue(OperandValue[int]):
     def __init__(self,
                  int_expression: StringValue,
                  custom_integer_validator: Optional[CustomIntegerValidator] = None):
-        self._describer = int_expression.describer()
+        self._describer = details.String(strings.AsToStringObject(int_expression.describer()))
         self._primitive_value_computer = _PrimitiveValueComputer(int_expression)
         self._validator = _IntegerValueValidator(self._primitive_value_computer,
                                                  custom_integer_validator)
 
-    def describer(self) -> Renderer[str]:
+    def describer(self) -> DetailsRenderer:
         return self._describer
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:

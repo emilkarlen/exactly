@@ -1,7 +1,9 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import ExpectationType
@@ -110,7 +112,7 @@ class TestCaseBase(unittest.TestCase):
             expected_result_of_positive_test: PassOrFail,
             actual_file_contents: str,
             symbols: SymbolTable = None,
-            expected_symbol_usages: ValueAssertion = asrt.is_empty_sequence):
+            expected_symbol_usages: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence):
         for expectation_type in ExpectationType:
             etc = expectation_type_config__non_is_success(expectation_type)
             with self.subTest(expectation_type=expectation_type):

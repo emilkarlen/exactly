@@ -1,0 +1,10 @@
+[setup]
+
+
+file checked-file = 'line 1'
+
+
+[assert]
+
+
+contents checked-file every line : ! line-num == 1

@@ -1,3 +1,4 @@
+import operator
 from typing import TypeVar, Generic, Optional, Sequence, Callable
 
 from exactly_lib.definitions import expression
@@ -5,16 +6,18 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.condition import comparators
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.matcher.matcher import MatcherValue, MatcherResolver
 from exactly_lib.test_case_utils.matcher.object import ObjectValue, ObjectResolver
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.matcher_base_class import Failure
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.util import logic_types
-from exactly_lib.util.description_tree import tree
-from exactly_lib.util.description_tree.renderer import NodeRenderer
+from exactly_lib.util.description_tree import details
+from exactly_lib.util.description_tree.renderer import NodeRenderer, DetailsRenderer
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -27,14 +30,32 @@ class ComparisonMatcher(Generic[T], MatcherWTraceAndNegation[T]):
                  expectation_type: ExpectationType,
                  operator: comparators.ComparisonOperator,
                  rhs: T,
-                 model_renderer: Callable[[T], str],
-                 name_of_lhs: str = 'actual',
+                 model_renderer: Callable[[T], DetailsRenderer],
                  ):
         self._model_renderer = model_renderer
         self._expectation_type = expectation_type
         self._rhs = rhs
         self._operator = operator
-        self._name_of_lhs = name_of_lhs
+
+    @staticmethod
+    def new_structure_tree(expectation_type: ExpectationType,
+                           op: comparators.ComparisonOperator,
+                           rhs: DetailsRenderer) -> StructureRenderer:
+        return _StructureRenderer(
+            expectation_type,
+            op,
+            rhs,
+            None,
+            lambda x: x,
+            None,
+        )
+
+    def structure(self) -> StructureRenderer:
+        return self.new_structure_tree(
+            self._expectation_type,
+            self._operator,
+            self._model_renderer(self._rhs),
+        )
 
     @property
     def option_description(self) -> str:
@@ -77,14 +98,13 @@ class ComparisonMatcher(Generic[T], MatcherWTraceAndNegation[T]):
 
         return MatchingResult(
             result,
-            _TraceRenderer(
+            _StructureRenderer(
                 self._expectation_type,
                 self._operator,
-                lhs,
-                self._rhs,
+                self._model_renderer(self._rhs),
                 condition_is_satisfied,
-                self._model_renderer,
-                self._name_of_lhs,
+                operator.not_,
+                self._model_renderer(lhs),
             ),
         )
 
@@ -104,7 +124,6 @@ class _TraceRenderer(Generic[T], NodeRenderer[bool]):
                  rhs: T,
                  result__wo_expectation_type: bool,
                  model_renderer: Callable[[T], str],
-                 name_of_lhs: str,
                  ):
         self._expectation_type = expectation_type
         self._rhs = rhs
@@ -112,23 +131,14 @@ class _TraceRenderer(Generic[T], NodeRenderer[bool]):
         self._operator = operator
         self._result__wo_expectation_type = result__wo_expectation_type
         self._model_renderer = model_renderer
-        self._name_of_lhs = name_of_lhs
 
     def render(self) -> Node[bool]:
-        lhs_str = ''.join([
-            self._model_renderer(self._lhs_from_model),
-            ' (',
-            self._name_of_lhs,
-            ')',
-        ])
-
+        header = ' '.join((self._operator.name,
+                           self._model_renderer(self._rhs)))
         comparison_node = Node(
-            self._operator.name,
+            header,
             self._result__wo_expectation_type,
-            [
-                tree.StringDetail(lhs_str),
-                tree.StringDetail(self._model_renderer(self._rhs)),
-            ],
+            custom_details.actual(details.String(self._model_renderer(self._lhs_from_model))).render(),
             ()
         )
 
@@ -145,17 +155,65 @@ class _TraceRenderer(Generic[T], NodeRenderer[bool]):
         )
 
 
+class _StructureRenderer(Generic[T], NodeRenderer[T]):
+    def __init__(self,
+                 expectation_type: ExpectationType,
+                 op: comparators.ComparisonOperator,
+                 rhs: DetailsRenderer,
+                 data: T,
+                 negate_data: Callable[[T], T],
+                 actual_lhs: Optional[DetailsRenderer],
+                 ):
+        self._expectation_type = expectation_type
+        self._op = op
+        self._rhs = rhs
+        self._data = data
+        self._negate_data = negate_data
+        self._actual_lhs = actual_lhs
+
+    def render(self) -> Node[None]:
+        ds = list(custom_details.rhs(self._rhs).render())
+        if self._actual_lhs is not None:
+            ds += custom_details.actual_lhs(self._actual_lhs).render()
+
+        comparison_node = Node(
+            self._op.name,
+            self._data,
+            ds,
+            ()
+        )
+
+        return (
+            comparison_node
+            if self._expectation_type is ExpectationType.POSITIVE
+            else
+            Node(
+                expression.NOT_OPERATOR_NAME,
+                self._negate_data(self._data),
+                (),
+                (comparison_node,)
+            )
+        )
+
+
 class ComparisonMatcherValue(Generic[T], MatcherValue[T]):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 operator: comparators.ComparisonOperator,
+                 op: comparators.ComparisonOperator,
                  rhs: ObjectValue[T],
-                 model_renderer: Callable[[T], str],
+                 model_renderer: Callable[[T], DetailsRenderer],
                  ):
         self._expectation_type = expectation_type
         self._rhs = rhs
-        self._operator = operator
+        self._operator = op
         self._model_renderer = model_renderer
+
+    def structure(self) -> StructureRenderer:
+        return ComparisonMatcher.new_structure_tree(
+            self._expectation_type,
+            self._operator,
+            self._rhs.describer(),
+        )
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
         return ComparisonMatcher(
@@ -169,13 +227,13 @@ class ComparisonMatcherValue(Generic[T], MatcherValue[T]):
 class ComparisonMatcherResolver(Generic[T], MatcherResolver[T]):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 operator: comparators.ComparisonOperator,
+                 op: comparators.ComparisonOperator,
                  rhs: ObjectResolver[T],
-                 model_renderer: Callable[[T], str],
+                 model_renderer: Callable[[T], DetailsRenderer],
                  ):
         self._expectation_type = expectation_type
         self._rhs = rhs
-        self._operator = operator
+        self._operator = op
         self._model_renderer = model_renderer
 
     @property

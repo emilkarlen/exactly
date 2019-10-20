@@ -48,8 +48,8 @@ class _Value(LineMatcherValue):
 
     def structure(self) -> StructureRenderer:
         return LineMatcherLineNumber.new_structure_tree(
-            custom_details.ComparatorExpression(self._operator,
-                                                self._int_expression.describer()),
+            custom_details.ComparatorExpression2(self._operator,
+                                                 self._int_expression.describer()),
         )
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:

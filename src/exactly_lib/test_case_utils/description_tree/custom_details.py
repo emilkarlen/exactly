@@ -20,13 +20,24 @@ _EXPECTED = 'Expected'
 _ACTUAL = 'Actual'
 _MATCH = 'Match'
 
+_RHS = 'RHS'
+_ACTUAL_LHS = 'Actual LHS'
+
 
 def expected(value: DetailsRenderer) -> DetailsRenderer:
     return HeaderAndValue(_EXPECTED, value)
 
 
+def rhs(value: DetailsRenderer) -> DetailsRenderer:
+    return HeaderAndValue(_RHS, value)
+
+
 def actual(value: DetailsRenderer) -> DetailsRenderer:
     return HeaderAndValue(_ACTUAL, value)
+
+
+def actual_lhs(value: DetailsRenderer) -> DetailsRenderer:
+    return HeaderAndValue(_ACTUAL_LHS, value)
 
 
 def match(matching_object: DetailsRenderer) -> DetailsRenderer:
@@ -195,4 +206,25 @@ class ComparatorExpression(DetailsRenderer):
                 self._comparator.name,
                 self._rhs.render(),
             ]))
+        ]
+
+
+class ComparatorExpression2(DetailsRenderer):
+    def __init__(self,
+                 comparator: comparators.ComparisonOperator,
+                 rhs_: DetailsRenderer,
+                 ):
+        self._comparator = comparator
+        self._rhs = rhs_
+
+    def render(self) -> Sequence[Detail]:
+        return [
+            tree.TreeDetail(
+                tree.Node(
+                    self._comparator.name,
+                    None,
+                    rhs(self._rhs).render(),
+                    (),
+                )
+            )
         ]

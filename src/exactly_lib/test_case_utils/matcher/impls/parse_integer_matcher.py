@@ -6,6 +6,7 @@ from exactly_lib.test_case_utils.condition.integer.integer_value import CustomIn
 from exactly_lib.test_case_utils.matcher.impls.comparison_matcher import ComparisonMatcherResolver
 from exactly_lib.test_case_utils.matcher.impls.operand_object import ObjectResolverOfOperandResolver
 from exactly_lib.test_case_utils.matcher.matcher import MatcherResolver
+from exactly_lib.util.description_tree import details
 from exactly_lib.util.logic_types import ExpectationType
 
 
@@ -21,5 +22,5 @@ def parse(parser: TokenParser,
         expectation_type,
         op_and_rhs.operator,
         ObjectResolverOfOperandResolver(op_and_rhs.right_operand),
-        str,
+        lambda x: details.String(x),
     )

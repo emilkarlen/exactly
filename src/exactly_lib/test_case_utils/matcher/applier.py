@@ -6,6 +6,7 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.matcher.element_getter import ElementGetter, ElementGetterValue, ElementGetterResolver
 from exactly_lib.test_case_utils.matcher.matcher import T, MatcherValue, MatcherResolver
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, Failure
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -19,6 +20,9 @@ class MatcherApplier(Generic[MODEL, T]):
                  ):
         self._matcher = matcher
         self._model_adapter = model_adapter
+
+    def structure(self) -> StructureRenderer:
+        return self._matcher.structure()
 
     def matches_w_failure(self, model: MODEL) -> Optional[Failure[T]]:
         """
@@ -44,6 +48,9 @@ class MatcherApplierValue(Generic[MODEL, T]):
                  ):
         self._matcher = matcher
         self._model_adapter = model_adapter
+
+    def structure(self) -> StructureRenderer:
+        return self._matcher.structure()
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherApplier[MODEL, T]:
         return MatcherApplier(
