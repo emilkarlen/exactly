@@ -4,11 +4,8 @@ from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import element_getters, parse_integer_matcher
-from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterResolver
-from exactly_lib.test_case_utils.string_matcher import matcher_applier, matcher_options
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import Failure
+from exactly_lib.test_case_utils.string_matcher import delegated_matcher, matcher_options
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.logic_types import ExpectationType
 
@@ -20,12 +17,11 @@ def parse(expectation_type: ExpectationType,
         expectation_type,
         parse_cmp_op.validator_for_non_negative,
     )
-    return matcher_applier.MaStringMatcherResolver(
+    return delegated_matcher.StringMatcherResolverDelegatedToMatcher(
         property_matcher.PropertyMatcherResolver(
             matcher,
             _operand_from_model_resolver(),
         ),
-        _mk_error_message,
     )
 
 
@@ -50,12 +46,4 @@ def _operand_from_model_resolver() -> PropertyGetterResolver[FileToCheck, int]:
         element_getters.PropertyGetterValueConstant(
             _PropertyGetter(),
         )
-    )
-
-
-def _mk_error_message(model: FileToCheck, failure: Failure[int]) -> ErrorMessageResolver:
-    return ErrorMessageResolverForFailure(
-        model.describer.construct_for_contents_attribute(
-            matcher_options.NUM_LINES_DESCRIPTION),
-        failure,
     )

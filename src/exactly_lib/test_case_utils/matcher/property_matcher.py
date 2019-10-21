@@ -4,10 +4,12 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.matcher.matcher import T, MatcherValue, MatcherResolver
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterValue, \
     PropertyGetterResolver
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, Failure
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
@@ -36,6 +38,14 @@ class PropertyMatcher(Generic[MODEL, T], MatcherWTrace[MODEL]):
             None,
             (),
             (self._matcher.structure(),)
+        )
+
+    def matches_emr(self, model: T) -> Optional[ErrorMessageResolver]:
+        return (
+            None
+            if self.matches_w_trace(model).value
+            else
+            err_msg_resolvers.constant('False')
         )
 
     def matches_w_failure(self, model: MODEL) -> Optional[Failure[T]]:

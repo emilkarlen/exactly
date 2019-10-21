@@ -13,7 +13,7 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.string_matcher.delegated_matcher import StringMatcherDelegatedToMatcherWTrace
+from exactly_lib.test_case_utils.string_matcher.delegated_matcher import StringMatcherDelegatedToMatcher
 from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherOnTransformedFileToCheck
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic import string_matcher_values
@@ -287,7 +287,7 @@ class StringMatcherReferenceResolver(StringMatcherResolver):
             )
 
         def get_matcher(tcds: HomeAndSds) -> StringMatcher:
-            return StringMatcherDelegatedToMatcherWTrace(
+            return StringMatcherDelegatedToMatcher(
                 combinator_matchers.Negation(original.value_of_any_dependency(tcds))
             )
 

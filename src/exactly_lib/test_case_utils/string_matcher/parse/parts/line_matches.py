@@ -73,7 +73,7 @@ def matcher_for_any_line_matches(expectation_type: ExpectationType,
         if expectation_type is ExpectationType.NEGATIVE:
             matcher = combinator_matchers.Negation(matcher)
 
-        return delegated_matcher.StringMatcherDelegatedToMatcherWTrace(matcher)
+        return delegated_matcher.StringMatcherDelegatedToMatcher(matcher)
 
     def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
         return resolving_dependencies_from_references(line_matcher_resolver.references, symbols)
@@ -100,7 +100,7 @@ def matcher_for_every_line_matches(expectation_type: ExpectationType,
         if expectation_type is ExpectationType.NEGATIVE:
             matcher = combinator_matchers.Negation(matcher)
 
-        return delegated_matcher.StringMatcherDelegatedToMatcherWTrace(matcher)
+        return delegated_matcher.StringMatcherDelegatedToMatcher(matcher)
 
     def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
         return resolving_dependencies_from_references(line_matcher_resolver.references, symbols)

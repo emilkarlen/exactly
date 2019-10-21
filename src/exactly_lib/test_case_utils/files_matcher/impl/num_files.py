@@ -42,9 +42,9 @@ class _FilesMatcher(FilesMatcher):
         )
 
     def matches_emr(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        matcher_applier = self._matcher_applier()
+        property_matcher = self._property_matcher()
 
-        failure = matcher_applier.matches_w_failure(files_source)
+        failure = property_matcher.matches_w_failure(files_source)
 
         return (
             ErrorMessageResolverForFailure(
@@ -57,9 +57,9 @@ class _FilesMatcher(FilesMatcher):
         )
 
     def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
-        return self._matcher_applier().matches_w_trace(model)
+        return self._property_matcher().matches_w_trace(model)
 
-    def _matcher_applier(self, ) -> PropertyMatcher[FilesMatcherModel, int]:
+    def _property_matcher(self, ) -> PropertyMatcher[FilesMatcherModel, int]:
         matcher = self._matcher
         if self._expectation_type is ExpectationType.NEGATIVE:
             matcher = matcher.negation

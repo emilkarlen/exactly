@@ -87,13 +87,13 @@ class Parser(InstructionParserThatConsumesCurrentLine):
             expectation_type,
             _must_be_within_byte_range,
         )
-        matcher_applier = PropertyMatcherResolver(
+        property_matcher = PropertyMatcherResolver(
             matcher,
             element_getters.PropertyGetterResolverConstant(_ExitCodeGetterValue()),
         )
         parser.report_superfluous_arguments_if_not_at_eol()
         return instruction_of_matcher.Instruction(
-            matcher_applier,
+            property_matcher,
             _mk_error_message,
         )
 

@@ -21,16 +21,17 @@ class Instruction(Generic[T], AssertPhaseInstruction):
                  applier: PropertyMatcherResolver[None, T],
                  err_msg_constructor: Callable[[Failure[T]], ErrorMessageResolver],
                  ):
-        self._applier = applier
+        self._property_matcher = applier
         self._err_msg_constructor = err_msg_constructor
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
-        return self._applier.references
+        return self._property_matcher.references
 
     def validate_pre_sds(self,
                          environment: i.InstructionEnvironmentForPreSdsStep
                          ) -> svh.SuccessOrValidationErrorOrHardError:
-        err_msg = self._applier.validator.validate_pre_sds_if_applicable(environment.path_resolving_environment)
+        err_msg = self._property_matcher.validator.validate_pre_sds_if_applicable(
+            environment.path_resolving_environment)
         return svh.new_maybe_svh_validation_error(err_msg)
 
     def main(self,
@@ -43,12 +44,13 @@ class Instruction(Generic[T], AssertPhaseInstruction):
             return pfh.new_pfh_hard_error(ex.error)
 
     def _validate_post_setup(self, environment: i.InstructionEnvironmentForPostSdsStep):
-        err_msg = self._applier.validator.validate_post_sds_if_applicable(environment.path_resolving_environment)
+        err_msg = self._property_matcher.validator.validate_post_sds_if_applicable(
+            environment.path_resolving_environment)
         if err_msg:
             raise HardErrorException(err_msg)
 
     def _execute(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pfh.PassOrFailOrHardError:
-        applier = self._applier.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        applier = self._property_matcher.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
         failure = applier.matches_w_failure(None)
         return (
             pfh.new_pfh_fail(self._err_msg_constructor(failure).resolve__tr())
