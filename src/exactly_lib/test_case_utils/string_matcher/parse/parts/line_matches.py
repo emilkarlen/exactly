@@ -1,29 +1,20 @@
 import contextlib
-from typing import Optional, Sequence, Iterator, ContextManager
+from typing import Iterator, ContextManager
 
 from exactly_lib.definitions import instruction_arguments
-from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.definitions.instruction_arguments import LINE_MATCHER
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case.validation import pre_or_post_validation as ppv, pre_or_post_value_validation as ppvv
-from exactly_lib.test_case_utils import pfh_exception
-from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.test_case_utils.err_msg import diff_msg_utils
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.test_case_utils.line_matcher.model_construction import model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
 from exactly_lib.test_case_utils.line_matcher.trace_rendering import LineMatcherLineRenderer
 from exactly_lib.test_case_utils.string_matcher import delegated_matcher, resolvers
 from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.impls import quantifier_matchers, combinator_matchers
-from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher, StringMatcherValue
+from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherValue
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -118,123 +109,3 @@ def _get_line_elements(string_matcher_model: FileToCheck) -> ContextManager[Iter
 
 def _line_renderer(line: LineMatcherLine) -> DetailsRenderer:
     return LineMatcherLineRenderer(line)
-
-
-class _StringMatcherBase(StringMatcher):
-    def __init__(self,
-                 any_or_every_keyword: str,
-                 expectation_type: ExpectationType,
-                 line_matcher: LineMatcher,
-                 ):
-        super().__init__()
-        self._any_or_every_keyword = any_or_every_keyword
-        self._expectation_type = expectation_type
-        self._line_matcher = line_matcher
-
-    @property
-    def name(self) -> str:
-        return ' '.join([self._any_or_every_keyword,
-                         matcher_options.LINE_ARGUMENT,
-                         ])
-
-    @property
-    def option_description(self) -> str:
-        components = [self._any_or_every_keyword,
-                      matcher_options.LINE_ARGUMENT,
-                      instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
-                      self._line_matcher.option_description]
-        return ' '.join(components)
-
-    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        try:
-            self._check(self._line_matcher, model)
-        except pfh_exception.PfhFailException as ex:
-            return err_msg_resolvers.text_doc(ex.err_msg)
-
-    def _check(self,
-               line_matcher: LineMatcher,
-               file_to_check: FileToCheck):
-        raise NotImplementedError('abstract method')
-
-    def _report_fail(self,
-                     checked_file_describer: FilePropertyDescriptorConstructor,
-                     actual_single_line_value: str,
-                     description_lines: Sequence[str] = ()):
-        failure_info_resolver = self._diff_failure_info_resolver(checked_file_describer)
-        failure_info = failure_info_resolver.resolve(diff_msg.actual_with_single_line_value(
-            actual_single_line_value,
-            description_lines))
-        raise pfh_exception.PfhFailException(failure_info.error_message__as_td())
-
-    def _report_fail_with_line(self,
-                               checked_file_describer: FilePropertyDescriptorConstructor,
-                               cause: str,
-                               number__contents: LineMatcherLine):
-        single_line_actual_value = 'Line {} {}'.format(number__contents[0], cause)
-
-        failure_info_resolver = self._diff_failure_info_resolver(checked_file_describer)
-        failure_info = failure_info_resolver.resolve(diff_msg.actual_with_single_line_value(
-            single_line_actual_value,
-            [number__contents[1]]))
-        raise pfh_exception.PfhFailException(failure_info.error_message__as_td())
-
-    def _diff_failure_info_resolver(self,
-                                    checked_file_describer: FilePropertyDescriptorConstructor
-                                    ) -> DiffFailureInfoResolver:
-        return diff_msg_utils.DiffFailureInfoResolver(
-            checked_file_describer.construct_for_contents_attribute(CONTENTS_ATTRIBUTE),
-            self._expectation_type,
-            diff_msg_utils.expected_constant(' '.join([
-                self._any_or_every_keyword,
-                matcher_options.LINE_ARGUMENT,
-                instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
-                LINE_MATCHER.name])
-            ))
-
-
-class _AnyLineMatchesStringMatcherForPositiveMatch(_StringMatcherBase):
-    def _check(self,
-               line_matcher: LineMatcher,
-               file_to_check: FileToCheck):
-        with file_to_check.lines() as file_lines:
-            for line in model_iter_from_file_line_iter(file_lines):
-                if line_matcher.matches(line):
-                    return
-        self._report_fail(file_to_check.describer,
-                          'no line matches')
-
-
-class _AnyLineMatchesStringMatcherForNegativeMatch(_StringMatcherBase):
-    def _check(self,
-               line_matcher: LineMatcher,
-               file_to_check: FileToCheck):
-        with file_to_check.lines() as file_lines:
-            for line in model_iter_from_file_line_iter(file_lines):
-                if line_matcher.matches(line):
-                    self._report_fail_with_line(file_to_check.describer,
-                                                'matches',
-                                                line)
-
-
-class _EveryLineMatchesStringMatcherForPositiveMatch(_StringMatcherBase):
-    def _check(self,
-               line_matcher: LineMatcher,
-               file_to_check: FileToCheck):
-        with file_to_check.lines() as file_lines:
-            for line in model_iter_from_file_line_iter(file_lines):
-                if not line_matcher.matches(line):
-                    self._report_fail_with_line(file_to_check.describer,
-                                                'does not match',
-                                                line)
-
-
-class _EveryLineMatchesStringMatcherForNegativeMatch(_StringMatcherBase):
-    def _check(self,
-               line_matcher: LineMatcher,
-               file_to_check: FileToCheck):
-        with file_to_check.lines() as file_lines:
-            for line in model_iter_from_file_line_iter(file_lines):
-                if not line_matcher.matches(line):
-                    return
-        self._report_fail(file_to_check.describer,
-                          'every line matches')
