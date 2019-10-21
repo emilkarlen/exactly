@@ -3,11 +3,11 @@ from typing import Set, Optional, Sequence, Iterator, ContextManager
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.instruction_arguments import LINE_MATCHER
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.validation import pre_or_post_validation as ppv, pre_or_post_value_validation as ppvv
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils import pfh_exception
@@ -18,15 +18,14 @@ from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoRe
 from exactly_lib.test_case_utils.line_matcher.model_construction import model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
 from exactly_lib.test_case_utils.line_matcher.trace_rendering import LineMatcherLineRenderer
-from exactly_lib.test_case_utils.string_matcher import delegated_matcher
+from exactly_lib.test_case_utils.string_matcher import delegated_matcher, resolvers
 from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
 from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_from_references
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.impls import quantifier_matchers, combinator_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher, StringMatcherValue
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -61,24 +60,20 @@ def _parse_line_matches_tokens_and_line_matcher(token_parser: TokenParser) -> Li
 
 def matcher_for_any_line_matches(expectation_type: ExpectationType,
                                  line_matcher_resolver: LineMatcherResolver) -> StringMatcherResolver:
-    def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
-        line_matcher = line_matcher_resolver \
-            .resolve(environment.symbols) \
-            .value_of_any_dependency(environment.home_and_sds)
-
-        matcher = quantifier_matchers.Exists(
+    def get_matcher(symbols: SymbolTable) -> StringMatcherValue:
+        matcher = quantifier_matchers.ExistsValue(
             _element_setup(),
-            line_matcher,
+            line_matcher_resolver.resolve(symbols),
         )
         if expectation_type is ExpectationType.NEGATIVE:
-            matcher = combinator_matchers.Negation(matcher)
+            matcher = combinator_matchers.NegationValue(matcher)
 
-        return delegated_matcher.StringMatcherDelegatedToMatcher(matcher)
+        return delegated_matcher.StringMatcherValueDelegatedToMatcher(matcher)
 
     def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
         return resolving_dependencies_from_references(line_matcher_resolver.references, symbols)
 
-    return StringMatcherResolverFromParts(
+    return resolvers.StringMatcherResolverFromParts2(
         line_matcher_resolver.references,
         _validator_for_line_matcher(line_matcher_resolver),
         get_resolving_dependencies,
@@ -88,24 +83,20 @@ def matcher_for_any_line_matches(expectation_type: ExpectationType,
 
 def matcher_for_every_line_matches(expectation_type: ExpectationType,
                                    line_matcher_resolver: LineMatcherResolver) -> StringMatcherResolver:
-    def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
-        line_matcher = line_matcher_resolver \
-            .resolve(environment.symbols) \
-            .value_of_any_dependency(environment.home_and_sds)
-
-        matcher = quantifier_matchers.ForAll(
+    def get_matcher(symbols: SymbolTable) -> StringMatcherValue:
+        matcher = quantifier_matchers.ForAllValue(
             _element_setup(),
-            line_matcher,
+            line_matcher_resolver.resolve(symbols),
         )
         if expectation_type is ExpectationType.NEGATIVE:
-            matcher = combinator_matchers.Negation(matcher)
+            matcher = combinator_matchers.NegationValue(matcher)
 
-        return delegated_matcher.StringMatcherDelegatedToMatcher(matcher)
+        return delegated_matcher.StringMatcherValueDelegatedToMatcher(matcher)
 
     def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
         return resolving_dependencies_from_references(line_matcher_resolver.references, symbols)
 
-    return StringMatcherResolverFromParts(
+    return resolvers.StringMatcherResolverFromParts2(
         line_matcher_resolver.references,
         _validator_for_line_matcher(line_matcher_resolver),
         get_resolving_dependencies,
@@ -123,6 +114,7 @@ def _validator_for_line_matcher(line_matcher_resolver: LineMatcherResolver) -> p
 def _element_setup() -> quantifier_matchers.ElementSetup[FileToCheck, LineMatcherLine]:
     return quantifier_matchers.ElementSetup(
         matcher_options.LINE_ARGUMENT,
+        syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.singular_name,
         _get_line_elements,
         _line_renderer,
     )

@@ -49,7 +49,7 @@ class WithCachedTreeStructureDescriptionBase(WithTreeStructureDescription, ABC):
 
 
 class _DetailsRendererFromTreeStructured(DetailsRenderer):
-    def __init__(self, tree_structured: WithNameAndTreeStructureDescription):
+    def __init__(self, tree_structured: WithTreeStructureDescription):
         self._tree_structured = tree_structured
 
     def render(self) -> Sequence[Detail]:

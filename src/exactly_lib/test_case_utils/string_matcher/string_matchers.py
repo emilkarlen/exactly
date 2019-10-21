@@ -1,15 +1,23 @@
-from typing import Optional
+from typing import Optional, Set
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
-from exactly_lib.type_system.logic.string_transformer import StringTransformer, SequenceStringTransformer
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherValue
+from exactly_lib.type_system.logic.string_transformer import StringTransformer, SequenceStringTransformer, \
+    StringTransformerValue
+from exactly_lib.util.description_tree import renderers, details
 
 
 class StringMatcherOnTransformedFileToCheck(StringMatcher):
     """Applies a string transformer to the file to check."""
+
+    NAME = ' '.join((instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION,
+                     syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name))
 
     def __init__(self,
                  transformer: StringTransformer,
@@ -20,10 +28,21 @@ class StringMatcherOnTransformedFileToCheck(StringMatcher):
 
     @property
     def name(self) -> str:
-        return ' '.join((
-            instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME.long,
-            syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
-        ))
+        return self.NAME
+
+    @staticmethod
+    def new_structure_tree(transformer: StructureRenderer,
+                           on_transformed: StructureRenderer) -> StructureRenderer:
+        return renderers.NodeRendererFromParts(
+            StringMatcherOnTransformedFileToCheck.NAME,
+            None,
+            (details.Tree(transformer),),
+            (on_transformed,),
+        )
+
+    def _structure(self) -> StructureRenderer:
+        return self.new_structure_tree(self._transformer.structure(),
+                                       self._on_transformed.structure())
 
     @property
     def option_description(self) -> str:
@@ -52,3 +71,29 @@ class StringMatcherOnTransformedFileToCheck(StringMatcher):
                 .append_child(result_on_transformed.trace)
                 .build_result(result_on_transformed.value)
         )
+
+
+class StringMatcherWithTransformationValue(StringMatcherValue):
+    def __init__(self,
+                 transformer: StringTransformerValue,
+                 on_transformed: StringMatcherValue,
+                 ):
+        self._transformer = transformer
+        self._on_transformed = on_transformed
+
+    def structure(self) -> StructureRenderer:
+        return StringMatcherOnTransformedFileToCheck.new_structure_tree(
+            self._transformer.structure(),
+            self._on_transformed.structure(),
+        )
+
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
+        ret_val = set(self._transformer.resolving_dependencies())
+        ret_val.update(self._on_transformed.resolving_dependencies())
+
+        return ret_val
+
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringMatcher:
+        return StringMatcherOnTransformedFileToCheck(self._transformer.value_of_any_dependency(tcds),
+                                                     self._on_transformed.value_of_any_dependency(tcds),
+                                                     )

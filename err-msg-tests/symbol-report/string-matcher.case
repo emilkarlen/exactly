@@ -2,7 +2,8 @@
 
 def line-matcher LINE_NUM = line-num > 2
 
-def string-matcher QUANT_LINE = any line : LINE_NUM
+def string-matcher QUANT_LINE_E = any   line : LINE_NUM
+def string-matcher QUANT_LINE_A = every line : LINE_NUM
 
 def string-matcher EMPTY       = empty
 def string-matcher EQUALS      = equals 'hello'

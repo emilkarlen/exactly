@@ -1,6 +1,5 @@
 from typing import Sequence, Callable, Set
 
-from exactly_lib.definitions import expression
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
@@ -13,8 +12,8 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.string_matcher.delegated_matcher import StringMatcherDelegatedToMatcher
-from exactly_lib.test_case_utils.string_matcher.string_matchers import StringMatcherOnTransformedFileToCheck
+from exactly_lib.test_case_utils.string_matcher import delegated_matcher
+from exactly_lib.test_case_utils.string_matcher import string_matchers
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic import string_matcher_values
 from exactly_lib.type_system.logic.impls import combinator_matchers
@@ -80,7 +79,8 @@ class _StringMatcherWithTransformationResolver(StringMatcherResolver):
 
     def __init__(self,
                  transformer: StringTransformerResolver,
-                 original: StringMatcherResolver):
+                 original: StringMatcherResolver,
+                 ):
         self._transformer = transformer
         self._original = original
         self._validator = pre_or_post_validation.AndValidator([
@@ -91,20 +91,10 @@ class _StringMatcherWithTransformationResolver(StringMatcherResolver):
         ])
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
-        transformer_value = self._transformer.resolve(symbols)
-        original_value = self._original.resolve(symbols)
-
-        resolving_dependencies = set(transformer_value.resolving_dependencies())
-        resolving_dependencies.update(original_value.resolving_dependencies())
-
-        def get_matcher(tcds: HomeAndSds) -> StringMatcher:
-            return StringMatcherOnTransformedFileToCheck(transformer_value.value_of_any_dependency(tcds),
-                                                         original_value.value_of_any_dependency(tcds),
-                                                         )
-
-        return StringMatcherValueFromParts(original_value.structure,
-                                           resolving_dependencies,
-                                           get_matcher)
+        return string_matchers.StringMatcherWithTransformationValue(
+            self._transformer.resolve(symbols),
+            self._original.resolve(symbols),
+        )
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -278,23 +268,8 @@ class StringMatcherReferenceResolver(StringMatcherResolver):
 
     @staticmethod
     def _negated(original: StringMatcherValue) -> StringMatcherValue:
-        def get_structure() -> StructureRenderer:
-            return renderers.NodeRendererFromParts(
-                expression.NOT_OPERATOR_NAME,
-                None,
-                (),
-                (original.structure(),)
-            )
-
-        def get_matcher(tcds: HomeAndSds) -> StringMatcher:
-            return StringMatcherDelegatedToMatcher(
-                combinator_matchers.Negation(original.value_of_any_dependency(tcds))
-            )
-
-        return StringMatcherValueFromParts(
-            get_structure,
-            original.resolving_dependencies(),
-            get_matcher,
+        return delegated_matcher.StringMatcherValueDelegatedToMatcher(
+            combinator_matchers.NegationValue(original)
         )
 
     def __str__(self):

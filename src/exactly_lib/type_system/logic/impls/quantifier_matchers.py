@@ -24,10 +24,12 @@ ELEMENT = TypeVar('ELEMENT')
 class ElementSetup(Generic[MODEL, ELEMENT]):
     def __init__(self,
                  type_name: str,
+                 element_matcher_syntax_name: str,
                  elements_getter: Callable[[MODEL], ContextManager[Iterator[ELEMENT]]],
                  renderer: Callable[[ELEMENT], DetailsRenderer],
                  ):
         self.type_name = type_name
+        self.element_matcher_syntax_name = element_matcher_syntax_name
         self.elements_getter = elements_getter
         self.renderer = renderer
 
@@ -46,19 +48,23 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
         self._element_setup = element_setup
         self._predicate = predicate
 
-        self._name = ' '.join((instruction_arguments.QUANTIFIER_ARGUMENTS[quantifier],
-                               element_setup.type_name,
-                               ))
+        self._name = self._name(quantifier, element_setup)
+
+    @staticmethod
+    def _name(quantifier: Quantifier,
+              element_setup: ElementSetup) -> str:
+        return ' '.join((instruction_arguments.QUANTIFIER_ARGUMENTS[quantifier],
+                         element_setup.type_name,
+                         instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+                         element_setup.element_matcher_syntax_name,
+                         ))
 
     @staticmethod
     def new_structure_tree(quantifier: Quantifier,
                            element_setup: ElementSetup,
                            predicate: WithTreeStructureDescription) -> StructureRenderer:
-        name = ' '.join((instruction_arguments.QUANTIFIER_ARGUMENTS[quantifier],
-                         element_setup.type_name,
-                         ))
         return renderers.NodeRendererFromParts(
-            name,
+            _QuantifierBase._name(quantifier, element_setup),
             None,
             (),
             (predicate.structure(),),

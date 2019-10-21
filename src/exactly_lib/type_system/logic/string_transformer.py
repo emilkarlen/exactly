@@ -7,7 +7,9 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription
+from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription, \
+    WithTreeStructureDescription, StructureRenderer
+from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.functional import compose_first_and_second
 
 StringTransformerModel = Iterable[str]
@@ -32,7 +34,12 @@ class StringTransformer(WithNameAndTreeStructureDescription, ABC):
         return type(self).__name__
 
 
-class StringTransformerValue(MultiDirDependentValue[StringTransformer]):
+class StringTransformerValue(MultiDirDependentValue[StringTransformer],
+                             WithTreeStructureDescription):
+
+    def structure(self) -> StructureRenderer:
+        return renderers.header_only('string transformer TODO')
+
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return set()
 

@@ -104,6 +104,7 @@ class _QuantifiedMatcher(FilesMatcher):
     def _element_setup(self) -> quantifier_matchers.ElementSetup:
         return quantifier_matchers.ElementSetup(
             files_matcher_primitives.QUANTIFICATION_OVER_FILE_ARGUMENT,
+            syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
             self._file_elements_from_model,
             _element_detail_renderer,
         )
