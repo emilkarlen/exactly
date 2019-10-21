@@ -1,6 +1,7 @@
 [setup]
 
 def line-matcher REGEX    = matches [a-z]+b?c
+def line-matcher REGEX_IC = matches -ignore-case [a-z]+b?c
 
 def line-matcher LINE_NUM = line-num > 2
 

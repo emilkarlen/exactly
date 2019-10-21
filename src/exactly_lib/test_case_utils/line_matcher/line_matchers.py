@@ -140,12 +140,15 @@ class LineMatcherRegex(_LineMatcherWExpectedAndActualBase):
         return renderers.NodeRendererFromParts(
             LineMatcherRegex.NAME,
             None,
-            (regex,),
+            (custom_details.regex_with_config_renderer(False, regex),),
             (),
         )
 
-    def __init__(self, compiled_regular_expression: Pattern):
-        super().__init__(custom_details.PatternRenderer(False, compiled_regular_expression))
+    def __init__(self, compiled_regular_expression: Pattern[str]):
+        super().__init__(custom_details.regex_with_config_renderer(
+            False,
+            custom_details.PatternRenderer(compiled_regular_expression))
+        )
         self._compiled_regular_expression = compiled_regular_expression
 
     @property

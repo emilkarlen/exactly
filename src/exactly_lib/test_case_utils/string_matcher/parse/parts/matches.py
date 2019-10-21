@@ -1,24 +1,28 @@
 import re
 import shlex
-from typing import Optional, Pattern, Match
+from typing import Optional, Pattern, Match, Set
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.test_case.validation import pre_or_post_validation
+from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.error_messages import ExpectedValueResolver, ErrorMessageResolverConstructor
-from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
-from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromValueWithValidation, \
-    StringMatcherValueWithValidation
+from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
+from exactly_lib.test_case_utils.string_matcher import matcher_options, resolvers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher, StringMatcherValue
+from exactly_lib.util.description_tree import renderers
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -44,34 +48,37 @@ def parse(expectation_type: ExpectationType,
 def value_resolver(expectation_type: ExpectationType,
                    is_full_match: bool,
                    contents_matcher: RegexResolver) -> StringMatcherResolver:
-    error_message_constructor = ErrorMessageResolverConstructor(expectation_type,
-                                                                ExpectedValueResolver(matcher_options.MATCHES_ARGUMENT,
-                                                                                      contents_matcher))
+    error_message_constructor = ErrorMessageResolverConstructor(
+        expectation_type,
+        ExpectedValueResolver(matcher_options.MATCHES_ARGUMENT,
+                              contents_matcher)
+    )
 
-    def get_value_with_validator(symbols: SymbolTable) -> StringMatcherValueWithValidation:
+    def get_value_validator(symbols: SymbolTable) -> PreOrPostSdsValueValidator:
+        return contents_matcher.resolve(symbols).validator()
+
+    def get_value(symbols: SymbolTable) -> StringMatcherValue:
         regex_value = contents_matcher.resolve(symbols)
-
-        def get_matcher(tcds: HomeAndSds) -> StringMatcher:
-            return MatchesRegexStringMatcher(
-                expectation_type,
-                is_full_match,
-                regex_value.value_of_any_dependency(tcds),
-                error_message_constructor,
-            )
-
-        return StringMatcherValueWithValidation(
-            regex_value.resolving_dependencies(),
-            regex_value.validator(),
-            get_matcher,
+        return MatchesRegexStringMatcherValue(
+            expectation_type,
+            regex_value,
+            is_full_match,
+            error_message_constructor,
         )
 
-    return StringMatcherResolverFromValueWithValidation(
+    return resolvers.StringMatcherResolverFromParts2(
         contents_matcher.references,
-        get_value_with_validator,
+        pre_or_post_validation.PreOrPostSdsValidatorFromValueValidator(get_value_validator),
+        get_value,
     )
 
 
 class MatchesRegexStringMatcher(StringMatcher):
+    NAME = ' '.join((
+        matcher_options.MATCHES_ARGUMENT,
+        syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
+    ))
+
     def __init__(self,
                  expectation_type: ExpectationType,
                  is_full_match: bool,
@@ -83,8 +90,12 @@ class MatchesRegexStringMatcher(StringMatcher):
         self._is_full_match = is_full_match
         self._pattern = pattern
         self._err_msg_constructor = error_message_constructor
+        self._pattern_renderer = custom_details.PatternRenderer(pattern)
         self._expected_detail_renderer = custom_details.expected(
-            custom_details.PatternRenderer(is_full_match, pattern)
+            custom_details.regex_with_config_renderer(
+                is_full_match,
+                self._pattern_renderer,
+            )
         )
 
     @property
@@ -93,6 +104,22 @@ class MatchesRegexStringMatcher(StringMatcher):
             matcher_options.MATCHES_ARGUMENT,
             syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
         ))
+
+    @staticmethod
+    def new_structure_tree(is_full_match: bool,
+                           expected_regex: DetailsRenderer) -> StructureRenderer:
+        return renderers.NodeRendererFromParts(
+            MatchesRegexStringMatcher.NAME,
+            None,
+            (custom_details.regex_with_config_renderer(is_full_match, expected_regex),),
+            (),
+        )
+
+    def _structure(self) -> StructureRenderer:
+        return self.new_structure_tree(
+            self._is_full_match,
+            self._pattern_renderer,
+        )
 
     @property
     def option_description(self) -> str:
@@ -158,6 +185,47 @@ class MatchesRegexStringMatcher(StringMatcher):
 
     def _new_tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(self._expected_detail_renderer)
+
+
+class MatchesRegexStringMatcherValue(StringMatcherValue):
+    def __init__(self,
+                 expectation_type: ExpectationType,
+                 regex: RegexValue,
+                 is_full_match: bool,
+                 error_message_constructor: ErrorMessageResolverConstructor,
+                 ):
+        self._expectation_type = expectation_type
+        self._regex = regex
+        self._is_full_match = is_full_match
+        self._error_message_constructor = error_message_constructor
+
+    def structure(self) -> StructureRenderer:
+        return MatchesRegexStringMatcher.new_structure_tree(
+            self._is_full_match,
+            self._regex.describer(),
+        )
+
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
+        return self._regex.resolving_dependencies()
+
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return self._regex.validator()
+
+    def value_when_no_dir_dependencies(self) -> StringMatcher:
+        return MatchesRegexStringMatcher(
+            self._expectation_type,
+            self._is_full_match,
+            self._regex.value_when_no_dir_dependencies(),
+            self._error_message_constructor,
+        )
+
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringMatcher:
+        return MatchesRegexStringMatcher(
+            self._expectation_type,
+            self._is_full_match,
+            self._regex.value_of_any_dependency(tcds),
+            self._error_message_constructor,
+        )
 
 
 class _ErrorMessageResolver(ErrorMessageResolver):

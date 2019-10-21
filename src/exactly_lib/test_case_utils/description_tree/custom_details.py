@@ -1,3 +1,4 @@
+import re
 from typing import Sequence, Iterable, Pattern, Match
 
 from exactly_lib.common.report_rendering import print
@@ -5,11 +6,9 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
-from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.type_system.data import string_or_file_ref_values
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForValue
-from exactly_lib.util.cli_syntax import option_syntax
-from exactly_lib.util.description_tree import tree
+from exactly_lib.util.description_tree import tree, details
 from exactly_lib.util.description_tree.details import HeaderAndValue
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
@@ -22,6 +21,10 @@ _MATCH = 'Match'
 
 _RHS = 'RHS'
 _ACTUAL_LHS = 'Actual LHS'
+
+_REGEX_FULL_MATCH = 'Full match'
+_REGEX_CONTAINS = 'Contains'
+_REGEX_IGNORE_CASE = 'Case insensitive'
 
 
 def expected(value: DetailsRenderer) -> DetailsRenderer:
@@ -136,22 +139,40 @@ class StringOrPathValue(DetailsRenderer):
             )
 
 
+def regex_with_config_renderer(is_full_match: bool,
+                               pattern: DetailsRenderer,
+                               ) -> DetailsRenderer:
+    header = (
+        _REGEX_FULL_MATCH
+        if is_full_match
+        else
+        _REGEX_CONTAINS
+    )
+    return HeaderAndValue(
+        header,
+        pattern,
+    )
+
+
+def regex(ignore_case: bool, pattern: DetailsRenderer) -> DetailsRenderer:
+    return (
+        HeaderAndValue(_REGEX_IGNORE_CASE, pattern)
+        if ignore_case
+        else
+        pattern
+    )
+
+
 class PatternRenderer(DetailsRenderer):
     def __init__(self,
-                 is_full_match: bool,
                  pattern: Pattern[str],
                  ):
         self._pattern = pattern
-        self._is_full_match = is_full_match
 
     def render(self) -> Sequence[Detail]:
-        s = self._pattern.pattern
-        if self._is_full_match:
-            s += option_syntax.option_syntax(matcher_options.FULL_MATCH_ARGUMENT_OPTION)
-
-        return [
-            tree.StringDetail(s)
-        ]
+        pattern_string = details.String(self._pattern.pattern)
+        renderer = regex(self._pattern.flags & re.IGNORECASE, pattern_string)
+        return renderer.render()
 
 
 class PatternMatchRenderer(DetailsRenderer):

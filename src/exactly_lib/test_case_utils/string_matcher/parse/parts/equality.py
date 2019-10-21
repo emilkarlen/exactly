@@ -76,14 +76,10 @@ def value_resolver(expectation_type: ExpectationType,
             get_validator,
         )
 
-    def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
-        return expected_contents.resolve(symbols).resolving_dependencies()
-
     return StringMatcherResolverFromParts2(
         expected_contents.references,
         SingleStepValidator(ValidationStep.PRE_SDS,
                             validator),
-        get_resolving_dependencies,
         get_matcher_value,
     )
 

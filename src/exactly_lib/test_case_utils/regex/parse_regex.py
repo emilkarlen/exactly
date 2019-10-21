@@ -14,6 +14,7 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import parse_string_or_here_doc_from_token_parser
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
 from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
@@ -141,7 +142,10 @@ class _RegexValue(RegexValue):
                  is_ignore_case: bool,
                  string: StringValue,
                  ):
-        self._describer = details.String(string_rendering.AsToStringObject(string.describer()))
+        self._describer = custom_details.regex(
+            is_ignore_case,
+            details.String(string_rendering.AsToStringObject(string.describer()))
+        )
         self._validator = _ValidatorWhichCreatesRegex(is_ignore_case, string)
 
     def describer(self) -> DetailsRenderer:

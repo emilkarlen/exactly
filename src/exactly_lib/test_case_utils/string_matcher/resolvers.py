@@ -148,10 +148,8 @@ class StringMatcherResolverFromParts2(StringMatcherResolver):
     def __init__(self,
                  references: Sequence[SymbolReference],
                  validator: PreOrPostSdsValidator,
-                 resolving_dependencies: Callable[[SymbolTable], Set[DirectoryStructurePartition]],
                  get_matcher_value: Callable[[SymbolTable], StringMatcherValue]):
         self._get_matcher_value = get_matcher_value
-        self._resolving_dependencies = resolving_dependencies
         self._validator = validator
         self._references = references
 

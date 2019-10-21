@@ -13,7 +13,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 class RegexConstantValueTestImpl(RegexValue):
     def __init__(self,
-                 value: Pattern,
+                 value: Pattern[str],
                  resolving_dependencies: Optional[Set[DirectoryStructurePartition]] = None,
                  validator: PreOrPostSdsValueValidator = ConstantPreOrPostSdsValueValidator(None, None),
                  ):
@@ -22,7 +22,8 @@ class RegexConstantValueTestImpl(RegexValue):
         self._resolving_dependencies = set() if resolving_dependencies is None else resolving_dependencies
 
     def describer(self) -> DetailsRenderer:
-        return custom_details.PatternRenderer(False, self._value)
+        return custom_details.regex_with_config_renderer(False,
+                                                         custom_details.PatternRenderer(self._value))
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self._resolving_dependencies

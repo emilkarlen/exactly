@@ -1,5 +1,5 @@
 import contextlib
-from typing import Set, Optional, Sequence, Iterator, ContextManager
+from typing import Optional, Sequence, Iterator, ContextManager
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
@@ -9,7 +9,6 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case.validation import pre_or_post_validation as ppv, pre_or_post_value_validation as ppvv
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
@@ -20,7 +19,6 @@ from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_li
 from exactly_lib.test_case_utils.line_matcher.trace_rendering import LineMatcherLineRenderer
 from exactly_lib.test_case_utils.string_matcher import delegated_matcher, resolvers
 from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.test_case_utils.symbols_utils import resolving_dependencies_from_references
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.impls import quantifier_matchers, combinator_matchers
@@ -70,13 +68,9 @@ def matcher_for_any_line_matches(expectation_type: ExpectationType,
 
         return delegated_matcher.StringMatcherValueDelegatedToMatcher(matcher)
 
-    def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
-        return resolving_dependencies_from_references(line_matcher_resolver.references, symbols)
-
     return resolvers.StringMatcherResolverFromParts2(
         line_matcher_resolver.references,
         _validator_for_line_matcher(line_matcher_resolver),
-        get_resolving_dependencies,
         get_matcher,
     )
 
@@ -93,13 +87,9 @@ def matcher_for_every_line_matches(expectation_type: ExpectationType,
 
         return delegated_matcher.StringMatcherValueDelegatedToMatcher(matcher)
 
-    def get_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
-        return resolving_dependencies_from_references(line_matcher_resolver.references, symbols)
-
     return resolvers.StringMatcherResolverFromParts2(
         line_matcher_resolver.references,
         _validator_for_line_matcher(line_matcher_resolver),
-        get_resolving_dependencies,
         get_matcher,
     )
 

@@ -2,16 +2,24 @@
 
 def line-matcher LINE_NUM = line-num > 2
 
+
 def string-matcher QUANT_LINE_E = any   line : LINE_NUM
 def string-matcher QUANT_LINE_A = every line : LINE_NUM
 
 def string-matcher EMPTY       = empty
-def string-matcher NOT_EMPTY   = ! empty
+def string-matcher NOT_EMPTY   = ! EMPTY
+
 def string-matcher EQUALS      = equals 'hello'
-def string-matcher NOT_EQUALS  = ! equals 'negated'
-def string-matcher MATCHES     = matches [a-z]+
-def string-matcher NUM_LINES   = num-lines == 4+1
-def string-matcher NOT         = ! NUM_LINES
+def string-matcher NOT_EQUALS  = ! EQUALS
+
+def string-matcher MATCHES         = matches [a-z]+
+def string-matcher MATCHES_FULL    = matches -full [a-z]+
+def string-matcher MATCHES_FULL_IC = matches -full -ignore-case [a-z]+
+def string-matcher NOT_MATCHES     = ! MATCHES
+
+def string-matcher NUM_LINES     = num-lines == 4+1
+def string-matcher NOT_NUM_LINES = ! NUM_LINES
+
 def string-matcher TRANSFORMED = -transformed-by select line-num == 1 NUM_LINES
 
-def string-matcher SYM_REF     = NUM_LINES
+def string-matcher SYM_REF     = NOT_NUM_LINES
