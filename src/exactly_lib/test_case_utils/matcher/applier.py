@@ -8,6 +8,7 @@ from exactly_lib.test_case_utils.matcher.element_getter import ElementGetter, El
 from exactly_lib.test_case_utils.matcher.matcher import T, MatcherValue, MatcherResolver
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, Failure
+from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 
 MODEL = TypeVar('MODEL')
@@ -21,8 +22,18 @@ class MatcherApplier(Generic[MODEL, T]):
         self._matcher = matcher
         self._model_adapter = model_adapter
 
+    @property
+    def name(self) -> str:
+        """TODO Temp helper that should be removed after usages removed"""
+        return self._model_adapter.name
+
     def structure(self) -> StructureRenderer:
-        return self._matcher.structure()
+        return renderers.NodeRendererFromParts(
+            self._model_adapter.name,
+            None,
+            (),
+            (self._matcher.structure(),)
+        )
 
     def matches_w_failure(self, model: MODEL) -> Optional[Failure[T]]:
         """
@@ -36,8 +47,15 @@ class MatcherApplier(Generic[MODEL, T]):
         """
         :raises HardErrorException
         """
-        return self._matcher.matches_w_trace(
-            self._model_adapter.get_from(model),
+        matcher_result = self._matcher.matches_w_trace(self._model_adapter.get_from(model))
+        return MatchingResult(
+            matcher_result.value,
+            renderers.NodeRendererFromParts(
+                self._model_adapter.name,
+                matcher_result.value,
+                (),
+                (matcher_result.trace,)
+            )
         )
 
 
@@ -49,8 +67,18 @@ class MatcherApplierValue(Generic[MODEL, T]):
         self._matcher = matcher
         self._model_adapter = model_adapter
 
+    @property
+    def name(self) -> str:
+        """TODO Temp helper that should be removed after usages removed"""
+        return self._model_adapter.name
+
     def structure(self) -> StructureRenderer:
-        return self._matcher.structure()
+        return renderers.NodeRendererFromParts(
+            self._model_adapter.name,
+            None,
+            (),
+            (self._matcher.structure(),)
+        )
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherApplier[MODEL, T]:
         return MatcherApplier(

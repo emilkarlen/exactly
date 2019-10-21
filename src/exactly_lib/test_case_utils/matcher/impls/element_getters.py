@@ -12,6 +12,10 @@ class ElementGetterValueConstant(Generic[MODEL, T], ElementGetterValue[MODEL, T]
     def __init__(self, constant: ElementGetter[MODEL, T]):
         self._constant = constant
 
+    @property
+    def name(self) -> str:
+        return self._constant.name
+
     def value_of_any_dependency(self, tcds: HomeAndSds) -> ElementGetter[MODEL, T]:
         return self._constant
 

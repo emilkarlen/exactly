@@ -21,8 +21,6 @@ def parse(expectation_type: ExpectationType,
         parse_cmp_op.validator_for_non_negative,
     )
     return matcher_applier.MaStringMatcherResolver(
-        ' '.join((matcher_options.NUM_LINES_ARGUMENT,
-                  syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name)),
         applier.MatcherApplierResolver(
             matcher,
             _operand_from_model_resolver(),
@@ -32,6 +30,13 @@ def parse(expectation_type: ExpectationType,
 
 
 class _ElementGetter(ElementGetter[FileToCheck, int]):
+    NAME = ' '.join((matcher_options.NUM_LINES_ARGUMENT,
+                     syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name))
+
+    @property
+    def name(self) -> str:
+        return self.NAME
+
     def get_from(self, model: FileToCheck) -> int:
         ret_val = 0
         with model.lines() as lines:

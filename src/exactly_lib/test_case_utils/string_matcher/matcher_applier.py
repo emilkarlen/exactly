@@ -12,38 +12,24 @@ from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolve
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.matcher_base_class import T, Failure
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherValue
-from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 
 
 class MaStringMatcher(Generic[T], StringMatcher):
     def __init__(self,
-                 name: str,
                  applier: MatcherApplier[FileToCheck, T],
                  err_msg_constructor: Callable[[FileToCheck, Failure[T]], ErrorMessageResolver],
                  ):
         super().__init__()
-        self._name = name
         self._applier = applier
         self._err_msg_constructor = err_msg_constructor
 
-    @staticmethod
-    def new_structure_tree(name: str,
-                           matcher: StructureRenderer) -> StructureRenderer:
-        return renderers.NodeRendererFromParts(
-            name,
-            None,
-            (),
-            (matcher,),
-        )
-
     @property
     def name(self) -> str:
-        return self._name
+        return self._applier.name
 
     def _structure(self) -> StructureRenderer:
-        return MaStringMatcher.new_structure_tree(self._name,
-                                                  self._applier.structure())
+        return self._applier.structure()
 
     @property
     def option_description(self) -> str:
@@ -57,24 +43,17 @@ class MaStringMatcher(Generic[T], StringMatcher):
         return self._err_msg_constructor(model, failure)
 
     def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
-        result = self._applier.matches_w_trace(model)
-        return (
-            self._new_tb()
-                .append_child(result.trace)
-                .build_result(result.value)
-        )
+        return self._applier.matches_w_trace(model)
 
 
 class MaStringMatcherValue(Generic[T],
                            WithCachedTreeStructureDescriptionBase,
                            StringMatcherValue):
     def __init__(self,
-                 name: str,
                  applier: MatcherApplierValue[FileToCheck, T],
                  err_msg_constructor: Callable[[FileToCheck, Failure[T]], ErrorMessageResolver],
                  ):
         WithCachedTreeStructureDescriptionBase.__init__(self)
-        self._name = name
         self._applier = applier
         self._err_msg_constructor = err_msg_constructor
 
@@ -82,8 +61,7 @@ class MaStringMatcherValue(Generic[T],
         return set(DirectoryStructurePartition)
 
     def _structure(self) -> StructureRenderer:
-        return MaStringMatcher.new_structure_tree(self._name,
-                                                  self._applier.structure())
+        return self._applier.structure()
 
     def value_when_no_dir_dependencies(self) -> StringMatcher:
         """
@@ -93,7 +71,6 @@ class MaStringMatcherValue(Generic[T],
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
         return MaStringMatcher(
-            self._name,
             self._applier.value_of_any_dependency(home_and_sds),
             self._err_msg_constructor,
         )
@@ -101,11 +78,9 @@ class MaStringMatcherValue(Generic[T],
 
 class MaStringMatcherResolver(Generic[T], StringMatcherResolver):
     def __init__(self,
-                 name: str,
                  applier: MatcherApplierResolver[FileToCheck, T],
                  err_msg_constructor: Callable[[FileToCheck, Failure[T]], ErrorMessageResolver],
                  ):
-        self._name = name
         self._applier = applier
         self._err_msg_constructor = err_msg_constructor
 
@@ -119,7 +94,6 @@ class MaStringMatcherResolver(Generic[T], StringMatcherResolver):
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
         return MaStringMatcherValue(
-            self._name,
             self._applier.resolve(symbols),
             self._err_msg_constructor
         )

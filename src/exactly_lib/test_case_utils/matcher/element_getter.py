@@ -12,6 +12,11 @@ MODEL = TypeVar('MODEL')
 
 
 class ElementGetter(Generic[MODEL, T], ABC):
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        pass
+
     @abstractmethod
     def get_from(self, model: MODEL) -> T:
         """
@@ -21,6 +26,11 @@ class ElementGetter(Generic[MODEL, T], ABC):
 
 
 class ElementGetterValue(Generic[MODEL, T], ABC):
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        pass
+
     @abstractmethod
     def value_of_any_dependency(self, tcds: HomeAndSds) -> ElementGetter[MODEL, T]:
         pass

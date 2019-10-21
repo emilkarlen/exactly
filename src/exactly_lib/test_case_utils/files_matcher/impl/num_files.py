@@ -57,12 +57,7 @@ class _FilesMatcher(FilesMatcher):
         )
 
     def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
-        matcher_result = self._matcher_applier().matches_w_trace(model)
-
-        tb = self._new_tb()
-        tb.append_child(matcher_result.trace)
-
-        return tb.build_result(matcher_result.value)
+        return self._matcher_applier().matches_w_trace(model)
 
     def _matcher_applier(self, ) -> MatcherApplier[FilesMatcherModel, int]:
         matcher = self._matcher
@@ -105,5 +100,9 @@ class _NumFilesMatcherResolver(FilesMatcherResolverBase):
 
 
 class _ElementGetter(ElementGetter[FilesMatcherModel, int]):
+    @property
+    def name(self) -> str:
+        return files_matcher.NUM_FILES_CHECK_ARGUMENT
+
     def get_from(self, model: FilesMatcherModel) -> int:
         return len(list(model.files()))

@@ -9,6 +9,7 @@ from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.instructions.assert_.utils import instruction_of_matcher
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
@@ -105,8 +106,14 @@ def _mk_error_message(failure: Failure[int]) -> ErrorMessageResolver:
 
 
 class _ExitCodeGetter(ElementGetter[None, int]):
+    NAME = instruction_names.EXIT_CODE_INSTRUCTION_NAME
+
     def __init__(self, sds: SandboxDirectoryStructure):
         self._sds = sds
+
+    @property
+    def name(self) -> str:
+        return self.NAME
 
     def get_from(self, model: None) -> int:
         sds = self._sds
@@ -153,6 +160,10 @@ class _ExitCodeGetter(ElementGetter[None, int]):
 
 
 class _ExitCodeGetterValue(ElementGetterValue[None, int]):
+    @property
+    def name(self) -> str:
+        return _ExitCodeGetter.NAME
+
     def value_of_any_dependency(self, tcds: HomeAndSds) -> ElementGetter[None, int]:
         return _ExitCodeGetter(tcds.sds)
 
