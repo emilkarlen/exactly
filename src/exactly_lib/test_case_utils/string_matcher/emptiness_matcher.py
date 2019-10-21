@@ -1,8 +1,10 @@
-from typing import Optional
+from typing import Optional, Set
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.primitives import file_or_dir_contents
-from exactly_lib.test_case_utils.description_tree import custom_details
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
@@ -11,7 +13,7 @@ from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolve
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import FileToCheck
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherValue
 from exactly_lib.type_system.logic.string_matcher import StringMatcher
 from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.logic_types import ExpectationType
@@ -21,40 +23,46 @@ class EmptinessStringMatcher(StringMatcher):
     NAME = file_or_dir_contents.EMPTINESS_CHECK_ARGUMENT
 
     @staticmethod
-    def new_structure_tree() -> StructureRenderer:
-        return renderers.header_only(EmptinessStringMatcher.NAME)
+    def new_structure_tree(expectation_type: ExpectationType) -> StructureRenderer:
+        positive = renderers.header_only(EmptinessStringMatcher.NAME)
+        return (
+            positive
+            if expectation_type is ExpectationType.POSITIVE
+            else
+            custom_renderers.negation(positive)
+        )
 
     def __init__(self, expectation_type: ExpectationType):
         super().__init__()
-        self.expectation_type = expectation_type
+        self._expectation_type = expectation_type
 
     @property
     def name(self) -> str:
         return file_or_dir_contents.EMPTINESS_CHECK_ARGUMENT
 
     def _structure(self) -> StructureRenderer:
-        return self.new_structure_tree()
+        return self.new_structure_tree(self._expectation_type)
 
     @property
     def option_description(self) -> str:
-        return diff_msg.negation_str(self.expectation_type) + 'empty'
+        return diff_msg.negation_str(self._expectation_type) + 'empty'
 
     def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         first_line = self._first_line(model)
-        if self.expectation_type is ExpectationType.POSITIVE:
+        if self._expectation_type is ExpectationType.POSITIVE:
             if first_line != '':
-                return _ErrorMessageResolver(self.expectation_type,
+                return _ErrorMessageResolver(self._expectation_type,
                                              model.describer,
                                              repr(first_line) + '...')
         else:
             if first_line == '':
-                return _ErrorMessageResolver(self.expectation_type,
+                return _ErrorMessageResolver(self._expectation_type,
                                              model.describer,
                                              EMPTINESS_CHECK_EXPECTED_VALUE)
         return None
 
     def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
-        if self.expectation_type is ExpectationType.NEGATIVE:
+        if self._expectation_type is ExpectationType.NEGATIVE:
             return combinator_matchers.Negation(EmptinessStringMatcher(ExpectationType.POSITIVE)).matches_w_trace(model)
         else:
             return self._matches_positive(model)
@@ -78,6 +86,21 @@ class EmptinessStringMatcher(StringMatcher):
             for line in lines:
                 return line
         return ''
+
+
+class EmptinessStringMatcherValue(StringMatcherValue):
+    def __init__(self, expectation_type: ExpectationType):
+        super().__init__()
+        self._expectation_type = expectation_type
+
+    def structure(self) -> StructureRenderer:
+        return EmptinessStringMatcher.new_structure_tree(self._expectation_type)
+
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
+        return set()
+
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringMatcher:
+        return EmptinessStringMatcher(self._expectation_type)
 
 
 class _ErrorMessageResolver(ErrorMessageResolver):

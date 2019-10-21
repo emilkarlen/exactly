@@ -6,6 +6,7 @@ def string-matcher QUANT_LINE_E = any   line : LINE_NUM
 def string-matcher QUANT_LINE_A = every line : LINE_NUM
 
 def string-matcher EMPTY       = empty
+def string-matcher NOT_EMPTY   = ! empty
 def string-matcher EQUALS      = equals 'hello'
 def string-matcher NOT_EQUALS  = ! equals 'negated'
 def string-matcher MATCHES     = matches [a-z]+
