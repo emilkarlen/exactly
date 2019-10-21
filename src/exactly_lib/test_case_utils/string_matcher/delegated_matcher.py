@@ -5,10 +5,10 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.matcher.matcher import MatcherValue, MatcherResolver
+from exactly_lib.test_case_utils.matcher.resolver import MatcherResolver
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, MatcherValue
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherValue
 from exactly_lib.util.symbol_table import SymbolTable
 

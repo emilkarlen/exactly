@@ -8,12 +8,12 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.test_case_utils.matcher.matcher import MatcherValue, MatcherResolver
 from exactly_lib.test_case_utils.matcher.object import ObjectValue, ObjectResolver
+from exactly_lib.test_case_utils.matcher.resolver import MatcherResolver
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
-from exactly_lib.type_system.logic.matcher_base_class import Failure
+from exactly_lib.type_system.logic.matcher_base_class import Failure, MatcherValue
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.util import logic_types
 from exactly_lib.util.description_tree import details

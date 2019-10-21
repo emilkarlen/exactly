@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Optional
 
-from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription, \
+    WithTreeStructureDescription
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.logic_types import ExpectationType
@@ -80,3 +82,9 @@ class MatcherWTraceAndNegation(Generic[T], MatcherWTrace[T], ABC):
         :raises HardErrorException
         """
         raise NotImplementedError('deprecated')
+
+
+class MatcherValue(Generic[T], WithTreeStructureDescription, ABC):
+    @abstractmethod
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
+        pass
