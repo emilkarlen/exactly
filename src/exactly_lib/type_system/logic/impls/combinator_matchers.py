@@ -2,13 +2,15 @@ from abc import ABC
 from typing import TypeVar, Generic, Sequence, Optional
 
 from exactly_lib.definitions import expression
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation, \
+    MatcherValue, T
 from exactly_lib.util.description_tree import renderers
 
 MODEL = TypeVar('MODEL')
@@ -76,6 +78,17 @@ class Negation(_CombinatorBase[MODEL]):
         return self._negated,
 
 
+class NegationValue(Generic[T], MatcherValue[T]):
+    def __init__(self, negated: MatcherValue[T]):
+        self._negated = negated
+
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
+        return Negation(self._negated.value_of_any_dependency(tcds))
+
+    def structure(self) -> StructureRenderer:
+        return Negation.new_structure_tree(self._negated)
+
+
 class Conjunction(_CombinatorBase[MODEL]):
     NAME = expression.AND_OPERATOR_NAME
 
@@ -135,6 +148,17 @@ class Conjunction(_CombinatorBase[MODEL]):
         return self._parts
 
 
+class ConjunctionValue(Generic[T], MatcherValue[T]):
+    def __init__(self, parts: Sequence[MatcherValue[T]]):
+        self._parts = parts
+
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
+        return Conjunction([part.value_of_any_dependency(tcds) for part in self._parts])
+
+    def structure(self) -> StructureRenderer:
+        return Conjunction.new_structure_tree(self._parts)
+
+
 class Disjunction(_CombinatorBase[MODEL]):
     NAME = expression.OR_OPERATOR_NAME
 
@@ -192,3 +216,14 @@ class Disjunction(_CombinatorBase[MODEL]):
 
     def _children(self) -> Sequence[MatcherWTrace[MODEL]]:
         return self._parts
+
+
+class DisjunctionValue(Generic[T], MatcherValue[T]):
+    def __init__(self, parts: Sequence[MatcherValue[T]]):
+        self._parts = parts
+
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
+        return Disjunction([part.value_of_any_dependency(tcds) for part in self._parts])
+
+    def structure(self) -> StructureRenderer:
+        return Disjunction.new_structure_tree(self._parts)
