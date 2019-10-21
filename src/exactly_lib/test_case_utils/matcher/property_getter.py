@@ -11,7 +11,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 MODEL = TypeVar('MODEL')
 
 
-class ElementGetter(Generic[MODEL, T], ABC):
+class PropertyGetter(Generic[MODEL, T], ABC):
     @property
     @abstractmethod
     def name(self) -> str:
@@ -25,25 +25,25 @@ class ElementGetter(Generic[MODEL, T], ABC):
         pass
 
 
-class ElementGetterValue(Generic[MODEL, T], ABC):
+class PropertyGetterValue(Generic[MODEL, T], ABC):
     @property
     @abstractmethod
     def name(self) -> str:
         pass
 
     @abstractmethod
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> ElementGetter[MODEL, T]:
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> PropertyGetter[MODEL, T]:
         pass
 
 
-class ElementGetterResolver(Generic[MODEL, T], ABC):
+class PropertyGetterResolver(Generic[MODEL, T], ABC):
     @property
     @abstractmethod
     def references(self) -> Sequence[SymbolReference]:
         pass
 
     @abstractmethod
-    def resolve(self, symbols: SymbolTable) -> ElementGetterValue[MODEL, T]:
+    def resolve(self, symbols: SymbolTable) -> PropertyGetterValue[MODEL, T]:
         pass
 
     @property

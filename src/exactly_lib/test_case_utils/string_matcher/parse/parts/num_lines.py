@@ -2,10 +2,10 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
-from exactly_lib.test_case_utils.matcher import applier
-from exactly_lib.test_case_utils.matcher.element_getter import ElementGetter, ElementGetterResolver
+from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import element_getters, parse_integer_matcher
 from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
+from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterResolver
 from exactly_lib.test_case_utils.string_matcher import matcher_applier, matcher_options
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import Failure
@@ -21,7 +21,7 @@ def parse(expectation_type: ExpectationType,
         parse_cmp_op.validator_for_non_negative,
     )
     return matcher_applier.MaStringMatcherResolver(
-        applier.MatcherApplierResolver(
+        property_matcher.PropertyMatcherResolver(
             matcher,
             _operand_from_model_resolver(),
         ),
@@ -29,7 +29,7 @@ def parse(expectation_type: ExpectationType,
     )
 
 
-class _ElementGetter(ElementGetter[FileToCheck, int]):
+class _PropertyGetter(PropertyGetter[FileToCheck, int]):
     NAME = ' '.join((matcher_options.NUM_LINES_ARGUMENT,
                      syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name))
 
@@ -45,10 +45,10 @@ class _ElementGetter(ElementGetter[FileToCheck, int]):
         return ret_val
 
 
-def _operand_from_model_resolver() -> ElementGetterResolver[FileToCheck, int]:
-    return element_getters.ElementGetterResolverConstant(
-        element_getters.ElementGetterValueConstant(
-            _ElementGetter(),
+def _operand_from_model_resolver() -> PropertyGetterResolver[FileToCheck, int]:
+    return element_getters.PropertyGetterResolverConstant(
+        element_getters.PropertyGetterValueConstant(
+            _PropertyGetter(),
         )
     )
 

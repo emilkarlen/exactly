@@ -6,7 +6,8 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.matcher.applier import MatcherApplier, MatcherApplierValue, MatcherApplierResolver
+from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcher, PropertyMatcherValue, \
+    PropertyMatcherResolver
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
@@ -17,7 +18,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 class MaStringMatcher(Generic[T], StringMatcher):
     def __init__(self,
-                 applier: MatcherApplier[FileToCheck, T],
+                 applier: PropertyMatcher[FileToCheck, T],
                  err_msg_constructor: Callable[[FileToCheck, Failure[T]], ErrorMessageResolver],
                  ):
         super().__init__()
@@ -50,7 +51,7 @@ class MaStringMatcherValue(Generic[T],
                            WithCachedTreeStructureDescriptionBase,
                            StringMatcherValue):
     def __init__(self,
-                 applier: MatcherApplierValue[FileToCheck, T],
+                 applier: PropertyMatcherValue[FileToCheck, T],
                  err_msg_constructor: Callable[[FileToCheck, Failure[T]], ErrorMessageResolver],
                  ):
         WithCachedTreeStructureDescriptionBase.__init__(self)
@@ -78,7 +79,7 @@ class MaStringMatcherValue(Generic[T],
 
 class MaStringMatcherResolver(Generic[T], StringMatcherResolver):
     def __init__(self,
-                 applier: MatcherApplierResolver[FileToCheck, T],
+                 applier: PropertyMatcherResolver[FileToCheck, T],
                  err_msg_constructor: Callable[[FileToCheck, Failure[T]], ErrorMessageResolver],
                  ):
         self._applier = applier

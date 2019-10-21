@@ -21,10 +21,10 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.test_case_utils import negation_of_predicate, pfh_exception
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
-from exactly_lib.test_case_utils.matcher.applier import MatcherApplierResolver
-from exactly_lib.test_case_utils.matcher.element_getter import ElementGetterValue, ElementGetter
 from exactly_lib.test_case_utils.matcher.impls import element_getters, parse_integer_matcher
 from exactly_lib.test_case_utils.matcher.impls import err_msg
+from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterValue, PropertyGetter
+from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherResolver
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import Failure
@@ -87,9 +87,9 @@ class Parser(InstructionParserThatConsumesCurrentLine):
             expectation_type,
             _must_be_within_byte_range,
         )
-        matcher_applier = MatcherApplierResolver(
+        matcher_applier = PropertyMatcherResolver(
             matcher,
-            element_getters.ElementGetterResolverConstant(_ExitCodeGetterValue()),
+            element_getters.PropertyGetterResolverConstant(_ExitCodeGetterValue()),
         )
         parser.report_superfluous_arguments_if_not_at_eol()
         return instruction_of_matcher.Instruction(
@@ -105,7 +105,7 @@ def _mk_error_message(failure: Failure[int]) -> ErrorMessageResolver:
     )
 
 
-class _ExitCodeGetter(ElementGetter[None, int]):
+class _ExitCodeGetter(PropertyGetter[None, int]):
     NAME = instruction_names.EXIT_CODE_INSTRUCTION_NAME
 
     def __init__(self, sds: SandboxDirectoryStructure):
@@ -159,12 +159,12 @@ class _ExitCodeGetter(ElementGetter[None, int]):
             raise HardErrorException(msg)
 
 
-class _ExitCodeGetterValue(ElementGetterValue[None, int]):
+class _ExitCodeGetterValue(PropertyGetterValue[None, int]):
     @property
     def name(self) -> str:
         return _ExitCodeGetter.NAME
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> ElementGetter[None, int]:
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> PropertyGetter[None, int]:
         return _ExitCodeGetter(tcds.sds)
 
 
