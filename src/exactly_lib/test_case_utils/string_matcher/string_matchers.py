@@ -25,6 +25,7 @@ class StringMatcherOnTransformedFileToCheck(StringMatcher):
         super().__init__()
         self._transformer = transformer
         self._on_transformed = on_transformed
+        self._transformer_detail = details.Tree(self._transformer.structure())
 
     @property
     def name(self) -> str:
@@ -68,6 +69,7 @@ class StringMatcherOnTransformedFileToCheck(StringMatcher):
         result_on_transformed = self._on_transformed.matches_w_trace(transformed_model)
         return (
             self._new_tb()
+                .append_details(self._transformer_detail)
                 .append_child(result_on_transformed.trace)
                 .build_result(result_on_transformed.value)
         )
