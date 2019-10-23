@@ -1,12 +1,22 @@
-from typing import Optional
+from typing import Optional, Set, Callable
 
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherValue
+from exactly_lib.util.description_tree import tree
+from exactly_lib_test.test_case_utils.description_tree.test_resources import ConstantNodeRendererTestImpl
 
 
 class StringMatcherConstant(StringMatcher):
-    """Matcher with constant result."""
+    """
+    Matcher with constant result.
+
+    TODO Replace with StringMatcherConstantTestImpl
+    """
 
     def __init__(self, result: Optional[ErrorMessageResolver]):
         super().__init__()
@@ -29,3 +39,56 @@ class StringMatcherConstant(StringMatcher):
 
     def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
         return self._new_tb().build_result(self._result is None)
+
+
+class StringMatcherConstantTestImpl(StringMatcher):
+    """Matcher with constant result."""
+
+    def __init__(self,
+                 result: bool,
+                 structure: tree.Node[None] = tree.Node('test impl constant', None, (), ()),
+                 ):
+        super().__init__()
+        self._result = result
+        self.__structure = structure
+
+    @property
+    def name(self) -> str:
+        return self.__structure.header
+
+    def _structure(self) -> StructureRenderer:
+        return ConstantNodeRendererTestImpl(self.__structure)
+
+    @property
+    def option_description(self) -> str:
+        return self.__structure.header
+
+    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
+        return (
+            None
+            if self._result
+            else
+            err_msg_resolvers.constant('Unconditional False')
+        )
+
+    def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
+        return self._new_tb().build_result(self._result)
+
+
+class StringMatcherValueFromPartsTestImpl(StringMatcherValue):
+    def __init__(self,
+                 structure: StructureRenderer,
+                 resolving_dependencies: Set[DirectoryStructurePartition],
+                 matcher: Callable[[HomeAndSds], StringMatcher]):
+        self._structure = structure
+        self._matcher = matcher
+        self._resolving_dependencies = resolving_dependencies
+
+    def structure(self) -> StructureRenderer:
+        return self._structure
+
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
+        return self._resolving_dependencies
+
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
+        return self._matcher(home_and_sds)

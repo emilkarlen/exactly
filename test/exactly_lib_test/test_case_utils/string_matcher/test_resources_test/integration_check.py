@@ -15,18 +15,20 @@ from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
 from exactly_lib.type_system.logic.string_matcher_values import StringMatcherConstantValue
+from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl
+from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl, \
+    StringMatcherResolverFromPartsTestImpl
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
@@ -39,10 +41,12 @@ from exactly_lib_test.test_case_utils.test_resources import validation as asrt_v
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, is_pass, is_hard_error
 from exactly_lib_test.test_resources.files.file_checks import FileChecker
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     sds_2_home_and_sds_assertion
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant
+from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant, \
+    StringMatcherConstantTestImpl
 
 
 def suite() -> unittest.TestSuite:
@@ -198,6 +202,45 @@ class TestMisc(TestCaseBase):
             sut.ArrangementPostAct(),
             is_pass())
 
+    def test_fail_WHEN_structure_of_ddv_and_primitive_differs(self):
+        header = 'a header'
+        cases = [
+            NameAndValue(
+                'different header',
+                StringMatcherResolverFromPartsTestImpl(
+                    renderers.header_only('header of ddv'),
+                    (),
+                    pre_or_post_validation.ConstantSuccessValidator(),
+                    no_resolving_dependencies,
+                    lambda x: StringMatcherConstantTestImpl(True,
+                                                            tree.Node('header of primitive', None, (), ())),
+                ),
+            ),
+            NameAndValue(
+                'different number of children',
+                StringMatcherResolverFromPartsTestImpl(
+                    renderers.header_only(header),
+                    (),
+                    pre_or_post_validation.ConstantSuccessValidator(),
+                    no_resolving_dependencies,
+                    lambda x: StringMatcherConstantTestImpl(True,
+                                                            tree.Node(header, None, (),
+                                                                      (tree.Node(header, None, (), ()),))),
+                ),
+            )
+        ]
+
+        for case in cases:
+            model = empty_model().with_original_file_contents('')
+            with self.subTest(case.name):
+                with self.assertRaises(utils.TestError):
+                    self._check(
+                        ConstantParser(case.value),
+                        utils.single_line_source(),
+                        model,
+                        sut.ArrangementPostAct(),
+                        matcher_assertions.expectation())
+
 
 class TestFailingExpectations(TestCaseBase):
     def test_fail_due_to_unexpected_result_from_pre_validation(self):
@@ -267,9 +310,11 @@ class TestFailingExpectations(TestCaseBase):
 
 def string_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> StringMatcherResolver:
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
-        return StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(environment.home_and_sds)
+        return StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(environment.home_and_sds,
+                                                                    _ARBITRARY_STRUCTURE_RENDERER)
 
-    return StringMatcherResolverFromParts(
+    return StringMatcherResolverFromPartsTestImpl(
+        _ARBITRARY_STRUCTURE_RENDERER,
         (),
         ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(),
         no_resolving_dependencies,
@@ -281,9 +326,11 @@ def string_matcher_that_asserts_models_is_expected(put: unittest.TestCase,
                                                    expected_model_string_contents: str
                                                    ) -> StringMatcherResolver:
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
-        return StringMatcherThatAssertsModelsIsExpected(put, expected_model_string_contents)
+        return StringMatcherThatAssertsModelsIsExpected(put, expected_model_string_contents,
+                                                        _ARBITRARY_STRUCTURE_RENDERER)
 
-    return StringMatcherResolverFromParts(
+    return StringMatcherResolverFromPartsTestImpl(
+        _ARBITRARY_STRUCTURE_RENDERER,
         (),
         pre_or_post_validation.ConstantSuccessValidator(),
         no_resolving_dependencies,
@@ -371,13 +418,20 @@ class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrP
 
 
 class StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(StringMatcherTestImplBase):
-    def __init__(self, tcds: HomeAndSds):
+    def __init__(self,
+                 tcds: HomeAndSds,
+                 structure: StructureRenderer,
+                 ):
         super().__init__()
         self.tcds = tcds
+        self._structure = structure
 
     @property
     def name(self) -> str:
         return str(type(self))
+
+    def _structure(self) -> StructureRenderer:
+        return self._structure
 
     def _matches_side_effects(self, model: FileToCheck):
         utils.raise_test_error_if_cwd_is_not_test_root(self.tcds.sds)
@@ -386,14 +440,20 @@ class StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(StringMatcherTestImpl
 class StringMatcherThatAssertsModelsIsExpected(StringMatcherTestImplBase):
     def __init__(self,
                  put: unittest.TestCase,
-                 expected_model_string_contents: str):
+                 expected_model_string_contents: str,
+                 structure: StructureRenderer,
+                 ):
         super().__init__()
         self.put = put
         self.expected_model_string_contents = expected_model_string_contents
+        self._structure = structure
 
     @property
     def name(self) -> str:
         return str(type(self))
+
+    def _structure(self) -> StructureRenderer:
+        return self._structure
 
     def _matches_side_effects(self, model: FileToCheck):
         self._assert_original_file_is_existing_regular_file_with_expected_contents(model)
@@ -418,6 +478,8 @@ _MATCHER_THAT_MATCHES = StringMatcherConstant(None)
 def no_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
     return set()
 
+
+_ARBITRARY_STRUCTURE_RENDERER = renderers.header_only('arbitrary structure header')
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

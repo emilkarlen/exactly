@@ -3,7 +3,6 @@ import filecmp
 import pathlib
 from typing import List, Set, Optional, Iterable, Callable
 
-from exactly_lib.definitions import expression
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.string_or_file import StringOrFileRefResolver
@@ -14,7 +13,7 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.description_tree import custom_details
+from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver, ExpectedValueResolver
@@ -148,17 +147,7 @@ class EqualityStringMatcher(StringMatcher):
             expected_contents,
         )
 
-        return (
-            equality_node
-            if expectation_type is ExpectationType.POSITIVE
-            else
-            renderers.NodeRendererFromParts(
-                expression.NOT_OPERATOR_NAME,
-                None,
-                (),
-                (equality_node,),
-            )
-        )
+        return custom_renderers.positive_or_negative(expectation_type, equality_node)
 
     def __init__(self,
                  expectation_type: ExpectationType,
@@ -298,12 +287,6 @@ class EqualityStringMatcher(StringMatcher):
 
     def _new_tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(self._expected_detail_renderer)
-
-    def _structure(self) -> StructureRenderer:
-        return renderers.header_and_detail(
-            self.name,
-            self._renderer_of_expected_value,
-        )
 
 
 def _validator_of_expected(expected_contents: StringOrFileRefResolver) -> PreOrPostSdsValidator:

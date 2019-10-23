@@ -2,11 +2,11 @@ import unittest
 
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering as sut
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
-from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node, StringDetail
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib.util.simple_textstruct.structure import ElementProperties, INDENTATION__NEUTRAL, TextStyle, \
     Indentation, TEXT_STYLE__NEUTRAL
+from exactly_lib_test.test_case_utils.description_tree.test_resources import ConstantNodeRendererTestImpl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct
@@ -22,7 +22,7 @@ class Test(unittest.TestCase):
         for data in [False, True]:
             with self.subTest(data=data):
                 root = Node('header', data, (), ())
-                renderer = _ConstantNodeRenderer(root)
+                renderer = ConstantNodeRendererTestImpl(root)
 
                 # EXPECTATION #
 
@@ -68,7 +68,7 @@ def _check(put: unittest.TestCase,
            rendered_node: Node[bool],
            expectation: ValueAssertion[s.MajorBlock],
            ):
-    renderer = sut.BoolTraceRenderer(_ConstantNodeRenderer(rendered_node))
+    renderer = sut.BoolTraceRenderer(ConstantNodeRendererTestImpl(rendered_node))
 
     # ACT #
 
@@ -131,14 +131,6 @@ def expected_detail_properties(level: int) -> s.ElementProperties:
                     _EXPECTED_DETAIL_INDENT_SUFFIX),
         TEXT_STYLE__NEUTRAL,
     )
-
-
-class _ConstantNodeRenderer(NodeRenderer[bool]):
-    def __init__(self, constant: Node[bool]):
-        self._constant = constant
-
-    def render(self) -> Node[bool]:
-        return self._constant
 
 
 _EXPECTED_DETAIL_INDENT_SUFFIX = ' ' * len('(B) ')

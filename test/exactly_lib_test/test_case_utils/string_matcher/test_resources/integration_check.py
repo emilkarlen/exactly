@@ -166,6 +166,12 @@ class Executor:
                                                       structure_tree_of_primitive,
                                                       'structure of primitive')
 
+        structure_equals_ddv = asrt_d_tree.header_data_and_children_equal_as(structure_tree_of_ddv)
+        structure_equals_ddv.apply_with_message(
+            self.put,
+            structure_tree_of_primitive,
+            'structure of primitive should be same as that of ddv')
+
         return matcher
 
     def _execute_validate_pre_sds(self,
