@@ -18,6 +18,10 @@ class Arguments:
         self.first_line = str(first_line)
         self.following_lines = list(map(str, following_lines))
 
+    @staticmethod
+    def empty() -> 'Arguments':
+        return Arguments('', ())
+
     @property
     def is_empty(self) -> bool:
         return not self.first_line and not self.following_lines
@@ -36,12 +40,10 @@ class Arguments:
                                 self.following_lines)
 
     def followed_by(self,
-                    arguments,
-                    first_line_separator: str = ' '):
+                    arguments: 'Arguments',
+                    first_line_separator: str = ' ') -> 'Arguments':
         """
-        :type arguments: Arguments
         :param first_line_separator: String that separates the first line of the two arguments
-        :rtype: Arguments
         """
         return Arguments(self.first_line + first_line_separator + arguments.first_line,
                          self.following_lines + arguments.following_lines)

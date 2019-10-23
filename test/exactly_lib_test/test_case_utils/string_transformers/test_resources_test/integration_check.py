@@ -16,12 +16,14 @@ from exactly_lib_test.section_document.test_resources.parser_classes import Cons
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
 from exactly_lib_test.symbol.test_resources.string_transformer import string_transformer_from_primitive_value, \
-    string_transformer_from_result, arbitrary_transformer_value
+    string_transformer_from_result, arbitrary_transformer_value, StringTransformerIdentityTestImpl
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check as sut
-from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import Expectation, is_pass
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_hard_error
+from exactly_lib_test.test_resources.test_utils import NEA
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
@@ -95,7 +97,7 @@ class TestSymbolReferences(TestCaseBase):
             ConstantParser(resolver_that_checks_symbols),
             sut.Arrangement(
                 symbols=symbol_table_of_arrangement),
-            sut.Expectation(),
+            sut.Expectation(is_identity_transformer=asrt.anything_goes()),
         )
 
 
@@ -132,7 +134,9 @@ class TestMisc(TestCaseBase):
             arbitrary_model(),
             ConstantParser(arbitrary_transformer()),
             sut.Arrangement(),
-            is_pass())
+            expectation=sut.Expectation(
+                is_identity_transformer=asrt.anything_goes()
+            ))
 
 
 class TestFailingExpectations(TestCaseBase):
@@ -167,6 +171,41 @@ class TestFailingExpectations(TestCaseBase):
                 sut.Arrangement(),
                 Expectation(
                     main_result=assert_num_lines_in_result_equals(2)),
+            )
+
+    def test_fail_due_to_unexpected_is_identity_transformer(self):
+        cases = [
+            NEA('actual is identity transformer',
+                expected=True,
+                actual=string_transformer_from_primitive_value(
+                    StringTransformerIdentityTestImpl()
+                )),
+            NEA('actual is NOT identity transformer',
+                expected=False,
+                actual=arbitrary_non_identity_transformer()),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                with self.assertRaises(utils.TestError):
+                    self._check(
+                        utils.single_line_source(),
+                        arbitrary_model(),
+                        ConstantParser(case.actual),
+                        sut.Arrangement(),
+                        Expectation(
+                            is_identity_transformer=asrt.equals(case.expected)),
+                    )
+
+    def test_default_expectation_of_is_identity_SHOULD_be_false(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                utils.single_line_source(),
+                arbitrary_model(),
+                ConstantParser(string_transformer_from_primitive_value(
+                    StringTransformerIdentityTestImpl()
+                )),
+                sut.Arrangement(),
+                Expectation(),
             )
 
 
@@ -224,6 +263,10 @@ def model_with_num_lines(number_of_lines: int) -> StringTransformerModel:
 
 def arbitrary_transformer() -> StringTransformerResolver:
     return string_transformer_from_result(model_with_num_lines(1))
+
+
+def arbitrary_non_identity_transformer() -> StringTransformerResolver:
+    return arbitrary_transformer()
 
 
 if __name__ == '__main__':

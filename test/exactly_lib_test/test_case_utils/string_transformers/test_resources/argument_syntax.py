@@ -1,8 +1,9 @@
 from typing import List
 
-import exactly_lib.test_case_utils.string_transformer.names
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 
 
 def syntax_for_transformer_option(transformer_expression: str) -> str:
@@ -22,21 +23,25 @@ def arguments_for_transformer_option(transformer_expression: str) -> List[str]:
 def syntax_for_replace_transformer(regex_token_str: str,
                                    replacement_token_str: str) -> str:
     return ' '.join([
-        exactly_lib.test_case_utils.string_transformer.names.REPLACE_TRANSFORMER_NAME,
+        names.REPLACE_TRANSFORMER_NAME,
         regex_token_str,
         replacement_token_str,
     ])
 
 
+def syntax_for_replace_transformer__custom(arguments: Arguments) -> Arguments:
+    return Arguments(names.REPLACE_TRANSFORMER_NAME).followed_by(arguments)
+
+
 def syntax_for_select_transformer(line_matcher: str) -> str:
     return ' '.join([
-        exactly_lib.test_case_utils.string_transformer.names.SELECT_TRANSFORMER_NAME,
+        names.SELECT_TRANSFORMER_NAME,
         line_matcher,
     ])
 
 
 def syntax_for_sequence_of_transformers(transformer_syntax_list: list) -> str:
-    return (' ' + exactly_lib.test_case_utils.string_transformer.names.SEQUENCE_OPERATOR_NAME + ' ').join(
+    return (' ' + names.SEQUENCE_OPERATOR_NAME + ' ').join(
         transformer_syntax_list)
 
 

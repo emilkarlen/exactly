@@ -1,74 +1,138 @@
 import unittest
 
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
-from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver, LineMatcherReferenceResolver
-from exactly_lib.test_case_utils.string_transformer.impl import select
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
+    SingleInstructionInvalidArgumentException
+from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
-from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.section_document.test_resources import parse_source
+from exactly_lib_test.symbol.test_resources import symbol_syntax
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResolverConstantTestImpl, \
-    is_line_matcher_reference_to
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
+    LineMatcherConstantTestImpl, is_line_matcher_reference_to__ref
+from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_resolvers
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import validation_cases
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as st_args
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as st_args, \
+    model_construction
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import resolver_assertions as asrt_resolver
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources.values import LineMatcherFromPredicates, is_identical_to
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestInvalidSyntax),
         unittest.makeSuite(TestSelectTransformer),
-        unittest.makeSuite(TestSelectTransformerResolver),
+        unittest.makeSuite(TestLineMatcherPrimitive),
         ValidatorShouldValidateLineMatcher(),
     ])
 
 
-class TestSelectTransformer(unittest.TestCase):
-    def test_SHOULD_not_be_identity_transformer(self):
-        transformer = select.SelectStringTransformer(sub_string_line_matcher('MATCH'))
-        self.assertFalse(transformer.is_identity_transformer)
-
-    def test_select_with_sub_string_matcher(self):
-        transformer = select.SelectStringTransformer(sub_string_line_matcher('MATCH'))
+class TestInvalidSyntax(integration_check.TestCaseWithCheckMethods):
+    def test_failing_parse(self):
         cases = [
-            NameAndValue('no lines',
-                         ([],
-                          [])
-                         ),
-            NameAndValue('single line that matches',
-                         (['MATCH'],
-                          ['MATCH'])
-                         ),
-            NameAndValue('single line that does not match',
-                         (['not a match'],
-                          [])
-                         ),
-            NameAndValue('some lines matches',
-                         ([
-                              'first line is a MATCH',
-                              'second line is not a match',
-                              'third line MATCH:es',
-                              'fourth line not',
-                          ],
-                          [
-                              'first line is a MATCH',
-                              'third line MATCH:es',
-                          ])
-                         ),
+            NameAndValue(
+                'no arguments',
+                st_args.syntax_for_select_transformer(''),
+            ),
+            NameAndValue(
+                'argument is not a line matcher',
+                st_args.syntax_for_select_transformer(symbol_syntax.NOT_A_VALID_SYMBOL_NAME),
+            ),
         ]
         for case in cases:
-            input_lines, expected_output_lines = case.value
+            with self.subTest(case.name):
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    sut.parser().parse(parse_source.remaining_source(case.value))
+
+
+class TestSelectTransformer(integration_check.TestCaseWithCheckMethods):
+    def test_SHOULD_not_be_identity_transformer(self):
+        # ARRANGE #
+        line_matcher = NameAndValue(
+            'line_matcher_symbol',
+            LineMatcherResolverConstantTestImpl(
+                LineMatcherConstantTestImpl(False),
+            ),
+        )
+        line_matcher_arg = lm_arg.SymbolReference(line_matcher.name)
+
+        arguments = st_args.syntax_for_select_transformer(str(line_matcher_arg))
+
+        # ACT & ASSERT #
+
+        self._check_with_source_variants(
+            Arguments(arguments),
+            model_construction.of_lines([]),
+            integration_check.Arrangement(
+                symbols=symbol_table_from_name_and_resolvers([
+                    line_matcher,
+                ])
+            ),
+            integration_check.Expectation(
+                is_identity_transformer=asrt.equals(False),
+                symbol_references=asrt.matches_singleton_sequence(
+                    is_line_matcher_reference_to__ref(line_matcher.name)
+                ),
+            )
+        )
+
+    def test_every_line_SHOULD_be_filtered(self):
+        line_matcher = NameAndValue(
+            'line_matcher_symbol',
+            LineMatcherResolverConstantTestImpl(
+                sub_string_line_matcher('MATCH'),
+            ),
+        )
+        line_matcher_arg = lm_arg.SymbolReference(line_matcher.name)
+        cases = [
+            NEA('no lines',
+                [],
+                [],
+                ),
+            NEA('single line that matches',
+                ['a MATCH'],
+                ['a MATCH'],
+                ),
+            NEA('single line that does not match',
+                actual=['not a match'],
+                expected=[],
+                ),
+            NEA('some lines matches',
+                actual=[
+                    'first line is a MATCH',
+                    'second line is not a match',
+                    'third line MATCH:es',
+                    'fourth line not',
+                ],
+                expected=[
+                    'first line is a MATCH',
+                    'third line MATCH:es',
+                ],
+                ),
+        ]
+        for case in cases:
             with self.subTest(case_name=case.name):
-                # ACT #
-                actual = transformer.transform(iter(input_lines))
-                # ASSERT #
-                actual_lines = list(actual)
-                self.assertEqual(expected_output_lines,
-                                 actual_lines)
+                arguments = st_args.syntax_for_select_transformer(str(line_matcher_arg))
+
+                self._check_with_source_variants(
+                    Arguments(arguments),
+                    model_construction.of_lines(case.actual),
+                    integration_check.Arrangement(
+                        symbols=symbol_table_from_name_and_resolvers([
+                            line_matcher,
+                        ])
+                    ),
+                    integration_check.Expectation(
+                        main_result=asrt.on_transformed(list,
+                                                        asrt.equals(case.expected)),
+                        symbol_references=asrt.matches_singleton_sequence(
+                            is_line_matcher_reference_to__ref(line_matcher.name)
+                        )
+                    )
+                )
 
     def test_other_scenarios(self):
         cases = [
@@ -107,59 +171,69 @@ class TestSelectTransformer(unittest.TestCase):
                  ])
             ),
         ]
+        line_matcher_name = 'the_line_matcher_symbol_name'
+        line_matcher_arg = lm_arg.SymbolReference(line_matcher_name)
+        arguments = st_args.syntax_for_select_transformer(str(line_matcher_arg))
+
         for case in cases:
             line_matcher, input_lines, expected_output_lines = case.value
             with self.subTest(case_name=case.name):
-                transformer = select.SelectStringTransformer(line_matcher)
-                # ACT #
-                actual = transformer.transform(iter(input_lines))
-                # ASSERT #
-                actual_lines = list(actual)
-                self.assertEqual(expected_output_lines,
-                                 actual_lines)
+                # ACT & ASSERT #
+
+                self._check_with_source_variants(
+                    Arguments(arguments),
+                    model_construction.of_lines(input_lines),
+                    integration_check.Arrangement(
+                        symbols=symbol_table_from_name_and_resolvers([
+                            NameAndValue(line_matcher_name,
+                                         LineMatcherResolverConstantTestImpl(
+                                             line_matcher,
+                                         ),
+                                         ),
+                        ])
+                    ),
+                    integration_check.Expectation(
+                        main_result=asrt.on_transformed(list,
+                                                        asrt.equals(expected_output_lines)),
+                        symbol_references=asrt.matches_singleton_sequence(
+                            is_line_matcher_reference_to__ref(line_matcher_name)
+                        )
+                    )
+                )
 
 
-class TestSelectTransformerResolver(unittest.TestCase):
-    def test_sans_references(self):
-        line_matcher = LineMatcherConstant(False)
-
-        resolved_value = select.SelectStringTransformer(line_matcher)
-        assertion_on_resolver = asrt_resolver.resolved_value_equals_string_transformer(
-            resolved_value,
-            references=asrt.is_empty_sequence)
-
-        actual_resolver = select.StringTransformerSelectResolver(
-            LineMatcherResolverConstantTestImpl(line_matcher))
-        assertion_on_resolver.apply_without_message(self,
-                                                    actual_resolver)
-
-    def test_references(self):
+class TestLineMatcherPrimitive(integration_check.TestCaseWithCheckMethods):
+    def test(self):
         # ARRANGE #
-        symbol = NameAndValue('matcher_symbol',
-                              LineMatcherConstant(True))
 
-        actual_resolver = select.StringTransformerSelectResolver(
-            LineMatcherReferenceResolver(symbol.name))
+        reg_ex_pattern = 'const_pattern'
+        arguments = st_args.syntax_for_select_transformer(str(lm_arg.Matches(reg_ex_pattern)))
 
-        # EXPECTATION #
+        lines = [
+            reg_ex_pattern,
+            'non matching line',
+        ]
+        expected_lines = [
+            reg_ex_pattern,
+        ]
 
-        expected_resolved_value = select.SelectStringTransformer(symbol.value)
-
-        assertion_on_resolver = asrt_resolver.resolved_value_equals_string_transformer(
-            expected_resolved_value,
-            references=asrt.matches_sequence(([
-                is_line_matcher_reference_to(symbol.name)
-            ])),
-            symbols=SymbolTable({
-                symbol.name: container(LineMatcherConstantResolver(symbol.value)),
-            }))
         # ACT & ASSERT #
-        assertion_on_resolver.apply_without_message(self,
-                                                    actual_resolver)
+
+        self._check_with_source_variants(
+            Arguments(arguments),
+            model_construction.of_lines(lines),
+            integration_check.Arrangement(),
+            integration_check.Expectation(
+                main_result=asrt.on_transformed(list,
+                                                asrt.equals(expected_lines)),
+                symbol_references=asrt.is_empty_sequence
+            )
+        )
 
 
-class ValidatorShouldValidateLineMatcher(unittest.TestCase):
+class ValidatorShouldValidateLineMatcher(integration_check.TestCaseWithCheckMethods):
     def runTest(self):
+        # ARRANGE #
         for case in validation_cases.failing_validation_cases():
             line_matcher_symbol_context = case.value.symbol_context
             line_matcher_arg = lm_arg.SymbolReference(line_matcher_symbol_context.name)
@@ -167,10 +241,10 @@ class ValidatorShouldValidateLineMatcher(unittest.TestCase):
             arguments = st_args.syntax_for_select_transformer(str(line_matcher_arg))
 
             with self.subTest(case.name):
-                integration_check.check(
-                    self,
-                    remaining_source(arguments),
-                    [],
+                # ACT & ASSERT #
+                self._check_with_source_variants(
+                    Arguments(arguments),
+                    model_construction.of_lines([]),
                     integration_check.Arrangement(
                         symbols=line_matcher_symbol_context.symbol_table
                     ),

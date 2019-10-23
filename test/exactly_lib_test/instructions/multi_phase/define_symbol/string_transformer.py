@@ -5,7 +5,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.string_transformer.names import REPLACE_TRANSFORMER_NAME, SEQUENCE_OPERATOR_NAME
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
-from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer, SequenceStringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
@@ -14,17 +13,17 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_container
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import resolver_assertions as asrt_resolver
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import transformers
-from exactly_lib_test.test_case_utils.string_transformers.test_resources.resolver_assertions import \
-    resolved_value_equals_string_transformer
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.test_resources import string_transformer_assertions as asrt_string_transformer
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
@@ -50,7 +49,9 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # EXPECTATION #
 
         expected_container = matches_container(
-            resolved_value_equals_string_transformer(IdentityStringTransformer())
+            asrt_resolver.resolved_value_matches_string_transformer(
+                asrt_string_transformer.is_identity_transformer()
+            )
         )
 
         expectation = Expectation(
@@ -122,18 +123,12 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         ]
         # EXPECTATION #
 
-        the_sequence_transformer = SequenceStringTransformer([
-            symbol.value,
-            transformers.replace_transformer(regex_str,
-                                             replacement_str),
-        ])
-
         expected_container = matches_container(
             assertion_on_resolver=
-            resolved_value_equals_string_transformer(
-                the_sequence_transformer,
+            asrt_resolver.resolved_value_matches_string_transformer(
+                asrt_string_transformer.is_identity_transformer(asrt.equals(False)),
                 references=asrt.matches_sequence([
-                    is_reference_to_string_transformer(symbol.name),
+                    is_reference_to_string_transformer__ref(symbol.name),
                 ]),
                 symbols=SymbolTable({
                     symbol.name: container(StringTransformerConstant(symbol.value)),

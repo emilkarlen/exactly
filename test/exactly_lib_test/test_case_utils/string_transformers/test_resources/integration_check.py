@@ -33,12 +33,14 @@ class Expectation:
             validation: ValidationExpectation = all_validations_passes(),
             main_result: ValueAssertion[StringTransformerModel] = asrt.anything_goes(),
             is_hard_error: Optional[ValueAssertion[str]] = None,
+            is_identity_transformer: ValueAssertion[bool] = asrt.equals(False)
     ):
         self.source = source
         self.symbol_references = symbol_references
         self.validation = validation
         self.main_result = main_result
         self.is_hard_error = is_hard_error
+        self.is_identity_transformer = is_identity_transformer
 
 
 is_pass = Expectation
@@ -153,8 +155,11 @@ class _Checker:
                                                                ret_val,
                                                                'primitive value')
 
-        assert isinstance(ret_val, StringTransformer)
-
+        self.expectation.is_identity_transformer.apply_with_message(
+            self.put,
+            ret_val.is_identity_transformer,
+            'is identity transformer'
+        )
         return ret_val
 
     def _check_validation_pre_sds(self, transformer_value: StringTransformerValue):

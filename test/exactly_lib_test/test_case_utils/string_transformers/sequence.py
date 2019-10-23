@@ -1,13 +1,10 @@
 import itertools
 import unittest
 
-from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
-from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.logic.string_transformer import StringTransformerModel, \
     IdentityStringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_resolvers
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -26,7 +23,6 @@ from exactly_lib_test.type_system.logic.string_transformer.test_resources import
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         ResultShouldBeCompositionOfSequencedTransformers(),
-        SymbolReferencesShouldBeReportedForEverySequencedTransformer(),
         ValidatorShouldValidateSequencedTransformers(),
     ])
 
@@ -94,37 +90,6 @@ class ResultShouldBeCompositionOfSequencedTransformers(integration_check.TestCas
                 )
 
 
-class SymbolReferencesShouldBeReportedForEverySequencedTransformer(unittest.TestCase):
-    def runTest(self):
-        # ARRANGE #
-
-        transformer_symbols = ['st1', 'st2', 'st3']
-
-        expected_references = asrt.matches_sequence([
-            is_reference_to_string_transformer__ref(transformer)
-            for transformer in transformer_symbols
-        ])
-
-        arguments = st_args.syntax_for_sequence_of_transformers([
-            transformer
-            for transformer in transformer_symbols
-        ])
-
-        parser = parse_string_transformer.parser()
-
-        # ACT #
-
-        actual = parser.parse(remaining_source(arguments))
-
-        # ASSERT #
-
-        self.assertIsInstance(actual, StringTransformerResolver)
-
-        actual_references = actual.references
-
-        expected_references.apply(self, actual_references)
-
-
 class ValidatorShouldValidateSequencedTransformers(integration_check.TestCaseWithCheckMethods):
     def runTest(self):
         successful_transformer = NameAndValue(
@@ -154,9 +119,9 @@ class ValidatorShouldValidateSequencedTransformers(integration_check.TestCaseWit
 
                 with self.subTest(validation_case=case.name,
                                   order_case=order_case.name):
-                    self._check(
-                        remaining_source(arguments),
-                        [],
+                    self._check_with_source_variants(
+                        Arguments(arguments),
+                        model_construction.of_lines([]),
                         Arrangement(
                             symbols=symbols
                         ),

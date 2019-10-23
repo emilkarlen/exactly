@@ -4,15 +4,38 @@ from exactly_lib.test_case_utils.string_transformer.impl.replace import ReplaceS
 from exactly_lib.test_case_utils.string_transformer.impl.select import SelectStringTransformer
 from exactly_lib.test_case_utils.string_transformer.transformer_visitor import StringTransformerStructureVisitor
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, IdentityStringTransformer, \
-    SequenceStringTransformer, CustomStringTransformer
+    SequenceStringTransformer, CustomStringTransformer, StringTransformerModel
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import value_assertions as asrt_line_matcher
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.model_construction import ModelConstructor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
+    MessageBuilder
 
 
 def equals_string_transformer(expected: StringTransformer,
                               description: str = '') -> ValueAssertion[StringTransformer]:
     return _EqualsAssertion(expected, description)
+
+
+def matches_application(model: ModelConstructor,
+                        expectation: ValueAssertion[StringTransformerModel],
+                        ) -> ValueAssertion[StringTransformer]:
+    return _MatchesApplication(model, expectation)
+
+
+class _MatchesApplication(asrt.ValueAssertionBase[StringTransformer]):
+    def __init__(self,
+                 model: ModelConstructor,
+                 expectation: ValueAssertion[StringTransformerModel]):
+        self._expectation = expectation
+        self._model = model
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: StringTransformer,
+               message_builder: MessageBuilder):
+        actual = value.transform(self._model())
+        self._expectation.apply(put, actual, message_builder.for_sub_component('transform'))
 
 
 class _EqualsAssertion(ValueAssertionBase):

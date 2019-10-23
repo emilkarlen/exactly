@@ -15,11 +15,11 @@ from exactly_lib_test.type_system.logic.test_resources.values import FileMatcher
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestResolvedValueEqualsStringTransformer)
+    return unittest.makeSuite(TestResolvedValueMatchesStringTransformer)
 
 
-class TestResolvedValueEqualsStringTransformer(unittest.TestCase):
-    def test_equals_string_transformer(self):
+class TestResolvedValueMatchesStringTransformer(unittest.TestCase):
+    def test_matches_string_transformer(self):
         # ARRANGE #
         cases = [
             NameAndValue('without symbol table',
@@ -35,12 +35,14 @@ class TestResolvedValueEqualsStringTransformer(unittest.TestCase):
         resolver = StringTransformerConstant(actual_and_expected)
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.resolved_value_equals_string_transformer(actual_and_expected,
-                                                                                  symbols=case.value)
+                assertion_to_check = sut.resolved_value_matches_string_transformer(
+                    value=asrt.anything_goes(),
+                    symbols=case.value,
+                )
                 # ACT & ASSERT #
                 assertion_to_check.apply_without_message(self, resolver)
 
-    def test_SHOULD_not_equal_string_transformer_WHEN_actual_is_file_matcher(self):
+    def test_SHOULD_not_match_WHEN_actual_is_file_matcher(self):
         # ARRANGE #
         cases = [
             NameAndValue('without symbol table',
@@ -53,17 +55,18 @@ class TestResolvedValueEqualsStringTransformer(unittest.TestCase):
 
         ]
         actual = FileMatcherTestImpl()
-        expected = IdentityStringTransformer()
 
         resolver_of_actual = FileMatcherConstantResolver(actual)
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_equals_expected = sut.resolved_value_equals_string_transformer(expected,
-                                                                                         symbols=case.value)
+                assertion_equals_expected = sut.resolved_value_matches_string_transformer(
+                    asrt.anything_goes(),
+                    symbols=case.value
+                )
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_equals_expected, resolver_of_actual)
 
-    def test_SHOULD_not_equal_string_transformer_WHEN_actual_is_different_string_transformer(self):
+    def test_SHOULD_not_match_WHEN_actual_is_different_string_transformer(self):
         # ARRANGE #
         cases = [
             NameAndValue('without symbol table',
@@ -76,32 +79,33 @@ class TestResolvedValueEqualsStringTransformer(unittest.TestCase):
 
         ]
         actual = SequenceStringTransformer([])
-        expected = IdentityStringTransformer()
 
         resolver_of_actual = StringTransformerConstant(actual)
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_equals_expected = sut.resolved_value_equals_string_transformer(expected,
-                                                                                         symbols=case.value)
+                assertion_equals_expected = sut.resolved_value_matches_string_transformer(
+                    value=asrt.fail('unconditional unexpected'),
+                    symbols=case.value)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_equals_expected, resolver_of_actual)
 
-    def test_equals_references(self):
+    def test_matches_references(self):
         # ARRANGE #
         actual_reference = data_symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
         actual_resolver = StringTransformerResolverConstantTestImpl(
             IdentityStringTransformer(),
             references=actual_references)
-        assertion_to_check = sut.resolved_value_equals_string_transformer(actual_resolver.resolved_value,
-                                                                          references=asrt.matches_sequence([
-                                                                              asrt.is_(actual_reference)
-                                                                          ]),
-                                                                          )
+        assertion_to_check = sut.resolved_value_matches_string_transformer(
+            value=asrt.anything_goes(),
+            references=asrt.matches_sequence([
+                asrt.is_(actual_reference)
+            ]),
+        )
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, actual_resolver)
 
-    def test_not_equals_references(self):
+    def test_not_matches_references(self):
         # ARRANGE #
         actual_reference = data_symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
@@ -120,9 +124,10 @@ class TestResolvedValueEqualsStringTransformer(unittest.TestCase):
 
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.resolved_value_equals_string_transformer(actual_resolver.resolved_value,
-                                                                                  references=case.value,
-                                                                                  )
+                assertion_to_check = sut.resolved_value_matches_string_transformer(
+                    value=asrt.anything_goes(),
+                    references=case.value,
+                )
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check, actual_resolver)
 
