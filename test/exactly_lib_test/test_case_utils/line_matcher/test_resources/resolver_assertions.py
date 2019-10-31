@@ -18,3 +18,13 @@ def resolved_value_equals_line_matcher(value: LineMatcher,
         references,
         value_equals_line_matcher(value),
         symbols=symbols)
+
+
+def resolved_value_matches_line_matcher(value: ValueAssertion[LineMatcher],
+                                        references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+                                        symbols: symbol_table.SymbolTable = None
+                                        ) -> ValueAssertion[SymbolValueResolver]:
+    return resolver_assertions.matches_resolver_of_line_matcher(
+        references,
+        value,
+        symbols=symbols)

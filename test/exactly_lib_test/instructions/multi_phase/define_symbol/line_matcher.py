@@ -20,8 +20,9 @@ from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYM
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import value_assertions as asrt_line_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.resolver_assertions import \
-    resolved_value_equals_line_matcher
+    resolved_value_matches_line_matcher
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
@@ -59,7 +60,9 @@ class TestSuccessfulScenarios(TestCaseBase):
         # EXPECTATION #
 
         expected_container = matches_container(
-            resolved_value_equals_line_matcher(LineMatcherConstant(True))
+            resolved_value_matches_line_matcher(
+                asrt_line_matcher.value_equals_line_matcher(LineMatcherConstant(True))
+            )
         )
 
         expectation = Expectation(
@@ -110,8 +113,8 @@ class TestSuccessfulScenarios(TestCaseBase):
 
         expected_container = matches_container(
             assertion_on_resolver=
-            resolved_value_equals_line_matcher(
-                the_and_matcher,
+            resolved_value_matches_line_matcher(
+                asrt_line_matcher.value_equals_line_matcher(the_and_matcher),
                 references=asrt.matches_sequence([
                     is_line_matcher_reference_to(symbol.name),
                 ]),

@@ -17,7 +17,7 @@ from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
-from exactly_lib.type_system.logic.line_matcher import LineMatcherValue
+from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcher
 from exactly_lib.type_system.logic.program.program_value import ProgramValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
 from exactly_lib.type_system.value_type import TypeCategory, ValueType, LogicValueType, DataValueType
@@ -147,7 +147,7 @@ def matches_resolver_of_file_matcher(references: ValueAssertion[Sequence[SymbolR
 
 
 def matches_resolver_of_line_matcher(references: ValueAssertion[Sequence[SymbolReference]],
-                                     resolved_value: ValueAssertion[LineMatcherValue],
+                                     resolved_value: ValueAssertion[DirDependentValue[LineMatcher]],
                                      custom: ValueAssertion[LineMatcherResolver] = asrt.anything_goes(),
                                      symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_line_matcher_type(),
