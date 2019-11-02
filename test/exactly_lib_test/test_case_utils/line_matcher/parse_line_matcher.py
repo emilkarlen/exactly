@@ -2,7 +2,6 @@ import re
 import unittest
 from typing import List, Sequence
 
-import exactly_lib.test_case_utils.line_matcher.impl.line_number
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -12,11 +11,11 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher, \
     IntegerMatcherFromComparisonOperator
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
+from exactly_lib.test_case_utils.line_matcher.impl import line_number
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex, LineMatcherConstant, \
-    LineMatcherNot, LineMatcherAnd, LineMatcherOr, LineMatcherLineNumber
+    LineMatcherLineNumber
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
-from exactly_lib.type_system.logic.line_matcher import LineMatcher
-from exactly_lib.util import symbol_table
+from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
@@ -26,7 +25,7 @@ from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import value_assertions as asrt_line_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.resolver_assertions import \
-    resolved_value_matches_line_matcher, resolved_value_equals_line_matcher
+    resolved_value_matches_line_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.value_assertions import value_matches_line_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.test_resources import matcher_parse_check
@@ -45,21 +44,11 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class Configuration(matcher_parse_check.Configuration):
+class Configuration(matcher_parse_check.Configuration[LineMatcherLine]):
     def parse(self, parser: TokenParser) -> SymbolValueResolver:
         return sut.parse_line_matcher_from_token_parser(parser)
 
-    def resolved_value_equals(self,
-                              value: LineMatcher,
-                              references: ValueAssertion = asrt.is_empty_sequence,
-                              symbols: symbol_table.SymbolTable = None) -> ValueAssertion:
-        return resolved_value_equals_line_matcher(
-            value,
-            references,
-            symbols
-        )
-
-    def is_reference_to(self, symbol_name: str) -> ValueAssertion:
+    def is_reference_to(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_line_matcher_reference_to(symbol_name)
 
     def resolver_of_constant_matcher(self, matcher: LineMatcher) -> SymbolValueResolver:
@@ -68,14 +57,8 @@ class Configuration(matcher_parse_check.Configuration):
     def constant_matcher(self, result: bool) -> LineMatcher:
         return LineMatcherConstant(result)
 
-    def not_matcher(self, matcher: LineMatcher) -> LineMatcher:
-        return LineMatcherNot(matcher)
-
-    def and_matcher(self, matchers: list) -> LineMatcher:
-        return LineMatcherAnd(matchers)
-
-    def or_matcher(self, matchers: list) -> LineMatcher:
-        return LineMatcherOr(matchers)
+    def arbitrary_model_that_should_not_be_touched(self) -> LineMatcherLine:
+        return 1, 'arbitrary line'
 
 
 class TestRegexParser(unittest.TestCase):
@@ -200,7 +183,7 @@ class TestLineNumberParser(unittest.TestCase):
                source: TokenParser,
                expectation: Expectation):
         # ACT #
-        actual_resolver = exactly_lib.test_case_utils.line_matcher.impl.line_number.parse_line_number(source)
+        actual_resolver = line_number.parse_line_number(source)
         # ASSERT #
         expectation.resolver.apply_with_message(self, actual_resolver,
                                                 'resolver')
@@ -231,7 +214,7 @@ class TestLineNumberParser(unittest.TestCase):
         for name, source in cases:
             with self.subTest(case_name=name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    exactly_lib.test_case_utils.line_matcher.impl.line_number.parse_line_number(source)
+                    line_number.parse_line_number(source)
 
     def test_successful_parse(self):
         # ARRANGE #

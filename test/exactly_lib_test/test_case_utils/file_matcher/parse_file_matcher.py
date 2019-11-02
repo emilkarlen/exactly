@@ -1,20 +1,22 @@
+import pathlib
 import re
 import unittest
 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
-from exactly_lib.test_case_utils.file_matcher.impl import combinators
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
 from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
 from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.util import symbol_table
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
+from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
@@ -29,6 +31,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.source_case import So
 from exactly_lib_test.test_case_utils.test_resources import matcher_parse_check
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.data.test_resources import described_path
 
 
 def suite() -> unittest.TestSuite:
@@ -40,37 +43,24 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class Configuration(matcher_parse_check.Configuration):
+class Configuration(matcher_parse_check.Configuration[FileMatcherModel]):
     def parse(self, parser: TokenParser) -> SymbolValueResolver:
         return sut.parse_resolver(parser)
 
-    def resolved_value_equals(self,
-                              value: FileMatcher,
-                              references: ValueAssertion = asrt.is_empty_sequence,
-                              symbols: symbol_table.SymbolTable = None) -> ValueAssertion:
-        return resolved_value_equals_file_matcher(
-            value,
-            references,
-            symbols
-        )
-
-    def is_reference_to(self, symbol_name: str) -> ValueAssertion:
+    def is_reference_to(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_file_matcher_reference_to(symbol_name)
 
     def resolver_of_constant_matcher(self, matcher: FileMatcher) -> SymbolValueResolver:
         return FileMatcherConstantResolver(matcher)
 
+    def arbitrary_model_that_should_not_be_touched(self) -> FileMatcherModel:
+        return file_matcher_models.FileMatcherModelForPrimitivePath(
+            TmpDirFileSpaceThatMustNoBeUsed(),
+            described_path.new_primitive(pathlib.Path()),
+        )
+
     def constant_matcher(self, result: bool) -> FileMatcher:
         return file_matchers.FileMatcherConstant(result)
-
-    def not_matcher(self, matcher: FileMatcher) -> FileMatcher:
-        return combinators.FileMatcherNot(matcher)
-
-    def and_matcher(self, matchers: list) -> FileMatcher:
-        return combinators.FileMatcherAnd(matchers)
-
-    def or_matcher(self, matchers: list) -> FileMatcher:
-        return combinators.FileMatcherOr(matchers)
 
 
 NON_MATCHER_ARGUMENTS = 'not_a_matcher argument'
@@ -82,8 +72,8 @@ DESCRIPTION_IS_SINGLE_STR = asrt.matches_sequence([asrt.is_instance(str)])
 
 class Expectation:
     def __init__(self,
-                 resolver: ValueAssertion,
-                 source: ValueAssertion,
+                 resolver: ValueAssertion[SymbolValueResolver],
+                 source: ValueAssertion[ParseSource],
                  ):
         self.selector = resolver
         self.source = source

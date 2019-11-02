@@ -1,63 +1,75 @@
 import unittest
+from typing import TypeVar, Generic, List, Sequence
 
 from exactly_lib.definitions import expression
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver, SymbolContainer
-from exactly_lib.type_system.logic.matcher_base_class import Matcher
-from exactly_lib.util import symbol_table
-from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
+from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
     import remaining_source
+from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.expression.test_resources import \
     NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+
+MODEL = TypeVar('MODEL')
 
 
-class Configuration:
+class Configuration(Generic[MODEL]):
     def parse(self, parser: TokenParser) -> SymbolValueResolver:
         raise NotImplementedError('abstract method')
 
-    def resolved_value_equals(self, value: Matcher,
-                              references: ValueAssertion = asrt.is_empty_sequence,
-                              symbols: symbol_table.SymbolTable = None) -> ValueAssertion:
+    def is_reference_to(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         raise NotImplementedError('abstract method')
 
-    def is_reference_to(self, symbol_name: str) -> ValueAssertion:
+    def resolver_of_constant_matcher(self, matcher: MatcherWTrace[MODEL]) -> SymbolValueResolver:
         raise NotImplementedError('abstract method')
 
-    def resolver_of_constant_matcher(self, matcher: Matcher) -> SymbolValueResolver:
-        raise NotImplementedError('abstract method')
+    def resolver_of_constant_result_matcher(self, result: bool) -> SymbolValueResolver:
+        return self.resolver_of_constant_matcher(self.constant_matcher(result))
 
-    def container_with_resolver_of_constant_matcher(self, matcher: Matcher) -> SymbolContainer:
+    def container_with_resolver_of_constant_matcher(self, matcher: MatcherWTrace[MODEL]) -> SymbolContainer:
         return container(self.resolver_of_constant_matcher(matcher))
 
-    def constant_matcher(self, result: bool) -> Matcher:
+    def arbitrary_model_that_should_not_be_touched(self) -> MODEL:
         raise NotImplementedError('abstract method')
 
-    def not_matcher(self, matcher: Matcher) -> Matcher:
+    def constant_matcher(self, result: bool) -> MatcherWTrace[MODEL]:
         raise NotImplementedError('abstract method')
 
-    def and_matcher(self, matchers: list) -> Matcher:
-        raise NotImplementedError('abstract method')
 
-    def or_matcher(self, matchers: list) -> Matcher:
-        raise NotImplementedError('abstract method')
+class ExecutionExpectation:
+    def __init__(self,
+                 result: bool,
+                 operands: List[bool]):
+        self.result = result
+        self.operands = operands
+
+    @property
+    def name(self) -> str:
+        return 'result={}, operands={}'.format(self.result,
+                                               self.operands)
 
 
 class Expectation:
     def __init__(self,
-                 resolver: ValueAssertion,
-                 token_stream: ValueAssertion = asrt.anything_goes()):
+                 resolver: ValueAssertion[SymbolValueResolver],
+                 token_stream: ValueAssertion[TokenParser] = asrt.anything_goes()):
         self.resolver = resolver
         self.token_stream = token_stream
 
 
 class TestParseStandardExpressionsBase(unittest.TestCase):
+    TCDS = fake_tcds()
+
     @property
     def conf(self) -> Configuration:
         raise NotImplementedError('abstract method')
@@ -75,6 +87,49 @@ class TestParseStandardExpressionsBase(unittest.TestCase):
                                                     source.token_stream,
                                                     'token stream')
 
+    def _check_execution(self,
+                         source: str,
+                         references: List[str],
+                         expectations: Sequence[ExecutionExpectation]):
+        conf = self.conf
+        # ACT #
+        actual_resolver = conf.parse(remaining_source(source))
+        # ASSERT #
+        references_expectation = asrt.matches_sequence([
+            conf.is_reference_to(reference)
+            for reference in references
+        ])
+        references_expectation.apply_with_message(
+            self,
+            actual_resolver.references,
+            'references',
+        )
+        model = conf.arbitrary_model_that_should_not_be_touched()
+
+        for expectation in expectations:
+            with self.subTest(expectation.name):
+                self.assertEqual(len(references),
+                                 len(expectation.operands),
+                                 'test case setup: number of operands must equal number of references')
+                symbols = symbol_utils.symbol_table_from_name_and_resolvers(
+                    [
+                        NameAndValue(sym_name,
+                                     conf.resolver_of_constant_result_matcher(result)
+                                     )
+                        for sym_name, result in zip(references, expectation.operands)
+                    ]
+                )
+                ddv = actual_resolver.resolve(symbols)
+                matcher = ddv.value_of_any_dependency(self.TCDS)
+                self.assertIsInstance(matcher, MatcherWTrace,
+                                      'primitive value should be instance of ' + str(type(MatcherWTrace)))
+                assert isinstance(matcher, MatcherWTrace)
+
+                actual_result = matcher.matches_w_trace(model)
+                asrt_matching_result.matches_value(expectation.result).apply_with_message(self,
+                                                                                          actual_result,
+                                                                                          'matching result')
+
     def test_failing_parse(self):
         cases = [
             (
@@ -89,107 +144,67 @@ class TestParseStandardExpressionsBase(unittest.TestCase):
 
     def test_reference(self):
         # ARRANGE #
-        conf = self.conf
-        symbol = NameAndValue('the_symbol_name',
-                              conf.constant_matcher(True))
-
-        symbols = singleton_symbol_table_2(symbol.name,
-                                           conf.container_with_resolver_of_constant_matcher(symbol.value))
+        symbol_name = 'the_symbol_name'
 
         # ACT & ASSERT #
-        self._check(
-            remaining_source(symbol.name),
-            Expectation(
-                resolver=conf.resolved_value_equals(
-                    value=symbol.value,
-                    references=asrt.matches_sequence([conf.is_reference_to(symbol.name)]),
-                    symbols=symbols
-                ),
-            ))
+        self._check_execution(
+            symbol_name,
+            references=[symbol_name],
+            expectations=[
+                ExecutionExpectation(False, [False]),
+                ExecutionExpectation(True, [True]),
+            ],
+        )
 
     def test_not(self):
         # ARRANGE #
-        conf = self.conf
-        symbol = NameAndValue('the_symbol_name',
-                              conf.constant_matcher(True))
-
-        symbols = singleton_symbol_table_2(symbol.name,
-                                           conf.container_with_resolver_of_constant_matcher(symbol.value))
+        symbol_name = 'the_symbol_name'
 
         # ACT & ASSERT #
-        self._check(
-            remaining_source('{not_} {symbol}'.format(not_=expression.NOT_OPERATOR_NAME,
-                                                      symbol=symbol.name)),
-            Expectation(
-                resolver=conf.resolved_value_equals(
-                    value=conf.not_matcher(symbol.value),
-                    references=asrt.matches_sequence([conf.is_reference_to(symbol.name)]),
-                    symbols=symbols
-                ),
-            ))
+        self._check_execution(
+            '{not_} {symbol}'.format(not_=expression.NOT_OPERATOR_NAME,
+                                     symbol=symbol_name),
+            references=[symbol_name],
+            expectations=[
+                ExecutionExpectation(True, [False]),
+                ExecutionExpectation(False, [True]),
+            ],
+        )
 
     def test_and(self):
         # ARRANGE #
-        conf = self.conf
-        symbol_1 = NameAndValue('the_symbol_1_name',
-                                conf.constant_matcher(True))
-
-        symbol_2 = NameAndValue('the_symbol_2_name',
-                                conf.constant_matcher(False))
-
-        symbols = SymbolTable({
-            symbol_1.name: conf.container_with_resolver_of_constant_matcher(symbol_1.value),
-            symbol_2.name: conf.container_with_resolver_of_constant_matcher(symbol_2.value),
-        })
-
+        symbol_1 = 'the_symbol_1_name'
+        symbol_2 = 'the_symbol_2_name'
         # ACT & ASSERT #
-        self._check(
-            remaining_source('{symbol_1} {and_op} {symbol_2}'.format(
-                symbol_1=symbol_1.name,
+        self._check_execution(
+            '{symbol_1} {and_op} {symbol_2}'.format(
+                symbol_1=symbol_1,
                 and_op=expression.AND_OPERATOR_NAME,
-                symbol_2=symbol_2.name,
-            )),
-            Expectation(
-                resolver=conf.resolved_value_equals(
-                    value=conf.and_matcher([symbol_1.value,
-                                            symbol_2.value]),
-                    references=asrt.matches_sequence([
-                        conf.is_reference_to(symbol_1.name),
-                        conf.is_reference_to(symbol_2.name),
-                    ]),
-                    symbols=symbols
-                ),
-            ))
+                symbol_2=symbol_2,
+            ),
+            references=[symbol_1, symbol_2],
+            expectations=[
+                ExecutionExpectation(False, [False, False]),
+                ExecutionExpectation(False, [False, True]),
+                ExecutionExpectation(False, [True, False]),
+                ExecutionExpectation(True, [True, True]),
+            ])
 
     def test_or(self):
         # ARRANGE #
-        conf = self.conf
-        symbol_1 = NameAndValue('the_symbol_1_name',
-                                conf.constant_matcher(True))
-
-        symbol_2 = NameAndValue('the_symbol_2_name',
-                                conf.constant_matcher(False))
-
-        symbols = SymbolTable({
-            symbol_1.name: conf.container_with_resolver_of_constant_matcher(symbol_1.value),
-            symbol_2.name: conf.container_with_resolver_of_constant_matcher(symbol_2.value),
-        })
-
+        symbol_1 = 'the_symbol_1_name'
+        symbol_2 = 'the_symbol_2_name'
         # ACT & ASSERT #
-        self._check(
-            remaining_source('{symbol_1} {or_op} {symbol_2}'.format(
-                symbol_1=symbol_1.name,
-                or_op=expression.OR_OPERATOR_NAME,
-                symbol_2=symbol_2.name,
-            )),
-            Expectation(
-                resolver=conf.resolved_value_equals(
-                    value=conf.or_matcher([symbol_1.value,
-                                           symbol_2.value]),
-                    references=asrt.matches_sequence([
-                        conf.is_reference_to(symbol_1.name),
-                        conf.is_reference_to(symbol_2.name),
-                    ]),
-                    symbols=symbols
-                ),
-            ))
+        self._check_execution(
+            '{symbol_1} {and_op} {symbol_2}'.format(
+                symbol_1=symbol_1,
+                and_op=expression.OR_OPERATOR_NAME,
+                symbol_2=symbol_2,
+            ),
+            references=[symbol_1, symbol_2],
+            expectations=[
+                ExecutionExpectation(False, [False, False]),
+                ExecutionExpectation(True, [False, True]),
+                ExecutionExpectation(True, [True, False]),
+                ExecutionExpectation(True, [True, True]),
+            ])
