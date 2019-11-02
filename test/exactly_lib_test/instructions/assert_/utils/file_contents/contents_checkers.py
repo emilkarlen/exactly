@@ -15,9 +15,9 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformerVa
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
-from exactly_lib_test.test_case_utils.err_msg.test_resources import described_path
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
+from exactly_lib_test.type_system.data.test_resources import described_path
 
 
 def suite() -> unittest.TestSuite:

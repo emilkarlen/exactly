@@ -22,7 +22,7 @@ from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResol
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.type_system.data.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
+from exactly_lib_test.type_system.logic.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
 from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant
 from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer, \
     LineMatcherNotImplementedTestImpl

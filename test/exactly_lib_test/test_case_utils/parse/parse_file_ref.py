@@ -56,8 +56,8 @@ from exactly_lib_test.test_case_utils.parse.test_resources.source_case import So
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.data.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
 from exactly_lib_test.type_system.data.test_resources.path_part_assertions import equals_path_part_string
+from exactly_lib_test.type_system.logic.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
 from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer
 from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_entries
 

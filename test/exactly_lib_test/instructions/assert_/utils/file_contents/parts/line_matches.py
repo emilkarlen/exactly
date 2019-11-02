@@ -18,10 +18,10 @@ from exactly_lib_test.instructions.assert_.utils.file_contents.contents_checkers
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
     destination_file_path_getter_that_gives_seq_of_unique_paths
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
-from exactly_lib_test.test_case_utils.err_msg.test_resources import described_path
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, pfh_expectation_type_config
 from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing
+from exactly_lib_test.type_system.data.test_resources import described_path
 from exactly_lib_test.type_system.logic.test_resources.values import is_identical_to, LineMatcherFromPredicates
 
 
