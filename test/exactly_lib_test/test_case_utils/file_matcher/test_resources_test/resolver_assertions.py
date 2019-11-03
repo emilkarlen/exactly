@@ -4,6 +4,7 @@ from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherCo
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
+from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
@@ -15,11 +16,11 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestResolvedValueEqualsFileMatcher)
+    return unittest.makeSuite(TestResolvedValueMatchesFileMatcher)
 
 
-class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
-    def test_SHOULD_not_equal_WHEN_actual_is_line_matcher(self):
+class TestResolvedValueMatchesFileMatcher(unittest.TestCase):
+    def test_SHOULD_not_match_WHEN_value_does_not_match(self):
         # ARRANGE #
         cases = [
             NameAndValue('without symbol table',
@@ -32,17 +33,16 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
 
         ]
         actual = LineMatcherConstant(False)
-        expected = FileMatcherConstant(False)
 
         resolver_of_actual = LineMatcherConstantResolver(actual)
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_equals_expected = sut.resolved_value_equals_file_matcher(expected,
-                                                                                   symbols=case.value)
+                assertion_equals_expected = sut.resolved_value_matches_file_matcher(asrt.fail('unconditional'),
+                                                                                    symbols=case.value)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_equals_expected, resolver_of_actual)
 
-    def test_equals_file_matcher(self):
+    def test_matches_file_matcher(self):
         # ARRANGE #
         cases = [
             NameAndValue('without symbol table',
@@ -54,48 +54,24 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
                          )),
 
         ]
-        actual_and_expected = FileMatcherConstant(True)
-        resolver = FileMatcherConstantResolver(actual_and_expected)
+        resolver = FileMatcherConstantResolver(FileMatcherConstant(True))
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.resolved_value_equals_file_matcher(actual_and_expected,
-                                                                            symbols=case.value)
+                assertion_to_check = sut.resolved_value_matches_file_matcher(asrt.is_instance(FileMatcherValue),
+                                                                             symbols=case.value)
                 # ACT & ASSERT #
                 assertion_to_check.apply_without_message(self, resolver)
-
-    def test_not_equals_file_matcher(self):
-        # ARRANGE #
-        cases = [
-            NameAndValue('without symbol table',
-                         None),
-            NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
-                             'the symbol name',
-                             symbol_utils.container(fake()),
-                         )),
-
-        ]
-        actual = FileMatcherConstant(False)
-        expected = FileMatcherConstant(True)
-
-        resolver_of_actual = FileMatcherConstantResolver(actual)
-        for case in cases:
-            with self.subTest(name=case.name):
-                assertion_equals_expected = sut.resolved_value_equals_file_matcher(expected,
-                                                                                   symbols=case.value)
-                # ACT & ASSERT #
-                assert_that_assertion_fails(assertion_equals_expected, resolver_of_actual)
 
     def test_equals_references(self):
         # ARRANGE #
         actual_reference = data_symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
         resolver = fake(references=actual_references)
-        assertion_to_check = sut.resolved_value_equals_file_matcher(resolver.resolved_value,
-                                                                    references=asrt.matches_sequence([
-                                                                        asrt.is_(actual_reference)
-                                                                    ]),
-                                                                    )
+        assertion_to_check = sut.resolved_value_matches_file_matcher(asrt.anything_goes(),
+                                                                     references=asrt.matches_sequence([
+                                                                         asrt.is_(actual_reference)
+                                                                     ]),
+                                                                     )
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, resolver)
 
@@ -116,9 +92,9 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
 
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.resolved_value_equals_file_matcher(resolver.resolved_value,
-                                                                            references=case.value,
-                                                                            )
+                assertion_to_check = sut.resolved_value_matches_file_matcher(asrt.anything_goes(),
+                                                                             references=case.value,
+                                                                             )
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check, resolver)
 

@@ -6,9 +6,11 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher.impl import combinators
+from exactly_lib.test_case_utils.file_matcher.impl import name_glob_pattern, file_type, name_regex
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
 from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
 from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
+from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.visitor import FileMatcherStructureVisitor
@@ -24,6 +26,29 @@ def equals_file_matcher(expected: FileMatcher,
 def value_equals_file_matcher(expected: FileMatcher,
                               description: str = '') -> ValueAssertion[FileMatcherValue]:
     return _EqualsAssertionValue(expected, description)
+
+
+def is_type_matcher(expected: FileType) -> ValueAssertion[FileMatcher]:
+    return asrt.is_instance_with(file_type.FileMatcherType,
+                                 asrt.sub_component('file_type',
+                                                    file_type.FileMatcherType.file_type.fget,
+                                                    asrt.is_(expected)))
+
+
+def is_name_glob_pattern(name_pattern: ValueAssertion[str] = asrt.anything_goes()) -> ValueAssertion[FileMatcher]:
+    return asrt.is_instance_with(name_glob_pattern.FileMatcherNameGlobPattern,
+                                 asrt.sub_component('glob_pattern',
+                                                    name_glob_pattern.FileMatcherNameGlobPattern.glob_pattern.fget,
+                                                    asrt.is_instance_with(str, name_pattern))
+                                 )
+
+
+def is_name_regex(name_pattern: ValueAssertion[str] = asrt.anything_goes()) -> ValueAssertion[FileMatcher]:
+    return asrt.is_instance_with(name_regex.FileMatcherBaseNameRegExPattern,
+                                 asrt.sub_component('reg_ex_pattern',
+                                                    name_regex.FileMatcherBaseNameRegExPattern.reg_ex_pattern.fget,
+                                                    asrt.is_instance_with(str, name_pattern))
+                                 )
 
 
 def matches_file_matcher_value__deep(

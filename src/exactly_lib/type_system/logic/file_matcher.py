@@ -17,20 +17,16 @@ from exactly_lib.util.file_utils import TmpDirFileSpace
 
 
 class FileMatcherModel(ABC):
-    def __init__(self,
-                 tmp_file_space: TmpDirFileSpace,
-                 path: DescribedPathPrimitive):
-        self._tmp_file_space = tmp_file_space
-        self._path = path
-
     @property
+    @abstractmethod
     def tmp_file_space(self) -> TmpDirFileSpace:
-        return self._tmp_file_space
+        pass
 
     @property
+    @abstractmethod
     def path(self) -> DescribedPathPrimitive:
         """Path of the file to match. May or may not exist."""
-        return self._path
+        pass
 
     @property
     @abstractmethod

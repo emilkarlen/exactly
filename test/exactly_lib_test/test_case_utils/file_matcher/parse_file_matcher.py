@@ -1,6 +1,6 @@
 import pathlib
-import re
 import unittest
+from typing import List
 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -10,9 +10,6 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
-from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
-from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
-from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
@@ -20,10 +17,11 @@ from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import value_assertions as asrt_file_matcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import name_glob_pattern_matcher_of, \
     type_matcher_of, name_reg_ex_pattern_matcher_of
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
-    resolved_value_equals_file_matcher
+    resolved_value_matches_file_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser
@@ -126,7 +124,11 @@ class TestNameGlobPattern(TestCaseBase):
                 self._check_parse(
                     case.source,
                     Expectation(
-                        resolved_value_equals_file_matcher(FileMatcherNameGlobPattern(pattern)),
+                        resolved_value_matches_file_matcher(
+                            asrt_file_matcher.matches_file_matcher_value__deep(
+                                asrt_file_matcher.is_name_glob_pattern(asrt.equals(pattern))
+                            )
+                        ),
                         source=case.source_assertion,
                     )
                 )
@@ -159,13 +161,16 @@ class TestBaseNameRegExPattern(TestCaseBase):
                                      remaining_part_of_current_line=asrt.equals(space[1:] + 'following argument')),
                        ),
         ]
-        expected = FileMatcherBaseNameRegExPattern(re.compile(pattern))
         for case in cases:
             with self.subTest(case=case.name):
                 self._check_parse(
                     case.source,
                     Expectation(
-                        resolved_value_equals_file_matcher(expected),
+                        resolved_value_matches_file_matcher(
+                            asrt_file_matcher.matches_file_matcher_value__deep(
+                                asrt_file_matcher.is_name_regex(asrt.equals(pattern))
+                            )
+                        ),
                         source=case.source_assertion,
                     )
                 )
@@ -175,7 +180,7 @@ class TestFileType(TestCaseBase):
     def test_parse(self):
         space = '   '
 
-        def source_cases(file_type: file_properties.FileType) -> list:
+        def source_cases(file_type: file_properties.FileType) -> List[SourceCase]:
 
             return [
                 SourceCase('single name argument',
@@ -205,7 +210,11 @@ class TestFileType(TestCaseBase):
                     self._check_parse(
                         source_case.source,
                         Expectation(
-                            resolved_value_equals_file_matcher(FileMatcherType(file_type)),
+                            resolved_value_matches_file_matcher(
+                                asrt_file_matcher.matches_file_matcher_value__deep(
+                                    asrt_file_matcher.is_type_matcher(file_type)
+                                )
+                            ),
                             source=source_case.source_assertion,
                         ),
                     )
@@ -218,7 +227,11 @@ class TestFileType(TestCaseBase):
                 self._check_parse(
                     source,
                     Expectation(
-                        resolved_value_equals_file_matcher(FileMatcherType(file_type)),
+                        resolved_value_matches_file_matcher(
+                            asrt_file_matcher.matches_file_matcher_value__deep(
+                                asrt_file_matcher.is_type_matcher(file_type)
+                            )
+                        ),
                         source=asrt.anything_goes(),
                     ),
                 )
