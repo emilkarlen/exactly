@@ -25,6 +25,7 @@ from exactly_lib_test.test_case_utils.line_matcher.test_resources.resolver_asser
     resolved_value_matches_line_matcher
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.test_resources import matcher_assertions as asrt_matcher
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
@@ -59,9 +60,22 @@ class TestSuccessfulScenarios(TestCaseBase):
 
         # EXPECTATION #
 
+        expected_equivalent = LineMatcherConstant(True)
+        models_for_equivalence_check = [
+            asrt_matcher.ModelInfo((1, '')),
+            asrt_matcher.ModelInfo((1, '  ')),
+            asrt_matcher.ModelInfo((1, 'non empty')),
+            asrt_matcher.ModelInfo((2, '')),
+            asrt_matcher.ModelInfo((2, '  ')),
+            asrt_matcher.ModelInfo((3, 'non empty')),
+        ]
+
         expected_container = matches_container(
             resolved_value_matches_line_matcher(
-                asrt_line_matcher.value_equals_line_matcher(LineMatcherConstant(True))
+                asrt_line_matcher.value_matches_line_matcher(
+                    asrt_matcher.is_equivalent_to(expected_equivalent,
+                                                  models_for_equivalence_check)
+                )
             )
         )
 
@@ -84,9 +98,14 @@ class TestSuccessfulScenarios(TestCaseBase):
         # ARRANGE #
 
         regex_str = 'the_regex'
+        models_for_equivalence_check = [
+            asrt_matcher.ModelInfo((1, regex_str)),
+            asrt_matcher.ModelInfo((2, 'before' + regex_str + 'after')),
+            asrt_matcher.ModelInfo((1, 'no match')),
+        ]
 
         symbol = NameAndValue('the_symbol_name',
-                              LineMatcherConstant(False))
+                              LineMatcherConstant(True))
 
         regex_matcher_syntax = argument_syntax.syntax_for_regex_matcher(regex_str)
 
@@ -106,15 +125,19 @@ class TestSuccessfulScenarios(TestCaseBase):
 
         # EXPECTATION #
 
+        the_regex_matcher = LineMatcherRegex(re.compile(regex_str))
         the_and_matcher = LineMatcherAnd([
             symbol.value,
-            LineMatcherRegex(re.compile(regex_str)),
+            the_regex_matcher,
         ])
 
         expected_container = matches_container(
             assertion_on_resolver=
             resolved_value_matches_line_matcher(
-                asrt_line_matcher.value_equals_line_matcher(the_and_matcher),
+                asrt_line_matcher.value_matches_line_matcher(
+                    asrt_matcher.is_equivalent_to(the_and_matcher,
+                                                  models_for_equivalence_check)
+                ),
                 references=asrt.matches_sequence([
                     is_line_matcher_reference_to(symbol.name),
                 ]),

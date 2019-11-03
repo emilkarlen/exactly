@@ -15,10 +15,10 @@ from exactly_lib_test.type_system.logic.test_resources.values import FileMatcher
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestResolvedValueEqualsLineMatcher)
+    return unittest.makeSuite(TestResolvedValueMatchesLineMatcher)
 
 
-class TestResolvedValueEqualsLineMatcher(unittest.TestCase):
+class TestResolvedValueMatchesLineMatcher(unittest.TestCase):
     def test_equals_line_matcher(self):
         # ARRANGE #
         cases = [
@@ -31,16 +31,15 @@ class TestResolvedValueEqualsLineMatcher(unittest.TestCase):
                          )),
 
         ]
-        actual_and_expected = LineMatcherConstant(False)
-        resolver = LineMatcherConstantResolver(actual_and_expected)
+        resolver = LineMatcherConstantResolver(LineMatcherConstant(False))
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.resolved_value_equals_line_matcher(actual_and_expected,
-                                                                            symbols=case.value)
+                assertion_to_check = sut.resolved_value_matches_line_matcher(asrt.anything_goes(),
+                                                                             symbols=case.value)
                 # ACT & ASSERT #
                 assertion_to_check.apply_without_message(self, resolver)
 
-    def test_SHOULD_not_equal_line_matcher_WHEN_actual_is_file_matcher(self):
+    def test_SHOULD_not_equal_line_matcher_WHEN_assertion_on_value_fails(self):
         # ARRANGE #
         cases = [
             NameAndValue('without symbol table',
@@ -52,37 +51,12 @@ class TestResolvedValueEqualsLineMatcher(unittest.TestCase):
                          )),
 
         ]
-        actual = FileMatcherTestImpl()
-        expected = LineMatcherConstant(False)
-
-        resolver_of_actual = FileMatcherConstantResolver(actual)
+        resolver_of_actual = FileMatcherConstantResolver(FileMatcherTestImpl())
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_equals_expected = sut.resolved_value_equals_line_matcher(expected,
-                                                                                   symbols=case.value)
-                # ACT & ASSERT #
-                assert_that_assertion_fails(assertion_equals_expected, resolver_of_actual)
-
-    def test_SHOULD_not_equal_line_matcher_WHEN_actual_is_different_line_matcher(self):
-        # ARRANGE #
-        cases = [
-            NameAndValue('without symbol table',
-                         None),
-            NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
-                             'the symbol name',
-                             symbol_utils.container(ARBITRARY_LINE_MATCHER_RESOLVER),
-                         )),
-
-        ]
-        actual = LineMatcherConstant(True)
-        expected = LineMatcherConstant(False)
-
-        resolver_of_actual = LineMatcherConstantResolver(actual)
-        for case in cases:
-            with self.subTest(name=case.name):
-                assertion_equals_expected = sut.resolved_value_equals_line_matcher(expected,
-                                                                                   symbols=case.value)
+                assertion_equals_expected = sut.resolved_value_matches_line_matcher(
+                    asrt.fail('unconditional failure of value assertion'),
+                    symbols=case.value)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_equals_expected, resolver_of_actual)
 
@@ -93,11 +67,11 @@ class TestResolvedValueEqualsLineMatcher(unittest.TestCase):
         actual_resolver = LineMatcherResolverConstantTestImpl(
             LineMatcherConstant(False),
             references=actual_references)
-        assertion_to_check = sut.resolved_value_equals_line_matcher(actual_resolver.resolved_value,
-                                                                    references=asrt.matches_sequence([
-                                                                        asrt.is_(actual_reference)
-                                                                    ]),
-                                                                    )
+        assertion_to_check = sut.resolved_value_matches_line_matcher(asrt.anything_goes(),
+                                                                     references=asrt.matches_sequence([
+                                                                         asrt.is_(actual_reference)
+                                                                     ]),
+                                                                     )
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, actual_resolver)
 
@@ -120,9 +94,9 @@ class TestResolvedValueEqualsLineMatcher(unittest.TestCase):
 
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.resolved_value_equals_line_matcher(actual_resolver.resolved_value,
-                                                                            references=case.value,
-                                                                            )
+                assertion_to_check = sut.resolved_value_matches_line_matcher(asrt.anything_goes(),
+                                                                             references=case.value,
+                                                                             )
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check, actual_resolver)
 

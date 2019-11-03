@@ -1,4 +1,3 @@
-import re
 import unittest
 from typing import List, Sequence
 
@@ -313,9 +312,15 @@ class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase)
 def resolved_value_is_regex_matcher(regex_str: str,
                                     references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence
                                     ) -> ValueAssertion[SymbolValueResolver]:
-    expected_matcher = regex_matcher(regex_str)
-    return resolved_value_matches_line_matcher(asrt_line_matcher.value_equals_line_matcher(expected_matcher),
-                                               references=references)
+    return resolved_value_matches_line_matcher(
+        asrt_line_matcher.value_matches_line_matcher(
+            asrt.is_instance_with(LineMatcherRegex,
+                                  asrt.sub_component('regex_pattern_string',
+                                                     LineMatcherRegex.regex_pattern_string.fget,
+                                                     asrt.equals(regex_str)))
+        ),
+        references=references
+    )
 
 
 def resolved_value_is_line_number_matcher(integer_matcher: IntegerMatcher,
@@ -328,7 +333,3 @@ def resolved_value_is_line_number_matcher(integer_matcher: IntegerMatcher,
         references,
         value_matches_line_matcher(expected_matcher)
     )
-
-
-def regex_matcher(regex_str: str) -> LineMatcherRegex:
-    return LineMatcherRegex(re.compile(regex_str))
