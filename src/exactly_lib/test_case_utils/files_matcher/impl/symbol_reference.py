@@ -1,12 +1,13 @@
 from typing import Sequence
 
 from exactly_lib.symbol import lookups
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver, FilesMatcherValue
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironment
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_validation import ValidatorOfReferredResolverBase, \
     PreOrPostSdsValidator
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 

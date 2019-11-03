@@ -1,10 +1,10 @@
 from abc import ABC
 from typing import Callable
 
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherConstructor, FilesMatcher
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherConstructor
 from exactly_lib.util.file_utils import TmpDirFileSpace
 
 
