@@ -1,4 +1,4 @@
-from typing import Sequence, List, Callable
+from typing import Sequence, Callable
 
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
@@ -79,7 +79,7 @@ class LineMatcherNotResolver(LineMatcherResolver):
 
 
 class LineMatcherAndResolver(LineMatcherResolver):
-    def __init__(self, parts: List[LineMatcherResolver]):
+    def __init__(self, parts: Sequence[LineMatcherResolver]):
         self._parts = parts
         self._references = references_from_objects_with_symbol_references(parts)
 
@@ -95,7 +95,7 @@ class LineMatcherAndResolver(LineMatcherResolver):
 
 
 class LineMatcherOrResolver(LineMatcherResolver):
-    def __init__(self, parts: List[LineMatcherResolver]):
+    def __init__(self, parts: Sequence[LineMatcherResolver]):
         self._parts = parts
         self._references = references_from_objects_with_symbol_references(parts)
 
