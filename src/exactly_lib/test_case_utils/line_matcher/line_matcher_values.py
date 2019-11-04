@@ -1,11 +1,10 @@
-from abc import ABC
-from typing import Set, List, Callable, Optional, Sequence
+from typing import Set, Callable, Optional, Sequence
 
 from exactly_lib.test_case.validation import pre_or_post_value_validation, pre_or_post_value_validators
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherNot, LineMatcherAnd, LineMatcherOr
+from exactly_lib.test_case_utils.line_matcher import line_matchers
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherValue
@@ -39,10 +38,10 @@ class LineMatcherValueFromPrimitiveValue(LineMatcherValue):
         return self._primitive_value
 
 
-class LineMatcherCompositionValueBase(LineMatcherValue, ABC):
+class _LineMatcherCompositionValueBase(LineMatcherValue):
     def __init__(self,
-                 parts: List[LineMatcherValue],
-                 mk_primitive_value: Callable[[List[LineMatcher]], LineMatcher],
+                 parts: Sequence[LineMatcherValue],
+                 mk_primitive_value: Callable[[Sequence[LineMatcher]], LineMatcher],
                  mk_structure: Callable[[Sequence[WithTreeStructureDescription]], StructureRenderer]):
         self._mk_primitive_value = mk_primitive_value
         self._mk_structure = mk_structure
@@ -80,22 +79,25 @@ class LineMatcherCompositionValueBase(LineMatcherValue, ABC):
         ])
 
 
-class LineMatcherNotValue(LineMatcherCompositionValueBase):
-    def __init__(self, matcher: LineMatcherValue):
-        super().__init__([matcher],
-                         lambda values: LineMatcherNot(values[0]),
-                         lambda values: combinator_matchers.Negation.new_structure_tree(values[0]))
+def negation(matcher: LineMatcherValue) -> LineMatcherValue:
+    return _LineMatcherCompositionValueBase(
+        [matcher],
+        lambda values: line_matchers.negation(values[0]),
+        lambda values: combinator_matchers.Negation.new_structure_tree(values[0]),
+    )
 
 
-class LineMatcherAndValue(LineMatcherCompositionValueBase):
-    def __init__(self, parts: List[LineMatcherValue]):
-        super().__init__(parts,
-                         lambda values: LineMatcherAnd(values),
-                         combinator_matchers.Conjunction.new_structure_tree)
+def conjunction(parts: Sequence[LineMatcherValue]) -> LineMatcherValue:
+    return _LineMatcherCompositionValueBase(
+        parts,
+        line_matchers.conjunction,
+        combinator_matchers.Conjunction.new_structure_tree,
+    )
 
 
-class LineMatcherOrValue(LineMatcherCompositionValueBase):
-    def __init__(self, parts: List[LineMatcherValue]):
-        super().__init__(parts,
-                         lambda values: LineMatcherOr(values),
-                         combinator_matchers.Disjunction.new_structure_tree)
+def disjunction(parts: Sequence[LineMatcherValue]) -> LineMatcherValue:
+    return _LineMatcherCompositionValueBase(
+        parts,
+        line_matchers.disjunction,
+        combinator_matchers.Disjunction.new_structure_tree,
+    )

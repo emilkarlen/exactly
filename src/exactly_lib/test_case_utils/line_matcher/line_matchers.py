@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Optional, List, Match, Sequence
+from typing import Optional, Match, Sequence
 from typing import Pattern
 
 from exactly_lib.definitions.entity import syntax_elements
@@ -19,66 +19,16 @@ from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
 
 
-class LineMatcherDelegatedToMatcherWTrace(LineMatcher):
-    def __init__(self, delegated: MatcherWTraceAndNegation[LineMatcherLine]):
-        super().__init__()
-        self._delegated = delegated
-
-    @property
-    def name(self) -> str:
-        return self._delegated.name
-
-    def _structure(self) -> StructureRenderer:
-        return self._delegated.structure()
-
-    @property
-    def option_description(self) -> str:
-        return self._delegated.option_description
-
-    def matches(self, model: LineMatcherLine) -> bool:
-        return self._delegated.matches(model)
-
-    def matches_emr(self, model: LineMatcherLine) -> Optional[ErrorMessageResolver]:
-        return self._delegated.matches_emr(model)
-
-    def matches_w_trace(self, model: LineMatcherLine) -> MatchingResult:
-        return self._delegated.matches_w_trace(model)
+def negation(matcher: LineMatcher) -> LineMatcher:
+    return _LineMatcherDelegatedToMatcherWTrace(combinator_matchers.Negation(matcher))
 
 
-class LineMatcherNot(LineMatcherDelegatedToMatcherWTrace):
-    """Matcher that negates a given matcher."""
-
-    def __init__(self, matcher: LineMatcher):
-        self._matcher = matcher
-        super().__init__(combinator_matchers.Negation(matcher))
-
-    @property
-    def negated_matcher(self) -> LineMatcher:
-        return self._matcher
+def conjunction(matchers: Sequence[LineMatcher]) -> LineMatcher:
+    return _LineMatcherDelegatedToMatcherWTrace(combinator_matchers.Conjunction(matchers))
 
 
-class LineMatcherAnd(LineMatcherDelegatedToMatcherWTrace):
-    """Matcher that and:s a list of matchers."""
-
-    def __init__(self, matchers: List[LineMatcher]):
-        self._matchers = matchers
-        super().__init__(combinator_matchers.Conjunction(matchers))
-
-    @property
-    def matchers(self) -> List[LineMatcher]:
-        return self._matchers
-
-
-class LineMatcherOr(LineMatcherDelegatedToMatcherWTrace):
-    """Matcher that or:s a list of matchers."""
-
-    def __init__(self, matchers: List[LineMatcher]):
-        self._matchers = matchers
-        super().__init__(combinator_matchers.Disjunction(matchers))
-
-    @property
-    def matchers(self) -> List[LineMatcher]:
-        return self._matchers
+def disjunction(matchers: Sequence[LineMatcher]) -> LineMatcher:
+    return _LineMatcherDelegatedToMatcherWTrace(combinator_matchers.Disjunction(matchers))
 
 
 class LineMatcherConstant(LineMatcher):
@@ -217,6 +167,32 @@ class LineMatcherLineNumber(_LineMatcherWExpectedAndActualBase):
 
     def matches(self, line: LineMatcherLine) -> bool:
         return self._integer_matcher.matches(line[0])
+
+
+class _LineMatcherDelegatedToMatcherWTrace(LineMatcher):
+    def __init__(self, delegated: MatcherWTraceAndNegation[LineMatcherLine]):
+        super().__init__()
+        self._delegated = delegated
+
+    @property
+    def name(self) -> str:
+        return self._delegated.name
+
+    def _structure(self) -> StructureRenderer:
+        return self._delegated.structure()
+
+    @property
+    def option_description(self) -> str:
+        return self._delegated.option_description
+
+    def matches(self, model: LineMatcherLine) -> bool:
+        return self._delegated.matches(model)
+
+    def matches_emr(self, model: LineMatcherLine) -> Optional[ErrorMessageResolver]:
+        return self._delegated.matches_emr(model)
+
+    def matches_w_trace(self, model: LineMatcherLine) -> MatchingResult:
+        return self._delegated.matches_w_trace(model)
 
 
 class _ExpectedAndActualRenderer(DetailsRenderer):

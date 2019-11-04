@@ -104,9 +104,14 @@ _CONCEPT = grammar.Concept(
     LINE_MATCHER_ARGUMENT,
 )
 
+
+def _mk_reference(name: str) -> LineMatcherResolver:
+    return resolvers.LineMatcherReferenceResolver(name)
+
+
 GRAMMAR = grammar.Grammar(
     _CONCEPT,
-    mk_reference=resolvers.LineMatcherReferenceResolver,
+    mk_reference=_mk_reference,
     simple_expressions={
         line_matcher.REGEX_MATCHER_NAME:
             grammar.SimpleExpression(parse_regex,

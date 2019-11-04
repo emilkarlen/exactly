@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.expression import grammar
@@ -65,7 +67,7 @@ class SimpleSansArg(SimpleExpr):
 
 
 class ComplexExpr(Expr):
-    def __init__(self, expressions: list):
+    def __init__(self, expressions: Sequence[Expr]):
         self.expressions = expressions
 
     def __str__(self):
@@ -126,9 +128,14 @@ PREFIX_EXPRESSIONS = {
                                        grammar.OperatorExpressionDescription([])),
 }
 
+
+def _mk_reference(name: str) -> Expr:
+    return RefExpr(name)
+
+
 GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
     concept=CONCEPT,
-    mk_reference=RefExpr,
+    mk_reference=_mk_reference,
     simple_expressions=SIMPLE_EXPRESSIONS,
     complex_expressions={
         COMPLEX_A:
@@ -145,7 +152,7 @@ GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
 
 GRAMMAR_SANS_COMPLEX_EXPRESSIONS = grammar.Grammar(
     concept=CONCEPT,
-    mk_reference=RefExpr,
+    mk_reference=_mk_reference,
     simple_expressions=SIMPLE_EXPRESSIONS,
     prefix_expressions=PREFIX_EXPRESSIONS,
     complex_expressions={},

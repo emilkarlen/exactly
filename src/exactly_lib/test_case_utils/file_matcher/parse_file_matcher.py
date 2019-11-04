@@ -231,13 +231,18 @@ REGULAR_FILE_CONTENTS_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     ])
 )
 
+
+def _mk_reference(name: str) -> FileMatcherResolver:
+    return resolvers.FileMatcherReferenceResolver(name)
+
+
 GRAMMAR = grammar.Grammar(
     concept=grammar.Concept(
         name=FILE_MATCHER_TYPE_INFO.name,
         type_system_type_name=FILE_MATCHER_TYPE_INFO.identifier,
         syntax_element_name=MATCHER_ARGUMENT,
     ),
-    mk_reference=resolvers.FileMatcherReferenceResolver,
+    mk_reference=_mk_reference,
     simple_expressions={
         NAME_MATCHER_NAME: grammar.SimpleExpression(_parse_name_matcher,
                                                     NAME_SYNTAX_DESCRIPTION),

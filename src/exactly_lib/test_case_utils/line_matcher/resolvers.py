@@ -71,7 +71,7 @@ class LineMatcherNotResolver(LineMatcherResolver):
         self._resolver = line_matcher_resolver
 
     def resolve(self, symbols: SymbolTable) -> LineMatcherValue:
-        return values.LineMatcherNotValue(self._resolver.resolve(symbols))
+        return values.negation(self._resolver.resolve(symbols))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -84,7 +84,7 @@ class LineMatcherAndResolver(LineMatcherResolver):
         self._references = references_from_objects_with_symbol_references(parts)
 
     def resolve(self, symbols: SymbolTable) -> LineMatcherValue:
-        return values.LineMatcherAndValue([
+        return values.conjunction([
             part.resolve(symbols)
             for part in self._parts
         ])
@@ -100,7 +100,7 @@ class LineMatcherOrResolver(LineMatcherResolver):
         self._references = references_from_objects_with_symbol_references(parts)
 
     def resolve(self, symbols: SymbolTable) -> LineMatcherValue:
-        return values.LineMatcherOrValue([
+        return values.disjunction([
             part.resolve(symbols)
             for part in self._parts
         ])

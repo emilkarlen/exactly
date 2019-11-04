@@ -5,7 +5,7 @@ import exactly_lib.definitions.primitives.line_matcher
 from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant, LineMatcherAnd, LineMatcherRegex
+from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant, conjunction, LineMatcherRegex
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
@@ -126,7 +126,7 @@ class TestSuccessfulScenarios(TestCaseBase):
         # EXPECTATION #
 
         the_regex_matcher = LineMatcherRegex(re.compile(regex_str))
-        the_and_matcher = LineMatcherAnd([
+        the_and_matcher = conjunction([
             symbol.value,
             the_regex_matcher,
         ])

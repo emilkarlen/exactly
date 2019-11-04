@@ -48,7 +48,7 @@ class TestAnd(matcher_combinators_check.TestAndBase):
         return LineMatcherConfiguration()
 
     def new_combinator_to_check(self, constructor_argument):
-        return sut.LineMatcherAnd(constructor_argument)
+        return sut.conjunction(constructor_argument)
 
 
 class TestOr(matcher_combinators_check.TestOrBase):
@@ -59,7 +59,7 @@ class TestOr(matcher_combinators_check.TestOrBase):
         return LineMatcherConfiguration()
 
     def new_combinator_to_check(self, constructor_argument):
-        return sut.LineMatcherOr(constructor_argument)
+        return sut.disjunction(constructor_argument)
 
 
 class TestNot(matcher_combinators_check.TestNotBase):
@@ -70,7 +70,7 @@ class TestNot(matcher_combinators_check.TestNotBase):
         return LineMatcherConfiguration()
 
     def new_combinator_to_check(self, constructor_argument):
-        return sut.LineMatcherNot(constructor_argument)
+        return sut.negation(constructor_argument)
 
 
 class LineMatcherThatRegistersModelArgument(matcher_combinators_check.MatcherWTraceThatRegistersModelArgument,

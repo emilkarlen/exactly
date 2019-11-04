@@ -1,4 +1,4 @@
-from typing import Sequence, List, Set, Callable
+from typing import Sequence, Set, Callable
 
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
@@ -71,7 +71,7 @@ class FileMatcherNotResolver(FileMatcherResolver):
 
 
 class FileMatcherAndResolver(FileMatcherResolver):
-    def __init__(self, parts: List[FileMatcherResolver]):
+    def __init__(self, parts: Sequence[FileMatcherResolver]):
         self._resolvers = parts
         self._references = references_from_objects_with_symbol_references(parts)
 
@@ -87,7 +87,7 @@ class FileMatcherAndResolver(FileMatcherResolver):
 
 
 class FileMatcherOrResolver(FileMatcherResolver):
-    def __init__(self, parts: List[FileMatcherResolver]):
+    def __init__(self, parts: Sequence[FileMatcherResolver]):
         self._resolvers = parts
         self._references = references_from_objects_with_symbol_references(parts)
 

@@ -140,9 +140,14 @@ _CONCEPT = grammar.Concept(
     STRING_TRANSFORMER_ARGUMENT,
 )
 
+
+def _mk_reference(name: str) -> StringTransformerResolver:
+    return resolvers.StringTransformerReference(name)
+
+
 GRAMMAR = grammar.Grammar(
     _CONCEPT,
-    mk_reference=resolvers.StringTransformerReference,
+    mk_reference=_mk_reference,
     simple_expressions={
         REPLACE_TRANSFORMER_NAME:
             grammar.SimpleExpression(replace.parse_replace,
