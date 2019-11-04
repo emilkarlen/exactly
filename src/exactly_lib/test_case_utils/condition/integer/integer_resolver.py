@@ -1,12 +1,9 @@
 from typing import Sequence, Optional
 
 from exactly_lib.common.report_rendering import text_docs
-from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils import svh_exception
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import NotAnIntegerException, python_evaluate
@@ -46,17 +43,6 @@ class IntegerResolver(OperandResolver[int]):
     def references(self) -> Sequence[SymbolReference]:
         return self._value_resolver.references
 
-    @property
-    def validator(self) -> SvhPreSdsValidatorViaExceptions:
-        return self._validator
-
-    @property
-    def pre_or_post_sds_validator(self) -> PreOrPostSdsValidator:
-        """
-        Gives a validator that always will do validation pre sds.
-        """
-        return _PreOrPostSdsValidator(self._validator)
-
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         self._validator.validate_pre_sds(environment)
 
@@ -91,17 +77,3 @@ class _ValidatorThatReportsViaExceptions(SvhPreSdsValidatorViaExceptions):
             err_msg = self._custom_integer_validator(resolved_value)
             if err_msg:
                 raise svh_exception.SvhValidationException(err_msg)
-
-
-class _PreOrPostSdsValidator(PreOrPostSdsValidator):
-    def __init__(self, adapted: SvhPreSdsValidatorViaExceptions):
-        self._adapted = adapted
-
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
-        try:
-            self._adapted.validate_pre_sds(environment)
-        except svh_exception.SvhException as ex:
-            return ex.err_msg
-
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
-        return None
