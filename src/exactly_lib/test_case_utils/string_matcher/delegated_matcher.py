@@ -2,7 +2,9 @@ from typing import Optional, Set, List
 
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.matcher.resolver import MatcherResolver
@@ -71,7 +73,10 @@ class StringMatcherResolverDelegatedToMatcher(StringMatcherResolver):
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
-        return self._delegated.validator
+        return pre_or_post_validation.PreOrPostSdsValidatorFromValueValidator(self._value_validator)
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
         return StringMatcherValueDelegatedToMatcher(self._delegated.resolve(symbols))
+
+    def _value_validator(self, symbols: SymbolTable) -> PreOrPostSdsValueValidator:
+        return self._delegated.resolve(symbols).validator

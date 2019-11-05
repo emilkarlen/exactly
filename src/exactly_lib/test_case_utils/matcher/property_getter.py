@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Generic, Sequence, TypeVar
 
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import pre_or_post_value_validation
+from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -35,6 +35,10 @@ class PropertyGetterValue(Generic[MODEL, T], ABC):
     def value_of_any_dependency(self, tcds: HomeAndSds) -> PropertyGetter[MODEL, T]:
         pass
 
+    @property
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return pre_or_post_value_validation.constant_success_validator()
+
 
 class PropertyGetterResolver(Generic[MODEL, T], ABC):
     @property
@@ -45,7 +49,3 @@ class PropertyGetterResolver(Generic[MODEL, T], ABC):
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> PropertyGetterValue[MODEL, T]:
         pass
-
-    @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return pre_or_post_validation.ConstantSuccessValidator()

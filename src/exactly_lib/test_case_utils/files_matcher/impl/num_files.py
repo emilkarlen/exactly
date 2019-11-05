@@ -3,6 +3,7 @@ from typing import Sequence, Optional
 from exactly_lib.definitions.primitives import files_matcher
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
@@ -88,7 +89,9 @@ class _NumFilesMatcherResolver(FilesMatcherResolverBase):
                  ):
         self._matcher = matcher
 
-        super().__init__(matcher.validator)
+        super().__init__(
+            pre_or_post_validation.PreOrPostSdsValidatorFromValueValidator(self._get_validator)
+        )
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -98,6 +101,9 @@ class _NumFilesMatcherResolver(FilesMatcherResolverBase):
         return _NumFilesMatcherValue(
             self._matcher.resolve(symbols),
         )
+
+    def _get_validator(self, symbols: SymbolTable) -> pre_or_post_validation.PreOrPostSdsValueValidator:
+        return self._matcher.resolve(symbols).validator
 
 
 class _PropertyGetter(PropertyGetter[FilesMatcherModel, int]):

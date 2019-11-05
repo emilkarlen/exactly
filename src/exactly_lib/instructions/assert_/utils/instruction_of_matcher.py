@@ -18,20 +18,20 @@ class Instruction(Generic[T], AssertPhaseInstruction):
     """Makes an instruction of a :class:`Matcher`"""
 
     def __init__(self,
-                 applier: PropertyMatcherResolver[None, T],
+                 matcher: PropertyMatcherResolver[None, T],
                  err_msg_constructor: Callable[[Failure[T]], ErrorMessageResolver],
                  ):
-        self._property_matcher = applier
+        self._matcher = matcher
         self._err_msg_constructor = err_msg_constructor
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
-        return self._property_matcher.references
+        return self._matcher.references
 
     def validate_pre_sds(self,
                          environment: i.InstructionEnvironmentForPreSdsStep
                          ) -> svh.SuccessOrValidationErrorOrHardError:
-        err_msg = self._property_matcher.validator.validate_pre_sds_if_applicable(
-            environment.path_resolving_environment)
+        validator = self._matcher.resolve(environment.symbols).validator
+        err_msg = validator.validate_pre_sds_if_applicable(environment.hds)
         return svh.new_maybe_svh_validation_error(err_msg)
 
     def main(self,
@@ -44,14 +44,14 @@ class Instruction(Generic[T], AssertPhaseInstruction):
             return pfh.new_pfh_hard_error(ex.error)
 
     def _validate_post_setup(self, environment: i.InstructionEnvironmentForPostSdsStep):
-        err_msg = self._property_matcher.validator.validate_post_sds_if_applicable(
-            environment.path_resolving_environment)
+        validator = self._matcher.resolve(environment.symbols).validator
+        err_msg = validator.validate_post_sds_if_applicable(environment.home_and_sds)
         if err_msg:
             raise HardErrorException(err_msg)
 
     def _execute(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pfh.PassOrFailOrHardError:
-        applier = self._property_matcher.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
-        failure = applier.matches_w_failure(None)
+        matcher = self._matcher.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        failure = matcher.matches_w_failure(None)
         return (
             pfh.new_pfh_fail(self._err_msg_constructor(failure).resolve__tr())
             if failure

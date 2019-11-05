@@ -236,11 +236,14 @@ class PreOrPostSdsValidatorFromValueValidator(PreOrPostSdsValidator):
         self._hds = None
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
-        if self._value_validator is None:
-            self._hds = environment.hds
-            self._value_validator = self._get_value_validator(environment.symbols)
-        return self._value_validator.validate_pre_sds_if_applicable(environment.hds)
+        return self._get_validator(environment.symbols).validate_pre_sds_if_applicable(environment.hds)
 
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
         tcds = HomeAndSds(self._hds, environment.sds)
-        return self._value_validator.validate_post_sds_if_applicable(tcds)
+        return self._get_validator(environment.symbols).validate_post_sds_if_applicable(tcds)
+
+    def _get_validator(self, symbols: SymbolTable) -> PreOrPostSdsValueValidator:
+        if self._value_validator is None:
+            self._value_validator = self._get_value_validator(symbols)
+
+        return self._value_validator

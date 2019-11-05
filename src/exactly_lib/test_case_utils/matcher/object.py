@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Generic, TypeVar, Set, Sequence
 
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import pre_or_post_value_validation
+from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
@@ -22,6 +23,10 @@ class ObjectValue(Generic[T], MultiDirDependentValue[T], ABC):
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return set()
 
+    @property
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return pre_or_post_value_validation.constant_success_validator()
+
     @abstractmethod
     def value_of_any_dependency(self, tcds: HomeAndSds) -> T:
         pass
@@ -33,11 +38,6 @@ class ObjectResolver(Generic[T], ABC):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return []
-
-    @property
-    @abstractmethod
-    def validator(self) -> PreOrPostSdsValidator:
-        pass
 
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> ObjectValue[T]:

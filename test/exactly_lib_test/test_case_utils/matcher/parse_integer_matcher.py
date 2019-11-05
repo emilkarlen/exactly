@@ -6,8 +6,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
-    PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
@@ -224,14 +222,15 @@ class TestParseIntegerMatcher(unittest.TestCase):
                         actual_resolver = sut.parse(parser, expectation_type, None)
                         # ASSERT #
                         case.references.apply_with_message(self, actual_resolver.references, 'references')
-                        path_resolving_env = PathResolvingEnvironmentPreOrPostSds(tcds, case.symbols)
 
-                        mb_validation_failure = actual_resolver.validator.validate_pre_sds_if_applicable(
-                            path_resolving_env)
+                        actual_ddv = actual_resolver.resolve(case.symbols)
+
+                        validator = actual_ddv.validator
+
+                        mb_validation_failure = validator.validate_pre_sds_if_applicable(tcds.hds)
                         self.assertIsNone(mb_validation_failure, 'pre sds validation')
 
-                        mb_validation_failure = actual_resolver.validator.validate_post_sds_if_applicable(
-                            path_resolving_env)
+                        mb_validation_failure = validator.validate_post_sds_if_applicable(tcds)
                         self.assertIsNone(mb_validation_failure, 'post sds validation')
 
                         actual = actual_resolver.resolve(case.symbols).value_of_any_dependency(tcds)
@@ -283,12 +282,11 @@ class TestParseIntegerMatcher(unittest.TestCase):
                     with from_parse_source(case.source) as parser:
                         # ACT #
                         actual_resolver = sut.parse(parser, expectation_type, None)
+                        actual_ddv = actual_resolver.resolve(case.symbols)
                         # ASSERT #
                         case.references.apply_with_message(self, actual_resolver.references, 'references')
-                        path_resolving_env = PathResolvingEnvironmentPreSds(tcds.hds, case.symbols)
 
-                        mb_validation_failure = actual_resolver.validator.validate_pre_sds_if_applicable(
-                            path_resolving_env)
+                        mb_validation_failure = actual_ddv.validator.validate_pre_sds_if_applicable(tcds.hds)
 
                         self.assertIsNotNone(mb_validation_failure, 'pre sds validation')
 

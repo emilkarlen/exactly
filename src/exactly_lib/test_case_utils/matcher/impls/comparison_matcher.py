@@ -3,7 +3,7 @@ from typing import TypeVar, Generic, Optional, Sequence, Callable
 
 from exactly_lib.definitions import expression
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.description_tree import custom_details
@@ -215,6 +215,10 @@ class ComparisonMatcherValue(Generic[T], MatcherValue[T]):
             self._rhs.describer(),
         )
 
+    @property
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return self._rhs.validator
+
     def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
         return ComparisonMatcher(
             self._expectation_type,
@@ -239,10 +243,6 @@ class ComparisonMatcherResolver(Generic[T], MatcherResolver[T]):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._rhs.references
-
-    @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return self._rhs.validator
 
     def resolve(self, symbols: SymbolTable) -> MatcherValue[T]:
         return ComparisonMatcherValue(

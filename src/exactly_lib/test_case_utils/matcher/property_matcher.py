@@ -1,8 +1,8 @@
 from typing import Generic, TypeVar, Optional, Sequence
 
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import pre_or_post_value_validators
+from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterValue, \
@@ -79,6 +79,10 @@ class PropertyMatcherValue(Generic[MODEL, T], MatcherValue[MODEL]):
                  ):
         self._matcher = matcher
         self._property_getter = property_getter
+        self._validator = pre_or_post_value_validators.all_of([
+            self._matcher.validator,
+            self._property_getter.validator,
+        ])
 
     @property
     def name(self) -> str:
@@ -92,6 +96,10 @@ class PropertyMatcherValue(Generic[MODEL, T], MatcherValue[MODEL]):
             (),
             (self._matcher.structure(),)
         )
+
+    @property
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return self._validator
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> PropertyMatcher[MODEL, T]:
         return PropertyMatcher(
@@ -108,18 +116,10 @@ class PropertyMatcherResolver(Generic[MODEL, T], MatcherResolver[MODEL]):
         self._matcher = matcher
         self._property_getter = property_getter
         self._references = list(matcher.references) + list(property_getter.references)
-        self._validator = pre_or_post_validation.all_of([
-            self._matcher.validator,
-            self._property_getter.validator,
-        ])
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
-
-    @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return self._validator
 
     def resolve(self, symbols: SymbolTable) -> PropertyMatcherValue[MODEL, T]:
         return PropertyMatcherValue(

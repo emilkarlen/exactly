@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Optional
 
+from exactly_lib.test_case.validation import pre_or_post_value_validation
+from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription, \
     WithTreeStructureDescription
@@ -88,3 +90,7 @@ class MatcherValue(Generic[T], WithTreeStructureDescription, ABC):
     @abstractmethod
     def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
         pass
+
+    @property
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return pre_or_post_value_validation.constant_success_validator()
