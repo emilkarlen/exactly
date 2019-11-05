@@ -112,7 +112,7 @@ class _ExitCodeGetter(PropertyGetter[None, int]):
         self._sds = sds
 
     @property
-    def name(self) -> str:
+    def name(self) -> Optional[str]:
         return self.NAME
 
     def get_from(self, model: None) -> int:
@@ -161,7 +161,7 @@ class _ExitCodeGetter(PropertyGetter[None, int]):
 
 class _ExitCodeGetterValue(PropertyGetterValue[None, int]):
     @property
-    def name(self) -> str:
+    def name(self) -> Optional[str]:
         return _ExitCodeGetter.NAME
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> PropertyGetter[None, int]:

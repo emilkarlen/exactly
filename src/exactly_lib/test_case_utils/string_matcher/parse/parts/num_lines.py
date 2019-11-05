@@ -1,3 +1,5 @@
+from typing import Optional
+
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
@@ -29,7 +31,7 @@ class _PropertyGetter(PropertyGetter[FileToCheck, int]):
                      syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name))
 
     @property
-    def name(self) -> str:
+    def name(self) -> Optional[str]:
         return self.NAME
 
     def get_from(self, model: FileToCheck) -> int:

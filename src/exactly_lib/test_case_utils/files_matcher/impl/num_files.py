@@ -108,7 +108,7 @@ class _NumFilesMatcherResolver(FilesMatcherResolverBase):
 
 class _PropertyGetter(PropertyGetter[FilesMatcherModel, int]):
     @property
-    def name(self) -> str:
+    def name(self) -> Optional[str]:
         return files_matcher.NUM_FILES_CHECK_ARGUMENT
 
     def get_from(self, model: FilesMatcherModel) -> int:

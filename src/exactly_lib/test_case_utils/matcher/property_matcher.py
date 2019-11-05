@@ -36,13 +36,24 @@ class PropertyMatcher(Generic[MODEL, T], MatcherWTrace[MODEL]):
     def option_description(self) -> str:
         return self._property_getter.name
 
-    def structure(self) -> StructureRenderer:
-        return renderers.NodeRendererFromParts(
-            self._property_getter.name,
-            None,
-            (),
-            (self._matcher.structure(),)
+    @staticmethod
+    def new_structure_tree(property_getter_name: Optional[str],
+                           matcher: StructureRenderer) -> StructureRenderer:
+        return (
+            matcher
+            if property_getter_name is None
+            else
+            renderers.NodeRendererFromParts(
+                property_getter_name,
+                None,
+                (),
+                (matcher,)
+            )
         )
+
+    def structure(self) -> StructureRenderer:
+        return self.new_structure_tree(self._property_getter.name,
+                                       self._matcher.structure())
 
     def matches_emr(self, model: T) -> Optional[ErrorMessageResolver]:
         return (
@@ -65,13 +76,19 @@ class PropertyMatcher(Generic[MODEL, T], MatcherWTrace[MODEL]):
         :raises HardErrorException
         """
         matcher_result = self._matcher.matches_w_trace(self._property_getter.get_from(model))
-        return MatchingResult(
-            matcher_result.value,
-            renderers.NodeRendererFromParts(
-                self._property_getter.name,
+        property_getter_name = self._property_getter.name
+        return (
+            matcher_result
+            if property_getter_name is None
+            else
+            MatchingResult(
                 matcher_result.value,
-                (),
-                (matcher_result.trace,)
+                renderers.NodeRendererFromParts(
+                    self._property_getter.name,
+                    matcher_result.value,
+                    (),
+                    (matcher_result.trace,)
+                )
             )
         )
 
@@ -94,12 +111,8 @@ class PropertyMatcherValue(Generic[MODEL, T], MatcherValue[MODEL]):
         return self._property_getter.name
 
     def structure(self) -> StructureRenderer:
-        return renderers.NodeRendererFromParts(
-            self._property_getter.name,
-            None,
-            (),
-            (self._matcher.structure(),)
-        )
+        return PropertyMatcher.new_structure_tree(self._property_getter.name,
+                                                  self._matcher.structure())
 
     @property
     def validator(self) -> PreOrPostSdsValueValidator:

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -37,7 +39,7 @@ class _PropertyGetter(property_getters.PropertyGetter[LineMatcherLine, int]):
                      syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name))
 
     @property
-    def name(self) -> str:
+    def name(self) -> Optional[str]:
         return self.NAME
 
     def get_from(self, model: LineMatcherLine) -> int:
