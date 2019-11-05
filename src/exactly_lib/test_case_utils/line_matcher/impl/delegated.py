@@ -1,13 +1,13 @@
 from typing import Optional, Set, List
 
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
+from exactly_lib.symbol.logic.resolver import MatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.matcher.resolver import MatcherResolver
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers

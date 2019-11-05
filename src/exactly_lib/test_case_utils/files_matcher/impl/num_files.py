@@ -2,6 +2,7 @@ from typing import Sequence, Optional
 
 from exactly_lib.definitions.primitives import files_matcher
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
+from exactly_lib.symbol.logic.resolver import MatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -11,7 +12,6 @@ from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesM
 from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcher
-from exactly_lib.test_case_utils.matcher.resolver import MatcherResolver
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherConstructor, \
     FilesMatcherValue

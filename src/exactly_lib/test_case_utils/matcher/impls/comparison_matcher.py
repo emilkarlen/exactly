@@ -2,6 +2,7 @@ import operator
 from typing import TypeVar, Generic, Optional, Sequence, Callable
 
 from exactly_lib.definitions import expression
+from exactly_lib.symbol.logic.resolver import MatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -9,7 +10,6 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.matcher.object import ObjectValue, ObjectResolver
-from exactly_lib.test_case_utils.matcher.resolver import MatcherResolver
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
