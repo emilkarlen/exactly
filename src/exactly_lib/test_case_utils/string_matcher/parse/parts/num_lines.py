@@ -3,7 +3,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.matcher import property_matcher
-from exactly_lib.test_case_utils.matcher.impls import element_getters, parse_integer_matcher
+from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_integer_matcher
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterResolver
 from exactly_lib.test_case_utils.string_matcher import delegated_matcher, matcher_options
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
@@ -42,8 +42,8 @@ class _PropertyGetter(PropertyGetter[FileToCheck, int]):
 
 
 def _operand_from_model_resolver() -> PropertyGetterResolver[FileToCheck, int]:
-    return element_getters.PropertyGetterResolverConstant(
-        element_getters.PropertyGetterValueConstant(
+    return property_getters.PropertyGetterResolverConstant(
+        property_getters.PropertyGetterValueConstant(
             _PropertyGetter(),
         )
     )

@@ -75,19 +75,19 @@ class PropertyMatcher(Generic[MODEL, T], MatcherWTrace[MODEL]):
 class PropertyMatcherValue(Generic[MODEL, T], MatcherValue[MODEL]):
     def __init__(self,
                  matcher: MatcherValue[T],
-                 model_adapter: PropertyGetterValue[MODEL, T],
+                 property_getter: PropertyGetterValue[MODEL, T],
                  ):
         self._matcher = matcher
-        self._model_adapter = model_adapter
+        self._property_getter = property_getter
 
     @property
     def name(self) -> str:
         """TODO Temp helper that should be removed after usages removed"""
-        return self._model_adapter.name
+        return self._property_getter.name
 
     def structure(self) -> StructureRenderer:
         return renderers.NodeRendererFromParts(
-            self._model_adapter.name,
+            self._property_getter.name,
             None,
             (),
             (self._matcher.structure(),)
@@ -96,21 +96,21 @@ class PropertyMatcherValue(Generic[MODEL, T], MatcherValue[MODEL]):
     def value_of_any_dependency(self, tcds: HomeAndSds) -> PropertyMatcher[MODEL, T]:
         return PropertyMatcher(
             self._matcher.value_of_any_dependency(tcds),
-            self._model_adapter.value_of_any_dependency(tcds),
+            self._property_getter.value_of_any_dependency(tcds),
         )
 
 
 class PropertyMatcherResolver(Generic[MODEL, T], MatcherResolver[MODEL]):
     def __init__(self,
                  matcher: MatcherResolver[T],
-                 model_adapter: PropertyGetterResolver[MODEL, T],
+                 property_getter: PropertyGetterResolver[MODEL, T],
                  ):
         self._matcher = matcher
-        self._model_adapter = model_adapter
-        self._references = list(matcher.references) + list(model_adapter.references)
+        self._property_getter = property_getter
+        self._references = list(matcher.references) + list(property_getter.references)
         self._validator = pre_or_post_validation.all_of([
             self._matcher.validator,
-            self._model_adapter.validator,
+            self._property_getter.validator,
         ])
 
     @property
@@ -124,5 +124,5 @@ class PropertyMatcherResolver(Generic[MODEL, T], MatcherResolver[MODEL]):
     def resolve(self, symbols: SymbolTable) -> PropertyMatcherValue[MODEL, T]:
         return PropertyMatcherValue(
             self._matcher.resolve(symbols),
-            self._model_adapter.resolve(symbols),
+            self._property_getter.resolve(symbols),
         )

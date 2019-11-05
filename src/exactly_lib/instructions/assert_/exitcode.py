@@ -21,8 +21,8 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.test_case_utils import negation_of_predicate, pfh_exception
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
-from exactly_lib.test_case_utils.matcher.impls import element_getters, parse_integer_matcher
 from exactly_lib.test_case_utils.matcher.impls import err_msg
+from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_integer_matcher
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterValue, PropertyGetter
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherResolver
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -89,7 +89,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         )
         property_matcher = PropertyMatcherResolver(
             matcher,
-            element_getters.PropertyGetterResolverConstant(_ExitCodeGetterValue()),
+            property_getters.PropertyGetterResolverConstant(_ExitCodeGetterValue()),
         )
         parser.report_superfluous_arguments_if_not_at_eol()
         return instruction_of_matcher.Instruction(
