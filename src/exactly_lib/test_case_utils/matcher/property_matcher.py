@@ -32,6 +32,10 @@ class PropertyMatcher(Generic[MODEL, T], MatcherWTrace[MODEL]):
         """TODO Temp helper that should be removed after usages removed"""
         return self._property_getter.name
 
+    @property
+    def option_description(self) -> str:
+        return self._property_getter.name
+
     def structure(self) -> StructureRenderer:
         return renderers.NodeRendererFromParts(
             self._property_getter.name,

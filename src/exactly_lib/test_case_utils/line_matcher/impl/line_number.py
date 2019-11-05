@@ -1,69 +1,44 @@
-from typing import Set
-
+from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
-from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcherFromComparisonOperator
-from exactly_lib.test_case_utils.condition.integer.integer_value import IntegerValue
-from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
-    IntegerComparisonOperatorAndRightOperandResolver
-from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import validator_for_non_negative
-from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherLineNumber
-from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherResolverFromParts
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcher
-from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.test_case_utils.matcher import property_matcher
+from exactly_lib.test_case_utils.matcher.impls import parse_integer_matcher, property_getters
+from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterResolver
+from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
+from exactly_lib.util.logic_types import ExpectationType
+from . import delegated
 
 
 def parse_line_number(parser: TokenParser) -> LineMatcherResolver:
-    cmp_op_and_rhs = parse_cmp_op.parse_integer_comparison_operator_and_rhs(parser,
-                                                                            validator_for_non_negative)
-
-    return resolver(cmp_op_and_rhs)
-
-
-def resolver(condition: IntegerComparisonOperatorAndRightOperandResolver) -> LineMatcherResolver:
-    def get_value(symbols: SymbolTable) -> LineMatcherValue:
-        return _Value(condition.operator,
-                      condition.right_operand.resolve(symbols))
-
-    return LineMatcherResolverFromParts(
-        condition.right_operand.references,
-        get_value,
+    matcher = parse_integer_matcher.parse(
+        parser,
+        ExpectationType.POSITIVE,
+        parse_integer_matcher.validator_for_non_negative,
+    )
+    return delegated.LineMatcherResolverDelegatedToMatcher(
+        property_matcher.PropertyMatcherResolver(
+            matcher,
+            _operand_from_model_resolver(),
+        ),
     )
 
 
-class _Value(LineMatcherValue):
-    def __init__(self,
-                 operator: comparators.ComparisonOperator,
-                 int_expression: IntegerValue,
-                 ):
-        self._operator = operator
-        self._int_expression = int_expression
-
-    def structure(self) -> StructureRenderer:
-        return LineMatcherLineNumber.new_structure_tree(
-            custom_details.ComparatorExpression2(self._operator,
-                                                 self._int_expression.describer()),
+def _operand_from_model_resolver() -> PropertyGetterResolver[LineMatcherLine, int]:
+    return property_getters.PropertyGetterResolverConstant(
+        property_getters.PropertyGetterValueConstant(
+            _PropertyGetter(),
         )
+    )
 
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._int_expression.resolving_dependencies()
 
-    def validator(self) -> PreOrPostSdsValueValidator:
-        return self._int_expression.validator()
+class _PropertyGetter(property_getters.PropertyGetter[LineMatcherLine, int]):
+    NAME = ' '.join((line_matcher.LINE_NUMBER_MATCHER_NAME,
+                     syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name))
 
-    def value_when_no_dir_dependencies(self) -> LineMatcher:
-        return self._matcher_of(self._int_expression.value_when_no_dir_dependencies())
+    @property
+    def name(self) -> str:
+        return self.NAME
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> LineMatcher:
-        return self._matcher_of(self._int_expression.value_of_any_dependency(tcds))
-
-    def _matcher_of(self, rhs: int) -> LineMatcher:
-        return LineMatcherLineNumber(IntegerMatcherFromComparisonOperator(self._operator,
-                                                                          rhs))
+    def get_from(self, model: LineMatcherLine) -> int:
+        return model[0]

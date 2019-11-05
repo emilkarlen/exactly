@@ -41,12 +41,12 @@ class MatcherEquivalenceAssertion(Generic[MODEL], ValueAssertionBase[Matcher[MOD
 
         # Check description
 
-        actual_option_description = value.option_description
-        expected_option_description = self.expected_equivalent.option_description
+        actual_name = value.name
+        expected_name = self.expected_equivalent.name
 
-        put.assertEqual(expected_option_description,
-                        actual_option_description,
-                        message_builder.apply('actual_option_description'))
+        put.assertEqual(expected_name,
+                        actual_name,
+                        message_builder.apply('name'))
 
         # Check applications
 

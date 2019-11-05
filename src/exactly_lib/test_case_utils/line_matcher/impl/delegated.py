@@ -16,7 +16,7 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, Mat
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class LineMatcherDelegatedToMatcherWTrace(LineMatcher):
+class LineMatcherDelegatedToMatcher(LineMatcher):
     def __init__(self, delegated: MatcherWTraceAndNegation[LineMatcherLine]):
         super().__init__()
         self._delegated = delegated
@@ -34,7 +34,7 @@ class LineMatcherDelegatedToMatcherWTrace(LineMatcher):
 
     @property
     def negation(self) -> LineMatcher:
-        return LineMatcherDelegatedToMatcherWTrace(
+        return LineMatcherDelegatedToMatcher(
             combinator_matchers.Negation(self)
         )
 
@@ -54,10 +54,14 @@ class LineMatcherValueDelegatedToMatcher(LineMatcherValue):
         self._delegated = delegated
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return set(DirectoryStructurePartition)
+        """TODO Remove this functionality"""
+        return set()
 
     def structure(self) -> StructureRenderer:
         return self._delegated.structure()
+
+    def validator(self) -> PreOrPostSdsValueValidator:
+        return self._delegated.validator
 
     def value_when_no_dir_dependencies(self) -> LineMatcher:
         """
@@ -66,7 +70,7 @@ class LineMatcherValueDelegatedToMatcher(LineMatcherValue):
         raise ValueError(str(type(self)) + ' do not support this short cut.')
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> LineMatcher:
-        return LineMatcherDelegatedToMatcherWTrace(self._delegated.value_of_any_dependency(home_and_sds))
+        return LineMatcherDelegatedToMatcher(self._delegated.value_of_any_dependency(home_and_sds))
 
 
 class LineMatcherResolverDelegatedToMatcher(LineMatcherResolver):

@@ -28,7 +28,7 @@ class LineMatcherImplBase(WithCachedTreeStructureDescriptionBase,
 
     @property
     def negation(self) -> LineMatcher:
-        return delegated.LineMatcherDelegatedToMatcherWTrace(
+        return delegated.LineMatcherDelegatedToMatcher(
             combinator_matchers.Negation(self)
         )
 

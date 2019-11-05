@@ -1,7 +1,6 @@
 from typing import Optional
 
 from exactly_lib.common.report_rendering import text_docs
-from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.instruction_arguments import INTEGER_ARGUMENT
 from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
@@ -17,17 +16,7 @@ from exactly_lib.test_case_utils.condition.parse import parse_comparison_operato
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util import strings
-from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
-
-_NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'
-
-
-def validator_for_non_negative(actual: int) -> Optional[TextRenderer]:
-    if actual < 0:
-        return expected_found.unexpected_lines(_NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION,
-                                               str(actual))
-    return None
 
 
 class IntegerComparisonOperatorAndRightOperandResolver:

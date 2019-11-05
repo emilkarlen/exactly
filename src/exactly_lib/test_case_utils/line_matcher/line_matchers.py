@@ -1,10 +1,8 @@
-from abc import ABC
 from typing import Optional, Match, Sequence
 from typing import Pattern
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
-from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher
 from exactly_lib.test_case_utils.description_tree import custom_details, bool_trace_rendering
 from exactly_lib.test_case_utils.line_matcher import trace_rendering
 from exactly_lib.test_case_utils.line_matcher.impl import delegated
@@ -20,15 +18,15 @@ from exactly_lib.util.description_tree.tree import Detail
 
 
 def negation(matcher: LineMatcher) -> LineMatcher:
-    return delegated.LineMatcherDelegatedToMatcherWTrace(combinator_matchers.Negation(matcher))
+    return delegated.LineMatcherDelegatedToMatcher(combinator_matchers.Negation(matcher))
 
 
 def conjunction(matchers: Sequence[LineMatcher]) -> LineMatcher:
-    return delegated.LineMatcherDelegatedToMatcherWTrace(combinator_matchers.Conjunction(matchers))
+    return delegated.LineMatcherDelegatedToMatcher(combinator_matchers.Conjunction(matchers))
 
 
 def disjunction(matchers: Sequence[LineMatcher]) -> LineMatcher:
-    return delegated.LineMatcherDelegatedToMatcherWTrace(combinator_matchers.Disjunction(matchers))
+    return delegated.LineMatcherDelegatedToMatcher(combinator_matchers.Disjunction(matchers))
 
 
 class LineMatcherConstant(LineMatcherImplBase):
@@ -64,24 +62,7 @@ class LineMatcherConstant(LineMatcherImplBase):
         return self._result
 
 
-class _LineMatcherWExpectedAndActualBase(LineMatcherImplBase, ABC):
-    def __init__(self, expected: DetailsRenderer):
-        super().__init__()
-        self._expected = expected
-
-    def _structure(self) -> StructureRenderer:
-        return renderers.header_and_detail(
-            self.name,
-            self._expected,
-        )
-
-    def _tb_for_line(self, line: LineMatcherLine) -> TraceBuilder:
-        return TraceBuilder(self.name).append_details(
-            _ExpectedAndActualRenderer(self._expected, line)
-        )
-
-
-class LineMatcherRegex(_LineMatcherWExpectedAndActualBase):
+class LineMatcherRegex(LineMatcherImplBase):
     """Matches lines who's contents matches a given regex."""
 
     NAME = ' '.join((
@@ -99,10 +80,11 @@ class LineMatcherRegex(_LineMatcherWExpectedAndActualBase):
         )
 
     def __init__(self, compiled_regular_expression: Pattern[str]):
-        super().__init__(custom_details.regex_with_config_renderer(
+        super().__init__()
+        self._expected = custom_details.regex_with_config_renderer(
             False,
             custom_details.PatternRenderer(compiled_regular_expression))
-        )
+
         self._compiled_regular_expression = compiled_regular_expression
 
     @property
@@ -134,43 +116,16 @@ class LineMatcherRegex(_LineMatcherWExpectedAndActualBase):
     def _new_tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(self._expected_detail_renderer)
 
-
-class LineMatcherLineNumber(_LineMatcherWExpectedAndActualBase):
-    """Matches lines who's line number satisfy a given condition."""
-
-    NAME = ' '.join((line_matcher.LINE_NUMBER_MATCHER_NAME,
-                     syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name))
-
-    @staticmethod
-    def new_structure_tree(line_number_matcher: DetailsRenderer) -> StructureRenderer:
-        return renderers.NodeRendererFromParts(
-            LineMatcherLineNumber.NAME,
-            None,
-            (line_number_matcher,),
-            (),
+    def _structure(self) -> StructureRenderer:
+        return renderers.header_and_detail(
+            self.name,
+            self._expected,
         )
 
-    def __init__(self, integer_matcher: IntegerMatcher):
-        super().__init__(details.String(integer_matcher.option_description))
-        self._integer_matcher = integer_matcher
-
-    @property
-    def name(self) -> str:
-        return self.NAME
-
-    @property
-    def option_description(self) -> str:
-        return self._integer_matcher.option_description
-
-    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
-        tb = self._tb_for_line(line)
-
-        is_match = self.matches(line)
-
-        return tb.build_result(is_match)
-
-    def matches(self, line: LineMatcherLine) -> bool:
-        return self._integer_matcher.matches(line[0])
+    def _tb_for_line(self, line: LineMatcherLine) -> TraceBuilder:
+        return TraceBuilder(self.name).append_details(
+            _ExpectedAndActualRenderer(self._expected, line)
+        )
 
 
 class _ExpectedAndActualRenderer(DetailsRenderer):

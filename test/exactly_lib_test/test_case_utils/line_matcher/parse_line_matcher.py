@@ -1,20 +1,21 @@
 import unittest
-from typing import List, Sequence
+from typing import List, Sequence, Optional
 
+from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher, \
-    IntegerMatcherFromComparisonOperator
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex, LineMatcherConstant, \
-    LineMatcherLineNumber
+from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex, LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
+from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
+from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
@@ -26,6 +27,8 @@ from exactly_lib_test.test_case_utils.line_matcher.test_resources import value_a
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.resolver_assertions import \
     resolved_value_matches_line_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.value_assertions import value_matches_line_matcher
+from exactly_lib_test.test_case_utils.matcher.test_resources.int_expr_matcher import \
+    ComparisonMatcherForEquivalenceChecks
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.test_resources import matcher_parse_check
 from exactly_lib_test.test_case_utils.test_resources.matcher_parse_check import Expectation
@@ -220,9 +223,8 @@ class TestLineNumberParser(unittest.TestCase):
         def model_of(rhs: int) -> ModelInfo:
             return ModelInfo((rhs, 'irrelevant line contents'))
 
-        expected_integer_matcher = IntegerMatcherFromComparisonOperator(
-            comparators.LT,
-            69)
+        expected_integer_matcher = _ExpectedEquivalentLineNumMatcher(comparators.LT,
+                                                                     69)
         expected_resolver = resolved_value_is_line_number_matcher(expected_integer_matcher,
                                                                   [
                                                                       model_of(60),
@@ -289,9 +291,9 @@ class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase)
 
         comparator = comparators.LT
         rhs = 72
-        expected_integer_matcher = IntegerMatcherFromComparisonOperator(
-            comparator,
-            rhs)
+        expected_integer_matcher = _ExpectedEquivalentLineNumMatcher(comparator,
+                                                                     rhs)
+
         expected_resolver = resolved_value_is_line_number_matcher(expected_integer_matcher,
                                                                   [
                                                                       model_of(69),
@@ -323,13 +325,37 @@ def resolved_value_is_regex_matcher(regex_str: str,
     )
 
 
-def resolved_value_is_line_number_matcher(integer_matcher: IntegerMatcher,
+def resolved_value_is_line_number_matcher(equivalent: Matcher[LineMatcherLine],
                                           model_infos: List[ModelInfo],
                                           references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence
                                           ) -> ValueAssertion[SymbolValueResolver]:
-    expected_matcher = is_equivalent_to(LineMatcherLineNumber(integer_matcher),
+    expected_matcher = is_equivalent_to(equivalent,
                                         model_infos)
     return resolver_assertions.matches_resolver_of_line_matcher(
         references,
         value_matches_line_matcher(expected_matcher)
     )
+
+
+class _ExpectedEquivalentLineNumMatcher(Matcher[LineMatcherLine]):
+    NAME = ' '.join((line_matcher.LINE_NUMBER_MATCHER_NAME,
+                     syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name))
+
+    def __init__(self,
+                 operator: comparators.ComparisonOperator,
+                 rhs: int):
+        self._matcher = ComparisonMatcherForEquivalenceChecks(self.NAME, operator, rhs)
+
+    @property
+    def name(self) -> str:
+        return self.NAME
+
+    def matches(self, model: LineMatcherLine) -> bool:
+        return self._matcher.matches(model[0])
+
+    def matches_emr(self, model: LineMatcherLine) -> Optional[ErrorMessageResolver]:
+        return self._matcher.matches_emr(model[0])
+
+    @property
+    def option_description(self) -> str:
+        raise NotImplementedError('unsupported')

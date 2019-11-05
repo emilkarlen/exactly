@@ -75,9 +75,9 @@ class MatcherWTraceAndNegation(Generic[T], MatcherWTrace[T], ABC):
     def negation(self) -> 'MatcherWTraceAndNegation[T]':
         pass
 
-    @property
-    def name(self) -> str:
-        raise NotImplementedError('deprecated')
+    # @property
+    # def name(self) -> str:
+    #     raise NotImplementedError('deprecated')
 
     def matches_w_failure(self, model: T) -> Optional[Failure[T]]:
         """

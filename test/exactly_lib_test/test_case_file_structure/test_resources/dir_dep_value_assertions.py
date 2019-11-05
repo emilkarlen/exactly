@@ -29,10 +29,12 @@ def matches_single_dir_dependent_value(resolving_dependency: Optional[DirectoryS
 def matches_multi_dir_dependent_value(dir_dependencies: DirDependencies,
                                       resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
                                       tcds: HomeAndSds = fake_home_and_sds(),
+                                      supports_dir_dependencies: bool = True,
                                       ) -> ValueAssertion[DirDependentValue[T]]:
     return MultiDirDependentValueAssertion(dir_dependencies,
                                            resolved_value,
-                                           tcds)
+                                           tcds,
+                                           supports_dir_dependencies)
 
 
 class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[DirDependentValue[T]]):
@@ -40,10 +42,12 @@ class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[DirDependent
                  resolving_dependencies: ValueAssertion[Set[DirectoryStructurePartition]],
                  resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
                  tcds: HomeAndSds,
+                 supports_dir_dependencies: bool = True,
                  ):
         self.resolving_dependencies = resolving_dependencies
         self.resolved_value = resolved_value
         self.tcds = tcds
+        self.supports_dir_dependencies = supports_dir_dependencies
 
     def _check_sub_class_properties(self,
                                     put: unittest.TestCase,
@@ -93,7 +97,7 @@ class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[DirDependent
                               message_builder: asrt.MessageBuilder):
         assertion_on_resolved_value = self.resolved_value(tcds)
 
-        if not actual.has_dir_dependency():
+        if self.supports_dir_dependencies and not actual.has_dir_dependency():
             actual_resolved_value = actual.value_when_no_dir_dependencies()
             assertion_on_resolved_value.apply(put,
                                               actual_resolved_value,
@@ -165,10 +169,12 @@ class MultiDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
                  dir_dependencies: DirDependencies,
                  resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
                  tcds: HomeAndSds = fake_home_and_sds(),
+                 supports_dir_dependencies: bool = True,
                  ):
         super().__init__(asrt.equals(resolving_dependencies_from_dir_dependencies(dir_dependencies)),
                          resolved_value,
-                         tcds)
+                         tcds,
+                         supports_dir_dependencies)
         self._dir_dependencies = dir_dependencies
 
     def _check_sub_class_properties(self,

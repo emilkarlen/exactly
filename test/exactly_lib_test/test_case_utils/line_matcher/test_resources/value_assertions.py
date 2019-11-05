@@ -10,4 +10,5 @@ def value_matches_line_matcher(expected: ValueAssertion[LineMatcher],
     return asrt_dir_dep_val.matches_multi_dir_dependent_value(
         dir_dependencies,
         lambda tcds: expected,
+        supports_dir_dependencies=False,
     )

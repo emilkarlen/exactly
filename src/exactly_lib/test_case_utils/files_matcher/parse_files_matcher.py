@@ -9,7 +9,6 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
-from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, sub_set_selection, \
     negation
@@ -68,7 +67,7 @@ class _SimpleMatcherParser:
         matcher = parse_integer_matcher.parse(
             parser,
             ExpectationType.POSITIVE,
-            parse_cmp_op.validator_for_non_negative,
+            parse_integer_matcher.validator_for_non_negative,
         )
 
         return num_files.resolver(matcher)

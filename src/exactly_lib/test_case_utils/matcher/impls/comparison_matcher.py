@@ -50,6 +50,10 @@ class ComparisonMatcher(Generic[T], MatcherWTraceAndNegation[T]):
             None,
         )
 
+    @property
+    def name(self) -> str:
+        return self._operator.name
+
     def structure(self) -> StructureRenderer:
         return self.new_structure_tree(
             self._expectation_type,

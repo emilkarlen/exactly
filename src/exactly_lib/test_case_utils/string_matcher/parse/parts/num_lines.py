@@ -1,7 +1,6 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
-from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_integer_matcher
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterResolver
@@ -15,7 +14,7 @@ def parse(expectation_type: ExpectationType,
     matcher = parse_integer_matcher.parse(
         token_parser,
         expectation_type,
-        parse_cmp_op.validator_for_non_negative,
+        parse_integer_matcher.validator_for_non_negative,
     )
     return delegated_matcher.StringMatcherResolverDelegatedToMatcher(
         property_matcher.PropertyMatcherResolver(

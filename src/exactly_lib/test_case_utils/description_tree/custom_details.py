@@ -228,24 +228,3 @@ class ComparatorExpression(DetailsRenderer):
                 self._rhs.render(),
             ]))
         ]
-
-
-class ComparatorExpression2(DetailsRenderer):
-    def __init__(self,
-                 comparator: comparators.ComparisonOperator,
-                 rhs_: DetailsRenderer,
-                 ):
-        self._comparator = comparator
-        self._rhs = rhs_
-
-    def render(self) -> Sequence[Detail]:
-        return [
-            tree.TreeDetail(
-                tree.Node(
-                    self._comparator.name,
-                    None,
-                    rhs(self._rhs).render(),
-                    (),
-                )
-            )
-        ]
