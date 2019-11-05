@@ -6,6 +6,7 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
     constant_success_validator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_utils.line_matcher.impl.impl_base_classes import LineMatcherImplBase
 from exactly_lib.test_case_utils.line_matcher.line_matcher_values import LineMatcherValueFromPrimitiveValue
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherValue, LineMatcherLine
@@ -26,7 +27,7 @@ def arbitrary_resolver() -> LineMatcherResolver:
     )
 
 
-class LineMatcherConstantTestImpl(LineMatcher):
+class LineMatcherConstantTestImpl(LineMatcherImplBase):
     """Matcher with constant result."""
 
     def __init__(self, result: bool):

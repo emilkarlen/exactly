@@ -8,9 +8,10 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case_utils.line_matcher.impl.impl_base_classes import LineMatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine, LineMatcherValue
+from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, LineMatcherValue
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
@@ -172,7 +173,7 @@ class TestFailingExpectations(TestCaseBase):
             )
 
 
-class _LineMatcherThatReportsHardError(LineMatcher):
+class _LineMatcherThatReportsHardError(LineMatcherImplBase):
     @property
     def name(self) -> str:
         return str(type(self))

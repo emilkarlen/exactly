@@ -1,6 +1,7 @@
 from typing import Iterable, Callable
 
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
+from exactly_lib.test_case_utils.line_matcher.impl.impl_base_classes import LineMatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
@@ -31,7 +32,7 @@ class FileMatcherTestImpl(FileMatcherImplBase):
         raise NotImplementedError('should never be used')
 
 
-class LineMatcherNotImplementedTestImpl(LineMatcher):
+class LineMatcherNotImplementedTestImpl(LineMatcherImplBase):
     @property
     def name(self) -> str:
         return str(type(self))
@@ -55,7 +56,7 @@ def is_identical_to(line_num: int, line_contents: str) -> LineMatcher:
                                      lambda x: x == line_contents)
 
 
-class LineMatcherFromPredicates(LineMatcher):
+class LineMatcherFromPredicates(LineMatcherImplBase):
     def __init__(self,
                  line_num_predicate: Callable[[int], bool] = lambda x: True,
                  line_contents_predicate: Callable[[str], bool] = lambda x: True):

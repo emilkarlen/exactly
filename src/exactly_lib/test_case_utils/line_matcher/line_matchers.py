@@ -7,12 +7,12 @@ from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher
 from exactly_lib.test_case_utils.description_tree import custom_details, bool_trace_rendering
 from exactly_lib.test_case_utils.line_matcher import trace_rendering
+from exactly_lib.test_case_utils.line_matcher.impl import delegated
+from exactly_lib.test_case_utils.line_matcher.impl.impl_base_classes import LineMatcherImplBase
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -20,18 +20,18 @@ from exactly_lib.util.description_tree.tree import Detail
 
 
 def negation(matcher: LineMatcher) -> LineMatcher:
-    return _LineMatcherDelegatedToMatcherWTrace(combinator_matchers.Negation(matcher))
+    return delegated.LineMatcherDelegatedToMatcherWTrace(combinator_matchers.Negation(matcher))
 
 
 def conjunction(matchers: Sequence[LineMatcher]) -> LineMatcher:
-    return _LineMatcherDelegatedToMatcherWTrace(combinator_matchers.Conjunction(matchers))
+    return delegated.LineMatcherDelegatedToMatcherWTrace(combinator_matchers.Conjunction(matchers))
 
 
 def disjunction(matchers: Sequence[LineMatcher]) -> LineMatcher:
-    return _LineMatcherDelegatedToMatcherWTrace(combinator_matchers.Disjunction(matchers))
+    return delegated.LineMatcherDelegatedToMatcherWTrace(combinator_matchers.Disjunction(matchers))
 
 
-class LineMatcherConstant(LineMatcher):
+class LineMatcherConstant(LineMatcherImplBase):
     """Matcher with constant result."""
 
     def __init__(self, result: bool):
@@ -43,6 +43,10 @@ class LineMatcherConstant(LineMatcher):
             'constant',
             details.String(bool_trace_rendering.bool_string(self._result))
         )
+
+    @property
+    def name(self) -> str:
+        return self.option_description
 
     @property
     def option_description(self) -> str:
@@ -60,7 +64,7 @@ class LineMatcherConstant(LineMatcher):
         return self._result
 
 
-class _LineMatcherWExpectedAndActualBase(LineMatcher, ABC):
+class _LineMatcherWExpectedAndActualBase(LineMatcherImplBase, ABC):
     def __init__(self, expected: DetailsRenderer):
         super().__init__()
         self._expected = expected
@@ -167,32 +171,6 @@ class LineMatcherLineNumber(_LineMatcherWExpectedAndActualBase):
 
     def matches(self, line: LineMatcherLine) -> bool:
         return self._integer_matcher.matches(line[0])
-
-
-class _LineMatcherDelegatedToMatcherWTrace(LineMatcher):
-    def __init__(self, delegated: MatcherWTraceAndNegation[LineMatcherLine]):
-        super().__init__()
-        self._delegated = delegated
-
-    @property
-    def name(self) -> str:
-        return self._delegated.name
-
-    def _structure(self) -> StructureRenderer:
-        return self._delegated.structure()
-
-    @property
-    def option_description(self) -> str:
-        return self._delegated.option_description
-
-    def matches(self, model: LineMatcherLine) -> bool:
-        return self._delegated.matches(model)
-
-    def matches_emr(self, model: LineMatcherLine) -> Optional[ErrorMessageResolver]:
-        return self._delegated.matches_emr(model)
-
-    def matches_w_trace(self, model: LineMatcherLine) -> MatchingResult:
-        return self._delegated.matches_w_trace(model)
 
 
 class _ExpectedAndActualRenderer(DetailsRenderer):
