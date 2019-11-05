@@ -7,14 +7,14 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 
 LineMatcherLine = Tuple[int, str]
 
 FIRST_LINE_NUMBER = 1
 
 
-class LineMatcher(MatcherWTrace[LineMatcherLine], ABC):
+class LineMatcher(MatcherWTraceAndNegation[LineMatcherLine], ABC):
     """
     Matches text lines.
 

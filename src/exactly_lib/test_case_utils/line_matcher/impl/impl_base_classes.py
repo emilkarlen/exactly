@@ -3,9 +3,11 @@ from typing import Optional
 
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.test_case_utils.line_matcher.impl import delegated
 from exactly_lib.type_system.description import trace_renderers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 
@@ -23,6 +25,12 @@ class LineMatcherImplBase(WithCachedTreeStructureDescriptionBase,
 
     def _new_tb(self) -> TraceBuilder:
         return TraceBuilder(self.name)
+
+    @property
+    def negation(self) -> LineMatcher:
+        return delegated.LineMatcherDelegatedToMatcherWTrace(
+            combinator_matchers.Negation(self)
+        )
 
     def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
         mb_fail = self.matches_emr(line)
