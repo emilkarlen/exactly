@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.definitions import expression, instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
@@ -9,9 +11,11 @@ from exactly_lib.test_case_utils.expression import grammar, parser as parse_expr
 from exactly_lib.test_case_utils.line_matcher import line_matchers
 from exactly_lib.test_case_utils.line_matcher import resolvers
 from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
+from exactly_lib.test_case_utils.matcher.impls import combinator_resolvers
 from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
+from .impl import delegated
 
 CONSTANT_TRUE_MATCHER_RESOLVER = resolvers.LineMatcherConstantResolver(line_matchers.LineMatcherConstant(True))
 
@@ -109,6 +113,18 @@ def _mk_reference(name: str) -> LineMatcherResolver:
     return resolvers.LineMatcherReferenceResolver(name)
 
 
+def _mk_negation(operand: LineMatcherResolver) -> LineMatcherResolver:
+    return delegated.LineMatcherResolverDelegatedToMatcher(combinator_resolvers.Negation(operand))
+
+
+def _mk_conjunction(operands: Sequence[LineMatcherResolver]) -> LineMatcherResolver:
+    return delegated.LineMatcherResolverDelegatedToMatcher(combinator_resolvers.Conjunction(operands))
+
+
+def _mk_disjunction(operands: Sequence[LineMatcherResolver]) -> LineMatcherResolver:
+    return delegated.LineMatcherResolverDelegatedToMatcher(combinator_resolvers.Disjunction(operands))
+
+
 GRAMMAR = grammar.Grammar(
     _CONCEPT,
     mk_reference=_mk_reference,
@@ -122,19 +138,19 @@ GRAMMAR = grammar.Grammar(
     },
     complex_expressions={
         expression.AND_OPERATOR_NAME:
-            grammar.ComplexExpression(resolvers.LineMatcherAndResolver,
+            grammar.ComplexExpression(_mk_conjunction,
                                       grammar.OperatorExpressionDescription(
                                           _TP.fnap(_AND_SED_DESCRIPTION)
                                       )),
         expression.OR_OPERATOR_NAME:
-            grammar.ComplexExpression(resolvers.LineMatcherOrResolver,
+            grammar.ComplexExpression(_mk_disjunction,
                                       grammar.OperatorExpressionDescription(
                                           _TP.fnap(_OR_SED_DESCRIPTION)
                                       )),
     },
     prefix_expressions={
         expression.NOT_OPERATOR_NAME:
-            grammar.PrefixExpression(resolvers.LineMatcherNotResolver,
+            grammar.PrefixExpression(_mk_negation,
                                      grammar.OperatorExpressionDescription(
                                          _TP.fnap(_NOT_SED_DESCRIPTION)
                                      ))

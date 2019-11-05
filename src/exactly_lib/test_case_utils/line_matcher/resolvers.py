@@ -2,7 +2,6 @@ from typing import Sequence, Callable
 
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
-from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.line_matcher import line_matcher_values as values
@@ -64,47 +63,3 @@ class LineMatcherReferenceResolver(LineMatcherResolver):
 
     def __str__(self):
         return str(type(self)) + '\'' + str(self._name_of_referenced_resolver) + '\''
-
-
-class LineMatcherNotResolver(LineMatcherResolver):
-    def __init__(self, line_matcher_resolver: LineMatcherResolver):
-        self._resolver = line_matcher_resolver
-
-    def resolve(self, symbols: SymbolTable) -> LineMatcherValue:
-        return values.negation(self._resolver.resolve(symbols))
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._resolver.references
-
-
-class LineMatcherAndResolver(LineMatcherResolver):
-    def __init__(self, parts: Sequence[LineMatcherResolver]):
-        self._parts = parts
-        self._references = references_from_objects_with_symbol_references(parts)
-
-    def resolve(self, symbols: SymbolTable) -> LineMatcherValue:
-        return values.conjunction([
-            part.resolve(symbols)
-            for part in self._parts
-        ])
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._references
-
-
-class LineMatcherOrResolver(LineMatcherResolver):
-    def __init__(self, parts: Sequence[LineMatcherResolver]):
-        self._parts = parts
-        self._references = references_from_objects_with_symbol_references(parts)
-
-    def resolve(self, symbols: SymbolTable) -> LineMatcherValue:
-        return values.disjunction([
-            part.resolve(symbols)
-            for part in self._parts
-        ])
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._references
