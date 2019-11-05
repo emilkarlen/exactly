@@ -63,10 +63,17 @@ class _ValidatorThatReportsViaExceptions(SvhPreSdsValidatorViaExceptions):
         try:
             resolved_value = self._int_resolver.resolve(environment)
         except NotAnIntegerException as ex:
+            py_ex_str = (
+                ''
+                if ex.python_exception_message is None
+                else
+                '\n\nPython exception:\n' + ex.python_exception_message
+            )
             msg = text_docs.single_pre_formatted_line_object(
                 strings.FormatPositional(
-                    'Argument must be an integer: `{}\'',
-                    ex.value_string)
+                    'Argument must be an integer: `{}\'{}',
+                    ex.value_string,
+                    py_ex_str)
             )
             raise svh_exception.SvhValidationException(msg)
 
