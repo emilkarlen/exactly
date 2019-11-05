@@ -1,13 +1,14 @@
 from typing import List
 
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
+from exactly_lib.symbol.logic.resolver import MatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.logic.line_matcher import LineMatcherValue
+from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcherLine
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class LineMatcherResolver(LogicValueResolver):
+class LineMatcherResolver(LogicValueResolver, MatcherResolver[LineMatcherLine]):
     """ Base class for resolvers of :class:`LineMatcher`. """
 
     @property

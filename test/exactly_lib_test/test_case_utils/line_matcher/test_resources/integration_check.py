@@ -165,7 +165,7 @@ class _Checker:
         return ret_val
 
     def _check_validation_pre_sds(self, matcher_value: LineMatcherValue):
-        validator = matcher_value.validator()
+        validator = matcher_value.validator
         result = validator.validate_pre_sds_if_applicable(self.tcds.hds)
 
         self.expectation.validation.pre_sds.apply_with_message(self.put,
@@ -176,7 +176,7 @@ class _Checker:
             raise _CheckIsDoneException()
 
     def _check_validation_post_sds(self, matcher_value: LineMatcherValue):
-        validator = matcher_value.validator()
+        validator = matcher_value.validator
         result = validator.validate_post_sds_if_applicable(self.tcds)
 
         self.expectation.validation.post_sds.apply_with_message(self.put,

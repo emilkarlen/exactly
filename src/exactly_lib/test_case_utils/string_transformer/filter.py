@@ -21,7 +21,7 @@ class SelectStringTransformerValue(StringTransformerValue):
         return self._line_matcher.resolving_dependencies()
 
     def validator(self) -> PreOrPostSdsValueValidator:
-        return self._line_matcher.validator()
+        return self._line_matcher.validator
 
     def value_when_no_dir_dependencies(self) -> StringTransformer:
         return select.SelectStringTransformer(

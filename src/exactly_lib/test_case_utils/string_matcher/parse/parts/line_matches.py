@@ -87,7 +87,7 @@ def matcher_for_every_line_matches(expectation_type: ExpectationType,
 
 def _validator_for_line_matcher(line_matcher_resolver: LineMatcherResolver) -> ppv.PreOrPostSdsValidator:
     def get_validator(symbols: SymbolTable) -> ppvv.PreOrPostSdsValueValidator:
-        return line_matcher_resolver.resolve(symbols).validator()
+        return line_matcher_resolver.resolve(symbols).validator
 
     return ppv.PreOrPostSdsValidatorFromValueValidator(get_validator)
 

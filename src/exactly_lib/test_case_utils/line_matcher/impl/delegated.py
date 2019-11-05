@@ -60,6 +60,7 @@ class LineMatcherValueDelegatedToMatcher(LineMatcherValue):
     def structure(self) -> StructureRenderer:
         return self._delegated.structure()
 
+    @property
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._delegated.validator
 

@@ -28,6 +28,7 @@ class LineMatcherValueFromPrimitiveValue(LineMatcherValue):
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self._resolving_dependencies
 
+    @property
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 
@@ -49,7 +50,7 @@ class _LineMatcherCompositionValueBase(LineMatcherValue):
         if not parts:
             raise ValueError('Composition must have at least one element')
         self._validator = pre_or_post_value_validators.all_of([
-            part.validator()
+            part.validator
             for part in parts
         ])
 
@@ -63,6 +64,7 @@ class _LineMatcherCompositionValueBase(LineMatcherValue):
 
         return ret_val
 
+    @property
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 

@@ -43,6 +43,7 @@ class _Value(LineMatcherValue):
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self._regex.resolving_dependencies()
 
+    @property
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._regex.validator()
 

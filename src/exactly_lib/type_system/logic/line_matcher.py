@@ -6,8 +6,7 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherValue
 
 LineMatcherLine = Tuple[int, str]
 
@@ -25,10 +24,11 @@ class LineMatcher(MatcherWTraceAndNegation[LineMatcherLine], ABC):
     pass
 
 
-class LineMatcherValue(MultiDirDependentValue[LineMatcher], WithTreeStructureDescription, ABC):
+class LineMatcherValue(MatcherValue[LineMatcherLine], MultiDirDependentValue[LineMatcher], ABC):
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return set()
 
+    @property
     def validator(self) -> PreOrPostSdsValueValidator:
         return constant_success_validator()
 
