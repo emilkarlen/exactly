@@ -1,12 +1,12 @@
 from typing import Iterable, Callable
 
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
-from exactly_lib.test_case_utils.line_matcher.impl.impl_base_classes import LineMatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
+from exactly_lib_test.type_system.logic.test_resources.line_matcher_base_class import LineMatcherTestImplBase
 from exactly_lib_test.util.render.test_resources import renderers
 from exactly_lib_test.util.render.test_resources.renderers import structure_renderer_for_arbitrary_object
 
@@ -32,7 +32,7 @@ class FileMatcherTestImpl(FileMatcherImplBase):
         raise NotImplementedError('should never be used')
 
 
-class LineMatcherNotImplementedTestImpl(LineMatcherImplBase):
+class LineMatcherNotImplementedTestImpl(LineMatcherTestImplBase):
     @property
     def name(self) -> str:
         return str(type(self))
@@ -56,7 +56,7 @@ def is_identical_to(line_num: int, line_contents: str) -> LineMatcher:
                                      lambda x: x == line_contents)
 
 
-class LineMatcherFromPredicates(LineMatcherImplBase):
+class LineMatcherFromPredicates(LineMatcherTestImplBase):
     def __init__(self,
                  line_num_predicate: Callable[[int], bool] = lambda x: True,
                  line_contents_predicate: Callable[[str], bool] = lambda x: True):

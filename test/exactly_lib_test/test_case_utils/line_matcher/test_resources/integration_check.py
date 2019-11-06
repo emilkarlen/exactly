@@ -6,7 +6,6 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
@@ -188,31 +187,22 @@ class _Checker:
 
     def _check_application(self, matcher: LineMatcher):
         try:
-            main_result__emr = matcher.matches_emr(self.model)
             main_result__trace = matcher.matches_w_trace(self.model)
 
-            self._check_application_result(main_result__emr, main_result__trace)
+            self._check_application_result(main_result__trace)
         except HardErrorException as ex:
             self._check_hard_error(ex)
 
     def _check_application_result(self,
-                                  result: Optional[ErrorMessageResolver],
                                   result__trace: MatchingResult,
                                   ):
         if self.expectation.is_hard_error is not None:
             self.put.fail('HARD_ERROR not reported (raised)')
 
         if self.expectation.main_result is None:
-            self.put.assertIsNone(result,
-                                  'result from main')
             self._assert_is_matching_result_for(True, result__trace)
         else:
-            self.put.assertIsNotNone(result,
-                                     'result from main')
             self._assert_is_matching_result_for(False, result__trace)
-            err_msg = result.resolve()
-            self.expectation.main_result.apply_with_message(self.put, err_msg,
-                                                            'error result of main')
 
     def _check_hard_error(self, result: HardErrorException):
         if self.expectation.is_hard_error is None:

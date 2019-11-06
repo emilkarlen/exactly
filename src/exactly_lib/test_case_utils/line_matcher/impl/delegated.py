@@ -49,13 +49,20 @@ class LineMatcherDelegatedToMatcher(LineMatcher):
 
 
 class LineMatcherValueDelegatedToMatcher(LineMatcherValue):
-    def __init__(self, delegated: MatcherValue[LineMatcherLine]):
+    def __init__(self,
+                 delegated: MatcherValue[LineMatcherLine],
+                 resolving_dependencies: Optional[Set[DirectoryStructurePartition]] = None,
+                 ):
         super().__init__()
         self._delegated = delegated
+        self._resolving_dependencies = (set()
+                                        if resolving_dependencies is None
+                                        else
+                                        resolving_dependencies)
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         """TODO Remove this functionality"""
-        return set()
+        return self._resolving_dependencies
 
     def structure(self) -> StructureRenderer:
         return self._delegated.structure()

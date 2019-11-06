@@ -11,7 +11,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex, LineMatcherConstant
+from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
@@ -23,9 +23,6 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
 from exactly_lib_test.symbol.test_resources import resolver_assertions
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
-from exactly_lib_test.test_case_utils.line_matcher.test_resources import value_assertions as asrt_line_matcher
-from exactly_lib_test.test_case_utils.line_matcher.test_resources.resolver_assertions import \
-    resolved_value_matches_line_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.value_assertions import value_matches_line_matcher
 from exactly_lib_test.test_case_utils.matcher.test_resources.int_expr_matcher import \
     ComparisonMatcherForEquivalenceChecks
@@ -35,12 +32,10 @@ from exactly_lib_test.test_case_utils.test_resources.matcher_parse_check import 
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
-from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes, surrounded_by_hard_quotes
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestRegexParser),
         unittest.makeSuite(TestLineNumberParser),
         unittest.makeSuite(TestParseLineMatcher),
     ])
@@ -61,123 +56,6 @@ class Configuration(matcher_parse_check.Configuration[LineMatcherLine]):
 
     def arbitrary_model_that_should_not_be_touched(self) -> LineMatcherLine:
         return 1, 'arbitrary line'
-
-
-class TestRegexParser(unittest.TestCase):
-    def _check(self,
-               source: TokenParser,
-               expectation: Expectation):
-        # ACT #
-        actual_resolver = sut.parse_regex(source)
-        # ASSERT #
-        expectation.resolver.apply_with_message(self, actual_resolver,
-                                                'resolver')
-        expectation.token_stream.apply_with_message(self,
-                                                    source.token_stream,
-                                                    'token stream')
-
-    def test_failing_parse(self):
-        cases = [
-            (
-                'no arguments',
-                remaining_source(''),
-            ),
-            (
-                'no arguments, but it appears on the following line',
-                remaining_source('',
-                                 ['regex']),
-            ),
-        ]
-        for name, source in cases:
-            with self.subTest(case_name=name):
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_regex(source)
-
-    def test_successful_parse_of_unquoted_tokens(self):
-        # ARRANGE #
-        regex_str = 'regex'
-
-        text_on_following_line = 'text on following line'
-
-        expected_resolver = resolved_value_is_regex_matcher(regex_str)
-        cases = [
-            SourceCase(
-                'transformer is only source',
-                source=
-                remaining_source('{regex}'.format(
-                    regex=regex_str,
-                )),
-                source_assertion=
-                assert_token_stream(is_null=asrt.is_true),
-            ),
-            SourceCase(
-                'transformer is followed by a token',
-                source=
-                remaining_source('{regex} following_token'.format(
-                    regex=regex_str,
-                )),
-                source_assertion=
-                assert_token_stream(
-                    is_null=asrt.is_false,
-                    remaining_part_of_current_line=asrt.equals('following_token')),
-            ),
-            SourceCase(
-                'transformer is only element on current line, but followed by more lines',
-                source=
-                remaining_source('{regex}'.format(
-                    regex=regex_str,
-                ),
-                    following_lines=[text_on_following_line]),
-                source_assertion=
-                assert_token_stream(
-                    is_null=asrt.is_false,
-                    remaining_source=asrt.equals('\n' + text_on_following_line)),
-            ),
-        ]
-        for case in cases:
-            with self.subTest(case_name=case.name):
-                self._check(case.source,
-                            Expectation(expected_resolver,
-                                        case.source_assertion))
-
-    def test_successful_parse_of_quoted_tokens(self):
-        # ARRANGE #
-        regex_str = 'the regex'
-
-        text_on_following_line = 'text on following line'
-
-        expected_resolver = resolved_value_is_regex_matcher(regex_str)
-        cases = [
-            SourceCase(
-                'soft quotes',
-
-                source=
-                remaining_source('{regex}'.format(
-                    regex=surrounded_by_soft_quotes(regex_str),
-                )),
-
-                source_assertion=
-                assert_token_stream(is_null=asrt.is_true),
-            ),
-            SourceCase(
-                'hard quotes, and text on following line',
-
-                source=
-                remaining_source('{regex}'.format(
-                    regex=surrounded_by_hard_quotes(regex_str),
-                ),
-                    following_lines=[text_on_following_line]),
-
-                source_assertion=
-                assert_token_stream(
-                    remaining_source=asrt.equals('\n' + text_on_following_line)),
-            ),
-        ]
-        for case in cases:
-            with self.subTest(case_name=case.name):
-                self._check(case.source,
-                            Expectation(expected_resolver,
-                                        case.source_assertion))
 
 
 class TestLineNumberParser(unittest.TestCase):
@@ -273,17 +151,6 @@ class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase)
     def conf(self) -> Configuration:
         return self._conf
 
-    def test_regex(self):
-        # ARRANGE #
-        regex_str = 'regex'
-
-        # ACT & ASSERT #
-        self._check(
-            remaining_source(argument_syntax.syntax_for_regex_matcher(regex_str)),
-            Expectation(
-                resolver=resolved_value_is_regex_matcher(regex_str)),
-        )
-
     def test_line_number(self):
         # ARRANGE #
         def model_of(rhs: int) -> ModelInfo:
@@ -309,20 +176,6 @@ class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase)
             Expectation(
                 resolver=expected_resolver),
         )
-
-
-def resolved_value_is_regex_matcher(regex_str: str,
-                                    references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence
-                                    ) -> ValueAssertion[SymbolValueResolver]:
-    return resolved_value_matches_line_matcher(
-        asrt_line_matcher.value_matches_line_matcher(
-            asrt.is_instance_with(LineMatcherRegex,
-                                  asrt.sub_component('regex_pattern_string',
-                                                     LineMatcherRegex.regex_pattern_string.fget,
-                                                     asrt.equals(regex_str)))
-        ),
-        references=references
-    )
 
 
 def resolved_value_is_line_number_matcher(equivalent: Matcher[LineMatcherLine],

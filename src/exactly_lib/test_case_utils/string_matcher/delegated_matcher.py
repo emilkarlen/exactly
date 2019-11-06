@@ -44,7 +44,7 @@ class StringMatcherDelegatedToMatcher(StringMatcher):
 class StringMatcherValueDelegatedToMatcher(StringMatcherValue):
     def __init__(self,
                  delegated: MatcherValue[FileToCheck],
-                 resolving_dependencies: Set[DirectoryStructurePartition] = None,
+                 resolving_dependencies: Optional[Set[DirectoryStructurePartition]] = None,
                  ):
         super().__init__()
         self._delegated = delegated

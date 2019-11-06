@@ -1,17 +1,17 @@
-from typing import Set
+from typing import Optional
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex
+from exactly_lib.test_case_utils.line_matcher.impl import delegated
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherResolverFromParts
+from exactly_lib.test_case_utils.matcher import property_matcher
+from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_getters
+from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.regex import parse_regex
-from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherValue
+from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
+from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcherLine
+from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -25,7 +25,17 @@ def parse(token_parser: TokenParser) -> LineMatcherResolver:
 
 def resolver(regex_resolver: RegexResolver) -> LineMatcherResolver:
     def get_value(symbols: SymbolTable) -> LineMatcherValue:
-        return _Value(regex_resolver.resolve(symbols))
+        regex_value = regex_resolver.resolve(symbols)
+        regex_matcher = matches_regex.MatchesRegexValue(ExpectationType.POSITIVE, regex_value, False)
+        return delegated.LineMatcherValueDelegatedToMatcher(
+            property_matcher.PropertyMatcherValue(
+                regex_matcher,
+                property_getters.PropertyGetterValueConstant(
+                    _PropertyGetter(),
+                ),
+            ),
+            regex_value.resolving_dependencies()
+        )
 
     return LineMatcherResolverFromParts(
         regex_resolver.references,
@@ -33,22 +43,10 @@ def resolver(regex_resolver: RegexResolver) -> LineMatcherResolver:
     )
 
 
-class _Value(LineMatcherValue):
-    def __init__(self, regex: RegexValue):
-        self._regex = regex
-
-    def structure(self) -> StructureRenderer:
-        return LineMatcherRegex.new_structure_tree(self._regex.describer())
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._regex.resolving_dependencies()
-
+class _PropertyGetter(PropertyGetter[LineMatcherLine, str]):
     @property
-    def validator(self) -> PreOrPostSdsValueValidator:
-        return self._regex.validator()
+    def name(self) -> Optional[str]:
+        return None
 
-    def value_when_no_dir_dependencies(self) -> LineMatcher:
-        return LineMatcherRegex(self._regex.value_when_no_dir_dependencies())
-
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> LineMatcher:
-        return LineMatcherRegex(self._regex.value_of_any_dependency(home_and_sds))
+    def get_from(self, model: LineMatcherLine) -> str:
+        return model[1]

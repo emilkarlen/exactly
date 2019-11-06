@@ -1,8 +1,8 @@
 from abc import ABC
 from typing import List
 
-import exactly_lib.definitions.primitives.line_matcher
 from exactly_lib.definitions import expression
+from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.matcher_argument import MatcherArg
@@ -38,7 +38,7 @@ class LineNum(LineMatcherArg):
 
     @property
     def elements(self) -> List:
-        return [exactly_lib.definitions.primitives.line_matcher.LINE_NUMBER_MATCHER_NAME,
+        return [line_matcher.LINE_NUMBER_MATCHER_NAME,
                 self._int_condition,
                 ]
 
@@ -49,7 +49,7 @@ class Matches(LineMatcherArg):
 
     @property
     def elements(self) -> List:
-        return [exactly_lib.definitions.primitives.line_matcher.REGEX_MATCHER_NAME,
+        return [line_matcher.REGEX_MATCHER_NAME,
                 self.regex,
                 ]
 

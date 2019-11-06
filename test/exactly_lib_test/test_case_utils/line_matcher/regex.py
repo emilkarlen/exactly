@@ -1,85 +1,106 @@
-import re
 import unittest
 
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_utils.line_matcher import line_matchers
+from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
+from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_resolvers
-from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg, integration_check
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import test_case_utils
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import Arrangement, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
 from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases import failing_regex_validation_cases
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    ExpectationTypeConfigForNoneIsSuccess, PassOrFail
+    ExpectationTypeConfigForNoneIsSuccess, PassOrFail, MAIN_RESULT_ASSERTION_ERR_MSG_FOR_MATCHER
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestRegex),
+        unittest.makeSuite(TestParseAndExecuteValidArguments),
         ParseShouldFailWhenRegexArgumentIsMissing(),
         ValidationShouldFailWhenRegexIsInvalid(),
         TestWithSymbolReferences(),
     ])
 
 
-class TestRegex(unittest.TestCase):
+class Case:
+    def __init__(self,
+                 name: str,
+                 reg_ex_str: str,
+                 line: str,
+                 result: bool,
+                 ):
+        self.name = name
+        self.reg_ex_str = reg_ex_str
+        self.line = line
+        self.result = result
+
+
+class TestParseAndExecuteValidArguments(unittest.TestCase):
     def runTest(self):
+        # Note : NEW LINES are NEVER included in the model
         cases = [
-            NameAndValue('single character regex that matches',
-                         (
-                             'a',
-                             'abc abc',
-                             True,
-                         )),
-            NameAndValue('single character regex that not matches',
-                         (
-                             'x',
-                             'abc abc',
-                             False,
-                         )),
-            NameAndValue('regex that matches',
-                         (
-                             'a..d',
-                             '__ abcd __',
-                             True,
-                         )),
-            NameAndValue('regex that not matches',
-                         (
-                             'a..d',
-                             '__  __',
-                             False,
-                         )),
-            NameAndValue('dot should not match newline',
-                         (
-                             '.',
-                             '\n',
-                             False,
-                         )),
+            Case('single character regex that matches',
+                 'a',
+                 'abc abc',
+                 True,
+                 ),
+            Case('single character regex that not matches',
+                 'x',
+                 'abc abc',
+                 False,
+                 ),
+            Case('regex that matches',
+                 'a..d',
+                 '__ abcd __',
+                 True,
+                 ),
+            Case('regex that not matches',
+                 'a..d',
+                 '__  __',
+                 False,
+                 ),
         ]
         for case in cases:
-            reg_ex_str, line, expected_result = case.value
-            with self.subTest(case_name=case.name):
-                matcher = line_matchers.LineMatcherRegex(re.compile(reg_ex_str))
-                # ACT #
-                actual_pattern_str = matcher.regex_pattern_string
+            argument_w_opt_neg = arg.WithOptionalNegation(
+                arg.Matches(case.reg_ex_str)
+            )
+            for expectation_type in ExpectationType:
+                argument = argument_w_opt_neg.get(expectation_type)
+                matcher_arguments = Arguments(str(argument))
+                for line_number in (1, 2):
+                    model = (line_number, case.line)
+                    with self.subTest(name=case.name,
+                                      expectation_type=expectation_type):
+                        _check_with_source_variants(
+                            self,
+                            matcher_arguments,
+                            model,
+                            Arrangement(),
+                            Expectation(
+                                main_result=MAIN_RESULT_ASSERTION_ERR_MSG_FOR_MATCHER[expectation_type][case.result]
+                            )
+                        )
 
-                actual_result = matcher.matches((1, line))
 
-                # ASSERT #
-
-                self.assertEqual(reg_ex_str,
-                                 actual_pattern_str,
-                                 'pattern string')
-
-                self.assertEqual(expected_result,
-                                 actual_result is not None,
-                                 'result')
+def _check_with_source_variants(put: unittest.TestCase,
+                                arguments: Arguments,
+                                model: LineMatcherLine,
+                                arrangement: Arrangement,
+                                expectation: Expectation):
+    for source in equivalent_source_variants__with_source_check__for_expression_parser(put, arguments):
+        integration_check.check(put,
+                                source,
+                                model,
+                                arrangement,
+                                expectation)
 
 
 class ParseShouldFailWhenRegexArgumentIsMissing(test_case_utils.TestWithNegationArgumentBase):

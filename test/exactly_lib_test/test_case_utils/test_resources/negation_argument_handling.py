@@ -160,3 +160,14 @@ _MAIN_RESULT_ASSERTION_ERR_MSG_FOR_FAIL = {
         PassOrFail.FAIL: None,
     },
 }
+
+MAIN_RESULT_ASSERTION_ERR_MSG_FOR_MATCHER = {
+    ExpectationType.POSITIVE: {
+        True: None,
+        False: _ASSERT_IS_FAILURE_FOR_ERR_MSG,
+    },
+    ExpectationType.NEGATIVE: {
+        True: _ASSERT_IS_FAILURE_FOR_ERR_MSG,
+        False: None,
+    },
+}

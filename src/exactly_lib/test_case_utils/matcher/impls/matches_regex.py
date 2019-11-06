@@ -126,6 +126,7 @@ class MatchesRegexValue(MatcherValue[str]):
             self._regex.describer(),
         )
 
+    @property
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._regex.validator()
 

@@ -1,11 +1,11 @@
-import re
 import unittest
 
 import exactly_lib.definitions.primitives.line_matcher
 from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant, conjunction, LineMatcherRegex
+from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
+from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
@@ -19,6 +19,7 @@ from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import value_assertions as asrt_line_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.resolver_assertions import \
@@ -125,25 +126,23 @@ class TestSuccessfulScenarios(TestCaseBase):
 
         # EXPECTATION #
 
-        the_regex_matcher = LineMatcherRegex(re.compile(regex_str))
-        the_and_matcher = conjunction([
-            symbol.value,
-            the_regex_matcher,
-        ])
+        symbol_table = SymbolTable({symbol.name: container(LineMatcherConstantResolver(symbol.value)), })
+
+        expected_matcher_resolver = parse_line_matcher.parser().parse(remaining_source(matcher_argument))
+
+        expected_matcher = expected_matcher_resolver.resolve(symbol_table).value_of_any_dependency(fake_tcds())
 
         expected_container = matches_container(
             assertion_on_resolver=
             resolved_value_matches_line_matcher(
                 asrt_line_matcher.value_matches_line_matcher(
-                    asrt_matcher.is_equivalent_to(the_and_matcher,
+                    asrt_matcher.is_equivalent_to(expected_matcher,
                                                   models_for_equivalence_check)
                 ),
                 references=asrt.matches_sequence([
                     is_line_matcher_reference_to(symbol.name),
                 ]),
-                symbols=SymbolTable({
-                    symbol.name: container(LineMatcherConstantResolver(symbol.value)),
-                }),
+                symbols=symbol_table,
             )
         )
 

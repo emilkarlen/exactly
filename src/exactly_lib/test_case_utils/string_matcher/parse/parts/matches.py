@@ -5,9 +5,9 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_getters
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
-from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherValue
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
 from exactly_lib.test_case_utils.string_matcher import matcher_options, resolvers
@@ -45,7 +45,7 @@ def value_resolver(expectation_type: ExpectationType,
         regex_value = contents_matcher.resolve(symbols)
         regex_matcher = matches_regex.MatchesRegexValue(expectation_type, regex_value, is_full_match, )
         return StringMatcherValueDelegatedToMatcher(
-            PropertyMatcherValue(
+            property_matcher.PropertyMatcherValue(
                 regex_matcher,
                 property_getters.PropertyGetterValueConstant(
                     _PropertyGetter(),

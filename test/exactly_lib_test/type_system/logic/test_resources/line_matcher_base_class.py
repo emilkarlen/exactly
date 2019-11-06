@@ -12,17 +12,9 @@ from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherL
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 
 
-class LineMatcherImplBase(WithCachedTreeStructureDescriptionBase,
-                          LineMatcher,
-                          ABC):
-    """
-    Matches text lines.
-
-    A line is a tuple (line number, line contents).
-
-    Line numbers start at 1.
-    """
-
+class LineMatcherTestImplBase(WithCachedTreeStructureDescriptionBase,
+                              LineMatcher,
+                              ABC):
     def _new_tb(self) -> TraceBuilder:
         return TraceBuilder(self.name)
 
