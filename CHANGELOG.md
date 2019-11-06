@@ -7,6 +7,10 @@ with exception of a "0." prefix until version 1 is released.
 
 ## [next-release]
 
+### Added
+
+ - Command `symbol` - ability to display information from suite
+
 ### Changed
 
  - Python compatibility: Increased to Python v 3.5.4
