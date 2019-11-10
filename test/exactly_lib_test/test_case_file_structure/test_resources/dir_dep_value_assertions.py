@@ -2,7 +2,7 @@ import unittest
 from typing import TypeVar, Callable, Set, Optional, Generic
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue, SingleDirDependentValue, \
-    MultiDirDependentValue, DirDependencies, resolving_dependencies_from_dir_dependencies
+    MultiDirDependentValue, DirDependencies, resolving_dependencies_from_dir_dependencies, DirDependentPrimeValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
@@ -35,6 +35,13 @@ def matches_multi_dir_dependent_value(dir_dependencies: DirDependencies,
                                            resolved_value,
                                            tcds,
                                            supports_dir_dependencies)
+
+
+def matches_dir_dependent_prime_value(resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
+                                      tcds: HomeAndSds = fake_home_and_sds(),
+                                      ) -> ValueAssertion[DirDependentValue[T]]:
+    return _DirDependentPrimeValueAssertion(resolved_value,
+                                            tcds)
 
 
 class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[DirDependentValue[T]]):
@@ -191,3 +198,33 @@ class MultiDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
         asrt.equals(self._dir_dependencies).apply(put,
                                                   actual_dir_dependencies,
                                                   message_builder.for_sub_component('dir_dependencies'))
+
+
+class _DirDependentPrimeValueAssertion(ValueAssertionBase[T]):
+    def __init__(self,
+                 resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
+                 tcds: HomeAndSds = fake_home_and_sds(),
+                 ):
+        self.resolved_value = resolved_value
+        self.tcds = tcds
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: asrt.MessageBuilder):
+        asrt.is_instance(DirDependentPrimeValue).apply(put, value, message_builder)
+        assert isinstance(value, DirDependentPrimeValue)  # Type info for IDE
+
+        self._check_resolved_value(put, value, self.tcds, message_builder)
+
+    def _check_resolved_value(self,
+                              put: unittest.TestCase,
+                              actual: DirDependentPrimeValue,
+                              tcds: HomeAndSds,
+                              message_builder: asrt.MessageBuilder):
+        assertion_on_resolved_value = self.resolved_value(tcds)
+
+        actual_resolved_value = actual.value_of_any_dependency(tcds)
+        assertion_on_resolved_value.apply(put,
+                                          actual_resolved_value,
+                                          message_builder.for_sub_component('resolved primitive value'))

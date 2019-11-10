@@ -1,4 +1,5 @@
 import pathlib
+from abc import ABC
 from enum import Enum
 from typing import TypeVar, Generic, Set, Optional
 
@@ -72,7 +73,19 @@ class WithDirDependencies:
         return DirectoryStructurePartition.NON_HOME not in self.resolving_dependencies()
 
 
-class DirDependentValue(Generic[RESOLVED_TYPE], WithDirDependencies):
+class DirDependentPrimeValue(Generic[RESOLVED_TYPE]):
+    # TODO After refactoring: make this class the base class DirDependentValue
+    """A value that may refer to the test case directories."""
+
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> RESOLVED_TYPE:
+        """Gives the value, regardless of actual dependency."""
+        raise NotImplementedError()
+
+
+class DirDependentValue(Generic[RESOLVED_TYPE],
+                        DirDependentPrimeValue[RESOLVED_TYPE],
+                        WithDirDependencies,
+                        ABC):
     """A value that may refer to the test case directories."""
 
     def value_when_no_dir_dependencies(self) -> RESOLVED_TYPE:
@@ -80,10 +93,6 @@ class DirDependentValue(Generic[RESOLVED_TYPE], WithDirDependencies):
         :raises DirDependencyError: This value has dir dependencies.
         """
         raise DirDependencyError(self.resolving_dependencies())
-
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> RESOLVED_TYPE:
-        """Gives the value, regardless of actual dependency."""
-        raise NotImplementedError()
 
 
 class SingleDirDependentValue(DirDependentValue[pathlib.Path]):

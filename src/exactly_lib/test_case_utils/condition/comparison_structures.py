@@ -57,7 +57,7 @@ class _FailureReporter(Generic[T]):
         return self.err_msg_resolver.failure_info()
 
 
-class OperandValue(ABC, Generic[T], MultiDirDependentValue[T]):
+class OperandValue(Generic[T], MultiDirDependentValue[T], ABC):
     @abstractmethod
     def describer(self) -> DetailsRenderer:
         pass
