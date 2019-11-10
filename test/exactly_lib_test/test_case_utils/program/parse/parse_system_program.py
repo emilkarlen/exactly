@@ -1,5 +1,5 @@
 import unittest
-from typing import List, Set, Callable
+from typing import List, Callable
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -9,7 +9,7 @@ from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition, RelOptionType, \
-    RESOLVING_DEPENDENCY_OF, RelNonHomeOptionType, RelHomeOptionType
+    RelNonHomeOptionType, RelHomeOptionType
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_system_program as sut
 from exactly_lib.type_system.data import file_refs
@@ -87,12 +87,10 @@ class ArgumentsCase:
     def __init__(self,
                  name: str,
                  source_elements: List,
-                 expected_dir_dependencies: Set[DirectoryStructurePartition],
                  expected_resolved_values: Callable[[HomeAndSds], List[str]],
                  expected_symbol_references: List[ValueAssertion[SymbolReference]]):
         self.name = name
         self.source_elements = source_elements
-        self.expected_dir_dependencies = expected_dir_dependencies
         self.expected_resolved_values = expected_resolved_values
         self.expected_symbol_references = expected_symbol_references
 
@@ -123,32 +121,20 @@ class TestSuccessfulParse(unittest.TestCase):
                                            file_refs.constant_path_part(file_name))
 
         argument_cases = [
-            ArgumentsCase('no arguments',
-                          source_elements=[],
-                          expected_dir_dependencies=set(),
-                          expected_resolved_values=lambda tcds: [],
-                          expected_symbol_references=[]
-                          ),
-            ArgumentsCase('single constant argument',
-                          source_elements=['argument'],
-                          expected_dir_dependencies=set(),
-                          expected_resolved_values=lambda tcds: ['argument'],
-                          expected_symbol_references=[]
-                          ),
+            ArgumentsCase('no arguments', source_elements=[], expected_resolved_values=lambda tcds: [],
+                          expected_symbol_references=[]),
+            ArgumentsCase('single constant argument', source_elements=['argument'],
+                          expected_resolved_values=lambda tcds: ['argument'], expected_symbol_references=[]),
             ArgumentsCase('symbol reference and constant argument',
                           source_elements=[ab.symbol_reference(argument_string_symbol.name), 'argument'],
-                          expected_dir_dependencies=set(),
                           expected_resolved_values=lambda tcds: [argument_string_symbol.value, 'argument'],
                           expected_symbol_references=[
                               asrt_sym_ref.is_reference_to_data_type_symbol(argument_string_symbol.name)
-                          ]
-                          ),
+                          ]),
             ArgumentsCase('existing file argument',
                           source_elements=[ab.option(syntax_elements.EXISTING_FILE_OPTION_NAME), file_name],
-                          expected_dir_dependencies={RESOLVING_DEPENDENCY_OF[default_relativity_of_existing_file]},
                           expected_resolved_values=lambda tcds: [str(file_ref.value_of_any_dependency(tcds))],
-                          expected_symbol_references=[]
-                          ),
+                          expected_symbol_references=[]),
         ]
 
         program_cases = [
@@ -209,8 +195,7 @@ def check_parsing_of_program(put: unittest.TestCase,
 
         expectation = asrt_resolver.matches_resolver_of_program(
             references=expected_references_assertion,
-            resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_value(
-                resolving_dependencies=asrt.equals(argument_case.expected_dir_dependencies),
+            resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_prime_value(
                 resolved_value=expected_program,
             ),
             symbols=symbols

@@ -12,7 +12,7 @@ from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver, ge
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue, DirDependentPrimeValue
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue
@@ -170,7 +170,7 @@ def matches_resolver_of_string_transformer(references: ValueAssertion[Sequence[S
 
 
 def matches_resolver_of_program(references: ValueAssertion[Sequence[SymbolReference]],
-                                resolved_program_value: ValueAssertion[DirDependentValue],
+                                resolved_program_value: ValueAssertion[DirDependentPrimeValue],
                                 custom: ValueAssertion[ProgramResolver] = asrt.anything_goes(),
                                 symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_program_type(),

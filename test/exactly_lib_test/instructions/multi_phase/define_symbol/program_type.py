@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
@@ -58,8 +57,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                 references=asrt.matches_sequence([
                     is_program_reference_to(referred_symbol.name)
                 ]),
-                resolved_program_value=asrt_dir_dep_val.matches_multi_dir_dependent_value(
-                    DirDependencies.NONE,
+                resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_prime_value(
                     lambda tcds: matches_py_source_on_cmd_line_program(python_source)),
                 symbols=symbols
             ))

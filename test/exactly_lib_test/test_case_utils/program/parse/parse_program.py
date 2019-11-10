@@ -41,13 +41,10 @@ class TestParseSystemProgram(unittest.TestCase):
             expected_resolved_value='program_name',
             expected_symbol_references=[],
         )
-        arguments_case = parse_system_program.ArgumentsCase(
-            'single constant argument',
-            source_elements=['the_argument'],
-            expected_dir_dependencies=set(),
-            expected_resolved_values=lambda tcds: ['the_argument'],
-            expected_symbol_references=[],
-        )
+        arguments_case = parse_system_program.ArgumentsCase('single constant argument',
+                                                            source_elements=['the_argument'],
+                                                            expected_resolved_values=lambda tcds: ['the_argument'],
+                                                            expected_symbol_references=[])
 
         parser = sut.program_parser()
         parse_system_program.check_parsing_of_program(self,
