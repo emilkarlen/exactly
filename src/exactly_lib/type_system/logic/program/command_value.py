@@ -25,6 +25,6 @@ class CommandValue(DirDependentValue[Command]):
     def arguments(self) -> ListValue:
         return self._arguments
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> Command:
-        return Command(self._command_driver.value_of_any_dependency(home_and_sds),
-                       self._arguments.value_of_any_dependency(home_and_sds))
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> Command:
+        return Command(self._command_driver.value_of_any_dependency(tcds),
+                       self._arguments.value_of_any_dependency(tcds))

@@ -31,6 +31,6 @@ class LineMatcherValue(DirDependentValue[LineMatcher],
         return constant_success_validator()
 
     @abstractmethod
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> LineMatcher:
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> LineMatcher:
         """Gives the value, regardless of actual dependency."""
         pass

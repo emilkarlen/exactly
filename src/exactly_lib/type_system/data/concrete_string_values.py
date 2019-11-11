@@ -26,7 +26,7 @@ class ConstantFragment(StringFragment):
     def value_when_no_dir_dependencies(self):
         return self.string_constant
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> str:
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> str:
         return self.string_constant
 
     def describer(self) -> Renderer[str]:
@@ -53,8 +53,8 @@ class _StringFragmentFromDirDependentValue(StringFragment):
     def value_when_no_dir_dependencies(self):
         return self._to_string(self.value.value_when_no_dir_dependencies())
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> str:
-        return self._to_string(self.value.value_of_any_dependency(home_and_sds))
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> str:
+        return self._to_string(self.value.value_of_any_dependency(tcds))
 
     def _to_string(self, x) -> str:
         raise NotImplementedError()
@@ -134,8 +134,8 @@ class TransformedStringFragment(StringFragment):
     def value_when_no_dir_dependencies(self) -> str:
         return self._transformer(self._string_fragment.value_when_no_dir_dependencies())
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> str:
-        return self._transformer(self._string_fragment.value_of_any_dependency(home_and_sds))
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> str:
+        return self._transformer(self._string_fragment.value_of_any_dependency(tcds))
 
     def describer(self) -> Renderer[str]:
         return _TransformedStringRenderer(self._string_fragment,

@@ -33,5 +33,5 @@ class StdinDataValue(DirDependentValue[StdinData]):
     def fragments(self) -> Sequence[StringOrFileRefValue]:
         return self._fragments
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StdinData:
-        return StdinData([f.value_of_any_dependency(home_and_sds) for f in self._fragments])
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> StdinData:
+        return StdinData([f.value_of_any_dependency(tcds) for f in self._fragments])

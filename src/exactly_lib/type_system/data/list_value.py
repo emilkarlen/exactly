@@ -37,11 +37,11 @@ class ListValue(MultiDependenciesDdv[List[str]]):
         return [e.value_when_no_dir_dependencies()
                 for e in self._string_value_elements]
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> List[str]:
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> List[str]:
         """
         :rtype: List of `str`
         """
-        return [e.value_of_any_dependency(home_and_sds)
+        return [e.value_of_any_dependency(tcds)
                 for e in self._string_value_elements]
 
     def __str__(self):

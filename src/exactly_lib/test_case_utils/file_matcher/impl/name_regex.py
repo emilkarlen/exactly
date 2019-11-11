@@ -47,8 +47,8 @@ class _Value(FileMatcherValue):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._regex.validator()
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> FileMatcher:
-        return FileMatcherBaseNameRegExPattern(self._regex.value_of_any_dependency(home_and_sds))
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> FileMatcher:
+        return FileMatcherBaseNameRegExPattern(self._regex.value_of_any_dependency(tcds))
 
 
 class FileMatcherBaseNameRegExPattern(FileMatcherImplBase):

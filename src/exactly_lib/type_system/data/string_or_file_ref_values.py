@@ -126,12 +126,12 @@ class StringOrFileRefValue(MultiDependenciesDdv[StringOrPath]):
                                 self._string_value.value_when_no_dir_dependencies(),
                                 None)
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringOrPath:
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringOrPath:
         if self.is_file_ref:
             return StringOrPath(self._source_type,
                                 None,
-                                self._file_ref_value.value_of_any_dependency__d(home_and_sds))
+                                self._file_ref_value.value_of_any_dependency__d(tcds))
         else:
             return StringOrPath(self._source_type,
-                                self._string_value.value_of_any_dependency(home_and_sds),
+                                self._string_value.value_of_any_dependency(tcds),
                                 None)

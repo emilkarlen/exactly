@@ -44,7 +44,7 @@ class StringTransformerValue(DirDependentValue[StringTransformer],
         return constant_success_validator()
 
     @abstractmethod
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringTransformer:
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringTransformer:
         pass
 
 

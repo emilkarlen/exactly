@@ -46,8 +46,8 @@ class _Value(FileMatcherValue):
     def __init__(self, glob_pattern: StringValue):
         self._glob_pattern = glob_pattern
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> FileMatcher:
-        return FileMatcherNameGlobPattern(self._glob_pattern.value_of_any_dependency(home_and_sds))
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> FileMatcher:
+        return FileMatcherNameGlobPattern(self._glob_pattern.value_of_any_dependency(tcds))
 
 
 class FileMatcherNameGlobPattern(FileMatcherImplBase):

@@ -156,5 +156,5 @@ class StringMatcherValue(DirDependentValue[StringMatcher],
         return renderers.header_only('string-matcher TODO')
 
     @abstractmethod
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringMatcher:
         pass

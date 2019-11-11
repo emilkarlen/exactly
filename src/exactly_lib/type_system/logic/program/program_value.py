@@ -47,7 +47,7 @@ class ProgramValue(DirDependentValue[Program]):
     def transformation(self) -> StringTransformerValue:
         return self._transformation
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> Program:
-        return Program(self.command.value_of_any_dependency(home_and_sds),
-                       self.stdin.value_of_any_dependency(home_and_sds),
-                       self.transformation.value_of_any_dependency(home_and_sds))
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> Program:
+        return Program(self.command.value_of_any_dependency(tcds),
+                       self.stdin.value_of_any_dependency(tcds),
+                       self.transformation.value_of_any_dependency(tcds))

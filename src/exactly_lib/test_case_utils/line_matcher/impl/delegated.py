@@ -59,8 +59,8 @@ class LineMatcherValueDelegatedToMatcher(LineMatcherValue):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._delegated.validator
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> LineMatcher:
-        return LineMatcherDelegatedToMatcher(self._delegated.value_of_any_dependency(home_and_sds))
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> LineMatcher:
+        return LineMatcherDelegatedToMatcher(self._delegated.value_of_any_dependency(tcds))
 
 
 class LineMatcherResolverDelegatedToMatcher(LineMatcherResolver):

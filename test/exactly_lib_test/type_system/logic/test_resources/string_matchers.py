@@ -84,5 +84,5 @@ class StringMatcherValueFromPartsTestImpl(StringMatcherValue):
     def structure(self) -> StructureRenderer:
         return self._structure
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
-        return self._matcher(home_and_sds)
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringMatcher:
+        return self._matcher(tcds)

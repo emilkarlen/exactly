@@ -68,5 +68,5 @@ class FileMatcherValueFromParts(FileMatcherValue):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> FileMatcher:
-        return self._matcher(home_and_sds)
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> FileMatcher:
+        return self._matcher(tcds)

@@ -219,11 +219,11 @@ class MultiDependenciesDdvTestImpl(Generic[RESOLVED_TYPE], sut.MultiDependencies
         else:
             return self._value_when_no_dir_dependencies
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds):
+    def value_of_any_dependency(self, tcds: HomeAndSds):
         if self._get_value_of_any_dependency is None:
             return self.value_when_no_dir_dependencies()
         else:
-            return self._get_value_of_any_dependency(home_and_sds)
+            return self._get_value_of_any_dependency(tcds)
 
     def __str__(self):
         return '{}(has_dir_dependency={has_dir_dependency}, exists_pre_sds={exists_pre_sds})'.format(

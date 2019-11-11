@@ -61,7 +61,7 @@ RESOLVED_TYPE = TypeVar('RESOLVED_TYPE')
 class DirDependentValue(Generic[RESOLVED_TYPE]):
     """A value that may refer to the test case directories."""
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> RESOLVED_TYPE:
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> RESOLVED_TYPE:
         """Gives the value, regardless of actual dependency."""
         raise NotImplementedError()
 
@@ -122,11 +122,11 @@ class Max1DependencyDdv(Generic[RESOLVED_TYPE],
         """
         raise NotImplementedError()
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> RESOLVED_TYPE:
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> RESOLVED_TYPE:
         if self.exists_pre_sds():
-            return self.value_pre_sds(home_and_sds.hds)
+            return self.value_pre_sds(tcds.hds)
         else:
-            return self.value_post_sds(home_and_sds.sds)
+            return self.value_post_sds(tcds.sds)
 
 
 class MultiDependenciesDdv(Generic[RESOLVED_TYPE],

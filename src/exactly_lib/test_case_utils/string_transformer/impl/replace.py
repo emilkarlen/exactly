@@ -69,9 +69,9 @@ class _Value(StringTransformerValue):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._regex.validator()
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringTransformer:
-        return ReplaceStringTransformer(self._regex.value_of_any_dependency(home_and_sds),
-                                        self._replacement.value_of_any_dependency(home_and_sds))
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringTransformer:
+        return ReplaceStringTransformer(self._regex.value_of_any_dependency(tcds),
+                                        self._replacement.value_of_any_dependency(tcds))
 
 
 class ReplaceStringTransformer(StringTransformer):

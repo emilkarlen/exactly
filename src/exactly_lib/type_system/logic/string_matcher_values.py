@@ -14,5 +14,5 @@ class StringMatcherConstantValue(StringMatcherValue):
     def structure(self) -> StructureRenderer:
         return self._value.structure()
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringMatcher:
         return self._value

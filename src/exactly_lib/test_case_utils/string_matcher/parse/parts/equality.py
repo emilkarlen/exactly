@@ -118,8 +118,8 @@ class EqualityStringMatcherValue(StringMatcherValue):
             custom_details.StringOrPathValue(self._expected_contents),
         )
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
-        expected_contents = self._expected_contents.value_of_any_dependency(home_and_sds)
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringMatcher:
+        expected_contents = self._expected_contents.value_of_any_dependency(tcds)
         return EqualityStringMatcher(
             self._expectation_type,
             expected_contents,
@@ -128,7 +128,7 @@ class EqualityStringMatcherValue(StringMatcherValue):
                 parse_here_doc_or_file_ref.ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
                                                                  expected_contents)
             ),
-            self._get_validator(home_and_sds),
+            self._get_validator(tcds),
         )
 
 

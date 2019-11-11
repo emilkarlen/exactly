@@ -46,8 +46,8 @@ class StringValue(StringWithDirDependency):
                             for f in self._fragments]
         return ''.join(fragment_strings)
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> str:
-        fragment_strings = [f.value_of_any_dependency(home_and_sds)
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> str:
+        fragment_strings = [f.value_of_any_dependency(tcds)
                             for f in self._fragments]
         return ''.join(fragment_strings)
 
