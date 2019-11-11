@@ -1,12 +1,8 @@
-from typing import Set
-
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue, StdinData
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerValue
-from exactly_lib.type_system.utils import resolving_dependencies_from_sequence
 from exactly_lib.util.process_execution.command import Command
 
 
@@ -50,16 +46,6 @@ class ProgramValue(DirDependentValue[Program]):
     @property
     def transformation(self) -> StringTransformerValue:
         return self._transformation
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return resolving_dependencies_from_sequence([self.command,
-                                                     self.stdin,
-                                                     self.transformation])
-
-    def value_when_no_dir_dependencies(self) -> Program:
-        return Program(self.command.value_when_no_dir_dependencies(),
-                       self.stdin.value_when_no_dir_dependencies(),
-                       self.transformation.value_when_no_dir_dependencies())
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> Program:
         return Program(self.command.value_of_any_dependency(home_and_sds),
