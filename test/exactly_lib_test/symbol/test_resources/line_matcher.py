@@ -68,15 +68,9 @@ class LineMatcherValueTestImpl(LineMatcherValue):
     def structure(self) -> StructureRenderer:
         return self._primitive_value.structure()
 
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._resolving_dependencies
-
     @property
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
-
-    def value_when_no_dir_dependencies(self) -> LineMatcher:
-        return self._primitive_value
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> LineMatcher:
         return self._primitive_value

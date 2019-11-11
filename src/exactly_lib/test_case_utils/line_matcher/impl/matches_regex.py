@@ -27,15 +27,12 @@ def resolver(regex_resolver: RegexResolver) -> LineMatcherResolver:
     def get_value(symbols: SymbolTable) -> LineMatcherValue:
         regex_value = regex_resolver.resolve(symbols)
         regex_matcher = matches_regex.MatchesRegexValue(ExpectationType.POSITIVE, regex_value, False)
-        return delegated.LineMatcherValueDelegatedToMatcher(
-            property_matcher.PropertyMatcherValue(
-                regex_matcher,
-                property_getters.PropertyGetterValueConstant(
-                    _PropertyGetter(),
-                ),
+        return delegated.LineMatcherValueDelegatedToMatcher(property_matcher.PropertyMatcherValue(
+            regex_matcher,
+            property_getters.PropertyGetterValueConstant(
+                _PropertyGetter(),
             ),
-            regex_value.resolving_dependencies()
-        )
+        ))
 
     return LineMatcherResolverFromParts(
         regex_resolver.references,

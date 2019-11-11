@@ -25,15 +25,9 @@ class LineMatcherValueFromPrimitiveValue(LineMatcherValue):
     def structure(self) -> StructureRenderer:
         return self._primitive_value.structure()
 
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._resolving_dependencies
-
     @property
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
-
-    def value_when_no_dir_dependencies(self) -> LineMatcher:
-        return self._primitive_value
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> LineMatcher:
         return self._primitive_value
@@ -57,22 +51,9 @@ class _LineMatcherCompositionValueBase(LineMatcherValue):
     def structure(self) -> StructureRenderer:
         return self._mk_structure(self._parts)
 
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        ret_val = self._parts[0].resolving_dependencies()
-        for composed in self._parts[1:]:
-            ret_val.update(composed.resolving_dependencies())
-
-        return ret_val
-
     @property
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
-
-    def value_when_no_dir_dependencies(self) -> LineMatcher:
-        return self._mk_primitive_value([
-            part.value_when_no_dir_dependencies()
-            for part in self._parts
-        ])
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> LineMatcher:
         return self._mk_primitive_value([
