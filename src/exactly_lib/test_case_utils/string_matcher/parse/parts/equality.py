@@ -1,7 +1,7 @@
 import difflib
 import filecmp
 import pathlib
-from typing import List, Set, Optional, Iterable, Callable
+from typing import List, Optional, Iterable, Callable
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -12,7 +12,6 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
     ValidationStep, \
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
@@ -118,9 +117,6 @@ class EqualityStringMatcherValue(StringMatcherValue):
             self._expectation_type,
             custom_details.StringOrPathValue(self._expected_contents),
         )
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._expected_contents.resolving_dependencies()
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
         expected_contents = self._expected_contents.value_of_any_dependency(home_and_sds)

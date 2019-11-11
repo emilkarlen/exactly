@@ -1,4 +1,4 @@
-from typing import Sequence, Callable, Set
+from typing import Sequence, Callable
 
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
@@ -8,9 +8,6 @@ from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.string_matcher import delegated_matcher
 from exactly_lib.test_case_utils.string_matcher import string_matchers
 from exactly_lib.type_system.logic import string_matcher_values
@@ -124,51 +121,6 @@ class StringMatcherResolverFromParts2(StringMatcherResolver):
     @property
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
-
-    def __str__(self):
-        return str(type(self))
-
-
-class StringMatcherValueWithValidation(StringMatcherValue):
-    def __init__(self,
-                 resolving_dependencies: Set[DirectoryStructurePartition],
-                 validator: PreOrPostSdsValueValidator,
-                 get_matcher: Callable[[HomeAndSds], StringMatcher]):
-        self._resolving_dependencies = resolving_dependencies
-        self._validator = validator
-        self._get_matcher = get_matcher
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._resolving_dependencies
-
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
-        return self._get_matcher(home_and_sds)
-
-    def validator(self) -> PreOrPostSdsValueValidator:
-        return self._validator
-
-
-class StringMatcherResolverFromValueWithValidation(StringMatcherResolver):
-    def __init__(self,
-                 references: Sequence[SymbolReference],
-                 make_value: Callable[[SymbolTable], StringMatcherValueWithValidation]):
-        self._make_value = make_value
-        self._references = references
-        self._validator = pre_or_post_validation.PreOrPostSdsValidatorFromValueValidator(self._get_value_validator)
-
-    def resolve(self, symbols: SymbolTable) -> StringMatcherValueWithValidation:
-        return self._make_value(symbols)
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._references
-
-    @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return self._validator
-
-    def _get_value_validator(self, symbols: SymbolTable) -> PreOrPostSdsValueValidator:
-        return self.resolve(symbols).validator()
 
     def __str__(self):
         return str(type(self))

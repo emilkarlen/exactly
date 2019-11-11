@@ -1,9 +1,11 @@
+from typing import Sequence
+
 from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util import symbol_table
@@ -14,7 +16,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 
 def matches_string_matcher_resolver(primitive_value: ValueAssertion[StringMatcher] = asrt.anything_goes(),
-                                    references: ValueAssertion = asrt.is_empty_sequence,
+                                    references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                                     symbols: symbol_table.SymbolTable = None,
                                     tcds: HomeAndSds = fake_home_and_sds(),
                                     ) -> ValueAssertion[LogicValueResolver]:
@@ -26,18 +28,13 @@ def matches_string_matcher_resolver(primitive_value: ValueAssertion[StringMatche
     def resolve_primitive_value(value: StringMatcherValue):
         return value.value_of_any_dependency(tcds)
 
-    resolved_value_assertion = asrt.is_instance_with__many(
+    resolved_value_assertion = asrt.is_instance_with(
         StringMatcherValue,
-        [
-            asrt.sub_component('resolving dependencies',
-                               lambda sm_value: sm_value.resolving_dependencies(),
-                               asrt.is_set_of(asrt.is_instance(DirectoryStructurePartition))),
-
-            asrt.sub_component('primitive value',
-                               resolve_primitive_value,
-                               asrt.is_instance_with(StringMatcher,
-                                                     primitive_value))
-        ])
+        asrt.sub_component('primitive value',
+                           resolve_primitive_value,
+                           asrt.is_instance_with(StringMatcher,
+                                                 primitive_value))
+    )
 
     return asrt.is_instance_with(
         StringMatcherResolver,
@@ -62,7 +59,7 @@ def matches_string_matcher_resolver(primitive_value: ValueAssertion[StringMatche
     )
 
 
-def matches_string_matcher_attributes(references: ValueAssertion = asrt.is_empty_sequence,
+def matches_string_matcher_attributes(references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                                       ) -> ValueAssertion[LogicValueResolver]:
     return asrt.is_instance_with(
         StringMatcherResolver,

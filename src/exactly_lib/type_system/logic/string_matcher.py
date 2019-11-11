@@ -1,11 +1,10 @@
 import pathlib
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
-from typing import Set, Optional, Iterable
+from typing import Optional, Iterable
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentPrimeValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
 from exactly_lib.type_system.description import trace_renderers
@@ -150,20 +149,12 @@ class StringMatcher(WithCachedTreeStructureDescriptionBase,
         return TraceBuilder(self.name)
 
 
-class StringMatcherValue(MultiDirDependentValue[StringMatcher],
-                         MatcherValue[FileToCheck]):
+class StringMatcherValue(DirDependentPrimeValue[StringMatcher],
+                         MatcherValue[FileToCheck],
+                         ABC):
     def structure(self) -> StructureRenderer:
         return renderers.header_only('string-matcher TODO')
 
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return set()
-
-    def value_when_no_dir_dependencies(self) -> StringMatcher:
-        """
-        :raises DirDependencyError: This value has dir dependencies.
-        """
-        raise ValueError(str(type(self)) + ' do not support this short cut.')
-
+    @abstractmethod
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
-        """Gives the value, regardless of actual dependency."""
-        raise NotImplementedError()
+        pass

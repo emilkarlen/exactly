@@ -1,4 +1,4 @@
-from typing import Sequence, Callable, Set
+from typing import Sequence, Callable
 
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
@@ -7,7 +7,6 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue
 from exactly_lib.type_system.logic.string_matcher_values import StringMatcherConstantValue
@@ -88,11 +87,9 @@ class StringMatcherResolverFromPartsTestImpl(StringMatcherResolver):
                  structure: StructureRenderer,
                  references: Sequence[SymbolReference],
                  validator: PreOrPostSdsValidator,
-                 resolving_dependencies: Callable[[SymbolTable], Set[DirectoryStructurePartition]],
                  matcher: Callable[[PathResolvingEnvironmentPreOrPostSds], StringMatcher]):
         self._structure = structure
         self._matcher = matcher
-        self._resolving_dependencies = resolving_dependencies
         self._validator = validator
         self._references = references
 
@@ -102,7 +99,6 @@ class StringMatcherResolverFromPartsTestImpl(StringMatcherResolver):
             return self._matcher(environment)
 
         return StringMatcherValueFromPartsTestImpl(self._structure,
-                                                   self._resolving_dependencies(symbols),
                                                    get_matcher)
 
     @property

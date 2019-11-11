@@ -51,7 +51,6 @@ def value_resolver(expectation_type: ExpectationType,
                     _PropertyGetter(),
                 ),
             ),
-            regex_value.resolving_dependencies()
         )
 
     return resolvers.StringMatcherResolverFromParts2(

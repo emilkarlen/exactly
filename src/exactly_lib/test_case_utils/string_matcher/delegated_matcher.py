@@ -1,4 +1,4 @@
-from typing import Optional, Set, List
+from typing import Optional, List
 
 from exactly_lib.symbol.logic.resolver import MatcherResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
@@ -7,7 +7,6 @@ from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, MatcherValue
@@ -44,26 +43,12 @@ class StringMatcherDelegatedToMatcher(StringMatcher):
 class StringMatcherValueDelegatedToMatcher(StringMatcherValue):
     def __init__(self,
                  delegated: MatcherValue[FileToCheck],
-                 resolving_dependencies: Optional[Set[DirectoryStructurePartition]] = None,
                  ):
         super().__init__()
         self._delegated = delegated
-        self._resolving_dependencies = (set()
-                                        if resolving_dependencies is None
-                                        else
-                                        resolving_dependencies)
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._resolving_dependencies
 
     def structure(self) -> StructureRenderer:
         return self._delegated.structure()
-
-    def value_when_no_dir_dependencies(self) -> StringMatcher:
-        """
-        :raises DirDependencyError: This value has dir dependencies.
-        """
-        raise ValueError(str(type(self)) + ' do not support this short cut.')
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
         return StringMatcherDelegatedToMatcher(self._delegated.value_of_any_dependency(home_and_sds))

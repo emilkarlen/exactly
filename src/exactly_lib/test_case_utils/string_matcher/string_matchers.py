@@ -1,9 +1,8 @@
-from typing import Optional, Set
+from typing import Optional
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
@@ -88,12 +87,6 @@ class StringMatcherWithTransformationValue(StringMatcherValue):
             self._transformer.structure(),
             self._on_transformed.structure(),
         )
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        ret_val = set(self._transformer.resolving_dependencies())
-        ret_val.update(self._on_transformed.resolving_dependencies())
-
-        return ret_val
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> StringMatcher:
         return StringMatcherOnTransformedFileToCheck(self._transformer.value_of_any_dependency(tcds),

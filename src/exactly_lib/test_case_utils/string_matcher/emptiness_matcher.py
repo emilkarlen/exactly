@@ -1,9 +1,8 @@
-from typing import Optional, Set
+from typing import Optional
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
@@ -95,9 +94,6 @@ class EmptinessStringMatcherValue(StringMatcherValue):
 
     def structure(self) -> StructureRenderer:
         return EmptinessStringMatcher.new_structure_tree(self._expectation_type)
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return set()
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> StringMatcher:
         return EmptinessStringMatcher(self._expectation_type)

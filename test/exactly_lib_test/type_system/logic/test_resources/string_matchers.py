@@ -1,7 +1,6 @@
-from typing import Optional, Set, Callable
+from typing import Optional, Callable
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -78,17 +77,12 @@ class StringMatcherConstantTestImpl(StringMatcher):
 class StringMatcherValueFromPartsTestImpl(StringMatcherValue):
     def __init__(self,
                  structure: StructureRenderer,
-                 resolving_dependencies: Set[DirectoryStructurePartition],
                  matcher: Callable[[HomeAndSds], StringMatcher]):
         self._structure = structure
         self._matcher = matcher
-        self._resolving_dependencies = resolving_dependencies
 
     def structure(self) -> StructureRenderer:
         return self._structure
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._resolving_dependencies
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringMatcher:
         return self._matcher(home_and_sds)

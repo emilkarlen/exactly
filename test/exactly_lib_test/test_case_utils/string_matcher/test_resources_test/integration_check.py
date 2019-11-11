@@ -2,7 +2,7 @@
 Test of test-infrastructure: instruction_check.
 """
 import unittest
-from typing import Sequence, Optional, List, Set
+from typing import Sequence, Optional, List
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
@@ -14,7 +14,6 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
@@ -211,7 +210,6 @@ class TestMisc(TestCaseBase):
                     renderers.header_only('header of ddv'),
                     (),
                     pre_or_post_validation.ConstantSuccessValidator(),
-                    no_resolving_dependencies,
                     lambda x: StringMatcherConstantTestImpl(True,
                                                             tree.Node('header of primitive', None, (), ())),
                 ),
@@ -222,7 +220,6 @@ class TestMisc(TestCaseBase):
                     renderers.header_only(header),
                     (),
                     pre_or_post_validation.ConstantSuccessValidator(),
-                    no_resolving_dependencies,
                     lambda x: StringMatcherConstantTestImpl(True,
                                                             tree.Node(header, None, (),
                                                                       (tree.Node(header, None, (), ()),))),
@@ -317,7 +314,6 @@ def string_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> String
         _ARBITRARY_STRUCTURE_RENDERER,
         (),
         ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(),
-        no_resolving_dependencies,
         get_matcher,
     )
 
@@ -333,7 +329,6 @@ def string_matcher_that_asserts_models_is_expected(put: unittest.TestCase,
         _ARBITRARY_STRUCTURE_RENDERER,
         (),
         pre_or_post_validation.ConstantSuccessValidator(),
-        no_resolving_dependencies,
         get_matcher,
     )
 
@@ -473,11 +468,6 @@ class StringMatcherThatAssertsModelsIsExpected(StringMatcherTestImplBase):
 PARSER_THAT_GIVES_MATCHER_THAT_MATCHES = parser_for_constant()
 
 _MATCHER_THAT_MATCHES = StringMatcherConstant(None)
-
-
-def no_resolving_dependencies(symbols: SymbolTable) -> Set[DirectoryStructurePartition]:
-    return set()
-
 
 _ARBITRARY_STRUCTURE_RENDERER = renderers.header_only('arbitrary structure header')
 
