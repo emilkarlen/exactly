@@ -1,12 +1,11 @@
 import functools
-from abc import ABC
-from typing import Set, Iterable, Sequence
+from abc import ABC, abstractmethod
+from typing import Iterable, Sequence
 
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     constant_success_validator
-from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentPrimeValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription, \
     WithTreeStructureDescription, StructureRenderer
 from exactly_lib.util.description_tree import renderers
@@ -34,27 +33,19 @@ class StringTransformer(WithNameAndTreeStructureDescription, ABC):
         return type(self).__name__
 
 
-class StringTransformerValue(MultiDirDependentValue[StringTransformer],
-                             WithTreeStructureDescription):
+class StringTransformerValue(DirDependentPrimeValue[StringTransformer],
+                             WithTreeStructureDescription,
+                             ABC):
 
     def structure(self) -> StructureRenderer:
         return renderers.header_only('string transformer TODO')
 
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return set()
-
     def validator(self) -> PreOrPostSdsValueValidator:
         return constant_success_validator()
 
-    def value_when_no_dir_dependencies(self) -> StringTransformer:
-        """
-        :raises DirDependencyError: This value has dir dependencies.
-        """
-        raise NotImplementedError()
-
+    @abstractmethod
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringTransformer:
-        """Gives the value, regardless of actual dependency."""
-        raise NotImplementedError()
+        pass
 
 
 class IdentityStringTransformer(StringTransformer):

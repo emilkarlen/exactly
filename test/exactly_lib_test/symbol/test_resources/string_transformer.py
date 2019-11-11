@@ -1,11 +1,10 @@
-from typing import Sequence, Optional, Set
+from typing import Sequence
 
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerValue, \
     StringTransformerModel
 from exactly_lib.type_system.logic.string_transformer_values import StringTransformerConstantValue
@@ -63,23 +62,14 @@ class StringTransformerValueTestImpl(StringTransformerValue):
     def __init__(self,
                  primitive_value: StringTransformer,
                  validator: PreOrPostSdsValueValidator = constant_success_validator(),
-                 resolving_dependencies: Optional[Set[DirectoryStructurePartition]] = None):
+                 ):
         self._primitive_value = primitive_value
         self._validator = validator
-        self._resolving_dependencies = (set()
-                                        if resolving_dependencies is None
-                                        else resolving_dependencies)
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._resolving_dependencies
 
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 
-    def value_when_no_dir_dependencies(self) -> StringTransformer:
-        return self._primitive_value
-
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringTransformer:
+    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringTransformer:
         return self._primitive_value
 
 

@@ -1,4 +1,4 @@
-from typing import Set, Pattern, Sequence
+from typing import Pattern, Sequence
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
@@ -9,7 +9,6 @@ from exactly_lib.symbol.object_with_symbol_references import references_from_obj
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
@@ -66,18 +65,9 @@ class _Value(StringTransformerValue):
                  replacement: StringValue):
         self._regex = regex
         self._replacement = replacement
-        self._resolving_dependencies = set(regex.resolving_dependencies())
-        self._resolving_dependencies.update(replacement.resolving_dependencies())
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._resolving_dependencies
 
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._regex.validator()
-
-    def value_when_no_dir_dependencies(self) -> StringTransformer:
-        return ReplaceStringTransformer(self._regex.value_when_no_dir_dependencies(),
-                                        self._replacement.value_when_no_dir_dependencies())
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringTransformer:
         return ReplaceStringTransformer(self._regex.value_of_any_dependency(home_and_sds),

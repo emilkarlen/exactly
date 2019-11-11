@@ -1,16 +1,8 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, IdentityStringTransformer, \
     SequenceStringTransformer
-from exactly_lib.type_system.logic.string_transformer_values import StringTransformerSequenceValue, \
-    DirDependentStringTransformerValue
-from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
-    matches_multi_dir_dependent_value
-from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import \
-    MultiDirDependentValueTestImpl
-from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.string_transformers import \
@@ -18,10 +10,7 @@ from exactly_lib_test.type_system.logic.test_resources.string_transformers impor
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestPrimitiveValue),
-        unittest.makeSuite(TestValue),
-    ])
+    return unittest.makeSuite(TestPrimitiveValue)
 
 
 def equals_string_transformer(expected: StringTransformer) -> ValueAssertion[StringTransformer]:
@@ -42,40 +31,6 @@ def equals_sequence_transformer(expected: SequenceStringTransformer) -> ValueAss
                            ])
                            )
     )
-
-
-class TestValue(unittest.TestCase):
-    def test_dir_dep_properties(self):
-        cases = [
-            NEA('no components',
-                MultiDirDependentValueTestImpl(set(),
-                                               SequenceStringTransformer([])),
-                StringTransformerSequenceValue([])
-                ),
-            NEA('single component',
-                MultiDirDependentValueTestImpl({DirectoryStructurePartition.HOME},
-                                               SequenceStringTransformer([IdentityStringTransformer()])),
-                StringTransformerSequenceValue([DirDependentStringTransformerValue({DirectoryStructurePartition.HOME},
-                                                                                   make_identity_transformer)])
-                ),
-            NEA('multiple components',
-                MultiDirDependentValueTestImpl({DirectoryStructurePartition.HOME,
-                                                DirectoryStructurePartition.NON_HOME},
-                                               SequenceStringTransformer([IdentityStringTransformer(),
-                                                                          IdentityStringTransformer()])),
-                StringTransformerSequenceValue([
-                    DirDependentStringTransformerValue({DirectoryStructurePartition.HOME},
-                                                       make_identity_transformer),
-                    DirDependentStringTransformerValue({DirectoryStructurePartition.NON_HOME},
-                                                       make_identity_transformer),
-                ])
-                ),
-        ]
-        for case in cases:
-            with self.subTest(case.name):
-                assertion = matches_multi_dir_dependent_value(case.expected, equals_string_transformer)
-
-                assertion.apply_without_message(self, case.actual)
 
 
 def make_identity_transformer(tcds: HomeAndSds) -> StringTransformer:

@@ -8,7 +8,6 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.formatting import program_name
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic import string_transformer_values
 from exactly_lib.type_system.logic.string_transformer import StringTransformerValue, CustomStringTransformer
 from exactly_lib.util.textformat.structure import structures as docs
@@ -32,9 +31,7 @@ class EnvVarReplacementStringTransformer(CustomStringTransformer):
 
 def value(name: str) -> StringTransformerValue:
     return string_transformer_values.DirDependentStringTransformerValue(
-        DirectoryStructurePartition,
-        lambda tcds: EnvVarReplacementStringTransformer(name, tcds),
-    )
+        lambda tcds: EnvVarReplacementStringTransformer(name, tcds))
 
 
 def replace(home_and_sds: HomeAndSds,
