@@ -1,4 +1,4 @@
-from typing import List, Set, Optional
+from typing import List, Optional
 
 from exactly_lib.common.report_rendering import text_docs__old
 from exactly_lib.definitions import actual_file_attributes
@@ -10,7 +10,6 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case.validation.pre_or_post_value_validators import ValueValidatorFromResolverValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_system_element_matcher import ErrorMessageResolverForFailingFileProperties2
@@ -101,14 +100,8 @@ class RegularFileMatchesStringMatcherValue(FileMatcherValue):
         self._string_matcher = string_matcher
         self._validator = validator
 
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._string_matcher.resolving_dependencies()
-
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
-
-    def value_when_no_dir_dependencies(self) -> FileMatcher:
-        return RegularFileMatchesStringMatcher(self._string_matcher.value_when_no_dir_dependencies())
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> FileMatcher:
         return RegularFileMatchesStringMatcher(self._string_matcher.value_of_any_dependency(tcds))

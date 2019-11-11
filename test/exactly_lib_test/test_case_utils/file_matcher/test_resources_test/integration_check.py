@@ -18,7 +18,7 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherValueFromPrimitiveValue
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
-from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromParts, no_resolving_dependencies
+from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromParts
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue, FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable
@@ -256,7 +256,6 @@ def file_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> FileMatc
 
     return FileMatcherResolverFromParts(
         (),
-        no_resolving_dependencies,
         ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(),
         get_matcher,
     )
@@ -294,7 +293,6 @@ def parser_for_constant(resolved_value: FileMatcher = FileMatcherConstant(True),
     return ConstantParser(
         FileMatcherResolverFromParts(
             references=references,
-            resolving_dependencies=no_resolving_dependencies,
             validator=validator,
             matcher=lambda tcds: resolved_value,
         ))

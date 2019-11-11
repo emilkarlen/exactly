@@ -114,7 +114,6 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
         for case in cases:
             resolver_of_failing_matcher = FileMatcherResolverConstantValueTestImpl(
                 FileMatcherValueFromParts(
-                    set(),
                     case.actual,
                     get_file_matcher_successful_matcher
                 ),

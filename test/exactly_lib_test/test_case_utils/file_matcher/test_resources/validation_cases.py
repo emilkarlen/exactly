@@ -27,7 +27,6 @@ class ValidationCaseSvh:
             symbol_name,
             resolvers.FileMatcherResolverFromParts(
                 [],
-                resolvers.no_resolving_dependencies,
                 validator=constant_validator(actual),
                 matcher=get_matcher
             )

@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import Set, Optional
+from typing import Optional
 
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     constant_success_validator
-from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentPrimeValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
 from exactly_lib.type_system.description import trace_renderers
@@ -63,19 +62,10 @@ class FileMatcher(MatcherWTraceAndNegation[FileMatcherModel], ABC):
         return TraceBuilder(self.name)
 
 
-class FileMatcherValue(MultiDirDependentValue[FileMatcher]):
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return set()
-
-    def value_when_no_dir_dependencies(self) -> FileMatcher:
-        """
-        :raises DirDependencyError: This value has dir dependencies.
-        """
-        raise NotImplementedError()
-
+class FileMatcherValue(DirDependentPrimeValue[FileMatcher], ABC):
     def validator(self) -> PreOrPostSdsValueValidator:
         return constant_success_validator()
 
+    @abstractmethod
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> FileMatcher:
-        """Gives the value, regardless of actual dependency."""
-        raise NotImplementedError()
+        pass
