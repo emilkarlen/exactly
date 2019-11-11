@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.data.string_value import StringValue, StringFragment
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import MultiDirDependentValueAssertion
@@ -12,12 +12,12 @@ def equals_string_value(expected: StringValue) -> ValueAssertion[StringValue]:
     return _AssertStringValueHasSpecifiedProperties(expected)
 
 
-def equals_string_fragment(expected: MultiDirDependentValue) -> ValueAssertion[StringFragment]:
+def equals_string_fragment(expected: MultiDependenciesDdv) -> ValueAssertion[StringFragment]:
     return _AssertStringFragmentHasSpecifiedProperties(expected)
 
 
 class _AssertStringFragmentHasSpecifiedProperties(MultiDirDependentValueAssertion):
-    def __init__(self, expected: MultiDirDependentValue):
+    def __init__(self, expected: MultiDependenciesDdv):
         super().__init__(StringFragment, expected)
         self._expected = expected
 
@@ -33,7 +33,7 @@ class _AssertStringValueHasSpecifiedProperties(MultiDirDependentValueAssertion):
 
     def _check_custom_multi(self,
                             put: unittest.TestCase,
-                            actual: MultiDirDependentValue,
+                            actual: MultiDependenciesDdv,
                             home_and_sds: HomeAndSds,
                             message_builder: asrt.MessageBuilder):
         assert isinstance(actual, StringValue)

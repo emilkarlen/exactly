@@ -8,7 +8,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_d
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DependenciesAwareDdv
 from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -27,7 +27,7 @@ def string_resolver_of_single_symbol_reference(
 class ConstantValueResolver(DataValueResolver):
     def __init__(self,
                  value_type: DataValueType,
-                 value: DirDependentValue):
+                 value: DependenciesAwareDdv):
         self._value_type = value_type
         self._value = value
 
@@ -43,5 +43,5 @@ class ConstantValueResolver(DataValueResolver):
     def references(self) -> Sequence[SymbolReference]:
         return ()
 
-    def resolve(self, symbols: SymbolTable) -> DirDependentValue:
+    def resolve(self, symbols: SymbolTable) -> DependenciesAwareDdv:
         return self._value

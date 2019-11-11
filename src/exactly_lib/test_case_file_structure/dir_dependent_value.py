@@ -1,4 +1,3 @@
-import pathlib
 from abc import ABC
 from enum import Enum
 from typing import TypeVar, Generic, Set, Optional
@@ -59,7 +58,15 @@ class DirDependencyError(ValueError):
 RESOLVED_TYPE = TypeVar('RESOLVED_TYPE')
 
 
-class WithDirDependencies:
+class DirDependentValue(Generic[RESOLVED_TYPE]):
+    """A value that may refer to the test case directories."""
+
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> RESOLVED_TYPE:
+        """Gives the value, regardless of actual dependency."""
+        raise NotImplementedError()
+
+
+class WithDirDependenciesReporting:
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         raise NotImplementedError()
 
@@ -73,20 +80,11 @@ class WithDirDependencies:
         return DirectoryStructurePartition.NON_HOME not in self.resolving_dependencies()
 
 
-class DirDependentPrimeValue(Generic[RESOLVED_TYPE]):
-    # TODO After refactoring: make this class the base class DirDependentValue
-    """A value that may refer to the test case directories."""
-
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> RESOLVED_TYPE:
-        """Gives the value, regardless of actual dependency."""
-        raise NotImplementedError()
-
-
-class DirDependentValue(Generic[RESOLVED_TYPE],
-                        DirDependentPrimeValue[RESOLVED_TYPE],
-                        WithDirDependencies,
-                        ABC):
-    """A value that may refer to the test case directories."""
+class DependenciesAwareDdv(Generic[RESOLVED_TYPE],
+                           DirDependentValue[RESOLVED_TYPE],
+                           WithDirDependenciesReporting,
+                           ABC):
+    """A DDV that know and can report its dependencies."""
 
     def value_when_no_dir_dependencies(self) -> RESOLVED_TYPE:
         """
@@ -95,8 +93,9 @@ class DirDependentValue(Generic[RESOLVED_TYPE],
         raise DirDependencyError(self.resolving_dependencies())
 
 
-class SingleDirDependentValue(DirDependentValue[pathlib.Path]):
-    """A :class:`DirDependentValue` that depends at most on a single :class:`ResolvingDependency`."""
+class Max1DependencyDdv(Generic[RESOLVED_TYPE],
+                        DependenciesAwareDdv[RESOLVED_TYPE]):
+    """A :class:`DirDependentValue` that depends at most on one :class:`ResolvingDependency`."""
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         resolving_dep = self.resolving_dependency()
@@ -111,7 +110,7 @@ class SingleDirDependentValue(DirDependentValue[pathlib.Path]):
         """
         raise NotImplementedError()
 
-    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDirectoryStructure) -> RESOLVED_TYPE:
         """
         :raises DirDependencyError: This file exists only post-SDS.
         """
@@ -123,14 +122,16 @@ class SingleDirDependentValue(DirDependentValue[pathlib.Path]):
         """
         raise NotImplementedError()
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> RESOLVED_TYPE:
         if self.exists_pre_sds():
             return self.value_pre_sds(home_and_sds.hds)
         else:
             return self.value_post_sds(home_and_sds.sds)
 
 
-class MultiDirDependentValue(Generic[RESOLVED_TYPE], DirDependentValue[RESOLVED_TYPE]):
+class MultiDependenciesDdv(Generic[RESOLVED_TYPE],
+                           DependenciesAwareDdv[RESOLVED_TYPE],
+                           ABC):
     """A :class:`DirDependentValue` that may depend on a multiple :class:`ResolvingDependency`."""
 
     def dir_dependencies(self) -> DirDependencies:

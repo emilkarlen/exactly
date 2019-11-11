@@ -57,7 +57,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                 references=asrt.matches_sequence([
                     is_program_reference_to(referred_symbol.name)
                 ]),
-                resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_prime_value(
+                resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_value(
                     lambda tcds: matches_py_source_on_cmd_line_program(python_source)),
                 symbols=symbols
             ))

@@ -5,7 +5,7 @@ from exactly_lib.symbol.data import string_resolver as sr, file_ref_resolver as 
     visitor as sut
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.string_resolvers import str_constant
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DependenciesAwareDdv
 from exactly_lib.type_system.value_type import ValueType, DataValueType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
@@ -114,5 +114,5 @@ class _UnknownDataValueResolver(DataValueResolver):
     def references(self) -> list:
         raise NotImplementedError('not used')
 
-    def resolve(self, symbols: SymbolTable) -> DirDependentValue:
+    def resolve(self, symbols: SymbolTable) -> DependenciesAwareDdv:
         raise NotImplementedError('not used')

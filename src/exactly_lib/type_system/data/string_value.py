@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Sequence, Set
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system import utils
@@ -9,7 +9,7 @@ from exactly_lib.util.render import strings
 from exactly_lib.util.render.renderer import Renderer
 
 
-class StringWithDirDependency(MultiDirDependentValue[str]):
+class StringWithDirDependency(MultiDependenciesDdv[str]):
     pass
 
 

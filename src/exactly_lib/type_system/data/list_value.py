@@ -1,6 +1,6 @@
 from typing import List, Set, Sequence
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system import utils
@@ -9,7 +9,7 @@ from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import SequenceRenderer
 
 
-class ListValue(MultiDirDependentValue[List[str]]):
+class ListValue(MultiDependenciesDdv[List[str]]):
     def __init__(self, string_value_elements: List[StringValue]):
         self._string_value_elements = tuple(string_value_elements)
 

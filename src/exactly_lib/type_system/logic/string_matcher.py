@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from typing import Optional, Iterable
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentPrimeValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
@@ -149,7 +149,7 @@ class StringMatcher(WithCachedTreeStructureDescriptionBase,
         return TraceBuilder(self.name)
 
 
-class StringMatcherValue(DirDependentPrimeValue[StringMatcher],
+class StringMatcherValue(DirDependentValue[StringMatcher],
                          MatcherValue[FileToCheck],
                          ABC):
     def structure(self) -> StructureRenderer:

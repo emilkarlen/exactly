@@ -4,7 +4,7 @@ from typing import Generic, TypeVar, Set, Sequence
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_value_validation
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -13,7 +13,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 T = TypeVar('T')
 
 
-class ObjectValue(Generic[T], MultiDirDependentValue[T], ABC):
+class ObjectValue(Generic[T], MultiDependenciesDdv[T], ABC):
     """Value for an arbitrary object"""
 
     @abstractmethod

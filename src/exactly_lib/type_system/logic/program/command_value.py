@@ -1,16 +1,16 @@
 from abc import ABC
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentPrimeValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.util.process_execution.command import Command, CommandDriver
 
 
-class CommandDriverValue(DirDependentPrimeValue[CommandDriver], ABC):
+class CommandDriverValue(DirDependentValue[CommandDriver], ABC):
     pass
 
 
-class CommandValue(DirDependentPrimeValue[Command]):
+class CommandValue(DirDependentValue[Command]):
     def __init__(self,
                  command_driver: CommandDriverValue,
                  arguments: ListValue):

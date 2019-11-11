@@ -195,7 +195,7 @@ def check_parsing_of_program(put: unittest.TestCase,
 
         expectation = asrt_resolver.matches_resolver_of_program(
             references=expected_references_assertion,
-            resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_prime_value(
+            resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_value(
                 resolved_value=expected_program,
             ),
             symbols=symbols

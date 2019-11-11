@@ -3,7 +3,7 @@ from abc import abstractmethod, ABC
 from pathlib import Path
 from typing import Optional, Set
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import SingleDirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import Max1DependencyDdv
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity, RESOLVING_DEPENDENCY_OF, \
@@ -34,7 +34,7 @@ class DescribedPathPrimitive(ABC):
         pass
 
 
-class FileRef(SingleDirDependentValue, ABC):
+class FileRef(Max1DependencyDdv[pathlib.Path], ABC):
     """
     A reference to a file (any kind of file), with functionality to resolve it's path,
     and information about whether it exists pre SDS or not.

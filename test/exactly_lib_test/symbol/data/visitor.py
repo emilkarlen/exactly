@@ -4,7 +4,7 @@ from typing import Type
 
 from exactly_lib.symbol.data import visitor as sut
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DependenciesAwareDdv
 from exactly_lib.type_system.value_type import DataValueType
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -99,5 +99,5 @@ class UnknownDataTypeResolverClass(sut.DataValueResolver):
     def references(self) -> List[SymbolReference]:
         raise NotImplementedError('unsupported')
 
-    def resolve(self, symbols: SymbolTable) -> DirDependentValue:
+    def resolve(self, symbols: SymbolTable) -> DependenciesAwareDdv:
         raise NotImplementedError('unsupported')

@@ -1,6 +1,5 @@
-import pathlib
 import unittest
-from typing import Set, Generic, Callable, Optional
+from typing import Set, Generic, Callable, Optional, Any
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies, \
     dir_dependency_of_resolving_dependencies, RESOLVED_TYPE
@@ -15,21 +14,21 @@ from exactly_lib_test.test_resources.test_of_test_resources_util import assert_t
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestEqualsSingleDirDependentValue),
+        unittest.makeSuite(TestEqualsMax1DependencyDdv),
         unittest.makeSuite(TestEqualsMultiDirDependentValue),
     ])
 
 
-class TestEqualsSingleDirDependentValue(unittest.TestCase):
+class TestEqualsMax1DependencyDdv(unittest.TestCase):
     def test_pass(self):
         cases = [
-            ASingleDirDependentValue(resolving_dependency=None,
-                                     value_when_no_dir_dependencies=do_return('value'),
-                                     value_pre_sds=do_return('value')),
-            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.HOME,
-                                     value_pre_sds=do_return('value pre sds')),
-            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.NON_HOME,
-                                     value_post_sds=do_return('value post sds'))
+            AMax1DependencyDdv(resolving_dependency=None,
+                               value_when_no_dir_dependencies=do_return('value'),
+                               value_pre_sds=do_return('value')),
+            AMax1DependencyDdv(resolving_dependency=DirectoryStructurePartition.HOME,
+                               value_pre_sds=do_return('value pre sds')),
+            AMax1DependencyDdv(resolving_dependency=DirectoryStructurePartition.NON_HOME,
+                               value_post_sds=do_return('value post sds'))
         ]
         for value in cases:
             with self.subTest(value=str(value)):
@@ -38,43 +37,43 @@ class TestEqualsSingleDirDependentValue(unittest.TestCase):
 
     def test_fail__has_dir_dependency(self):
         self._assert_not_equal(
-            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.HOME),
-            ASingleDirDependentValue(resolving_dependency=None),
+            AMax1DependencyDdv(resolving_dependency=DirectoryStructurePartition.HOME),
+            AMax1DependencyDdv(resolving_dependency=None),
         )
 
     def test_fail__exists_pre_sds(self):
         self._assert_not_equal(
-            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.NON_HOME),
-            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.HOME),
+            AMax1DependencyDdv(resolving_dependency=DirectoryStructurePartition.NON_HOME),
+            AMax1DependencyDdv(resolving_dependency=DirectoryStructurePartition.HOME),
         )
 
     def test_fail__value_when_no_dir_dependencies(self):
         self._assert_not_equal(
-            ASingleDirDependentValue(resolving_dependency=None,
-                                     value_when_no_dir_dependencies=do_return('expected')),
-            ASingleDirDependentValue(resolving_dependency=None,
-                                     value_when_no_dir_dependencies=do_return('actual')),
+            AMax1DependencyDdv(resolving_dependency=None,
+                               value_when_no_dir_dependencies=do_return('expected')),
+            AMax1DependencyDdv(resolving_dependency=None,
+                               value_when_no_dir_dependencies=do_return('actual')),
         )
 
     def test_fail__value_pre_sds(self):
         self._assert_not_equal(
-            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.HOME,
-                                     value_pre_sds=do_return('expected')),
-            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.HOME,
-                                     value_pre_sds=do_return('actual')),
+            AMax1DependencyDdv(resolving_dependency=DirectoryStructurePartition.HOME,
+                               value_pre_sds=do_return('expected')),
+            AMax1DependencyDdv(resolving_dependency=DirectoryStructurePartition.HOME,
+                               value_pre_sds=do_return('actual')),
         )
 
     def test_fail__value_post_sds(self):
         self._assert_not_equal(
-            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.NON_HOME,
-                                     value_post_sds=do_return('expected')),
-            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.NON_HOME,
-                                     value_post_sds=do_return('actual')),
+            AMax1DependencyDdv(resolving_dependency=DirectoryStructurePartition.NON_HOME,
+                               value_post_sds=do_return('expected')),
+            AMax1DependencyDdv(resolving_dependency=DirectoryStructurePartition.NON_HOME,
+                               value_post_sds=do_return('actual')),
         )
 
     @staticmethod
-    def _assert_not_equal(expected: sut.SingleDirDependentValue,
-                          actual: sut.SingleDirDependentValue):
+    def _assert_not_equal(expected: sut.Max1DependencyDdv,
+                          actual: sut.Max1DependencyDdv):
         assertion = sut.matches_single_dir_dependent_value(expected)
         assert_that_assertion_fails(assertion, actual)
 
@@ -138,8 +137,8 @@ class TestEqualsMultiDirDependentValue(unittest.TestCase):
         )
 
     @staticmethod
-    def _assert_not_equal(expected: sut.MultiDirDependentValue,
-                          actual: sut.MultiDirDependentValue):
+    def _assert_not_equal(expected: sut.MultiDependenciesDdv,
+                          actual: sut.MultiDependenciesDdv):
         assertion = sut.matches_multi_dir_dependent_value(expected)
         assert_that_assertion_fails(assertion, actual)
 
@@ -148,7 +147,7 @@ class _ShouldNotBeInvokedTestException(Exception):
     pass
 
 
-class ASingleDirDependentValue(sut.SingleDirDependentValue):
+class AMax1DependencyDdv(sut.Max1DependencyDdv[Any]):
     def __init__(self,
                  resolving_dependency: Optional[DirectoryStructurePartition],
                  value_when_no_dir_dependencies=do_raise(_ShouldNotBeInvokedTestException()),
@@ -175,13 +174,13 @@ class ASingleDirDependentValue(sut.SingleDirDependentValue):
     def exists_pre_sds(self) -> bool:
         return self._resolving_dependency is None or self._resolving_dependency == DirectoryStructurePartition.HOME
 
-    def value_when_no_dir_dependencies(self):
+    def value_when_no_dir_dependencies(self) -> Any:
         return self._value_when_no_dir_dependencies()
 
-    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDirectoryStructure) -> Any:
         return self._value_pre_sds(hds)
 
-    def value_post_sds(self, sds: SandboxDirectoryStructure):
+    def value_post_sds(self, sds: SandboxDirectoryStructure) -> Any:
         return self._value_post_sds(sds)
 
     def __str__(self):
@@ -190,7 +189,7 @@ class ASingleDirDependentValue(sut.SingleDirDependentValue):
             self._resolving_dependency)
 
 
-class MultiDirDependentValueTestImpl(Generic[RESOLVED_TYPE], sut.MultiDirDependentValue[RESOLVED_TYPE]):
+class MultiDependenciesDdvTestImpl(Generic[RESOLVED_TYPE], sut.MultiDependenciesDdv[RESOLVED_TYPE]):
     def __init__(self,
                  resolving_dependencies: Set[DirectoryStructurePartition],
                  value_when_no_dir_dependencies: RESOLVED_TYPE,
@@ -234,7 +233,7 @@ class MultiDirDependentValueTestImpl(Generic[RESOLVED_TYPE], sut.MultiDirDepende
         )
 
 
-class AMultiDirDependentValue(MultiDirDependentValueTestImpl[None]):
+class AMultiDirDependentValue(MultiDependenciesDdvTestImpl[None]):
     def __init__(self,
                  resolving_dependencies: Set[DirectoryStructurePartition],
                  get_value_when_no_dir_dependencies=do_raise(_ShouldNotBeInvokedTestException()),

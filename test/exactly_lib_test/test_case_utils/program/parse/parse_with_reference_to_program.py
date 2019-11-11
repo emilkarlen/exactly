@@ -7,7 +7,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import file_ref_resolvers, list_resolvers, string_resolvers
 from exactly_lib.symbol.data.file_ref_resolvers import constant
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentPrimeValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
@@ -314,7 +314,7 @@ class ResolvingCase:
     def __init__(self,
                  name: str,
                  actual_resolver: ProgramResolver,
-                 expected: ValueAssertion[DirDependentPrimeValue[Program]]):
+                 expected: ValueAssertion[DirDependentValue[Program]]):
         self.name = name
         self.actual_resolver = actual_resolver
         self.expected = expected
@@ -343,7 +343,7 @@ class TestResolving(unittest.TestCase):
                                      file_ref_resolvers.constant(exe_file_ref),
                                      arguments_resolvers.new_without_validation(
                                          list_resolvers.from_str_constants(expected_arguments))),
-                                 expected=asrt_dir_dep_val.matches_dir_dependent_prime_value(assertion))
+                                 expected=asrt_dir_dep_val.matches_dir_dependent_value(assertion))
 
         return [case(RelOptionType.REL_HOME_ACT),
                 case(RelOptionType.REL_TMP)]
@@ -366,7 +366,7 @@ class TestResolving(unittest.TestCase):
         case = ResolvingCase('', actual_resolver=program_resolvers.with_ref_to_program(
             string_resolvers.str_constant(the_executable_program),
             arguments_resolvers.new_without_validation(list_resolvers.from_str_constants(expected_arguments))),
-                             expected=asrt_dir_dep_val.matches_dir_dependent_prime_value(assertion))
+                             expected=asrt_dir_dep_val.matches_dir_dependent_value(assertion))
         return [case]
 
     def test(self):

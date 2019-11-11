@@ -1,7 +1,7 @@
 import enum
 from typing import Optional, Set
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive, FileRef
@@ -63,7 +63,7 @@ class StringOrPath(tuple):
         return self[3]
 
 
-class StringOrFileRefValue(MultiDirDependentValue[StringOrPath]):
+class StringOrFileRefValue(MultiDependenciesDdv[StringOrPath]):
     """
     Either a :class:`StringValue` or a :class:`FileRef`
     """

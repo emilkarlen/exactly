@@ -1,6 +1,6 @@
 from typing import Set
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentPrimeValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic.program.command_value import CommandValue
@@ -30,7 +30,7 @@ class Program(tuple):
         return self[2]
 
 
-class ProgramValue(DirDependentPrimeValue[Program]):
+class ProgramValue(DirDependentValue[Program]):
     def __init__(self,
                  command: CommandValue,
                  stdin: StdinDataValue,

@@ -6,6 +6,6 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 def value_matches_line_matcher(expected: ValueAssertion[LineMatcher],
                                ) -> ValueAssertion[DirDependentValue[LineMatcher]]:
-    return asrt_dir_dep_val.matches_dir_dependent_prime_value(
+    return asrt_dir_dep_val.matches_dir_dependent_value(
         lambda tcds: expected,
     )

@@ -3,7 +3,7 @@ from typing import Optional
 
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     constant_success_validator
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentPrimeValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
@@ -62,7 +62,7 @@ class FileMatcher(MatcherWTraceAndNegation[FileMatcherModel], ABC):
         return TraceBuilder(self.name)
 
 
-class FileMatcherValue(DirDependentPrimeValue[FileMatcher], ABC):
+class FileMatcherValue(DirDependentValue[FileMatcher], ABC):
     def validator(self) -> PreOrPostSdsValueValidator:
         return constant_success_validator()
 

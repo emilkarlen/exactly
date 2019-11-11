@@ -3,7 +3,7 @@ from typing import Sequence, TypeVar, Generic, Set
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
@@ -57,7 +57,7 @@ class _FailureReporter(Generic[T]):
         return self.err_msg_resolver.failure_info()
 
 
-class OperandValue(Generic[T], MultiDirDependentValue[T], ABC):
+class OperandValue(Generic[T], MultiDependenciesDdv[T], ABC):
     @abstractmethod
     def describer(self) -> DetailsRenderer:
         pass

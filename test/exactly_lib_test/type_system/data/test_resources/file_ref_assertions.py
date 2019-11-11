@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import SingleDirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import Max1DependencyDdv
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
@@ -22,7 +22,7 @@ class _AssertFileRefHasSpecifiedProperties(SingleDirDependentValueAssertion):
 
     def _check_custom(self,
                       put: unittest.TestCase,
-                      actual: SingleDirDependentValue,
+                      actual: Max1DependencyDdv,
                       home_and_sds: HomeAndSds,
                       message_builder: asrt.MessageBuilder):
         super()._check_custom(put, actual, home_and_sds, message_builder)

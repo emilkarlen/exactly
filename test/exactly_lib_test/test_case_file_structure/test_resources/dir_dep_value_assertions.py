@@ -1,8 +1,8 @@
 import unittest
 from typing import TypeVar, Callable, Set, Optional, Generic
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue, SingleDirDependentValue, \
-    MultiDirDependentValue, DirDependencies, resolving_dependencies_from_dir_dependencies, DirDependentPrimeValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DependenciesAwareDdv, Max1DependencyDdv, \
+    MultiDependenciesDdv, DirDependencies, resolving_dependencies_from_dir_dependencies, DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
@@ -12,16 +12,9 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 T = TypeVar('T')
 
 
-def matches_dir_dependent_value(resolving_dependencies: ValueAssertion[Set[DirectoryStructurePartition]],
-                                resolved_value: Callable[[HomeAndSds], ValueAssertion[T]]
-                                ) -> ValueAssertion[DirDependentValue[T]]:
-    return ArbitraryDirDependentValueAssertion(resolving_dependencies,
-                                               resolved_value)
-
-
 def matches_single_dir_dependent_value(resolving_dependency: Optional[DirectoryStructurePartition],
                                        resolved_value: Callable[[HomeAndSds], ValueAssertion[T]]
-                                       ) -> ValueAssertion[DirDependentValue[T]]:
+                                       ) -> ValueAssertion[DependenciesAwareDdv[T]]:
     return SingleDirDependentValueAssertion(resolving_dependency,
                                             resolved_value)
 
@@ -29,36 +22,32 @@ def matches_single_dir_dependent_value(resolving_dependency: Optional[DirectoryS
 def matches_multi_dir_dependent_value(dir_dependencies: DirDependencies,
                                       resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
                                       tcds: HomeAndSds = fake_home_and_sds(),
-                                      supports_dir_dependencies: bool = True,
-                                      ) -> ValueAssertion[DirDependentValue[T]]:
+                                      ) -> ValueAssertion[DependenciesAwareDdv[T]]:
     return MultiDirDependentValueAssertion(dir_dependencies,
                                            resolved_value,
-                                           tcds,
-                                           supports_dir_dependencies)
+                                           tcds)
 
 
-def matches_dir_dependent_prime_value(resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
-                                      tcds: HomeAndSds = fake_home_and_sds(),
-                                      ) -> ValueAssertion[DirDependentValue[T]]:
-    return _DirDependentPrimeValueAssertion(resolved_value,
-                                            tcds)
+def matches_dir_dependent_value(resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
+                                tcds: HomeAndSds = fake_home_and_sds(),
+                                ) -> ValueAssertion[DirDependentValue[T]]:
+    return _DirDependentValueAssertion(resolved_value,
+                                       tcds)
 
 
-class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[DirDependentValue[T]]):
+class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[DependenciesAwareDdv[T]]):
     def __init__(self,
                  resolving_dependencies: ValueAssertion[Set[DirectoryStructurePartition]],
                  resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
                  tcds: HomeAndSds,
-                 supports_dir_dependencies: bool = True,
                  ):
         self.resolving_dependencies = resolving_dependencies
         self.resolved_value = resolved_value
         self.tcds = tcds
-        self.supports_dir_dependencies = supports_dir_dependencies
 
     def _check_sub_class_properties(self,
                                     put: unittest.TestCase,
-                                    actual: DirDependentValue,
+                                    actual: DependenciesAwareDdv,
                                     tcds: HomeAndSds,
                                     message_builder: asrt.MessageBuilder):
         raise NotImplementedError('abstract method')
@@ -67,8 +56,8 @@ class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[DirDependent
                put: unittest.TestCase,
                value,
                message_builder: asrt.MessageBuilder):
-        asrt.is_instance(DirDependentValue).apply(put, value, message_builder)
-        assert isinstance(value, DirDependentValue)  # Type info for IDE
+        asrt.is_instance(DependenciesAwareDdv).apply(put, value, message_builder)
+        assert isinstance(value, DependenciesAwareDdv)  # Type info for IDE
 
         self._check_resolving_dependencies(put, value, message_builder)
 
@@ -78,7 +67,7 @@ class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[DirDependent
 
     def _check_resolving_dependencies(self,
                                       put: unittest.TestCase,
-                                      actual: DirDependentValue,
+                                      actual: DependenciesAwareDdv,
                                       message_builder: asrt.MessageBuilder):
         self.resolving_dependencies.apply(put,
                                           actual.resolving_dependencies(),
@@ -99,12 +88,12 @@ class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[DirDependent
 
     def _check_resolved_value(self,
                               put: unittest.TestCase,
-                              actual: DirDependentValue,
+                              actual: DependenciesAwareDdv,
                               tcds: HomeAndSds,
                               message_builder: asrt.MessageBuilder):
         assertion_on_resolved_value = self.resolved_value(tcds)
 
-        if self.supports_dir_dependencies and not actual.has_dir_dependency():
+        if not actual.has_dir_dependency():
             actual_resolved_value = actual.value_when_no_dir_dependencies()
             assertion_on_resolved_value.apply(put,
                                               actual_resolved_value,
@@ -114,22 +103,6 @@ class DirDependentValueAssertionBase(Generic[T], ValueAssertionBase[DirDependent
         assertion_on_resolved_value.apply(put,
                                           actual_resolved_value,
                                           message_builder.for_sub_component('resolved primitive value'))
-
-
-class ArbitraryDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
-    def __init__(self,
-                 resolving_dependencies: ValueAssertion[Set[DirectoryStructurePartition]],
-                 resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
-                 tcds: HomeAndSds = fake_home_and_sds(),
-                 ):
-        super().__init__(resolving_dependencies, resolved_value, tcds)
-
-    def _check_sub_class_properties(self,
-                                    put: unittest.TestCase,
-                                    actual: DirDependentValue,
-                                    tcds: HomeAndSds,
-                                    message_builder: asrt.MessageBuilder):
-        pass
 
 
 class SingleDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
@@ -144,13 +117,13 @@ class SingleDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
 
     def _check_sub_class_properties(self,
                                     put: unittest.TestCase,
-                                    actual: DirDependentValue,
+                                    actual: DependenciesAwareDdv,
                                     tcds: HomeAndSds,
                                     message_builder: asrt.MessageBuilder):
         put.assertIsInstance(actual,
-                             SingleDirDependentValue,
+                             Max1DependencyDdv,
                              message_builder.apply('class'))
-        assert isinstance(actual, SingleDirDependentValue)  # Type info for IDE
+        assert isinstance(actual, Max1DependencyDdv)  # Type info for IDE
 
         put.assertEqual(self._resolving_dependency,
                         actual.resolving_dependency(),
@@ -159,16 +132,16 @@ class SingleDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
         assertion_on_resolved_value = self.resolved_value(tcds)
 
         if not self._resolving_dependency or self._resolving_dependency == DirectoryStructurePartition.HOME:
-            resolved_value_post_sds = actual.value_pre_sds(tcds.hds)
+            resolved_value_pre_sds = actual.value_pre_sds(tcds.hds)
             assertion_on_resolved_value.apply(put,
-                                              resolved_value_post_sds,
+                                              resolved_value_pre_sds,
                                               message_builder.for_sub_component('value_pre_sds'))
 
         if not self._resolving_dependency or self._resolving_dependency == DirectoryStructurePartition.NON_HOME:
             resolved_value_post_sds = actual.value_post_sds(tcds.sds)
             assertion_on_resolved_value.apply(put,
                                               resolved_value_post_sds,
-                                              message_builder.for_sub_component('value_pre_sds'))
+                                              message_builder.for_sub_component('value_post_sds'))
 
 
 class MultiDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
@@ -176,23 +149,21 @@ class MultiDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
                  dir_dependencies: DirDependencies,
                  resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
                  tcds: HomeAndSds = fake_home_and_sds(),
-                 supports_dir_dependencies: bool = True,
                  ):
         super().__init__(asrt.equals(resolving_dependencies_from_dir_dependencies(dir_dependencies)),
                          resolved_value,
-                         tcds,
-                         supports_dir_dependencies)
+                         tcds)
         self._dir_dependencies = dir_dependencies
 
     def _check_sub_class_properties(self,
                                     put: unittest.TestCase,
-                                    actual: DirDependentValue,
+                                    actual: DependenciesAwareDdv,
                                     tcds: HomeAndSds,
                                     message_builder: asrt.MessageBuilder):
         put.assertIsInstance(actual,
-                             MultiDirDependentValue,
+                             MultiDependenciesDdv,
                              message_builder.apply('class'))
-        assert isinstance(actual, MultiDirDependentValue)  # Type info for IDE
+        assert isinstance(actual, MultiDependenciesDdv)  # Type info for IDE
 
         actual_dir_dependencies = actual.dir_dependencies()
         asrt.equals(self._dir_dependencies).apply(put,
@@ -200,7 +171,7 @@ class MultiDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
                                                   message_builder.for_sub_component('dir_dependencies'))
 
 
-class _DirDependentPrimeValueAssertion(ValueAssertionBase[T]):
+class _DirDependentValueAssertion(ValueAssertionBase[T]):
     def __init__(self,
                  resolved_value: Callable[[HomeAndSds], ValueAssertion[T]],
                  tcds: HomeAndSds = fake_home_and_sds(),
@@ -212,14 +183,14 @@ class _DirDependentPrimeValueAssertion(ValueAssertionBase[T]):
                put: unittest.TestCase,
                value,
                message_builder: asrt.MessageBuilder):
-        asrt.is_instance(DirDependentPrimeValue).apply(put, value, message_builder)
-        assert isinstance(value, DirDependentPrimeValue)  # Type info for IDE
+        asrt.is_instance(DirDependentValue).apply(put, value, message_builder)
+        assert isinstance(value, DirDependentValue)  # Type info for IDE
 
         self._check_resolved_value(put, value, self.tcds, message_builder)
 
     def _check_resolved_value(self,
                               put: unittest.TestCase,
-                              actual: DirDependentPrimeValue,
+                              actual: DirDependentValue,
                               tcds: HomeAndSds,
                               message_builder: asrt.MessageBuilder):
         assertion_on_resolved_value = self.resolved_value(tcds)

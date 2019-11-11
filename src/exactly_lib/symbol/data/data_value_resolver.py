@@ -3,7 +3,7 @@ from typing import List
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DependenciesAwareDdv
 from exactly_lib.type_system.value_type import TypeCategory, DataValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -27,7 +27,7 @@ class DataValueResolver(SymbolValueResolver):
     def references(self) -> List[SymbolReference]:
         raise NotImplementedError('abstract method')
 
-    def resolve(self, symbols: SymbolTable) -> DirDependentValue:
+    def resolve(self, symbols: SymbolTable) -> DependenciesAwareDdv:
         """
         Resolves the value given a symbol table.
         :rtype: Depends on the concrete value.

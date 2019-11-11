@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentPrimeValue
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.data.string_or_file_ref_values import StringOrFileRefValue, StringOrPath
 
@@ -25,7 +25,7 @@ class StdinData(tuple):
         return len(self.fragments) == 0
 
 
-class StdinDataValue(DirDependentPrimeValue[StdinData]):
+class StdinDataValue(DirDependentValue[StdinData]):
     def __init__(self, fragments: Sequence[StringOrFileRefValue]):
         self._fragments = fragments
 

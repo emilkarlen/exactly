@@ -1,9 +1,8 @@
-import pathlib
 import unittest
 from typing import Set, Callable, Optional, Any
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import SingleDirDependentValue, \
-    MultiDirDependentValue, DirDependencies
+from exactly_lib.test_case_file_structure.dir_dependent_value import Max1DependencyDdv, \
+    MultiDependenciesDdv, DirDependencies
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
@@ -70,7 +69,7 @@ class TestMatchesSingleDirDependentValue(unittest.TestCase):
         )
 
     @staticmethod
-    def _assert_not_matches(actual: SingleDirDependentValue,
+    def _assert_not_matches(actual: Max1DependencyDdv,
                             resolving_dependency: Optional[DirectoryStructurePartition],
                             resolved_value: ValueAssertion,
                             ):
@@ -153,7 +152,7 @@ class TestMatchesMultiDirDependentValue(unittest.TestCase):
                 )
 
     @staticmethod
-    def _assert_not_matches(actual: MultiDirDependentValue,
+    def _assert_not_matches(actual: MultiDependenciesDdv,
                             dir_dependencies: DirDependencies,
                             resolved_value: Callable[[HomeAndSds], ValueAssertion[Any]]
                             ):
@@ -166,7 +165,7 @@ class _ShouldNotBeInvokedTestException(Exception):
     pass
 
 
-class ASingleDirDependentValue(SingleDirDependentValue):
+class AMax1DependencyDdv(Max1DependencyDdv[Any]):
     def __init__(self,
                  resolving_dependency: Optional[DirectoryStructurePartition],
                  value_when_no_dir_dependencies: Callable[[], Any] = do_raise(_ShouldNotBeInvokedTestException()),
@@ -188,40 +187,40 @@ class ASingleDirDependentValue(SingleDirDependentValue):
         else:
             return {self._resolving_dependency}
 
-    def value_when_no_dir_dependencies(self):
+    def value_when_no_dir_dependencies(self) -> Any:
         return self._value_when_no_dir_dependencies()
 
-    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDirectoryStructure) -> Any:
         return self._value_pre_sds(hds)
 
-    def value_post_sds(self, sds: SandboxDirectoryStructure):
+    def value_post_sds(self, sds: SandboxDirectoryStructure) -> Any:
         return self._value_post_sds(sds)
 
 
 def single_dir_dep_val_without_dependencies(resolved_value,
-                                            ) -> SingleDirDependentValue:
+                                            ) -> Max1DependencyDdv:
     def when_no_dependencies():
         return resolved_value
 
-    return ASingleDirDependentValue(None,
-                                    value_when_no_dir_dependencies=when_no_dependencies,
-                                    value_pre_sds=lambda hds: resolved_value,
-                                    value_post_sds=lambda sds: resolved_value)
+    return AMax1DependencyDdv(None,
+                              value_when_no_dir_dependencies=when_no_dependencies,
+                              value_pre_sds=lambda hds: resolved_value,
+                              value_post_sds=lambda sds: resolved_value)
 
 
 def single_dir_dep_val_with_dep_on_hds(resolve_pre_sds: Callable[[HomeDirectoryStructure], Any],
-                                       ) -> SingleDirDependentValue:
-    return ASingleDirDependentValue(DirectoryStructurePartition.HOME,
-                                    value_pre_sds=resolve_pre_sds)
+                                       ) -> Max1DependencyDdv:
+    return AMax1DependencyDdv(DirectoryStructurePartition.HOME,
+                              value_pre_sds=resolve_pre_sds)
 
 
 def single_dir_dep_val_with_dep_on_sds(resolve_post_sds: Callable[[SandboxDirectoryStructure], Any],
-                                       ) -> SingleDirDependentValue:
-    return ASingleDirDependentValue(DirectoryStructurePartition.NON_HOME,
-                                    value_post_sds=resolve_post_sds)
+                                       ) -> Max1DependencyDdv:
+    return AMax1DependencyDdv(DirectoryStructurePartition.NON_HOME,
+                              value_post_sds=resolve_post_sds)
 
 
-class AMultiDirDependentValue(MultiDirDependentValue[Any]):
+class AMultiDependenciesDdv(MultiDependenciesDdv[Any]):
     def __init__(self,
                  resolving_dependencies: Set[DirectoryStructurePartition],
 
@@ -246,17 +245,17 @@ class AMultiDirDependentValue(MultiDirDependentValue[Any]):
 
 
 def multi_dir_dep_val_without_dependencies(resolved_value,
-                                           ) -> MultiDirDependentValue:
+                                           ) -> MultiDependenciesDdv:
     def when_no_dependencies():
         return resolved_value
 
-    return AMultiDirDependentValue(set(),
-                                   get_value_when_no_dir_dependencies=when_no_dependencies,
-                                   get_value_of_any_dependency=lambda tcds: resolved_value)
+    return AMultiDependenciesDdv(set(),
+                                 get_value_when_no_dir_dependencies=when_no_dependencies,
+                                 get_value_of_any_dependency=lambda tcds: resolved_value)
 
 
 def multi_dir_dep_val_with_dependencies(resolving_dependencies: Set[DirectoryStructurePartition],
                                         get_value_of_any_dependency: Callable[[HomeAndSds], Any],
-                                        ) -> MultiDirDependentValue:
-    return AMultiDirDependentValue(resolving_dependencies,
-                                   get_value_of_any_dependency=get_value_of_any_dependency)
+                                        ) -> MultiDependenciesDdv:
+    return AMultiDependenciesDdv(resolving_dependencies,
+                                 get_value_of_any_dependency=get_value_of_any_dependency)
