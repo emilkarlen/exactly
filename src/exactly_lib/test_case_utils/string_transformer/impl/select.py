@@ -7,9 +7,9 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.line_matcher.model_construction import original_and_model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.string_transformer import names
-from exactly_lib.test_case_utils.string_transformer.filter import SelectStringTransformerValue
+from exactly_lib.test_case_utils.string_transformer.filter import SelectStringTransformerDdv
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
-from exactly_lib.type_system.logic.string_transformer import StringTransformerValue, StringTransformer, \
+from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer, \
     StringTransformerModel
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -18,8 +18,8 @@ class StringTransformerSelectResolver(StringTransformerResolver):
     def __init__(self, line_matcher_resolver: LineMatcherResolver):
         self.line_matcher_resolver = line_matcher_resolver
 
-    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
-        return SelectStringTransformerValue(self.line_matcher_resolver.resolve(symbols))
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
+        return SelectStringTransformerDdv(self.line_matcher_resolver.resolve(symbols))
 
     @property
     def references(self) -> Sequence[SymbolReference]:

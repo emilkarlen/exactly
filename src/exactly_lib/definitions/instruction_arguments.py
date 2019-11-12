@@ -1,5 +1,5 @@
 from exactly_lib.definitions.entity import types
-from exactly_lib.definitions.file_ref import REL_SYMBOL_OPTION_NAME
+from exactly_lib.definitions.path import REL_SYMBOL_OPTION_NAME
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import Quantifier

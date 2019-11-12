@@ -1,13 +1,13 @@
 from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, pfh_exception as pfh_ex_method
-from exactly_lib.test_case_utils import file_ref_check
+from exactly_lib.test_case_utils import path_check
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
 from exactly_lib.test_case_utils.err_msg2 import path_err_msgs, file_or_dir_contents_headers
 from exactly_lib.test_case_utils.file_properties import FileType
@@ -18,11 +18,11 @@ from exactly_lib.util.render import combinators as rend_comb
 
 class FilesSource:
     def __init__(self,
-                 path_of_dir: FileRefResolver):
+                 path_of_dir: PathResolver):
         self._path_of_dir = path_of_dir
 
     @property
-    def path_of_dir(self) -> FileRefResolver:
+    def path_of_dir(self) -> PathResolver:
         return self._path_of_dir
 
 
@@ -40,9 +40,9 @@ class AssertPathIsExistingDirectory(AssertionPart[FilesSource, FilesSource]):
                                                             True)
 
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
-        failure_message = file_ref_check.pre_or_post_sds_failure_message_or_none(
-            file_ref_check.FileRefCheck(files_source.path_of_dir,
-                                        expect_existing_dir),
+        failure_message = path_check.pre_or_post_sds_failure_message_or_none(
+            path_check.PathCheck(files_source.path_of_dir,
+                                 expect_existing_dir),
             path_resolving_env)
         if failure_message is not None:
             raise pfh_ex_method.PfhFailException(failure_message)

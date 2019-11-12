@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherValueFromParts
+from exactly_lib.test_case_utils.file_matcher.file_matcher_ddvs import FileMatcherDdvFromParts
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
@@ -113,7 +113,7 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
 
         for case in cases:
             resolver_of_failing_matcher = FileMatcherResolverConstantValueTestImpl(
-                FileMatcherValueFromParts(
+                FileMatcherDdvFromParts(
                     case.actual,
                     get_file_matcher_successful_matcher
                 ),

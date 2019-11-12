@@ -11,7 +11,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherDdv, FileToCheck
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
@@ -148,7 +148,7 @@ class Executor:
                                                  'resolver structure')
 
         matcher_value = resolver.resolve(environment.symbols)
-        assert isinstance(matcher_value, StringMatcherValue)
+        assert isinstance(matcher_value, StringMatcherDdv)
 
         structure_tree_of_ddv = matcher_value.structure().render()
 

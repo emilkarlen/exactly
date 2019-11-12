@@ -1,6 +1,6 @@
 from typing import Iterable, Set
 
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.lookups import lookup_container
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
@@ -12,7 +12,7 @@ def resolving_dependencies_from_references(references: Iterable[SymbolReference]
     ret_val = set()
     for reference in references:
         resolver = lookup_container(symbols, reference.name).resolver
-        if isinstance(resolver, FileRefResolver):
+        if isinstance(resolver, PathResolver):
             resolving_dependency = resolver.resolve(symbols).resolving_dependency()
             if resolving_dependency is not None:
                 ret_val.add(resolving_dependency)

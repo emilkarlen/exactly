@@ -8,8 +8,8 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.formatting import program_name
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.logic import string_transformer_values
-from exactly_lib.type_system.logic.string_transformer import StringTransformerValue, CustomStringTransformer
+from exactly_lib.type_system.logic import string_transformer_ddvs
+from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, CustomStringTransformer
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -29,8 +29,8 @@ class EnvVarReplacementStringTransformer(CustomStringTransformer):
         return (_replace(self._name_and_value_list, line) for line in lines)
 
 
-def value(name: str) -> StringTransformerValue:
-    return string_transformer_values.DirDependentStringTransformerValue(
+def ddv(name: str) -> StringTransformerDdv:
+    return string_transformer_ddvs.DirDependentStringTransformerDdv(
         lambda tcds: EnvVarReplacementStringTransformer(name, tcds))
 
 

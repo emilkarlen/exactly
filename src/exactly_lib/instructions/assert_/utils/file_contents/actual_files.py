@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Sequence
 
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -14,7 +14,7 @@ from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers
 from exactly_lib.test_case_utils.err_msg2 import path_rendering, header_rendering
 from exactly_lib.type_system.data import path_description
-from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
 from exactly_lib.util.render.renderer import Renderer
@@ -60,7 +60,7 @@ class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndValidation, A
 
 class ConstructorForPath(ComparisonActualFileConstructor):
     def __init__(self,
-                 path: FileRefResolver,
+                 path: PathResolver,
                  object_name: ToStringObject,
                  file_access_needs_to_be_verified: bool,
                  ):

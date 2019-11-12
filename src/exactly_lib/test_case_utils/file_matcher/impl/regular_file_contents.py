@@ -17,7 +17,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic import string_matcher
 from exactly_lib.type_system.logic import string_transformer
-from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher, FileMatcherModel
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable
@@ -93,33 +93,33 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
         )
 
 
-class RegularFileMatchesStringMatcherValue(FileMatcherValue):
+class RegularFileMatchesStringMatcherDdv(FileMatcherDdv):
     def __init__(self,
-                 string_matcher: string_matcher.StringMatcherValue,
+                 contents_matcher: string_matcher.StringMatcherDdv,
                  validator: PreOrPostSdsValueValidator):
-        self._string_matcher = string_matcher
+        self._contents_matcher = contents_matcher
         self._validator = validator
 
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> FileMatcher:
-        return RegularFileMatchesStringMatcher(self._string_matcher.value_of_any_dependency(tcds))
+        return RegularFileMatchesStringMatcher(self._contents_matcher.value_of_any_dependency(tcds))
 
 
 class RegularFileMatchesStringMatcherResolver(FileMatcherResolver):
-    def __init__(self, string_matcher: StringMatcherResolver):
-        self._string_matcher = string_matcher
+    def __init__(self, contents_matcher: StringMatcherResolver):
+        self._contents_matcher = contents_matcher
 
     @property
     def references(self) -> List[SymbolReference]:
-        return self._string_matcher.references
+        return self._contents_matcher.references
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
-        return RegularFileMatchesStringMatcherValue(
-            self._string_matcher.resolve(symbols),
+    def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
+        return RegularFileMatchesStringMatcherDdv(
+            self._contents_matcher.resolve(symbols),
             ValueValidatorFromResolverValidator(
                 symbols,
-                self._string_matcher.validator
+                self._contents_matcher.validator
             )
         )

@@ -10,7 +10,7 @@ from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, LineMatcherValue
+from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, LineMatcherDdv
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
@@ -18,7 +18,7 @@ from exactly_lib_test.section_document.test_resources.parser_classes import Cons
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
 from exactly_lib_test.symbol.test_resources.line_matcher import line_matcher_from_primitive_value, \
-    resolver_of_unconditionally_matching_matcher, value_of_unconditionally_matching_matcher
+    resolver_of_unconditionally_matching_matcher, ddv_of_unconditionally_matching_matcher
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check as sut
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import Expectation, is_pass
@@ -203,10 +203,10 @@ class LineMatcherResolverThatAssertsThatSymbolsAreAsExpected(LineMatcherResolver
     def references(self) -> List[SymbolReference]:
         return []
 
-    def resolve(self, symbols: SymbolTable) -> LineMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> LineMatcherDdv:
         self._expectation.apply_with_message(self._put, symbols, 'symbols given to resolve')
 
-        return value_of_unconditionally_matching_matcher()
+        return ddv_of_unconditionally_matching_matcher()
 
 
 ARBITRARY_MODEL = (1, 'line of arbitrary model')

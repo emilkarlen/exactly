@@ -43,9 +43,9 @@ class TestVisitor(unittest.TestCase):
             'ret val',
         )
 
-    def test_visit_file_ref(self):
+    def test_visit_path(self):
         self._check(
-            sut.FileRefResolver,
+            sut.PathResolver,
             path_resolvers.arbitrary_resolver(),
             'other ret val',
         )
@@ -77,8 +77,8 @@ class AVisitorThatRecordsVisitedMethods(sut.DataValueResolverPseudoVisitor[str])
         self.visited_types.append(sut.StringResolver)
         return self._ret_val
 
-    def visit_file_ref(self, value: sut.FileRefResolver) -> str:
-        self.visited_types.append(sut.FileRefResolver)
+    def visit_path(self, value: sut.PathResolver) -> str:
+        self.visited_types.append(sut.PathResolver)
         return self._ret_val
 
     def visit_list(self, value: sut.ListResolver) -> str:

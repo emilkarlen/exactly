@@ -19,7 +19,7 @@ from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
-from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file_ref
+from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_path
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
@@ -74,16 +74,16 @@ class _ActualFileParser(ComparisonActualFileParser):
     def parse_from_token_parser(self, parser: TokenParser) -> ComparisonActualFileConstructor:
         parser.require_is_not_at_eol(
             'Missing {actual_file} argument'.format(actual_file=ACTUAL_PATH_ARGUMENT.name))
-        file_ref = parse_file_ref.parse_file_ref_from_token_parser(ACTUAL_RELATIVITY_CONFIGURATION,
-                                                                   parser)
-        return actual_files.ConstructorForPath(file_ref,
+        path = parse_path.parse_path_from_token_parser(ACTUAL_RELATIVITY_CONFIGURATION,
+                                                       parser)
+        return actual_files.ConstructorForPath(path,
                                                actual_file_attributes.PLAIN_FILE_OBJECT_NAME,
                                                True)
 
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
     rel_opts_configuration.RelOptionsConfiguration(
-        parse_file_ref.ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE,
+        parse_path.ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE,
         RelOptionType.REL_CWD),
     ACTUAL_PATH_ARGUMENT.name,
     True)

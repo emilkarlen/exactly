@@ -2,16 +2,16 @@ from typing import Sequence
 
 from exactly_lib.symbol import symbol_usage as su, resolver_structure as struct
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.data.string_resolver import StringFragmentResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.data import string_value as sv, concrete_string_values as csv
-from exactly_lib.type_system.data.concrete_string_values import StrValueTransformer, TransformedStringFragment, \
-    StringValueFragment
-from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.data.list_value import ListValue
+from exactly_lib.type_system.data import string_ddv as sv, concrete_strings as csv
+from exactly_lib.type_system.data.concrete_strings import StrValueTransformer, TransformedStringFragmentDdv, \
+    StringDdvFragmentDdv
+from exactly_lib.type_system.data.list_ddv import ListDdv
+from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -35,8 +35,8 @@ class ConstantStringFragmentResolver(StringFragmentResolver):
     def references(self) -> Sequence[SymbolReference]:
         return ()
 
-    def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
-        return csv.ConstantFragment(self._constant)
+    def resolve(self, symbols: SymbolTable) -> sv.StringFragmentDdv:
+        return csv.ConstantFragmentDdv(self._constant)
 
 
 class SymbolStringFragmentResolver(StringFragmentResolver):
@@ -55,33 +55,33 @@ class SymbolStringFragmentResolver(StringFragmentResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self._symbol_reference,
 
-    def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
+    def resolve(self, symbols: SymbolTable) -> sv.StringFragmentDdv:
         container = symbols.lookup(self._symbol_reference.name)
         assert isinstance(container, struct.SymbolContainer), 'Value in SymTbl must be SymbolContainer'
         value_resolver = container.resolver
         assert isinstance(value_resolver, DataValueResolver), 'Value must be a DataValueResolver'
         value = value_resolver.resolve(symbols)
-        if isinstance(value, sv.StringValue):
-            return csv.StringValueFragment(value)
-        elif isinstance(value, FileRef):
-            return csv.FileRefFragment(value)
-        elif isinstance(value, ListValue):
-            return csv.ListValueFragment(value)
+        if isinstance(value, sv.StringDdv):
+            return csv.StringDdvFragmentDdv(value)
+        elif isinstance(value, PathDdv):
+            return csv.PathFragmentDdv(value)
+        elif isinstance(value, ListDdv):
+            return csv.ListFragmentDdv(value)
         else:
             raise TypeError('Not a {}: {}'.format(str(DataValueResolver),
                                                   value))
 
 
-class FileRefAsStringFragmentResolver(StringFragmentResolver):
-    def __init__(self, file_ref: FileRefResolver):
-        self._file_ref = file_ref
+class PathAsStringFragmentResolver(StringFragmentResolver):
+    def __init__(self, path: PathResolver):
+        self._path = path
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self._file_ref.references
+        return self._path.references
 
-    def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
-        return csv.FileRefFragment(self._file_ref.resolve(symbols))
+    def resolve(self, symbols: SymbolTable) -> sv.StringFragmentDdv:
+        return csv.PathFragmentDdv(self._path.resolve(symbols))
 
 
 class ListAsStringFragmentResolver(StringFragmentResolver):
@@ -92,8 +92,8 @@ class ListAsStringFragmentResolver(StringFragmentResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self._list_resolver.references
 
-    def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
-        return csv.ListValueFragment(self._list_resolver.resolve(symbols))
+    def resolve(self, symbols: SymbolTable) -> sv.StringFragmentDdv:
+        return csv.ListFragmentDdv(self._list_resolver.resolve(symbols))
 
 
 class TransformedStringFragmentResolver(StringFragmentResolver):
@@ -115,9 +115,9 @@ class TransformedStringFragmentResolver(StringFragmentResolver):
     def string_constant(self) -> str:
         return self._transformer(self._string_resolver.string_constant)
 
-    def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
-        return TransformedStringFragment(StringValueFragment(self._string_resolver.resolve(symbols)),
-                                         self._transformer)
+    def resolve(self, symbols: SymbolTable) -> sv.StringFragmentDdv:
+        return TransformedStringFragmentDdv(StringDdvFragmentDdv(self._string_resolver.resolve(symbols)),
+                                            self._transformer)
 
     @property
     def references(self) -> list:

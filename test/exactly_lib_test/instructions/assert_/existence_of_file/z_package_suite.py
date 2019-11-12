@@ -29,12 +29,12 @@ from exactly_lib_test.symbol.test_resources import file_matcher as asrt_file_mat
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_resolvers
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import symbol_file_ref_argument, \
-    file_ref_argument
+from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import symbol_path_argument, \
+    path_argument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.validation_cases import failing_validation_cases__svh
-from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
+from exactly_lib_test.test_case_utils.parse.parse_path import path_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
@@ -113,7 +113,7 @@ class SymbolUsagesTest(unittest.TestCase):
 
         expected_path_symbol_ref = asrt_sym_ref.symbol_usage_equals_symbol_reference(
             SymbolReference(path_symbol_name,
-                            file_ref_or_string_reference_restrictions(
+                            path_or_string_reference_restrictions(
                                 EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS))
         )
 
@@ -122,20 +122,20 @@ class SymbolUsagesTest(unittest.TestCase):
         cases = [
             NEA('no symbols',
                 asrt.matches_sequence([]),
-                args.WithOptionalNegation(args.PathArg(file_ref_argument('plain-file-name')))
+                args.WithOptionalNegation(args.PathArg(path_argument('plain-file-name')))
                 ),
             NEA('path symbol',
                 asrt.matches_sequence([
                     expected_path_symbol_ref,
                 ]),
-                args.WithOptionalNegation(args.PathArg(symbol_file_ref_argument(path_symbol_name)))
+                args.WithOptionalNegation(args.PathArg(symbol_path_argument(path_symbol_name)))
                 ),
             NEA('path symbol and file matcher symbol',
                 asrt.matches_sequence([
                     expected_path_symbol_ref,
                     expected_file_matcher_ref,
                 ]),
-                args.WithOptionalNegation(args.PathArg(symbol_file_ref_argument(path_symbol_name)),
+                args.WithOptionalNegation(args.PathArg(symbol_path_argument(path_symbol_name)),
                                           fm_args.SymbolReference(file_matcher_symbol_name))
                 ),
         ]
@@ -163,7 +163,7 @@ class FileMatcherValidationTest(unittest.TestCase):
 
             argument = args.CompleteInstructionArg(
                 ExpectationType.POSITIVE,
-                args.PathArg(file_ref_argument('ignored-file')),
+                args.PathArg(path_argument('ignored-file')),
                 fm_args.SymbolReference(failing_symbol_context.name))
 
             with self.subTest(failing_file_matcher_case.name):

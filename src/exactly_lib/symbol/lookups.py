@@ -1,5 +1,5 @@
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
@@ -8,11 +8,11 @@ from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.resolver_structure import SymbolContainer
-from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.data.list_value import ListValue
-from exactly_lib.type_system.data.string_value import StringValue
+from exactly_lib.type_system.data.list_ddv import ListDdv
+from exactly_lib.type_system.data.path_ddv import PathDdv
+from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.logic.program.program_value import ProgramValue
-from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
+from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -23,7 +23,7 @@ def lookup_string(symbols: SymbolTable, name: str) -> StringResolver:
     return ret_val
 
 
-def lookup_and_resolve_string(symbols: SymbolTable, name: str) -> StringValue:
+def lookup_and_resolve_string(symbols: SymbolTable, name: str) -> StringDdv:
     return lookup_string(symbols, name).resolve(symbols)
 
 
@@ -34,19 +34,19 @@ def lookup_list(symbols: SymbolTable, name: str) -> ListResolver:
     return ret_val
 
 
-def lookup_and_resolve_list(symbols: SymbolTable, name: str) -> ListValue:
+def lookup_and_resolve_list(symbols: SymbolTable, name: str) -> ListDdv:
     return lookup_list(symbols, name).resolve(symbols)
 
 
-def lookup_file_ref(symbols: SymbolTable, name: str) -> FileRefResolver:
+def lookup_path(symbols: SymbolTable, name: str) -> PathResolver:
     container = lookup_container(symbols, name)
     ret_val = container.resolver
-    assert isinstance(ret_val, FileRefResolver), 'Referenced symbol must be FileRefResolver'
+    assert isinstance(ret_val, PathResolver), 'Referenced symbol must be PathResolver'
     return ret_val
 
 
-def lookup_and_resolve_file_ref(symbols: SymbolTable, name: str) -> FileRef:
-    return lookup_file_ref(symbols, name).resolve(symbols)
+def lookup_and_resolve_path(symbols: SymbolTable, name: str) -> PathDdv:
+    return lookup_path(symbols, name).resolve(symbols)
 
 
 def lookup_line_matcher(symbols: SymbolTable, name: str) -> LineMatcherResolver:
@@ -84,7 +84,7 @@ def lookup_string_transformer(symbols: SymbolTable, name: str) -> StringTransfor
     return ret_val
 
 
-def lookup_and_resolve_string_transformer(symbols: SymbolTable, name: str) -> StringTransformerValue:
+def lookup_and_resolve_string_transformer(symbols: SymbolTable, name: str) -> StringTransformerDdv:
     return lookup_string_transformer(symbols, name).resolve(symbols)
 
 

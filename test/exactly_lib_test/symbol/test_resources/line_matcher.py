@@ -6,9 +6,9 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
     constant_success_validator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_utils.line_matcher.line_matcher_values import LineMatcherValueFromPrimitiveValue
+from exactly_lib.test_case_utils.line_matcher.line_matcher_ddvs import LineMatcherValueFromPrimitiveDdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherValue, LineMatcherLine
+from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherDdv, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -56,7 +56,7 @@ class LineMatcherConstantTestImpl(LineMatcherTestImplBase):
         return self._result
 
 
-class LineMatcherValueTestImpl(LineMatcherValue):
+class LineMatcherDdvTestImpl(LineMatcherDdv):
     def __init__(self,
                  primitive_value: LineMatcher,
                  validator: PreOrPostSdsValueValidator = constant_success_validator(),
@@ -91,13 +91,13 @@ class LineMatcherResolverConstantTestImpl(LineMatcherResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    def resolve(self, symbols: SymbolTable) -> LineMatcherValue:
-        return LineMatcherValueTestImpl(self._resolved_value)
+    def resolve(self, symbols: SymbolTable) -> LineMatcherDdv:
+        return LineMatcherDdvTestImpl(self._resolved_value)
 
 
 class LineMatcherResolverConstantValueTestImpl(LineMatcherResolver):
     def __init__(self,
-                 resolved_value: LineMatcherValue,
+                 resolved_value: LineMatcherDdv,
                  references: Sequence[SymbolReference] = ()):
         self._resolved_value = resolved_value
         self._references = list(references)
@@ -110,7 +110,7 @@ class LineMatcherResolverConstantValueTestImpl(LineMatcherResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    def resolve(self, symbols: SymbolTable) -> LineMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> LineMatcherDdv:
         return self._resolved_value
 
 
@@ -132,7 +132,7 @@ def is_line_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
 
 def successful_matcher_with_validation(validator: PreOrPostSdsValueValidator):
     return LineMatcherResolverConstantValueTestImpl(
-        LineMatcherValueTestImpl(
+        LineMatcherDdvTestImpl(
             LineMatcherConstantTestImpl(True),
             validator
         )
@@ -144,8 +144,8 @@ def line_matcher_from_primitive_value(resolved_value: LineMatcher = LineMatcherC
                                       validator: PreOrPostSdsValueValidator = constant_success_validator(),
                                       ) -> LineMatcherResolver:
     return LineMatcherResolverConstantValueTestImpl(
-        LineMatcherValueTestImpl(resolved_value,
-                                 validator),
+        LineMatcherDdvTestImpl(resolved_value,
+                               validator),
         references=references,
     )
 
@@ -154,8 +154,8 @@ def resolver_of_unconditionally_matching_matcher() -> LineMatcherResolver:
     return LineMatcherResolverConstantTestImpl(LineMatcherConstantTestImpl(True))
 
 
-def value_of_unconditionally_matching_matcher() -> LineMatcherValue:
-    return LineMatcherValueFromPrimitiveValue(
+def ddv_of_unconditionally_matching_matcher() -> LineMatcherDdv:
+    return LineMatcherValueFromPrimitiveDdv(
         LineMatcherConstantTestImpl(True)
     )
 

@@ -6,7 +6,7 @@ from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherDdv
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util import symbol_table
 from exactly_lib_test.symbol.test_resources.resolver_assertions import is_resolver_of_logic_type
@@ -25,11 +25,11 @@ def matches_string_matcher_resolver(primitive_value: ValueAssertion[StringMatche
     def resolve_value(resolver: LogicValueResolver):
         return resolver.resolve(symbols)
 
-    def resolve_primitive_value(value: StringMatcherValue):
-        return value.value_of_any_dependency(tcds)
+    def resolve_primitive_value(ddv: StringMatcherDdv):
+        return ddv.value_of_any_dependency(tcds)
 
     resolved_value_assertion = asrt.is_instance_with(
-        StringMatcherValue,
+        StringMatcherDdv,
         asrt.sub_component('primitive value',
                            resolve_primitive_value,
                            asrt.is_instance_with(StringMatcher,

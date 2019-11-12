@@ -13,7 +13,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
     ActualFilePropertyDescriptorConstructorForComparisonFile, ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data import file_ref_resolvers
+from exactly_lib.symbol.data import path_resolvers
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -26,11 +26,11 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
-from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
+from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
 from exactly_lib.test_case_utils.program.execution.store_result_in_instruction_tmp_dir import \
     make_transformed_file_from_output_in_instruction_tmp_dir
 from exactly_lib.test_case_utils.program.parse import parse_program
-from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data import paths
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution import process_output_files
 from exactly_lib.util.render.renderer import Renderer
@@ -47,7 +47,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                   WithAssertPhasePurpose):
     def __init__(self, name: str,
                  name_of_checked_file: str):
-        self.file_arg = a.Named(parse_here_doc_or_file_ref.CONFIGURATION.argument_syntax_name)
+        self.file_arg = a.Named(parse_here_doc_or_path.CONFIGURATION.argument_syntax_name)
         self._help_parts = FileContentsCheckerHelp(name,
                                                    name_of_checked_file,
                                                    [])
@@ -86,8 +86,8 @@ class Parser(ComparisonActualFileParser):
         self._checked_file = checked_file
         self._checked_file_name = process_output_files.PROC_OUTPUT_FILE_NAMES[checked_file]
         self._default = actual_files.ConstructorForPath(
-            file_ref_resolvers.of_rel_option(RelOptionType.REL_RESULT,
-                                             file_refs.constant_path_part(self._checked_file_name)),
+            path_resolvers.of_rel_option(RelOptionType.REL_RESULT,
+                                         paths.constant_path_part(self._checked_file_name)),
             file_or_dir_contents_headers.target_name_of_proc_output_file_from_act_phase(checked_file),
             False,
         )
@@ -127,8 +127,8 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
                                                                           source_info,
                                                                           self._checked_output,
                                                                           program)
-        file_with_transformed_contents = file_ref_resolvers.constant(
-            file_refs.absolute_path(result.path_of_file_with_transformed_contents)
+        file_with_transformed_contents = path_resolvers.constant(
+            paths.absolute_path(result.path_of_file_with_transformed_contents)
         )
 
         path_with_transformed_contents = (

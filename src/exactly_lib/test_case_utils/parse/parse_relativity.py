@@ -3,7 +3,7 @@ from typing import Union, Optional
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO
-from exactly_lib.definitions.file_ref import REL_SYMBOL_OPTION_NAME, REL_SOURCE_FILE_DIR_OPTION_NAME
+from exactly_lib.definitions.path import REL_SYMBOL_OPTION_NAME, REL_SOURCE_FILE_DIR_OPTION_NAME
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import is_option_argument
@@ -11,7 +11,7 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure import relative_path_options as rel_opts
@@ -24,7 +24,7 @@ from exactly_lib.util.parse.token import Token
 def reference_restrictions_for_path_symbol(accepted_relativity_variants: PathRelativityVariants
                                            ) -> ReferenceRestrictions:
     return ReferenceRestrictionsOnDirectAndIndirect(
-        FileRefRelativityRestriction(accepted_relativity_variants))
+        PathRelativityRestriction(accepted_relativity_variants))
 
 
 def parse_explicit_relativity_info(options: RelOptionsConfiguration,

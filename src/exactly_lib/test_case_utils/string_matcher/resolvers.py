@@ -10,9 +10,9 @@ from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.string_matcher import delegated_matcher
 from exactly_lib.test_case_utils.string_matcher import string_matchers
-from exactly_lib.type_system.logic import string_matcher_values
+from exactly_lib.type_system.logic import string_matcher_ddvs
 from exactly_lib.type_system.logic.impls import combinator_matchers
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherDdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -34,9 +34,9 @@ class StringMatcherConstantResolver(StringMatcherResolver):
     """
 
     def __init__(self, value: StringMatcher):
-        self._value = string_matcher_values.StringMatcherConstantValue(value)
+        self._value = string_matcher_ddvs.StringMatcherConstantDdv(value)
 
-    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
         return self._value
 
     @property
@@ -52,10 +52,10 @@ class StringMatcherConstantOfValueResolver(StringMatcherResolver):
     A :class:`StringMatcherResolver` that is a constant :class:`StringMatcherValue`
     """
 
-    def __init__(self, value: StringMatcherValue):
+    def __init__(self, value: StringMatcherDdv):
         self._value = value
 
-    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
         return self._value
 
     @property
@@ -84,8 +84,8 @@ class _StringMatcherWithTransformationResolver(StringMatcherResolver):
             original.validator,
         ])
 
-    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
-        return string_matchers.StringMatcherWithTransformationValue(
+    def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
+        return string_matchers.StringMatcherWithTransformationDdv(
             self._transformer.resolve(symbols),
             self._original.resolve(symbols),
         )
@@ -106,12 +106,12 @@ class StringMatcherResolverFromParts2(StringMatcherResolver):
     def __init__(self,
                  references: Sequence[SymbolReference],
                  validator: PreOrPostSdsValidator,
-                 get_matcher_value: Callable[[SymbolTable], StringMatcherValue]):
+                 get_matcher_value: Callable[[SymbolTable], StringMatcherDdv]):
         self._get_matcher_value = get_matcher_value
         self._validator = validator
         self._references = references
 
-    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
         return self._get_matcher_value(symbols)
 
     @property
@@ -148,7 +148,7 @@ class StringMatcherReferenceResolver(StringMatcherResolver):
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
 
-    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
         resolver = lookups.lookup_string_matcher(symbols,
                                                  self._name_of_referenced_resolver)
         referenced_value = resolver.resolve(symbols)
@@ -159,9 +159,9 @@ class StringMatcherReferenceResolver(StringMatcherResolver):
             return self._negated(referenced_value)
 
     @staticmethod
-    def _negated(original: StringMatcherValue) -> StringMatcherValue:
-        return delegated_matcher.StringMatcherValueDelegatedToMatcher(
-            combinator_matchers.NegationValue(original)
+    def _negated(original: StringMatcherDdv) -> StringMatcherDdv:
+        return delegated_matcher.StringMatcherDdvDelegatedToMatcher(
+            combinator_matchers.NegationDdv(original)
         )
 
     def __str__(self):

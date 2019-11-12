@@ -4,18 +4,18 @@ from exactly_lib.symbol.data import string_resolver as sut
 from exactly_lib.symbol.data.impl import string_resolver_impls as impl
 from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.data import concrete_string_values as csv
-from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
-from exactly_lib.type_system.data.list_value import ListValue
+from exactly_lib.type_system.data import concrete_strings as csv
+from exactly_lib.type_system.data import paths
+from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
+from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table, Entry
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_string_fragments
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.type_system.data.test_resources.string_value_assertions import equals_string_fragment, \
-    equals_string_value
+from exactly_lib_test.type_system.data.test_resources.string_ddv_assertions import equals_string_fragment_ddv, \
+    equals_string_ddv
 from exactly_lib_test.util.test_resources import symbol_tables
 
 
@@ -51,7 +51,7 @@ class TestConstantStringFragmentResolver(unittest.TestCase):
         # ACT #
         actual = fragment.resolve(empty_symbol_table())
         # ASSERT #
-        assertion = equals_string_fragment(csv.ConstantFragment(string_constant))
+        assertion = equals_string_fragment_ddv(csv.ConstantFragmentDdv(string_constant))
         assertion.apply_without_message(self, actual)
 
 
@@ -86,43 +86,43 @@ class TestSymbolStringFragmentResolver(unittest.TestCase):
         # ACT #
         actual = fragment.resolve(symbol_table)
         # ASSERT #
-        self.assertIsInstance(actual, csv.StringValueFragment)
-        assertion = equals_string_fragment(csv.ConstantFragment(symbol.value))
+        self.assertIsInstance(actual, csv.StringDdvFragmentDdv)
+        assertion = equals_string_fragment_ddv(csv.ConstantFragmentDdv(symbol.value))
         assertion.apply_without_message(self, actual)
 
     def test_resolve_of_path_symbol_SHOULD_give_string_constant(self):
         # ARRANGE #
         symbol = NameAndValue('the_symbol_name',
-                              file_refs.rel_act(file_refs.constant_path_part('file-name')))
+                              paths.rel_act(paths.constant_path_part('file-name')))
         symbol_reference = su.symbol_reference(symbol.name)
         fragment = impl.SymbolStringFragmentResolver(symbol_reference)
-        symbol_table = su.symbol_table_with_single_file_ref_value(symbol.name, symbol.value)
+        symbol_table = su.symbol_table_with_single_path_value(symbol.name, symbol.value)
         # ACT #
         actual = fragment.resolve(symbol_table)
         # ASSERT #
-        self.assertIsInstance(actual, csv.FileRefFragment)
-        assertion = equals_string_fragment(csv.FileRefFragment(symbol.value))
+        self.assertIsInstance(actual, csv.PathFragmentDdv)
+        assertion = equals_string_fragment_ddv(csv.PathFragmentDdv(symbol.value))
         assertion.apply_without_message(self, actual)
 
     def test_resolve_of_list_symbol_SHOULD_give_list_value(self):
         # ARRANGE #
         string_value_1 = 'string value 1'
         string_value_2 = 'string value 2'
-        expected_list_value = ListValue([string_value_of_single_string(string_value_1),
-                                         string_value_of_single_string(string_value_2)])
+        expected_list_value = ListDdv([string_ddv_of_single_string(string_value_1),
+                                       string_ddv_of_single_string(string_value_2)])
         symbol = NameAndValue('the_symbol_name',
                               expected_list_value)
         symbol_reference = su.symbol_reference(symbol.name)
         fragment = impl.SymbolStringFragmentResolver(symbol_reference)
 
         symbol_table = symbol_tables.symbol_table_from_entries([Entry(symbol.name,
-                                                                      su.list_value_constant_container(
+                                                                      su.list_ddv_constant_container(
                                                                           symbol.value))])
         # ACT #
         actual = fragment.resolve(symbol_table)
         # ASSERT #
-        self.assertIsInstance(actual, csv.ListValueFragment)
-        assertion = equals_string_fragment(csv.ListValueFragment(expected_list_value))
+        self.assertIsInstance(actual, csv.ListFragmentDdv)
+        assertion = equals_string_fragment_ddv(csv.ListFragmentDdv(expected_list_value))
         assertion.apply_without_message(self, actual)
 
 
@@ -143,12 +143,12 @@ class StringResolverTest(unittest.TestCase):
         string_constant_2 = 'string constant 2'
         string_symbol = NameAndValue('string_symbol_name', 'string symbol value')
         path_symbol = NameAndValue('path_symbol_name',
-                                   file_refs.rel_act(file_refs.constant_path_part('file-name')))
+                                   paths.rel_act(paths.constant_path_part('file-name')))
         list_element_1 = 'list element 1'
         list_element_2 = 'list element 2'
         list_symbol = NameAndValue('list_symbol_name',
-                                   ListValue([string_value_of_single_string(list_element_1),
-                                              string_value_of_single_string(list_element_2)])
+                                   ListDdv([string_ddv_of_single_string(list_element_1),
+                                            string_ddv_of_single_string(list_element_2)])
                                    )
 
         cases = [
@@ -156,21 +156,21 @@ class StringResolverTest(unittest.TestCase):
                 'no fragments',
                 sut.StringResolver(()),
                 empty_symbol_table(),
-                csv.StringValue(()),
+                csv.StringDdv(()),
             ),
             (
                 'single string constant fragment',
                 sut.StringResolver((impl.ConstantStringFragmentResolver(string_constant_1),)),
                 empty_symbol_table(),
-                csv.StringValue((csv.ConstantFragment(string_constant_1),)),
+                csv.StringDdv((csv.ConstantFragmentDdv(string_constant_1),)),
             ),
             (
                 'multiple single string constant fragments',
                 sut.StringResolver((impl.ConstantStringFragmentResolver(string_constant_1),
                                     impl.ConstantStringFragmentResolver(string_constant_2))),
                 empty_symbol_table(),
-                csv.StringValue((csv.ConstantFragment(string_constant_1),
-                                 csv.ConstantFragment(string_constant_2))),
+                csv.StringDdv((csv.ConstantFragmentDdv(string_constant_1),
+                               csv.ConstantFragmentDdv(string_constant_2))),
             ),
             (
                 'single symbol fragment/symbol is a string',
@@ -179,15 +179,15 @@ class StringResolverTest(unittest.TestCase):
                         su.symbol_reference(string_symbol.name)),)),
                 su.symbol_table_with_single_string_value(string_symbol.name,
                                                          string_symbol.value),
-                csv.StringValue((csv.ConstantFragment(string_symbol.value),)),
+                csv.StringDdv((csv.ConstantFragmentDdv(string_symbol.value),)),
             ),
             (
                 'single symbol fragment/symbol is a path',
                 sut.StringResolver((
                     impl.SymbolStringFragmentResolver(
                         su.symbol_reference(path_symbol.name)),)),
-                su.symbol_table_with_single_file_ref_value(path_symbol.name, path_symbol.value),
-                csv.StringValue((csv.FileRefFragment(path_symbol.value),)),
+                su.symbol_table_with_single_path_value(path_symbol.name, path_symbol.value),
+                csv.StringDdv((csv.PathFragmentDdv(path_symbol.value),)),
             ),
             (
                 'single symbol fragment/symbol is a list',
@@ -195,9 +195,9 @@ class StringResolverTest(unittest.TestCase):
                     impl.SymbolStringFragmentResolver(
                         su.symbol_reference(list_symbol.name)),)),
                 symbol_tables.symbol_table_from_entries([Entry(list_symbol.name,
-                                                               su.list_value_constant_container(
+                                                               su.list_ddv_constant_container(
                                                                    list_symbol.value))]),
-                csv.StringValue((csv.ListValueFragment(list_symbol.value),)),
+                csv.StringDdv((csv.ListFragmentDdv(list_symbol.value),)),
             ),
             (
                 'multiple fragments of different types',
@@ -209,20 +209,20 @@ class StringResolverTest(unittest.TestCase):
                 )),
                 symbol_tables.symbol_table_from_entries([
                     Entry(string_symbol.name, su.string_constant_container(string_symbol.value)),
-                    Entry(path_symbol.name, su.file_ref_constant_container(path_symbol.value)),
-                    Entry(list_symbol.name, su.list_value_constant_container(list_symbol.value)),
+                    Entry(path_symbol.name, su.path_constant_container(path_symbol.value)),
+                    Entry(list_symbol.name, su.list_ddv_constant_container(list_symbol.value)),
                 ]),
-                csv.StringValue((csv.ConstantFragment(string_symbol.value),
-                                 csv.ConstantFragment(string_constant_1),
-                                 csv.FileRefFragment(path_symbol.value),
-                                 csv.ListValueFragment(list_symbol.value),
-                                 )),
+                csv.StringDdv((csv.ConstantFragmentDdv(string_symbol.value),
+                               csv.ConstantFragmentDdv(string_constant_1),
+                               csv.PathFragmentDdv(path_symbol.value),
+                               csv.ListFragmentDdv(list_symbol.value),
+                               )),
             ),
         ]
         for test_name, string_value, symbol_table, expected in cases:
             with self.subTest(test_name=test_name):
                 actual = string_value.resolve(symbol_table)
-                assertion = equals_string_value(expected)
+                assertion = equals_string_ddv(expected)
                 assertion.apply_without_message(self, actual)
 
     def test_references(self):

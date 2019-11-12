@@ -12,7 +12,7 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
     RelNonHomeOptionType, RelHomeOptionType
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_system_program as sut
-from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable
@@ -117,8 +117,8 @@ class TestSuccessfulParse(unittest.TestCase):
 
         file_name = 'a-file.txt'
         default_relativity_of_existing_file = RelOptionType.REL_HOME_CASE
-        file_ref = file_refs.of_rel_option(default_relativity_of_existing_file,
-                                           file_refs.constant_path_part(file_name))
+        path = paths.of_rel_option(default_relativity_of_existing_file,
+                                   paths.constant_path_part(file_name))
 
         argument_cases = [
             ArgumentsCase('no arguments', source_elements=[], expected_resolved_values=lambda tcds: [],
@@ -133,7 +133,7 @@ class TestSuccessfulParse(unittest.TestCase):
                           ]),
             ArgumentsCase('existing file argument',
                           source_elements=[ab.option(syntax_elements.EXISTING_FILE_OPTION_NAME), file_name],
-                          expected_resolved_values=lambda tcds: [str(file_ref.value_of_any_dependency(tcds))],
+                          expected_resolved_values=lambda tcds: [str(path.value_of_any_dependency(tcds))],
                           expected_symbol_references=[]),
         ]
 

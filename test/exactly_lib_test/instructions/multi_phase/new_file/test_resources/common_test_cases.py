@@ -4,9 +4,9 @@ from typing import Sequence, Iterable
 from exactly_lib.instructions.multi_phase import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.data import file_ref_resolvers
+from exactly_lib.symbol.data import path_resolvers
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelOptionType
-from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data import paths
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils import IS_FAILURE
 from exactly_lib_test.instructions.multi_phase.test_resources import \
@@ -197,7 +197,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
         for dst_file_relativity_case in dst_file_relativity_cases:
             path_symbol_wo_suffix = NameAndValue(
                 'dst_path_symbol',
-                file_ref_resolvers.constant(file_refs.of_rel_option(dst_file_relativity_case)),
+                path_resolvers.constant(paths.of_rel_option(dst_file_relativity_case)),
             )
             additional_symbol_table_entries = [
                 Entry(path_symbol_wo_suffix.name,

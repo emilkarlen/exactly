@@ -12,9 +12,9 @@ def equals_test_case_reference(expected: TestCaseFileReference) -> ValueAssertio
                                TestCaseFileReference.file_path.fget,
                                asrt.equals(expected.file_path)
                                ),
-            asrt.sub_component('file_reference_relativity_root_dir',
-                               TestCaseFileReference.file_reference_relativity_root_dir.fget,
-                               asrt.equals(expected.file_reference_relativity_root_dir)
+            asrt.sub_component('path_relativity_root_dir',
+                               TestCaseFileReference.path_relativity_root_dir.fget,
+                               asrt.equals(expected.path_relativity_root_dir)
                                ),
         ])
 

@@ -9,12 +9,12 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependen
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
-from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_utils.regex.test_resources import assertions as sut
-from exactly_lib_test.test_case_utils.regex.test_resources.regex_values import RegexResolverConstantTestImpl
+from exactly_lib_test.test_case_utils.regex.test_resources.regex_ddvs import RegexResolverConstantTestImpl
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails, \
     post_sds_validation_fails

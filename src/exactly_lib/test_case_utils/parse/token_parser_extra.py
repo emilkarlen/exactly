@@ -4,8 +4,8 @@ from exactly_lib.section_document.element_parsers.misc_utils import new_token_st
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.test_case_utils.parse import parse_file_ref
+from exactly_lib.symbol.data.path_resolver import PathResolver
+from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 
 
@@ -24,8 +24,8 @@ class TokenParserExtra(TokenParser):
         """
         super().__init__(token_stream, error_message_format_map)
 
-    def consume_file_ref(self, conf: RelOptionArgumentConfiguration) -> FileRefResolver:
-        return parse_file_ref.parse_file_ref(self._token_stream, conf)
+    def consume_path(self, conf: RelOptionArgumentConfiguration) -> PathResolver:
+        return parse_path.parse_path(self._token_stream, conf)
 
 
 def new_token_parser(source: str,

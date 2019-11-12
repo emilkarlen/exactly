@@ -96,7 +96,7 @@ class ResolverForTestCase(Resolver):
 
     def resolve(self) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheck]:
         accessor, act_phase_setup = self._accessor()
-        test_case = accessor.apply(self._test_case_file_ref())
+        test_case = accessor.apply(self._test_case_path())
 
         return self._from_test_case(
             test_case,
@@ -115,6 +115,6 @@ class ResolverForTestCase(Resolver):
         return accessor_resolver.resolve(case_execution_settings.test_case_file_path,
                                          case_execution_settings.run_as_part_of_explicit_suite)
 
-    def _test_case_file_ref(self) -> test_case_processing.TestCaseFileReference:
+    def _test_case_path(self) -> test_case_processing.TestCaseFileReference:
         return test_case_processing.test_case_reference_of_source_file(
             self.execution_settings.test_case_file_path)

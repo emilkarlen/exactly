@@ -60,27 +60,27 @@ class TestParse(unittest.TestCase):
         arguments = '  expected-argument  '
         instruction_embryo = self._parse_arguments(arguments)
         symbols = empty_symbol_table()
-        file_ref = instruction_embryo.dir_path_resolver.resolve(symbols)
+        path = instruction_embryo.dir_path_resolver.resolve(symbols)
         equals_path_part_string('expected-argument').apply_with_message(self,
-                                                                        file_ref.path_suffix(),
+                                                                        path.path_suffix(),
                                                                         'path_suffix')
 
     def test_success_when_correct_number_of_arguments(self):
         arguments = 'expected-argument'
         instruction_embryo = self._parse_arguments(arguments)
         symbols = empty_symbol_table()
-        file_ref = instruction_embryo.dir_path_resolver.resolve(symbols)
+        path = instruction_embryo.dir_path_resolver.resolve(symbols)
         equals_path_part_string('expected-argument').apply_with_message(self,
-                                                                        file_ref.path_suffix(),
+                                                                        path.path_suffix(),
                                                                         'path_suffix')
 
     def test_success_when_correct_number_of_arguments__escaped(self):
         arguments = '"expected argument"'
         instruction_embryo = self._parse_arguments(arguments)
         symbols = empty_symbol_table()
-        file_ref = instruction_embryo.dir_path_resolver.resolve(symbols)
+        path = instruction_embryo.dir_path_resolver.resolve(symbols)
         equals_path_part_string('expected argument').apply_with_message(self,
-                                                                        file_ref.path_suffix(),
+                                                                        path.path_suffix(),
                                                                         'path_suffix')
 
 

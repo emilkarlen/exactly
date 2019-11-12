@@ -3,6 +3,7 @@ from typing import TypeVar, Generic, Optional
 
 from exactly_lib.test_case.validation import pre_or_post_value_validation
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription, \
     WithTreeStructureDescription
@@ -82,7 +83,10 @@ class MatcherWTraceAndNegation(Generic[T], MatcherWTrace[T], ABC):
         raise NotImplementedError('deprecated')
 
 
-class MatcherValue(Generic[T], WithTreeStructureDescription, ABC):
+class MatcherDdv(Generic[T],
+                 DirDependentValue[T],
+                 WithTreeStructureDescription,
+                 ABC):
     @abstractmethod
     def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
         pass

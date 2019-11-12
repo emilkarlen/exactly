@@ -39,15 +39,15 @@ from exactly_lib.test_case_file_structure.path_relativity import PathRelativityV
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
-from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
-from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import parse_string_or_here_doc_from_token_parser
+from exactly_lib.test_case_utils.parse import parse_path, parse_list
+from exactly_lib.test_case_utils.parse.parse_here_doc_or_path import parse_string_or_here_doc_from_token_parser
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.test_case_utils.string_transformer import resolvers as line_transformer_resolvers, \
     parse_string_transformer
-from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
+from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -261,7 +261,7 @@ def _parse_not_whole_line(parser: Callable[[FileSystemLocationInfo, TokenParser]
 
 def _parse_path(fs_location_info: FileSystemLocationInfo,
                 token_parser: TokenParser) -> DataValueResolver:
-    return parse_file_ref.parse_file_ref_from_token_parser(
+    return parse_path.parse_path_from_token_parser(
         REL_OPTION_ARGUMENT_CONFIGURATION,
         token_parser,
         fs_location_info.current_source_file.abs_path_of_dir_containing_last_file_base_name)

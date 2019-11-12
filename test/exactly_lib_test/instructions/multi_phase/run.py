@@ -142,8 +142,8 @@ class TestExecuteInterpret(TestCaseBase):
     def test_check_zero_exit_code__rel_tmp(self):
         self._check_single_line_arguments_with_source_variants(
             args.sequence([pgm_args.interpret_py_source_file(
-                args.file_ref_rel_opt('exit-with-value-on-command-line.py',
-                                      RelOptionType.REL_TMP)),
+                args.path_rel_opt('exit-with-value-on-command-line.py',
+                                  RelOptionType.REL_TMP)),
                 0]).as_str,
             home_and_sds_test.Arrangement(
                 sds_contents_before=contents_in(RelSdsOptionType.REL_TMP,

@@ -5,7 +5,7 @@ from exactly_lib.symbol.data.restrictions import value_restrictions as vr, refer
 from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureOfIndirectReference
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, \
     StringRestriction, \
-    FileRefRelativityRestriction
+    PathRelativityRestriction
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
 from exactly_lib.symbol.restriction import ReferenceRestrictions, TypeCategoryRestriction
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
@@ -23,7 +23,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestIsNoRestriction),
         unittest.makeSuite(TestIsStringRestriction),
         unittest.makeSuite(TestEqualsStringRestriction),
-        unittest.makeSuite(TestEqualsFileRefRelativityRestriction),
+        unittest.makeSuite(TestEqualsPathRelativityRestriction),
         unittest.makeSuite(TestEqualsValueRestriction),
         unittest.makeSuite(TestEqualsOrReferenceRestrictions),
         unittest.makeSuite(TestEqualsReferenceRestrictions),
@@ -195,33 +195,33 @@ class TestEqualsStringRestriction(unittest.TestCase):
         assert_that_assertion_fails(sut.equals_string_restriction(expected), actual)
 
 
-class TestEqualsFileRefRelativityRestriction(unittest.TestCase):
+class TestEqualsPathRelativityRestriction(unittest.TestCase):
     def test_equals(self):
         test_cases = [
             PathRelativityVariants(set(), False),
             PathRelativityVariants({RelOptionType.REL_ACT}, True),
         ]
         for variants in test_cases:
-            restriction = FileRefRelativityRestriction(variants)
+            restriction = PathRelativityRestriction(variants)
             with self.subTest():
-                sut.equals_file_ref_relativity_restriction(restriction).apply_without_message(self, restriction)
+                sut.equals_path_relativity_restriction(restriction).apply_without_message(self, restriction)
 
     def test_not_equals__different__types(self):
-        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
+        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
         actual = AnyDataTypeRestriction()
-        assert_that_assertion_fails(sut.equals_file_ref_relativity_restriction(expected), actual)
+        assert_that_assertion_fails(sut.equals_path_relativity_restriction(expected), actual)
 
     def test_not_equals__different__accepted_relativity_variants(self):
-        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
-        actual = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, False))
-        assert_that_assertion_fails(sut.equals_file_ref_relativity_restriction(expected), actual)
+        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
+        actual = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, False))
+        assert_that_assertion_fails(sut.equals_path_relativity_restriction(expected), actual)
 
 
 class TestEqualsValueRestriction(unittest.TestCase):
     def test_equals(self):
         test_cases = [
-            FileRefRelativityRestriction(PathRelativityVariants(set(), False)),
-            FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, True)),
+            PathRelativityRestriction(PathRelativityVariants(set(), False)),
+            PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, True)),
             StringRestriction(),
             AnyDataTypeRestriction(),
         ]
@@ -229,8 +229,8 @@ class TestEqualsValueRestriction(unittest.TestCase):
             with self.subTest():
                 sut.equals_value_restriction(restriction).apply_without_message(self, restriction)
 
-    def test_not_equals__different__types__one_is_file_ref_relativity_variants(self):
-        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
+    def test_not_equals__different__types__one_is_path_relativity_variants(self):
+        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
         actual = AnyDataTypeRestriction()
         assert_that_assertion_fails(sut.equals_value_restriction(expected), actual)
 
@@ -240,8 +240,8 @@ class TestEqualsValueRestriction(unittest.TestCase):
         assert_that_assertion_fails(sut.equals_value_restriction(expected), actual)
 
     def test_not_equals__same_type__different_accepted_relativity_variants(self):
-        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
-        actual = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, False))
+        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
+        actual = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, False))
         assert_that_assertion_fails(sut.equals_value_restriction(expected), actual)
 
 

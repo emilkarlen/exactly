@@ -20,8 +20,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
     SymbolUser
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_utils.parse import parse_string
-from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from_parse_source
 from exactly_lib.test_case_utils.parse.parse_list import parse_list
+from exactly_lib.test_case_utils.parse.parse_path import parse_path_from_parse_source
 from exactly_lib.test_case_utils.program.command import command_resolvers
 
 
@@ -81,8 +81,8 @@ class _Parser(ExecutableObjectParser):
     def _parse_executable_file(argument: str) -> CommandConfiguration:
         try:
             source = ParseSource(argument)
-            executable = parse_file_ref_from_parse_source(source,
-                                                          RELATIVITY_CONFIGURATION)
+            executable = parse_path_from_parse_source(source,
+                                                      RELATIVITY_CONFIGURATION)
             arguments = parse_list(source)
             command_resolver = command_resolvers.for_executable_file(executable)
             executable_file = command_resolver.new_with_additional_argument_list(arguments)

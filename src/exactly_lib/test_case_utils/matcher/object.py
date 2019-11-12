@@ -13,8 +13,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 T = TypeVar('T')
 
 
-class ObjectValue(Generic[T], MultiDependenciesDdv[T], ABC):
-    """Value for an arbitrary object"""
+class ObjectDdv(Generic[T], MultiDependenciesDdv[T], ABC):
+    """DDV for an arbitrary object"""
 
     @abstractmethod
     def describer(self) -> DetailsRenderer:
@@ -40,5 +40,5 @@ class ObjectResolver(Generic[T], ABC):
         return []
 
     @abstractmethod
-    def resolve(self, symbols: SymbolTable) -> ObjectValue[T]:
+    def resolve(self, symbols: SymbolTable) -> ObjectDdv[T]:
         pass

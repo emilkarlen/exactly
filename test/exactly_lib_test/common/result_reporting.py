@@ -6,7 +6,7 @@ from exactly_lib.section_document.source_location import SourceLocationPath, Sou
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.common.report_rendering.source_location import matches_source_code_minor_block, \
-    expected_file_reference_line
+    expected_path_line
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct
@@ -134,5 +134,5 @@ def section_line(section_name: str) -> str:
 
 def file_and_line_num_line(file_path: pathlib.Path,
                            source: LineSequence) -> str:
-    return expected_file_reference_line(file_path,
-                                        source.first_line_number)
+    return expected_path_line(file_path,
+                              source.first_line_number)

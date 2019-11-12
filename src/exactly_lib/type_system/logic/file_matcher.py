@@ -6,7 +6,7 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.description import trace_renderers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -62,7 +62,7 @@ class FileMatcher(MatcherWTraceAndNegation[FileMatcherModel], ABC):
         return TraceBuilder(self.name)
 
 
-class FileMatcherValue(DirDependentValue[FileMatcher], ABC):
+class FileMatcherDdv(DirDependentValue[FileMatcher], ABC):
     def validator(self) -> PreOrPostSdsValueValidator:
         return constant_success_validator()
 

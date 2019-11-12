@@ -1,12 +1,12 @@
 import unittest
 
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.data.visitor import DataValueResolverPseudoVisitor
 from exactly_lib.type_system.value_type import TypeCategory
-from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_file_ref_resolver, \
+from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_path_resolver, \
     equals_string_resolver
 from exactly_lib_test.symbol.data.test_resources.list_assertions import equals_list_resolver
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -26,8 +26,8 @@ class _EqualsDataValueResolverVisitor(DataValueResolverPseudoVisitor):
         self.put = put
         self.actual = actual
 
-    def visit_file_ref(self, expected: FileRefResolver):
-        return equals_file_ref_resolver(expected).apply(self.put, self.actual, self.message_builder)
+    def visit_path(self, expected: PathResolver):
+        return equals_path_resolver(expected).apply(self.put, self.actual, self.message_builder)
 
     def visit_string(self, expected: StringResolver):
         return equals_string_resolver(expected).apply(self.put, self.actual, self.message_builder)

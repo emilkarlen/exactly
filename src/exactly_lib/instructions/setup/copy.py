@@ -15,7 +15,7 @@ from exactly_lib.instructions.utils.documentation import src_dst
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case import exception_detection
 from exactly_lib.test_case.os_services import OsServices
@@ -102,19 +102,19 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> SetupPhaseInstruction:
         parser = TokenParserExtra(TokenStream(rest_of_line))
-        src_file_ref = parser.consume_file_ref(REL_OPTION_ARG_CONF_FOR_SOURCE)
+        src_path = parser.consume_path(REL_OPTION_ARG_CONF_FOR_SOURCE)
         if parser.is_at_eol:
-            return _InstallSourceWithoutExplicitDestinationInstruction(src_file_ref)
-        dst_file_ref = parser.consume_file_ref(REL_OPTION_ARG_CONF_FOR_DESTINATION)
+            return _InstallSourceWithoutExplicitDestinationInstruction(src_path)
+        dst_path = parser.consume_path(REL_OPTION_ARG_CONF_FOR_DESTINATION)
         parser.report_superfluous_arguments_if_not_at_eol()
-        return _InstallSourceWithExplicitDestinationInstruction(src_file_ref,
-                                                                dst_file_ref)
+        return _InstallSourceWithExplicitDestinationInstruction(src_path,
+                                                                dst_path)
 
 
 class _InstallInstructionBase(SetupPhaseInstruction):
     def __init__(self,
-                 source_file_ref: FileRefResolver):
-        self.source_file_ref = source_file_ref
+                 source_path: PathResolver):
+        self.source_path = source_path
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
@@ -131,15 +131,15 @@ class _InstallInstructionBase(SetupPhaseInstruction):
 
     def _src_path(self,
                   environment: InstructionEnvironmentForPreSdsStep) -> pathlib.Path:
-        return self.source_file_ref.resolve(environment.symbols).value_pre_sds(environment.hds)
+        return self.source_path.resolve(environment.symbols).value_pre_sds(environment.hds)
 
 
 class _InstallSourceWithoutExplicitDestinationInstruction(_InstallInstructionBase):
-    def __init__(self, source_file_ref: FileRefResolver):
-        super().__init__(source_file_ref)
+    def __init__(self, source_path: PathResolver):
+        super().__init__(source_path)
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
-        return self.source_file_ref.references
+        return self.source_path.references
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
@@ -156,20 +156,20 @@ class _InstallSourceWithoutExplicitDestinationInstruction(_InstallInstructionBas
 
 class _InstallSourceWithExplicitDestinationInstruction(_InstallInstructionBase):
     def __init__(self,
-                 source_file_ref: FileRefResolver,
-                 destination_file_ref: FileRefResolver):
-        super().__init__(source_file_ref)
-        self.destination_file_ref = destination_file_ref
+                 source_path: PathResolver,
+                 destination_path: PathResolver):
+        super().__init__(source_path)
+        self.destination_path = destination_path
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
-        return tuple(self.source_file_ref.references) + tuple(self.destination_file_ref.references)
+        return tuple(self.source_path.references) + tuple(self.destination_path.references)
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         src_path = self._src_path(environment)
-        dst_path = self.destination_file_ref.resolve(environment.symbols).value_post_sds(environment.sds)
+        dst_path = self.destination_path.resolve(environment.symbols).value_post_sds(environment.sds)
         main = _MainWithExplicitDestination(os_services, src_path, dst_path)
         return exception_detection.return_success_or_hard_error(main)
 

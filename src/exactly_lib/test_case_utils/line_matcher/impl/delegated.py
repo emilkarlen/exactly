@@ -10,8 +10,8 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
-from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine, LineMatcherValue
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation, MatcherValue
+from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine, LineMatcherDdv
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation, MatcherDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -47,8 +47,8 @@ class LineMatcherDelegatedToMatcher(LineMatcher):
         return self._delegated.matches_w_trace(model)
 
 
-class LineMatcherValueDelegatedToMatcher(LineMatcherValue):
-    def __init__(self, delegated: MatcherValue[LineMatcherLine]):
+class LineMatcherValueDelegatedToMatcher(LineMatcherDdv):
+    def __init__(self, delegated: MatcherDdv[LineMatcherLine]):
         super().__init__()
         self._delegated = delegated
 
@@ -76,7 +76,7 @@ class LineMatcherResolverDelegatedToMatcher(LineMatcherResolver):
     def validator(self) -> PreOrPostSdsValidator:
         return pre_or_post_validation.PreOrPostSdsValidatorFromValueValidator(self._value_validator)
 
-    def resolve(self, symbols: SymbolTable) -> LineMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> LineMatcherDdv:
         return LineMatcherValueDelegatedToMatcher(self._delegated.resolve(symbols))
 
     def _value_validator(self, symbols: SymbolTable) -> PreOrPostSdsValueValidator:

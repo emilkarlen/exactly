@@ -7,7 +7,7 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
-from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver

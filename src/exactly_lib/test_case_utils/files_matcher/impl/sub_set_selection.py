@@ -15,9 +15,9 @@ from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher i
     resolver_validator_for_file_matcher
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherConstructor, \
-    FilesMatcherValue
+    FilesMatcherDdv
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.file_utils import TmpDirFileSpace
@@ -81,10 +81,10 @@ class _SubSetSelectorMatcher(WithCachedNameAndTreeStructureDescriptionBase, File
         )
 
 
-class _SubSetSelectorMatcherValue(FilesMatcherValue):
+class _SubSetSelectorMatcherDdv(FilesMatcherDdv):
     def __init__(self,
-                 selector: FileMatcherValue,
-                 matcher_on_selection: FilesMatcherValue,
+                 selector: FileMatcherDdv,
+                 matcher_on_selection: FilesMatcherDdv,
                  ):
         self._selector = selector
         self._matcher_on_selection = matcher_on_selection
@@ -124,8 +124,8 @@ class _SubSetSelectorMatcherResolver(FilesMatcherResolver):
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
 
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
-        return _SubSetSelectorMatcherValue(
+    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
+        return _SubSetSelectorMatcherDdv(
             self._selector.resolve(symbols),
             self._matcher_on_selection.resolve(symbols)
         )

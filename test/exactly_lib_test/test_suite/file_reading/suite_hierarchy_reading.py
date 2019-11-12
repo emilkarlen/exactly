@@ -782,7 +782,7 @@ class TestInvalidFileSyntax(unittest.TestCase):
     def test_invalid_section(self):
         check_exception.check(SuiteFileSyntaxError(), self)
 
-    def test_invalid_file_reference_syntax(self):
+    def test_invalid_path_syntax(self):
         check_exception.check(SuiteFileSyntaxErrorOfMissingClosingQuotation(), self)
 
 

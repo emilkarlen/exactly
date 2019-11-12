@@ -39,12 +39,12 @@ class Expectation:
                  main_result: ValueAssertion[SuccessOrHardError] = sh_assertions.is_success(),
                  source: ValueAssertion[ParseSource] = asrt.anything_goes(),
                  configuration: ValueAssertion[ConfigurationBuilder] = asrt.anything_goes(),
-                 file_ref_rel_root_2_conf: Callable[[pathlib.Path], ValueAssertion[ConfigurationBuilder]] =
+                 path_rel_root_2_conf: Callable[[pathlib.Path], ValueAssertion[ConfigurationBuilder]] =
                  lambda x: asrt.anything_goes()
                  ):
         self.main_result = main_result
         self.configuration = configuration
-        self.file_ref_rel_root_2_conf = file_ref_rel_root_2_conf
+        self.path_rel_root_2_conf = path_rel_root_2_conf
         self.source = source
 
 
@@ -97,7 +97,7 @@ class Executor:
                                                                   configuration_builder,
                                                                   'ConfigurationBuilder')
 
-                self.expectation.file_ref_rel_root_2_conf(
+                self.expectation.path_rel_root_2_conf(
                     abs_path_of_dir_containing_root_file
                 ).apply_with_message(self.put,
                                      configuration_builder,

@@ -84,8 +84,8 @@ class _SymbolConcept(ConceptDocumentation):
         from exactly_lib.definitions.primitives.file_or_dir_contents import EMPTINESS_CHECK_ARGUMENT
         from exactly_lib.test_case_utils.string_matcher.matcher_options import EQUALS_ARGUMENT
 
-        from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import FILE_ARGUMENT_OPTION
-        from exactly_lib.definitions.file_ref import REL_symbol_OPTION
+        from exactly_lib.test_case_utils.parse.parse_here_doc_or_path import FILE_ARGUMENT_OPTION
+        from exactly_lib.definitions.path import REL_symbol_OPTION
         part_2_parser = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'symbol': formatting.concept_(SYMBOL_CONCEPT_INFO),

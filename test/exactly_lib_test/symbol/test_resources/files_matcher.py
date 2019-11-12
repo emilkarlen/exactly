@@ -10,7 +10,7 @@ from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherConstructor, \
-    FilesMatcherValue
+    FilesMatcherDdv
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -50,7 +50,7 @@ class FilesMatcherTestImpl(FilesMatcher):
         )
 
 
-class FilesMatcherValueConstantTestImpl(FilesMatcherValue):
+class FilesMatcherDdvConstantTestImpl(FilesMatcherDdv):
     def __init__(self,
                  constant: FilesMatcherConstructor,
                  ):
@@ -60,16 +60,16 @@ class FilesMatcherValueConstantTestImpl(FilesMatcherValue):
         return self._constant
 
 
-def constant_value(matcher: FilesMatcher) -> FilesMatcherValue:
-    return FilesMatcherValueConstantTestImpl(
+def constant_value(matcher: FilesMatcher) -> FilesMatcherDdv:
+    return FilesMatcherDdvConstantTestImpl(
         files_matchers.ConstantConstructor(
             matcher
         )
     )
 
 
-def value_with_result(result: bool) -> FilesMatcherValue:
-    return FilesMatcherValueConstantTestImpl(
+def value_with_result(result: bool) -> FilesMatcherDdv:
+    return FilesMatcherDdvConstantTestImpl(
         files_matchers.ConstantConstructor(
             FilesMatcherTestImpl(result)
         )
@@ -96,13 +96,13 @@ class FilesMatcherResolverConstantTestImpl(FilesMatcherResolver):
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
 
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
         return value_with_result(self._resolved_value)
 
 
 class FilesMatcherResolverConstantValueTestImpl(FilesMatcherResolver):
     def __init__(self,
-                 resolved_value: FilesMatcherValue,
+                 resolved_value: FilesMatcherDdv,
                  references: Sequence[SymbolReference] = (),
                  validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()):
         self._resolved_value = resolved_value
@@ -116,7 +116,7 @@ class FilesMatcherResolverConstantValueTestImpl(FilesMatcherResolver):
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
 
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
         return self._resolved_value
 
 

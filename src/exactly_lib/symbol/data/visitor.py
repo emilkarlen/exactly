@@ -1,8 +1,8 @@
 from typing import TypeVar, Generic
 
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 
 T = TypeVar('T')
@@ -17,8 +17,8 @@ class DataValueResolverPseudoVisitor(Generic[T]):
         """
         :return: Return value from _visit... method
         """
-        if isinstance(value, FileRefResolver):
-            return self.visit_file_ref(value)
+        if isinstance(value, PathResolver):
+            return self.visit_path(value)
         if isinstance(value, StringResolver):
             return self.visit_string(value)
         if isinstance(value, ListResolver):
@@ -28,7 +28,7 @@ class DataValueResolverPseudoVisitor(Generic[T]):
     def visit_string(self, value: StringResolver) -> T:
         raise NotImplementedError()
 
-    def visit_file_ref(self, value: FileRefResolver) -> T:
+    def visit_path(self, value: PathResolver) -> T:
         raise NotImplementedError()
 
     def visit_list(self, value: ListResolver) -> T:

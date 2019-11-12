@@ -9,8 +9,8 @@ from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_getters
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.regex import parse_regex
-from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
-from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcherLine
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver
+from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherLine
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -24,10 +24,10 @@ def parse(token_parser: TokenParser) -> LineMatcherResolver:
 
 
 def resolver(regex_resolver: RegexResolver) -> LineMatcherResolver:
-    def get_value(symbols: SymbolTable) -> LineMatcherValue:
-        regex_value = regex_resolver.resolve(symbols)
-        regex_matcher = matches_regex.MatchesRegexValue(ExpectationType.POSITIVE, regex_value, False)
-        return delegated.LineMatcherValueDelegatedToMatcher(property_matcher.PropertyMatcherValue(
+    def get_value(symbols: SymbolTable) -> LineMatcherDdv:
+        regex_ddv = regex_resolver.resolve(symbols)
+        regex_matcher = matches_regex.MatchesRegexDdv(ExpectationType.POSITIVE, regex_ddv, False)
+        return delegated.LineMatcherValueDelegatedToMatcher(property_matcher.PropertyMatcherDdv(
             regex_matcher,
             property_getters.PropertyGetterValueConstant(
                 _PropertyGetter(),

@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherValue
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherDdv
 from exactly_lib.util.description_tree import tree
 from exactly_lib_test.test_case_utils.description_tree.test_resources import ConstantNodeRendererTestImpl
 
@@ -74,7 +74,7 @@ class StringMatcherConstantTestImpl(StringMatcher):
         return self._new_tb().build_result(self._result)
 
 
-class StringMatcherValueFromPartsTestImpl(StringMatcherValue):
+class StringMatcherDdvFromPartsTestImpl(StringMatcherDdv):
     def __init__(self,
                  structure: StructureRenderer,
                  matcher: Callable[[HomeAndSds], StringMatcher]):

@@ -1,4 +1,4 @@
-from exactly_lib.definitions import file_ref
+from exactly_lib.definitions import path
 from exactly_lib.definitions.entity import types
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
@@ -37,14 +37,14 @@ _STD_FORMAT_MAP = {
     'program_type': types.PROGRAM_TYPE_INFO.identifier,
     'soft_quote': SOFT_QUOTE_CHAR,
     'hard_quote': HARD_QUOTE_CHAR,
-    'rel_tmp': file_ref.REL_TMP_OPTION,
-    'rel_act': file_ref.REL_ACT_OPTION,
-    'rel_result': file_ref.REL_RESULT_OPTION,
-    'rel_cd': file_ref.REL_CWD_OPTION,
-    'rel_home': file_ref.REL_HOME_CASE_OPTION,
-    'rel_act_home': file_ref.REL_HOME_ACT_OPTION,
-    'rel_symbol': file_ref.REL_symbol_OPTION,
-    'rel_source_file': file_ref.REL_source_file_dir_OPTION,
+    'rel_tmp': path.REL_TMP_OPTION,
+    'rel_act': path.REL_ACT_OPTION,
+    'rel_result': path.REL_RESULT_OPTION,
+    'rel_cd': path.REL_CWD_OPTION,
+    'rel_home': path.REL_HOME_CASE_OPTION,
+    'rel_act_home': path.REL_HOME_ACT_OPTION,
+    'rel_symbol': path.REL_symbol_OPTION,
+    'rel_source_file': path.REL_source_file_dir_OPTION,
 }
 
 TYPE_IDENT_2_VALID_VALID = {

@@ -82,8 +82,8 @@ on resolving dependency to prevent dynamic values from appearing
 in static ones.
 
 Today there are restrictions on resolving dependencies on
-some PATH values.  These are validated by resolving PathValue
-(FileRef) and checking the relativity.
+some PATH values.  These are validated by resolving PathDdv
+and checking the relativity.
 This relativity could be included in the general resolving
 dependency reported by any type, to make it independent of
 types.

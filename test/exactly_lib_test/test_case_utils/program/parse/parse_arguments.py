@@ -3,8 +3,8 @@ from typing import List, Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data import list_resolvers, string_resolvers
+from exactly_lib.symbol.data import path_resolvers
 from exactly_lib.symbol.data.list_resolver import Element
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -64,7 +64,7 @@ class Case:
         self.expectation = expectation
 
 
-class FileRefCase:
+class PathCase:
     def __init__(self,
                  name: str,
                  relativity_variant: RelativityOptionConfiguration,
@@ -198,27 +198,27 @@ class TestSingleElement(unittest.TestCase):
         symbol_name = 'symbol_name'
 
         relativity_cases = [
-            FileRefCase('default relativity SHOULD be CASE_HOME',
-                        rel_opts.default_conf_rel_home(RelHomeOptionType.REL_HOME_CASE),
-                        list_element_for_file_ref(RelOptionType.REL_HOME_CASE, plain_file_name),
-                        ),
-            FileRefCase('relativity in SDS should be validated post SDS',
-                        rel_opts.conf_rel_non_home(RelNonHomeOptionType.REL_TMP),
-                        list_element_for_file_ref(RelOptionType.REL_TMP, plain_file_name),
-                        ),
-            FileRefCase('rel symbol',
-                        rel_opts.symbol_conf_rel_home(RelHomeOptionType.REL_HOME_ACT,
-                                                      symbol_name,
-                                                      sut.REL_OPTIONS_CONF.accepted_relativity_variants),
-                        list_resolvers.string_element(
-                            string_resolvers.from_file_ref_resolver(
-                                file_ref_resolvers.rel_symbol_with_const_file_name(
-                                    SymbolReference(symbol_name,
-                                                    reference_restrictions_for_path_symbol(
-                                                        sut.REL_OPTIONS_CONF.accepted_relativity_variants
-                                                    )),
-                                    plain_file_name))),
-                        ),
+            PathCase('default relativity SHOULD be CASE_HOME',
+                     rel_opts.default_conf_rel_home(RelHomeOptionType.REL_HOME_CASE),
+                     list_element_for_path(RelOptionType.REL_HOME_CASE, plain_file_name),
+                     ),
+            PathCase('relativity in SDS should be validated post SDS',
+                     rel_opts.conf_rel_non_home(RelNonHomeOptionType.REL_TMP),
+                     list_element_for_path(RelOptionType.REL_TMP, plain_file_name),
+                     ),
+            PathCase('rel symbol',
+                     rel_opts.symbol_conf_rel_home(RelHomeOptionType.REL_HOME_ACT,
+                                                   symbol_name,
+                                                   sut.REL_OPTIONS_CONF.accepted_relativity_variants),
+                     list_resolvers.string_element(
+                         string_resolvers.from_path_resolver(
+                             path_resolvers.rel_symbol_with_const_file_name(
+                                 SymbolReference(symbol_name,
+                                                 reference_restrictions_for_path_symbol(
+                                                     sut.REL_OPTIONS_CONF.accepted_relativity_variants
+                                                 )),
+                                 plain_file_name))),
+                     ),
         ]
         for case in relativity_cases:
             with self.subTest(case.name):
@@ -275,11 +275,11 @@ def is_single_validator_with(expectations: Sequence[NameAndValue[ValueAssertion[
     ])
 
 
-def list_element_for_file_ref(relativity: RelOptionType,
-                              name: str) -> Element:
+def list_element_for_path(relativity: RelOptionType,
+                          name: str) -> Element:
     return list_resolvers.string_element(
-        string_resolvers.from_file_ref_resolver(
-            file_ref_resolvers.of_rel_option_with_const_file_name(relativity, name)))
+        string_resolvers.from_path_resolver(
+            path_resolvers.of_rel_option_with_const_file_name(relativity, name)))
 
 
 class TestMultipleElements(unittest.TestCase):

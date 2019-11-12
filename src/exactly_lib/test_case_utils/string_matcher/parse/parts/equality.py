@@ -5,7 +5,7 @@ from typing import List, Optional, Iterable, Callable
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data.string_or_file import StringOrFileRefResolver
+from exactly_lib.symbol.data.string_or_path import StringOrPathResolver
 from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, SingleStepValidator, \
@@ -18,17 +18,17 @@ from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver, ExpectedValueResolver
 from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
+from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts2
-from exactly_lib.type_system.data.string_or_file_ref_values import StringOrPath, StringOrFileRefValue
+from exactly_lib.type_system.data.string_or_path_ddvs import StringOrPath, StringOrPathDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher, StringMatcherValue
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher, StringMatcherDdv
 from exactly_lib.util import file_utils
 from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -41,13 +41,13 @@ _EQUALITY_CHECK_EXPECTED_VALUE = 'equals'
 
 _EXPECTED_SYNTAX_ELEMENT_FOR_EQUALS = 'EXPECTED'
 
-EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
+EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_path.CONFIGURATION
 
 
 def parse(expectation_type: ExpectationType,
           token_parser: TokenParser) -> StringMatcherResolver:
     token_parser.require_has_valid_head_token(_EXPECTED_SYNTAX_ELEMENT_FOR_EQUALS)
-    expected_contents = parse_here_doc_or_file_ref.parse_from_token_parser(
+    expected_contents = parse_here_doc_or_path.parse_from_token_parser(
         token_parser,
         EXPECTED_FILE_REL_OPT_ARG_CONFIG,
         consume_last_here_doc_line=False)
@@ -59,16 +59,16 @@ def parse(expectation_type: ExpectationType,
 
 
 def value_resolver(expectation_type: ExpectationType,
-                   expected_contents: StringOrFileRefResolver) -> StringMatcherResolver:
+                   expected_contents: StringOrPathResolver) -> StringMatcherResolver:
     validator = _validator_of_expected(expected_contents)
 
-    def get_matcher_value(symbols: SymbolTable) -> StringMatcherValue:
+    def get_matcher_value(symbols: SymbolTable) -> StringMatcherDdv:
         def get_validator(tcds: HomeAndSds) -> FixedPreOrPostSdsValidator:
             return FixedPreOrPostSdsValidator(PathResolvingEnvironmentPreOrPostSds(tcds, symbols),
                                               validator)
 
         expected_contents_value = expected_contents.resolve(symbols)
-        return EqualityStringMatcherValue(
+        return EqualityStringMatcherDdv(
             expectation_type,
             expected_contents_value,
             get_validator,
@@ -99,10 +99,10 @@ class _ErrorMessageResolverConstructor:
                                      actual_info)
 
 
-class EqualityStringMatcherValue(StringMatcherValue):
+class EqualityStringMatcherDdv(StringMatcherDdv):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 expected_contents: StringOrFileRefValue,
+                 expected_contents: StringOrPathDdv,
                  get_validator: Callable[[HomeAndSds], PreOrPostSdsValidatorPrimitive],
                  ):
         super().__init__()
@@ -125,8 +125,8 @@ class EqualityStringMatcherValue(StringMatcherValue):
             expected_contents,
             _ErrorMessageResolverConstructor(
                 self._expectation_type,
-                parse_here_doc_or_file_ref.ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
-                                                                 expected_contents)
+                parse_here_doc_or_path.ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
+                                                             expected_contents)
             ),
             self._get_validator(tcds),
         )
@@ -231,7 +231,7 @@ class EqualityStringMatcher(StringMatcher):
 
     def _file_path_for_file_with_expected_contents(self, tmp_file_space: TmpDirFileSpace) -> pathlib.Path:
         if self._expected_contents.is_path:
-            return self._expected_contents.file_ref_value.primitive
+            return self._expected_contents.path_value.primitive
         else:
             contents = self._expected_contents.string_value
             return tmp_text_file_containing(contents,
@@ -285,7 +285,7 @@ class EqualityStringMatcher(StringMatcher):
         return self._new_tb().append_details(self._expected_detail_renderer)
 
 
-def _validator_of_expected(expected_contents: StringOrFileRefResolver) -> PreOrPostSdsValidator:
+def _validator_of_expected(expected_contents: StringOrPathResolver) -> PreOrPostSdsValidator:
     return expected_contents.validator__file_must_exist_as(FileType.REGULAR, True)
 
 

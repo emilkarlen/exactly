@@ -2,14 +2,14 @@ import unittest
 from typing import List, Callable, Dict
 
 from exactly_lib.instructions.multi_phase import new_file as sut
-from exactly_lib.symbol.data import file_ref_resolvers
+from exactly_lib.symbol.data import path_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data import paths
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources import \
@@ -37,10 +37,10 @@ from exactly_lib_test.symbol.test_resources.string_transformer import is_referen
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptFileRefArgument
+from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly, dir_contains_exactly
-from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
+from exactly_lib_test.test_case_utils.parse.parse_path import path_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
@@ -102,8 +102,8 @@ class TestSymbolUsages(TestCaseBase):
 
         symbols = SymbolTable({
             dst_file_symbol.name:
-                container(file_ref_resolvers.of_rel_option(RelOptionType.REL_ACT,
-                                                           file_refs.constant_path_part(dst_file_symbol.value))),
+                container(path_resolvers.of_rel_option(RelOptionType.REL_ACT,
+                                                       paths.constant_path_part(dst_file_symbol.value))),
 
             text_printed_by_shell_command_symbol.name:
                 container(string_resolvers.str_constant(text_printed_by_shell_command_symbol.value)),
@@ -124,7 +124,7 @@ class TestSymbolUsages(TestCaseBase):
 
                             equals_symbol_reference(
                                 SymbolReference(dst_file_symbol.name,
-                                                file_ref_or_string_reference_restrictions(
+                                                path_or_string_reference_restrictions(
                                                     sut.REL_OPT_ARG_CONF.options.accepted_relativity_variants))
                             ),
 
@@ -246,7 +246,7 @@ class TestSuccessfulScenariosWithDifferentSourceVariants(TestCaseBase):
     def test_contents_from_stdout_with_transformer(self):
         text_printed_by_program = 'single line of output'
         expected_file_contents = text_printed_by_program.upper() + '\n'
-        file_arg = RelOptFileRefArgument('a-file-name.txt', RelOptionType.REL_TMP)
+        file_arg = RelOptPathArgument('a-file-name.txt', RelOptionType.REL_TMP)
 
         expected_file = fs.File(file_arg.name, expected_file_contents)
 
@@ -325,8 +325,8 @@ class TestFailingValidation(TestCaseBase):
     def test_validation_of_non_existing_file_pre_sds_fails(self):
         # ARRANGE #
         program_with_ref_to_file_in_home_ds = pgm_args.program(
-            pgm_args.interpret_py_source_file(ab.file_ref_rel_opt('non-existing-file',
-                                                                  RelOptionType.REL_HOME_CASE))
+            pgm_args.interpret_py_source_file(ab.path_rel_opt('non-existing-file',
+                                                              RelOptionType.REL_HOME_CASE))
         )
         complete_arguments = instr_args.from_program('dst-file.txt',
                                                      ProcOutputFile.STDOUT,
@@ -339,8 +339,8 @@ class TestFailingValidation(TestCaseBase):
     def test_validation_of_non_existing_file_post_sds_fails(self):
         # ARRANGE #
         program_with_ref_to_file_in_home_ds = pgm_args.program(
-            pgm_args.interpret_py_source_file(ab.file_ref_rel_opt('non-existing-file',
-                                                                  RelOptionType.REL_ACT))
+            pgm_args.interpret_py_source_file(ab.path_rel_opt('non-existing-file',
+                                                              RelOptionType.REL_ACT))
         )
         complete_arguments = instr_args.from_program('dst-file.txt',
                                                      ProcOutputFile.STDOUT,

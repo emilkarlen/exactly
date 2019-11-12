@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Sequence
 
-from exactly_lib.definitions import file_ref as file_ref_texts
+from exactly_lib.definitions import path as path_texts
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
@@ -12,14 +12,14 @@ from exactly_lib_test.test_resources.arguments_building import SequenceOfArgumen
 
 def rel_symbol_arg(symbol_name: str) -> ArgumentElementRenderer:
     return arguments_building.SequenceOfArguments([
-        arguments_building.OptionArgument(file_ref_texts.REL_SYMBOL_OPTION_NAME),
+        arguments_building.OptionArgument(path_texts.REL_SYMBOL_OPTION_NAME),
         symbol_name,
     ])
 
 
-class FileRefArgument(SequenceOfArgumentsBase, ABC):
+class PathArgument(SequenceOfArgumentsBase, ABC):
     """
-    Renders a file ref argument with optional relativity option.
+    Renders a path argument with optional relativity option.
     """
 
     @property
@@ -33,9 +33,9 @@ class FileRefArgument(SequenceOfArgumentsBase, ABC):
         pass
 
 
-class _FileRefArgumentWithRelativityOptionFromRenderer(FileRefArgument):
+class _PathArgumentWithRelativityOptionFromRenderer(PathArgument):
     """
-    Renders a file ref argument with optional relativity option.
+    Renders a path argument with optional relativity option.
     """
 
     def __init__(self,
@@ -57,18 +57,18 @@ class _FileRefArgumentWithRelativityOptionFromRenderer(FileRefArgument):
                     self.name]
 
 
-def file_ref_argument(name: str,
-                      relativity: ArgumentElementRenderer = None) -> FileRefArgument:
-    return _FileRefArgumentWithRelativityOptionFromRenderer(name, relativity)
+def path_argument(name: str,
+                  relativity: ArgumentElementRenderer = None) -> PathArgument:
+    return _PathArgumentWithRelativityOptionFromRenderer(name, relativity)
 
 
-def symbol_file_ref_argument(symbol_name: str) -> FileRefArgument:
-    return file_ref_argument(symbol_reference_syntax_for_name(symbol_name))
+def symbol_path_argument(symbol_name: str) -> PathArgument:
+    return path_argument(symbol_reference_syntax_for_name(symbol_name))
 
 
-class RelOptFileRefArgument(FileRefArgument):
+class RelOptPathArgument(PathArgument):
     """
-    Renders a file ref argument with optional relativity option.
+    Renders a path argument with optional relativity option.
     """
 
     def __init__(self,

@@ -32,7 +32,7 @@ def parse_string_resolver_from_parse_source(source: ParseSource,
                                             conf: Configuration = DEFAULT_CONFIGURATION) -> StringResolver:
     """
     :param source: Has a current line
-    :raises SingleInstructionInvalidArgumentException: If cannot parse a FileRef
+    :raises SingleInstructionInvalidArgumentException: If cannot parse a PathDdv
     """
 
     ts = new_token_stream(source.remaining_part_of_current_line)

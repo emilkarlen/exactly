@@ -2,7 +2,7 @@ from typing import List
 
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
+from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -20,5 +20,5 @@ class StringTransformerResolver(LogicValueResolver):
     def references(self) -> List[SymbolReference]:
         raise NotImplementedError('abstract method')
 
-    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
         raise NotImplementedError('abstract method')

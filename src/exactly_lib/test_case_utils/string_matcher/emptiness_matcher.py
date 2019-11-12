@@ -12,7 +12,7 @@ from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolve
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherValue
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherDdv
 from exactly_lib.type_system.logic.string_matcher import StringMatcher
 from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.logic_types import ExpectationType
@@ -87,7 +87,7 @@ class EmptinessStringMatcher(StringMatcher):
         return ''
 
 
-class EmptinessStringMatcherValue(StringMatcherValue):
+class EmptinessStringMatcherDdv(StringMatcherDdv):
     def __init__(self, expectation_type: ExpectationType):
         super().__init__()
         self._expectation_type = expectation_type

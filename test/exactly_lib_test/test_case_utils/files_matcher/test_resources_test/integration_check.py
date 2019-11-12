@@ -19,7 +19,7 @@ from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherConstructor, \
-    FilesMatcherValue
+    FilesMatcherDdv
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable
@@ -196,7 +196,7 @@ class TestMisc(TestCaseBase):
     def test_model_is_correct(self):
         relativity = conf_rel_sds(RelSdsOptionType.REL_TMP)
 
-        model = Model(relativity.file_ref_resolver_for(''))
+        model = Model(relativity.path_resolver_for(''))
 
         expected_files_from_model = DirContents([
             empty_file('file-1'),
@@ -291,8 +291,8 @@ def _files_matcher_that_asserts_models_is_expected(put: unittest.TestCase,
                                                    relativity: RelativityOptionConfigurationForRelSds,
                                                    ) -> FilesMatcherResolver:
     return FilesMatcherResolverConstantValueTestImpl(
-        _FilesMatcherValueThatAssertsModelsIsExpected(put,
-                                                      relativity),
+        _FilesMatcherDdvThatAssertsModelsIsExpected(put,
+                                                    relativity),
     )
 
 
@@ -347,7 +347,7 @@ class _FilesMatcherThatAssertsModelsIsExpected(FilesMatcher):
         return self._new_tb().build_result(True)
 
 
-class _FilesMatcherValueThatAssertsModelsIsExpected(FilesMatcherValue):
+class _FilesMatcherDdvThatAssertsModelsIsExpected(FilesMatcherDdv):
     def __init__(self,
                  put: unittest.TestCase,
                  relativity: RelativityOptionConfigurationForRelSds,
@@ -426,7 +426,7 @@ class _FilesMatcherResolverThatAssertsThatSymbolsAreAsExpected(FilesMatcherResol
         return ValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(self._put,
                                                                          self._expectation)
 
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
         self._expectation.apply_with_message(self._put, symbols, 'symbols given to resolve')
 
         return files_matcher.value_with_result(True)

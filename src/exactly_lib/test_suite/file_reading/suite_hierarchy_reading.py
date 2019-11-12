@@ -100,9 +100,9 @@ class _SingleFileReader:
             for element in section_contents.elements:
                 if element.element_type is ElementType.INSTRUCTION:
                     try:
-                        file_references_instruction = element.instruction_info.instruction
-                        assert isinstance(file_references_instruction, TestSuiteFileReferencesInstruction)
-                        paths = file_references_instruction.resolve_paths(env)
+                        path_instruction = element.instruction_info.instruction
+                        assert isinstance(path_instruction, TestSuiteFileReferencesInstruction)
+                        paths = path_instruction.resolve_paths(env)
                         paths_checker(element, paths)
                         ret_val.extend(paths)
                     except instruction.FileNotAccessibleSimpleError as ex:

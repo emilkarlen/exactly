@@ -6,8 +6,8 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
-from exactly_lib.type_system.data import string_or_file_ref_values
-from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForValue
+from exactly_lib.type_system.data import string_or_path_ddvs
+from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForDdv
 from exactly_lib.util.description_tree import tree, details
 from exactly_lib.util.description_tree.details import HeaderAndValue
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -48,7 +48,7 @@ def match(matching_object: DetailsRenderer) -> DetailsRenderer:
 
 
 class PathValueDetailsRenderer(DetailsRenderer):
-    def __init__(self, path: PathDescriberForValue):
+    def __init__(self, path: PathDescriberForDdv):
         self._path = path
 
     def render(self) -> Sequence[Detail]:
@@ -93,7 +93,7 @@ class StringList(DetailsRenderer):
 
 class StringOrPath(DetailsRenderer):
     def __init__(self,
-                 string_or_path: string_or_file_ref_values.StringOrPath,
+                 string_or_path: string_or_path_ddvs.StringOrPath,
                  ):
         self._string_or_path = string_or_path
 
@@ -106,7 +106,7 @@ class StringOrPath(DetailsRenderer):
             return HeaderAndValue(
                 syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
                 PathPrimitiveDetailsRenderer(
-                    x.file_ref_value.describer
+                    x.path_value.describer
                 )
             )
         else:
@@ -118,7 +118,7 @@ class StringOrPath(DetailsRenderer):
 
 class StringOrPathValue(DetailsRenderer):
     def __init__(self,
-                 string_or_path: string_or_file_ref_values.StringOrFileRefValue,
+                 string_or_path: string_or_path_ddvs.StringOrPathDdv,
                  ):
         self._string_or_path = string_or_path
 
@@ -127,15 +127,15 @@ class StringOrPathValue(DetailsRenderer):
 
     def _renderer(self) -> DetailsRenderer:
         x = self._string_or_path
-        if x.is_file_ref:
+        if x.is_path:
             return HeaderAndValue(
                 syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
-                PathValueDetailsRenderer(x.path_value.describer())
+                PathValueDetailsRenderer(x.path.describer())
             )
         else:
             return HeaderAndValue(
                 syntax_elements.STRING_SYNTAX_ELEMENT.singular_name,
-                StringAsSingleLineWithMaxLenDetailsRenderer(x.string_value.describer().render())
+                StringAsSingleLineWithMaxLenDetailsRenderer(x.string.describer().render())
             )
 
 

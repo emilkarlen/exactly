@@ -4,16 +4,16 @@ from typing import List, Sequence
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import file_ref_resolvers, list_resolvers, string_resolvers
-from exactly_lib.symbol.data.file_ref_resolvers import constant
+from exactly_lib.symbol.data import path_resolvers, list_resolvers, string_resolvers
+from exactly_lib.symbol.data.path_resolvers import constant
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.test_case_utils.program.parse import parse_with_reference_to_program as sut
-from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.file_refs import simple_of_rel_option
+from exactly_lib.type_system.data import paths
+from exactly_lib.type_system.data.paths import simple_of_rel_option
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable
@@ -326,12 +326,12 @@ class TestResolving(unittest.TestCase):
         file_name = 'the exe file'
 
         def case(relativity: RelOptionType) -> ResolvingCase:
-            exe_file_ref = file_refs.of_rel_option(relativity, file_refs.constant_path_part(file_name))
+            exe_path = paths.of_rel_option(relativity, paths.constant_path_part(file_name))
 
             def assertion(tcds: HomeAndSds) -> ValueAssertion[Program]:
                 return asrt_pgm_val.matches_program(
                     command=asrt_command.equals_executable_file_command(
-                        executable_file=exe_file_ref.value_of_any_dependency(tcds),
+                        executable_file=exe_path.value_of_any_dependency(tcds),
                         arguments=expected_arguments
                     ),
                     stdin=asrt_pgm_val.no_stdin(),
@@ -340,7 +340,7 @@ class TestResolving(unittest.TestCase):
 
             return ResolvingCase('relativity=' + str(relativity),
                                  actual_resolver=program_resolvers.with_ref_to_exe_file(
-                                     file_ref_resolvers.constant(exe_file_ref),
+                                     path_resolvers.constant(exe_path),
                                      arguments_resolvers.new_without_validation(
                                          list_resolvers.from_str_constants(expected_arguments))),
                                  expected=asrt_dir_dep_val.matches_dir_dependent_value(assertion))

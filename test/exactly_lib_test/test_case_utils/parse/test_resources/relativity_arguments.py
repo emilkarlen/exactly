@@ -1,4 +1,4 @@
-from exactly_lib.definitions import file_ref as file_ref_texts
+from exactly_lib.definitions import path as path_texts
 
 
 def args_with_rel_ops(arg_str: str, **kwargs) -> str:
@@ -9,13 +9,13 @@ def args_with_rel_ops(arg_str: str, **kwargs) -> str:
 
 
 _FORMAT_MAP = {
-    'rel_home_option': file_ref_texts.REL_HOME_CASE_OPTION,
-    'rel_cwd_option': file_ref_texts.REL_CWD_OPTION,
-    'rel_tmp_option': file_ref_texts.REL_TMP_OPTION,
-    'rel_act_option': file_ref_texts.REL_ACT_OPTION,
-    'rel_result_option': file_ref_texts.REL_RESULT_OPTION,
+    'rel_home_option': path_texts.REL_HOME_CASE_OPTION,
+    'rel_cwd_option': path_texts.REL_CWD_OPTION,
+    'rel_tmp_option': path_texts.REL_TMP_OPTION,
+    'rel_act_option': path_texts.REL_ACT_OPTION,
+    'rel_result_option': path_texts.REL_RESULT_OPTION,
 }
 
 
 def rel_symbol_arg_str(symbol_name: str) -> str:
-    return file_ref_texts.REL_symbol_OPTION + ' ' + symbol_name
+    return path_texts.REL_symbol_OPTION + ' ' + symbol_name

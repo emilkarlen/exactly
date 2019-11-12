@@ -2,7 +2,7 @@ from abc import ABC
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.data.list_value import ListValue
+from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.util.process_execution.command import Command, CommandDriver
 
 
@@ -13,7 +13,7 @@ class CommandDriverValue(DirDependentValue[CommandDriver], ABC):
 class CommandValue(DirDependentValue[Command]):
     def __init__(self,
                  command_driver: CommandDriverValue,
-                 arguments: ListValue):
+                 arguments: ListDdv):
         self._command_driver = command_driver
         self._arguments = arguments
 
@@ -22,7 +22,7 @@ class CommandValue(DirDependentValue[Command]):
         return self._command_driver
 
     @property
-    def arguments(self) -> ListValue:
+    def arguments(self) -> ListDdv:
         return self._arguments
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> Command:

@@ -7,7 +7,7 @@ from exactly_lib.symbol.logic.string_transformer import StringTransformerResolve
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerValue, \
+from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
     StringTransformerModel
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
@@ -115,7 +115,7 @@ class _Checker:
                                                               transformer_resolver.references,
                                                               'reference')
 
-        transformer_value = self._resolve_value(transformer_resolver)
+        transformer_value = self._resolve_ddv(transformer_resolver)
 
         self._check_validation_pre_sds(transformer_value)
         self._check_validation_post_sds(transformer_value)
@@ -137,19 +137,19 @@ class _Checker:
 
         return resolver
 
-    def _resolve_value(self, transformer_resolver: StringTransformerResolver) -> StringTransformerValue:
-        transformer_value = transformer_resolver.resolve(self.arrangement.symbols)
+    def _resolve_ddv(self, transformer_resolver: StringTransformerResolver) -> StringTransformerDdv:
+        transformer_ddv = transformer_resolver.resolve(self.arrangement.symbols)
 
-        asrt.is_instance(StringTransformerValue).apply_with_message(self.put,
-                                                                    transformer_value,
-                                                                    'resolved value')
+        asrt.is_instance(StringTransformerDdv).apply_with_message(self.put,
+                                                                  transformer_ddv,
+                                                                  'resolved value')
 
-        assert isinstance(transformer_value, StringTransformerValue)
+        assert isinstance(transformer_ddv, StringTransformerDdv)
 
-        return transformer_value
+        return transformer_ddv
 
-    def _resolve_primitive_value(self, transformer_value: StringTransformerValue) -> StringTransformer:
-        ret_val = transformer_value.value_of_any_dependency(self.tcds)
+    def _resolve_primitive_value(self, transformer_ddv: StringTransformerDdv) -> StringTransformer:
+        ret_val = transformer_ddv.value_of_any_dependency(self.tcds)
 
         asrt.is_instance(StringTransformer).apply_with_message(self.put,
                                                                ret_val,
@@ -162,8 +162,8 @@ class _Checker:
         )
         return ret_val
 
-    def _check_validation_pre_sds(self, transformer_value: StringTransformerValue):
-        result = transformer_value.validator().validate_pre_sds_if_applicable(self.tcds.hds)
+    def _check_validation_pre_sds(self, transformer_ddv: StringTransformerDdv):
+        result = transformer_ddv.validator().validate_pre_sds_if_applicable(self.tcds.hds)
 
         self.expectation.validation.pre_sds.apply_with_message(self.put,
                                                                result,
@@ -172,8 +172,8 @@ class _Checker:
         if result is not None:
             raise _CheckIsDoneException()
 
-    def _check_validation_post_sds(self, transformer_value: StringTransformerValue):
-        result = transformer_value.validator().validate_post_sds_if_applicable(self.tcds)
+    def _check_validation_post_sds(self, transformer_ddv: StringTransformerDdv):
+        result = transformer_ddv.validator().validate_post_sds_if_applicable(self.tcds)
 
         self.expectation.validation.post_sds.apply_with_message(self.put,
                                                                 result,

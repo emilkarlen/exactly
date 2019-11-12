@@ -12,7 +12,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForPrimitivePath
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue, FileMatcherModel
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand
@@ -20,7 +20,7 @@ from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_t
 from exactly_lib_test.symbol.test_resources import resolver_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import value_assertions as asrt_file_matcher
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import ddv_assertions as asrt_file_matcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.model_construction import ModelConstructor
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -131,42 +131,42 @@ class Executor:
 
     def _resolve_value(self,
                        resolver: FileMatcherResolver,
-                       environment: PathResolvingEnvironmentPreOrPostSds) -> FileMatcherValue:
+                       environment: PathResolvingEnvironmentPreOrPostSds) -> FileMatcherDdv:
 
         resolver_health_check = resolver_assertions.matches_resolver_of_file_matcher(
-            resolved_value=asrt_file_matcher.matches_file_matcher_value(),
+            resolved_value=asrt_file_matcher.matches_file_matcher_ddv(),
             references=asrt.is_sequence_of(asrt.is_instance(SymbolReference)),
             symbols=environment.symbols)
 
         resolver_health_check.apply_with_message(self.put, resolver,
                                                  'resolver structure')
 
-        matcher_value = resolver.resolve(environment.symbols)
-        assert isinstance(matcher_value, FileMatcherValue)
+        matcher_ddv = resolver.resolve(environment.symbols)
+        assert isinstance(matcher_ddv, FileMatcherDdv)
 
-        return matcher_value
+        return matcher_ddv
 
     @staticmethod
-    def _resolve_primitive(matcher_value: FileMatcherValue,
+    def _resolve_primitive(ddv: FileMatcherDdv,
                            environment: PathResolvingEnvironmentPreOrPostSds) -> FileMatcher:
 
-        matcher = matcher_value.value_of_any_dependency(environment.home_and_sds)
+        matcher = ddv.value_of_any_dependency(environment.home_and_sds)
         assert isinstance(matcher, FileMatcher)
 
         return matcher
 
     def _execute_validate_pre_sds(self,
                                   environment: PathResolvingEnvironmentPreOrPostSds,
-                                  value: FileMatcherValue) -> Optional[TextRenderer]:
-        result = value.validator().validate_pre_sds_if_applicable(environment.hds)
+                                  ddv: FileMatcherDdv) -> Optional[TextRenderer]:
+        result = ddv.validator().validate_pre_sds_if_applicable(environment.hds)
         self.expectation.validation_pre_sds.apply(self.put, result,
                                                   asrt.MessageBuilder('result of validate/pre sds'))
         return result
 
     def _execute_validate_post_setup(self,
                                      environment: PathResolvingEnvironmentPreOrPostSds,
-                                     value: FileMatcherValue) -> Optional[TextRenderer]:
-        result = value.validator().validate_post_sds_if_applicable(environment.home_and_sds)
+                                     ddv: FileMatcherDdv) -> Optional[TextRenderer]:
+        result = ddv.validator().validate_post_sds_if_applicable(environment.home_and_sds)
         self.expectation.validation_post_sds.apply(self.put, result,
                                                    asrt.MessageBuilder('result of validate/post setup'))
         return result

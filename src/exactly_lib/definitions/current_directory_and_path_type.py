@@ -1,8 +1,8 @@
 from typing import List
 
 from exactly_lib.common.help.documentation_text import paths_uses_posix_syntax
-from exactly_lib.definitions import file_ref
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions import path
 from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case.instructions import instruction_names
@@ -46,7 +46,7 @@ def cd_instruction_section_on_def_instruction() -> List[ParagraphItem]:
         'current_directory_concept': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
         'def_instruction': InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
         'symbol_concept': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.singular_name),
-        'rel_cd_option': formatting.cli_option(file_ref.REL_CWD_OPTION),
+        'rel_cd_option': formatting.cli_option(path.REL_CWD_OPTION),
         'path_type': formatting.keyword(types.PATH_TYPE_INFO.name.singular),
     })
     return tp.fnap(_CD_INSTRUCTION_SECTION_ON_DEF_INSTRUCTION)
@@ -57,7 +57,7 @@ def path_type_path_rendering() -> SectionItem:
         'current_directory_concept': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
         'def_instruction': InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
         'symbol_concept': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.singular_name),
-        'rel_cd_option': formatting.cli_option(file_ref.REL_CWD_OPTION),
+        'rel_cd_option': formatting.cli_option(path.REL_CWD_OPTION),
         'path_type': formatting.keyword(types.PATH_TYPE_INFO.name.singular),
     })
     return Section(tp.text(_PATH_TYPE_PATH_RENDERING_DESCRIPTION_HEADER),

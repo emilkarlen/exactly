@@ -1,7 +1,7 @@
-from exactly_lib.type_system.data.path_part import PathPart
+from exactly_lib.type_system.data.path_part import PathPartDdv
 
 
-class PathPartAsFixedPath(PathPart):
+class PathPartDdvAsFixedPath(PathPartDdv):
     def __init__(self, file_name: str):
         self._file_name = file_name
 
@@ -9,21 +9,21 @@ class PathPartAsFixedPath(PathPart):
         return self._file_name
 
 
-class PathPartAsNothing(PathPart):
+class PathPartDdvAsNothing(PathPartDdv):
     def value(self) -> str:
         return ''
 
 
-class PathPartVisitor:
-    def visit(self, path_suffix: PathPart):
-        if isinstance(path_suffix, PathPartAsFixedPath):
+class PathPartDdvVisitor:
+    def visit(self, path_suffix: PathPartDdv):
+        if isinstance(path_suffix, PathPartDdvAsFixedPath):
             return self.visit_fixed_path(path_suffix)
-        elif isinstance(path_suffix, PathPartAsNothing):
+        elif isinstance(path_suffix, PathPartDdvAsNothing):
             return self.visit_nothing(path_suffix)
-        raise TypeError('Not a {}: {}'.format(str(PathPart), path_suffix))
+        raise TypeError('Not a {}: {}'.format(str(PathPartDdv), path_suffix))
 
-    def visit_fixed_path(self, path_suffix: PathPartAsFixedPath):
+    def visit_fixed_path(self, path_suffix: PathPartDdvAsFixedPath):
         raise NotImplementedError()
 
-    def visit_nothing(self, path_suffix: PathPartAsNothing):
+    def visit_nothing(self, path_suffix: PathPartDdvAsNothing):
         raise NotImplementedError()

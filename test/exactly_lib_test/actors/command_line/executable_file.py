@@ -8,9 +8,9 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHomeOptionType
-from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
+from exactly_lib.test_case_utils.parse.parse_path import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
-from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data import paths
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.actors.test_resources import \
@@ -33,7 +33,7 @@ from exactly_lib_test.test_resources.programs import python_program_execution as
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as str_asrt
-from exactly_lib_test.type_system.data.test_resources import list_values as lv
+from exactly_lib_test.type_system.data.test_resources import list_ddvs
 from exactly_lib_test.util.test_resources import py_program
 from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
@@ -180,7 +180,7 @@ class TestSymbolUsages(unittest.TestCase):
             ])),
             symbol_table=SymbolTable({
                 list_symbol.name:
-                    su.list_value_constant_container(lv.list_value_of_string_constants(list_symbol.value)),
+                    su.list_ddv_constant_container(list_ddvs.list_ddv_of_string_constants(list_symbol.value)),
             })
         )
 
@@ -198,11 +198,11 @@ class TestSymbolUsages(unittest.TestCase):
                         arrangement,
                         expectation)
 
-    def test_possibility_to_have_sds_file_references_in_argument(self):
+    def test_possibility_to_have_sds_path_references_in_argument(self):
         file_name_of_referenced_file = 'file-name.txt'
         symbol = NameAndValue('symbol_name',
-                              file_refs.of_rel_option(RelOptionType.REL_TMP,
-                                                      file_refs.constant_path_part(file_name_of_referenced_file)))
+                              paths.of_rel_option(RelOptionType.REL_TMP,
+                                                  paths.constant_path_part(file_name_of_referenced_file)))
 
         executable = 'the-executable'
 
@@ -219,7 +219,7 @@ class TestSymbolUsages(unittest.TestCase):
             ])),
             symbol_table=SymbolTable({
                 symbol.name:
-                    su.file_ref_constant_container(symbol.value),
+                    su.path_constant_container(symbol.value),
             })
         )
 
@@ -321,7 +321,7 @@ class TestSymbolUsages(unittest.TestCase):
     def test_multiple_symbol_references_in_executable(self):
         sub_dir_of_home = 'sub-dir'
         dir_symbol = NameAndValue('dir_symbol_name',
-                                  file_refs.rel_home_act(file_refs.constant_path_part(sub_dir_of_home)))
+                                  paths.rel_home_act(paths.constant_path_part(sub_dir_of_home)))
 
         executable_file_name_symbol = NameAndValue('executable_file_name_symbol_name',
                                                    'the-executable-file')
@@ -346,7 +346,7 @@ class TestSymbolUsages(unittest.TestCase):
             ])),
             symbol_table=SymbolTable({
                 dir_symbol.name:
-                    su.file_ref_constant_container(dir_symbol.value),
+                    su.path_constant_container(dir_symbol.value),
 
                 executable_file_name_symbol.name:
                     su.string_constant_container(executable_file_name_symbol.value),

@@ -88,8 +88,8 @@ def is_interpreter_file_and_args(interpreter: str,
             put.assertEqual(' ' + args,
                             actual_cmd_and_args[-(len(args) + 1):],
                             'Last part of string should be equal to the arguments')
-            file_ref_part = actual_cmd_and_args[len(interpreter):-(len(args) + 1)]
-            put.assertTrue(file_name_base in file_ref_part,
+            path_part = actual_cmd_and_args[len(interpreter):-(len(args) + 1)]
+            put.assertTrue(file_name_base in path_part,
                            'File ref base name should appear in the file reference')
             # This may be a dangerous test, since string quoting may obfuscate the
             # file name.

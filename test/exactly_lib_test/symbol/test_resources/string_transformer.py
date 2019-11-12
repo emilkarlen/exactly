@@ -5,9 +5,9 @@ from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerValue, \
+from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
     StringTransformerModel
-from exactly_lib.type_system.logic.string_transformer_values import StringTransformerConstantValue
+from exactly_lib.type_system.logic.string_transformer_ddvs import StringTransformerConstantDdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -58,7 +58,7 @@ class StringTransformerConstantSequenceTestImpl(StringTransformerTestImplBase):
         return iter(self._result)
 
 
-class StringTransformerValueTestImpl(StringTransformerValue):
+class StringTransformerDdvTestImpl(StringTransformerDdv):
     def __init__(self,
                  primitive_value: StringTransformer,
                  validator: PreOrPostSdsValueValidator = constant_success_validator(),
@@ -88,26 +88,26 @@ class StringTransformerResolverConstantTestImpl(StringTransformerResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
-        return StringTransformerConstantValue(self._resolved_value)
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
+        return StringTransformerConstantDdv(self._resolved_value)
 
 
 class StringTransformerResolverConstantValueTestImpl(StringTransformerResolver):
     def __init__(self,
-                 resolved_value: StringTransformerValue,
+                 resolved_value: StringTransformerDdv,
                  references: Sequence[SymbolReference] = ()):
         self._resolved_value = resolved_value
         self._references = list(references)
 
     @property
-    def resolved_value(self) -> StringTransformer:
+    def resolved_value(self) -> StringTransformerDdv:
         return self._resolved_value
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
         return self._resolved_value
 
 
@@ -116,7 +116,7 @@ def string_transformer_from_primitive_value(primitive_value: StringTransformer =
                                             validator: PreOrPostSdsValueValidator = constant_success_validator(),
                                             ) -> StringTransformerResolver:
     return StringTransformerResolverConstantValueTestImpl(
-        StringTransformerValueTestImpl(
+        StringTransformerDdvTestImpl(
             primitive_value,
             validator
         ),
@@ -129,7 +129,7 @@ def string_transformer_from_result(result: StringTransformerModel,
                                    validator: PreOrPostSdsValueValidator = constant_success_validator(),
                                    ) -> StringTransformerResolver:
     return StringTransformerResolverConstantValueTestImpl(
-        StringTransformerValueTestImpl(
+        StringTransformerDdvTestImpl(
             StringTransformerConstantTestImpl(result),
             validator
         ),
@@ -142,7 +142,7 @@ def string_transformer_from_repeatable_result(result: Sequence[str],
                                               validator: PreOrPostSdsValueValidator = constant_success_validator(),
                                               ) -> StringTransformerResolver:
     return StringTransformerResolverConstantValueTestImpl(
-        StringTransformerValueTestImpl(
+        StringTransformerDdvTestImpl(
             StringTransformerConstantSequenceTestImpl(result),
             validator
         ),
@@ -174,8 +174,8 @@ def arbitrary_transformer() -> StringTransformer:
     return StringTransformerIdentityTestImpl()
 
 
-def arbitrary_transformer_value() -> StringTransformerValue:
-    return StringTransformerValueTestImpl(arbitrary_transformer())
+def arbitrary_transformer_ddv() -> StringTransformerDdv:
+    return StringTransformerDdvTestImpl(arbitrary_transformer())
 
 
 def arbitrary_transformer_resolver() -> StringTransformerResolver:

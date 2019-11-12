@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherConstructor, \
-    FilesMatcherValue
+    FilesMatcherDdv
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
@@ -40,8 +40,8 @@ class _NegationMatcher(FilesMatcher):
         return self._new_tb().append_child(un_negated.trace).build_result(not un_negated.value)
 
 
-class _NegationMatcherValue(FilesMatcherValue):
-    def __init__(self, matcher_to_negate: FilesMatcherValue):
+class _NegationMatcherDdv(FilesMatcherDdv):
+    def __init__(self, matcher_to_negate: FilesMatcherDdv):
         self._matcher_to_negate = matcher_to_negate
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> FilesMatcherConstructor:
@@ -66,5 +66,5 @@ class _NegationMatcherResolver(FilesMatcherResolver):
     def validator(self) -> PreOrPostSdsValidator:
         return self._matcher_to_negate.validator()
 
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
-        return _NegationMatcherValue(self._matcher_to_negate.resolve(symbols))
+    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
+        return _NegationMatcherDdv(self._matcher_to_negate.resolve(symbols))

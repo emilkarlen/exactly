@@ -9,14 +9,14 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.string_transformer import StringTransformerModel, StringTransformerValue
+from exactly_lib.type_system.logic.string_transformer import StringTransformerModel, StringTransformerDdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
 from exactly_lib_test.symbol.test_resources.string_transformer import string_transformer_from_primitive_value, \
-    string_transformer_from_result, arbitrary_transformer_value, StringTransformerIdentityTestImpl
+    string_transformer_from_result, arbitrary_transformer_ddv, StringTransformerIdentityTestImpl
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check as sut
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import Expectation
@@ -229,10 +229,10 @@ class StringTransformerResolverThatAssertsThatSymbolsAreAsExpected(StringTransfo
     def references(self) -> List[SymbolReference]:
         return []
 
-    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
         self._expectation.apply_with_message(self._put, symbols, 'symbols given to resolve')
 
-        return arbitrary_transformer_value()
+        return arbitrary_transformer_ddv()
 
 
 class _AssertNumElements(ValueAssertionBase[StringTransformerModel]):

@@ -5,8 +5,8 @@ from exactly_lib.util.cli_syntax.elements.argument import OptionName
 from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.symbol.test_resources import arguments_building as sym_ab
 from exactly_lib_test.test_case_file_structure.test_resources import arguments_building as fr_ab
-from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptFileRefArgument, \
-    FileRefArgument, file_ref_argument
+from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument, \
+    PathArgument, path_argument
 from exactly_lib_test.test_resources import arguments_building as ab
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer, QuotedStringArgument
 from exactly_lib_test.test_resources.arguments_building import Stringable
@@ -49,11 +49,11 @@ def rel_symbol_option(symbol_name: str) -> ArgumentElementRenderer:
     return fr_ab.rel_symbol_arg(symbol_name)
 
 
-def file_ref(file_name: Stringable,
-             relativity: ArgumentElementRenderer = None) -> FileRefArgument:
-    return file_ref_argument(file_name, relativity)
+def path(file_name: Stringable,
+         relativity: ArgumentElementRenderer = None) -> PathArgument:
+    return path_argument(file_name, relativity)
 
 
-def file_ref_rel_opt(file_name: str,
-                     relativity: RelOptionType) -> RelOptFileRefArgument:
-    return RelOptFileRefArgument(file_name, relativity)
+def path_rel_opt(file_name: str,
+                 relativity: RelOptionType) -> RelOptPathArgument:
+    return RelOptPathArgument(file_name, relativity)

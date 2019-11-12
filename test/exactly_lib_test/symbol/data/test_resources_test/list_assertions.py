@@ -6,7 +6,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import OrRefere
     ReferenceRestrictionsOnDirectAndIndirect, is_any_data_type
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
+from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
 from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su, list_assertions as sut
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
@@ -150,7 +150,7 @@ class TestMatchesResolver(unittest.TestCase):
         cases = [
             MatchesCase('empty list of fragments',
                         expected=
-                        lr.ListValue([]),
+                        lr.ListDdv([]),
                         expected_references=
                         asrt.is_empty_sequence,
                         actual=
@@ -158,7 +158,7 @@ class TestMatchesResolver(unittest.TestCase):
                         ),
             MatchesCase('single fragment',
                         expected=
-                        lr.ListValue([string_value_of_single_string('expected value')]),
+                        lr.ListDdv([string_ddv_of_single_string('expected value')]),
                         expected_references=
                         asrt.is_empty_sequence,
                         actual=
@@ -166,7 +166,7 @@ class TestMatchesResolver(unittest.TestCase):
                         ),
             MatchesCase('symbol reference',
                         expected=
-                        lr.ListValue([string_value_of_single_string(string_symbol.value)]),
+                        lr.ListDdv([string_ddv_of_single_string(string_symbol.value)]),
                         expected_references=
                         equals_symbol_references([SymbolReference(string_symbol.name,
                                                                   is_any_data_type())]),
@@ -191,7 +191,7 @@ class TestMatchesResolver(unittest.TestCase):
         cases = [
             MatchesCase('different number of elements',
                         expected=
-                        lr.ListValue([]),
+                        lr.ListDdv([]),
                         expected_references=
                         asrt.is_empty_sequence,
                         actual=
@@ -199,7 +199,7 @@ class TestMatchesResolver(unittest.TestCase):
                         ),
             MatchesCase('different value of single string',
                         expected=
-                        lr.ListValue([string_value_of_single_string('expected value')]),
+                        lr.ListDdv([string_ddv_of_single_string('expected value')]),
                         expected_references=
                         asrt.is_empty_sequence,
                         actual=
@@ -207,7 +207,7 @@ class TestMatchesResolver(unittest.TestCase):
                         ),
             MatchesCase('different references',
                         expected=
-                        lr.ListValue([string_value_of_single_string(string_symbol.value)]),
+                        lr.ListDdv([string_ddv_of_single_string(string_symbol.value)]),
                         expected_references=
                         equals_symbol_references([SymbolReference(string_symbol.name,
                                                                   ReferenceRestrictionsOnDirectAndIndirect(
@@ -244,7 +244,7 @@ class Case:
 class MatchesCase:
     def __init__(self,
                  name: str,
-                 expected: lr.ListValue,
+                 expected: lr.ListDdv,
                  expected_references: ValueAssertion,
                  actual: lr.ListResolver,
                  symbols: SymbolTable = None):

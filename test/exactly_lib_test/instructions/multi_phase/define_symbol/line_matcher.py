@@ -21,9 +21,9 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
-from exactly_lib_test.test_case_utils.line_matcher.test_resources import value_assertions as asrt_line_matcher
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import ddv_assertions as asrt_line_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.resolver_assertions import \
-    resolved_value_matches_line_matcher
+    resolved_ddv_matches_line_matcher
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources import matcher_assertions as asrt_matcher
@@ -72,8 +72,8 @@ class TestSuccessfulScenarios(TestCaseBase):
         ]
 
         expected_container = matches_container(
-            resolved_value_matches_line_matcher(
-                asrt_line_matcher.value_matches_line_matcher(
+            resolved_ddv_matches_line_matcher(
+                asrt_line_matcher.ddv_matches_line_matcher(
                     asrt_matcher.is_equivalent_to(expected_equivalent,
                                                   models_for_equivalence_check)
                 )
@@ -134,8 +134,8 @@ class TestSuccessfulScenarios(TestCaseBase):
 
         expected_container = matches_container(
             assertion_on_resolver=
-            resolved_value_matches_line_matcher(
-                asrt_line_matcher.value_matches_line_matcher(
+            resolved_ddv_matches_line_matcher(
+                asrt_line_matcher.ddv_matches_line_matcher(
                     asrt_matcher.is_equivalent_to(expected_matcher,
                                                   models_for_equivalence_check)
                 ),

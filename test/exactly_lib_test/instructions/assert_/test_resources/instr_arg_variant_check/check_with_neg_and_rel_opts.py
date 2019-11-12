@@ -61,7 +61,7 @@ class InstructionArgumentsVariantConstructorWithTemplateStringBase(InstructionAr
 class InstructionChecker:
     """
     Methods for checking an instruction with arguments for
-    negation and path_value with different accepted relativities.
+    negation and path_ddv with different accepted relativities.
     """
 
     def __init__(self,

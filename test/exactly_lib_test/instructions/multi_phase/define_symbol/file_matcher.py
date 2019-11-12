@@ -16,10 +16,10 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import value_assertions as asrt_file_matcher
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import ddv_assertions as asrt_file_matcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import file_matcher_arguments
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
-    resolved_value_matches_file_matcher
+    resolved_ddv_matches_file_matcher
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources import file_matcher
@@ -73,8 +73,8 @@ class TestSuccessfulScenarios(TestCaseBase):
                 )
 
                 expected_container = matches_container(
-                    resolved_value_matches_file_matcher(
-                        asrt_file_matcher.matches_file_matcher_value__deep(
+                    resolved_ddv_matches_file_matcher(
+                        asrt_file_matcher.matches_file_matcher_ddv__deep(
                             case.expected_value
                         )
                     )

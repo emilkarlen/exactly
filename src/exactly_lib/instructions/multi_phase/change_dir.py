@@ -16,7 +16,7 @@ from exactly_lib.instructions.multi_phase.utils.assert_phase_info import IsAHelp
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
@@ -76,7 +76,7 @@ Omitting the {dir_argument} is the same as giving ".".
 
 
 class InstructionEmbryo(embryo.InstructionEmbryo):
-    def __init__(self, destination: FileRefResolver):
+    def __init__(self, destination: PathResolver):
         self.destination = destination
 
     @property
@@ -119,9 +119,9 @@ class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
         rel_opt_arg_conf = relativity_options(self.is_after_act_phase)
         tokens = TokenParserExtra(TokenStream(rest_of_line))
 
-        target_file_ref = tokens.consume_file_ref(rel_opt_arg_conf)
+        target_path = tokens.consume_path(rel_opt_arg_conf)
         tokens.report_superfluous_arguments_if_not_at_eol()
-        return InstructionEmbryo(target_file_ref)
+        return InstructionEmbryo(target_path)
 
 
 def parts_parser(is_after_act_phase: bool) -> InstructionPartsParser:

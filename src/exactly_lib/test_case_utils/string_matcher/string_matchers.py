@@ -6,9 +6,9 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherValue
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, SequenceStringTransformer, \
-    StringTransformerValue
+    StringTransformerDdv
 from exactly_lib.util.description_tree import renderers, details
 
 
@@ -74,10 +74,10 @@ class StringMatcherOnTransformedFileToCheck(StringMatcher):
         )
 
 
-class StringMatcherWithTransformationValue(StringMatcherValue):
+class StringMatcherWithTransformationDdv(StringMatcherDdv):
     def __init__(self,
-                 transformer: StringTransformerValue,
-                 on_transformed: StringMatcherValue,
+                 transformer: StringTransformerDdv,
+                 on_transformed: StringMatcherDdv,
                  ):
         self._transformer = transformer
         self._on_transformed = on_transformed

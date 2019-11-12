@@ -3,9 +3,8 @@ from typing import Tuple
 
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     constant_success_validator
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherValue
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherDdv
 
 LineMatcherLine = Tuple[int, str]
 
@@ -23,9 +22,7 @@ class LineMatcher(MatcherWTraceAndNegation[LineMatcherLine], ABC):
     pass
 
 
-class LineMatcherValue(DirDependentValue[LineMatcher],
-                       MatcherValue[LineMatcherLine],
-                       ABC):
+class LineMatcherDdv(MatcherDdv[LineMatcherLine], ABC):
     @property
     def validator(self) -> PreOrPostSdsValueValidator:
         return constant_success_validator()

@@ -15,7 +15,7 @@ from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
     InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
@@ -26,7 +26,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case.validation import pre_or_post_value_validation
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.test_case_utils import file_properties, negation_of_predicate, file_ref_check
+from exactly_lib.test_case_utils import file_properties, negation_of_predicate, path_check
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
 from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
@@ -37,7 +37,7 @@ from exactly_lib.test_case_utils.err_msg2.path_rendering import HeaderAndPathMaj
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.file_matcher import resolvers  as fm_resolvers
-from exactly_lib.test_case_utils.parse import parse_file_ref
+from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -157,8 +157,8 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
     def _parse(self, parser: token_stream_parser.TokenParser) -> AssertPhaseInstruction:
         expectation_type = parser.consume_optional_negation_operator()
 
-        path_to_check = parse_file_ref.parse_file_ref_from_token_parser(_REL_OPTION_CONFIG,
-                                                                        parser)
+        path_to_check = parse_path.parse_path_from_token_parser(_REL_OPTION_CONFIG,
+                                                                parser)
 
         file_matcher = self._parse_optional_file_matcher(parser)
 
@@ -184,13 +184,13 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 class _Instruction(AssertPhaseInstruction):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 file_ref_resolver: FileRefResolver,
+                 path_resolver: PathResolver,
                  file_matcher: Optional[FileMatcherResolver]):
         self._expectation_type = expectation_type
-        self._file_ref_resolver = file_ref_resolver
+        self._path_resolver = path_resolver
         self._file_matcher = file_matcher
 
-        self._symbol_usages = list(file_ref_resolver.references)
+        self._symbol_usages = list(path_resolver.references)
         if file_matcher is not None:
             self._symbol_usages += file_matcher.references
 
@@ -215,7 +215,7 @@ class _Instruction(AssertPhaseInstruction):
         try:
             return _Assertion(environment,
                               self._expectation_type,
-                              self._file_ref_resolver,
+                              self._path_resolver,
                               self._file_matcher).apply()
         except HardErrorException as ex:
             return pfh.new_pfh_hard_error(ex.error)
@@ -232,16 +232,16 @@ class _Assertion:
     def __init__(self,
                  environment: i.InstructionEnvironmentForPostSdsStep,
                  expectation_type: ExpectationType,
-                 file_ref_resolver: FileRefResolver,
+                 path_resolver: PathResolver,
                  file_matcher: Optional[FileMatcherResolver]
                  ):
         self.environment = environment
         self.expectation_type = expectation_type
-        self.file_ref_resolver = file_ref_resolver
+        self.path_resolver = path_resolver
         self.file_matcher = file_matcher
 
         self.described_path = (
-            self.file_ref_resolver.resolve(self.environment.symbols)
+            self.path_resolver.resolve(self.environment.symbols)
                 .value_of_any_dependency__d(environment.home_and_sds)
         )
 
@@ -262,8 +262,8 @@ class _Assertion:
         if self.expectation_type is ExpectationType.NEGATIVE:
             check = file_properties.negation_of(check)
 
-        mb_failure = file_ref_check.failure_message_or_none(check,
-                                                            self.described_path)
+        mb_failure = path_check.failure_message_or_none(check,
+                                                        self.described_path)
 
         return (
             pfh.new_pfh_pass()
@@ -272,8 +272,8 @@ class _Assertion:
         )
 
     def _assert_with_file_matcher(self) -> pfh.PassOrFailOrHardError:
-        mb_failure_of_existence = file_ref_check.failure_message_or_none(_FILE_EXISTENCE_CHECK,
-                                                                         self.described_path)
+        mb_failure_of_existence = path_check.failure_message_or_none(_FILE_EXISTENCE_CHECK,
+                                                                     self.described_path)
 
         if mb_failure_of_existence is not None:
             return (pfh.new_pfh_fail(mb_failure_of_existence)

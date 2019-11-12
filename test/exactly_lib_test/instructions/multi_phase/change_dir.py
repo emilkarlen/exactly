@@ -1,19 +1,19 @@
 import os
 import unittest
 
-from exactly_lib.definitions import file_ref as file_ref_syntax
+from exactly_lib.definitions import path as path_syntax
 from exactly_lib.instructions.multi_phase import change_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.file_ref import FileRef
+from exactly_lib.type_system.data import paths
+from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_file_ref_resolver
+from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_resolver
 from exactly_lib_test.test_case_file_structure.test_resources.format_rel_option import format_rel_options
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir, empty_file
@@ -50,8 +50,8 @@ class TestParseSet(unittest.TestCase):
                 # ACT #
                 actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
-                expected_file_ref = _file_ref_of(RelOptionType.REL_ACT)
-                assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
+                expected_path = _path_of(RelOptionType.REL_ACT)
+                assertion = matches_path_resolver(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_no_relativity_option_should_use_default_option(self):
@@ -62,9 +62,9 @@ class TestParseSet(unittest.TestCase):
                 # ACT #
                 actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
-                expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
-                                                            file_refs.constant_path_part(arguments))
-                assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
+                expected_path = paths.of_rel_option(RelOptionType.REL_CWD,
+                                                    paths.constant_path_part(arguments))
+                assertion = matches_path_resolver(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_no_arguments_is_rel_default_option(self):
@@ -75,8 +75,8 @@ class TestParseSet(unittest.TestCase):
                 # ACT #
                 actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
-                expected_file_ref = _file_ref_of(RelOptionType.REL_CWD)
-                assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
+                expected_path = _path_of(RelOptionType.REL_CWD)
+                assertion = matches_path_resolver(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_fail_when_superfluous_arguments(self):
@@ -96,9 +96,9 @@ class TestParseSet(unittest.TestCase):
                 # ACT #
                 actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
-                expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
-                                                            file_refs.constant_path_part(arguments.strip()))
-                assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
+                expected_path = paths.of_rel_option(RelOptionType.REL_CWD,
+                                                    paths.constant_path_part(arguments.strip()))
+                assertion = matches_path_resolver(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_success_when_correct_number_of_arguments__escaped(self):
@@ -109,21 +109,21 @@ class TestParseSet(unittest.TestCase):
                 # ACT #
                 actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
-                expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
-                                                            file_refs.constant_path_part('expected argument'))
-                assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
+                expected_path = paths.of_rel_option(RelOptionType.REL_CWD,
+                                                    paths.constant_path_part('expected argument'))
+                assertion = matches_path_resolver(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_rel_tmp_without_argument(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
-                arguments = file_ref_syntax.REL_TMP_OPTION
+                arguments = path_syntax.REL_TMP_OPTION
                 parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
                 actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
-                expected_file_ref = _file_ref_of(RelOptionType.REL_TMP)
-                assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
+                expected_path = _path_of(RelOptionType.REL_TMP)
+                assertion = matches_path_resolver(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_rel_tmp_with_argument(self):
@@ -134,9 +134,9 @@ class TestParseSet(unittest.TestCase):
                 # ACT #
                 actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
-                expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_TMP,
-                                                            file_refs.constant_path_part('subdir'))
-                assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
+                expected_path = paths.of_rel_option(RelOptionType.REL_TMP,
+                                                    paths.constant_path_part('subdir'))
+                assertion = matches_path_resolver(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_rel_tmp_with_superfluous_argument(self):
@@ -149,7 +149,7 @@ class TestParseSet(unittest.TestCase):
                     parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
 
     def test_rel_result_should_not_be_available_pre_act_phase(self):
-        arguments = file_ref_syntax.REL_RESULT_OPTION
+        arguments = path_syntax.REL_RESULT_OPTION
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             parser = sut.EmbryoParser(is_after_act_phase=False)
             # ACT #
@@ -348,8 +348,8 @@ class TestFailingScenarios(TestCaseBase):
                              sds_test.Expectation(expected_action_result=is_failure()))
 
 
-def _file_ref_of(relativity=RelOptionType.REL_ACT) -> FileRef:
-    return file_refs.of_rel_option(relativity, file_refs.empty_path_part())
+def _path_of(relativity=RelOptionType.REL_ACT) -> PathDdv:
+    return paths.of_rel_option(relativity, paths.empty_path_part())
 
 
 if __name__ == '__main__':

@@ -7,7 +7,7 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.logic.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.parse import parse_list, parse_string, parse_file_ref
+from exactly_lib.test_case_utils.parse import parse_list, parse_string, parse_path
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.test_case_utils.program import syntax_elements
@@ -80,8 +80,8 @@ def _parse_rest_of_line_as_single_element(token_parser: TokenParser) -> Argument
 
 
 def _parse_existing_file(token_parser: TokenParser) -> ArgumentsResolver:
-    file_ref = parse_file_ref.parse_file_ref_from_token_parser(REL_OPT_ARG_CONF, token_parser)
-    return arguments_resolvers.ref_to_file_that_must_exist(file_ref)
+    path = parse_path.parse_path_from_token_parser(REL_OPT_ARG_CONF, token_parser)
+    return arguments_resolvers.ref_to_file_that_must_exist(path)
 
 
 def _parse_plain_list_element(parser: TokenParser) -> ArgumentsResolver:

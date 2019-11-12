@@ -1,12 +1,12 @@
 from typing import Optional, Callable
 
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system.data.path_describer import PathDescriberForValue, \
+from exactly_lib.type_system.data.path_describer import PathDescriberForDdv, \
     PathDescriberForPrimitive
 from exactly_lib.util.render.renderer import Renderer
 
 
-class PathDescriberForValueFromStr(PathDescriberForValue):
+class PathDescriberForDdvFromStr(PathDescriberForDdv):
     def __init__(self,
                  value: Renderer[str],
                  relativity: Callable[[], Optional[DirectoryStructurePartition]]
@@ -25,7 +25,7 @@ class PathDescriberForValueFromStr(PathDescriberForValue):
 
 class PathDescriberForPrimitiveFromStr(PathDescriberForPrimitive):
     def __init__(self,
-                 value: PathDescriberForValue,
+                 value: PathDescriberForDdv,
                  primitive: Renderer[str],
                  ):
         self._value = value

@@ -1,13 +1,13 @@
 import unittest
 from typing import Sequence
 
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.impl.string_resolver_impls import ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.data.string_resolver import StringFragmentResolver, StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
-from exactly_lib.type_system.data.file_ref import FileRef
+from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
@@ -16,24 +16,24 @@ from exactly_lib_test.symbol.test_resources import resolver_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
-from exactly_lib_test.type_system.data.test_resources.file_ref_assertions import equals_file_ref
-from exactly_lib_test.type_system.data.test_resources.string_value_assertions import equals_string_value, \
-    equals_string_fragment
+from exactly_lib_test.type_system.data.test_resources.path_assertions import equals_path
+from exactly_lib_test.type_system.data.test_resources.string_ddv_assertions import equals_string_ddv, \
+    equals_string_fragment_ddv
 
 
-def equals_file_ref_resolver(expected: FileRefResolver) -> ValueAssertion:
+def equals_path_resolver(expected: PathResolver) -> ValueAssertion:
     symbols = symbol_table_with_values_matching_references(expected.references)
-    expected_file_ref = expected.resolve(symbols)
+    expected_path = expected.resolve(symbols)
     return resolver_assertions.matches_resolver_of_path(equals_symbol_references(expected.references),
-                                                        equals_file_ref(expected_file_ref),
+                                                        equals_path(expected_path),
                                                         symbols=symbols)
 
 
-def matches_file_ref_resolver(expected_resolved_value: FileRef,
-                              expected_symbol_references: ValueAssertion,
-                              symbol_table: SymbolTable = None) -> ValueAssertion:
+def matches_path_resolver(expected_resolved_value: PathDdv,
+                          expected_symbol_references: ValueAssertion,
+                          symbol_table: SymbolTable = None) -> ValueAssertion:
     return resolver_assertions.matches_resolver_of_path(expected_symbol_references,
-                                                        equals_file_ref(expected_resolved_value),
+                                                        equals_path(expected_resolved_value),
                                                         symbols=symbol_table)
 
 
@@ -66,7 +66,7 @@ def equals_string_resolver(expected: StringResolver,
         return x.fragments
 
     return resolver_assertions.matches_resolver_of_string(equals_symbol_references(expected.references),
-                                                          equals_string_value(expected_resolved_value),
+                                                          equals_string_ddv(expected_resolved_value),
                                                           asrt.sub_component('fragment resolvers',
                                                                              get_fragment_resolvers,
                                                                              equals_string_fragments(
@@ -147,7 +147,7 @@ class _EqualsStringFragmentAssertion(ValueAssertionBase[StringFragmentResolver])
                                ),
             asrt.sub_component('resolve',
                                lambda sfr: sfr.resolve(environment.symbols),
-                               equals_string_fragment(self.expected.resolve(environment.symbols))
+                               equals_string_fragment_ddv(self.expected.resolve(environment.symbols))
                                ),
 
             asrt.sub_component('resolve_value_of_any_dependency',

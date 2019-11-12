@@ -1,8 +1,8 @@
 -*- org -*-
 
-* When PathPart is absolute THEN FileRef will be absolute
+* When PathPart is absolute THEN PathDdv will be absolute
 <2018-07-18 wed>
-even if the FileRefResolver, and maybe also the FileRef,
+even if the PathResolver, and maybe also the PathDdv,
 say it is relative.
 
 Solution:

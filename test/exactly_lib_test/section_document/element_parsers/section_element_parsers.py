@@ -43,11 +43,11 @@ class TestParserFromSequenceOfParsers(unittest.TestCase):
         mocked_parser.parse = MagicMock(return_value=None)
         source_text = 'first line'
         source = ParseSource(source_text)
-        file_reference_relativity_root_dir = pathlib.Path()
+        path_relativity_root_dir = pathlib.Path()
         # ACT #
-        mocked_parser.parse(file_reference_relativity_root_dir, source)
+        mocked_parser.parse(path_relativity_root_dir, source)
         # ASSERT #
-        mocked_parser.parse.assert_called_once_with(file_reference_relativity_root_dir, source)
+        mocked_parser.parse.assert_called_once_with(path_relativity_root_dir, source)
 
     def test_all_fail_None_SHOULD_be_returned_WHEN_all_parsers_return_None(self):
         # ARRANGE #

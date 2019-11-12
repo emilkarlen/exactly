@@ -15,10 +15,10 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import parse_string_or_here_doc_from_token_parser
-from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
-from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
-from exactly_lib.type_system.data.string_value import StringValue
+from exactly_lib.test_case_utils.parse.parse_here_doc_or_path import parse_string_or_here_doc_from_token_parser
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver, RegexDdv
+from exactly_lib.type_system.data.string_ddv import StringDdv
+from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
 from exactly_lib.util import strings
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -81,15 +81,15 @@ class _RegexResolver(RegexResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self._string.references
 
-    def resolve(self, symbols: SymbolTable) -> RegexValue:
-        return _RegexValue(self._is_ignore_case,
-                           self._string.resolve(symbols))
+    def resolve(self, symbols: SymbolTable) -> RegexDdv:
+        return _RegexDdv(self._is_ignore_case,
+                         self._string.resolve(symbols))
 
 
 class _ValidatorWhichCreatesRegex(PreOrPostSdsValueValidator):
     def __init__(self,
                  is_ignore_case: bool,
-                 string: StringValue):
+                 string: StringDdv):
         self._is_ignore_case = is_ignore_case
         self.string = string
         self.pattern = None
@@ -137,10 +137,10 @@ class _ValidatorWhichCreatesRegex(PreOrPostSdsValueValidator):
             )
 
 
-class _RegexValue(RegexValue):
+class _RegexDdv(RegexDdv):
     def __init__(self,
                  is_ignore_case: bool,
-                 string: StringValue,
+                 string: StringDdv,
                  ):
         self._describer = custom_details.regex(
             is_ignore_case,

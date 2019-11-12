@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.logic.program.command_resolver import CommandDriverResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -13,7 +13,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 class CommandDriverResolverForExecutableFile(CommandDriverResolver):
     def __init__(self,
-                 executable_file: FileRefResolver):
+                 executable_file: PathResolver):
         super().__init__([ExistingExecutableFileValidator(executable_file)])
         self._executable_file = executable_file
 
@@ -22,7 +22,7 @@ class CommandDriverResolverForExecutableFile(CommandDriverResolver):
         return self._executable_file.references
 
     @property
-    def executable_file(self) -> FileRefResolver:
+    def executable_file(self) -> PathResolver:
         return self._executable_file
 
     def resolve(self, symbols: SymbolTable) -> CommandDriverValue:

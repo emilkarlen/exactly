@@ -5,11 +5,11 @@ from exactly_lib.instructions.multi_phase import new_file as sut
 from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.data import file_ref_resolvers
+from exactly_lib.symbol.data import path_resolvers
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType, RelOptionType, RelNonHomeOptionType
-from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources import utils as new_file_utils
@@ -30,7 +30,7 @@ from exactly_lib_test.symbol.test_resources.string_transformer import StringTran
     is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
+from exactly_lib_test.test_case_utils.parse.parse_path import path_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
@@ -88,12 +88,12 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
         symbols = SymbolTable({
             src_file_symbol.name:
-                container(file_ref_resolvers.of_rel_option(src_file_rel_conf.relativity_option,
-                                                           file_refs.constant_path_part(src_file_symbol.value))),
+                container(path_resolvers.of_rel_option(src_file_rel_conf.relativity_option,
+                                                       paths.constant_path_part(src_file_symbol.value))),
 
             dst_file_symbol.name:
-                container(file_ref_resolvers.of_rel_option(dst_file_rel_option,
-                                                           file_refs.constant_path_part(dst_file_symbol.value))),
+                container(path_resolvers.of_rel_option(dst_file_rel_option,
+                                                       paths.constant_path_part(dst_file_symbol.value))),
 
             to_upper_transformer.name:
                 container(to_upper_transformer.value),
@@ -124,7 +124,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
                                     equals_symbol_reference(
                                         SymbolReference(dst_file_symbol.name,
-                                                        file_ref_or_string_reference_restrictions(
+                                                        path_or_string_reference_restrictions(
                                                             sut.REL_OPT_ARG_CONF.options.accepted_relativity_variants))
                                     ),
 
@@ -132,7 +132,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
                                     equals_symbol_reference(
                                         SymbolReference(src_file_symbol.name,
-                                                        file_ref_or_string_reference_restrictions(
+                                                        path_or_string_reference_restrictions(
                                                             src_file_rel_opt_arg_conf.options.accepted_relativity_variants))
                                     ),
                                 ]),

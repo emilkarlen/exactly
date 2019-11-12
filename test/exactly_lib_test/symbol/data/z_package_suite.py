@@ -3,7 +3,7 @@ import unittest
 from exactly_lib_test.symbol.data import concrete_resolvers
 from exactly_lib_test.symbol.data import string_resolver, list_resolver, string_resolvers, visitor
 from exactly_lib_test.symbol.data import symbol_usage
-from exactly_lib_test.symbol.data.file_ref_resolver_impls import z_package_suite as file_ref_resolver_impls
+from exactly_lib_test.symbol.data.path_resolver_impls import z_package_suite as path_resolver_impls
 from exactly_lib_test.symbol.data.restrictions import z_package_suite as restrictions
 from exactly_lib_test.symbol.data.test_resources_test import z_package_suite as test_resources_test
 
@@ -17,7 +17,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(string_resolver.suite())
     ret_val.addTest(list_resolver.suite())
     ret_val.addTest(concrete_resolvers.suite())
-    ret_val.addTest(file_ref_resolver_impls.suite())
+    ret_val.addTest(path_resolver_impls.suite())
     ret_val.addTest(string_resolvers.suite())
     return ret_val
 

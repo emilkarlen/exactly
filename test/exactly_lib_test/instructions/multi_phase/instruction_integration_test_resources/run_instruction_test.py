@@ -77,7 +77,7 @@ class TestSuccessfulExecutionViaSymbolReference(TestCaseBase):
 
         program_that_executes_py_pgm_symbol = NameAndValue(
             'PROGRAM_THAT_EXECUTES_PY_FILE',
-            program_resolvers.interpret_py_source_file_that_must_exist(py_file_conf.file_ref_resolver)
+            program_resolvers.interpret_py_source_file_that_must_exist(py_file_conf.path_resolver)
         )
 
         symbols_dict = SymbolTable({
@@ -202,5 +202,5 @@ class TestSuccessfulValidation(TestCaseBase):
 def source_for_interpreting(relativity: RelOptionType,
                             file_name: str) -> ParseSource:
     return pgm_args.program(pgm_args.interpret_py_source_file(
-        args.file_ref_rel_opt(file_name,
-                              relativity))).as_remaining_source
+        args.path_rel_opt(file_name,
+                          relativity))).as_remaining_source

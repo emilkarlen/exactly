@@ -7,7 +7,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import svh_exception
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import NotAnIntegerException, python_evaluate
-from exactly_lib.test_case_utils.condition.integer.integer_value import CustomIntegerValidator, IntegerValue
+from exactly_lib.test_case_utils.condition.integer.integer_ddv import CustomIntegerValidator, IntegerDdv
 from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.util import strings
 from exactly_lib.util.symbol_table import SymbolTable
@@ -46,9 +46,9 @@ class IntegerResolver(OperandResolver[int]):
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         self._validator.validate_pre_sds(environment)
 
-    def resolve(self, symbols: SymbolTable) -> IntegerValue:
-        return IntegerValue(self._value_resolver.resolve(symbols),
-                            self._custom_integer_validator)
+    def resolve(self, symbols: SymbolTable) -> IntegerDdv:
+        return IntegerDdv(self._value_resolver.resolve(symbols),
+                          self._custom_integer_validator)
 
 
 class _ValidatorThatReportsViaExceptions(SvhPreSdsValidatorViaExceptions):

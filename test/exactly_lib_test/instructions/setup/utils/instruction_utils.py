@@ -1,16 +1,16 @@
 import unittest
 
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
-from exactly_lib.symbol.data import file_ref_resolvers
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data import path_resolvers
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_utils.file_ref_check import FileRefCheck
-from exactly_lib.type_system.data import file_refs
+from exactly_lib.test_case_utils.path_check import PathCheck
+from exactly_lib.type_system.data import paths
 from exactly_lib_test.test_case_utils.file_properties import FileCheckThatEvaluatesTo
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
@@ -24,8 +24,8 @@ def suite() -> unittest.TestSuite:
 
 
 class TestInstruction(InstructionWithFileRefsBase):
-    def __init__(self, file_ref_list_tuple):
-        super().__init__(file_ref_list_tuple)
+    def __init__(self, path_list_tuple):
+        super().__init__(path_list_tuple)
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
@@ -37,8 +37,8 @@ class TestInstruction(InstructionWithFileRefsBase):
 class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase):
     def test_successful_validation(self):
         instruction = TestInstruction(
-            (FileRefCheck(_resolver_of(file_refs.rel_home_case(file_refs.constant_path_part('file.txt'))),
-                          FileCheckThatEvaluatesTo(True)),))
+            (PathCheck(_resolver_of(paths.rel_home_case(paths.constant_path_part('file.txt'))),
+                       FileCheckThatEvaluatesTo(True)),))
         with home_and_sds_with_act_as_curr_dir() as path_resolving_env:
             home_and_sds = path_resolving_env.home_and_sds
             environment = InstructionEnvironmentForPreSdsStep(home_and_sds.hds, {})
@@ -50,8 +50,8 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase
 
     def test_unsuccessful_validation(self):
         instruction = TestInstruction(
-            (FileRefCheck(_resolver_of(file_refs.rel_home_case(file_refs.constant_path_part('file.txt'))),
-                          FileCheckThatEvaluatesTo(False)),))
+            (PathCheck(_resolver_of(paths.rel_home_case(paths.constant_path_part('file.txt'))),
+                       FileCheckThatEvaluatesTo(False)),))
         with home_and_sds_with_act_as_curr_dir() as path_resolving_env:
             home_and_sds = path_resolving_env.home_and_sds
             environment = InstructionEnvironmentForPreSdsStep(home_and_sds.hds, {})
@@ -65,8 +65,8 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase
 class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.TestCase):
     def test_successful_validation(self):
         instruction = TestInstruction(
-            (FileRefCheck(_resolver_of(file_refs.rel_cwd(file_refs.constant_path_part('file.txt'))),
-                          FileCheckThatEvaluatesTo(True)),))
+            (PathCheck(_resolver_of(paths.rel_cwd(paths.constant_path_part('file.txt'))),
+                       FileCheckThatEvaluatesTo(True)),))
         with home_and_sds_with_act_as_curr_dir() as path_resolving_env:
             home_and_sds = path_resolving_env.home_and_sds
             environment = InstructionEnvironmentForPreSdsStep(home_and_sds.hds, {})
@@ -78,8 +78,8 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.Test
 
     def test_unsuccessful_validation(self):
         instruction = TestInstruction(
-            (FileRefCheck(_resolver_of(file_refs.rel_cwd(file_refs.constant_path_part('file.txt'))),
-                          FileCheckThatEvaluatesTo(False)),))
+            (PathCheck(_resolver_of(paths.rel_cwd(paths.constant_path_part('file.txt'))),
+                       FileCheckThatEvaluatesTo(False)),))
         with home_and_sds_with_act_as_curr_dir() as path_resolving_env:
             home_and_sds = path_resolving_env.home_and_sds
             environment = InstructionEnvironmentForPreSdsStep(home_and_sds.hds, {})
@@ -98,8 +98,8 @@ def _env_from(sds: SandboxDirectoryStructure,
                                                 'phase-identifier')
 
 
-def _resolver_of(file_ref: file_refs.FileRef) -> FileRefResolver:
-    return file_ref_resolvers.constant(file_ref)
+def _resolver_of(path: paths.PathDdv) -> PathResolver:
+    return path_resolvers.constant(path)
 
 
 if __name__ == '__main__':

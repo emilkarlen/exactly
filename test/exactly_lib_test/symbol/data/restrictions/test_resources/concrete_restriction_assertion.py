@@ -7,7 +7,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import DataType
     FailureOfIndirectReference, OrRestrictionPart, is_any_data_type
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, \
     StringRestriction, \
-    FileRefRelativityRestriction, ValueRestrictionVisitor
+    PathRelativityRestriction, ValueRestrictionVisitor
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions, ReferenceRestrictions, Failure
@@ -27,10 +27,10 @@ def equals_string_restriction(expected: StringRestriction) -> ValueAssertion:
     return is_string_value_restriction
 
 
-def equals_file_ref_relativity_restriction(expected: FileRefRelativityRestriction) -> ValueAssertion:
-    return asrt.is_instance_with(FileRefRelativityRestriction,
+def equals_path_relativity_restriction(expected: PathRelativityRestriction) -> ValueAssertion:
+    return asrt.is_instance_with(PathRelativityRestriction,
                                  asrt.sub_component('accepted',
-                                                    FileRefRelativityRestriction.accepted.fget,
+                                                    PathRelativityRestriction.accepted.fget,
                                                     equals_path_relativity_variants(expected.accepted)))
 
 
@@ -111,8 +111,8 @@ class _EqualsValueRestrictionVisitor(ValueRestrictionVisitor):
     def visit_string(self, expected: StringRestriction):
         equals_string_restriction(expected).apply(self.put, self.actual, self.message_builder)
 
-    def visit_file_ref_relativity(self, expected: FileRefRelativityRestriction):
-        equals_file_ref_relativity_restriction(expected).apply(self.put, self.actual, self.message_builder)
+    def visit_path_relativity(self, expected: PathRelativityRestriction):
+        equals_path_relativity_restriction(expected).apply(self.put, self.actual, self.message_builder)
 
 
 def matches_restrictions_on_direct_and_indirect(

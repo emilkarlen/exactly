@@ -1,6 +1,6 @@
-from exactly_lib.definitions import instruction_arguments, file_ref as file_ref_texts
+from exactly_lib.definitions import instruction_arguments, path as path_texts
 from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
-from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
+from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
@@ -119,14 +119,14 @@ _FORMAT_MAP = {
     'empty': matcher_options.EMPTY_ARGUMENT,
     'equals': matcher_options.EQUALS_ARGUMENT,
     'matches': matcher_options.MATCHES_ARGUMENT,
-    'file_option': option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
+    'file_option': option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
     'full_match': FULL_MATCH_ARGUMENT,
     'not': matcher_options.NOT_ARGUMENT,
     'transform_option': option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
-    'rel_home_case_option': file_ref_texts.REL_HOME_CASE_OPTION,
-    'rel_cwd_option': file_ref_texts.REL_CWD_OPTION,
-    'rel_tmp_option': file_ref_texts.REL_TMP_OPTION,
-    'rel_symbol_option': file_ref_texts.REL_symbol_OPTION,
+    'rel_home_case_option': path_texts.REL_HOME_CASE_OPTION,
+    'rel_cwd_option': path_texts.REL_CWD_OPTION,
+    'rel_tmp_option': path_texts.REL_TMP_OPTION,
+    'rel_symbol_option': path_texts.REL_symbol_OPTION,
 }
 
 SB = ParseSourceBuilder(_FORMAT_MAP)

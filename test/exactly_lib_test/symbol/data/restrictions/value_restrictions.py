@@ -1,20 +1,20 @@
 import unittest
 from typing import Optional
 
-from exactly_lib.symbol.data import file_ref_resolvers
+from exactly_lib.symbol.data import path_resolvers
 from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr
 from exactly_lib.symbol.data.value_restriction import ValueRestriction, ErrorMessageWithFixTip
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.type_system.data.list_value import ListValue
+from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.list_resolvers import ListResolverTestImplForConstantListValue
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl
-from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
+from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
 from exactly_lib_test.type_system.logic.test_resources.values import FileMatcherTestImpl, FakeStringTransformer
 
 
@@ -22,7 +22,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestAnySymbolTypeRestriction),
         unittest.makeSuite(TestStringRestriction),
-        unittest.makeSuite(TestFileRefRelativityRestriction),
+        unittest.makeSuite(TestPathRelativityRestriction),
         unittest.makeSuite(TestValueRestrictionVisitor),
     ])
 
@@ -32,8 +32,8 @@ class TestAnySymbolTypeRestriction(unittest.TestCase):
         # ARRANGE #
         test_cases = [
             string_resolvers.str_constant('string'),
-            file_ref_constant_resolver(),
-            ListResolverTestImplForConstantListValue(ListValue([])),
+            path_constant_resolver(),
+            ListResolverTestImplForConstantListValue(ListDdv([])),
         ]
         restriction = vr.AnyDataTypeRestriction()
         symbols = empty_symbol_table()
@@ -83,7 +83,7 @@ class TestStringRestriction(unittest.TestCase):
     def test_fail__not_a_string(self):
         # ARRANGE #
         test_cases = [
-            file_ref_constant_resolver(),
+            path_constant_resolver(),
             FileMatcherResolverConstantTestImpl(FileMatcherTestImpl()),
         ]
         restriction = vr.StringRestriction()
@@ -98,14 +98,14 @@ class TestStringRestriction(unittest.TestCase):
                                      'Result should denote failing validation')
 
 
-class TestFileRefRelativityRestriction(unittest.TestCase):
+class TestPathRelativityRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            file_ref_resolvers.constant(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
-            file_ref_resolvers.constant(file_ref_test_impl(relativity=RelOptionType.REL_HOME_CASE)),
+            path_resolvers.constant(path_test_impl(relativity=RelOptionType.REL_ACT)),
+            path_resolvers.constant(path_test_impl(relativity=RelOptionType.REL_HOME_CASE)),
         ]
-        restriction = vr.FileRefRelativityRestriction(
+        restriction = vr.PathRelativityRestriction(
             PathRelativityVariants(
                 {RelOptionType.REL_ACT, RelOptionType.REL_HOME_CASE, RelOptionType.REL_RESULT},
                 False))
@@ -121,10 +121,10 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
     def test_fail__relative_paths(self):
         # ARRANGE #
         test_cases = [
-            file_ref_resolvers.constant(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
-            file_ref_resolvers.constant(file_ref_test_impl(relativity=RelOptionType.REL_HOME_CASE)),
+            path_resolvers.constant(path_test_impl(relativity=RelOptionType.REL_ACT)),
+            path_resolvers.constant(path_test_impl(relativity=RelOptionType.REL_HOME_CASE)),
         ]
-        restriction = vr.FileRefRelativityRestriction(
+        restriction = vr.PathRelativityRestriction(
             PathRelativityVariants(
                 {RelOptionType.REL_RESULT},
                 False))
@@ -168,16 +168,16 @@ class TestValueRestrictionVisitor(unittest.TestCase):
                          actual_return_value,
                          'return value')
 
-    def test_file_ref(self):
+    def test_path(self):
         # ARRANGE #
         expected_return_value = 69
         visitor = _VisitorThatRegisterClassOfVisitMethod(expected_return_value)
         # ACT #
         actual_return_value = visitor.visit(
-            vr.FileRefRelativityRestriction(
+            vr.PathRelativityRestriction(
                 PathRelativityVariants(set(), False)))
         # ASSERT #
-        self.assertEqual([vr.FileRefRelativityRestriction],
+        self.assertEqual([vr.PathRelativityRestriction],
                          visitor.visited_classes,
                          'visited classes')
         self.assertEqual(expected_return_value,
@@ -205,15 +205,15 @@ class _VisitorThatRegisterClassOfVisitMethod(vr.ValueRestrictionVisitor):
         self.visited_classes.append(vr.StringRestriction)
         return self.return_value
 
-    def visit_file_ref_relativity(self,
-                                  x: vr.FileRefRelativityRestriction):
-        self.visited_classes.append(vr.FileRefRelativityRestriction)
+    def visit_path_relativity(self,
+                              x: vr.PathRelativityRestriction):
+        self.visited_classes.append(vr.PathRelativityRestriction)
         return self.return_value
 
 
-def file_ref_constant_resolver() -> FileRefResolver:
-    return file_ref_resolvers.constant(file_ref_test_impl('file-name-rel-home',
-                                                          relativity=RelOptionType.REL_HOME_CASE))
+def path_constant_resolver() -> PathResolver:
+    return path_resolvers.constant(path_test_impl('file-name-rel-home',
+                                                  relativity=RelOptionType.REL_HOME_CASE))
 
 
 class UnknownValueRestriction(ValueRestriction):

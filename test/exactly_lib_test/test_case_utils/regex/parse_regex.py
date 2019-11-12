@@ -5,14 +5,14 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data import string_resolvers, file_ref_resolvers
+from exactly_lib.symbol.data import string_resolvers, path_resolvers
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex import parse_regex as sut
-from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
@@ -498,15 +498,15 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
     def test_symbol_references_with_dir_dependencies(self):
         # ARRANGE #
 
-        file_ref_symbol_name = 'FILE_REF_SYMBOL'
+        path_symbol_name = 'PATH_SYMBOL'
 
         regex_source_string = (symbol_reference_syntax_for_name(self.STAR_STRING_SYMBOL.name) +
-                               symbol_reference_syntax_for_name(file_ref_symbol_name))
+                               symbol_reference_syntax_for_name(path_symbol_name))
 
         expectation = Expectation(
             references=asrt.matches_sequence([
                 is_reference_to_valid_regex_string_part(self.STAR_STRING_SYMBOL.name),
-                is_reference_to_valid_regex_string_part(file_ref_symbol_name),
+                is_reference_to_valid_regex_string_part(path_symbol_name),
             ]),
             validation=validation.post_sds_validation_fails__w_any_msg(),
             token_stream=assert_token_stream(is_null=asrt.is_true),
@@ -519,12 +519,12 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
         ]
 
         for rel_opt in rel_opt_cases:
-            file_ref_resolver = file_ref_resolvers.of_rel_option(rel_opt)
+            path_resolver = path_resolvers.of_rel_option(rel_opt)
 
             arrangement = Arrangement(
                 symbols=SymbolTable({
                     self.STAR_STRING_SYMBOL.name: self.STAR_STRING_SYMBOL.value,
-                    file_ref_symbol_name: container(file_ref_resolver),
+                    path_symbol_name: container(path_resolver),
                 })
             )
 

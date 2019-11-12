@@ -4,8 +4,8 @@ from pathlib import Path
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
-from exactly_lib.type_system.data.path_describer import PathDescriberForValue, \
+from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_describer import PathDescriberForDdv, \
     PathDescriberForPrimitive
 
 
@@ -29,7 +29,7 @@ class PathDescriberHandlerForPrimitive(ABC):
 class PathDescriberHandlerForValue(ABC):
     @property
     @abstractmethod
-    def describer(self) -> PathDescriberForValue:
+    def describer(self) -> PathDescriberForDdv:
         pass
 
     @abstractmethod

@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherResolverBase
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel, FilesMatcher, \
-    FilesMatcherConstructor, FilesMatcherValue
+    FilesMatcherConstructor, FilesMatcherDdv
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util import logic_types, strings
 from exactly_lib.util.description_tree import details
@@ -32,11 +32,11 @@ class _EmptinessMatcherResolver(FilesMatcherResolverBase):
     def references(self) -> Sequence[SymbolReference]:
         return ()
 
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
-        return _EmptinessMatcherValue()
+    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
+        return _EmptinessMatcherDdv()
 
 
-class _EmptinessMatcherValue(FilesMatcherValue):
+class _EmptinessMatcherDdv(FilesMatcherDdv):
     def value_of_any_dependency(self, tcds: HomeAndSds) -> FilesMatcherConstructor:
         return files_matchers.ConstantConstructor(
             _EmptinessMatcher(ExpectationType.POSITIVE)

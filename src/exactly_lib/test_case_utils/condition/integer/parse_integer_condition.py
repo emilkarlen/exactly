@@ -10,8 +10,8 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import string_m
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.integer import integer_resolver
+from exactly_lib.test_case_utils.condition.integer.integer_ddv import CustomIntegerValidator
 from exactly_lib.test_case_utils.condition.integer.integer_resolver import IntegerResolver
-from exactly_lib.test_case_utils.condition.integer.integer_value import CustomIntegerValidator, IntegerValue
 from exactly_lib.test_case_utils.condition.parse import parse_comparison_operator
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.value_type import ValueType
@@ -24,14 +24,6 @@ class IntegerComparisonOperatorAndRightOperandResolver:
                  operator: comparators.ComparisonOperator,
                  rhs_resolver: IntegerResolver):
         self.right_operand = rhs_resolver
-        self.operator = operator
-
-
-class IntegerComparisonOperatorAndRightOperandValue:
-    def __init__(self,
-                 operator: comparators.ComparisonOperator,
-                 rhs_value: IntegerValue):
-        self.right_operand = rhs_value
         self.operator = operator
 
 

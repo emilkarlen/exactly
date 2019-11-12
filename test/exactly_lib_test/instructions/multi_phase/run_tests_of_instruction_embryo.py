@@ -1,14 +1,14 @@
 import sys
 import unittest
 
-from exactly_lib.definitions.file_ref import REL_HOME_CASE_OPTION
+from exactly_lib.definitions.path import REL_HOME_CASE_OPTION
 from exactly_lib.instructions.multi_phase import run as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.parse import parse_file_ref
+from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.symbol_table import symbol_table_with_entries
@@ -140,7 +140,7 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
                 matches_reference_2(
                     python_interpreter_symbol.name,
                     equals_data_type_reference_restrictions(
-                        parse_file_ref.path_or_string_reference_restrictions(
+                        parse_path.path_or_string_reference_restrictions(
                             syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
@@ -266,7 +266,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
 
         arrangement = ArrangementWithSds(
             home_or_sds_contents=HomeOrSdsPopulatorForRelOptionType(
-                parse_file_ref.ALL_REL_OPTIONS_CONFIG.options.default_option,
+                parse_path.ALL_REL_OPTIONS_CONFIG.options.default_option,
                 fs.DirContents([file_to_interpret])),
             symbols=SymbolTable({
                 python_interpreter_symbol.name: su.string_constant_container(python_interpreter_symbol.value),
@@ -282,14 +282,14 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                 matches_reference_2(
                     python_interpreter_symbol.name,
                     equals_data_type_reference_restrictions(
-                        parse_file_ref.path_or_string_reference_restrictions(
+                        parse_path.path_or_string_reference_restrictions(
                             syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
                     file_to_interpret_symbol.name,
                     equals_data_type_reference_restrictions(
-                        parse_file_ref.path_or_string_reference_restrictions(
-                            parse_file_ref.ALL_REL_OPTIONS_CONFIG.options.accepted_relativity_variants
+                        parse_path.path_or_string_reference_restrictions(
+                            parse_path.ALL_REL_OPTIONS_CONFIG.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
                     exit_code_symbol.name,
@@ -313,7 +313,7 @@ class TestProgramViaSymbolReference(TestCaseBase):
 
     program_that_executes_py_pgm_symbol = NameAndValue(
         'PROGRAM_THAT_EXECUTES_PY_FILE',
-        program_resolvers.interpret_py_source_file_that_must_exist(py_file_conf.file_ref_resolver)
+        program_resolvers.interpret_py_source_file_that_must_exist(py_file_conf.path_resolver)
     )
 
     symbols_dict = SymbolTable({
@@ -436,7 +436,7 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
                 matches_reference_2(
                     python_interpreter_symbol.name,
                     equals_data_type_reference_restrictions(
-                        parse_file_ref.path_or_string_reference_restrictions(
+                        parse_path.path_or_string_reference_restrictions(
                             syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(

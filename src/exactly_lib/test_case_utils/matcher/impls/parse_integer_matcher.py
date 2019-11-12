@@ -4,7 +4,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.resolver import MatcherResolver
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition
-from exactly_lib.test_case_utils.condition.integer.integer_value import CustomIntegerValidator
+from exactly_lib.test_case_utils.condition.integer.integer_ddv import CustomIntegerValidator
 from exactly_lib.test_case_utils.matcher.impls.comparison_matcher import ComparisonMatcherResolver
 from exactly_lib.test_case_utils.matcher.impls.operand_object import ObjectResolverOfOperandResolver
 from exactly_lib.util.description_tree import details

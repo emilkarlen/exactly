@@ -50,7 +50,7 @@ def suite_for(configuration: Configuration) -> unittest.TestSuite:
         TestParse_fail_when_there_is_no_arguments,
         TestParse_fail_when_just_eq_argument,
         TestParse_fail_when_there_is_more_than_one_argument,
-        TestSuccessfulExecution_path_SHOULD_be_relative_file_reference_relativity_root_dir,
+        TestSuccessfulExecution_path_SHOULD_be_relative_path_relativity_root_dir,
         TestFailingExecution_hard_error_WHEN_path_does_not_exist,
         TestFailingExecution_hard_error_WHEN_path_exists_but_is_a_file,
         TestSuccessfulExecution_change_to_direct_sub_dir,
@@ -82,12 +82,12 @@ class TestCaseForConfigurationBase(TestCaseBaseWithShortDescriptionOfTestClassAn
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             Executor(self, arrangement, expectation).execute(self.conf.parser(), source)
 
-    def conf_prop_equals(self, file_ref_rel_root_path_2_expected: Callable[[Path], Path]
+    def conf_prop_equals(self, path_rel_root_path_2_expected: Callable[[Path], Path]
                          ) -> Callable[[Path], ValueAssertion[ConfigurationBuilder]]:
-        def ret_val(file_ref_rel_root_path: Path) -> ValueAssertion[ConfigurationBuilder]:
+        def ret_val(path_rel_root_path: Path) -> ValueAssertion[ConfigurationBuilder]:
             return asrt.sub_component('path prop value',
                                       self.conf.get_property_dir_path,
-                                      asrt.equals(file_ref_rel_root_path_2_expected(file_ref_rel_root_path)))
+                                      asrt.equals(path_rel_root_path_2_expected(path_rel_root_path)))
 
         return ret_val
 
@@ -114,7 +114,7 @@ class TestParse_fail_when_there_is_more_than_one_argument(TestCaseForConfigurati
                 self.conf.parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
-class TestSuccessfulExecution_path_SHOULD_be_relative_file_reference_relativity_root_dir(TestCaseForConfigurationBase):
+class TestSuccessfulExecution_path_SHOULD_be_relative_path_relativity_root_dir(TestCaseForConfigurationBase):
     def runTest(self):
         path_argument_str = 'path-argument'
 
@@ -127,9 +127,9 @@ class TestSuccessfulExecution_path_SHOULD_be_relative_file_reference_relativity_
                 main_result=
                 sh_assertions.is_success(),
 
-                file_ref_rel_root_2_conf=
+                path_rel_root_2_conf=
                 self.conf_prop_equals(
-                    lambda file_ref_rel_root: file_ref_rel_root / path_argument_str)
+                    lambda path_rel_root: path_rel_root / path_argument_str)
             )
         )
 
@@ -162,9 +162,9 @@ class TestSuccessfulExecution_change_to_direct_sub_dir(TestCaseForConfigurationB
             Arrangement(
                 root_dir_contents=DirContents([empty_dir(directory_name)])),
             Expectation(
-                file_ref_rel_root_2_conf=
+                path_rel_root_2_conf=
                 self.conf_prop_equals(
-                    lambda file_ref_rel_root_dir: file_ref_rel_root_dir / directory_name)
+                    lambda path_rel_root_dir: path_rel_root_dir / directory_name)
             )
         )
 
@@ -180,9 +180,9 @@ class TestSuccessfulExecution_change_to_2_level_sub_dir(TestCaseForConfiguration
                 DirContents([Dir(first_dir,
                                  [empty_dir(second_dir)])])),
             Expectation(
-                file_ref_rel_root_2_conf=
+                path_rel_root_2_conf=
                 self.conf_prop_equals(
-                    lambda file_ref_rel_root_dir: file_ref_rel_root_dir / first_dir / second_dir)
+                    lambda path_rel_root_dir: path_rel_root_dir / first_dir / second_dir)
             )
         )
 
@@ -193,8 +193,8 @@ class TestSuccessfulExecution_change_to_parent_dir(TestCaseForConfigurationBase)
             syntax_for_assignment_of('..'),
             Arrangement(),
             Expectation(
-                file_ref_rel_root_2_conf=
+                path_rel_root_2_conf=
                 self.conf_prop_equals(
-                    lambda file_ref_rel_root_dir: file_ref_rel_root_dir.parent)
+                    lambda path_rel_root_dir: path_rel_root_dir.parent)
             )
         )

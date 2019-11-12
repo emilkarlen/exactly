@@ -3,7 +3,7 @@ from typing import Sequence, Optional
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.data import string_resolver
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -13,9 +13,9 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator, \
     ValidationStep
-from exactly_lib.test_case_utils import file_ref_check, file_properties, file_creation
+from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file__dp
-from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.process_execution.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
     execute_and_read_stderr_if_non_zero_exitcode, result_for_non_success_or_non_zero_exit_code
@@ -115,14 +115,14 @@ class FileMakerForContentsFromExistingFile(FileMaker):
     def __init__(self,
                  source_info: InstructionSourceInfo,
                  transformer: StringTransformerResolver,
-                 src_path: FileRefResolver):
+                 src_path: PathResolver):
         self._source_info = source_info
         self._transformer = transformer
         self._src_path = src_path
 
-        self._src_file_validator = file_ref_check.FileRefCheckValidator(
-            file_ref_check.FileRefCheck(src_path,
-                                        file_properties.must_exist_as(file_properties.FileType.REGULAR,
+        self._src_file_validator = path_check.PathCheckValidator(
+            path_check.PathCheck(src_path,
+                                    file_properties.must_exist_as(file_properties.FileType.REGULAR,
                                                                       follow_symlinks=True)))
 
         self._validator = pre_or_post_validation.AndValidator([

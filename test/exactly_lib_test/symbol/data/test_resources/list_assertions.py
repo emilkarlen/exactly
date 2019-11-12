@@ -3,7 +3,7 @@ from typing import Iterable, List, Sequence
 from exactly_lib.symbol.data import list_resolver
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.type_system.data.list_value import ListValue
+from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
@@ -12,8 +12,8 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.symbol.test_resources import resolver_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.data.test_resources.list_value_assertions import equals_list_value
-from exactly_lib_test.type_system.data.test_resources.string_value_assertions import equals_string_value
+from exactly_lib_test.type_system.data.test_resources.list_ddv_assertions import equals_list_ddv
+from exactly_lib_test.type_system.data.test_resources.string_ddv_assertions import equals_string_ddv
 
 
 def equals_list_resolver_element(expected: list_resolver.Element,
@@ -22,7 +22,7 @@ def equals_list_resolver_element(expected: list_resolver.Element,
         symbols = symbol_table_with_values_matching_references(list(expected.references))
     expected_resolved_value_list = expected.resolve(symbols)
     assertion_on_resolved_value = asrt.matches_sequence(
-        [equals_string_value(sv) for sv in expected_resolved_value_list])
+        [equals_string_ddv(sv) for sv in expected_resolved_value_list])
     component_assertions = [
         asrt.sub_component('references',
                            lambda x: list(x.references),
@@ -62,7 +62,7 @@ def equals_list_resolver(expected: ListResolver,
         return x.elements
 
     return resolver_assertions.matches_resolver_of_list(equals_symbol_references(expected.references),
-                                                        equals_list_value(expected_resolved_value),
+                                                        equals_list_ddv(expected_resolved_value),
                                                         asrt.sub_component('element resolvers',
                                                                            get_element_resolvers,
                                                                            equals_list_resolver_elements(
@@ -71,11 +71,11 @@ def equals_list_resolver(expected: ListResolver,
                                                         symbols)
 
 
-def matches_list_resolver(expected_resolved_value: ListValue,
+def matches_list_resolver(expected_resolved_value: ListDdv,
                           expected_symbol_references: ValueAssertion,
                           symbols: SymbolTable = None) -> ValueAssertion:
     return resolver_assertions.matches_resolver_of_list(expected_symbol_references,
-                                                        equals_list_value(expected_resolved_value),
+                                                        equals_list_ddv(expected_resolved_value),
                                                         symbols=symbols)
 
 

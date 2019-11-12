@@ -9,8 +9,8 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, MatcherValue
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherValue
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, MatcherDdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -40,9 +40,9 @@ class StringMatcherDelegatedToMatcher(StringMatcher):
         return self._delegated.matches_w_trace(model)
 
 
-class StringMatcherValueDelegatedToMatcher(StringMatcherValue):
+class StringMatcherDdvDelegatedToMatcher(StringMatcherDdv):
     def __init__(self,
-                 delegated: MatcherValue[FileToCheck],
+                 delegated: MatcherDdv[FileToCheck],
                  ):
         super().__init__()
         self._delegated = delegated
@@ -67,8 +67,8 @@ class StringMatcherResolverDelegatedToMatcher(StringMatcherResolver):
     def validator(self) -> PreOrPostSdsValidator:
         return pre_or_post_validation.PreOrPostSdsValidatorFromValueValidator(self._value_validator)
 
-    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
-        return StringMatcherValueDelegatedToMatcher(self._delegated.resolve(symbols))
+    def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
+        return StringMatcherDdvDelegatedToMatcher(self._delegated.resolve(symbols))
 
     def _value_validator(self, symbols: SymbolTable) -> PreOrPostSdsValueValidator:
         return self._delegated.resolve(symbols).validator

@@ -9,12 +9,12 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.element_parsers.token_stream_parser import \
     token_parser_with_additional_error_message_format_map
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.validation.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
-from exactly_lib.test_case_utils.parse import parse_file_ref
+from exactly_lib.test_case_utils.parse import parse_path
 
 
 class Parser(InstructionParserWithoutSourceFileLocationInfo):
@@ -36,8 +36,8 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
             if must_be_on_current_line:
                 token_parser.require_is_not_at_eol('Missing {PATH} argument')
 
-            path_to_check = parse_file_ref.parse_file_ref_from_token_parser(config.ACTUAL_RELATIVITY_CONFIGURATION,
-                                                                            token_parser)
+            path_to_check = parse_path.parse_path_from_token_parser(config.ACTUAL_RELATIVITY_CONFIGURATION,
+                                                                    token_parser)
 
             actual_path_checker_assertion_part = self._actual_path_checker_assertion_part(path_to_check)
 
@@ -57,7 +57,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
                                                                         lambda x: FilesSource(path_to_check))
 
     @staticmethod
-    def _actual_path_checker_assertion_part(path_to_check: FileRefResolver
+    def _actual_path_checker_assertion_part(path_to_check: PathResolver
                                             ) -> AssertionPart[FilesSource, FilesSource]:
         return assertion_part.compose(
             IdentityAssertionPartWithValidationAndReferences(

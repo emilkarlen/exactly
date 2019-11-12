@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.data.string_or_file import StringOrFileRefResolver
+from exactly_lib.symbol.data.string_or_path import StringOrPathResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -11,7 +11,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 class StdinDataResolver(ObjectWithTypedSymbolReferences):
     def __init__(self,
-                 fragments: Sequence[StringOrFileRefResolver],
+                 fragments: Sequence[StringOrPathResolver],
                  validators: Sequence[PreOrPostSdsValidator] = ()):
         self._validators = validators
         self._fragments = fragments

@@ -7,7 +7,7 @@ from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcher, LineMatcherLine
+from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
@@ -141,19 +141,19 @@ class _Checker:
 
         return resolver
 
-    def _resolve_value(self, matcher_resolver: LineMatcherResolver) -> LineMatcherValue:
-        matcher_value = matcher_resolver.resolve(self.arrangement.symbols)
+    def _resolve_value(self, matcher_resolver: LineMatcherResolver) -> LineMatcherDdv:
+        matcher_ddv = matcher_resolver.resolve(self.arrangement.symbols)
 
-        asrt.is_instance(LineMatcherValue).apply_with_message(self.put,
-                                                              matcher_value,
-                                                              'resolved value')
+        asrt.is_instance(LineMatcherDdv).apply_with_message(self.put,
+                                                            matcher_ddv,
+                                                            'resolved ddv')
 
-        assert isinstance(matcher_value, LineMatcherValue)
+        assert isinstance(matcher_ddv, LineMatcherDdv)
 
-        return matcher_value
+        return matcher_ddv
 
-    def _resolve_primitive_value(self, matcher_value: LineMatcherValue) -> LineMatcher:
-        ret_val = matcher_value.value_of_any_dependency(self.tcds)
+    def _resolve_primitive_value(self, matcher_ddv: LineMatcherDdv) -> LineMatcher:
+        ret_val = matcher_ddv.value_of_any_dependency(self.tcds)
 
         asrt.is_instance(LineMatcher).apply_with_message(self.put,
                                                          ret_val,
@@ -163,8 +163,8 @@ class _Checker:
 
         return ret_val
 
-    def _check_validation_pre_sds(self, matcher_value: LineMatcherValue):
-        validator = matcher_value.validator
+    def _check_validation_pre_sds(self, matcher_ddv: LineMatcherDdv):
+        validator = matcher_ddv.validator
         result = validator.validate_pre_sds_if_applicable(self.tcds.hds)
 
         self.expectation.validation.pre_sds.apply_with_message(self.put,
@@ -174,8 +174,8 @@ class _Checker:
         if result is not None:
             raise _CheckIsDoneException()
 
-    def _check_validation_post_sds(self, matcher_value: LineMatcherValue):
-        validator = matcher_value.validator
+    def _check_validation_post_sds(self, matcher_ddv: LineMatcherDdv):
+        validator = matcher_ddv.validator
         result = validator.validate_post_sds_if_applicable(self.tcds)
 
         self.expectation.validation.post_sds.apply_with_message(self.put,

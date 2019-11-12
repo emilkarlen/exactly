@@ -7,7 +7,7 @@ from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_validation import ValidatorOfReferredResolverBase, \
     PreOrPostSdsValidator
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherValue
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherDdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -30,7 +30,7 @@ class _ReferenceResolver(FilesMatcherResolver):
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
 
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
         resolver = lookups.lookup_files_matcher(symbols, self._name_of_referenced_resolver)
         return resolver.resolve(symbols)
 

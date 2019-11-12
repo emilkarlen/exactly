@@ -6,12 +6,12 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.regex.regex_value import RegexValue
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherValue, T
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherDdv, T
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.description_tree import renderers
@@ -107,10 +107,10 @@ class MatchesRegex(MatcherWTraceAndNegation[str]):
         return TraceBuilder(self.NAME).append_details(self._expected_detail_renderer)
 
 
-class MatchesRegexValue(MatcherValue[str]):
+class MatchesRegexDdv(MatcherDdv[str]):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 regex: RegexValue,
+                 regex: RegexDdv,
                  is_full_match: bool,
                  ):
         self._expectation_type = expectation_type

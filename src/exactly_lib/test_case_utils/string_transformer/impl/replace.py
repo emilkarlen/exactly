@@ -11,11 +11,11 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.regex import parse_regex
-from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver, RegexDdv
 from exactly_lib.test_case_utils.string_transformer import names
-from exactly_lib.type_system.data.string_value import StringValue
+from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel
-from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
+from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -50,19 +50,19 @@ class _Resolver(StringTransformerResolver):
         ])
         pass
 
-    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
-        return _Value(self._regex.resolve(symbols),
-                      self._replacement.resolve(symbols))
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
+        return _Ddv(self._regex.resolve(symbols),
+                    self._replacement.resolve(symbols))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
 
-class _Value(StringTransformerValue):
+class _Ddv(StringTransformerDdv):
     def __init__(self,
-                 regex: RegexValue,
-                 replacement: StringValue):
+                 regex: RegexDdv,
+                 replacement: StringDdv):
         self._regex = regex
         self._replacement = replacement
 

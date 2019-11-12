@@ -1,12 +1,12 @@
 import unittest
 
-from exactly_lib.symbol.data import file_ref_resolvers
+from exactly_lib.symbol.data import path_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as sut
 from exactly_lib_test.symbol.test_resources.symbol_utils import single_line_sequence
-from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
+from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 
 
@@ -21,7 +21,7 @@ class TestEqualsValueContainer(unittest.TestCase):
     def test_pass(self):
         value_cases = [
             string_resolvers.str_constant('s'),
-            file_ref_resolvers.constant(file_ref_test_impl('file-name')),
+            path_resolvers.constant(path_test_impl('file-name')),
         ]
         for value in value_cases:
             for ignore_source_line in [False, True]:
@@ -42,7 +42,7 @@ class TestEqualsValueContainer(unittest.TestCase):
 
     def test_fail__different_source_line_and_source_line_check_is_not_ignored(self):
         # ARRANGE #
-        common_value = file_ref_resolvers.constant(file_ref_test_impl('common file-name'))
+        common_value = path_resolvers.constant(path_test_impl('common file-name'))
         expected = SymbolContainer(common_value, single_line_sequence(1, 'source code 1'))
         actual = SymbolContainer(common_value, single_line_sequence(2, 'source code 2'))
         assertion = sut.equals_container(expected, ignore_source_line=False)
@@ -53,7 +53,7 @@ class TestEqualsValueDefinition(unittest.TestCase):
     def test_pass(self):
         value_cases = [
             string_resolvers.str_constant('s'),
-            file_ref_resolvers.constant(file_ref_test_impl('file-name')),
+            path_resolvers.constant(path_test_impl('file-name')),
         ]
         for value in value_cases:
             for ignore_source_line in [False, True]:

@@ -34,8 +34,8 @@ class TestResolvedValueMatchesLineMatcher(unittest.TestCase):
         resolver = LineMatcherConstantResolver(LineMatcherConstant(False))
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.resolved_value_matches_line_matcher(asrt.anything_goes(),
-                                                                             symbols=case.value)
+                assertion_to_check = sut.resolved_ddv_matches_line_matcher(asrt.anything_goes(),
+                                                                           symbols=case.value)
                 # ACT & ASSERT #
                 assertion_to_check.apply_without_message(self, resolver)
 
@@ -54,7 +54,7 @@ class TestResolvedValueMatchesLineMatcher(unittest.TestCase):
         resolver_of_actual = FileMatcherConstantResolver(FileMatcherTestImpl())
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_equals_expected = sut.resolved_value_matches_line_matcher(
+                assertion_equals_expected = sut.resolved_ddv_matches_line_matcher(
                     asrt.fail('unconditional failure of value assertion'),
                     symbols=case.value)
                 # ACT & ASSERT #
@@ -67,11 +67,11 @@ class TestResolvedValueMatchesLineMatcher(unittest.TestCase):
         actual_resolver = LineMatcherResolverConstantTestImpl(
             LineMatcherConstant(False),
             references=actual_references)
-        assertion_to_check = sut.resolved_value_matches_line_matcher(asrt.anything_goes(),
-                                                                     references=asrt.matches_sequence([
+        assertion_to_check = sut.resolved_ddv_matches_line_matcher(asrt.anything_goes(),
+                                                                   references=asrt.matches_sequence([
                                                                          asrt.is_(actual_reference)
                                                                      ]),
-                                                                     )
+                                                                   )
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, actual_resolver)
 
@@ -94,9 +94,9 @@ class TestResolvedValueMatchesLineMatcher(unittest.TestCase):
 
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.resolved_value_matches_line_matcher(asrt.anything_goes(),
-                                                                             references=case.value,
-                                                                             )
+                assertion_to_check = sut.resolved_ddv_matches_line_matcher(asrt.anything_goes(),
+                                                                           references=case.value,
+                                                                           )
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check, actual_resolver)
 

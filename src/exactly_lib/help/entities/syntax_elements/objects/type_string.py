@@ -1,8 +1,8 @@
 from typing import List
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.definitions import file_ref
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions import path
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
 from exactly_lib.definitions.test_case.instructions import define_symbol
@@ -31,7 +31,7 @@ class _Documentation(SyntaxElementDocumentation):
             'hard_quotes': formatting.concept(token.HARD_QUOTE_NAME.plural),
             'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
 
-            'REL_CD_OPTION': file_ref.REL_CWD_OPTION,
+            'REL_CD_OPTION': path.REL_CWD_OPTION,
         })
 
     def invokation_variants(self) -> List[InvokationVariant]:

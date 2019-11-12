@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.data.string_or_file_ref_values import StringOrFileRefValue, StringOrPath
+from exactly_lib.type_system.data.string_or_path_ddvs import StringOrPathDdv, StringOrPath
 
 
 class StdinData(tuple):
@@ -26,11 +26,11 @@ class StdinData(tuple):
 
 
 class StdinDataValue(DirDependentValue[StdinData]):
-    def __init__(self, fragments: Sequence[StringOrFileRefValue]):
+    def __init__(self, fragments: Sequence[StringOrPathDdv]):
         self._fragments = fragments
 
     @property
-    def fragments(self) -> Sequence[StringOrFileRefValue]:
+    def fragments(self) -> Sequence[StringOrPathDdv]:
         return self._fragments
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> StdinData:

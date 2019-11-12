@@ -10,7 +10,7 @@ from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, 
     PropertyGetterResolver
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, Failure, MatcherValue
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, Failure, MatcherDdv
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -93,9 +93,9 @@ class PropertyMatcher(Generic[MODEL, T], MatcherWTrace[MODEL]):
         )
 
 
-class PropertyMatcherValue(Generic[MODEL, T], MatcherValue[MODEL]):
+class PropertyMatcherDdv(Generic[MODEL, T], MatcherDdv[MODEL]):
     def __init__(self,
-                 matcher: MatcherValue[T],
+                 matcher: MatcherDdv[T],
                  property_getter: PropertyGetterValue[MODEL, T],
                  ):
         self._matcher = matcher
@@ -138,8 +138,8 @@ class PropertyMatcherResolver(Generic[MODEL, T], MatcherResolver[MODEL]):
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    def resolve(self, symbols: SymbolTable) -> PropertyMatcherValue[MODEL, T]:
-        return PropertyMatcherValue(
+    def resolve(self, symbols: SymbolTable) -> PropertyMatcherDdv[MODEL, T]:
+        return PropertyMatcherDdv(
             self._matcher.resolve(symbols),
             self._property_getter.resolve(symbols),
         )

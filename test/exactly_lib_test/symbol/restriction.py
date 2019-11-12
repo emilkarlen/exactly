@@ -1,15 +1,15 @@
 import unittest
 
 from exactly_lib.symbol import restriction as sut
-from exactly_lib.symbol.data import string_resolvers, file_ref_resolvers
+from exactly_lib.symbol.data import string_resolvers, path_resolvers
 from exactly_lib.symbol.logic.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
-from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
-from exactly_lib.type_system.data.list_value import ListValue
+from exactly_lib.type_system.data import paths
+from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
+from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.type_system.logic.program.command_values import CommandDriverValueForShell
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
@@ -81,7 +81,7 @@ class TestElementTypeRestriction(unittest.TestCase):
 
 
 class TestValueTypeRestriction(unittest.TestCase):
-    arbitrary_list_resolver = ListResolverTestImplForConstantListValue(ListValue([]))
+    arbitrary_list_resolver = ListResolverTestImplForConstantListValue(ListDdv([]))
 
     value_type_2_resolver_of_type = {
 
@@ -92,7 +92,7 @@ class TestValueTypeRestriction(unittest.TestCase):
             arbitrary_list_resolver,
 
         ValueType.PATH:
-            file_ref_resolvers.constant(file_refs.rel_sandbox(RelSdsOptionType.REL_ACT, file_refs.empty_path_part())),
+            path_resolvers.constant(paths.rel_sandbox(RelSdsOptionType.REL_ACT, paths.empty_path_part())),
 
         ValueType.LINE_MATCHER:
             LineMatcherResolverConstantTestImpl(LineMatcherNotImplementedTestImpl()),
@@ -114,8 +114,8 @@ class TestValueTypeRestriction(unittest.TestCase):
                 CommandResolver(
                     CommandDriverResolverForConstantTestImpl(
                         CommandValue(
-                            CommandDriverValueForShell(string_value_of_single_string('the shell command line')),
-                            ListValue.empty())),
+                            CommandDriverValueForShell(string_ddv_of_single_string('the shell command line')),
+                            ListDdv.empty())),
                     ArgumentsResolver(arbitrary_list_resolver),
                 ),
                 accumulator.empty()

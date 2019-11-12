@@ -4,7 +4,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
     PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver, T, OperandValue
+from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver, T, OperandDdv
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
@@ -41,11 +41,11 @@ class _OperandResolverThat(OperandResolver[T]):
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         self._validate_pre_sds(environment)
 
-    def resolve(self, symbols: SymbolTable) -> OperandValue[T]:
-        return _OperandValue(self._resolve, symbols)
+    def resolve(self, symbols: SymbolTable) -> OperandDdv[T]:
+        return _OperandDdv(self._resolve, symbols)
 
 
-class _OperandValue(Generic[T], OperandValue[T]):
+class _OperandDdv(Generic[T], OperandDdv[T]):
     def __init__(self,
                  resolve: Callable[[PathResolvingEnvironmentPreOrPostSds], T],
                  symbols: SymbolTable,

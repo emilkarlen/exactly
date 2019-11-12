@@ -11,8 +11,8 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAnd
 from exactly_lib.definitions.current_directory_and_path_type import path_type_path_rendering
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
-from exactly_lib.definitions.file_ref import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER, REL_source_file_dir_OPTION
 from exactly_lib.definitions.instruction_arguments import REL_SYMBOL_OPTION
+from exactly_lib.definitions.path import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER, REL_source_file_dir_OPTION
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE

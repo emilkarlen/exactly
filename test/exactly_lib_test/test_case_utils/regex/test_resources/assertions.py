@@ -6,7 +6,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver, RegexDdv
 from exactly_lib.util import symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dep_value_assertions import \
     matches_multi_dir_dependent_value
@@ -41,8 +41,8 @@ def matches_regex_resolver(
         tcds,
     )
 
-    def validation_is_successful(value: RegexValue) -> bool:
-        validator = value.validator()
+    def validation_is_successful(ddv: RegexDdv) -> bool:
+        validator = ddv.validator()
         return (validator.validate_pre_sds_if_applicable(tcds.hds) is None and
                 validator.validate_post_sds_if_applicable(tcds) is None)
 

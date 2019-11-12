@@ -8,10 +8,10 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.err_msg.property_description import property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.pfh_exception import PfhFailException
-from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.err_msg import prop_descr
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
-from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
+from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
@@ -37,8 +37,8 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
 
         with tmp_dir(DirContents([existing_regular_file])) as path_of_existing_directory:
             path_of_existing_regular_file = path_of_existing_directory / existing_regular_file.name
-            path_value = file_refs.absolute_path(path_of_existing_regular_file)
-            path = path_value.value_of_any_dependency__d(fake_tcds())
+            path_ddv = paths.absolute_path(path_of_existing_regular_file)
+            path = path_ddv.value_of_any_dependency__d(fake_tcds())
             model = sut.ComparisonActualFile(path,
                                              FilePropertyDescriptorConstructorTestImpl(),
                                              True)
@@ -98,7 +98,7 @@ class StringTransformerResolverWithReferences(StringTransformerResolver):
     def __init__(self, references: Sequence[SymbolReference]):
         self._references = references
 
-    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
         raise NotImplementedError('should not be used in these tests')
 
     @property

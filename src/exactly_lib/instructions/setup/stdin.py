@@ -14,7 +14,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
@@ -23,9 +23,9 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSetti
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.file_ref_check import FileRefCheck
-from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
-from exactly_lib.type_system.data.string_or_file_ref_values import SourceType
+from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
+from exactly_lib.test_case_utils.path_check import PathCheck
+from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -36,7 +36,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name))
 
 
-RELATIVITY_OPTIONS_CONFIGURATION = parse_here_doc_or_file_ref.CONFIGURATION
+RELATIVITY_OPTIONS_CONFIGURATION = parse_here_doc_or_path.CONFIGURATION
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
@@ -83,16 +83,16 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
                 [instruction_arguments.ASSIGNMENT_OPERATOR],
                 lambda x: x
             )
-            string_or_file_ref = parse_here_doc_or_file_ref.parse_from_token_parser(token_parser,
-                                                                                    RELATIVITY_OPTIONS_CONFIGURATION)
-            if string_or_file_ref.source_type is not SourceType.HERE_DOC:
+            string_or_path = parse_here_doc_or_path.parse_from_token_parser(token_parser,
+                                                                            RELATIVITY_OPTIONS_CONFIGURATION)
+            if string_or_path.source_type is not SourceType.HERE_DOC:
                 token_parser.report_superfluous_arguments_if_not_at_eol()
                 token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
 
-            if string_or_file_ref.is_file_ref:
-                return _InstructionForFileRef(string_or_file_ref.file_reference_resolver)
+            if string_or_path.is_path:
+                return _InstructionForFileRef(string_or_path.path_resolver)
             else:
-                return _InstructionForStringResolver(string_or_file_ref.string_resolver)
+                return _InstructionForStringResolver(string_or_path.string_resolver)
 
 
 class _InstructionForStringResolver(SetupPhaseInstruction):
@@ -112,9 +112,9 @@ class _InstructionForStringResolver(SetupPhaseInstruction):
 
 
 class _InstructionForFileRef(InstructionWithFileRefsBase):
-    def __init__(self, redirect_file: FileRefResolver):
-        super().__init__((FileRefCheck(redirect_file,
-                                       file_properties.must_exist_as(FileType.REGULAR)),))
+    def __init__(self, redirect_file: PathResolver):
+        super().__init__((PathCheck(redirect_file,
+                                    file_properties.must_exist_as(FileType.REGULAR)),))
         self.redirect_file = redirect_file
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
@@ -125,8 +125,8 @@ class _InstructionForFileRef(InstructionWithFileRefsBase):
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         env = environment.path_resolving_environment_pre_or_post_sds
-        file_ref = self.redirect_file.resolve(environment.symbols)
-        settings_builder.stdin.file_name = file_ref.value_of_any_dependency(env.home_and_sds)
+        path = self.redirect_file.resolve(environment.symbols)
+        settings_builder.stdin.file_name = path.value_of_any_dependency(env.home_and_sds)
         return sh.new_sh_success()
 
 

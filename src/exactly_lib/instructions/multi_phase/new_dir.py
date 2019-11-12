@@ -16,7 +16,7 @@ from exactly_lib.instructions.multi_phase.utils import instruction_part_utils
 from exactly_lib.instructions.multi_phase.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
@@ -61,7 +61,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
 
 class TheInstructionEmbryo(embryo.InstructionEmbryo):
-    def __init__(self, dir_path_resolver: FileRefResolver):
+    def __init__(self, dir_path_resolver: PathResolver):
         self.dir_path_resolver = dir_path_resolver
 
     @property
@@ -108,9 +108,9 @@ class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> TheInstructionEmbryo:
         tokens = TokenParserExtra(TokenStream(rest_of_line))
 
-        target_file_ref = tokens.consume_file_ref(RELATIVITY_VARIANTS)
+        target_path = tokens.consume_path(RELATIVITY_VARIANTS)
         tokens.report_superfluous_arguments_if_not_at_eol()
-        return TheInstructionEmbryo(target_file_ref)
+        return TheInstructionEmbryo(target_path)
 
 
 PARTS_PARSER = instruction_part_utils.PartsParserFromEmbryoParser(

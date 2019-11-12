@@ -108,7 +108,7 @@ class TestSuccessfulScenariosWithoutExplicitDestination(TestCaseBaseForParser):
     def test_install_file(self):
         for relativity_option in source_relativity_options('SOURCE_SYMBOL_NAME'):
             with self.subTest(msg=relativity_option.test_case_description):
-                file_arg = ab.file_ref('existing-file', relativity_option.option_argument)
+                file_arg = ab.path('existing-file', relativity_option.option_argument)
                 file_to_install = DirContents([(File(file_arg.name,
                                                      'contents'))])
                 self._run(file_arg,

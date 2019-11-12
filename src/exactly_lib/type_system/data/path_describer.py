@@ -5,7 +5,7 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.util.render.renderer import Renderer
 
 
-class PathDescriberForValue:
+class PathDescriberForDdv:
     @property
     @abstractmethod
     def value(self) -> Renderer[str]:
@@ -20,7 +20,7 @@ class PathDescriberForValue:
         pass
 
 
-class PathDescriberForPrimitive(PathDescriberForValue):
+class PathDescriberForPrimitive(PathDescriberForDdv):
     @property
     @abstractmethod
     def primitive(self) -> Renderer[str]:

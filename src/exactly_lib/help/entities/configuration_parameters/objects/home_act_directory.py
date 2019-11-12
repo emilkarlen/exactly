@@ -1,6 +1,6 @@
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import conf_params
-from exactly_lib.definitions.file_ref import REL_HOME_ACT_OPTION
+from exactly_lib.definitions.path import REL_HOME_ACT_OPTION
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import HOME_ACT_DIRECTORY_INSTRUCTION_NAME
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation

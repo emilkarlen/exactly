@@ -11,11 +11,11 @@ from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromValueParts
 from exactly_lib.test_case_utils.regex import parse_regex
-from exactly_lib.test_case_utils.regex.regex_value import RegexResolver, RegexValue
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver, RegexDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcher, FileMatcherModel
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util import strings
 from exactly_lib.util.description_tree import details
@@ -31,8 +31,8 @@ def parse(token_parser: TokenParser) -> FileMatcherResolver:
 
 
 def resolver(regex_resolver: RegexResolver) -> FileMatcherResolver:
-    def get_value(symbols: SymbolTable) -> FileMatcherValue:
-        return _Value(regex_resolver.resolve(symbols))
+    def get_value(symbols: SymbolTable) -> FileMatcherDdv:
+        return _Ddv(regex_resolver.resolve(symbols))
 
     return FileMatcherResolverFromValueParts(
         regex_resolver.references,
@@ -40,8 +40,8 @@ def resolver(regex_resolver: RegexResolver) -> FileMatcherResolver:
     )
 
 
-class _Value(FileMatcherValue):
-    def __init__(self, regex: RegexValue):
+class _Ddv(FileMatcherDdv):
+    def __init__(self, regex: RegexDdv):
         self._regex = regex
 
     def validator(self) -> PreOrPostSdsValueValidator:

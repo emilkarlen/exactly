@@ -34,9 +34,9 @@ class Processor:
             reporter = result_reporting.TestSuiteParseErrorReporter(reporting_environment)
             return reporter.report(ex)
 
-        test_case_file_ref = test_case_processing.test_case_reference_of_source_file(settings.test_case_file_path)
+        test_case_path = test_case_processing.test_case_reference_of_source_file(settings.test_case_file_path)
 
-        result = processor.apply(test_case_file_ref)
+        result = processor.apply(test_case_path)
 
         return result_reporter.report(result)
 

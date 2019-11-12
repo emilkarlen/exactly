@@ -2,13 +2,13 @@ from typing import Any, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case_utils.err_msg2 import header_rendering, path_rendering
-from exactly_lib.type_system.data.path_describer import PathDescriberForValue, PathDescriberForPrimitive
+from exactly_lib.type_system.data.path_describer import PathDescriberForDdv, PathDescriberForPrimitive
 from exactly_lib.util.render.renderer import SequenceRenderer, Renderer
 from exactly_lib.util.simple_textstruct.structure import LineElement, MajorBlock
 
 
 def line_header__value(header: Any,
-                       path: PathDescriberForValue,
+                       path: PathDescriberForDdv,
                        explanation: Optional[SequenceRenderer[LineElement]] = None,
                        ) -> TextRenderer:
     return path_rendering.HeaderAndPathMajorBlocks(
@@ -19,7 +19,7 @@ def line_header__value(header: Any,
 
 
 def line_header_block__value(header: Any,
-                             path: PathDescriberForValue,
+                             path: PathDescriberForDdv,
                              explanation: Optional[SequenceRenderer[LineElement]] = None,
                              ) -> Renderer[MajorBlock]:
     return path_rendering.HeaderAndPathMajorBlock(

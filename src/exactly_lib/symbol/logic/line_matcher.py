@@ -3,7 +3,7 @@ from typing import List
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.symbol.logic.resolver import MatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcherLine
+from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherLine
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -23,5 +23,5 @@ class LineMatcherResolver(LogicValueResolver, MatcherResolver[LineMatcherLine]):
     def references(self) -> List[SymbolReference]:
         raise NotImplementedError('abstract method')
 
-    def resolve(self, symbols: SymbolTable) -> LineMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> LineMatcherDdv:
         raise NotImplementedError('abstract method')

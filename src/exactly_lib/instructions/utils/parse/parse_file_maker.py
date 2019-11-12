@@ -12,7 +12,7 @@ from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.parse import parse_here_document
-from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from_token_parser
+from exactly_lib.test_case_utils.parse.parse_path import parse_path_from_token_parser
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_from_token_parser
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
@@ -176,8 +176,8 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
                                                program)
 
     def _parse_file(my_parser: TokenParser) -> FileMaker:
-        src_file = parse_file_ref_from_token_parser(instruction_config.src_rel_opt_arg_conf,
-                                                    my_parser)
+        src_file = parse_path_from_token_parser(instruction_config.src_rel_opt_arg_conf,
+                                                my_parser)
         contents_transformer = parse_optional_transformer_resolver(parser)
         my_parser.report_superfluous_arguments_if_not_at_eol()
         return FileMakerForContentsFromExistingFile(instruction_config.source_info,

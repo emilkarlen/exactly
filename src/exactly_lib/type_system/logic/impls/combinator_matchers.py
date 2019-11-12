@@ -12,7 +12,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation, \
-    MatcherValue, T
+    MatcherDdv, T
 from exactly_lib.util.description_tree import renderers
 
 MODEL = TypeVar('MODEL')
@@ -80,8 +80,8 @@ class Negation(_CombinatorBase[MODEL]):
         return self._negated,
 
 
-class NegationValue(Generic[T], MatcherValue[T]):
-    def __init__(self, operand: MatcherValue[T]):
+class NegationDdv(Generic[T], MatcherDdv[T]):
+    def __init__(self, operand: MatcherDdv[T]):
         self._operand = operand
 
     def structure(self) -> StructureRenderer:
@@ -154,8 +154,8 @@ class Conjunction(_CombinatorBase[MODEL]):
         return self._parts
 
 
-class ConjunctionValue(Generic[T], MatcherValue[T]):
-    def __init__(self, operands: Sequence[MatcherValue[T]]):
+class ConjunctionDdv(Generic[T], MatcherDdv[T]):
+    def __init__(self, operands: Sequence[MatcherDdv[T]]):
         self._operands = operands
         self._validator = pre_or_post_value_validators.all_of(
             [matcher.validator
@@ -232,8 +232,8 @@ class Disjunction(_CombinatorBase[MODEL]):
         return self._parts
 
 
-class DisjunctionValue(Generic[T], MatcherValue[T]):
-    def __init__(self, operands: Sequence[MatcherValue[T]]):
+class DisjunctionDdv(Generic[T], MatcherDdv[T]):
+    def __init__(self, operands: Sequence[MatcherDdv[T]]):
         self._operands = operands
         self._validator = pre_or_post_value_validators.all_of(
             [matcher.validator

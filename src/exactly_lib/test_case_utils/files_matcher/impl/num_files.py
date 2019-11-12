@@ -14,8 +14,8 @@ from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcher
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherConstructor, \
-    FilesMatcherValue
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, MatcherValue
+    FilesMatcherDdv
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, MatcherDdv
 from exactly_lib.util import logic_types
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -69,9 +69,9 @@ class _FilesMatcher(FilesMatcher):
         return PropertyMatcher(matcher, _PropertyGetter())
 
 
-class _NumFilesMatcherValue(FilesMatcherValue):
+class _NumFilesMatcherDdv(FilesMatcherDdv):
     def __init__(self,
-                 matcher: MatcherValue[int]):
+                 matcher: MatcherDdv[int]):
         self._matcher = matcher
 
     def value_of_any_dependency(self, tcds: HomeAndSds) -> FilesMatcherConstructor:
@@ -97,8 +97,8 @@ class _NumFilesMatcherResolver(FilesMatcherResolverBase):
     def references(self) -> Sequence[SymbolReference]:
         return self._matcher.references
 
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
-        return _NumFilesMatcherValue(
+    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
+        return _NumFilesMatcherDdv(
             self._matcher.resolve(symbols),
         )
 

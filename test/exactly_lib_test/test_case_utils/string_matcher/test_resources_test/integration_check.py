@@ -18,8 +18,8 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue, FileToCheck
-from exactly_lib.type_system.logic.string_matcher_values import StringMatcherConstantValue
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherDdv, FileToCheck
+from exactly_lib.type_system.logic.string_matcher_ddvs import StringMatcherConstantDdv
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
@@ -372,10 +372,10 @@ class StringMatcherResolverThatAssertsThatSymbolsAreAsExpected(StringMatcherReso
     def references(self) -> List[SymbolReference]:
         return []
 
-    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
         self._expectation.apply_with_message(self._put, symbols, 'symbols given to resolve')
 
-        return StringMatcherConstantValue(StringMatcherConstant(None))
+        return StringMatcherConstantDdv(StringMatcherConstant(None))
 
     @property
     def validator(self) -> PreOrPostSdsValidator:

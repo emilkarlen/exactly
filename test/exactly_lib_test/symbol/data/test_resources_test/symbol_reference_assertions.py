@@ -42,5 +42,5 @@ class TestEqualsSymbolReference(unittest.TestCase):
                                  r.ReferenceRestrictionsOnDirectAndIndirect(vr.AnyDataTypeRestriction()))
         assertion = sut.equals_symbol_reference_with_restriction_on_direct_target(
             common_name,
-            asrt.is_instance(vr.FileRefRelativityRestriction))
+            asrt.is_instance(vr.PathRelativityRestriction))
         assert_that_assertion_fails(assertion, actual)

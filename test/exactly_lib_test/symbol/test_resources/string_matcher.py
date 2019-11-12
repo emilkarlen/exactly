@@ -8,8 +8,8 @@ from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherValue
-from exactly_lib.type_system.logic.string_matcher_values import StringMatcherConstantValue
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherDdv
+from exactly_lib.type_system.logic.string_matcher_ddvs import StringMatcherConstantDdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -18,7 +18,7 @@ from exactly_lib_test.symbol.test_resources.symbols_setup import ResolverSymbolC
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import string_matchers
-from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherValueFromPartsTestImpl
+from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherDdvFromPartsTestImpl
 
 
 def arbitrary_resolver() -> StringMatcherResolver:
@@ -46,8 +46,8 @@ class StringMatcherResolverConstantTestImpl(StringMatcherResolver):
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
 
-    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
-        return StringMatcherConstantValue(self._resolved_value)
+    def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
+        return StringMatcherConstantDdv(self._resolved_value)
 
 
 IS_STRING_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.STRING_MATCHER)
@@ -93,13 +93,13 @@ class StringMatcherResolverFromPartsTestImpl(StringMatcherResolver):
         self._validator = validator
         self._references = references
 
-    def resolve(self, symbols: SymbolTable) -> StringMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
         def get_matcher(tcds: HomeAndSds) -> StringMatcher:
             environment = PathResolvingEnvironmentPreOrPostSds(tcds, symbols)
             return self._matcher(environment)
 
-        return StringMatcherValueFromPartsTestImpl(self._structure,
-                                                   get_matcher)
+        return StringMatcherDdvFromPartsTestImpl(self._structure,
+                                                 get_matcher)
 
     @property
     def references(self) -> Sequence[SymbolReference]:

@@ -34,7 +34,7 @@ class Test(unittest.TestCase):
         ]
 
         for path_case in path_cases:
-            test_case_file_refs_expectation = asrt.matches_sequence([
+            test_case_paths_expectation = asrt.matches_sequence([
                 equals_test_case_reference(path_case.value)
             ])
 
@@ -60,12 +60,12 @@ class Test(unittest.TestCase):
                                   suite_case=suite_case.name):
                     suite_hierarchy_reader = ReaderThatGivesConstantSuite(suite_case.value)
                     reporter = ProcessingReporterThatDoesNothing()
-                    file_ref_registering_processor = TestCaseProcessorThatJustRegistersTestCaseFileReference()
+                    path_registering_processor = TestCaseProcessorThatJustRegistersTestCaseFileReference()
                     processor = sut.Processor(DUMMY_CASE_PROCESSING,
                                               suite_hierarchy_reader,
                                               reporter,
                                               DepthFirstEnumerator(),
-                                              lambda config: file_ref_registering_processor)
+                                              lambda config: path_registering_processor)
                     # ACT #
                     return_value = processor.process(suite_case.value.source_file, null_output_reporting_environment())
                     # ASSERT #
@@ -73,9 +73,9 @@ class Test(unittest.TestCase):
                                      return_value,
                                      'Sanity check of result indicator')
 
-                    test_case_file_refs_expectation.apply_without_message(
+                    test_case_paths_expectation.apply_without_message(
                         self,
-                        file_ref_registering_processor.recording_media
+                        path_registering_processor.recording_media
                     )
 
 

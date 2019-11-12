@@ -9,10 +9,10 @@ from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_getters
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.regex import parse_regex
-from exactly_lib.test_case_utils.regex.regex_value import RegexResolver
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver
 from exactly_lib.test_case_utils.string_matcher import matcher_options, resolvers
-from exactly_lib.test_case_utils.string_matcher.delegated_matcher import StringMatcherValueDelegatedToMatcher
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherValue
+from exactly_lib.test_case_utils.string_matcher.delegated_matcher import StringMatcherDdvDelegatedToMatcher
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherDdv
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -41,11 +41,11 @@ def value_resolver(expectation_type: ExpectationType,
     def get_value_validator(symbols: SymbolTable) -> PreOrPostSdsValueValidator:
         return contents_matcher.resolve(symbols).validator()
 
-    def get_value(symbols: SymbolTable) -> StringMatcherValue:
-        regex_value = contents_matcher.resolve(symbols)
-        regex_matcher = matches_regex.MatchesRegexValue(expectation_type, regex_value, is_full_match, )
-        return StringMatcherValueDelegatedToMatcher(
-            property_matcher.PropertyMatcherValue(
+    def get_value(symbols: SymbolTable) -> StringMatcherDdv:
+        regex_ddv = contents_matcher.resolve(symbols)
+        regex_matcher = matches_regex.MatchesRegexDdv(expectation_type, regex_ddv, is_full_match, )
+        return StringMatcherDdvDelegatedToMatcher(
+            property_matcher.PropertyMatcherDdv(
                 regex_matcher,
                 property_getters.PropertyGetterValueConstant(
                     _PropertyGetter(),

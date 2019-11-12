@@ -1,5 +1,5 @@
 from exactly_lib.definitions.test_suite import file_names
-from exactly_lib.help.program_modes.test_suite.contents.section.common import file_ref_contents_description
+from exactly_lib.help.program_modes.test_suite.contents.section.common import path_contents_description
 from exactly_lib.help.program_modes.test_suite.contents_structure.section_documentation import \
     TestSuiteSectionDocumentationBaseForSectionWithoutInstructions
 from exactly_lib.section_document.model import SectionContents
@@ -14,7 +14,7 @@ class SuitesSectionDocumentation(TestSuiteSectionDocumentationBaseForSectionWith
             'default_suite_file_name': file_names.DEFAULT_SUITE_FILE,
         })
         return docs.section_contents(
-            file_ref_contents_description('suite'),
+            path_contents_description('suite'),
             [
                 docs.section('Default suite file',
                              tp.fnap(_DIR_AS_SUITE))

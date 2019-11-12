@@ -2,7 +2,7 @@ from typing import Optional
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions import type_system
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.data.restrictions import error_messages
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
 from exactly_lib.symbol.err_msg import error_messages as err_msg_for_any_type
@@ -45,9 +45,9 @@ class StringRestriction(ValueRestriction):
         return None
 
 
-class FileRefRelativityRestriction(ValueRestriction):
+class PathRelativityRestriction(ValueRestriction):
     """
-    Restricts to `FileRefValue` and `PathRelativityVariants`
+    Restricts to `PathDdv` and `PathRelativityVariants`
     """
 
     def __init__(self, accepted: PathRelativityVariants):
@@ -58,10 +58,10 @@ class FileRefRelativityRestriction(ValueRestriction):
                         symbol_name: str,
                         container: SymbolContainer) -> Optional[ErrorMessageWithFixTip]:
         resolver = container.resolver
-        if not isinstance(resolver, FileRefResolver):
+        if not isinstance(resolver, PathResolver):
             return err_msg_for_any_type.invalid_type_msg([ValueType.PATH], symbol_name, container)
-        file_ref = resolver.resolve(symbol_table)
-        actual_relativity = file_ref.relativity()
+        path = resolver.resolve(symbol_table)
+        actual_relativity = path.relativity()
         satisfaction = is_satisfied_by(actual_relativity, self._accepted)
         if satisfaction:
             return None
@@ -82,8 +82,8 @@ class ValueRestrictionVisitor:
             return self.visit_none(x)
         if isinstance(x, StringRestriction):
             return self.visit_string(x)
-        if isinstance(x, FileRefRelativityRestriction):
-            return self.visit_file_ref_relativity(x)
+        if isinstance(x, PathRelativityRestriction):
+            return self.visit_path_relativity(x)
         raise TypeError('%s is not an instance of %s' % (str(x), str(ValueRestriction)))
 
     def visit_none(self, x: AnyDataTypeRestriction):
@@ -92,5 +92,5 @@ class ValueRestrictionVisitor:
     def visit_string(self, x: StringRestriction):
         raise NotImplementedError()
 
-    def visit_file_ref_relativity(self, x: FileRefRelativityRestriction):
+    def visit_path_relativity(self, x: PathRelativityRestriction):
         raise NotImplementedError()

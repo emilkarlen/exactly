@@ -119,7 +119,7 @@ class TestFileInclusionChain(unittest.TestCase):
                 ),
             NIE('single link. referrer location is HERE, file_path_rel_referrer just base name',
                 expected_value=FileInclusionChainOutput(
-                    block=expected_file_reference_lines(base_name, ls1.first_line_number) +
+                    block=expected_path_lines(base_name, ls1.first_line_number) +
                           expected_source_line_lines(ls1.lines),
                     next_referrer_location=Path('.'),
                 ),
@@ -135,7 +135,7 @@ class TestFileInclusionChain(unittest.TestCase):
                 ),
             NIE('single link. referrer location is HERE, file_path_rel_referrer in sub dir',
                 expected_value=FileInclusionChainOutput(
-                    block=expected_file_reference_lines(link_sub_dir / base_name, ls1.first_line_number) +
+                    block=expected_path_lines(link_sub_dir / base_name, ls1.first_line_number) +
                           expected_source_line_lines(ls1.lines),
                     next_referrer_location=link_sub_dir,
                 ),
@@ -151,7 +151,7 @@ class TestFileInclusionChain(unittest.TestCase):
                 ),
             NIE('single link. referrer location is sub-dir, file_path_rel_referrer in sub dir',
                 expected_value=FileInclusionChainOutput(
-                    block=expected_file_reference_lines(
+                    block=expected_path_lines(
                         referrer_location_sub_dir / link_sub_dir / base_name,
                         ls1.first_line_number) +
                           expected_source_line_lines(ls1.lines),
@@ -170,13 +170,13 @@ class TestFileInclusionChain(unittest.TestCase):
             NIE('multiple links. referrer location is sub-dir, file_path_rel_referrer in sub dir',
                 expected_value=FileInclusionChainOutput(
                     block=
-                    (expected_file_reference_lines(
+                    (expected_path_lines(
                         referrer_location_sub_dir / link_sub_dir / base_name,
                         ls1.first_line_number)
                      +
                      expected_source_line_lines(ls1.lines)
                      +
-                     expected_file_reference_lines(
+                     expected_path_lines(
                          referrer_location_sub_dir / link_sub_dir / link_sub_dir2 / base_name2,
                          ls2.first_line_number)
                      +
@@ -333,7 +333,7 @@ class TestSourceLocationPath(unittest.TestCase):
                             +
                             expected_source_line_lines(ls1.lines)
                             +
-                            expected_file_reference_lines(
+                            expected_path_lines(
                                 final_loc_dir / final_loc_base_name,
                                 final_loc_ls.first_line_number)
                     ),
@@ -353,19 +353,19 @@ class TestSourceLocationPath(unittest.TestCase):
                 ),
             NIE('multiple links. referrer location is sub-dir, file_path_rel_referrer in sub dir',
                 expected_value=[
-                    (expected_file_reference_lines(
+                    (expected_path_lines(
                         referrer_location_sub_dir / link_sub_dir / base_name,
                         ls1.first_line_number)
                      +
                      expected_source_line_lines(ls1.lines)
                      +
-                     expected_file_reference_lines(
+                     expected_path_lines(
                          referrer_location_sub_dir / link_sub_dir / link_sub_dir2 / base_name2,
                          ls2.first_line_number)
                      +
                      expected_source_line_lines(ls2.lines)
                      +
-                     expected_file_reference_lines(
+                     expected_path_lines(
                          referrer_location_sub_dir / link_sub_dir / link_sub_dir2 / final_loc_dir / final_loc_base_name,
                          final_loc_ls.first_line_number)
                      ),
@@ -415,12 +415,12 @@ def matches_source_code_minor_block(source_code: Sequence[str]) -> ValueAssertio
     )
 
 
-def expected_file_reference_line(file: Path, line_number: int) -> str:
+def expected_path_line(file: Path, line_number: int) -> str:
     return str(file) + ', line ' + str(line_number)
 
 
-def expected_file_reference_lines(file: Path, line_number: int) -> List[str]:
-    return [expected_file_reference_line(file, line_number)]
+def expected_path_lines(file: Path, line_number: int) -> List[str]:
+    return [expected_path_line(file, line_number)]
 
 
 def expected_source_line_lines(lines: Sequence[str]) -> List[str]:

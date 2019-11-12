@@ -23,7 +23,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
 from exactly_lib_test.symbol.test_resources import resolver_assertions
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
-from exactly_lib_test.test_case_utils.line_matcher.test_resources.value_assertions import value_matches_line_matcher
+from exactly_lib_test.test_case_utils.line_matcher.test_resources.ddv_assertions import ddv_matches_line_matcher
 from exactly_lib_test.test_case_utils.matcher.test_resources.int_expr_matcher import \
     ComparisonMatcherForEquivalenceChecks
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
@@ -186,7 +186,7 @@ def resolved_value_is_line_number_matcher(equivalent: Matcher[LineMatcherLine],
                                         model_infos)
     return resolver_assertions.matches_resolver_of_line_matcher(
         references,
-        value_matches_line_matcher(expected_matcher)
+        ddv_matches_line_matcher(expected_matcher)
     )
 
 

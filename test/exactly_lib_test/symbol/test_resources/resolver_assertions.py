@@ -3,8 +3,8 @@ from typing import Sequence
 
 from exactly_lib.symbol import resolver_structure as rs
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver, get_data_value_type
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
@@ -13,13 +13,13 @@ from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.data.list_value import ListValue
-from exactly_lib.type_system.data.string_value import StringValue
-from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
-from exactly_lib.type_system.logic.line_matcher import LineMatcherValue, LineMatcher
+from exactly_lib.type_system.data.list_ddv import ListDdv
+from exactly_lib.type_system.data.path_ddv import PathDdv
+from exactly_lib.type_system.data.string_ddv import StringDdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv
+from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcher
 from exactly_lib.type_system.logic.program.program_value import ProgramValue
-from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
+from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.type_system.value_type import TypeCategory, ValueType, LogicValueType, DataValueType
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -103,45 +103,45 @@ def is_resolver_of_program_type() -> ValueAssertion[rs.SymbolValueResolver]:
 
 
 def matches_resolver_of_string(references: ValueAssertion[Sequence[SymbolReference]],
-                               resolved_value: ValueAssertion[StringValue],
+                               resolved_value: ValueAssertion[StringDdv],
                                custom: ValueAssertion[StringResolver] = asrt.anything_goes(),
                                symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_string_type(),
                             references,
-                            asrt.is_instance_with(StringValue, resolved_value),
+                            asrt.is_instance_with(StringDdv, resolved_value),
                             custom,
                             symbol_table_from_none_or_value(symbols))
 
 
 def matches_resolver_of_list(references: ValueAssertion[Sequence[SymbolReference]],
-                             resolved_value: ValueAssertion[ListValue],
+                             resolved_value: ValueAssertion[ListDdv],
                              custom: ValueAssertion[ListResolver] = asrt.anything_goes(),
                              symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_list_type(),
                             references,
-                            asrt.is_instance_with(ListValue, resolved_value),
+                            asrt.is_instance_with(ListDdv, resolved_value),
                             custom,
                             symbol_table_from_none_or_value(symbols))
 
 
 def matches_resolver_of_path(references: ValueAssertion[Sequence[SymbolReference]],
-                             resolved_value: ValueAssertion[FileRef],
-                             custom: ValueAssertion[FileRefResolver] = asrt.anything_goes(),
+                             resolved_value: ValueAssertion[PathDdv],
+                             custom: ValueAssertion[PathResolver] = asrt.anything_goes(),
                              symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_path_type(),
                             references,
-                            asrt.is_instance_with(FileRef, resolved_value),
+                            asrt.is_instance_with(PathDdv, resolved_value),
                             custom,
                             symbol_table_from_none_or_value(symbols))
 
 
 def matches_resolver_of_file_matcher(references: ValueAssertion[Sequence[SymbolReference]],
-                                     resolved_value: ValueAssertion[FileMatcherValue],
+                                     resolved_value: ValueAssertion[FileMatcherDdv],
                                      custom: ValueAssertion[FileMatcherResolver] = asrt.anything_goes(),
                                      symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_file_matcher_type(),
                             references,
-                            asrt.is_instance_with(FileMatcherValue, resolved_value),
+                            asrt.is_instance_with(FileMatcherDdv, resolved_value),
                             custom,
                             symbol_table_from_none_or_value(symbols))
 
@@ -152,19 +152,19 @@ def matches_resolver_of_line_matcher(references: ValueAssertion[Sequence[SymbolR
                                      symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_line_matcher_type(),
                             references,
-                            asrt.is_instance_with(LineMatcherValue, resolved_value),
+                            asrt.is_instance_with(LineMatcherDdv, resolved_value),
                             custom,
                             symbol_table_from_none_or_value(symbols))
 
 
 def matches_resolver_of_string_transformer(references: ValueAssertion[Sequence[SymbolReference]],
-                                           resolved_value: ValueAssertion[StringTransformerValue],
+                                           resolved_value: ValueAssertion[StringTransformerDdv],
                                            custom: ValueAssertion[
                                                StringTransformerResolver] = asrt.anything_goes(),
                                            symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_string_transformer_type(),
                             references,
-                            asrt.is_instance_with(StringTransformerValue, resolved_value),
+                            asrt.is_instance_with(StringTransformerDdv, resolved_value),
                             custom,
                             symbol_table_from_none_or_value(symbols))
 

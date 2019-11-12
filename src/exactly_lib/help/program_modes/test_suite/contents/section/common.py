@@ -6,7 +6,7 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def file_ref_contents_description(case_or_suite_string: str) -> List[ParagraphItem]:
+def path_contents_description(case_or_suite_string: str) -> List[ParagraphItem]:
     tp = TextParser({
         'case': case_or_suite_string,
         'program_name': formatting.program_name(program_info.PROGRAM_NAME),

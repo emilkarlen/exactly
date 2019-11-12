@@ -5,11 +5,11 @@ from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.data.concrete_string_values import ConstantFragment
-from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.data.string_value import StringValue
+from exactly_lib.type_system.data.concrete_strings import ConstantFragmentDdv
+from exactly_lib.type_system.data.path_ddv import PathDdv
+from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.logic.program.program_value import ProgramValue
-from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
+from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.type_system.value_type import ValueType, DataValueType, TypeCategory, LogicValueType
 from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
@@ -107,16 +107,16 @@ class TestMatchesResolver(unittest.TestCase):
 
     def test_fail_due_to_unexpected_resolved_value(self):
         # ARRANGE #
-        string_resolver = _StringResolverTestImpl(resolve_constant(STRING_VALUE))
+        string_resolver = _StringResolverTestImpl(resolve_constant(STRING_DDV))
         assertion = sut.matches_resolver(asrt.anything_goes(),
                                          asrt.anything_goes(),
-                                         asrt.not_(asrt.is_(STRING_VALUE)))
+                                         asrt.not_(asrt.is_(STRING_DDV)))
         # ACT & ASSERT #
         test_of_test_resources_util.assert_that_assertion_fails(assertion, string_resolver)
 
     def test_fail_due_to_failing_custom_assertion(self):
         # ARRANGE #
-        string_resolver = _StringResolverTestImpl(resolve_constant(STRING_VALUE))
+        string_resolver = _StringResolverTestImpl(resolve_constant(STRING_DDV))
         assertion = sut.matches_resolver(asrt.anything_goes(),
                                          asrt.anything_goes(),
                                          asrt.anything_goes(),
@@ -127,10 +127,10 @@ class TestMatchesResolver(unittest.TestCase):
     def test_success(self):
         # ARRANGE #
         reference = data_symbol_utils.symbol_reference('symbol_name')
-        string_resolver = _StringResolverTestImpl(resolve_constant(STRING_VALUE), [reference])
+        string_resolver = _StringResolverTestImpl(resolve_constant(STRING_DDV), [reference])
         assertion = sut.matches_resolver(sut.is_resolver_of_string_type(),
                                          asrt.len_equals(1),
-                                         asrt.is_(STRING_VALUE),
+                                         asrt.is_(STRING_DDV),
                                          asrt.is_(string_resolver))
         # ACT & ASSERT #
         assertion.apply_without_message(self, string_resolver)
@@ -140,17 +140,17 @@ class TestMatchesResolver(unittest.TestCase):
         symbol_name = 'symbol_name'
         string_resolver = _StringResolverTestImpl(resolve_string_via_symbol_table(symbol_name))
         symbol_table = singleton_symbol_table_2(symbol_name,
-                                                data_symbol_utils.string_value_constant_container2(STRING_VALUE))
+                                                data_symbol_utils.string_ddv_constant_container2(STRING_DDV))
 
         assertion = sut.matches_resolver(asrt.anything_goes(),
                                          asrt.anything_goes(),
-                                         asrt.is_(STRING_VALUE),
+                                         asrt.is_(STRING_DDV),
                                          symbols=symbol_table)
         # ACT & ASSERT #
         assertion.apply_without_message(self, string_resolver)
 
 
-STRING_VALUE = StringValue((ConstantFragment('value'),))
+STRING_DDV = StringDdv((ConstantFragmentDdv('value'),))
 
 T = TypeVar('T')
 
@@ -162,8 +162,8 @@ def resolve_constant(constant: T) -> Callable[[SymbolTable], T]:
     return ret_val
 
 
-def resolve_string_via_symbol_table(symbol_name: str) -> Callable[[SymbolTable], StringValue]:
-    def ret_val(symbols: SymbolTable) -> StringValue:
+def resolve_string_via_symbol_table(symbol_name: str) -> Callable[[SymbolTable], StringDdv]:
+    def ret_val(symbols: SymbolTable) -> StringDdv:
         container = symbols.lookup(symbol_name)
         assert isinstance(container, SymbolContainer), 'Value in SymTbl must be SymbolContainer'
         return container.resolver.resolve(symbols)
@@ -173,7 +173,7 @@ def resolve_string_via_symbol_table(symbol_name: str) -> Callable[[SymbolTable],
 
 class _StringResolverTestImpl(DataValueResolver):
     def __init__(self,
-                 value_getter: Callable[[SymbolTable], StringValue] = resolve_constant(STRING_VALUE),
+                 value_getter: Callable[[SymbolTable], StringDdv] = resolve_constant(STRING_DDV),
                  explicit_references: Sequence[SymbolReference] = ()):
         self.value_getter = value_getter
         self.explicit_references = explicit_references
@@ -190,7 +190,7 @@ class _StringResolverTestImpl(DataValueResolver):
     def value_type(self) -> ValueType:
         return ValueType.STRING
 
-    def resolve(self, symbols: SymbolTable) -> StringValue:
+    def resolve(self, symbols: SymbolTable) -> StringDdv:
         return self.value_getter(symbols)
 
     @property
@@ -219,7 +219,7 @@ class _PathResolverTestImpl(DataValueResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self.explicit_references
 
-    def resolve(self, symbols: SymbolTable) -> FileRef:
+    def resolve(self, symbols: SymbolTable) -> PathDdv:
         raise NotImplementedError('not used')
 
 
@@ -269,5 +269,5 @@ class _StringTransformerResolverTestImpl(LogicValueResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self.explicit_references
 
-    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
         raise NotImplementedError('not used')

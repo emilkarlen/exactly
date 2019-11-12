@@ -33,9 +33,9 @@ class StringTransformer(WithNameAndTreeStructureDescription, ABC):
         return type(self).__name__
 
 
-class StringTransformerValue(DirDependentValue[StringTransformer],
-                             WithTreeStructureDescription,
-                             ABC):
+class StringTransformerDdv(DirDependentValue[StringTransformer],
+                           WithTreeStructureDescription,
+                           ABC):
 
     def structure(self) -> StructureRenderer:
         return renderers.header_only('string transformer TODO')

@@ -14,7 +14,7 @@ def to_lower_case(name: str) -> StringTransformerResolver:
 
 
 def replace_env_vars(name: str) -> StringTransformerResolver:
-    return resolvers.StringTransformerConstantOfValue(env_vars_replacement.value(name))
+    return resolvers.StringTransformerConstantOfDdv(env_vars_replacement.ddv(name))
 
 
 def to_upper_case_doc() -> CustomSymbolDocumentation:

@@ -17,11 +17,11 @@ from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import value_assertions as asrt_file_matcher
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import ddv_assertions as asrt_file_matcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import name_glob_pattern_matcher_of, \
     type_matcher_of, name_reg_ex_pattern_matcher_of
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
-    resolved_value_matches_file_matcher
+    resolved_ddv_matches_file_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser
@@ -124,8 +124,8 @@ class TestNameGlobPattern(TestCaseBase):
                 self._check_parse(
                     case.source,
                     Expectation(
-                        resolved_value_matches_file_matcher(
-                            asrt_file_matcher.matches_file_matcher_value__deep(
+                        resolved_ddv_matches_file_matcher(
+                            asrt_file_matcher.matches_file_matcher_ddv__deep(
                                 asrt_file_matcher.is_name_glob_pattern(asrt.equals(pattern))
                             )
                         ),
@@ -166,8 +166,8 @@ class TestBaseNameRegExPattern(TestCaseBase):
                 self._check_parse(
                     case.source,
                     Expectation(
-                        resolved_value_matches_file_matcher(
-                            asrt_file_matcher.matches_file_matcher_value__deep(
+                        resolved_ddv_matches_file_matcher(
+                            asrt_file_matcher.matches_file_matcher_ddv__deep(
                                 asrt_file_matcher.is_name_regex(asrt.equals(pattern))
                             )
                         ),
@@ -210,8 +210,8 @@ class TestFileType(TestCaseBase):
                     self._check_parse(
                         source_case.source,
                         Expectation(
-                            resolved_value_matches_file_matcher(
-                                asrt_file_matcher.matches_file_matcher_value__deep(
+                            resolved_ddv_matches_file_matcher(
+                                asrt_file_matcher.matches_file_matcher_ddv__deep(
                                     asrt_file_matcher.is_type_matcher(file_type)
                                 )
                             ),
@@ -227,8 +227,8 @@ class TestFileType(TestCaseBase):
                 self._check_parse(
                     source,
                     Expectation(
-                        resolved_value_matches_file_matcher(
-                            asrt_file_matcher.matches_file_matcher_value__deep(
+                        resolved_ddv_matches_file_matcher(
+                            asrt_file_matcher.matches_file_matcher_ddv__deep(
                                 asrt_file_matcher.is_type_matcher(file_type)
                             )
                         ),

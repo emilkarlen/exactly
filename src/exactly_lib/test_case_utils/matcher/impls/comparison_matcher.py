@@ -9,11 +9,11 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.test_case_utils.matcher.object import ObjectValue, ObjectResolver
+from exactly_lib.test_case_utils.matcher.object import ObjectDdv, ObjectResolver
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
-from exactly_lib.type_system.logic.matcher_base_class import Failure, MatcherValue
+from exactly_lib.type_system.logic.matcher_base_class import Failure, MatcherDdv
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.util import logic_types
 from exactly_lib.util.description_tree import details
@@ -200,11 +200,11 @@ class _StructureRenderer(Generic[T], NodeRenderer[T]):
         )
 
 
-class ComparisonMatcherValue(Generic[T], MatcherValue[T]):
+class ComparisonMatcherDdv(Generic[T], MatcherDdv[T]):
     def __init__(self,
                  expectation_type: ExpectationType,
                  op: comparators.ComparisonOperator,
-                 rhs: ObjectValue[T],
+                 rhs: ObjectDdv[T],
                  model_renderer: Callable[[T], DetailsRenderer],
                  ):
         self._expectation_type = expectation_type
@@ -248,8 +248,8 @@ class ComparisonMatcherResolver(Generic[T], MatcherResolver[T]):
     def references(self) -> Sequence[SymbolReference]:
         return self._rhs.references
 
-    def resolve(self, symbols: SymbolTable) -> MatcherValue[T]:
-        return ComparisonMatcherValue(
+    def resolve(self, symbols: SymbolTable) -> MatcherDdv[T]:
+        return ComparisonMatcherDdv(
             self._expectation_type,
             self._operator,
             self._rhs.resolve(symbols),

@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol.data import list_resolvers, string_resolvers
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.logic.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
@@ -19,7 +19,7 @@ def for_shell(command_line: StringResolver,
                            arguments)
 
 
-def for_executable_file(executable_file: FileRefResolver,
+def for_executable_file(executable_file: PathResolver,
                         arguments: ArgumentsResolver = arguments_resolvers.empty()) -> CommandResolver:
     return CommandResolver(
         drivers.CommandDriverResolverForExecutableFile(executable_file),

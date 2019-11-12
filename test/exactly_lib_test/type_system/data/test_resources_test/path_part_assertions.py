@@ -14,21 +14,21 @@ def suite() -> unittest.TestSuite:
 
 class TestEqualsPathPartString(unittest.TestCase):
     def test_fail_when_file_name_is_different(self):
-        actual = sut.PathPartAsFixedPath('actual-file-name')
+        actual = sut.PathPartDdvAsFixedPath('actual-file-name')
         assertion = sut.equals_path_part_string('expected-file-name')
         put = test_case_with_failure_exception_set_to_test_exception()
         with put.assertRaises(TestException):
             assertion.apply_without_message(put, actual)
 
     def test_fail_when_actual_object_is_of_wrong_type(self):
-        actual = sut.PathPartAsNothing()
+        actual = sut.PathPartDdvAsNothing()
         assertion = sut.equals_path_part_string('file-name')
         put = test_case_with_failure_exception_set_to_test_exception()
         with put.assertRaises(TestException):
             assertion.apply_without_message(put, actual)
 
     def test_pass_when_file_name_is_equal(self):
-        actual = sut.PathPartAsFixedPath('file-name')
+        actual = sut.PathPartDdvAsFixedPath('file-name')
         assertion = sut.equals_path_part_string('file-name')
         put = test_case_with_failure_exception_set_to_test_exception()
         assertion.apply_without_message(put, actual)
@@ -37,7 +37,7 @@ class TestEqualsPathPartString(unittest.TestCase):
 class TestEqualsPathPart(unittest.TestCase):
     def test_pass(self):
         test_cases = [
-            sut.PathPartAsFixedPath('actual-file-name'),
+            sut.PathPartDdvAsFixedPath('actual-file-name'),
         ]
         for value in test_cases:
             with self.subTest():

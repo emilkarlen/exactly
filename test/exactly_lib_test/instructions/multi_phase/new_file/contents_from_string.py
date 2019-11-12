@@ -1,15 +1,15 @@
 import unittest
 from typing import Callable
 
-from exactly_lib.definitions import file_ref as file_ref_texts
+from exactly_lib.definitions import path as path_texts
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.parse import parse_file_ref
-from exactly_lib.type_system.data import file_refs
+from exactly_lib.test_case_utils.parse import parse_path
+from exactly_lib.type_system.data import paths
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.arguments_building import \
@@ -157,11 +157,11 @@ class TestSymbolReferences(TestCaseBase):
         sub_dir_name = 'sub-dir'
         relativity = RelOptionType.REL_ACT
         symbol = NameAndValue('symbol_name',
-                              file_refs.of_rel_option(relativity,
-                                                      file_refs.constant_path_part(sub_dir_name)))
+                              paths.of_rel_option(relativity,
+                                                  paths.constant_path_part(sub_dir_name)))
         expected_symbol_reference = SymbolReference(
             symbol.name,
-            parse_file_ref.path_or_string_reference_restrictions(
+            parse_path.path_or_string_reference_restrictions(
                 ACCEPTED_RELATIVITY_VARIANTS
             ))
         here_doc_line = 'single line in here doc'
@@ -177,7 +177,7 @@ class TestSymbolReferences(TestCaseBase):
                  'THE_MARKER']),
             ArrangementWithSds(
                 pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                symbols=data_symbol_utils.symbol_table_with_single_file_ref_value(
+                symbols=data_symbol_utils.symbol_table_with_single_path_value(
                     symbol.name,
                     symbol.value),
             ),
@@ -198,14 +198,14 @@ class TestSymbolReferences(TestCaseBase):
         sub_dir_name = 'sub-dir'
         relativity = RelOptionType.REL_ACT
         file_symbol = NameAndValue('file_symbol_name',
-                                   file_refs.of_rel_option(relativity,
-                                                           file_refs.constant_path_part(sub_dir_name)))
+                                   paths.of_rel_option(relativity,
+                                                       paths.constant_path_part(sub_dir_name)))
         contents_symbol = NameAndValue('contents_symbol_name',
                                        'contents symbol value')
 
         expected_file_symbol_reference = SymbolReference(
             file_symbol.name,
-            parse_file_ref.path_or_string_reference_restrictions(
+            parse_path.path_or_string_reference_restrictions(
                 ACCEPTED_RELATIVITY_VARIANTS))
         expected_contents_symbol_reference = SymbolReference(
             contents_symbol.name,
@@ -219,7 +219,7 @@ class TestSymbolReferences(TestCaseBase):
                                       expected_contents_symbol_reference]
 
         symbol_table = data_symbol_utils.SymbolTable({
-            file_symbol.name: data_symbol_utils.file_ref_constant_container(file_symbol.value),
+            file_symbol.name: data_symbol_utils.path_constant_container(file_symbol.value),
             contents_symbol.name: data_symbol_utils.string_constant_container(contents_symbol.value),
         })
 
@@ -291,7 +291,7 @@ class TestFailingParse(unittest.TestCase):
             arguments = argument_elements.as_arguments
             with self.subTest(arguments.first_line):
                 source = remaining_source('{rel_option} {contents}'.format(
-                    rel_option=file_ref_texts.REL_ACT_OPTION,
+                    rel_option=path_texts.REL_ACT_OPTION,
                     contents=arguments.first_line),
                     arguments.following_lines)
 

@@ -3,7 +3,7 @@ from typing import List
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity.conf_params import HOME_CASE_DIRECTORY_CONF_PARAM_INFO
-from exactly_lib.definitions.file_ref import REL_HOME_CASE_OPTION
+from exactly_lib.definitions.path import REL_HOME_CASE_OPTION
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import HOME_CASE_DIRECTORY_INSTRUCTION_NAME
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation

@@ -15,11 +15,11 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import consta
     PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherValueFromPrimitiveValue
+from exactly_lib.test_case_utils.file_matcher.file_matcher_ddvs import FileMatcherValueFromPrimitiveDdv
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromParts
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue, FileMatcherModel
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv, FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
@@ -309,10 +309,10 @@ class FileMatcherResolverThatAssertsThatSymbolsAreAsExpected(FileMatcherResolver
     def references(self) -> List[SymbolReference]:
         return []
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
         self._expectation.apply_with_message(self._put, symbols, 'symbols given to resolve')
 
-        return FileMatcherValueFromPrimitiveValue(FileMatcherConstant(True))
+        return FileMatcherValueFromPrimitiveDdv(FileMatcherConstant(True))
 
 
 class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrPostSdsValueValidator):

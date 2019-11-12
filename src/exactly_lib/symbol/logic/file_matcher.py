@@ -2,7 +2,7 @@ from typing import List
 
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.logic.file_matcher import FileMatcherValue
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -22,5 +22,5 @@ class FileMatcherResolver(LogicValueResolver):
     def references(self) -> List[SymbolReference]:
         raise NotImplementedError('abstract method')
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
         raise NotImplementedError('abstract method')

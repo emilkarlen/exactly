@@ -4,7 +4,7 @@ from typing import Iterator, Optional
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
@@ -77,7 +77,7 @@ class FilesMatcherConstructor(ABC):
         pass
 
 
-class FilesMatcherValue(DirDependentValue[FilesMatcherConstructor], ABC):
+class FilesMatcherDdv(DirDependentValue[FilesMatcherConstructor], ABC):
     @abstractmethod
     def value_of_any_dependency(self, tcds: HomeAndSds) -> FilesMatcherConstructor:
         pass

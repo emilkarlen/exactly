@@ -2,8 +2,8 @@ from typing import Sequence, List
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.common.help.with_see_also_set import SyntaxElementDescriptionTree, SyntaxElementDescriptionTreeFromSed
-from exactly_lib.definitions import file_ref
 from exactly_lib.definitions import formatting, instruction_arguments
+from exactly_lib.definitions import path
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import concepts as ci, syntax_elements
@@ -150,10 +150,10 @@ class RelOptionRenderer:
     def special_symbols(self) -> List[lists.HeaderContentListItem]:
         return [
             self.item_for(render_argument(instruction_arguments.REL_SYMBOL_OPTION),
-                          file_ref.RELATIVITY_DESCRIPTION_SYMBOL),
+                          path.RELATIVITY_DESCRIPTION_SYMBOL),
 
-            self.item_for(file_ref.REL_source_file_dir_OPTION,
-                          file_ref.RELATIVITY_DESCRIPTION_SOURCE_FILE),
+            self.item_for(path.REL_source_file_dir_OPTION,
+                          path.RELATIVITY_DESCRIPTION_SOURCE_FILE),
         ]
 
     @staticmethod

@@ -9,13 +9,13 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_executable
-from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.data.list_value import ListValue
+from exactly_lib.type_system.data.list_ddv import ListDdv
+from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, symbol_table_from_none_or_value
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_file_ref_resolver
+from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_resolver
 from exactly_lib_test.symbol.data.test_resources.list_assertions import matches_list_resolver
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
@@ -75,15 +75,15 @@ def token_stream_has_remaining_source(source: str) -> ValueAssertion:
 
 class ExpectationOnExeFile:
     def __init__(self,
-                 file_resolver_value: FileRef,
+                 path_ddv: PathDdv,
                  expected_symbol_references_of_file: List[SymbolReference],
-                 argument_resolver_value: ListValue,
+                 argument_resolver_value: ListDdv,
                  expected_symbol_references_of_argument: List[SymbolReference],
                  symbol_for_value_checks: SymbolTable = None):
         self.symbol_for_value_checks = symbol_for_value_checks
         if symbol_for_value_checks is None:
             self.symbol_for_value_checks = empty_symbol_table()
-        self.file_resolver_value = file_resolver_value
+        self.path_ddv = path_ddv
         self.expected_symbol_references_of_file = expected_symbol_references_of_file
         if self.expected_symbol_references_of_file is None:
             self.expected_symbol_references_of_file = []
@@ -97,13 +97,13 @@ class Expectation:
     def __init__(self,
                  source: ValueAssertion[ParseSource],
                  validation_result: validation.Expectation,
-                 file_resolver_value: FileRef,
+                 path_ddv: PathDdv,
                  expected_symbol_references_of_file: List[SymbolReference],
-                 argument_resolver_value: ListValue,
+                 argument_resolver_value: ListDdv,
                  expected_symbol_references_of_argument: List[SymbolReference]):
         self.source = source
         self.validation_result = validation_result
-        self.expectation_on_exe_file = ExpectationOnExeFile(file_resolver_value=file_resolver_value,
+        self.expectation_on_exe_file = ExpectationOnExeFile(path_ddv=path_ddv,
                                                             expected_symbol_references_of_file=expected_symbol_references_of_file,
                                                             argument_resolver_value=argument_resolver_value,
                                                             expected_symbol_references_of_argument=expected_symbol_references_of_argument)
@@ -112,15 +112,15 @@ class Expectation:
 def check_exe_file(put: unittest.TestCase,
                    expectation: ExpectationOnExeFile,
                    actual: ExecutableFileWithArgsResolver):
-    file_resolver_assertion = matches_file_ref_resolver(
-        expectation.file_resolver_value,
+    path_resolver_assertion = matches_path_resolver(
+        expectation.path_ddv,
         expected_symbol_references=equals_symbol_references(expectation.expected_symbol_references_of_file),
         symbol_table=expectation.symbol_for_value_checks)
-    file_resolver_assertion.apply_with_message(put, actual.executable_file,
-                                               'file_resolver')
-    file_ref_symbols = equals_symbol_references(expectation.expected_symbol_references_of_file)
-    file_ref_symbols.apply_with_message(put, actual.executable_file.references,
-                                        'file-resolver/references')
+    path_resolver_assertion.apply_with_message(put, actual.executable_file,
+                                               'path_resolver')
+    path_symbols = equals_symbol_references(expectation.expected_symbol_references_of_file)
+    path_symbols.apply_with_message(put, actual.executable_file.references,
+                                    'path-resolver/references')
     arguments_resolver_assertion = matches_list_resolver(
         expectation.argument_resolver_value,
         expected_symbol_references=equals_symbol_references(expectation.expected_symbol_references_of_argument),

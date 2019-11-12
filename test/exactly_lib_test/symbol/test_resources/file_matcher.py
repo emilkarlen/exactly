@@ -2,8 +2,8 @@ from typing import Sequence
 
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherValueFromPrimitiveValue
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
+from exactly_lib.test_case_utils.file_matcher.file_matcher_ddvs import FileMatcherValueFromPrimitiveDdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -35,26 +35,26 @@ class FileMatcherResolverConstantTestImpl(FileMatcherResolver):
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
-        return FileMatcherValueFromPrimitiveValue(self._resolved_value)
+    def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
+        return FileMatcherValueFromPrimitiveDdv(self._resolved_value)
 
 
 class FileMatcherResolverConstantValueTestImpl(FileMatcherResolver):
     def __init__(self,
-                 resolved_value: FileMatcherValue,
+                 resolved_value: FileMatcherDdv,
                  references: Sequence[SymbolReference] = ()):
         self._references = list(references)
         self._resolved_value = resolved_value
 
     @property
-    def resolved_value(self) -> FileMatcherValue:
+    def resolved_value(self) -> FileMatcherDdv:
         return self._resolved_value
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
         return self._resolved_value
 
 

@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib.symbol.data import file_ref_resolvers
-from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.data import path_resolvers
+from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
-from exactly_lib.type_system.data import file_refs
+from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
+from exactly_lib.type_system.data import paths
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
@@ -18,7 +18,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.exp
     expectation_that_file_for_actual_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_file_ref_relativity_restriction
+    equals_path_relativity_restriction
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
@@ -136,19 +136,19 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
             EXPECTED_FILE_REL_OPT_ARG_CONFIG
 
         expected_file_relativity_symbol = 'EXPECTED_RELATIVITY_SYMBOL_NAME'
-        file_ref_sym_tbl_entry_for_expected_file = data_symbol_utils.entry(
+        path_sym_tbl_entry_for_expected_file = data_symbol_utils.entry(
             expected_file_relativity_symbol,
-            file_ref_resolvers.constant(file_refs.of_rel_option(self.relativity_of_expected_file(),
-                                                                file_refs.empty_path_part())))
+            path_resolvers.constant(paths.of_rel_option(self.relativity_of_expected_file(),
+                                                        paths.empty_path_part())))
 
         symbols_in_arrangement = symbol_tables.symbol_table_from_entries(
-            [file_ref_sym_tbl_entry_for_expected_file] +
+            [path_sym_tbl_entry_for_expected_file] +
             self.rel_opt.symbols.entries_for_arrangement())
 
         symbol_usage_expectation_for_expected_file = equals_symbol_reference_with_restriction_on_direct_target(
             expected_file_relativity_symbol,
-            equals_file_ref_relativity_restriction(
-                FileRefRelativityRestriction(
+            equals_path_relativity_restriction(
+                PathRelativityRestriction(
                     EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants)))
 
         expected_symbol_usages = asrt.matches_sequence(
@@ -169,7 +169,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
                  '{file_option} {rel_symbol_option} {rel_symbol_name} expected.txt',
                  relativity_option=self.rel_opt.option_argument,
                  maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
-                 file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
+                 file_option=option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
                  rel_symbol_name=expected_file_relativity_symbol),
             ArrangementPostAct(
                 home_or_sds_contents=home_or_sds_contents_arrangement,

@@ -19,8 +19,8 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenSynta
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
@@ -31,8 +31,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
-from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref, parse_list
+from exactly_lib.test_case_utils.parse import parse_string, parse_path, parse_list
+from exactly_lib.test_case_utils.path_check import PathCheckValidator, PathCheck
 from exactly_lib.test_case_utils.program.command import command_resolvers
 from exactly_lib.util.process_execution import commands
 from exactly_lib.util.process_execution.command import Command, ProgramAndArguments
@@ -63,30 +63,30 @@ class ParserForInterpreterThatIsAShellCommand(parts.ActorFromParts):
 
 
 class _SourceInfo(SymbolUser):
-    def __init__(self, file_name: FileRefResolver):
-        self.file_reference = file_name
+    def __init__(self, file_name: PathResolver):
+        self.path = file_name
 
 
 class _SourceInfoForInterpreterThatIsAnExecutableFile(_SourceInfo):
     def __init__(self,
-                 file_name: FileRefResolver,
+                 file_name: PathResolver,
                  arguments: ListResolver):
         super().__init__(file_name)
         self.arguments = arguments
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
-        return tuple(self.file_reference.references) + tuple(self.arguments.references)
+        return tuple(self.path.references) + tuple(self.arguments.references)
 
 
 class _SourceInfoForInterpreterThatIsAShellCommand(_SourceInfo):
     def __init__(self,
-                 file_name: FileRefResolver,
+                 file_name: PathResolver,
                  arguments: StringResolver):
         super().__init__(file_name)
         self.arguments = arguments
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
-        return tuple(self.file_reference.references) + tuple(self.arguments.references)
+        return tuple(self.path.references) + tuple(self.arguments.references)
 
 
 class _Parser(ExecutableObjectParser):
@@ -99,8 +99,8 @@ class _Parser(ExecutableObjectParser):
         single_line = single_line.strip()
         source = ParseSource(single_line)
         try:
-            source_file_resolver = parse_file_ref.parse_file_ref_from_parse_source(source,
-                                                                                   RELATIVITY_CONFIGURATION)
+            source_file_resolver = parse_path.parse_path_from_parse_source(source,
+                                                                           RELATIVITY_CONFIGURATION)
             if self.is_shell:
                 return self._shell(source_file_resolver, source)
             else:
@@ -112,7 +112,7 @@ class _Parser(ExecutableObjectParser):
             raise ParseException(svh.new_svh_validation_error__str(ex.error_message))
 
     @staticmethod
-    def _executable_file(source_file: FileRefResolver,
+    def _executable_file(source_file: PathResolver,
                          source: ParseSource,
                          ) -> _SourceInfoForInterpreterThatIsAnExecutableFile:
         arguments = parse_list.parse_list(source)
@@ -120,7 +120,7 @@ class _Parser(ExecutableObjectParser):
                                                                arguments)
 
     @staticmethod
-    def _shell(source_file: FileRefResolver,
+    def _shell(source_file: PathResolver,
                source: ParseSource,
                ) -> _SourceInfoForInterpreterThatIsAShellCommand:
         stripped_arguments_string = source.remaining_source.strip()
@@ -136,8 +136,8 @@ class _Validator(parts.Validator):
         self.environment = environment
         self.source = source
         self.validator = PreOrPostSdsSvhValidationErrorValidator(
-            FileRefCheckValidator(FileRefCheck(source.file_reference,
-                                               file_properties.must_exist_as(file_properties.FileType.REGULAR)))
+            PathCheckValidator(PathCheck(source.path,
+                                         file_properties.must_exist_as(file_properties.FileType.REGULAR)))
         )
 
     def validate_pre_sds(self,
@@ -163,7 +163,7 @@ class _ProgramExecutor(SubProcessExecutor):
 
     def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
         arguments = list_resolvers.concat([
-            list_resolvers.from_strings([string_resolvers.from_file_ref_resolver(self.source.file_reference)]),
+            list_resolvers.from_strings([string_resolvers.from_path_resolver(self.source.path)]),
             self.source.arguments,
         ])
 
@@ -188,7 +188,7 @@ class _ShellSubProcessExecutor(SubProcessExecutor):
 
             string_resolvers.from_fragments([
                 string_resolvers.transformed_fragment(
-                    string_resolvers.file_ref_fragment(self.source.file_reference),
+                    string_resolvers.path_fragment(self.source.path),
                     shlex.quote)
             ]),
 

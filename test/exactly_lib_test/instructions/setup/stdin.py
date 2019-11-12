@@ -1,10 +1,10 @@
 import unittest
 from typing import List
 
-from exactly_lib.definitions import file_ref as file_ref_syntax
 from exactly_lib.definitions import instruction_arguments
-from exactly_lib.definitions.file_ref import REL_HOME_CASE_OPTION_NAME
+from exactly_lib.definitions import path as path_syntax
 from exactly_lib.definitions.instruction_arguments import ASSIGNMENT_OPERATOR
+from exactly_lib.definitions.path import REL_HOME_CASE_OPTION_NAME
 from exactly_lib.instructions.setup import stdin as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -16,10 +16,10 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
-from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
+from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
 from exactly_lib.test_case_utils.parse import parse_string
-from exactly_lib.type_system.data import file_ref
-from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data import path_ddv
+from exactly_lib.type_system.data import paths
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
@@ -58,8 +58,8 @@ class TestParse(unittest.TestCase):
             source4(''),
             assignment_of('string superfluous-argument'),
             assignment_of('{file_option} {rel_home} file superfluous-argument'.format(
-                file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
-                rel_home=file_ref_syntax.REL_HOME_CASE_OPTION,
+                file_option=option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
+                rel_home=path_syntax.REL_HOME_CASE_OPTION,
             )),
             assignment_of('<<MARKER superfluous argument',
                           ['single line',
@@ -79,7 +79,7 @@ class TestParse(unittest.TestCase):
         for rel_option_type in sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_options:
             option_string = long_option_syntax(REL_OPTIONS_MAP[rel_option_type].option_name.long)
             instruction_argument = '{file_option} {rel_option} file'.format(
-                file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
+                file_option=option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
                 rel_option=option_string)
             with self.subTest(msg='Argument ' + instruction_argument):
                 for source in equivalent_source_variants__with_source_check(self,
@@ -94,10 +94,10 @@ class TestParse(unittest.TestCase):
     def test_successful_single_last_line(self):
         test_cases = [
             '{file_option} file'.format(
-                file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
+                file_option=option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
             ),
             '{file_option} {relativity_option} "file name with space"'.format(
-                file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
+                file_option=option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
                 relativity_option=option_syntax(REL_HOME_CASE_OPTION_NAME),
             ),
         ]
@@ -136,7 +136,7 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
         for rel_opt in accepted_relativity_options:
             with self.subTest(option_string=rel_opt.option_argument):
                 self._run(assignment_of('{file_option} {relativity_option} file.txt'.format(
-                    file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
+                    file_option=option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
                     relativity_option=rel_opt.option_argument),
                     ['following line']),
                     Arrangement(
@@ -146,8 +146,8 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                     ),
                     Expectation(
                         settings_builder=AssertStdinFileIsSetToFile(
-                            file_refs.of_rel_option(rel_opt.relativity,
-                                                    file_refs.constant_path_part('file.txt'))),
+                            paths.of_rel_option(rel_opt.relativity,
+                                                paths.constant_path_part('file.txt'))),
                         symbol_usages=rel_opt.symbols.usages_expectation(),
                         source=is_at_beginning_of_line(2)),
                 )
@@ -164,7 +164,7 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
         for rel_opt in accepted_relativity_options:
             with self.subTest(option_string=rel_opt.option_argument):
                 self._run(assignment_of('{file_option} {relativity_option} file.txt'.format(
-                    file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
+                    file_option=option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
                     relativity_option=rel_opt.option_argument),
                     ['following line']),
                     Arrangement(
@@ -174,8 +174,8 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                     ),
                     Expectation(
                         settings_builder=AssertStdinFileIsSetToFile(
-                            file_refs.of_rel_option(RelOptionType.REL_HOME_CASE,
-                                                    file_refs.constant_path_part('file.txt'))),
+                            paths.of_rel_option(RelOptionType.REL_HOME_CASE,
+                                                paths.constant_path_part('file.txt'))),
                         symbol_usages=rel_opt.symbols.usages_expectation(),
                         source=is_at_beginning_of_line(2)),
                 )
@@ -208,9 +208,9 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
         cases = [
             ('string value container',
              data_symbol_utils.string_constant_container('string symbol value')),
-            ('file ref value container',
-             data_symbol_utils.file_ref_constant_container(
-                 file_refs.rel_act(file_refs.constant_path_part('file-name.txt')))),
+            ('path value container',
+             data_symbol_utils.path_constant_container(
+                 paths.rel_act(paths.constant_path_part('file-name.txt')))),
         ]
         for case in cases:
             with self.subTest(case[0]):
@@ -237,8 +237,8 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
 class TestFailingInstructionExecution(TestCaseBaseForParser):
     def test_referenced_file_does_not_exist(self):
         self._run(assignment_of('{file_option} {rel_home} non-existing-file'.format(
-            file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
-            rel_home=file_ref_syntax.REL_HOME_CASE_OPTION,
+            file_option=option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
+            rel_home=path_syntax.REL_HOME_CASE_OPTION,
         )),
             Arrangement(),
             Expectation(pre_validation_result=svh_assertions.is_validation_error(),
@@ -251,7 +251,7 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
             'SYMBOL',
             sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants)
         self._run(assignment_of('{file_option} {relativity_option} file.txt'.format(
-            file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
+            file_option=option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
             relativity_option=symbol_rel_opt.option_argument)),
             Arrangement(
                 symbols=symbol_rel_opt.symbols.in_arrangement(),
@@ -268,7 +268,7 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
             'SYMBOL',
             sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants)
         self._run(assignment_of('{file_option} {relativity_option} file.txt'.format(
-            file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
+            file_option=option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
             relativity_option=symbol_rel_opt.option_argument)),
             Arrangement(
                 symbols=symbol_rel_opt.symbols.in_arrangement(),
@@ -281,8 +281,8 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
 
     def test_referenced_file_is_a_directory(self):
         self._run(assignment_of('{file_option} {rel_home} directory'.format(
-            file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
-            rel_home=file_ref_syntax.REL_HOME_CASE_OPTION,
+            file_option=option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
+            rel_home=path_syntax.REL_HOME_CASE_OPTION,
         )),
             Arrangement(
                 hds_contents=case_home_dir_contents(DirContents([empty_dir('directory')]))
@@ -294,8 +294,8 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
 
 class AssertStdinFileIsSetToFile(ValueAssertionBase):
     def __init__(self,
-                 expected_file_reference: file_ref.FileRef):
-        self._expected_file_reference = expected_file_reference
+                 expected_path: path_ddv.PathDdv):
+        self._expected_path = expected_path
 
     def _apply(self,
                put: unittest.TestCase,
@@ -305,7 +305,7 @@ class AssertStdinFileIsSetToFile(ValueAssertionBase):
         assert isinstance(model, SettingsBuilderAssertionModel)  # Type info for IDE
         put.assertIsNone(model.actual.stdin.contents,
                          message_builder.apply('contents should not be set when using file'))
-        expected_file_name = self._expected_file_reference.value_of_any_dependency(
+        expected_file_name = self._expected_path.value_of_any_dependency(
             model.environment.path_resolving_environment_pre_or_post_sds.home_and_sds)
         put.assertEqual(expected_file_name,
                         model.actual.stdin.file_name,

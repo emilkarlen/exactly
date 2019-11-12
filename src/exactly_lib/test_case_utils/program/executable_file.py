@@ -1,18 +1,18 @@
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.program.command import command_resolvers
 
 
 class ExecutableFileWithArgsResolver:
     def __init__(self,
-                 executable_file: FileRefResolver,
+                 executable_file: PathResolver,
                  arguments: ListResolver):
         self._executable_file = executable_file
         self._arguments = arguments
 
     @property
-    def executable_file(self) -> FileRefResolver:
+    def executable_file(self) -> PathResolver:
         return self._executable_file
 
     @property

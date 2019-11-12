@@ -22,7 +22,7 @@ from exactly_lib_test.symbol.test_resources.string_transformer import is_referen
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly
-from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
+from exactly_lib_test.test_case_utils.parse.parse_path import path_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_arguments
@@ -108,7 +108,7 @@ class TestSymbolUsages(TestCaseBase):
 
             equals_symbol_reference(
                 SymbolReference(dst_file_symbol.name,
-                                file_ref_or_string_reference_restrictions(
+                                path_or_string_reference_restrictions(
                                     new_file.REL_OPT_ARG_CONF.options.accepted_relativity_variants))
             ),
 
@@ -116,7 +116,7 @@ class TestSymbolUsages(TestCaseBase):
 
             equals_symbol_reference(
                 SymbolReference(src_file_symbol.name,
-                                file_ref_or_string_reference_restrictions(
+                                path_or_string_reference_restrictions(
                                     parse_file_maker._src_rel_opt_arg_conf_for_phase(
                                         self.conf.phase_is_after_act()).options.accepted_relativity_variants))
             ),

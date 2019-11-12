@@ -5,9 +5,9 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_d
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
-from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
+from exactly_lib.test_case_utils.parse.parse_path import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
-from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data import paths
 from exactly_lib.util.process_execution.command import Command
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
@@ -139,7 +139,7 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
     def runTest(self):
         sub_dir_of_home = 'sub-dir'
         dir_symbol = NameAndValue('dir_symbol_name',
-                                  file_refs.rel_home_act(file_refs.constant_path_part(sub_dir_of_home)))
+                                  paths.rel_home_act(paths.constant_path_part(sub_dir_of_home)))
 
         source_file_name_symbol = NameAndValue('source_file_name_symbol_name',
                                                'the-source-file.py')
@@ -164,7 +164,7 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
             ])),
             symbol_table=SymbolTable({
                 dir_symbol.name:
-                    su.file_ref_constant_container(dir_symbol.value),
+                    su.path_constant_container(dir_symbol.value),
 
                 source_file_name_symbol.name:
                     su.string_constant_container(source_file_name_symbol.value),

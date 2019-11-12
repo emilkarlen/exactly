@@ -3,16 +3,15 @@ from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from typing import Optional, Iterable
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
-from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.description import trace_renderers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherValue
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist, TmpDirFileSpace
@@ -149,9 +148,7 @@ class StringMatcher(WithCachedTreeStructureDescriptionBase,
         return TraceBuilder(self.name)
 
 
-class StringMatcherValue(DirDependentValue[StringMatcher],
-                         MatcherValue[FileToCheck],
-                         ABC):
+class StringMatcherDdv(MatcherDdv[FileToCheck], ABC):
     def structure(self) -> StructureRenderer:
         return renderers.header_only('string-matcher TODO')
 

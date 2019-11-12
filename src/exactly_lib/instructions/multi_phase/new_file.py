@@ -26,7 +26,7 @@ from exactly_lib.instructions.utils.parse.parse_file_maker import CONTENTS_ASSIG
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.symbol_usage import SymbolUsage
@@ -36,7 +36,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
-from exactly_lib.test_case_utils.parse import parse_file_ref
+from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
@@ -98,7 +98,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
 
 class TheInstructionEmbryo(embryo.InstructionEmbryo):
     def __init__(self,
-                 path_to_create: FileRefResolver,
+                 path_to_create: PathResolver,
                  file_maker: FileMaker):
         self._path_to_create = path_to_create
         self._validator = pre_or_post_validation.all_of([
@@ -139,7 +139,7 @@ class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo):
                                consume_last_line_if_is_at_eol_after_parse=True) as parser:
             assert isinstance(parser, TokenParser)  # Type info for IDE
 
-            path_to_create = parse_file_ref.parse_file_ref_from_token_parser(REL_OPT_ARG_CONF, parser)
+            path_to_create = parse_path.parse_path_from_token_parser(REL_OPT_ARG_CONF, parser)
             instruction_config = InstructionConfig(
                 InstructionSourceInfo(first_line_number,
                                       self._instruction_name),
@@ -153,26 +153,26 @@ class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo):
 
 
 class _DstFileNameValidator(PreOrPostSdsValidator):
-    def __init__(self, path_to_create: FileRefResolver):
+    def __init__(self, path_to_create: PathResolver):
         self._path_to_create = path_to_create
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
-        path_value = self._path_to_create.resolve(environment.symbols)
-        suffix = path_value.path_suffix()
-        suffix_path = path_value.path_suffix_path()
+        path_ddv = self._path_to_create.resolve(environment.symbols)
+        suffix = path_ddv.path_suffix()
+        suffix_path = path_ddv.path_suffix_path()
 
         suffix_value = suffix.value()
         if suffix_value == '' or suffix_path.name == '':
             return path_err_msgs.line_header__value(
                 _PATH_IS_DIR,
-                path_value.describer()
+                path_ddv.describer()
             )
 
         (head, tail) = os.path.split(suffix_value)
         if tail in _RELATIVE_DIR_NAMES:
             return path_err_msgs.line_header__value(
                 _PATH_IS_RELATIVE_DIR,
-                path_value.describer(),
+                path_ddv.describer(),
             )
 
         return None

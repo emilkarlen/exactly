@@ -119,7 +119,7 @@ class TestFailingScenarios(TestCaseBase):
         symbol_name = 'symbol_name'
         reference_to_string_symbol = data_symbol_utils.symbol_reference(symbol_name,
                                                                         StringRestriction())
-        definition_of_path_symbol = data_symbol_utils.file_ref_symbol_definition(symbol_name)
+        definition_of_path_symbol = data_symbol_utils.path_symbol_definition(symbol_name)
         symbol_usages = [
             definition_of_path_symbol,
             reference_to_string_symbol,

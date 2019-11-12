@@ -3,7 +3,7 @@ from typing import Sequence
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.data import string_value as sv
+from exactly_lib.type_system.data import string_ddv as sv
 from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -33,7 +33,7 @@ class StringFragmentResolver(DataValueResolver):
         """
         raise ValueError('The object is not a string constant')
 
-    def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
+    def resolve(self, symbols: SymbolTable) -> sv.StringFragmentDdv:
         raise NotImplementedError()
 
 
@@ -53,10 +53,10 @@ class StringResolver(DataValueResolver):
     def value_type(self) -> ValueType:
         return ValueType.STRING
 
-    def resolve(self, symbols: SymbolTable) -> sv.StringValue:
+    def resolve(self, symbols: SymbolTable) -> sv.StringDdv:
         fragments = [fr.resolve(symbols)
                      for fr in self._fragment_resolvers]
-        return sv.StringValue(tuple(fragments))
+        return sv.StringDdv(tuple(fragments))
 
     @property
     def references(self) -> Sequence[SymbolReference]:

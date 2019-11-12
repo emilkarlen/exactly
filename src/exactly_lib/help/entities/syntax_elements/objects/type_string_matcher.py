@@ -11,7 +11,7 @@ from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxE
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
 from exactly_lib.test_case_utils import negation_of_predicate
-from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import FILE_ARGUMENT_OPTION
+from exactly_lib.test_case_utils.parse.parse_here_doc_or_path import FILE_ARGUMENT_OPTION
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.matcher_options import EMPTY_ARGUMENT
 from exactly_lib.test_case_utils.string_matcher.parse.parts.equality import \

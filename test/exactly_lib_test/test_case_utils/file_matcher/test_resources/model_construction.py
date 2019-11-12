@@ -2,7 +2,7 @@ import pathlib
 from typing import Callable
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.data.file_ref import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib_test.type_system.data.test_resources import described_path
 
 ModelConstructor = Callable[[HomeAndSds], DescribedPathPrimitive]

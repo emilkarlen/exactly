@@ -8,10 +8,8 @@ from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_utils.file_matcher import file_matcher_values
-from exactly_lib.test_case_utils.file_matcher.file_matcher_values import FileMatcherValueFromPrimitiveValue, \
-    FileMatcherValueFromParts
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherValue
+from exactly_lib.test_case_utils.file_matcher import file_matcher_ddvs as ddvs
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -24,8 +22,8 @@ class FileMatcherConstantResolver(FileMatcherResolver):
     def __init__(self, value: FileMatcher):
         self._value = value
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
-        return FileMatcherValueFromPrimitiveValue(self._value)
+    def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
+        return ddvs.FileMatcherValueFromPrimitiveDdv(self._value)
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -45,7 +43,7 @@ class FileMatcherReferenceResolver(FileMatcherResolver):
         self._references = [SymbolReference(name_of_referenced_resolver,
                                             ValueTypeRestriction(ValueType.FILE_MATCHER))]
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
         resolver = lookups.lookup_file_matcher(symbols, self._name_of_referenced_resolver)
         return resolver.resolve(symbols)
 
@@ -61,8 +59,8 @@ class FileMatcherNotResolver(FileMatcherResolver):
     def __init__(self, file_matcher_resolver: FileMatcherResolver):
         self._resolver = file_matcher_resolver
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
-        return file_matcher_values.FileMatcherNotValue(self._resolver.resolve(symbols))
+    def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
+        return ddvs.FileMatcherNotValue(self._resolver.resolve(symbols))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -74,8 +72,8 @@ class FileMatcherAndResolver(FileMatcherResolver):
         self._resolvers = parts
         self._references = references_from_objects_with_symbol_references(parts)
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
-        return file_matcher_values.FileMatcherAndValue([
+    def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
+        return ddvs.FileMatcherAndValue([
             part.resolve(symbols)
             for part in self._resolvers
         ])
@@ -90,8 +88,8 @@ class FileMatcherOrResolver(FileMatcherResolver):
         self._resolvers = parts
         self._references = references_from_objects_with_symbol_references(parts)
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
-        return file_matcher_values.FileMatcherOrValue([
+    def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
+        return ddvs.FileMatcherOrValue([
             part.resolve(symbols)
             for part in self._resolvers
         ])
@@ -110,14 +108,14 @@ class FileMatcherResolverFromParts(FileMatcherResolver):
         self._validator = validator
         self._references = references
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
         def get_matcher(tcds: HomeAndSds) -> FileMatcher:
             environment = PathResolvingEnvironmentPreOrPostSds(tcds, symbols)
             return self._matcher(environment)
 
-        return FileMatcherValueFromParts(self._validator,
-                                         get_matcher,
-                                         )
+        return ddvs.FileMatcherDdvFromParts(self._validator,
+                                            get_matcher,
+                                            )
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -130,11 +128,11 @@ class FileMatcherResolverFromParts(FileMatcherResolver):
 class FileMatcherResolverFromValueParts(FileMatcherResolver):
     def __init__(self,
                  references: Sequence[SymbolReference],
-                 make_value: Callable[[SymbolTable], FileMatcherValue]):
-        self._make_value = make_value
+                 make_ddv: Callable[[SymbolTable], FileMatcherDdv]):
+        self._make_value = make_ddv
         self._references = references
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcherValue:
+    def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
         return self._make_value(symbols)
 
     @property

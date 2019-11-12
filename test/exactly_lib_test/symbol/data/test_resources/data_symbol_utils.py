@@ -1,10 +1,10 @@
-from typing import Iterable
+from typing import Iterable, Tuple
 
 from exactly_lib.symbol import resolver_structure
-from exactly_lib.symbol.data import file_ref_resolvers
+from exactly_lib.symbol.data import path_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
@@ -12,15 +12,15 @@ from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.type_system.data import file_ref as _file_ref
-from exactly_lib.type_system.data.list_value import ListValue
-from exactly_lib.type_system.data.string_value import StringValue
+from exactly_lib.type_system.data import path_ddv as _path
+from exactly_lib.type_system.data.list_ddv import ListDdv
+from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.value_type import DataValueType
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.symbol.data.test_resources.list_resolvers import ListResolverTestImplForConstantListValue
 from exactly_lib_test.symbol.data.test_resources.value_resolvers import ConstantValueResolver
 from exactly_lib_test.symbol.test_resources.symbol_utils import single_line_sequence
-from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
+from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
 
 
 def container(value_resolver: DataValueResolver,
@@ -41,11 +41,11 @@ def string_constant_container(constant_str: str,
                            single_line_sequence(line_num, source_line))
 
 
-def string_value_constant_container2(string_value: StringValue,
-                                     line_num: int = 1,
-                                     source_line: str = 'value def line') -> SymbolContainer:
+def string_ddv_constant_container2(string_ddv: StringDdv,
+                                   line_num: int = 1,
+                                   source_line: str = 'value def line') -> SymbolContainer:
     return SymbolContainer(ConstantValueResolver(DataValueType.STRING,
-                                                 string_value),
+                                                 string_ddv),
                            single_line_sequence(line_num, source_line))
 
 
@@ -54,16 +54,16 @@ def string_symbol_definition(name: str, constant_str: str = 'string value') -> S
                             string_constant_container(constant_str))
 
 
-def string_value_symbol_definition(name: str, string_value: StringValue) -> SymbolDefinition:
+def string_ddv_symbol_definition(name: str, string_ddv: StringDdv) -> SymbolDefinition:
     return SymbolDefinition(name,
-                            string_value_constant_container2(string_value))
+                            string_ddv_constant_container2(string_ddv))
 
 
 def symbol_table_with_single_string_value(name: str, string_value: str = 'string value') -> SymbolTable:
     return symbol_table_from_symbol_definitions([string_symbol_definition(name, string_value)])
 
 
-def symbol_table_with_string_values(name_and_value_pairs: iter) -> SymbolTable:
+def symbol_table_with_string_values(name_and_value_pairs: Iterable[Tuple[str, str]]) -> SymbolTable:
     sym_defs = [string_symbol_definition(name, value)
                 for (name, value) in name_and_value_pairs]
     return symbol_table_from_symbol_definitions(sym_defs)
@@ -79,56 +79,56 @@ def symbol_table_with_string_values_from_name_and_value(name_and_value_list: ite
     return SymbolTable(dict(elements))
 
 
-def list_value_constant_container(list_value: ListValue,
-                                  line_num: int = 1,
-                                  source_line: str = 'value def line') -> SymbolContainer:
-    return SymbolContainer(ListResolverTestImplForConstantListValue(list_value),
+def list_ddv_constant_container(list_ddv: ListDdv,
+                                line_num: int = 1,
+                                source_line: str = 'value def line') -> SymbolContainer:
+    return SymbolContainer(ListResolverTestImplForConstantListValue(list_ddv),
                            single_line_sequence(line_num, source_line))
 
 
-def list_symbol_definition(name: str, resolved_value: ListValue) -> SymbolDefinition:
-    return SymbolDefinition(name, list_value_constant_container(resolved_value))
+def list_symbol_definition(name: str, resolved_value: ListDdv) -> SymbolDefinition:
+    return SymbolDefinition(name, list_ddv_constant_container(resolved_value))
 
 
-def symbol_table_with_single_list_value(symbol_name: str, resolved_value: ListValue) -> SymbolTable:
+def symbol_table_with_single_list_value(symbol_name: str, resolved_value: ListDdv) -> SymbolTable:
     return symbol_table_from_symbol_definitions([list_symbol_definition(symbol_name, resolved_value)])
 
 
-def file_ref_constant_container(
-        file_ref_value: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
-                                                               relativity=RelOptionType.REL_CWD),
+def path_constant_container(
+        path_value: _path.PathDdv = path_test_impl('file-name-rel-cd',
+                                                   relativity=RelOptionType.REL_CWD),
         line_num: int = 1,
         source_line: str = 'value def line') -> SymbolContainer:
-    return SymbolContainer(file_ref_resolvers.constant(file_ref_value),
+    return SymbolContainer(path_resolvers.constant(path_value),
                            single_line_sequence(line_num, source_line))
 
 
-def file_ref_resolver_container(file_ref_resolver: FileRefResolver,
-                                line_num: int = 1,
-                                source_line: str = 'value def line') -> SymbolContainer:
-    return SymbolContainer(file_ref_resolver,
+def path_resolver_container(path_resolver: PathResolver,
+                            line_num: int = 1,
+                            source_line: str = 'value def line') -> SymbolContainer:
+    return SymbolContainer(path_resolver,
                            single_line_sequence(line_num, source_line))
 
 
-def file_ref_symbol_definition(
+def path_symbol_definition(
         name: str,
-        file_ref_value: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
-                                                               relativity=RelOptionType.REL_CWD),
+        path_value: _path.PathDdv = path_test_impl('file-name-rel-cd',
+                                                   relativity=RelOptionType.REL_CWD),
         line_num: int = 1,
         source_line: str = 'value def line'
 ) -> SymbolDefinition:
     return SymbolDefinition(name,
-                            file_ref_constant_container(file_ref_value, line_num, source_line))
+                            path_constant_container(path_value, line_num, source_line))
 
 
-def symbol_table_with_single_file_ref_value(
+def symbol_table_with_single_path_value(
         name: str,
-        file_ref_value: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
-                                                               relativity=RelOptionType.REL_CWD),
+        path_value: _path.PathDdv = path_test_impl('file-name-rel-cd',
+                                                   relativity=RelOptionType.REL_CWD),
         line_num: int = 1,
         source_line: str = 'value def line') -> SymbolTable:
     return symbol_table_from_symbol_definitions(
-        [file_ref_symbol_definition(name, file_ref_value, line_num, source_line)])
+        [path_symbol_definition(name, path_value, line_num, source_line)])
 
 
 def symbol_reference(name: str,

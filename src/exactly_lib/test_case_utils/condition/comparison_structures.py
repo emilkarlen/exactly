@@ -57,7 +57,7 @@ class _FailureReporter(Generic[T]):
         return self.err_msg_resolver.failure_info()
 
 
-class OperandValue(Generic[T], MultiDependenciesDdv[T], ABC):
+class OperandDdv(Generic[T], MultiDependenciesDdv[T], ABC):
     @abstractmethod
     def describer(self) -> DetailsRenderer:
         pass
@@ -91,5 +91,5 @@ class OperandResolver(Generic[T], ABC):
         pass
 
     @abstractmethod
-    def resolve(self, symbols: SymbolTable) -> OperandValue[T]:
+    def resolve(self, symbols: SymbolTable) -> OperandDdv[T]:
         pass

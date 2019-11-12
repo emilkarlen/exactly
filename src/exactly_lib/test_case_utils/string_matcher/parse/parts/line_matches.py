@@ -14,7 +14,7 @@ from exactly_lib.test_case_utils.string_matcher import delegated_matcher, resolv
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.type_system.logic.impls import quantifier_matchers, combinator_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherValue
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherDdv
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -49,15 +49,15 @@ def _parse_line_matches_tokens_and_line_matcher(token_parser: TokenParser) -> Li
 
 def matcher_for_any_line_matches(expectation_type: ExpectationType,
                                  line_matcher_resolver: LineMatcherResolver) -> StringMatcherResolver:
-    def get_matcher(symbols: SymbolTable) -> StringMatcherValue:
-        matcher = quantifier_matchers.ExistsValue(
+    def get_matcher(symbols: SymbolTable) -> StringMatcherDdv:
+        matcher = quantifier_matchers.ExistsDdv(
             _element_setup(),
             line_matcher_resolver.resolve(symbols),
         )
         if expectation_type is ExpectationType.NEGATIVE:
-            matcher = combinator_matchers.NegationValue(matcher)
+            matcher = combinator_matchers.NegationDdv(matcher)
 
-        return delegated_matcher.StringMatcherValueDelegatedToMatcher(matcher)
+        return delegated_matcher.StringMatcherDdvDelegatedToMatcher(matcher)
 
     return resolvers.StringMatcherResolverFromParts2(
         line_matcher_resolver.references,
@@ -68,15 +68,15 @@ def matcher_for_any_line_matches(expectation_type: ExpectationType,
 
 def matcher_for_every_line_matches(expectation_type: ExpectationType,
                                    line_matcher_resolver: LineMatcherResolver) -> StringMatcherResolver:
-    def get_matcher(symbols: SymbolTable) -> StringMatcherValue:
-        matcher = quantifier_matchers.ForAllValue(
+    def get_matcher(symbols: SymbolTable) -> StringMatcherDdv:
+        matcher = quantifier_matchers.ForAllDdv(
             _element_setup(),
             line_matcher_resolver.resolve(symbols),
         )
         if expectation_type is ExpectationType.NEGATIVE:
-            matcher = combinator_matchers.NegationValue(matcher)
+            matcher = combinator_matchers.NegationDdv(matcher)
 
-        return delegated_matcher.StringMatcherValueDelegatedToMatcher(matcher)
+        return delegated_matcher.StringMatcherDdvDelegatedToMatcher(matcher)
 
     return resolvers.StringMatcherResolverFromParts2(
         line_matcher_resolver.references,

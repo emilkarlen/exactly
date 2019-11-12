@@ -5,7 +5,7 @@ from exactly_lib.symbol.logic.resolver import MatcherResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.impls import combinator_matchers
-from exactly_lib.type_system.logic.matcher_base_class import MatcherValue, T
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, T
 from exactly_lib.util.symbol_table import SymbolTable
 
 MODEL = TypeVar('MODEL')
@@ -26,16 +26,16 @@ class Negation(_ImplBase[MODEL]):
         super().__init__((operand,))
         self._operand = operand
 
-    def resolve(self, symbols: SymbolTable) -> MatcherValue[T]:
-        return combinator_matchers.NegationValue(self._operand.resolve(symbols))
+    def resolve(self, symbols: SymbolTable) -> MatcherDdv[T]:
+        return combinator_matchers.NegationDdv(self._operand.resolve(symbols))
 
 
 class Conjunction(_ImplBase[MODEL]):
     def __init__(self, operands: Sequence[MatcherResolver[MODEL]]):
         super().__init__(operands)
 
-    def resolve(self, symbols: SymbolTable) -> MatcherValue[T]:
-        return combinator_matchers.ConjunctionValue(
+    def resolve(self, symbols: SymbolTable) -> MatcherDdv[T]:
+        return combinator_matchers.ConjunctionDdv(
             [operand.resolve(symbols)
              for operand in self._operands]
         )
@@ -45,8 +45,8 @@ class Disjunction(_ImplBase[MODEL]):
     def __init__(self, operands: Sequence[MatcherResolver[MODEL]]):
         super().__init__(operands)
 
-    def resolve(self, symbols: SymbolTable) -> MatcherValue[T]:
-        return combinator_matchers.DisjunctionValue(
+    def resolve(self, symbols: SymbolTable) -> MatcherDdv[T]:
+        return combinator_matchers.DisjunctionDdv(
             [operand.resolve(symbols)
              for operand in self._operands]
         )

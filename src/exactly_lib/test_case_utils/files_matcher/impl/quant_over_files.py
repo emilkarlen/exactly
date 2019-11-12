@@ -22,9 +22,9 @@ from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher i
 from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
-from exactly_lib.type_system.logic.file_matcher import FileMatcherValue, FileMatcherModel, FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, FileMatcher
 from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel, FilesMatcher, \
-    FilesMatcherConstructor, FilesMatcherValue
+    FilesMatcherConstructor, FilesMatcherDdv
 from exactly_lib.type_system.logic.impls import quantifier_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
@@ -119,10 +119,10 @@ class _QuantifiedMatcher(FilesMatcher):
         )
 
 
-class _QuantifiedMatcherValue(FilesMatcherValue):
+class _QuantifiedMatcherDdv(FilesMatcherDdv):
     def __init__(self,
                  quantifier: Quantifier,
-                 matcher_on_file: FileMatcherValue,
+                 matcher_on_file: FileMatcherDdv,
                  ):
         self._quantifier = quantifier
         self._matcher_on_file = matcher_on_file
@@ -154,8 +154,8 @@ class _QuantifiedMatcherResolver(FilesMatcherResolverBase):
     def references(self) -> Sequence[SymbolReference]:
         return self._matcher_on_file.references
 
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherValue:
-        return _QuantifiedMatcherValue(
+    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
+        return _QuantifiedMatcherDdv(
             self._quantifier,
             self._matcher_on_file.resolve(symbols),
         )

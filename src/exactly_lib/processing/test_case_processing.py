@@ -11,8 +11,8 @@ from exactly_lib.test_case.error_description import ErrorDescription
 class TestCaseFileReference:
     def __init__(self,
                  file_path: pathlib.Path,
-                 file_reference_relativity_root_dir: pathlib.Path):
-        self.__file_reference_relativity_root_dir = file_reference_relativity_root_dir
+                 path_relativity_root_dir: pathlib.Path):
+        self.__path_relativity_root_dir = path_relativity_root_dir
         self.__file_path = file_path
 
     @property
@@ -20,8 +20,8 @@ class TestCaseFileReference:
         return self.__file_path
 
     @property
-    def file_reference_relativity_root_dir(self) -> pathlib.Path:
-        return self.__file_reference_relativity_root_dir
+    def path_relativity_root_dir(self) -> pathlib.Path:
+        return self.__path_relativity_root_dir
 
 
 def test_case_reference_of_source_file(source_file: pathlib.Path) -> TestCaseFileReference:

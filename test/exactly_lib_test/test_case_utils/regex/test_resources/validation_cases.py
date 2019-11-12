@@ -1,6 +1,6 @@
 from typing import List, Sequence
 
-from exactly_lib.symbol.data import file_ref_resolvers
+from exactly_lib.symbol.data import path_resolvers
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -28,9 +28,9 @@ class RegexValidationCase:
 
 
 def failing_regex_validation_cases(symbol_in_regex_name: str = 'symbol_in_regex') -> Sequence[RegexValidationCase]:
-    post_sds_file_ref = NameAndValue(
+    post_sds_path = NameAndValue(
         symbol_in_regex_name,
-        file_ref_resolvers.of_rel_option(RelOptionType.REL_ACT)
+        path_resolvers.of_rel_option(RelOptionType.REL_ACT)
     )
     return [
         RegexValidationCase(
@@ -42,9 +42,9 @@ def failing_regex_validation_cases(symbol_in_regex_name: str = 'symbol_in_regex'
         ),
         RegexValidationCase(
             'failing validation/post sds',
-            '*' + symbol_reference_syntax_for_name(post_sds_file_ref.name),
-            [post_sds_file_ref],
-            [is_reference_to_valid_regex_string_part(post_sds_file_ref.name)],
+            '*' + symbol_reference_syntax_for_name(post_sds_path.name),
+            [post_sds_path],
+            [is_reference_to_valid_regex_string_part(post_sds_path.name)],
             validation.post_sds_validation_fails__w_any_msg(),
         ),
     ]

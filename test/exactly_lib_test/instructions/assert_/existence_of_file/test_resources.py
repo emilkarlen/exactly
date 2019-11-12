@@ -4,7 +4,7 @@ from typing import List, Optional
 from exactly_lib.definitions import expression
 from exactly_lib.instructions.assert_ import existence_of_file
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import FileRefArgument
+from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import PathArgument
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
 
 
@@ -24,12 +24,12 @@ class Argument(ABC):
 class PathArg(Argument):
     """Generate source using __str__"""
 
-    def __init__(self, file_ref: FileRefArgument):
-        self.file_ref = file_ref
+    def __init__(self, path: PathArgument):
+        self.path = path
 
     @property
     def elements(self) -> List:
-        return list(self.file_ref.arguments)
+        return list(self.path.arguments)
 
 
 class CompleteInstructionArg(Argument):

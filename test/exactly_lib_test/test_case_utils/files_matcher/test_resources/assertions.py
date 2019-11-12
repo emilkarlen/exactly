@@ -3,7 +3,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherConstructor, FilesMatcherValue
+from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherConstructor, FilesMatcherDdv
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util import symbol_table
 from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
@@ -22,8 +22,8 @@ def matches_files_matcher_resolver(references: ValueAssertion = asrt.is_empty_se
     def resolve_value(resolver: LogicValueResolver):
         return resolver.resolve(symbols)
 
-    def resolve_constructor(value: FilesMatcherValue):
-        return value.value_of_any_dependency(tcds)
+    def resolve_constructor(ddv: FilesMatcherDdv):
+        return ddv.value_of_any_dependency(tcds)
 
     def resolve_matcher(value: FilesMatcherConstructor):
         return value.construct(TmpDirFileSpaceThatMustNoBeUsed())
@@ -48,7 +48,7 @@ def matches_files_matcher_resolver(references: ValueAssertion = asrt.is_empty_se
         ])
 
     value_assertion = asrt.is_instance_with__many(
-        FilesMatcherValue,
+        FilesMatcherDdv,
         [
             asrt.sub_component('resolve',
                                resolve_constructor,

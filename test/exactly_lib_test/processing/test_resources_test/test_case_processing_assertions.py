@@ -32,7 +32,7 @@ class TestEqualsTestCaseReference(unittest.TestCase):
                 expected=sut.equals_test_case_reference(
                     sut.TestCaseFileReference(
                         _ARBITRARY_FILE_REF.file_path,
-                        _ARBITRARY_FILE_REF.file_reference_relativity_root_dir
+                        _ARBITRARY_FILE_REF.path_relativity_root_dir
                     )
                 ),
                 ),
@@ -50,7 +50,7 @@ class TestEqualsTestCaseReference(unittest.TestCase):
             NEA('unexpected file_path',
                 actual=sut.TestCaseFileReference(
                     _ARBITRARY_FILE_REF.file_path / 'unexpected',
-                    _ARBITRARY_FILE_REF.file_reference_relativity_root_dir
+                    _ARBITRARY_FILE_REF.path_relativity_root_dir
                 )
                 ,
                 expected=sut.equals_test_case_reference(_ARBITRARY_FILE_REF),
@@ -58,7 +58,7 @@ class TestEqualsTestCaseReference(unittest.TestCase):
             NEA('unexpected relativity root dir',
                 actual=sut.TestCaseFileReference(
                     _ARBITRARY_FILE_REF.file_path,
-                    _ARBITRARY_FILE_REF.file_reference_relativity_root_dir / 'unexpected'
+                    _ARBITRARY_FILE_REF.path_relativity_root_dir / 'unexpected'
                 )
                 ,
                 expected=sut.equals_test_case_reference(_ARBITRARY_FILE_REF),

@@ -1,4 +1,4 @@
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import PathResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.logic.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
@@ -15,7 +15,7 @@ def arbitrary_resolver() -> ProgramResolver:
         string_resolvers.StringResolverTestImpl('the string'))
 
 
-def with_ref_to_exe_file(exe_file: FileRefResolver,
+def with_ref_to_exe_file(exe_file: PathResolver,
                          arguments: ArgumentsResolver = arguments_resolvers.empty()
                          ) -> ProgramResolverForCommand:
     return command_program_resolver.plain(
@@ -31,7 +31,7 @@ def with_ref_to_program(program: StringResolver,
     )
 
 
-def interpret_py_source_file_that_must_exist(py_source_file: FileRefResolver,
+def interpret_py_source_file_that_must_exist(py_source_file: PathResolver,
                                              arguments: ArgumentsResolver = arguments_resolvers.empty()
                                              ) -> ProgramResolverForCommand:
     return command_program_resolver.plain(

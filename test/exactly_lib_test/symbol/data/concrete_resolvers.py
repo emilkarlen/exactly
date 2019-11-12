@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers
-from exactly_lib.symbol.data import string_resolver as sr, file_ref_resolver as pr, list_resolver as lr, \
+from exactly_lib.symbol.data import list_resolvers, path_resolvers
+from exactly_lib.symbol.data import string_resolver as sr, path_resolver as pr, list_resolver as lr, \
     visitor as sut
 from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
 from exactly_lib.symbol.data.string_resolvers import str_constant
@@ -10,7 +10,7 @@ from exactly_lib.type_system.value_type import ValueType, DataValueType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     matches_multi_dir_dependent_value
-from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
+from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
 from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 from exactly_lib_test.test_resources.actions import do_return
 
@@ -39,16 +39,16 @@ class TestConstants(unittest.TestCase):
 
 
 class TestValueVisitor(unittest.TestCase):
-    def test_visit_file_ref(self):
+    def test_visit_path(self):
         # ARRANGE #
         visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('ret-val')
         # ACT #
-        ret_val = visitor.visit(file_ref_resolvers.constant(file_ref_test_impl()))
+        ret_val = visitor.visit(path_resolvers.constant(path_test_impl()))
         # ASSERT #
         self.assertEqual('ret-val', ret_val,
                          'Visitor is expected to return value from visit-method')
         self.assertListEqual(visitor.visited_classes,
-                             [pr.FileRefResolver],
+                             [pr.PathResolver],
                              'visited classes')
 
     def test_visit_string(self):
@@ -88,8 +88,8 @@ class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.DataValueResolverP
         self.ret_val = ret_val
         self.visited_classes = []
 
-    def visit_file_ref(self, value: pr.FileRefResolver):
-        self.visited_classes.append(pr.FileRefResolver)
+    def visit_path(self, value: pr.PathResolver):
+        self.visited_classes.append(pr.PathResolver)
         return self.ret_val
 
     def visit_string(self, value: sr.StringResolver):

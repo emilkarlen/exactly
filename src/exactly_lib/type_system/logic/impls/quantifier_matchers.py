@@ -10,7 +10,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation, \
-    MatcherValue, T
+    MatcherDdv, T
 from exactly_lib.util import strings
 from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -180,10 +180,10 @@ class Exists(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
         return self._no_match(tb, num_elements)
 
 
-class ExistsValue(Generic[MODEL, ELEMENT], MatcherValue[MODEL]):
+class ExistsDdv(Generic[MODEL, ELEMENT], MatcherDdv[MODEL]):
     def __init__(self,
                  element_setup: ElementSetup,
-                 predicate: MatcherValue[ELEMENT],
+                 predicate: MatcherDdv[ELEMENT],
                  ):
         self._element_setup = element_setup
         self._predicate = predicate
@@ -239,10 +239,10 @@ class ForAll(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
         return self._all_match(tb, num_elements)
 
 
-class ForAllValue(Generic[MODEL, ELEMENT], MatcherValue[MODEL]):
+class ForAllDdv(Generic[MODEL, ELEMENT], MatcherDdv[MODEL]):
     def __init__(self,
                  element_setup: ElementSetup,
-                 predicate: MatcherValue[ELEMENT],
+                 predicate: MatcherDdv[ELEMENT],
                  ):
         self._element_setup = element_setup
         self._predicate = predicate
