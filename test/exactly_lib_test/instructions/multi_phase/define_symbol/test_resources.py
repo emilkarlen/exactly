@@ -41,8 +41,8 @@ _STD_FORMAT_MAP = {
     'rel_act': path.REL_ACT_OPTION,
     'rel_result': path.REL_RESULT_OPTION,
     'rel_cd': path.REL_CWD_OPTION,
-    'rel_home': path.REL_HOME_CASE_OPTION,
-    'rel_act_home': path.REL_HOME_ACT_OPTION,
+    'rel_home': path.REL_HDS_CASE_OPTION,
+    'rel_act_home': path.REL_HDS_ACT_OPTION,
     'rel_symbol': path.REL_symbol_OPTION,
     'rel_source_file': path.REL_source_file_dir_OPTION,
 }

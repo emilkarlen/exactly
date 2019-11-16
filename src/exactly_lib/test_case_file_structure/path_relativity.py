@@ -5,8 +5,8 @@ from typing import Set, Optional
 class RelOptionType(enum.Enum):
     REL_CWD = 0
 
-    REL_HOME_CASE = 1
-    REL_HOME_ACT = 2
+    REL_HDS_CASE = 1
+    REL_HDS_ACT = 2
 
     REL_ACT = 3
     REL_TMP = 4
@@ -15,6 +15,8 @@ class RelOptionType(enum.Enum):
 
 class RelSdsOptionType(enum.Enum):
     """
+    Denotes directories in the Sandbox Directory Structure.
+
     Id values must match those of `RelOptionType`
     """
     REL_ACT = 3
@@ -22,8 +24,10 @@ class RelSdsOptionType(enum.Enum):
     REL_RESULT = 5
 
 
-class RelNonHomeOptionType(enum.Enum):
+class RelNonHdsOptionType(enum.Enum):
     """
+    Denotes directories not in the Home Directory Structure.
+
     Id values must match those of `RelOptionType`
     """
     REL_CWD = 0
@@ -33,25 +37,27 @@ class RelNonHomeOptionType(enum.Enum):
     REL_RESULT = 5
 
 
-class RelHomeOptionType(enum.Enum):
+class RelHdsOptionType(enum.Enum):
     """
+    Denotes directories in the Home Directory Structure.
+
     Id values must match those of `RelOptionType`
     """
-    REL_HOME_CASE = 1
-    REL_HOME_ACT = 2
+    REL_HDS_CASE = 1
+    REL_HDS_ACT = 2
 
 
 class DirectoryStructurePartition(enum.Enum):
-    HOME = 1
-    NON_HOME = 2
+    HDS = 1
+    NON_HDS = 2
 
 
 DEPENDENCY_DICT = {
-    DirectoryStructurePartition.HOME:
-        frozenset((RelOptionType.REL_HOME_CASE,
-                   RelOptionType.REL_HOME_ACT)),
+    DirectoryStructurePartition.HDS:
+        frozenset((RelOptionType.REL_HDS_CASE,
+                   RelOptionType.REL_HDS_ACT)),
 
-    DirectoryStructurePartition.NON_HOME:
+    DirectoryStructurePartition.NON_HDS:
         frozenset((RelOptionType.REL_ACT,
                    RelOptionType.REL_RESULT,
                    RelOptionType.REL_TMP,
@@ -60,38 +66,38 @@ DEPENDENCY_DICT = {
 }
 
 RESOLVING_DEPENDENCY_OF = {
-    RelOptionType.REL_HOME_CASE: DirectoryStructurePartition.HOME,
-    RelOptionType.REL_HOME_ACT: DirectoryStructurePartition.HOME,
+    RelOptionType.REL_HDS_CASE: DirectoryStructurePartition.HDS,
+    RelOptionType.REL_HDS_ACT: DirectoryStructurePartition.HDS,
 
-    RelOptionType.REL_ACT: DirectoryStructurePartition.NON_HOME,
-    RelOptionType.REL_RESULT: DirectoryStructurePartition.NON_HOME,
-    RelOptionType.REL_TMP: DirectoryStructurePartition.NON_HOME,
-    RelOptionType.REL_CWD: DirectoryStructurePartition.NON_HOME,
+    RelOptionType.REL_ACT: DirectoryStructurePartition.NON_HDS,
+    RelOptionType.REL_RESULT: DirectoryStructurePartition.NON_HDS,
+    RelOptionType.REL_TMP: DirectoryStructurePartition.NON_HDS,
+    RelOptionType.REL_CWD: DirectoryStructurePartition.NON_HDS,
 }
 
 
-def rel_non_home_from_rel_sds(rel_sds: RelSdsOptionType) -> RelNonHomeOptionType:
-    return RelNonHomeOptionType(rel_sds.value)
+def rel_non_hds_from_rel_sds(rel_sds: RelSdsOptionType) -> RelNonHdsOptionType:
+    return RelNonHdsOptionType(rel_sds.value)
 
 
 def rel_any_from_rel_sds(rel_sds: RelSdsOptionType) -> RelOptionType:
     return RelOptionType(rel_sds.value)
 
 
-def rel_any_from_rel_non_home(rel_sds_or_cwd: RelNonHomeOptionType) -> RelOptionType:
+def rel_any_from_rel_non_hds(rel_sds_or_cwd: RelNonHdsOptionType) -> RelOptionType:
     return RelOptionType(rel_sds_or_cwd.value)
 
 
-def rel_any_from_rel_home(rel_home: RelHomeOptionType) -> RelOptionType:
-    return RelOptionType(rel_home.value)
+def rel_any_from_rel_hds(rel_hds: RelHdsOptionType) -> RelOptionType:
+    return RelOptionType(rel_hds.value)
 
 
-def rel_home_from_rel_any(rel_any: RelOptionType) -> RelHomeOptionType:
+def rel_hds_from_rel_any(rel_any: RelOptionType) -> RelHdsOptionType:
     """
-    :return: None iff rel_any is not relative one of the home directories
+    :return: None iff rel_any is not relative one of the HDS directories
     """
     try:
-        return RelHomeOptionType(rel_any.value)
+        return RelHdsOptionType(rel_any.value)
     except ValueError:
         return None
 

@@ -227,7 +227,7 @@ class TestHardErrorWhenAFileThatIsNotARegularFileIsTested(unittest.TestCase):
                                 remaining_source(arguments),
                                 arrangement=
                                 ArrangementPostAct(
-                                    home_or_sds_contents=relativity_root_conf.populator_for_relativity_option_root(
+                                    tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                                         DirContents([
                                             Dir(name_of_checked_dir, [
                                                 non_regular_file,
@@ -425,7 +425,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                         remaining_source(arguments),
                         arrangement=
                         ArrangementPostAct(
-                            home_or_sds_contents=relativity_root_conf.populator_for_relativity_option_root(
+                            tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                                 DirContents([
                                     files_in_checked_dir,
                                 ])
@@ -493,7 +493,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                         remaining_source(arguments),
                         arrangement=
                         ArrangementPostAct(
-                            home_or_sds_contents=relativity_root_conf.populator_for_relativity_option_root(
+                            tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                                 DirContents([
                                     files_in_checked_dir,
                                 ])
@@ -557,7 +557,7 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
             remaining_source(arguments),
             arrangement=
             ArrangementPostAct(
-                home_or_sds_contents=relativity_root_conf.populator_for_relativity_option_root(
+                tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                     DirContents([
                         Dir(self.name_of_checked_dir, [
                             File('1.txt', original_file_contents),

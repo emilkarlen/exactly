@@ -8,7 +8,7 @@ from exactly_lib.symbol.object_with_symbol_references import references_from_obj
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation as validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
@@ -89,7 +89,7 @@ class _SubSetSelectorMatcherDdv(FilesMatcherDdv):
         self._selector = selector
         self._matcher_on_selection = matcher_on_selection
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> FilesMatcherConstructor:
+    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
         selector = self._selector.value_of_any_dependency(tcds)
         matcher_on_selection = self._matcher_on_selection.value_of_any_dependency(tcds)
 

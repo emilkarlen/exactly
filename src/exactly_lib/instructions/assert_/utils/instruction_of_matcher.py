@@ -45,12 +45,12 @@ class Instruction(Generic[T], AssertPhaseInstruction):
 
     def _validate_post_setup(self, environment: i.InstructionEnvironmentForPostSdsStep):
         validator = self._matcher.resolve(environment.symbols).validator
-        err_msg = validator.validate_post_sds_if_applicable(environment.home_and_sds)
+        err_msg = validator.validate_post_sds_if_applicable(environment.tcds)
         if err_msg:
             raise HardErrorException(err_msg)
 
     def _execute(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pfh.PassOrFailOrHardError:
-        matcher = self._matcher.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        matcher = self._matcher.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
         failure = matcher.matches_w_failure(None)
         return (
             pfh.new_pfh_fail(self._err_msg_constructor(failure).resolve__tr())

@@ -13,7 +13,7 @@ from exactly_lib_test.symbol.data.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources import resolver_assertions
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 from exactly_lib_test.type_system.data.test_resources.path_assertions import equals_path
@@ -125,7 +125,7 @@ class _EqualsStringFragmentAssertion(ValueAssertionBase[StringFragmentResolver])
         put.assertIsInstance(value, StringFragmentResolver)
         assert isinstance(value, StringFragmentResolver)  # Type info for IDE
         symbols = symbol_table_with_values_matching_references(self.expected.references)
-        tcds = fake_home_and_sds()
+        tcds = fake_tcds()
         environment = PathResolvingEnvironmentPreOrPostSds(tcds, symbols)
 
         assertions = [

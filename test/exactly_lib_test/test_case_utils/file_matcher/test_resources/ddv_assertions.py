@@ -1,9 +1,9 @@
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.impl import name_glob_pattern, file_type, name_regex
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -34,7 +34,7 @@ def is_name_regex(name_pattern: ValueAssertion[str] = asrt.anything_goes()) -> V
 def matches_file_matcher_ddv__deep(
         primitive_value: ValueAssertion[FileMatcher] = asrt.anything_goes(),
         validator: ValueAssertion[PreOrPostSdsValueValidator] = asrt.anything_goes(),
-        tcds: HomeAndSds = fake_home_and_sds(),
+        tcds: Tcds = fake_tcds(),
 ) -> ValueAssertion[FileMatcherDdv]:
     def resolve_primitive_value(value: FileMatcherDdv):
         return value.value_of_any_dependency(tcds)

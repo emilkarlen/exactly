@@ -3,11 +3,11 @@ import unittest
 
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, check, \
-    file_in_home_act_dir
+    file_in_hds_act_dir
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     AtcOsProcessExecutorThatRecordsArguments
-from exactly_lib_test.test_case_file_structure.test_resources import home_populators
+from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_with_assertion
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -38,7 +38,7 @@ class _NonShellExecutionCheckHelper:
             first_source_line_instruction_argument_source_template: str,
             act_phase_source_lines: list,
             expected_cmd_and_args: ValueAssertion,
-            hds_contents: home_populators.HomePopulator = home_populators.empty()):
+            hds_contents: hds_populators.HdsPopulator = hds_populators.empty()):
         instruction_argument_source = first_source_line_instruction_argument_source_template.format_map(
             self.format_map_for_template_string)
         for source, source_assertion in equivalent_source_variants_with_assertion(put, instruction_argument_source):
@@ -105,7 +105,7 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
             instruction_argument_source_template: str,
             act_phase_source_lines: list,
             cmd_and_args: ValueAssertion,
-            hds_contents: home_populators.HomePopulator = home_populators.empty()):
+            hds_contents: hds_populators.HdsPopulator = hds_populators.empty()):
         self.helper.check_both_single_and_multiple_line_source(
             self,
             instruction_argument_source_template,
@@ -120,7 +120,7 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
             is_interpreter_with_source_file_and_arguments('interpreter',
                                                           'file.src',
                                                           []),
-            hds_contents=file_in_home_act_dir('file.src'))
+            hds_contents=file_in_hds_act_dir('file.src'))
 
     def test_command_with_arguments(self):
         self._check_both_single_and_multiple_line_source(
@@ -130,7 +130,7 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
                                                           'file.src',
                                                           ['arg1',
                                                            '-arg2']),
-            hds_contents=file_in_home_act_dir('file.src')
+            hds_contents=file_in_hds_act_dir('file.src')
         )
 
     def test_quoting(self):
@@ -141,12 +141,12 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
                 'interpreter with space',
                 'file.src',
                 ['arg2', 'arg 3']),
-            hds_contents=file_in_home_act_dir('file.src')
+            hds_contents=file_in_hds_act_dir('file.src')
         )
 
 
 def is_interpreter_with_source_file_and_arguments(interpreter: str,
-                                                  source_file_relative_home_name: str,
+                                                  source_file_relative_hds_name: str,
                                                   arguments: list) -> ValueAssertion:
     class RetClass(ValueAssertionBase):
         def _apply(self,

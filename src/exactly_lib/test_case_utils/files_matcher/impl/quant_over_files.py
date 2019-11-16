@@ -8,7 +8,7 @@ from exactly_lib.definitions.primitives import files_matcher as files_matcher_pr
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
@@ -127,7 +127,7 @@ class _QuantifiedMatcherDdv(FilesMatcherDdv):
         self._quantifier = quantifier
         self._matcher_on_file = matcher_on_file
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> FilesMatcherConstructor:
+    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
         matcher_on_file = self._matcher_on_file.value_of_any_dependency(tcds)
 
         def mk_matcher(tmp_files_space: TmpDirFileSpace) -> FilesMatcher:

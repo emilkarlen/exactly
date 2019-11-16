@@ -1,18 +1,18 @@
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 
 
-class HomeOrSdsPopulator:
+class TcdsPopulator:
     """
     Populates any directory, and may be a home directory or directory in SDS or current directory.
     """
 
-    def populate_home_or_sds(self, home_or_sds: HomeAndSds):
+    def populate_tcds(self, tcds: Tcds):
         raise NotImplementedError()
 
 
-class HomePopulator(HomeOrSdsPopulator):
+class HdsPopulator(TcdsPopulator):
     """
     Populates the home directory structure.
     """
@@ -20,23 +20,23 @@ class HomePopulator(HomeOrSdsPopulator):
     def populate_hds(self, hds: HomeDirectoryStructure):
         raise NotImplementedError()
 
-    def populate_home_or_sds(self, home_or_sds: HomeAndSds):
-        self.populate_hds(home_or_sds.hds)
+    def populate_tcds(self, tcds: Tcds):
+        self.populate_hds(tcds.hds)
 
 
-class NonHomePopulator(HomeOrSdsPopulator):
+class NonHdsPopulator(TcdsPopulator):
     """
     Populates a directory in SDS or current directory.
     """
 
-    def populate_non_home(self, sds: SandboxDirectoryStructure):
+    def populate_non_hds(self, sds: SandboxDirectoryStructure):
         raise NotImplementedError()
 
-    def populate_home_or_sds(self, home_or_sds: HomeAndSds):
-        self.populate_non_home(home_or_sds.sds)
+    def populate_tcds(self, tcds: Tcds):
+        self.populate_non_hds(tcds.sds)
 
 
-class SdsPopulator(NonHomePopulator):
+class SdsPopulator(NonHdsPopulator):
     """
     Populates a directory inside the SDS
     """
@@ -44,5 +44,5 @@ class SdsPopulator(NonHomePopulator):
     def populate_sds(self, sds: SandboxDirectoryStructure):
         raise NotImplementedError()
 
-    def populate_non_home(self, sds: SandboxDirectoryStructure):
+    def populate_non_hds(self, sds: SandboxDirectoryStructure):
         self.populate_sds(sds)

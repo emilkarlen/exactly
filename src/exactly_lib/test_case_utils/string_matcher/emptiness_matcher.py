@@ -2,7 +2,7 @@ from typing import Optional
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.primitives import file_or_dir_contents
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
@@ -95,7 +95,7 @@ class EmptinessStringMatcherDdv(StringMatcherDdv):
     def structure(self) -> StructureRenderer:
         return EmptinessStringMatcher.new_structure_tree(self._expectation_type)
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringMatcher:
+    def value_of_any_dependency(self, tcds: Tcds) -> StringMatcher:
         return EmptinessStringMatcher(self._expectation_type)
 
 

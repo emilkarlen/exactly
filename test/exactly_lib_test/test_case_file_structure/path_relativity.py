@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_file_structure import path_relativity as sut
-from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType, RelOptionType, RelNonHomeOptionType, \
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType, \
     RelSdsOptionType, DirectoryStructurePartition
 
 
@@ -15,27 +15,27 @@ def suite() -> unittest.TestSuite:
 
 
 class TestRelativityOptionTypeTranslations(unittest.TestCase):
-    def test_rel_any_from_rel_home(self):
+    def test_rel_any_from_rel_hds(self):
         cases = [
-            (RelHomeOptionType.REL_HOME_CASE, RelOptionType.REL_HOME_CASE),
-            (RelHomeOptionType.REL_HOME_ACT, RelOptionType.REL_HOME_ACT),
+            (RelHdsOptionType.REL_HDS_CASE, RelOptionType.REL_HDS_CASE),
+            (RelHdsOptionType.REL_HDS_ACT, RelOptionType.REL_HDS_ACT),
         ]
-        for rel_home_option, expected_rel_option in cases:
-            with self.subTest(rel_home_option=str(rel_home_option)):
-                actual = sut.rel_any_from_rel_home(rel_home_option)
+        for rel_hds_option, expected_rel_option in cases:
+            with self.subTest(rel_hds_option=str(rel_hds_option)):
+                actual = sut.rel_any_from_rel_hds(rel_hds_option)
                 self.assertIs(expected_rel_option,
                               actual)
 
-    def test_rel_any_from_rel_non_home(self):
+    def test_rel_any_from_rel_non_hds(self):
         cases = [
-            (RelNonHomeOptionType.REL_ACT, RelOptionType.REL_ACT),
-            (RelNonHomeOptionType.REL_RESULT, RelOptionType.REL_RESULT),
-            (RelNonHomeOptionType.REL_TMP, RelOptionType.REL_TMP),
-            (RelNonHomeOptionType.REL_CWD, RelOptionType.REL_CWD),
+            (RelNonHdsOptionType.REL_ACT, RelOptionType.REL_ACT),
+            (RelNonHdsOptionType.REL_RESULT, RelOptionType.REL_RESULT),
+            (RelNonHdsOptionType.REL_TMP, RelOptionType.REL_TMP),
+            (RelNonHdsOptionType.REL_CWD, RelOptionType.REL_CWD),
         ]
-        for rel_non_home_option, expected_rel_option in cases:
-            with self.subTest(rel_non_home_option=str(rel_non_home_option)):
-                actual = sut.rel_any_from_rel_non_home(rel_non_home_option)
+        for rel_non_hds_option, expected_rel_option in cases:
+            with self.subTest(rel_non_hds_option=str(rel_non_hds_option)):
+                actual = sut.rel_any_from_rel_non_hds(rel_non_hds_option)
                 self.assertIs(expected_rel_option,
                               actual)
 
@@ -51,15 +51,15 @@ class TestRelativityOptionTypeTranslations(unittest.TestCase):
                 self.assertIs(expected_rel_option,
                               actual)
 
-    def test_rel_non_home_from_rel_sds(self):
+    def test_rel_non_hds_from_rel_sds(self):
         cases = [
-            (RelSdsOptionType.REL_ACT, RelNonHomeOptionType.REL_ACT),
-            (RelSdsOptionType.REL_RESULT, RelNonHomeOptionType.REL_RESULT),
-            (RelSdsOptionType.REL_TMP, RelNonHomeOptionType.REL_TMP),
+            (RelSdsOptionType.REL_ACT, RelNonHdsOptionType.REL_ACT),
+            (RelSdsOptionType.REL_RESULT, RelNonHdsOptionType.REL_RESULT),
+            (RelSdsOptionType.REL_TMP, RelNonHdsOptionType.REL_TMP),
         ]
         for rel_sds_option, expected_rel_option in cases:
             with self.subTest(rel_sds_option=str(rel_sds_option)):
-                actual = sut.rel_non_home_from_rel_sds(rel_sds_option)
+                actual = sut.rel_non_hds_from_rel_sds(rel_sds_option)
                 self.assertIs(expected_rel_option,
                               actual)
 
@@ -67,24 +67,24 @@ class TestRelativityOptionTypeTranslations(unittest.TestCase):
 class TestRelativityOptionTypeTranslationsToRelAny(unittest.TestCase):
     # Depends on the translations tested above
 
-    def test_rel_home_from_rel_any__that_is_a__rel_home(self):
+    def test_rel_hds_from_rel_any__that_is_a__rel_hds(self):
 
-        rel_home_cases = [
-            (RelHomeOptionType.REL_HOME_CASE, RelOptionType.REL_HOME_CASE),
-            (RelHomeOptionType.REL_HOME_ACT, RelOptionType.REL_HOME_ACT),
+        rel_hds_cases = [
+            (RelHdsOptionType.REL_HDS_CASE, RelOptionType.REL_HDS_CASE),
+            (RelHdsOptionType.REL_HDS_ACT, RelOptionType.REL_HDS_ACT),
         ]
-        for rel_home_option, rel_any_option in rel_home_cases:
+        for rel_hds_option, rel_any_option in rel_hds_cases:
             with self.subTest(rel_any_option=str(rel_any_option)):
-                actual = sut.rel_home_from_rel_any(rel_any_option)
-                self.assertIs(rel_home_option,
+                actual = sut.rel_hds_from_rel_any(rel_any_option)
+                self.assertIs(rel_hds_option,
                               actual)
 
-    def test_rel_home_from_rel_any__that_is_NOT_a__rel_home(self):
+    def test_rel_hds_from_rel_any__that_is_NOT_a__rel_hds(self):
 
-        for rel_non_home_option in RelNonHomeOptionType:
-            rel_any_option = sut.rel_any_from_rel_non_home(rel_non_home_option)
+        for rel_non_hds_option in RelNonHdsOptionType:
+            rel_any_option = sut.rel_any_from_rel_non_hds(rel_non_hds_option)
             with self.subTest(rel_any_option=str(rel_any_option)):
-                actual = sut.rel_home_from_rel_any(rel_any_option)
+                actual = sut.rel_hds_from_rel_any(rel_any_option)
                 self.assertIsNone(actual)
 
     def test_rel_sds_from_rel_any__that_is_a__rel_sds(self):
@@ -103,8 +103,8 @@ class TestRelativityOptionTypeTranslationsToRelAny(unittest.TestCase):
 
     def test_rel_sds_from_rel_any__that_is_NOT_a__rel_sds(self):
 
-        non_sds_options = [RelOptionType.REL_CWD] + [sut.rel_any_from_rel_home(rh)
-                                                     for rh in RelHomeOptionType]
+        non_sds_options = [RelOptionType.REL_CWD] + [sut.rel_any_from_rel_hds(rh)
+                                                     for rh in RelHdsOptionType]
         for rel_any_option in non_sds_options:
             with self.subTest(rel_any_option=str(rel_any_option)):
                 actual = sut.rel_sds_from_rel_any(rel_any_option)
@@ -112,19 +112,19 @@ class TestRelativityOptionTypeTranslationsToRelAny(unittest.TestCase):
 
 
 class TestDependencyDict(unittest.TestCase):
-    def test_dependency_of_home(self):
-        expected = {RelOptionType.REL_HOME_CASE,
-                    RelOptionType.REL_HOME_ACT}
-        actual = sut.DEPENDENCY_DICT[DirectoryStructurePartition.HOME]
+    def test_dependency_of_hds(self):
+        expected = {RelOptionType.REL_HDS_CASE,
+                    RelOptionType.REL_HDS_ACT}
+        actual = sut.DEPENDENCY_DICT[DirectoryStructurePartition.HDS]
         self.assertEqual(expected,
                          actual)
 
-    def test_dependency_of_non_home(self):
+    def test_dependency_of_non_hds(self):
         expected = {RelOptionType.REL_ACT,
                     RelOptionType.REL_TMP,
                     RelOptionType.REL_RESULT,
                     RelOptionType.REL_CWD}
-        actual = sut.DEPENDENCY_DICT[DirectoryStructurePartition.NON_HOME]
+        actual = sut.DEPENDENCY_DICT[DirectoryStructurePartition.NON_HDS]
         self.assertEqual(expected,
                          actual)
 
@@ -132,13 +132,13 @@ class TestDependencyDict(unittest.TestCase):
 class TestResolvingDependencyOf(unittest.TestCase):
     def test(self):
         cases = [
-            (RelOptionType.REL_HOME_CASE, DirectoryStructurePartition.HOME),
-            (RelOptionType.REL_HOME_ACT, DirectoryStructurePartition.HOME),
+            (RelOptionType.REL_HDS_CASE, DirectoryStructurePartition.HDS),
+            (RelOptionType.REL_HDS_ACT, DirectoryStructurePartition.HDS),
 
-            (RelOptionType.REL_ACT, DirectoryStructurePartition.NON_HOME),
-            (RelOptionType.REL_RESULT, DirectoryStructurePartition.NON_HOME),
-            (RelOptionType.REL_TMP, DirectoryStructurePartition.NON_HOME),
-            (RelOptionType.REL_CWD, DirectoryStructurePartition.NON_HOME),
+            (RelOptionType.REL_ACT, DirectoryStructurePartition.NON_HDS),
+            (RelOptionType.REL_RESULT, DirectoryStructurePartition.NON_HDS),
+            (RelOptionType.REL_TMP, DirectoryStructurePartition.NON_HDS),
+            (RelOptionType.REL_CWD, DirectoryStructurePartition.NON_HDS),
         ]
         for rel_option, expected_resolving_dependency in cases:
             with self.subTest(rel_option=str(rel_option)):

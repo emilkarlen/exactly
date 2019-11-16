@@ -9,9 +9,9 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelSdsOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
@@ -23,8 +23,8 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbo
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.test_of_test_framework_utils import single_line_source
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly, result_dir_contains_exactly
 from exactly_lib_test.test_case_utils.test_resources.symbol_table_check_help import \
@@ -41,7 +41,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestArgumentTypesGivenToAssertions),
         unittest.makeSuite(TestMiscCases),
         unittest.makeSuite(TestSymbols),
-        unittest.makeSuite(TestHomeDirHandling),
+        unittest.makeSuite(TestHdsDirHandling),
         unittest.makeSuite(TestPopulate),
     ])
 
@@ -75,20 +75,20 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
             sut.Expectation(main_side_effects_on_sds=asrt.IsInstance(SandboxDirectoryStructure)),
         )
 
-    def test_home_and_sds(self):
+    def test_tcds(self):
         self._check(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             single_line_source(),
             ArrangementWithSds(),
-            sut.Expectation(side_effects_on_home_and_sds=asrt.IsInstance(HomeAndSds)),
+            sut.Expectation(side_effects_on_tcds=asrt.IsInstance(Tcds)),
         )
 
-    def test_home(self):
+    def test_hds(self):
         self._check(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             single_line_source(),
             ArrangementWithSds(),
-            sut.Expectation(side_effects_on_home=asrt.IsInstance(pathlib.Path)),
+            sut.Expectation(side_effects_on_hds=asrt.IsInstance(pathlib.Path)),
         )
 
     def test_environment_variables__is_an_empty_dict(self):
@@ -194,38 +194,38 @@ class TestSymbols(TestCaseBase):
         )
 
 
-class TestHomeDirHandling(TestCaseBase):
-    def test_fail_due_to_side_effects_on_home(self):
+class TestHdsDirHandling(TestCaseBase):
+    def test_fail_due_to_side_effects_on_hds(self):
         with self.assertRaises(utils.TestError):
             self._check(
                 PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                 single_line_source(),
                 ArrangementWithSds(),
-                sut.Expectation(side_effects_on_home=f_asrt.dir_contains_at_least(
+                sut.Expectation(side_effects_on_hds=f_asrt.dir_contains_at_least(
                     DirContents([empty_file('file-name.txt')]))),
             )
 
-    def test_arrangement_and_expectation_of_home_dir_contents(self):
+    def test_arrangement_and_expectation_of_hds_dir_contents(self):
         home_dir_contents = DirContents([empty_file('file-name.txt')])
         self._check(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             single_line_source(),
             ArrangementWithSds(
-                hds_contents=case_home_dir_contents(home_dir_contents)),
+                hds_contents=hds_case_dir_contents(home_dir_contents)),
             sut.Expectation(
-                side_effects_on_home=f_asrt.dir_contains_exactly(home_dir_contents)),
+                side_effects_on_hds=f_asrt.dir_contains_exactly(home_dir_contents)),
         )
 
 
 class TestPopulate(TestCaseBase):
-    def test_populate_non_home(self):
-        populated_dir_contents = DirContents([empty_file('non-home-file.txt')])
+    def test_populate_non_hds(self):
+        populated_dir_contents = DirContents([empty_file('non-hds-file.txt')])
         self._check(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             single_line_source(),
             ArrangementWithSds(
-                non_home_contents=non_home_populator.rel_option(RelNonHomeOptionType.REL_TMP,
-                                                                populated_dir_contents)),
+                non_hds_contents=non_hds_populator.rel_option(RelNonHdsOptionType.REL_TMP,
+                                                              populated_dir_contents)),
             sut.Expectation(
                 main_side_effects_on_sds=tmp_user_dir_contains_exactly(
                     populated_dir_contents)),
@@ -339,7 +339,7 @@ class TestMiscCases(TestCaseBase):
                 PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                 single_line_source(),
                 ArrangementWithSds(),
-                sut.Expectation(side_effects_on_home_and_sds=asrt.IsInstance(bool)),
+                sut.Expectation(side_effects_on_tcds=asrt.IsInstance(bool)),
             )
 
     def test_fail_due_to_assertion_on_instruction_environment(self):

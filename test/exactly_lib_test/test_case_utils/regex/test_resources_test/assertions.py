@@ -6,8 +6,8 @@ from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import ConstantPreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
@@ -189,7 +189,7 @@ class TestMatchesRegexResolver(unittest.TestCase):
 
     def test_SHOULD_match_WHEN_resolving_dependencies_do_match(self):
         # ARRANGE #
-        expected_dependencies = {DirectoryStructurePartition.HOME}
+        expected_dependencies = {DirectoryStructurePartition.HDS}
         actual_dependencies = expected_dependencies
 
         resolver_of_actual = RegexResolverConstantTestImpl(
@@ -197,21 +197,21 @@ class TestMatchesRegexResolver(unittest.TestCase):
             resolving_dependencies=actual_dependencies
         )
 
-        assertion_to_check = sut.matches_regex_resolver(dir_dependencies=DirDependencies.HOME)
+        assertion_to_check = sut.matches_regex_resolver(dir_dependencies=DirDependencies.HDS)
 
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, resolver_of_actual)
 
     def test_SHOULD_not_match_WHEN_resolving_dependencies_do_not_match(self):
         # ARRANGE #
-        actual_dependencies = {DirectoryStructurePartition.NON_HOME}
+        actual_dependencies = {DirectoryStructurePartition.NON_HDS}
 
         resolver_of_actual = RegexResolverConstantTestImpl(
             ARBITRARY_PATTERN,
             resolving_dependencies=actual_dependencies
         )
 
-        assertion_to_check = sut.matches_regex_resolver(dir_dependencies=DirDependencies.HOME)
+        assertion_to_check = sut.matches_regex_resolver(dir_dependencies=DirDependencies.HDS)
 
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion_to_check, resolver_of_actual)
@@ -268,7 +268,7 @@ def arbitrary_resolver_with_references(references: Sequence[SymbolReference]) ->
                                          references)
 
 
-def check_of_primitive_value_fails_expectedly(tcds: HomeAndSds) -> ValueAssertion[Pattern]:
+def check_of_primitive_value_fails_expectedly(tcds: Tcds) -> ValueAssertion[Pattern]:
     return asrt.fail('unconditional failure')
 
 

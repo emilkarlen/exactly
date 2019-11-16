@@ -1,8 +1,8 @@
 from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 
 
 class PreOrPostSdsValueValidator:
@@ -24,14 +24,14 @@ class PreOrPostSdsValueValidator:
         """
         raise NotImplementedError()
 
-    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
         """
         Validates the object if it is expected to NOT exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
         raise NotImplementedError()
 
-    def validate_pre_or_post_sds(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
+    def validate_pre_or_post_sds(self, tcds: Tcds) -> Optional[TextRenderer]:
         """
         Validates the object using either pre- or post- SDS.
         :return: Error message iff validation failed.
@@ -52,7 +52,7 @@ class ConstantPreOrPostSdsValueValidator(PreOrPostSdsValueValidator):
     def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
         return self._pre_sds_result
 
-    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
         return self._post_sds_result
 
 

@@ -4,8 +4,8 @@ from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     constant_success_validator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.line_matcher.line_matcher_ddvs import LineMatcherValueFromPrimitiveDdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherDdv, LineMatcherLine
@@ -72,7 +72,7 @@ class LineMatcherDdvTestImpl(LineMatcherDdv):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> LineMatcher:
+    def value_of_any_dependency(self, tcds: Tcds) -> LineMatcher:
         return self._primitive_value
 
 

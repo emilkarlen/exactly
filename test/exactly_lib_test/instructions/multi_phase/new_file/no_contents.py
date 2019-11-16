@@ -20,12 +20,12 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.format_rel_option import format_rel_options
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
-    non_home_dir_contains_exactly
+    non_hds_dir_contains_exactly
 from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -88,10 +88,10 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                     ),
                     Expectation(
                         main_result=IS_SUCCESS,
-                        side_effects_on_home=f_asrt.dir_is_empty(),
+                        side_effects_on_hds=f_asrt.dir_is_empty(),
                         symbol_usages=asrt.is_empty_sequence,
-                        main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
-                                                                               fs.DirContents([expected_file])),
+                        main_side_effects_on_sds=non_hds_dir_contains_exactly(rel_opt_conf.root_dir__non_hds,
+                                                                              fs.DirContents([expected_file])),
                     ))
 
     def test_single_file_in_non_existing_sub_dir(self):
@@ -109,10 +109,10 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                     ),
                     Expectation(
                         main_result=IS_SUCCESS,
-                        side_effects_on_home=f_asrt.dir_is_empty(),
+                        side_effects_on_hds=f_asrt.dir_is_empty(),
                         symbol_usages=asrt.is_empty_sequence,
-                        main_side_effects_on_sds=non_home_dir_contains_exactly(
-                            rel_opt_conf.root_dir__non_home,
+                        main_side_effects_on_sds=non_hds_dir_contains_exactly(
+                            rel_opt_conf.root_dir__non_hds,
                             fs.DirContents([fs.Dir(sub_dir_name,
                                                    [expected_file])])),
                     ))
@@ -129,16 +129,16 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                         file_name=expected_file.file_name)),
                     ArrangementWithSds(
                         pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                        non_home_contents=rel_opt_conf.populator_for_relativity_option_root__non_home(
+                        non_hds_contents=rel_opt_conf.populator_for_relativity_option_root__non_hds(
                             fs.DirContents([fs.empty_dir(sub_dir_name)])
                         )
                     ),
                     Expectation(
                         main_result=IS_SUCCESS,
-                        side_effects_on_home=f_asrt.dir_is_empty(),
+                        side_effects_on_hds=f_asrt.dir_is_empty(),
                         symbol_usages=asrt.is_empty_sequence,
-                        main_side_effects_on_sds=non_home_dir_contains_exactly(
-                            rel_opt_conf.root_dir__non_home,
+                        main_side_effects_on_sds=non_hds_dir_contains_exactly(
+                            rel_opt_conf.root_dir__non_hds,
                             fs.DirContents([fs.Dir(sub_dir_name,
                                                    [expected_file])])),
                     ))

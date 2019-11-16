@@ -32,7 +32,7 @@ class PathRepresentationsRenderersForPrimitive(PathRepresentationsRenderers):
         p = self._path
         return (
             [p.value, p.primitive]
-            if p.resolving_dependency is DirectoryStructurePartition.HOME
+            if p.resolving_dependency is DirectoryStructurePartition.HDS
             else
             [p.value]
         )
@@ -73,7 +73,7 @@ class PathValueMinorBlock(Renderer[MinorBlock]):
 def path_renderers(path: PathDescriberForPrimitive) -> List[Renderer[str]]:
     return (
         [path.value, path.primitive]
-        if path.resolving_dependency is DirectoryStructurePartition.HOME
+        if path.resolving_dependency is DirectoryStructurePartition.HDS
         else [path.value]
     )
 

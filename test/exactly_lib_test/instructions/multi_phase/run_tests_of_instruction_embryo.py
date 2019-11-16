@@ -1,7 +1,7 @@
 import sys
 import unittest
 
-from exactly_lib.definitions.path import REL_HOME_CASE_OPTION
+from exactly_lib.definitions.path import REL_HDS_CASE_OPTION
 from exactly_lib.instructions.multi_phase import run as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -27,9 +27,9 @@ from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
-    multiple, HomeOrSdsPopulatorForRelOptionType
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
+    multiple, TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
@@ -43,7 +43,7 @@ from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_value_on_command_line
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_test
+from exactly_lib_test.test_resources.tcds_and_symbols import tcds_test
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -66,7 +66,7 @@ class TestInvalidSyntax(unittest.TestCase):
             parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
-class TestCaseBase(home_and_sds_test.TestCaseBase):
+class TestCaseBase(tcds_test.TestCaseBase):
     def _check_single_line_arguments_with_source_variants(self,
                                                           instruction_argument: str,
                                                           arrangement: ArrangementWithSds,
@@ -104,7 +104,7 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
             )
 
             arrangement = ArrangementWithSds(
-                home_or_sds_contents=relativity_option_conf.populator_for_relativity_option_root(
+                tcds_contents=relativity_option_conf.populator_for_relativity_option_root(
                     fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
                 symbols=relativity_option_conf.symbols.in_arrangement(),
             )
@@ -185,7 +185,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                 )
 
                 arrangement = ArrangementWithSds(
-                    home_or_sds_contents=multiple([
+                    tcds_contents=multiple([
                         roc_executable_file.populator_for_relativity_option_root(
                             fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
                         roc_source_file.populator_for_relativity_option_root(
@@ -210,10 +210,10 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
         home_dir_contents = fs.DirContents([fs.empty_file(existing_file_to_interpret)])
         for relativity_option_conf in RELATIVITY_OPTIONS:
             argument = '{relativity_option} non-existing-file {interpret_option}' \
-                       ' {rel_home_case_option} {existing_file}'.format(
+                       ' {rel_hds_case_option} {existing_file}'.format(
                 relativity_option=relativity_option_conf.option_argument,
                 interpret_option=syntax_elements.EXISTING_FILE_OPTION_NAME,
-                rel_home_case_option=REL_HOME_CASE_OPTION,
+                rel_hds_case_option=REL_HDS_CASE_OPTION,
                 existing_file=existing_file_to_interpret,
             )
 
@@ -221,7 +221,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
 
             arrangement = ArrangementWithSds(
                 symbols=relativity_option_conf.symbols.in_arrangement(),
-                hds_contents=case_home_dir_contents(home_dir_contents),
+                hds_contents=hds_case_dir_contents(home_dir_contents),
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
                 self._check_single_line_arguments_with_source_variants(argument,
@@ -265,7 +265,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
         source = remaining_source(argument, [following_line])
 
         arrangement = ArrangementWithSds(
-            home_or_sds_contents=HomeOrSdsPopulatorForRelOptionType(
+            tcds_contents=TcdsPopulatorForRelOptionType(
                 parse_path.ALL_REL_OPTIONS_CONFIG.options.default_option,
                 fs.DirContents([file_to_interpret])),
             symbols=SymbolTable({
@@ -326,7 +326,7 @@ class TestProgramViaSymbolReference(TestCaseBase):
             args.sequence([pgm_args.symbol_ref_command_line(self.program_that_executes_py_pgm_symbol.name),
                            0]).as_str,
             ArrangementWithSds(
-                home_or_sds_contents=self.py_file_rel_opt_conf.populator_for_relativity_option_root(
+                tcds_contents=self.py_file_rel_opt_conf.populator_for_relativity_option_root(
                     DirContents([self.py_file])
                 ),
                 symbols=self.symbols_dict
@@ -349,7 +349,7 @@ class TestProgramViaSymbolReference(TestCaseBase):
                 exit_code
             ]).as_str,
             ArrangementWithSds(
-                home_or_sds_contents=self.py_file_rel_opt_conf.populator_for_relativity_option_root(
+                tcds_contents=self.py_file_rel_opt_conf.populator_for_relativity_option_root(
                     DirContents([self.py_file])
                 ),
                 symbols=self.symbols_dict
@@ -379,7 +379,7 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
             )
 
             arrangement = ArrangementWithSds(
-                home_or_sds_contents=relativity_option_conf.populator_for_relativity_option_root(
+                tcds_contents=relativity_option_conf.populator_for_relativity_option_root(
                     fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
                 symbols=relativity_option_conf.symbols.in_arrangement(),
             )
@@ -510,7 +510,7 @@ IS_VALIDATION_ERROR = validation.is_arbitrary_validation_failure()
 
 def relativity_options(symbol_name: str) -> list:
     return [
-        rel_opt.default_conf_rel_any(RelOptionType.REL_HOME_CASE),
+        rel_opt.default_conf_rel_any(RelOptionType.REL_HDS_CASE),
 
         rel_opt.conf_rel_any(RelOptionType.REL_ACT),
         rel_opt.conf_rel_any(RelOptionType.REL_TMP),
@@ -518,7 +518,7 @@ def relativity_options(symbol_name: str) -> list:
         rel_opt.symbol_conf_rel_any(RelOptionType.REL_TMP,
                                     symbol_name,
                                     syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants),
-        rel_opt.symbol_conf_rel_any(RelOptionType.REL_HOME_CASE,
+        rel_opt.symbol_conf_rel_any(RelOptionType.REL_HDS_CASE,
                                     symbol_name,
                                     syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants),
     ]

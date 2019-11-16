@@ -1,25 +1,25 @@
 import pathlib
 import unittest
 
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationBase, InstructionTestConfiguration
-from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHomePopulator
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
-    HomeOrSdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     sub_dir_of_sds_contains_exactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsPopulator, \
     SdsPopulatorForSubDir
+from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
+    TcdsPopulator
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import SUB_DIR_RESOLVER
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     pfh_expectation_type_config
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
-    RelativityOptionConfigurationForRelNonHome, \
-    OptionStringConfigurationForRelativityOptionRelNonHome
+    RelativityOptionConfigurationForRelNonHds, \
+    OptionStringConfigurationForRelativityOptionRelNonHds
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -56,9 +56,9 @@ def suite_for__conf__rel_opts__negations(instruction_configuration: InstructionT
                                ])
 
 
-class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfigurationForRelNonHome):
+class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfigurationForRelNonHds):
     def __init__(self):
-        super().__init__(OptionStringConfigurationForRelativityOptionRelNonHome(RelNonHomeOptionType.REL_CWD))
+        super().__init__(OptionStringConfigurationForRelativityOptionRelNonHds(RelNonHdsOptionType.REL_CWD))
 
     @property
     def exists_pre_sds(self) -> bool:
@@ -68,14 +68,14 @@ class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfig
     def is_rel_cwd(self) -> bool:
         return True
 
-    def root_dir__non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def root_dir__non_hds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return self.root_dir__sds(sds)
 
-    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
+    def populator_for_relativity_option_root(self, contents: DirContents) -> TcdsPopulator:
         return self.populator_for_relativity_option_root__sds(contents)
 
-    def populator_for_relativity_option_root__non_home(self,
-                                                       contents: DirContents) -> NonHomePopulator:
+    def populator_for_relativity_option_root__non_hds(self,
+                                                      contents: DirContents) -> NonHdsPopulator:
         return self.populator_for_relativity_option_root__sds(contents)
 
     def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
@@ -88,5 +88,5 @@ class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfig
         return sub_dir_of_sds_contains_exactly(SUB_DIR_RESOLVER.population_dir,
                                                contents)
 
-    def population_dir(self, tds: HomeAndSds) -> pathlib.Path:
+    def population_dir(self, tds: Tcds) -> pathlib.Path:
         return SUB_DIR_RESOLVER.population_dir(tds.sds)

@@ -2,8 +2,8 @@ import enum
 from typing import Optional, Set
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive, PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.value_type import DataValueType
@@ -126,7 +126,7 @@ class StringOrPathDdv(MultiDependenciesDdv[StringOrPath]):
                                 self._string.value_when_no_dir_dependencies(),
                                 None)
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringOrPath:
+    def value_of_any_dependency(self, tcds: Tcds) -> StringOrPath:
         if self.is_path:
             return StringOrPath(self._source_type,
                                 None,

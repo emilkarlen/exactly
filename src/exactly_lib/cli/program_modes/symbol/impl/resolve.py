@@ -100,8 +100,8 @@ class ResolverForTestCase(Resolver):
 
         return self._from_test_case(
             test_case,
-            processors.default_conf_phase_configuration__of_home_dir(
-                self.execution_settings.initial_home_dir_path,
+            processors.default_conf_phase_configuration__of_hds_dir(
+                self.execution_settings.initial_hds_dir_path,
                 act_phase_setup.actor,
             )
         )

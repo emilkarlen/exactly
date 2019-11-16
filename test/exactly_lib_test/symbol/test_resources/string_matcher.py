@@ -6,7 +6,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherDdv
 from exactly_lib.type_system.logic.string_matcher_ddvs import StringMatcherConstantDdv
@@ -94,7 +94,7 @@ class StringMatcherResolverFromPartsTestImpl(StringMatcherResolver):
         self._references = references
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
-        def get_matcher(tcds: HomeAndSds) -> StringMatcher:
+        def get_matcher(tcds: Tcds) -> StringMatcher:
             environment = PathResolvingEnvironmentPreOrPostSds(tcds, symbols)
             return self._matcher(environment)
 

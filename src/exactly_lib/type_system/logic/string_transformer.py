@@ -5,7 +5,7 @@ from typing import Iterable, Sequence
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription, \
     WithTreeStructureDescription, StructureRenderer
 from exactly_lib.util.description_tree import renderers
@@ -44,7 +44,7 @@ class StringTransformerDdv(DirDependentValue[StringTransformer],
         return constant_success_validator()
 
     @abstractmethod
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringTransformer:
+    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformer:
         pass
 
 

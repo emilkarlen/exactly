@@ -207,12 +207,12 @@ class TestEqualsPathRelativityRestriction(unittest.TestCase):
                 sut.equals_path_relativity_restriction(restriction).apply_without_message(self, restriction)
 
     def test_not_equals__different__types(self):
-        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
+        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HDS_CASE}, False))
         actual = AnyDataTypeRestriction()
         assert_that_assertion_fails(sut.equals_path_relativity_restriction(expected), actual)
 
     def test_not_equals__different__accepted_relativity_variants(self):
-        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
+        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HDS_CASE}, False))
         actual = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, False))
         assert_that_assertion_fails(sut.equals_path_relativity_restriction(expected), actual)
 
@@ -230,7 +230,7 @@ class TestEqualsValueRestriction(unittest.TestCase):
                 sut.equals_value_restriction(restriction).apply_without_message(self, restriction)
 
     def test_not_equals__different__types__one_is_path_relativity_variants(self):
-        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
+        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HDS_CASE}, False))
         actual = AnyDataTypeRestriction()
         assert_that_assertion_fails(sut.equals_value_restriction(expected), actual)
 
@@ -240,7 +240,7 @@ class TestEqualsValueRestriction(unittest.TestCase):
         assert_that_assertion_fails(sut.equals_value_restriction(expected), actual)
 
     def test_not_equals__same_type__different_accepted_relativity_variants(self):
-        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
+        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HDS_CASE}, False))
         actual = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, False))
         assert_that_assertion_fails(sut.equals_value_restriction(expected), actual)
 

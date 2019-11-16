@@ -268,7 +268,7 @@ _TEXT_PARSER = TextParser({
     'path_se': formatting.syntax_element_(syntax_elements.PATH_SYNTAX_ELEMENT),
     'program_type': types.PROGRAM_TYPE_INFO.name,
     'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
-    'hds': concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.name,
+    'hds': concepts.HDS_CONCEPT_INFO.name,
     'SYMBOL_REFERENCE_SYNTAX_ELEMENT': formatting.syntax_element_(syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT),
     'TRANSFORMATION': instruction_arguments.STRING_TRANSFORMATION_ARGUMENT.name,
     'define_symbol': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,

@@ -16,7 +16,7 @@ def all_concepts() -> List[ConceptDocumentation]:
         action_to_check.ACTOR_CONCEPT,
         shell_syntax.SHELL_SYNTAX_CONCEPT,
         test_case_directory_structure.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT,
-        home_directory_structure.HOME_DIRECTORY_STRUCTURE_CONCEPT,
+        home_directory_structure.HDS_CONCEPT,
         sandbox.SANDBOX_CONCEPT,
         symbol.SYMBOL_CONCEPT,
         current_working_directory.CURRENT_WORKING_DIRECTORY_CONCEPT,

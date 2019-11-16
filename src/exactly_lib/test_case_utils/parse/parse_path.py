@@ -47,7 +47,7 @@ ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}
 
 ALL_REL_OPTION_VARIANTS = PathRelativityVariants(ALL_REL_OPTIONS, True)
 
-ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {RelOptionType.REL_HOME_CASE}
+ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {RelOptionType.REL_HDS_CASE}
 
 ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX = PathRelativityVariants(
     ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
@@ -61,29 +61,29 @@ ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE = PathRelativity
 def all_rel_options_config(argument_syntax_name: str,
                            path_suffix_is_required: bool = True) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(PathRelativityVariants(ALL_REL_OPTIONS, True),
-                                                                  RelOptionType.REL_HOME_CASE),
+                                                                  RelOptionType.REL_HDS_CASE),
                                           argument_syntax_name,
                                           path_suffix_is_required)
 
 
 ALL_REL_OPTIONS_CONFIG = all_rel_options_config(instruction_arguments.PATH_SYNTAX_ELEMENT_NAME)
 
-STANDARD_NON_HOME_RELATIVITY_VARIANTS = PathRelativityVariants(
-    ALL_REL_OPTIONS - {RelOptionType.REL_HOME_CASE},
+STANDARD_NON_HDS_RELATIVITY_VARIANTS = PathRelativityVariants(
+    ALL_REL_OPTIONS - {RelOptionType.REL_HDS_CASE},
     True)
 
-STANDARD_NON_HOME_OPTIONS = RelOptionsConfiguration(STANDARD_NON_HOME_RELATIVITY_VARIANTS,
-                                                    RelOptionType.REL_CWD)
+STANDARD_NON_HDS_OPTIONS = RelOptionsConfiguration(STANDARD_NON_HDS_RELATIVITY_VARIANTS,
+                                                   RelOptionType.REL_CWD)
 
 
-def non_home_config(argument_syntax_name: str,
-                    path_suffix_is_required: bool = True) -> RelOptionArgumentConfiguration:
-    return RelOptionArgumentConfiguration(STANDARD_NON_HOME_OPTIONS,
+def non_hds_config(argument_syntax_name: str,
+                   path_suffix_is_required: bool = True) -> RelOptionArgumentConfiguration:
+    return RelOptionArgumentConfiguration(STANDARD_NON_HDS_OPTIONS,
                                           argument_syntax_name,
                                           path_suffix_is_required)
 
 
-NON_HOME_CONFIG = non_home_config(instruction_arguments.PATH_SYNTAX_ELEMENT_NAME)
+NON_HDS_CONFIG = non_hds_config(instruction_arguments.PATH_SYNTAX_ELEMENT_NAME)
 
 
 def parse_path_from_parse_source(source: ParseSource,

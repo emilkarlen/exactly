@@ -11,7 +11,7 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformer, 
     StringTransformerModel
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser
@@ -100,7 +100,7 @@ class _Checker:
         self.parser = parser
         self.arrangement = arrangement
         self.expectation = expectation
-        self.tcds = fake_home_and_sds()
+        self.tcds = fake_tcds()
 
     def check(self):
         try:

@@ -7,7 +7,7 @@ from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result.sh import SuccessOrHardError
 from exactly_lib.test_case.test_case_status import TestCaseStatus
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 
 
 class ConfigurationBuilder:
@@ -21,8 +21,8 @@ class ConfigurationBuilder:
         self.__test_case_status = test_case_status
         self.__timeout_in_seconds = timeout_in_seconds
         self.__hds_dirs = {
-            RelHomeOptionType.REL_HOME_CASE: home_case_dir_path,
-            RelHomeOptionType.REL_HOME_ACT: home_act_dir_path,
+            RelHdsOptionType.REL_HDS_CASE: home_case_dir_path,
+            RelHdsOptionType.REL_HDS_ACT: home_act_dir_path,
         }
 
     @property
@@ -32,16 +32,16 @@ class ConfigurationBuilder:
     def set_test_case_status(self, x: TestCaseStatus):
         self.__test_case_status = x
 
-    def set_hds_dir(self, d: RelHomeOptionType, value: pathlib.Path):
+    def set_hds_dir(self, d: RelHdsOptionType, value: pathlib.Path):
         self.__hds_dirs[d] = value
 
-    def get_hds_dir(self, d: RelHomeOptionType) -> pathlib.Path:
+    def get_hds_dir(self, d: RelHdsOptionType) -> pathlib.Path:
         return self.__hds_dirs[d]
 
     @property
     def hds(self) -> HomeDirectoryStructure:
-        return HomeDirectoryStructure(case_dir=self.__hds_dirs[RelHomeOptionType.REL_HOME_CASE],
-                                      act_dir=self.__hds_dirs[RelHomeOptionType.REL_HOME_ACT])
+        return HomeDirectoryStructure(case_dir=self.__hds_dirs[RelHdsOptionType.REL_HDS_CASE],
+                                      act_dir=self.__hds_dirs[RelHdsOptionType.REL_HDS_ACT])
 
     @property
     def actor(self) -> Actor:

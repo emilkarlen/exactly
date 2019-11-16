@@ -21,8 +21,8 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.assertions i
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder, \
     ModelConstructor
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
@@ -81,20 +81,20 @@ class Executor:
             references=asrt.anything_goes()).apply_with_message(self.put, resolver,
                                                                 'resolver structure')
 
-        with home_and_sds_with_act_as_curr_dir(
+        with tcds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 hds_contents=self.arrangement.hds_contents,
                 sds_contents=self.arrangement.sds_contents,
-                non_home_contents=self.arrangement.non_home_contents,
-                home_or_sds_contents=self.arrangement.home_or_sds_contents,
+                non_hds_contents=self.arrangement.non_hds_contents,
+                tcds_contents=self.arrangement.tcds_contents,
                 symbols=self.arrangement.symbols) as path_resolving_environment:
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
-            home_and_sds = path_resolving_environment.home_and_sds
+            tcds = path_resolving_environment.tcds
 
             with preserved_cwd():
-                os.chdir(str(home_and_sds.hds.case_dir))
+                os.chdir(str(tcds.hds.case_dir))
 
-                environment = PathResolvingEnvironmentPreSds(home_and_sds.hds,
+                environment = PathResolvingEnvironmentPreSds(tcds.hds,
                                                              self.arrangement.symbols)
                 validate_result = self._execute_validate_pre_sds(environment, resolver)
                 self.expectation.symbol_usages.apply_with_message(self.put,
@@ -105,7 +105,7 @@ class Executor:
                     return
 
             environment = PathResolvingEnvironmentPreOrPostSds(
-                home_and_sds,
+                tcds,
                 self.arrangement.symbols)
             validate_result = self._execute_validate_post_setup(environment, resolver)
             self.expectation.symbol_usages.apply_with_message(self.put,
@@ -114,13 +114,13 @@ class Executor:
                                                               phase_step.STEP__VALIDATE_POST_SETUP)
             if validate_result is not None:
                 return
-            act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
-            write_act_result(home_and_sds.sds, act_result)
+            act_result = self.arrangement.act_result_producer.apply(ActEnvironment(tcds))
+            write_act_result(tcds.sds, act_result)
             matcher = self._resolve(resolver, environment)
             model = self._new_model(environment.sds)
             self._execute_main(model, matcher)
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
-            self.expectation.main_side_effects_on_home_and_sds.apply(self.put, home_and_sds)
+            self.expectation.main_side_effects_on_tcds.apply(self.put, tcds)
             self.expectation.symbol_usages.apply_with_message(self.put,
                                                               resolver.references,
                                                               'symbol-usages after ' +
@@ -143,7 +143,7 @@ class Executor:
 
         resolver_health_check = matches_string_matcher_resolver(references=asrt.anything_goes(),
                                                                 symbols=environment.symbols,
-                                                                tcds=environment.home_and_sds)
+                                                                tcds=environment.tcds)
         resolver_health_check.apply_with_message(self.put, resolver,
                                                  'resolver structure')
 
@@ -156,7 +156,7 @@ class Executor:
                                                       structure_tree_of_ddv,
                                                       'structure of ddv')
 
-        matcher = matcher_value.value_of_any_dependency(environment.home_and_sds)
+        matcher = matcher_value.value_of_any_dependency(environment.tcds)
         assert isinstance(matcher, StringMatcher)
 
         structure_tree_of_primitive = matcher.structure().render()

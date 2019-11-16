@@ -8,8 +8,8 @@ from exactly_lib.symbol.data import path_resolvers, list_resolvers, string_resol
 from exactly_lib.symbol.data.path_resolvers import constant
 from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.test_case_utils.program.parse import parse_with_reference_to_program as sut
 from exactly_lib.type_system.data import paths
@@ -22,8 +22,8 @@ from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val, \
     sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources import home_populators
-from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator, SdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
+from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HdsPopulator, SdsPopulator
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
@@ -34,8 +34,8 @@ from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_vali
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -131,7 +131,7 @@ class ValidationPreSdsCase:
     def __init__(self,
                  name: str,
                  source: ArgumentElementRenderer,
-                 home_contents: HomePopulator,
+                 home_contents: HdsPopulator,
                  ):
         self.name = name
         self.source = source
@@ -157,14 +157,14 @@ class TestValidation(unittest.TestCase):
 
         program_symbol_with_ref_to_non_exit_exe_file = NameAndValue(
             'PGM_WITH_REF_TO_EXE_FILE',
-            program_resolvers.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_HOME_ACT,
+            program_resolvers.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_HDS_ACT,
                                                                                  'non-existing-exe-file')))
         )
 
         program_symbol_with_ref_to_non_exiting_file_as_argument = NameAndValue(
             'PGM_WITH_REF_TO_SOURCE_FILE',
             program_resolvers.interpret_py_source_file_that_must_exist(
-                constant(simple_of_rel_option(RelOptionType.REL_HOME_ACT,
+                constant(simple_of_rel_option(RelOptionType.REL_HDS_ACT,
                                               'non-existing-python-file.py')))
         )
 
@@ -179,12 +179,12 @@ class TestValidation(unittest.TestCase):
         cases = [
             ValidationPreSdsCase('executable does not exist',
                                  sym_ref_args.sym_ref_cmd_line(program_symbol_with_ref_to_non_exit_exe_file.name),
-                                 home_populators.empty()
+                                 hds_populators.empty()
                                  ),
             ValidationPreSdsCase('source file does not exist',
                                  sym_ref_args.sym_ref_cmd_line(
                                      program_symbol_with_ref_to_non_exiting_file_as_argument.name),
-                                 home_populators.empty()
+                                 hds_populators.empty()
                                  ),
         ]
 
@@ -196,8 +196,8 @@ class TestValidation(unittest.TestCase):
                 program_resolver = parser.parse(source)
                 # ASSERT #
                 self.assertIsInstance(program_resolver, ProgramResolver)
-                with home_and_sds_with_act_as_curr_dir(hds_contents=case.home_contents,
-                                                       symbols=symbols) as environment:
+                with tcds_with_act_as_curr_dir(hds_contents=case.home_contents,
+                                               symbols=symbols) as environment:
                     validation_assertion = pre_or_post_sds_validator.PreOrPostSdsValidatorAssertion(
                         expected_validation,
                         environment
@@ -250,8 +250,8 @@ class TestValidation(unittest.TestCase):
                 program_resolver = parser.parse(source)
                 # ASSERT #
                 self.assertIsInstance(program_resolver, ProgramResolver)
-                with home_and_sds_with_act_as_curr_dir(sds_contents=case.sds_contents,
-                                                       symbols=symbols) as environment:
+                with tcds_with_act_as_curr_dir(sds_contents=case.sds_contents,
+                                               symbols=symbols) as environment:
                     validation_assertion = pre_or_post_sds_validator.PreOrPostSdsValidatorAssertion(
                         expected_validation,
                         environment
@@ -328,7 +328,7 @@ class TestResolving(unittest.TestCase):
         def case(relativity: RelOptionType) -> ResolvingCase:
             exe_path = paths.of_rel_option(relativity, paths.constant_path_part(file_name))
 
-            def assertion(tcds: HomeAndSds) -> ValueAssertion[Program]:
+            def assertion(tcds: Tcds) -> ValueAssertion[Program]:
                 return asrt_pgm_val.matches_program(
                     command=asrt_command.equals_executable_file_command(
                         executable_file=exe_path.value_of_any_dependency(tcds),
@@ -345,7 +345,7 @@ class TestResolving(unittest.TestCase):
                                          list_resolvers.from_str_constants(expected_arguments))),
                                  expected=asrt_dir_dep_val.matches_dir_dependent_value(assertion))
 
-        return [case(RelOptionType.REL_HOME_ACT),
+        return [case(RelOptionType.REL_HDS_ACT),
                 case(RelOptionType.REL_TMP)]
 
     @staticmethod
@@ -353,7 +353,7 @@ class TestResolving(unittest.TestCase):
                                  ) -> Sequence[ResolvingCase]:
         the_executable_program = 'the executable program'
 
-        def assertion(tcds: HomeAndSds) -> ValueAssertion[Program]:
+        def assertion(tcds: Tcds) -> ValueAssertion[Program]:
             return asrt_pgm_val.matches_program(
                 command=asrt_command.equals_system_program_command(
                     program=the_executable_program,

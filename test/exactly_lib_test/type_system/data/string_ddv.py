@@ -95,25 +95,25 @@ class TestTransformedFragment(unittest.TestCase):
 
 class TestPathFragment(unittest.TestCase):
     def test(self):
-        path_rel_home = paths.of_rel_option(paths.RelOptionType.REL_HOME_CASE,
+        path_rel_home = paths.of_rel_option(paths.RelOptionType.REL_HDS_CASE,
                                             PathPartDdvAsNothing())
         path_rel_sds = paths.of_rel_option(paths.RelOptionType.REL_ACT,
                                            PathPartDdvAsNothing())
         path_abs = paths.absolute_file_name(str(pathlib.Path().resolve()))
         cases = [
             (
-                'dependency on ' + str(DirectoryStructurePartition.HOME),
+                'dependency on ' + str(DirectoryStructurePartition.HDS),
                 strings.PathFragmentDdv(path_rel_home),
                 AMultiDirDependentValue(
-                    resolving_dependencies={DirectoryStructurePartition.HOME},
+                    resolving_dependencies={DirectoryStructurePartition.HDS},
                     get_value_of_any_dependency=lambda h_s: str(
                         path_rel_home.value_pre_sds(h_s.hds))),
             ),
             (
-                'dependency on ' + str(DirectoryStructurePartition.NON_HOME),
+                'dependency on ' + str(DirectoryStructurePartition.NON_HDS),
                 strings.PathFragmentDdv(path_rel_sds),
                 AMultiDirDependentValue(
-                    resolving_dependencies={DirectoryStructurePartition.NON_HOME},
+                    resolving_dependencies={DirectoryStructurePartition.NON_HDS},
                     get_value_of_any_dependency=lambda h_s: str(
                         path_rel_sds.value_post_sds(h_s.sds))),
             ),
@@ -135,7 +135,7 @@ class TestPathFragment(unittest.TestCase):
 
     def test_description(self):
         # ARRANGE #
-        path_rel_home = paths.of_rel_option(paths.RelOptionType.REL_HOME_CASE,
+        path_rel_home = paths.of_rel_option(paths.RelOptionType.REL_HDS_CASE,
                                             PathPartDdvAsNothing())
         path_rel_sds = paths.of_rel_option(paths.RelOptionType.REL_ACT,
                                            PathPartDdvAsNothing())
@@ -170,7 +170,7 @@ class TestPathFragment(unittest.TestCase):
 class TestListFragment(unittest.TestCase):
     def test(self):
         string_of_path_rel_home = string_ddv_of_single_path(
-            paths.of_rel_option(paths.RelOptionType.REL_HOME_CASE,
+            paths.of_rel_option(paths.RelOptionType.REL_HDS_CASE,
                                 PathPartDdvAsNothing()))
         string_1 = 'string value 1'
         string_2 = 'string value 2'
@@ -193,10 +193,10 @@ class TestListFragment(unittest.TestCase):
                     get_value_of_any_dependency=do_return(string_1 + ' ' + string_2)),
             ),
             (
-                'dependency on ' + str(DirectoryStructurePartition.HOME),
+                'dependency on ' + str(DirectoryStructurePartition.HDS),
                 strings.ListFragmentDdv(strings.ListDdv([string_of_path_rel_home])),
                 AMultiDirDependentValue(
-                    resolving_dependencies={DirectoryStructurePartition.HOME},
+                    resolving_dependencies={DirectoryStructurePartition.HDS},
                     get_value_of_any_dependency=lambda h_s: str(
                         string_of_path_rel_home.value_of_any_dependency(h_s))),
             ),
@@ -245,7 +245,7 @@ class TestStringValue(unittest.TestCase):
     def test(self):
         string_fragment_1 = 'string fragment 1'
         string_fragment_2 = 'string fragment 2'
-        path_rel_home = paths.of_rel_option(paths.RelOptionType.REL_HOME_CASE,
+        path_rel_home = paths.of_rel_option(paths.RelOptionType.REL_HDS_CASE,
                                             PathPartDdvAsNothing())
         path_rel_sds = paths.of_rel_option(paths.RelOptionType.REL_ACT,
                                            PathPartDdvAsNothing())
@@ -279,7 +279,7 @@ class TestStringValue(unittest.TestCase):
                 'single dir dependent value/pre sds',
                 sut.StringDdv(tuple([strings.PathFragmentDdv(path_rel_home)])),
                 AMultiDirDependentValue(
-                    resolving_dependencies={DirectoryStructurePartition.HOME},
+                    resolving_dependencies={DirectoryStructurePartition.HDS},
                     get_value_of_any_dependency=lambda h_s: str(
                         path_rel_home.value_pre_sds(h_s.hds))),
             ),
@@ -287,7 +287,7 @@ class TestStringValue(unittest.TestCase):
                 'single dir dependent value/post sds',
                 sut.StringDdv(tuple([strings.PathFragmentDdv(path_rel_sds)])),
                 AMultiDirDependentValue(
-                    resolving_dependencies={DirectoryStructurePartition.NON_HOME},
+                    resolving_dependencies={DirectoryStructurePartition.NON_HDS},
                     get_value_of_any_dependency=lambda h_s: str(
                         path_rel_sds.value_post_sds(h_s.sds))),
             ),
@@ -296,8 +296,8 @@ class TestStringValue(unittest.TestCase):
                 sut.StringDdv(tuple([strings.PathFragmentDdv(path_rel_home),
                                      strings.PathFragmentDdv(path_rel_sds)])),
                 AMultiDirDependentValue(
-                    resolving_dependencies={DirectoryStructurePartition.HOME,
-                                            DirectoryStructurePartition.NON_HOME},
+                    resolving_dependencies={DirectoryStructurePartition.HDS,
+                                            DirectoryStructurePartition.NON_HDS},
                     get_value_of_any_dependency=lambda h_s: (
                             str(path_rel_home.value_pre_sds(h_s.hds)) +
                             str(path_rel_sds.value_post_sds(h_s.sds)))

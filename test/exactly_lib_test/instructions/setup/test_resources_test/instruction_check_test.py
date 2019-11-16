@@ -16,7 +16,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh, svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.test_resources.symbol_table_check_help import \
@@ -90,14 +90,14 @@ class TestSettingsBuilder(TestCaseBase):
 
 
 class TestPopulate(TestCaseBase):
-    def test_populate_non_home(self):
-        populated_dir_contents = DirContents([empty_file('non-home-file.txt')])
+    def test_populate_non_hds(self):
+        populated_dir_contents = DirContents([empty_file('non-hds-file.txt')])
         self._check(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             single_line_source(),
             sut.Arrangement(
-                non_home_contents=non_home_populator.rel_option(
-                    non_home_populator.RelNonHomeOptionType.REL_TMP,
+                non_hds_contents=non_hds_populator.rel_option(
+                    non_hds_populator.RelNonHdsOptionType.REL_TMP,
                     populated_dir_contents)),
             sut.Expectation(
                 main_side_effects_on_sds=tmp_user_dir_contains_exactly(
@@ -227,7 +227,7 @@ class TestMiscCases(TestCaseBase):
             self._check(utils.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                         single_line_source(),
                         sut.Arrangement(),
-                        sut.Expectation(main_side_effects_on_home_and_sds=asrt.IsInstance(bool))
+                        sut.Expectation(main_side_effects_on_tcds=asrt.IsInstance(bool))
                         )
 
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):

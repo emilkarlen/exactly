@@ -2,11 +2,11 @@ import unittest
 
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, check, \
-    file_in_home_act_dir, shell_command_syntax_for
+    file_in_hds_act_dir, shell_command_syntax_for
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     AtcOsProcessExecutorThatRecordsArguments
-from exactly_lib_test.test_case_file_structure.test_resources import home_populators
+from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_with_assertion
 from exactly_lib_test.test_resources.programs import shell_commands
@@ -33,7 +33,7 @@ class _ShellExecutionCheckerHelper:
               instruction_argument_source_template: str,
               act_phase_source_lines: list,
               expectation_of_cmd_and_args: ValueAssertion,
-              hds_contents: home_populators.HomePopulator = home_populators.empty(),
+              hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
               ):
         instruction_argument_source = instruction_argument_source_template.format(
             actor_option=self.cli_option,
@@ -126,7 +126,7 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellC
     def _check(self, instruction_argument_source_template: str,
                act_phase_source_lines: list,
                expected_command_except_final_file_name_part: ValueAssertion,
-               hds_contents: home_populators.HomePopulator,
+               hds_contents: hds_populators.HdsPopulator,
                ):
         self.helper.apply(self,
                           instruction_argument_source_template,
@@ -138,19 +138,19 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellC
         self._check('= {actor_option} {shell_option} interpreter',
                     ['file.src'],
                     initial_part_of_command_without_file_argument_is('interpreter'),
-                    hds_contents=file_in_home_act_dir('file.src'))
+                    hds_contents=file_in_hds_act_dir('file.src'))
 
     def test_command_with_arguments(self):
         self._check(' = {actor_option} {shell_option} interpreter with -arg2',
                     ['file.src'],
                     initial_part_of_command_without_file_argument_is('interpreter with -arg2'),
-                    hds_contents=file_in_home_act_dir('file.src'))
+                    hds_contents=file_in_hds_act_dir('file.src'))
 
     def test_quoting(self):
         self._check(" = {actor_option} {shell_option} 'interpreter with quoting' arg2 \"arg 3\"",
                     ['file.src'],
                     initial_part_of_command_without_file_argument_is("'interpreter with quoting' arg2 \"arg 3\""),
-                    hds_contents=file_in_home_act_dir('file.src'))
+                    hds_contents=file_in_hds_act_dir('file.src'))
 
 
 class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellCommand(unittest.TestCase):

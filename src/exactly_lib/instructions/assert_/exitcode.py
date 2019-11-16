@@ -16,8 +16,8 @@ from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.element_parsers.token_stream_parser import new_token_parser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import negation_of_predicate, pfh_exception
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
@@ -164,7 +164,7 @@ class _ExitCodeGetterValue(PropertyGetterValue[None, int]):
     def name(self) -> Optional[str]:
         return _ExitCodeGetter.NAME
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> PropertyGetter[None, int]:
+    def value_of_any_dependency(self, tcds: Tcds) -> PropertyGetter[None, int]:
         return _ExitCodeGetter(tcds.sds)
 
 

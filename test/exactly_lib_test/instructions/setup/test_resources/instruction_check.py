@@ -20,10 +20,10 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators, \
-    home_and_sds_populators, sds_populator
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    HomeAndSdsAction, home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
+    tcds_populators, sds_populator
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    HdsAndSdsAction, tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -46,11 +46,11 @@ class SettingsBuilderAssertionModel(tuple):
 
 class Arrangement(ArrangementWithSds):
     def __init__(self,
-                 pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-                 hds_contents: home_populators.HomePopulator = home_populators.empty(),
+                 pre_contents_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                 hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
-                 non_home_contents: non_home_populator.NonHomePopulator = non_home_populator.empty(),
-                 home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
+                 non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
+                 tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder(),
@@ -60,8 +60,8 @@ class Arrangement(ArrangementWithSds):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
                          hds_contents=hds_contents,
                          sds_contents=sds_contents_before_main,
-                         non_home_contents=non_home_contents,
-                         home_or_sds_contents=home_or_sds_contents,
+                         non_hds_contents=non_hds_contents,
+                         tcds_contents=tcds_contents,
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
                          symbols=symbols,
@@ -83,7 +83,7 @@ class Expectation:
                  post_validation_result: ValueAssertion = svh_assertions.is_success(),
                  symbol_usages: ValueAssertion = asrt.is_empty_sequence,
                  main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
-                 main_side_effects_on_home_and_sds: ValueAssertion = asrt.anything_goes(),
+                 main_side_effects_on_tcds: ValueAssertion = asrt.anything_goes(),
                  settings_builder: ValueAssertion = asrt.anything_goes(),
                  source: ValueAssertion = asrt.anything_goes(),
                  symbols_after_main: ValueAssertion = asrt.anything_goes(),
@@ -93,7 +93,7 @@ class Expectation:
         self.main_side_effects_on_sds = main_side_effects_on_sds
         self.post_validation_result = post_validation_result
         self.settings_builder = settings_builder
-        self.main_side_effects_on_home_and_sds = main_side_effects_on_home_and_sds
+        self.main_side_effects_on_tcds = main_side_effects_on_tcds
         self.source = source
         self.symbol_usages = symbol_usages
         self.symbols_after_main = symbols_after_main
@@ -145,12 +145,12 @@ class Executor:
         self.expectation.symbol_usages.apply_with_message(self.put, instruction.symbol_usages(),
                                                           'symbol-usages')
 
-        with home_and_sds_with_act_as_curr_dir(
+        with tcds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 hds_contents=self.arrangement.hds_contents,
                 sds_contents=self.arrangement.sds_contents,
-                non_home_contents=self.arrangement.non_home_contents,
-                home_or_sds_contents=self.arrangement.home_or_sds_contents,
+                non_hds_contents=self.arrangement.non_hds_contents,
+                tcds_contents=self.arrangement.tcds_contents,
                 symbols=self.arrangement.symbols) as path_resolving_environment:
 
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
@@ -177,8 +177,8 @@ class Executor:
                 timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
                 symbols=self.arrangement.symbols)
 
-            home_and_sds = path_resolving_environment.home_and_sds
-            sds = home_and_sds.sds
+            tcds = path_resolving_environment.tcds
+            sds = tcds.sds
 
             main_result = self._execute_main(instruction_environment, instruction)
 
@@ -194,8 +194,8 @@ class Executor:
                 instruction_environment.symbols,
                 'symbols_after_main')
             self._execute_post_validate(instruction_environment, instruction)
-            self.expectation.main_side_effects_on_home_and_sds.apply(self.put,
-                                                                     instruction_environment.home_and_sds)
+            self.expectation.main_side_effects_on_tcds.apply(self.put,
+                                                             instruction_environment.tcds)
             self.expectation.symbol_usages.apply_with_message(self.put,
                                                               instruction.symbol_usages(),
                                                               'symbol-usages after ' +

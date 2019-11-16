@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import Max1DependencyDdv
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     SingleDirDependentValueAssertion
@@ -23,9 +23,9 @@ class _AssertPathHasSpecifiedProperties(SingleDirDependentValueAssertion):
     def _check_custom(self,
                       put: unittest.TestCase,
                       actual: Max1DependencyDdv,
-                      home_and_sds: HomeAndSds,
+                      tcds: Tcds,
                       message_builder: asrt.MessageBuilder):
-        super()._check_custom(put, actual, home_and_sds, message_builder)
+        super()._check_custom(put, actual, tcds, message_builder)
         assert isinstance(actual, PathDdv)
 
         self._check_path_suffix(put,

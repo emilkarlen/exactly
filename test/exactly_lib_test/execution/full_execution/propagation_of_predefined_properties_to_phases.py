@@ -54,9 +54,9 @@ class TestPredefinedSymbols(unittest.TestCase):
             actual_recorded_steps)
         test_case = test_case_that_records_property_of_env_for_each_step_of_partial_execution(recorder_builder)
         actor = actor_that_records_property_of_env_for_each_step_w_env_arg(recorder_builder)
-        default_home_dir = pathlib.Path.cwd()
-        configuration_builder = ConfigurationBuilder(default_home_dir,
-                                                     default_home_dir,
+        default_hds_dir = pathlib.Path.cwd()
+        configuration_builder = ConfigurationBuilder(default_hds_dir,
+                                                     default_hds_dir,
                                                      actor)
         arrangement = execution_check.Arrangement(test_case,
                                                   configuration_builder,

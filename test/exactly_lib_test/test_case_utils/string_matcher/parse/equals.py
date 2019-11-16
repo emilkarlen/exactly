@@ -65,15 +65,15 @@ def suite() -> unittest.TestSuite:
 
 
 _RELATIVITY_OPTION_CONFIGURATIONS_FOR_EXPECTED_FILE = [
-    rel_opt.conf_rel_any(RelOptionType.REL_HOME_CASE),
+    rel_opt.conf_rel_any(RelOptionType.REL_HDS_CASE),
     RelativityOptionConfigurationForRelCwdForTestCwdDir(),
     rel_opt.conf_rel_any(RelOptionType.REL_ACT),
     rel_opt.conf_rel_any(RelOptionType.REL_TMP),
-    rel_opt.default_conf_rel_any(RelOptionType.REL_HOME_CASE),
+    rel_opt.default_conf_rel_any(RelOptionType.REL_HDS_CASE),
     rel_opt.symbol_conf_rel_any(RelOptionType.REL_TMP,
                                 'EXPECTED_FILE_SYMBOL',
                                 EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants),
-    rel_opt.symbol_conf_rel_any(RelOptionType.REL_HOME_CASE,
+    rel_opt.symbol_conf_rel_any(RelOptionType.REL_HDS_CASE,
                                 'EXPECTED_FILE_SYMBOL',
                                 EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants),
 ]
@@ -106,7 +106,7 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithRelativityOptionAndNegationBase
                      relativity_option=self.rel_opt.option_argument)),
             model_construction.empty_model(),
             ArrangementPostAct(
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
+                tcds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('dir')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),

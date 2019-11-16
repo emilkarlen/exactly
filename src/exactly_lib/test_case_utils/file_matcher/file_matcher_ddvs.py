@@ -3,7 +3,7 @@ from typing import List, Callable
 
 from exactly_lib.test_case.validation import pre_or_post_value_validators
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.impl.combinators import FileMatcherNot, FileMatcherAnd, FileMatcherOr
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
 
@@ -12,7 +12,7 @@ class FileMatcherValueFromPrimitiveDdv(FileMatcherDdv):
     def __init__(self, primitive_value: FileMatcher):
         self._primitive_value = primitive_value
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> FileMatcher:
+    def value_of_any_dependency(self, tcds: Tcds) -> FileMatcher:
         return self._primitive_value
 
 
@@ -32,7 +32,7 @@ class FileMatcherCompositionDdvBase(FileMatcherDdv, ABC):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> FileMatcher:
+    def value_of_any_dependency(self, tcds: Tcds) -> FileMatcher:
         return self._mk_primitive_value([
             part.value_of_any_dependency(tcds)
             for part in self._parts
@@ -60,7 +60,7 @@ class FileMatcherOrValue(FileMatcherCompositionDdvBase):
 class FileMatcherDdvFromParts(FileMatcherDdv):
     def __init__(self,
                  validator: PreOrPostSdsValueValidator,
-                 matcher: Callable[[HomeAndSds], FileMatcher],
+                 matcher: Callable[[Tcds], FileMatcher],
                  ):
         self._validator = validator
         self._matcher = matcher
@@ -68,5 +68,5 @@ class FileMatcherDdvFromParts(FileMatcherDdv):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> FileMatcher:
+    def value_of_any_dependency(self, tcds: Tcds) -> FileMatcher:
         return self._matcher(tcds)

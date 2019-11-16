@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case.result import sh, svh
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -33,14 +33,14 @@ class InstructionExecutionBase:
                                  self.expectation.validation_pre_sds,
                                  actual)
 
-    def _check_main_side_effects_on_sds(self, home_and_sds: HomeAndSds):
+    def _check_main_side_effects_on_sds(self, tcds: Tcds):
         self.expectation.main_side_effects_on_sds.apply(self.put,
-                                                        home_and_sds.sds,
+                                                        tcds.sds,
                                                         asrt.MessageBuilder('main side effects on SDS'))
 
-    def _check_side_effects_on_home_and_sds(self, home_and_sds: HomeAndSds):
-        self.expectation.main_side_effects_on_home_and_sds.apply(self.put,
-                                                                 home_and_sds,
+    def _check_side_effects_on_tcds(self, tcds: Tcds):
+        self.expectation.main_side_effects_on_tcds.apply(self.put,
+                                                                 tcds,
                                                                  asrt.MessageBuilder('side effects on HomeAndSds'))
 
     def _check_instance_and(self,

@@ -20,8 +20,8 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
-    HomeOrSdsPopulatorForRelOptionType
+from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
+    TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.test_resources.files import file_structure as fs
@@ -63,7 +63,7 @@ class TestSymbolReferences(unittest.TestCase):
         source = remaining_source(argument, [following_line])
 
         arrangement = ArrangementWithSds(
-            home_or_sds_contents=HomeOrSdsPopulatorForRelOptionType(
+            tcds_contents=TcdsPopulatorForRelOptionType(
                 RelOptionType.REL_ACT,
                 fs.DirContents([file_to_interpret])),
             symbols=SymbolTable({

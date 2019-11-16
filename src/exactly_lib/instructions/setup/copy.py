@@ -41,10 +41,10 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 REL_OPTION_ARG_CONF_FOR_SOURCE = rel_opts_configuration.RelOptionArgumentConfiguration(
     rel_opts_configuration.RelOptionsConfiguration(
-        path_relativity.PathRelativityVariants({RelOptionType.REL_HOME_CASE,
-                                                RelOptionType.REL_HOME_ACT},
+        path_relativity.PathRelativityVariants({RelOptionType.REL_HDS_CASE,
+                                                RelOptionType.REL_HDS_ACT},
                                                True),
-        RelOptionType.REL_HOME_CASE),
+        RelOptionType.REL_HDS_CASE),
     instruction_arguments.SOURCE_PATH_ARGUMENT.name,
     path_suffix_is_required=True)
 
@@ -63,7 +63,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
         format_map = {
             'current_dir': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
-            'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
+            'sandbox': formatting.concept_(concepts.SDS_CONCEPT_INFO),
             'SOURCE': instruction_arguments.SOURCE_PATH_ARGUMENT.name,
             'DESTINATION': instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
         }

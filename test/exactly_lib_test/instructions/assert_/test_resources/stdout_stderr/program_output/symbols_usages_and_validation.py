@@ -84,10 +84,10 @@ class TestFailingValidationPreSds(TestCaseBase):
     def runTest(self):
         # ARRANGE #
 
-        program_with_ref_to_file_in_home_ds = pgm_args.program(
-            pgm_args.interpret_py_source_file(ab.path_rel_opt('non-existing-file', RelOptionType.REL_HOME_CASE))
+        program_with_ref_to_file_in_hds_ds = pgm_args.program(
+            pgm_args.interpret_py_source_file(ab.path_rel_opt('non-existing-file', RelOptionType.REL_HDS_CASE))
         )
-        arguments = po_ab.from_program(program_with_ref_to_file_in_home_ds,
+        arguments = po_ab.from_program(program_with_ref_to_file_in_hds_ds,
                                        matcher_arguments.emptiness_matcher())
 
         # ACT & ASSERT #
@@ -101,10 +101,10 @@ class TestFailingValidationPostSds(TestCaseBase):
     def runTest(self):
         # ARRANGE #
 
-        program_with_ref_to_file_in_home_ds = pgm_args.program(
+        program_with_ref_to_file_in_hds_ds = pgm_args.program(
             pgm_args.interpret_py_source_file(ab.path_rel_opt('non-existing-file', RelOptionType.REL_ACT))
         )
-        arguments = po_ab.from_program(program_with_ref_to_file_in_home_ds,
+        arguments = po_ab.from_program(program_with_ref_to_file_in_hds_ds,
                                        matcher_arguments.emptiness_matcher())
 
         # ACT & ASSERT #

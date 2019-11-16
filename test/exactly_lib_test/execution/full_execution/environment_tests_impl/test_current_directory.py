@@ -103,7 +103,7 @@ class Test(FullExecutionTestCaseBase):
         self.__assert_test_sanity()
         initial_dir = self.sds.act_dir
         initial_dir_recording = str(initial_dir)
-        home_dir = str(self.initial_home_dir_path)
+        home_dir = str(self.initial_hds_dir_path)
         expected_recordings = {
             phase_step.CONFIGURATION__MAIN:
                 home_dir,

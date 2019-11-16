@@ -26,21 +26,21 @@ class FullExecutionTestCaseBase:
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__full_result = None
         self.__sandbox_directory_structure = None
-        self.__initial_home_dir_path = None
+        self.__initial_hds_dir_path = None
         self.__actor = actor
         self.__atc_os_process_executor = atc_os_process_executor
 
     def execute(self):
         # SETUP #
-        self.__initial_home_dir_path = pathlib.Path().resolve()
+        self.__initial_hds_dir_path = pathlib.Path().resolve()
         # ACT #
-        initial_home_dir_path = self.initial_home_dir_path.resolve()
+        initial_hds_dir_path = self.initial_hds_dir_path.resolve()
         exe_conf = ExecutionConfiguration(dict(os.environ),
                                           self.__atc_os_process_executor,
                                           sandbox_root_name_resolver.for_test(),
                                           SymbolTable())
-        configuration_builder = ConfigurationBuilder(initial_home_dir_path,
-                                                     initial_home_dir_path,
+        configuration_builder = ConfigurationBuilder(initial_hds_dir_path,
+                                                     initial_hds_dir_path,
                                                      self._actor())
         full_result = execution.execute(
             exe_conf,
@@ -52,7 +52,7 @@ class FullExecutionTestCaseBase:
         self.__full_result = full_result
         self._assertions()
         # CLEANUP #
-        os.chdir(str(self.initial_home_dir_path))
+        os.chdir(str(self.initial_hds_dir_path))
         if not self.__dbg_do_not_delete_dir_structure and self.sds:
             shutil.rmtree(str(self.sds.root_dir))
         else:
@@ -75,8 +75,8 @@ class FullExecutionTestCaseBase:
         return self.__unittest_case
 
     @property
-    def initial_home_dir_path(self) -> pathlib.Path:
-        return self.__initial_home_dir_path
+    def initial_hds_dir_path(self) -> pathlib.Path:
+        return self.__initial_hds_dir_path
 
     @property
     def full_result(self) -> FullExeResult:

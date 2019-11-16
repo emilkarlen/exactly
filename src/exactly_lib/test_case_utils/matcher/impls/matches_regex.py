@@ -3,8 +3,8 @@ from typing import Optional, Pattern, Match, Set
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import str_matcher
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
@@ -130,7 +130,7 @@ class MatchesRegexDdv(MatcherDdv[str]):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._regex.validator()
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
         return MatchesRegex(
             self._expectation_type,
             self._is_full_match,

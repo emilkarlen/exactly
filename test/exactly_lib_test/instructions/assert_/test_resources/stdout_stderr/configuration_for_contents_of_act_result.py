@@ -3,11 +3,11 @@ from exactly_lib_test.instructions.assert_.test_resources import instruction_che
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
 from exactly_lib_test.test_case.test_resources.arrangements import ActResultProducer, ActResultProducerFromActResult
-from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators as home_or_sds
-from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as home_or_sds
+from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.process import SubProcessResult
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import HomeAndSdsAction
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import HdsAndSdsAction
 
 
 class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
@@ -16,26 +16,26 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
 
     def arrangement_for_contents(self,
                                  actual_contents: str,
-                                 post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-                                 home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
+                                 post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                                 home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
                                  symbols: SymbolTable = None,
                                  ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
             act_result_producer=(self._act_result_producer(actual_contents)),
-            home_or_sds_contents=home_or_sds_contents,
+            tcds_contents=home_or_sds_contents,
             post_sds_population_action=post_sds_population_action,
             symbols=symbols,
         )
 
     def arrangement_for_actual_and_expected(self,
                                             actual_contents: str,
-                                            expected: HomeOrSdsPopulator,
-                                            post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                                            expected: TcdsPopulator,
+                                            post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
                                             symbols: SymbolTable = None,
                                             ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
             act_result_producer=(self._act_result_producer(actual_contents)),
-            home_or_sds_contents=expected,
+            tcds_contents=expected,
             post_sds_population_action=post_sds_population_action,
             symbols=symbols,
         )

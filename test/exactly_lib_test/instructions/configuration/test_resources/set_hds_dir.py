@@ -9,7 +9,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
-from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import Arrangement, Expectation, \
     Executor
@@ -27,7 +27,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 
 class Configuration:
-    def __init__(self, target_directory: RelHomeOptionType):
+    def __init__(self, target_directory: RelHdsOptionType):
         self.target_directory = target_directory
 
     def get_property_dir_path(self, configuration_builder: ConfigurationBuilder) -> pathlib.Path:

@@ -19,25 +19,25 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
         'program_name': formatting.program_name(program_info.PROGRAM_NAME),
         'conf_param': formatting.concept_(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO),
 
-        'tcds_concept': formatting.concept_(concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO),
-        'TCDS': concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.acronym,
+        'tcds_concept': formatting.concept_(concepts.TCDS_CONCEPT_INFO),
+        'TCDS': concepts.TCDS_CONCEPT_INFO.acronym,
 
-        'SDS': concepts.SANDBOX_CONCEPT_INFO.acronym,
-        'sds_concept': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
-        'Sds_concept_header': concepts.SANDBOX_CONCEPT_INFO.singular_name.capitalize(),
+        'SDS': concepts.SDS_CONCEPT_INFO.acronym,
+        'sds_concept': formatting.concept_(concepts.SDS_CONCEPT_INFO),
+        'Sds_concept_header': concepts.SDS_CONCEPT_INFO.singular_name.capitalize(),
         'sds_single_line_description':
-            concepts.SANDBOX_CONCEPT_INFO.single_line_description_str.capitalize(),
+            concepts.SDS_CONCEPT_INFO.single_line_description_str.capitalize(),
 
-        'HDS': concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.acronym,
-        'hds_concept': formatting.concept_(concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO),
-        'Hds_concept_header': concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.singular_name.capitalize(),
+        'HDS': concepts.HDS_CONCEPT_INFO.acronym,
+        'hds_concept': formatting.concept_(concepts.HDS_CONCEPT_INFO),
+        'Hds_concept_header': concepts.HDS_CONCEPT_INFO.singular_name.capitalize(),
         'hds_single_line_description':
-            concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.single_line_description_str.capitalize(),
+            concepts.HDS_CONCEPT_INFO.single_line_description_str.capitalize(),
 
         'conf_phase': phase_names.CONFIGURATION,
         'act_phase': phase_names.ACT,
 
-        'act_home_conf_param': formatting.conf_param(test_case_file_structure.HDS_ACT_INFO.identifier),
+        'act_hds_conf_param': formatting.conf_param(test_case_file_structure.HDS_ACT_INFO.identifier),
 
         'data': type_system.DATA_TYPE_CATEGORY_NAME,
         'path_type': formatting.term(types.PATH_TYPE_INFO.singular_name),
@@ -74,13 +74,13 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
                 [
                     const_paragraphs_child(
                         'sds',
-                        concepts.SANDBOX_CONCEPT_INFO.singular_name.capitalize() +
+                        concepts.SDS_CONCEPT_INFO.singular_name.capitalize() +
                         ' and Current directory',
                         tp.fnap(_SDS_AND_CD)
                     ),
                     const_paragraphs_child(
                         'hds',
-                        concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.singular_name.capitalize(),
+                        concepts.HDS_CONCEPT_INFO.singular_name.capitalize(),
                         tp.fnap(_HDS),
                     ),
                     const_paragraphs_child(
@@ -200,7 +200,7 @@ The {hds_concept} ({HDS}) organizes files that exist before the execution
 and that should probably not be modified.
 
 
-One of the directories in the {HDS} is the {act_home_conf_param} directory.
+One of the directories in the {HDS} is the {act_hds_conf_param} directory.
 It is the default location of the executable program file
 that is tested, i.e. the location of files referenced from the {act_phase} phase.
 
@@ -244,9 +244,9 @@ The accepted {relativities} are chosen to prevent modification of files in the {
 
 def _dir_struct_see_also_targets() -> List[see_also.SeeAlsoTarget]:
     return [
-        concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
-        concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
-        concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
+        concepts.TCDS_CONCEPT_INFO.cross_reference_target,
+        concepts.SDS_CONCEPT_INFO.cross_reference_target,
+        concepts.HDS_CONCEPT_INFO.cross_reference_target,
         concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
         concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
         types.PATH_TYPE_INFO.cross_reference_target,
@@ -312,7 +312,7 @@ Timeout for all {os_process:s} is determined by the {conf_param} {time_out_conf_
 
 def _os_process_see_also_targets() -> List[see_also.SeeAlsoTarget]:
     return [
-        concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
+        concepts.TCDS_CONCEPT_INFO.cross_reference_target,
         concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
         concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
         conf_params.TIMEOUT_CONF_PARAM_INFO.cross_reference_target,

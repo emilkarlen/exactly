@@ -2,11 +2,11 @@ import pathlib
 from typing import Callable
 
 from exactly_lib.test_case_file_structure import path_relativity
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import \
-    RelOptionType, RelSdsOptionType, RelNonHomeOptionType, RelHomeOptionType
+    RelOptionType, RelSdsOptionType, RelNonHdsOptionType, RelHdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 
 
 class RelRootResolver:
@@ -17,17 +17,20 @@ class RelRootResolver:
     def relativity_type(self) -> RelOptionType:
         return self._relativity
 
-    def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+    def from_tcds(self, tcds: Tcds) -> pathlib.Path:
         raise NotImplementedError()
 
-    def from_home(self, hds: HomeDirectoryStructure) -> pathlib.Path:
-        raise ValueError('Root is not relative home: ' + str(self._relativity))
+    def from_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+        raise ValueError('Root is not relative HDS: ' + str(self._relativity))
 
-    def from_non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        raise ValueError('Root is not relative non-home: ' + str(self._relativity))
+    def from_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        raise ValueError('Root is not relative SDS: ' + str(self._relativity))
+
+    def from_non_hds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        raise ValueError('Root is not relative non-HDS: ' + str(self._relativity))
 
     @property
-    def is_rel_home(self) -> bool:
+    def is_rel_hds(self) -> bool:
         raise NotImplementedError()
 
     @property
@@ -43,26 +46,26 @@ class RelRootResolver:
         raise NotImplementedError()
 
 
-class RelHomeRootResolver(RelRootResolver):
+class RelHdsRootResolver(RelRootResolver):
     def __init__(self,
-                 relativity_type: RelHomeOptionType,
+                 relativity_type: RelHdsOptionType,
                  hds_2_root_fun: Callable[[HomeDirectoryStructure], pathlib.Path]):
-        super().__init__(path_relativity.rel_any_from_rel_home(relativity_type))
+        super().__init__(path_relativity.rel_any_from_rel_hds(relativity_type))
         self._relativity_type_hds = relativity_type
         self._hds_2_root_fun = hds_2_root_fun
 
     @property
-    def home_relativity_type(self) -> RelHomeOptionType:
+    def hds_relativity_type(self) -> RelHdsOptionType:
         return self._relativity_type_hds
 
-    def from_home(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def from_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         return self._hds_2_root_fun(hds)
 
-    def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
-        return self.from_home(home_and_sds.hds)
+    def from_tcds(self, tcds: Tcds) -> pathlib.Path:
+        return self.from_hds(tcds.hds)
 
     @property
-    def is_rel_home(self) -> bool:
+    def is_rel_hds(self) -> bool:
         return True
 
     @property
@@ -78,23 +81,23 @@ class RelHomeRootResolver(RelRootResolver):
         return True
 
 
-class RelNonHomeRootResolver(RelRootResolver):
-    def __init__(self, relativity_type: RelNonHomeOptionType):
-        super().__init__(path_relativity.rel_any_from_rel_non_home(relativity_type))
-        self._relativity_type_non_home = relativity_type
+class RelNonHdsRootResolver(RelRootResolver):
+    def __init__(self, relativity_type: RelNonHdsOptionType):
+        super().__init__(path_relativity.rel_any_from_rel_non_hds(relativity_type))
+        self._relativity_type_non_hds = relativity_type
 
     @property
-    def non_home_relativity_type(self) -> RelNonHomeOptionType:
-        return self._relativity_type_non_home
+    def non_hds_relativity_type(self) -> RelNonHdsOptionType:
+        return self._relativity_type_non_hds
 
-    def from_non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def from_non_hds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
 
-    def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
-        return self.from_non_home(home_and_sds.sds)
+    def from_tcds(self, tcds: Tcds) -> pathlib.Path:
+        return self.from_non_hds(tcds.sds)
 
     @property
-    def is_rel_home(self) -> bool:
+    def is_rel_hds(self) -> bool:
         return False
 
     @property
@@ -102,14 +105,14 @@ class RelNonHomeRootResolver(RelRootResolver):
         return False
 
 
-class RelNonHomeRootResolverForCwd(RelNonHomeRootResolver):
+class RelNonHdsRootResolverForCwd(RelNonHdsRootResolver):
     def __init__(self):
-        super().__init__(RelNonHomeOptionType.REL_CWD)
+        super().__init__(RelNonHdsOptionType.REL_CWD)
 
     def from_cwd(self) -> pathlib.Path:
         return pathlib.Path().cwd()
 
-    def from_non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def from_non_hds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return self.from_cwd()
 
     @property
@@ -121,11 +124,11 @@ class RelNonHomeRootResolverForCwd(RelNonHomeRootResolver):
         return False
 
 
-class RelSdsRootResolver(RelNonHomeRootResolver):
+class RelSdsRootResolver(RelNonHdsRootResolver):
     def __init__(self,
                  relativity_type: RelSdsOptionType,
                  sds_2_root_fun: Callable[[SandboxDirectoryStructure], pathlib.Path]):
-        super().__init__(path_relativity.rel_non_home_from_rel_sds(relativity_type))
+        super().__init__(path_relativity.rel_non_hds_from_rel_sds(relativity_type))
         self._relativity_type_sds = relativity_type
         self._sds_2_root_fun = sds_2_root_fun
 
@@ -136,7 +139,7 @@ class RelSdsRootResolver(RelNonHomeRootResolver):
     def from_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return self._sds_2_root_fun(sds)
 
-    def from_non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def from_non_hds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return self.from_sds(sds)
 
     @property
@@ -157,10 +160,10 @@ resolver_for_result = RelSdsRootResolver(RelSdsOptionType.REL_RESULT,
 resolver_for_tmp_user = RelSdsRootResolver(RelSdsOptionType.REL_TMP,
                                            SandboxDirectoryStructure.user_tmp_dir.fget)
 
-resolver_for_cwd = RelNonHomeRootResolverForCwd()
+resolver_for_cwd = RelNonHdsRootResolverForCwd()
 
-resolver_for_home_case = RelHomeRootResolver(RelHomeOptionType.REL_HOME_CASE,
-                                             HomeDirectoryStructure.case_dir.fget)
+resolver_for_hds_case = RelHdsRootResolver(RelHdsOptionType.REL_HDS_CASE,
+                                           HomeDirectoryStructure.case_dir.fget)
 
-resolver_for_home_act = RelHomeRootResolver(RelHomeOptionType.REL_HOME_ACT,
-                                            HomeDirectoryStructure.act_dir.fget)
+resolver_for_hds_act = RelHdsRootResolver(RelHdsOptionType.REL_HDS_ACT,
+                                          HomeDirectoryStructure.act_dir.fget)

@@ -8,12 +8,12 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativi
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure import relative_path_options
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
-    RelSdsOptionType, RelNonHomeOptionType, RelHomeOptionType, DirectoryStructurePartition, rel_any_from_rel_sds
-from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP, REL_NON_HOME_OPTIONS_MAP
+    RelSdsOptionType, RelNonHdsOptionType, RelHdsOptionType, DirectoryStructurePartition, rel_any_from_rel_sds
+from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP, REL_NON_HDS_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.concrete_path_parts import PathPartDdvAsFixedPath
 from exactly_lib.type_system.data.path_part import PathPartDdv
@@ -25,16 +25,16 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.test_case_file_structure.test_resources import arguments_building as path_args, sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources import home_populators
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
+from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
+from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import PathArgument, \
     path_argument
-from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
-    HomeOrSdsPopulator, \
-    HomeOrSdsPopulatorForRelOptionType
-from exactly_lib_test.test_case_file_structure.test_resources.non_home_populator import NonHomePopulator
+from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.non_hds_populator import NonHdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_contents_check
+from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
+    TcdsPopulator, \
+    TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_resources import arguments_building
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
 from exactly_lib_test.test_resources.files.file_structure import DirContents
@@ -123,16 +123,16 @@ class OptionStringConfigurationForRelativityOption(OptionStringConfiguration):
         return self._relativity
 
 
-class OptionStringConfigurationForRelativityOptionRelHome(OptionStringConfigurationForRelativityOption):
-    def __init__(self, relativity: RelHomeOptionType):
+class OptionStringConfigurationForRelativityOptionRelHds(OptionStringConfigurationForRelativityOption):
+    def __init__(self, relativity: RelHdsOptionType):
         super().__init__(
-            path_relativity.rel_any_from_rel_home(relativity))
+            path_relativity.rel_any_from_rel_hds(relativity))
 
 
-class OptionStringConfigurationForRelativityOptionRelNonHome(OptionStringConfigurationForRelativityOption):
-    def __init__(self, relativity: RelNonHomeOptionType):
+class OptionStringConfigurationForRelativityOptionRelNonHds(OptionStringConfigurationForRelativityOption):
+    def __init__(self, relativity: RelNonHdsOptionType):
         super().__init__(
-            path_relativity.rel_any_from_rel_non_home(relativity))
+            path_relativity.rel_any_from_rel_non_hds(relativity))
 
 
 class OptionStringConfigurationForRelativityOptionRelSds(OptionStringConfigurationForRelativityOption):
@@ -207,10 +207,10 @@ class RelativityOptionConfiguration:
     def exists_pre_sds(self) -> bool:
         raise NotImplementedError()
 
-    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
+    def populator_for_relativity_option_root(self, contents: DirContents) -> TcdsPopulator:
         raise NotImplementedError()
 
-    def population_dir(self, tds: HomeAndSds) -> pathlib.Path:
+    def population_dir(self, tds: Tcds) -> pathlib.Path:
         raise NotImplementedError()
 
     @property
@@ -257,19 +257,19 @@ class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguratio
     def exists_pre_sds(self) -> bool:
         return self.resolver.exists_pre_sds
 
-    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
-        return HomeOrSdsPopulatorForRelOptionType(self.relativity, contents)
+    def populator_for_relativity_option_root(self, contents: DirContents) -> TcdsPopulator:
+        return TcdsPopulatorForRelOptionType(self.relativity, contents)
 
-    def population_dir(self, tds: HomeAndSds) -> pathlib.Path:
-        return REL_OPTIONS_MAP[self.relativity].root_resolver.from_home_and_sds(tds)
+    def population_dir(self, tds: Tcds) -> pathlib.Path:
+        return REL_OPTIONS_MAP[self.relativity].root_resolver.from_tcds(tds)
 
 
-class RelativityOptionConfigurationRelHome(RelativityOptionConfigurationForRelOptionType):
+class RelativityOptionConfigurationRelHds(RelativityOptionConfigurationForRelOptionType):
     def __init__(self,
-                 relativity: RelHomeOptionType,
+                 relativity: RelHdsOptionType,
                  cli_option: OptionStringConfiguration,
                  symbols_configuration: SymbolsConfiguration = SymbolsConfiguration()):
-        super().__init__(path_relativity.rel_any_from_rel_home(relativity),
+        super().__init__(path_relativity.rel_any_from_rel_hds(relativity),
                          cli_option,
                          symbols_configuration)
         self._relativity_hds = relativity
@@ -277,24 +277,24 @@ class RelativityOptionConfigurationRelHome(RelativityOptionConfigurationForRelOp
 
     @property
     def directory_structure_partition(self) -> DirectoryStructurePartition:
-        return DirectoryStructurePartition.HOME
+        return DirectoryStructurePartition.HDS
 
     @property
-    def relativity_option_rel_home(self) -> RelHomeOptionType:
+    def relativity_option_rel_hds(self) -> RelHdsOptionType:
         return self._relativity_hds
 
     def root_dir__hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
-        return self._resolver_hds.from_home(hds)
+        return self._resolver_hds.from_hds(hds)
 
-    def populator_for_relativity_option_root__home(self, contents: DirContents) -> HomePopulator:
-        return home_populators.contents_in(self._relativity_hds, contents)
+    def populator_for_relativity_option_root__hds(self, contents: DirContents) -> HdsPopulator:
+        return hds_populators.contents_in(self._relativity_hds, contents)
 
     @property
     def exists_pre_sds(self) -> bool:
         return True
 
 
-class RelativityOptionConfigurationForRelNonHome(RelativityOptionConfiguration):
+class RelativityOptionConfigurationForRelNonHds(RelativityOptionConfiguration):
     def __init__(self,
                  cli_option: OptionStringConfiguration,
                  symbols_configuration: SymbolsConfiguration = SymbolsConfiguration()):
@@ -303,12 +303,12 @@ class RelativityOptionConfigurationForRelNonHome(RelativityOptionConfiguration):
 
     @property
     def directory_structure_partition(self) -> DirectoryStructurePartition:
-        return DirectoryStructurePartition.NON_HOME
+        return DirectoryStructurePartition.NON_HDS
 
-    def root_dir__non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def root_dir__non_hds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
 
-    def populator_for_relativity_option_root__non_home(self, contents: DirContents) -> NonHomePopulator:
+    def populator_for_relativity_option_root__non_hds(self, contents: DirContents) -> NonHdsPopulator:
         raise NotImplementedError()
 
     # TODO ska inte finnas i denna klass - finns pga felaktig design
@@ -323,15 +323,15 @@ class RelativityOptionConfigurationForRelNonHome(RelativityOptionConfiguration):
         raise NotImplementedError('abstract method')
 
 
-class RelativityOptionConfigurationForRelNonHomeBase(RelativityOptionConfigurationForRelNonHome):
+class RelativityOptionConfigurationForRelNonHdsBase(RelativityOptionConfigurationForRelNonHds):
     def __init__(self,
-                 relativity: RelNonHomeOptionType,
+                 relativity: RelNonHdsOptionType,
                  cli_option: OptionStringConfiguration,
                  symbols_configuration: SymbolsConfiguration = SymbolsConfiguration()):
         super().__init__(cli_option, symbols_configuration)
-        self.relativity_non_home = relativity
-        self.relativity = path_relativity.rel_any_from_rel_non_home(relativity)
-        self.resolver_non_home = relative_path_options.REL_NON_HOME_OPTIONS_MAP[relativity].root_resolver
+        self.relativity_non_hds = relativity
+        self.relativity = path_relativity.rel_any_from_rel_non_hds(relativity)
+        self.resolver_non_hds = relative_path_options.REL_NON_HDS_OPTIONS_MAP[relativity].root_resolver
 
     @property
     def exists_pre_sds(self) -> bool:
@@ -339,43 +339,43 @@ class RelativityOptionConfigurationForRelNonHomeBase(RelativityOptionConfigurati
 
     @property
     def is_rel_cwd(self) -> bool:
-        return self.relativity_non_home == RelNonHomeOptionType.REL_CWD
+        return self.relativity_non_hds == RelNonHdsOptionType.REL_CWD
 
-    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
-        return HomeOrSdsPopulatorForRelOptionType(self.relativity, contents)
+    def populator_for_relativity_option_root(self, contents: DirContents) -> TcdsPopulator:
+        return TcdsPopulatorForRelOptionType(self.relativity, contents)
 
-    def root_dir__non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        return self.resolver_non_home.from_non_home(sds)
+    def root_dir__non_hds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return self.resolver_non_hds.from_non_hds(sds)
 
-    def populator_for_relativity_option_root__non_home(self, contents: DirContents) -> NonHomePopulator:
-        return non_home_populator.rel_option(self.relativity_non_home, contents)
+    def populator_for_relativity_option_root__non_hds(self, contents: DirContents) -> NonHdsPopulator:
+        return non_hds_populator.rel_option(self.relativity_non_hds, contents)
 
     # TODO ska inte finnas i denna klass - finns pga felaktig design
     def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        return self.resolver_non_home.from_non_home(sds)
+        return self.resolver_non_hds.from_non_hds(sds)
 
     # TODO ska inte finnas i denna klass - finns pga felaktig design
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:
-        if self.relativity_non_home is RelNonHomeOptionType.REL_CWD:
+        if self.relativity_non_hds is RelNonHdsOptionType.REL_CWD:
             return sds_populator.cwd_contents(contents)
         else:
-            relativity_sds = RelSdsOptionType(self.relativity_non_home.value)
+            relativity_sds = RelSdsOptionType(self.relativity_non_hds.value)
             return sds_populator.contents_in(relativity_sds, contents)
 
     def assert_root_dir_contains_exactly(self, contents: DirContents) -> ValueAssertion:
-        return sds_contents_check.non_home_dir_contains_exactly(self.root_dir__non_home,
-                                                                contents)
+        return sds_contents_check.non_hds_dir_contains_exactly(self.root_dir__non_hds,
+                                                               contents)
 
-    def population_dir(self, tds: HomeAndSds) -> pathlib.Path:
-        return REL_NON_HOME_OPTIONS_MAP[self.relativity_non_home].root_resolver.from_home_and_sds(tds)
+    def population_dir(self, tds: Tcds) -> pathlib.Path:
+        return REL_NON_HDS_OPTIONS_MAP[self.relativity_non_hds].root_resolver.from_tcds(tds)
 
 
-class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRelNonHomeBase):
+class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRelNonHdsBase):
     def __init__(self,
                  relativity: RelSdsOptionType,
                  cli_option: OptionStringConfiguration,
                  symbols_configuration: SymbolsConfiguration = SymbolsConfiguration()):
-        super().__init__(path_relativity.rel_non_home_from_rel_sds(relativity),
+        super().__init__(path_relativity.rel_non_hds_from_rel_sds(relativity),
                          cli_option,
                          symbols_configuration)
         self.relativity_sds = relativity
@@ -447,26 +447,26 @@ def symbol_conf_rel_any(relativity: RelOptionType,
                                                 symbol_name))
 
 
-def conf_rel_non_home(relativity: RelNonHomeOptionType) -> RelativityOptionConfigurationForRelNonHome:
-    return RelativityOptionConfigurationForRelNonHomeBase(
+def conf_rel_non_hds(relativity: RelNonHdsOptionType) -> RelativityOptionConfigurationForRelNonHds:
+    return RelativityOptionConfigurationForRelNonHdsBase(
         relativity,
-        OptionStringConfigurationForRelativityOptionRelNonHome(relativity))
+        OptionStringConfigurationForRelativityOptionRelNonHds(relativity))
 
 
-def default_conf_rel_non_home(relativity: RelNonHomeOptionType) -> RelativityOptionConfigurationForRelNonHome:
-    return RelativityOptionConfigurationForRelNonHomeBase(
+def default_conf_rel_non_hds(relativity: RelNonHdsOptionType) -> RelativityOptionConfigurationForRelNonHds:
+    return RelativityOptionConfigurationForRelNonHdsBase(
         relativity,
         OptionStringConfigurationForDefaultRelativity())
 
 
-def symbol_conf_rel_non_home(relativity: RelNonHomeOptionType,
-                             symbol_name: str,
-                             accepted_relativities: PathRelativityVariants
-                             ) -> RelativityOptionConfigurationForRelNonHome:
-    return RelativityOptionConfigurationForRelNonHomeBase(
+def symbol_conf_rel_non_hds(relativity: RelNonHdsOptionType,
+                            symbol_name: str,
+                            accepted_relativities: PathRelativityVariants
+                            ) -> RelativityOptionConfigurationForRelNonHds:
+    return RelativityOptionConfigurationForRelNonHdsBase(
         relativity,
         OptionStringConfigurationForRelSymbol(symbol_name),
-        SymbolsConfigurationForSinglePathSymbol(path_relativity.rel_any_from_rel_non_home(relativity),
+        SymbolsConfigurationForSinglePathSymbol(path_relativity.rel_any_from_rel_non_hds(relativity),
                                                 accepted_relativities,
                                                 symbol_name))
 
@@ -495,32 +495,32 @@ def symbol_conf_rel_sds(relativity: RelSdsOptionType,
     )
 
 
-def conf_rel_home(relativity: RelHomeOptionType) -> RelativityOptionConfigurationRelHome:
-    return RelativityOptionConfigurationRelHome(
+def conf_rel_hds(relativity: RelHdsOptionType) -> RelativityOptionConfigurationRelHds:
+    return RelativityOptionConfigurationRelHds(
         relativity,
-        OptionStringConfigurationForRelativityOptionRelHome(relativity))
+        OptionStringConfigurationForRelativityOptionRelHds(relativity))
 
 
-def every_conf_rel_home() -> List[RelativityOptionConfigurationRelHome]:
+def every_conf_rel_hds() -> List[RelativityOptionConfigurationRelHds]:
     return [
-        conf_rel_home(relativity)
-        for relativity in RelHomeOptionType
+        conf_rel_hds(relativity)
+        for relativity in RelHdsOptionType
     ]
 
 
-def default_conf_rel_home(relativity: RelHomeOptionType) -> RelativityOptionConfigurationRelHome:
-    return RelativityOptionConfigurationRelHome(
+def default_conf_rel_hds(relativity: RelHdsOptionType) -> RelativityOptionConfigurationRelHds:
+    return RelativityOptionConfigurationRelHds(
         relativity,
         OptionStringConfigurationForDefaultRelativity())
 
 
-def symbol_conf_rel_home(relativity: RelHomeOptionType,
-                         symbol_name: str,
-                         accepted_relativities: PathRelativityVariants) -> RelativityOptionConfigurationRelHome:
-    return RelativityOptionConfigurationRelHome(
+def symbol_conf_rel_hds(relativity: RelHdsOptionType,
+                        symbol_name: str,
+                        accepted_relativities: PathRelativityVariants) -> RelativityOptionConfigurationRelHds:
+    return RelativityOptionConfigurationRelHds(
         relativity,
         OptionStringConfigurationForRelSymbol(symbol_name),
-        SymbolsConfigurationForSinglePathSymbol(path_relativity.rel_any_from_rel_home(relativity),
+        SymbolsConfigurationForSinglePathSymbol(path_relativity.rel_any_from_rel_hds(relativity),
                                                 accepted_relativities,
                                                 symbol_name))
 

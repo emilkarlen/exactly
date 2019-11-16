@@ -4,8 +4,8 @@ from typing import Optional, Callable, Any
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     ConstantPreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case_utils.test_resources.validation import Expectation, ValidationExpectation, \
     ValidationActual
@@ -15,7 +15,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 def check(put: unittest.TestCase,
           validator: PreOrPostSdsValueValidator,
-          tcds: HomeAndSds,
+          tcds: Tcds,
           expectation: Expectation):
     def _check(f: Callable[[Any], Optional[TextRenderer]],
                message: str,
@@ -52,7 +52,7 @@ class ValidatorThat(PreOrPostSdsValueValidator):
     def __init__(self,
                  pre_sds_action: Callable[[HomeDirectoryStructure], None] = do_nothing,
                  pre_sds_return_value: Optional[TextRenderer] = None,
-                 post_setup_action: Callable[[HomeAndSds], None] = do_nothing,
+                 post_setup_action: Callable[[Tcds], None] = do_nothing,
                  post_setup_return_value: Optional[TextRenderer] = None,
                  ):
         self.post_setup_return_value = post_setup_return_value
@@ -64,7 +64,7 @@ class ValidatorThat(PreOrPostSdsValueValidator):
         self.pre_sds_action(hds)
         return self.pre_sds_return_value
 
-    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
         self.post_setup_action(tcds)
         return self.post_setup_return_value
 
@@ -79,7 +79,7 @@ def constant_validator(result: ValidationActual) -> PreOrPostSdsValueValidator:
 class PreOrPostSdsValidatorAssertion(ValueAssertionBase[PreOrPostSdsValueValidator]):
     def __init__(self,
                  expectation: ValidationExpectation,
-                 tcds: HomeAndSds):
+                 tcds: Tcds):
         self.expectation = expectation
         self.tcds = tcds
 
@@ -101,7 +101,7 @@ class PreOrPostSdsValidatorAssertion(ValueAssertionBase[PreOrPostSdsValueValidat
 
 class PreOrPostSdsValueValidationAssertion(ValueAssertionBase[PreOrPostSdsValueValidator]):
     def __init__(self,
-                 tcds: HomeAndSds,
+                 tcds: Tcds,
                  expectation: ValidationExpectation,
                  ):
         self.tcds = tcds

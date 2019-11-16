@@ -12,10 +12,10 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
     ConfigurationBase
 from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
-from exactly_lib_test.test_case_file_structure.test_resources import home_populators, home_and_sds_populators, \
+from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, tcds_populators, \
     sds_populator
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    HomeAndSdsAction
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    HdsAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -58,17 +58,17 @@ class CleanupConfigurationBase(ConfigurationBase):
         )
 
     def arrangement(self,
-                    pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-                    hds_contents: home_populators.HomePopulator = home_populators.empty(),
+                    pre_contents_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                    hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
-                    home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
+                    home_or_sds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                     environ: dict = None,
                     os_services: OsServices = new_default(),
                     symbols: SymbolTable = None):
         return Arrangement(pre_contents_population_action=pre_contents_population_action,
                            hds_contents=hds_contents,
                            sds_contents_before_main=sds_contents_before_main,
-                           home_or_sds_contents=home_or_sds_contents,
+                           tcds_contents=home_or_sds_contents,
                            process_execution_settings=with_environ(environ),
                            os_services=os_services,
                            symbols=symbols)

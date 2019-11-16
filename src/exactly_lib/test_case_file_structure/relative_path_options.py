@@ -6,10 +6,10 @@ from exactly_lib.definitions.entity import conf_params as cp
 from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.test_case_file_structure import relativity_root
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelNonHomeOptionType, \
-    RelHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelNonHdsOptionType, \
+    RelHdsOptionType
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType, RelRootResolver, \
-    RelHomeRootResolver
+    RelHdsRootResolver
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.textformat.structure.core import StringText
@@ -53,7 +53,7 @@ class RelOptionInfoCorrespondingToTcDir(RelOptionInfo):
     def __init__(self,
                  directory_variable_name: str,
                  option_name: argument.OptionName,
-                 root_resolver: RelHomeRootResolver,
+                 root_resolver: RelHdsRootResolver,
                  informative_name: str):
         super().__init__(option_name,
                          root_resolver,
@@ -69,11 +69,11 @@ class RelOptionInfoCorrespondingToTcDir(RelOptionInfo):
         return symbol_syntax.symbol_reference_syntax_for_name(self._directory_name)
 
 
-class RelHomeOptionInfo(RelOptionInfoCorrespondingToTcDir):
+class RelHdsOptionInfo(RelOptionInfoCorrespondingToTcDir):
     def __init__(self,
                  directory_variable_name: str,
                  option_name: argument.OptionName,
-                 root_resolver: RelHomeRootResolver,
+                 root_resolver: RelHdsRootResolver,
                  cross_ref_info: ConfigurationParameterInfo,
                  informative_name: str):
         super().__init__(directory_variable_name,
@@ -92,7 +92,7 @@ class RelHomeOptionInfo(RelOptionInfoCorrespondingToTcDir):
         return self._configuration_parameter_name
 
 
-class RelNonHomeOptionInfo(RelOptionInfo):
+class RelNonHdsOptionInfo(RelOptionInfo):
     pass
 
 
@@ -108,7 +108,7 @@ class RelCurrentDirectoryOptionInfo(RelOptionInfo):
         return concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 
 
-class RelSdsOptionInfo(RelNonHomeOptionInfo, RelOptionInfoCorrespondingToTcDir):
+class RelSdsOptionInfo(RelNonHdsOptionInfo, RelOptionInfoCorrespondingToTcDir):
     pass
 
 
@@ -124,21 +124,21 @@ REL_SDS_TMP_INFO = RelSdsOptionInfo(path_texts.EXACTLY_DIR__REL_TMP, path_texts.
 REL_SDS_ACT_INFO = RelSdsOptionInfo(path_texts.EXACTLY_DIR__REL_ACT, path_texts.REL_ACT_OPTION_NAME,
                                     relativity_root.resolver_for_act, path_texts.RELATIVITY_DESCRIPTION_ACT)
 
-REL_HOME_ACT_INFO = RelHomeOptionInfo(path_texts.EXACTLY_DIR__REL_HOME_ACT,
-                                      path_texts.REL_HOME_ACT_OPTION_NAME,
-                                      relativity_root.resolver_for_home_act,
-                                      cp.HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
-                                      path_texts.RELATIVITY_DESCRIPTION_HOME_ACT)
+REL_HDS_ACT_INFO = RelHdsOptionInfo(path_texts.EXACTLY_DIR__REL_HDS_ACT,
+                                    path_texts.REL_HDS_ACT_OPTION_NAME,
+                                    relativity_root.resolver_for_hds_act,
+                                    cp.HDS_ACT_DIRECTORY_CONF_PARAM_INFO,
+                                    path_texts.RELATIVITY_DESCRIPTION_HDS_ACT)
 
-REL_HOME_CASE_INFO = RelHomeOptionInfo(path_texts.EXACTLY_DIR__REL_HOME_CASE,
-                                       path_texts.REL_HOME_CASE_OPTION_NAME,
-                                       relativity_root.resolver_for_home_case,
-                                       cp.HOME_CASE_DIRECTORY_CONF_PARAM_INFO,
-                                       path_texts.RELATIVITY_DESCRIPTION_HOME_CASE)
+REL_HDS_CASE_INFO = RelHdsOptionInfo(path_texts.EXACTLY_DIR__REL_HDS_CASE,
+                                     path_texts.REL_HDS_CASE_OPTION_NAME,
+                                     relativity_root.resolver_for_hds_case,
+                                     cp.HDS_CASE_DIRECTORY_CONF_PARAM_INFO,
+                                     path_texts.RELATIVITY_DESCRIPTION_HDS_CASE)
 
 REL_HDS_OPTIONS_MAP = {
-    RelHomeOptionType.REL_HOME_CASE: REL_HOME_CASE_INFO,
-    RelHomeOptionType.REL_HOME_ACT: REL_HOME_ACT_INFO,
+    RelHdsOptionType.REL_HDS_CASE: REL_HDS_CASE_INFO,
+    RelHdsOptionType.REL_HDS_ACT: REL_HDS_ACT_INFO,
 }
 
 REL_SDS_OPTIONS_MAP = {
@@ -149,28 +149,28 @@ REL_SDS_OPTIONS_MAP = {
     RelSdsOptionType.REL_RESULT: REL_SDS_RESULT_INFO,
 }
 
-REL_NON_HOME_OPTIONS_MAP = {
-    RelNonHomeOptionType.REL_CWD: REL_CWD_INFO,
+REL_NON_HDS_OPTIONS_MAP = {
+    RelNonHdsOptionType.REL_CWD: REL_CWD_INFO,
 
-    RelNonHomeOptionType.REL_ACT: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_ACT],
+    RelNonHdsOptionType.REL_ACT: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_ACT],
 
-    RelNonHomeOptionType.REL_TMP: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_TMP],
+    RelNonHdsOptionType.REL_TMP: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_TMP],
 
-    RelNonHomeOptionType.REL_RESULT: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_RESULT],
+    RelNonHdsOptionType.REL_RESULT: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_RESULT],
 }
 
 REL_OPTIONS_MAP = {
-    RelOptionType.REL_HOME_CASE: REL_HDS_OPTIONS_MAP[RelHomeOptionType.REL_HOME_CASE],
+    RelOptionType.REL_HDS_CASE: REL_HDS_OPTIONS_MAP[RelHdsOptionType.REL_HDS_CASE],
 
-    RelOptionType.REL_HOME_ACT: REL_HDS_OPTIONS_MAP[RelHomeOptionType.REL_HOME_ACT],
+    RelOptionType.REL_HDS_ACT: REL_HDS_OPTIONS_MAP[RelHdsOptionType.REL_HDS_ACT],
 
-    RelOptionType.REL_CWD: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_CWD],
+    RelOptionType.REL_CWD: REL_NON_HDS_OPTIONS_MAP[RelNonHdsOptionType.REL_CWD],
 
-    RelOptionType.REL_ACT: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_ACT],
+    RelOptionType.REL_ACT: REL_NON_HDS_OPTIONS_MAP[RelNonHdsOptionType.REL_ACT],
 
-    RelOptionType.REL_TMP: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_TMP],
+    RelOptionType.REL_TMP: REL_NON_HDS_OPTIONS_MAP[RelNonHdsOptionType.REL_TMP],
 
-    RelOptionType.REL_RESULT: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_RESULT],
+    RelOptionType.REL_RESULT: REL_NON_HDS_OPTIONS_MAP[RelNonHdsOptionType.REL_RESULT],
 }
 
 

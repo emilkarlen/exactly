@@ -29,7 +29,7 @@ class _CurrentWorkingDirectoryConcept(ConceptDocumentation):
             'CD': self.acronym(),
 
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'sds_concept': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
+            'sds_concept': formatting.concept_(concepts.SDS_CONCEPT_INFO),
             'act_sub_dir': SUB_DIRECTORY__ACT + '/',
             'path_type': formatting.symbol_type_(types.PATH_TYPE_INFO),
             'act_phase': phase_names.ACT.syntax,
@@ -61,7 +61,7 @@ class _CurrentWorkingDirectoryConcept(ConceptDocumentation):
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         ret_val = name_and_cross_ref.cross_reference_id_list([
-            concepts.SANDBOX_CONCEPT_INFO,
+            concepts.SDS_CONCEPT_INFO,
             types.PATH_TYPE_INFO,
         ])
         ret_val += [

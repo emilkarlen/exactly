@@ -4,7 +4,7 @@ from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
@@ -35,7 +35,7 @@ class MatchesPrimitiveValueResolvedOfAnyDependency(ValueAssertionBase):
         equals_symbol_references(self.symbol_references).apply_with_message(put,
                                                                             value.references,
                                                                             'symbol references')
-        environment = PathResolvingEnvironmentPreOrPostSds(fake_home_and_sds(),
+        environment = PathResolvingEnvironmentPreOrPostSds(fake_tcds(),
                                                            self.symbols)
         actual_resolved_prim_val = value.resolve_value_of_any_dependency(environment)
         self.expected_resolved_primitive_value.apply_with_message(put, actual_resolved_prim_val,

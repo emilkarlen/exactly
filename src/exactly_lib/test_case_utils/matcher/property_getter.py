@@ -4,7 +4,7 @@ from typing import Generic, Sequence, TypeVar, Optional
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_value_validation
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.symbol_table import SymbolTable
 
 MODEL = TypeVar('MODEL')
@@ -40,7 +40,7 @@ class PropertyGetterValue(Generic[MODEL, T], ABC):
         pass
 
     @abstractmethod
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> PropertyGetter[MODEL, T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> PropertyGetter[MODEL, T]:
         pass
 
     @property

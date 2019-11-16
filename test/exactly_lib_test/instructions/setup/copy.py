@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.instructions.setup import copy as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelHdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
@@ -11,8 +11,8 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
-from exactly_lib_test.test_case_file_structure.test_resources import home_populators, sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_contents_check as sds_contents_check
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -21,7 +21,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir, empty_file, empty_dir
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
     ChangeDirectoryToDirectory
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_entries
@@ -114,7 +114,7 @@ class TestSuccessfulScenariosWithoutExplicitDestination(TestCaseBaseForParser):
                 self._run(file_arg,
                           Arrangement(
                               pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                              hds_contents=case_home_dir_contents(file_to_install),
+                              hds_contents=hds_case_dir_contents(file_to_install),
                               symbols=relativity_option.symbols.in_arrangement(),
                           ),
                           Expectation(
@@ -134,7 +134,7 @@ class TestSuccessfulScenariosWithoutExplicitDestination(TestCaseBaseForParser):
         self._run(src_dir,
                   Arrangement(
                       pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                      hds_contents=case_home_dir_contents(files_to_install),
+                      hds_contents=hds_case_dir_contents(files_to_install),
                   ),
                   Expectation(main_side_effects_on_sds=sds_contents_check.cwd_contains_exactly(
                       files_to_install))
@@ -163,7 +163,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
                         dst_rel_option=dst_rel_option,
                         src_file_name=src_argument,
                         dst_file_name=dst_file_name,
-                        hds_contents=case_home_dir_contents(home_dir_contents),
+                        hds_contents=hds_case_dir_contents(home_dir_contents),
                         sds_populator_before_main=sds_populator.empty(),
                         expected_destination_dir_contents=expected_destination_dir_contents)
 
@@ -202,7 +202,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
                 ]),
             ),
         ]
-        src_rel_option = rel_opt_conf.default_conf_rel_home(RelHomeOptionType.REL_HOME_CASE)
+        src_rel_option = rel_opt_conf.default_conf_rel_hds(RelHdsOptionType.REL_HDS_CASE)
         for dst_rel_option in some_destination_relativity_options():
             for destination_setup in destination_dir_contents_cases:
                 self._sub_test__install_file(
@@ -210,7 +210,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
                     dst_rel_option=dst_rel_option,
                     src_file_name=source_file.file_name,
                     dst_file_name=destination_setup.path_argument_str,
-                    hds_contents=case_home_dir_contents(home_dir_contents),
+                    hds_contents=hds_case_dir_contents(home_dir_contents),
                     sds_populator_before_main=destination_setup.sds_populator_of_root_of(
                         dst_rel_option,
                         destination_setup.dst_relativity_root_contents_arrangement),
@@ -218,13 +218,13 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
 
     def _sub_test__install_file(
             self,
-            src_rel_option: rel_opt_conf.RelativityOptionConfigurationRelHome,
-            dst_rel_option: rel_opt_conf.RelativityOptionConfigurationForRelNonHome,
+            src_rel_option: rel_opt_conf.RelativityOptionConfigurationRelHds,
+            dst_rel_option: rel_opt_conf.RelativityOptionConfigurationForRelNonHds,
             src_file_name: str,
             dst_file_name: str,
             expected_destination_dir_contents: DirContents,
             sds_populator_before_main: sds_populator.SdsPopulator,
-            hds_contents: home_populators.HomePopulator = home_populators.empty(),
+            hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
     ):
         test_case_name = 'src_file_name={}  src_rel_option={}  dst_rel_option={}'.format(
             src_file_name,
@@ -254,8 +254,8 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
                             symbols=symbols_in_arrangement,
                         ),
                         Expectation(
-                            main_side_effects_on_sds=sds_contents_check.non_home_dir_contains_exactly(
-                                dst_rel_option.root_dir__non_home,
+                            main_side_effects_on_sds=sds_contents_check.non_hds_dir_contains_exactly(
+                                dst_rel_option.root_dir__non_hds,
                                 expected_destination_dir_contents),
                             symbol_usages=expected_symbol_usages,
                         )
@@ -271,7 +271,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
         self._run('{} {}'.format(src, dst),
                   Arrangement(
                       pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                      hds_contents=case_home_dir_contents(DirContents(home_dir_contents)),
+                      hds_contents=hds_case_dir_contents(DirContents(home_dir_contents)),
                       sds_contents_before_main=sds_populator.contents_in_resolved_dir(CWD_RESOLVER,
                                                                                       DirContents(act_dir_contents)),
                   ),
@@ -294,7 +294,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
         self._run('{} {}'.format(src_dir, dst_dir),
                   Arrangement(
                       pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                      hds_contents=case_home_dir_contents(DirContents(files_to_install)),
+                      hds_contents=hds_case_dir_contents(DirContents(files_to_install)),
                       sds_contents_before_main=sds_populator.contents_in_resolved_dir(CWD_RESOLVER,
                                                                                       cwd_dir_contents_before),
                   ),
@@ -312,7 +312,7 @@ class TestFailingScenarios(TestCaseBaseForParser):
         self._run(file_name,
                   Arrangement(
                       pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                      hds_contents=case_home_dir_contents(file_to_install),
+                      hds_contents=hds_case_dir_contents(file_to_install),
                       sds_contents_before_main=sds_populator.contents_in_resolved_dir(CWD_RESOLVER,
                                                                                       DirContents(
                                                                                           [empty_file(file_name)])),
@@ -329,7 +329,7 @@ class TestFailingScenarios(TestCaseBaseForParser):
         self._run('{} {}'.format(src, dst),
                   Arrangement(
                       pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                      hds_contents=case_home_dir_contents(home_dir_contents),
+                      hds_contents=hds_case_dir_contents(home_dir_contents),
                       sds_contents_before_main=sds_populator.contents_in_resolved_dir(CWD_RESOLVER,
                                                                                       cwd_dir_contents),
                   ),
@@ -347,7 +347,7 @@ class TestFailingScenarios(TestCaseBaseForParser):
         self._run('{} {}'.format(src, dst),
                   Arrangement(
                       pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
-                      hds_contents=case_home_dir_contents(home_dir_contents),
+                      hds_contents=hds_case_dir_contents(home_dir_contents),
                       sds_contents_before_main=sds_populator.contents_in_resolved_dir(CWD_RESOLVER,
                                                                                       cwd_dir_contents),
                   ),
@@ -358,10 +358,10 @@ class TestFailingScenarios(TestCaseBaseForParser):
 
 def source_relativity_options(symbol_name: str) -> list:
     return [
-        rel_opt_conf.default_conf_rel_home(RelHomeOptionType.REL_HOME_CASE),
-        rel_opt_conf.conf_rel_home(RelHomeOptionType.REL_HOME_CASE),
-        rel_opt_conf.symbol_conf_rel_home(
-            RelHomeOptionType.REL_HOME_CASE,
+        rel_opt_conf.default_conf_rel_hds(RelHdsOptionType.REL_HDS_CASE),
+        rel_opt_conf.conf_rel_hds(RelHdsOptionType.REL_HDS_CASE),
+        rel_opt_conf.symbol_conf_rel_hds(
+            RelHdsOptionType.REL_HDS_CASE,
             symbol_name,
             sut.REL_OPTION_ARG_CONF_FOR_SOURCE.options.accepted_relativity_variants),
     ]
@@ -369,16 +369,16 @@ def source_relativity_options(symbol_name: str) -> list:
 
 def destination_relativity_options(symbol_name: str) -> list:
     return [
-        rel_opt_conf.default_conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
-        rel_opt_conf.conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
-        rel_opt_conf.conf_rel_non_home(RelNonHomeOptionType.REL_ACT),
-        rel_opt_conf.conf_rel_non_home(RelNonHomeOptionType.REL_TMP),
-        rel_opt_conf.symbol_conf_rel_non_home(
-            RelNonHomeOptionType.REL_CWD,
+        rel_opt_conf.default_conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
+        rel_opt_conf.conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
+        rel_opt_conf.conf_rel_non_hds(RelNonHdsOptionType.REL_ACT),
+        rel_opt_conf.conf_rel_non_hds(RelNonHdsOptionType.REL_TMP),
+        rel_opt_conf.symbol_conf_rel_non_hds(
+            RelNonHdsOptionType.REL_CWD,
             symbol_name,
             sut.REL_OPTION_ARG_CONF_FOR_DESTINATION.options.accepted_relativity_variants),
-        rel_opt_conf.symbol_conf_rel_non_home(
-            RelNonHomeOptionType.REL_TMP,
+        rel_opt_conf.symbol_conf_rel_non_hds(
+            RelNonHdsOptionType.REL_TMP,
             symbol_name,
             sut.REL_OPTION_ARG_CONF_FOR_DESTINATION.options.accepted_relativity_variants),
     ]
@@ -386,8 +386,8 @@ def destination_relativity_options(symbol_name: str) -> list:
 
 def some_destination_relativity_options() -> list:
     return [
-        rel_opt_conf.conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
-        rel_opt_conf.conf_rel_non_home(RelNonHomeOptionType.REL_ACT),
+        rel_opt_conf.conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
+        rel_opt_conf.conf_rel_non_hds(RelNonHdsOptionType.REL_ACT),
     ]
 
 
@@ -408,11 +408,11 @@ class DestinationSetup:
         self.expected_relativity_root_contents = expected_relativity_root_contents
 
     def sds_populator_of_root_of(self,
-                                 destination_rel_opt: rel_opt_conf.RelativityOptionConfigurationForRelNonHome,
+                                 destination_rel_opt: rel_opt_conf.RelativityOptionConfigurationForRelNonHds,
                                  contents: DirContents,
                                  ) -> sds_populator.SdsPopulator:
         return sds_populator.contents_in_resolved_dir(
-            sds_populator.SdsSubDirResolverFromSdsFun(destination_rel_opt.root_dir__non_home),
+            sds_populator.SdsSubDirResolverFromSdsFun(destination_rel_opt.root_dir__non_hds),
             contents,
         )
 

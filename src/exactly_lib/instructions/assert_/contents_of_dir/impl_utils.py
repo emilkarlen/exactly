@@ -67,7 +67,7 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
 
         path_to_check = (
             files_source.path_of_dir.resolve(environment.symbols)
-                .value_of_any_dependency__d(environment.home_and_sds)
+                .value_of_any_dependency__d(environment.tcds)
         )
 
         model = FilesMatcherModelForDir(
@@ -75,7 +75,7 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
             path_to_check,
         )
         value = self._files_matcher.resolve(environment.symbols)
-        primitive = value.value_of_any_dependency(environment.home_and_sds)
+        primitive = value.value_of_any_dependency(environment.tcds)
         matcher = primitive.construct(environment.phase_logging.space_for_instruction())
         try:
             result = matcher.matches_w_trace(model)

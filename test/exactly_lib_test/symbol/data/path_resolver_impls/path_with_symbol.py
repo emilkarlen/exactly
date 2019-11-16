@@ -10,9 +10,9 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeR
     PathRelativityRestriction
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.symbol_table import Entry, singleton_symbol_table_2
@@ -24,7 +24,7 @@ from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import string
 from exactly_lib_test.symbol.data.test_resources.value_resolvers import \
     string_resolver_of_single_symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -37,7 +37,7 @@ class TestRelSymbol(unittest.TestCase):
     def test_symbol_references(self):
         # ARRANGE #
         expected_restriction = PathRelativityRestriction(
-            PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME_CASE}, True))
+            PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HDS_CASE}, True))
         symbol_name_of_rel_path = 'symbol_name_of_rel_path'
         symbol_name_of_path_suffix = 'symbol_name_of_path_suffix'
         restrictions_on_path_suffix_symbol = restrictions.ReferenceRestrictionsOnDirectAndIndirect(
@@ -74,7 +74,7 @@ class TestRelSymbol(unittest.TestCase):
     def test_exists_pre_sds(self):
         # ARRANGE #
         relativity_test_cases = [
-            (RelOptionType.REL_HOME_CASE,
+            (RelOptionType.REL_HDS_CASE,
              True,
              ),
             (RelOptionType.REL_TMP,
@@ -116,7 +116,7 @@ class TestRelSymbol(unittest.TestCase):
 
     def test_file_path_and_value_type(self):
         relativity_test_cases = [
-            (RelOptionType.REL_HOME_CASE, True),
+            (RelOptionType.REL_HDS_CASE, True),
             (RelOptionType.REL_ACT, False),
         ]
         path_suffix_str = 'path-suffix-file.txt'
@@ -146,11 +146,11 @@ class TestRelSymbol(unittest.TestCase):
                 symbol_table = singleton_symbol_table_2(referenced_sym.name,
                                                         referenced_sym.value)
                 symbol_table.add_all(symbol_table_entries)
-                home_and_sds = fake_home_and_sds()
-                expected_root_path = _root_path_of_option(rel_option, home_and_sds)
+                tcds = fake_tcds()
+                expected_root_path = _root_path_of_option(rel_option, tcds)
                 expected_path = expected_root_path / path_component_from_referenced_path / path_suffix_str
                 expected_path_str = str(expected_path)
-                environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds, symbol_table)
+                environment = PathResolvingEnvironmentPreOrPostSds(tcds, symbol_table)
                 with self.subTest(msg=str(rel_option)):
                     # ACT #
                     path_to_check = fr_resolver_to_check.resolve(environment.symbols)
@@ -160,7 +160,7 @@ class TestRelSymbol(unittest.TestCase):
                     else:
                         tested_path_msg = 'value_post_sds'
                         actual_path = path_to_check.value_post_sds(environment.sds)
-                    actual_path_pre_or_post_sds = path_to_check.value_of_any_dependency(environment.home_and_sds)
+                    actual_path_pre_or_post_sds = path_to_check.value_of_any_dependency(environment.tcds)
                     # ASSERT #
                     self.assertIs(DataValueType.PATH,
                                   fr_resolver_to_check.data_value_type,
@@ -187,9 +187,9 @@ def _path_relativity_variants_with(accepted: RelOptionType) -> PathRelativityVar
     return PathRelativityVariants({accepted}, False)
 
 
-def _root_path_of_option(rel_option: RelOptionType, home_and_sds: HomeAndSds) -> pathlib.Path:
+def _root_path_of_option(rel_option: RelOptionType, tcds: Tcds) -> pathlib.Path:
     resolver = REL_OPTIONS_MAP[rel_option].root_resolver
-    return resolver.from_home_and_sds(home_and_sds)
+    return resolver.from_tcds(tcds)
 
 
 if __name__ == '__main__':

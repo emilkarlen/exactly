@@ -7,12 +7,12 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
-from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib_test.actors.test_resources import act_phase_execution
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRaisesImplementationException
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources import home_populators
+from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -26,7 +26,7 @@ class Arrangement:
     def __init__(self,
                  source: ParseSource,
                  act_phase_source_lines: list,
-                 hds_contents: home_populators.HomePopulator = home_populators.empty(),
+                 hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                  atc_os_process_executor: AtcOsProcessExecutor = DEFAULT_ATC_OS_PROCESS_EXECUTOR
                  ):
         self.hds_contents = hds_contents
@@ -64,12 +64,12 @@ def check(put: unittest.TestCase,
 
 
 def _configuration_builder_with_exception_throwing_act_phase_setup() -> ConfigurationBuilder:
-    initial_home_dir = pathlib.Path()
-    return ConfigurationBuilder(initial_home_dir,
-                                initial_home_dir,
+    initial_hds_dir = pathlib.Path()
+    return ConfigurationBuilder(initial_hds_dir,
+                                initial_hds_dir,
                                 ActorThatRaisesImplementationException())
 
 
-def file_in_home_act_dir(file_name: str) -> home_populators.HomePopulator:
-    return home_populators.contents_in(RelHomeOptionType.REL_HOME_ACT,
-                                       fs.DirContents([fs.empty_file(file_name)]))
+def file_in_hds_act_dir(file_name: str) -> hds_populators.HdsPopulator:
+    return hds_populators.contents_in(RelHdsOptionType.REL_HDS_ACT,
+                                      fs.DirContents([fs.empty_file(file_name)]))

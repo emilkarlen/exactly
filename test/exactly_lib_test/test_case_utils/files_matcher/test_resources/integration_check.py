@@ -20,8 +20,8 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPo
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import Model
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    tcds_with_act_as_curr_dir
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
@@ -74,20 +74,20 @@ class _Executor:
                                                           resolver.references,
                                                           'symbol-usages after parse')
 
-        with home_and_sds_with_act_as_curr_dir(
+        with tcds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 hds_contents=self.arrangement.hds_contents,
                 sds_contents=self.arrangement.sds_contents,
-                non_home_contents=self.arrangement.non_home_contents,
-                home_or_sds_contents=self.arrangement.home_or_sds_contents,
+                non_hds_contents=self.arrangement.non_hds_contents,
+                tcds_contents=self.arrangement.tcds_contents,
                 symbols=self.arrangement.symbols) as path_resolving_environment:
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
-            home_and_sds = path_resolving_environment.home_and_sds
+            tcds = path_resolving_environment.tcds
 
             with preserved_cwd():
-                os.chdir(str(home_and_sds.hds.case_dir))
+                os.chdir(str(tcds.hds.case_dir))
 
-                environment = PathResolvingEnvironmentPreSds(home_and_sds.hds,
+                environment = PathResolvingEnvironmentPreSds(tcds.hds,
                                                              self.arrangement.symbols)
                 validate_result = self._execute_validate_pre_sds(environment, resolver)
                 self.expectation.symbol_usages.apply_with_message(self.put,
@@ -98,7 +98,7 @@ class _Executor:
                     return
 
             environment = PathResolvingEnvironmentPreOrPostSds(
-                home_and_sds,
+                tcds,
                 self.arrangement.symbols)
             validate_result = self._execute_validate_post_setup(environment, resolver)
             self.expectation.symbol_usages.apply_with_message(self.put,
@@ -107,17 +107,17 @@ class _Executor:
                                                               phase_step.STEP__VALIDATE_POST_SETUP)
             if validate_result is not None:
                 return
-            act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
-            write_act_result(home_and_sds.sds, act_result)
+            act_result = self.arrangement.act_result_producer.apply(ActEnvironment(tcds))
+            write_act_result(tcds.sds, act_result)
             dir_file_space, files_source = self._new_model(environment)
 
             matcher_value = self._resolve(resolver, environment)
-            matcher = matcher_value.value_of_any_dependency(home_and_sds).construct(dir_file_space)
+            matcher = matcher_value.value_of_any_dependency(tcds).construct(dir_file_space)
 
             self._execute_main(files_source, matcher)
 
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
-            self.expectation.main_side_effects_on_home_and_sds.apply(self.put, home_and_sds)
+            self.expectation.main_side_effects_on_tcds.apply(self.put, tcds)
             self.expectation.symbol_usages.apply_with_message(self.put,
                                                               resolver.references,
                                                               'symbol-usages after ' +
@@ -206,7 +206,7 @@ class _Executor:
             FilesMatcherModelForDir(
                 tmp_file_space,
                 self.model.dir_path_resolver.resolve(environment.symbols)
-                    .value_of_any_dependency__d(environment.home_and_sds),
+                    .value_of_any_dependency__d(environment.tcds),
                 self.model.files_selection,
             ),
         )

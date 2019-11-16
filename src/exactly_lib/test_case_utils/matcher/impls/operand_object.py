@@ -4,9 +4,9 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver, OperandDdv
 from exactly_lib.test_case_utils.matcher.object import ObjectResolver, ObjectDdv
 from exactly_lib.test_case_utils.svh_exception import SvhException
@@ -34,7 +34,7 @@ class ObjectValueOfOperandDdv(Generic[T], ObjectDdv[T]):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> T:
+    def value_of_any_dependency(self, tcds: Tcds) -> T:
         return self._operand.value_of_any_dependency(tcds)
 
 
@@ -67,5 +67,5 @@ class _Validator(PreOrPostSdsValueValidator):
         except SvhException as ex:
             return ex.err_msg
 
-    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
         pass

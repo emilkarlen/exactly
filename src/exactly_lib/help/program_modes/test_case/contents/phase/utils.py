@@ -19,7 +19,7 @@ _TEXT_PARSER = TextParser({
     'execution_mode': formatting.conf_param_(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO),
     'SKIP': NAME_SKIP,
     'result_subdir': sds.SUB_DIRECTORY__RESULT,
-    'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
+    'sandbox': formatting.concept_(concepts.SDS_CONCEPT_INFO),
     'ENV_VAR_RESULT': ENV_VAR_RESULT,
     'phase': PHASE_NAME_DICTIONARY,
     'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO)

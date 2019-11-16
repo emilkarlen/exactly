@@ -71,7 +71,7 @@ _REL_OPTION_CONFIG = RelOptionArgumentConfiguration(
     RelOptionsConfiguration(
         PathRelativityVariants(
             {RelOptionType.REL_CWD,
-             RelOptionType.REL_HOME_ACT,
+             RelOptionType.REL_HDS_ACT,
              RelOptionType.REL_ACT,
              RelOptionType.REL_TMP,
              },
@@ -206,7 +206,7 @@ class _Instruction(AssertPhaseInstruction):
     def validate_post_setup(self, environment: InstructionEnvironmentForPostSdsStep
                             ) -> svh.SuccessOrValidationErrorOrHardError:
         validator = self._validator(environment)
-        maybe_err_msg = validator.validate_post_sds_if_applicable(environment.home_and_sds)
+        maybe_err_msg = validator.validate_post_sds_if_applicable(environment.tcds)
         return svh.new_maybe_svh_validation_error(maybe_err_msg)
 
     def main(self,
@@ -242,7 +242,7 @@ class _Assertion:
 
         self.described_path = (
             self.path_resolver.resolve(self.environment.symbols)
-                .value_of_any_dependency__d(environment.home_and_sds)
+                .value_of_any_dependency__d(environment.tcds)
         )
 
     def apply(self) -> pfh.PassOrFailOrHardError:
@@ -302,7 +302,7 @@ class _Assertion:
     def _matches_file_matcher_for_expectation_type(self) -> MatchingResult:
         resolver = self._file_matcher_for_expectation_type()
 
-        fm = resolver.resolve(self.environment.symbols).value_of_any_dependency(self.environment.home_and_sds)
+        fm = resolver.resolve(self.environment.symbols).value_of_any_dependency(self.environment.tcds)
 
         model = file_matcher_models.FileMatcherModelForPrimitivePath(
             self.environment.phase_logging.space_for_instruction(),

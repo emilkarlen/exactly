@@ -23,8 +23,8 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
+from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
@@ -41,7 +41,7 @@ def suite_for(instruction_configuration: InstructionTestConfiguration) -> unitte
                                                     _ErrorWhenActualFileIsADirectory,
                                                     _ContentsDiffer,
                                                     _ContentsEquals,
-                                                    _ContentsEqualsWithExpectedFileRelHomeSymbol,
+                                                    _ContentsEqualsWithExpectedFileRelHdsSymbol,
                                                     _ContentsEqualsWithExpectedFileRelTmpSymbol,
                                                 ]
                                                 )
@@ -51,11 +51,11 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             args('{relativity_option} actual.txt {maybe_not} {equals} '
-                 '{file_option} {rel_home_case_option} expected.txt',
+                 '{file_option} {rel_hds_case_option} expected.txt',
                  relativity_option=self.rel_opt.option_argument,
                  maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
-                hds_contents=case_home_dir_contents(
+                hds_contents=hds_case_dir_contents(
                     DirContents([empty_file('expected.txt')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
@@ -68,13 +68,13 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             args(
-                '{relativity_option} actual-dir {maybe_not} {equals} {file_option} {rel_home_case_option} expected.txt',
+                '{relativity_option} actual-dir {maybe_not} {equals} {file_option} {rel_hds_case_option} expected.txt',
                 relativity_option=self.rel_opt.option_argument,
                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
-                hds_contents=case_home_dir_contents(
+                hds_contents=hds_case_dir_contents(
                     DirContents([File('expected.txt', 'expected contents')])),
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
+                tcds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('actual-dir')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
@@ -87,13 +87,13 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationForCons
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             args(
-                '{relativity_option} actual.txt {maybe_not} {equals} {file_option} {rel_home_case_option} expected.txt',
+                '{relativity_option} actual.txt {maybe_not} {equals} {file_option} {rel_hds_case_option} expected.txt',
                 relativity_option=self.rel_opt.option_argument,
                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
-                hds_contents=case_home_dir_contents(
+                hds_contents=hds_case_dir_contents(
                     DirContents([File('expected.txt', 'expected contents')])),
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
+                tcds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'not equal to expected contents')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
@@ -109,13 +109,13 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationForCons
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             args(
-                '{relativity_option} actual.txt {maybe_not} {equals} {file_option} {rel_home_case_option} expected.txt',
+                '{relativity_option} actual.txt {maybe_not} {equals} {file_option} {rel_hds_case_option} expected.txt',
                 relativity_option=self.rel_opt.option_argument,
                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
-                hds_contents=case_home_dir_contents(
+                hds_contents=hds_case_dir_contents(
                     DirContents([File('expected.txt', 'expected contents')])),
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
+                tcds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'expected contents')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
@@ -155,12 +155,12 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
             self.rel_opt.symbols.usage_expectation_assertions() +
             [symbol_usage_expectation_for_expected_file])
 
-        populator_of_expected_files = home_and_sds_populators.HomeOrSdsPopulatorForRelOptionType(
+        populator_of_expected_files = tcds_populators.TcdsPopulatorForRelOptionType(
             self.relativity_of_expected_file(),
             DirContents([File('expected.txt', 'expected contents')]))
         populator_of_actual_files = self.rel_opt.populator_for_relativity_option_root(
             DirContents([File('actual.txt', 'expected contents')]))
-        home_or_sds_contents_arrangement = home_and_sds_populators.multiple([
+        home_or_sds_contents_arrangement = tcds_populators.multiple([
             populator_of_actual_files,
             populator_of_expected_files
         ])
@@ -172,7 +172,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
                  file_option=option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
                  rel_symbol_name=expected_file_relativity_symbol),
             ArrangementPostAct(
-                home_or_sds_contents=home_or_sds_contents_arrangement,
+                tcds_contents=home_or_sds_contents_arrangement,
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=symbols_in_arrangement,
             ),
@@ -183,9 +183,9 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
         )
 
 
-class _ContentsEqualsWithExpectedFileRelHomeSymbol(_ContentsEqualsWithExpectedRelSymbolBase):
+class _ContentsEqualsWithExpectedFileRelHdsSymbol(_ContentsEqualsWithExpectedRelSymbolBase):
     def relativity_of_expected_file(self) -> RelOptionType:
-        return RelOptionType.REL_HOME_CASE
+        return RelOptionType.REL_HDS_CASE
 
 
 class _ContentsEqualsWithExpectedFileRelTmpSymbol(_ContentsEqualsWithExpectedRelSymbolBase):

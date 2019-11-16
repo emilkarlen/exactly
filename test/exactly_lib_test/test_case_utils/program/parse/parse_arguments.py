@@ -10,7 +10,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType, RelOptionType, RelNonHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType
 from exactly_lib.test_case_utils.parse.parse_relativity import reference_restrictions_for_path_symbol
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_arguments as sut
@@ -21,7 +21,7 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_case.test_resources import validation_check
-from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
 from exactly_lib_test.test_case_utils.parse import parse_list as test_of_list
 from exactly_lib_test.test_case_utils.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -199,17 +199,17 @@ class TestSingleElement(unittest.TestCase):
 
         relativity_cases = [
             PathCase('default relativity SHOULD be CASE_HOME',
-                     rel_opts.default_conf_rel_home(RelHomeOptionType.REL_HOME_CASE),
-                     list_element_for_path(RelOptionType.REL_HOME_CASE, plain_file_name),
+                     rel_opts.default_conf_rel_hds(RelHdsOptionType.REL_HDS_CASE),
+                     list_element_for_path(RelOptionType.REL_HDS_CASE, plain_file_name),
                      ),
             PathCase('relativity in SDS should be validated post SDS',
-                     rel_opts.conf_rel_non_home(RelNonHomeOptionType.REL_TMP),
+                     rel_opts.conf_rel_non_hds(RelNonHdsOptionType.REL_TMP),
                      list_element_for_path(RelOptionType.REL_TMP, plain_file_name),
                      ),
             PathCase('rel symbol',
-                     rel_opts.symbol_conf_rel_home(RelHomeOptionType.REL_HOME_ACT,
-                                                   symbol_name,
-                                                   sut.REL_OPTIONS_CONF.accepted_relativity_variants),
+                     rel_opts.symbol_conf_rel_hds(RelHdsOptionType.REL_HDS_ACT,
+                                                  symbol_name,
+                                                  sut.REL_OPTIONS_CONF.accepted_relativity_variants),
                      list_resolvers.string_element(
                          string_resolvers.from_path_resolver(
                              path_resolvers.rel_symbol_with_const_file_name(
@@ -240,7 +240,7 @@ class TestSingleElement(unittest.TestCase):
                                          validation_check.assert_with_files(
                                              arrangement=
                                              validation_check.Arrangement(
-                                                 dir_contents=home_and_sds_populators.empty(),
+                                                 dir_contents=tcds_populators.empty(),
                                                  symbols=rel_opt_conf.symbols.in_arrangement()),
                                              expectation=
                                              validation_check.fails_on(rel_opt_conf.directory_structure_partition),

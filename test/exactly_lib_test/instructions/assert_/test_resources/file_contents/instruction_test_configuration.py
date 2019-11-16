@@ -3,22 +3,22 @@ from typing import List, Callable
 
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators as home_or_sds
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as home_or_sds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__multi_line
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     pfh_expectation_type_config
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    HdsAndSdsAction
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    HomeAndSdsAction
 
 
 class InstructionTestConfiguration:
@@ -27,8 +27,8 @@ class InstructionTestConfiguration:
 
     def arrangement_for_contents(self,
                                  actual_contents: str,
-                                 post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-                                 home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
+                                 post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                                 home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
                                  symbols: SymbolTable = None,
                                  ) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()
@@ -45,9 +45,9 @@ class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfigurati
         return self.arguments_for(argument_tail).followed_by_lines(following_lines).as_remaining_source
 
     def arrangement_for_contents_from_fun(self,
-                                          home_and_sds_2_str: Callable[[HomeAndSds], str],
-                                          home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
-                                          post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                                          tcds_2_str: Callable[[Tcds], str],
+                                          home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
+                                          post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
                                           symbols: SymbolTable = None,
                                           ) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()

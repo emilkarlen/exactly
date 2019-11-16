@@ -3,9 +3,9 @@ from typing import Callable, Optional, Set
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandDdv
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import python_evaluate, NotAnIntegerException
 from exactly_lib.type_system.data.string_ddv import StringDdv
@@ -37,7 +37,7 @@ class IntegerDdv(OperandDdv[int]):
     def value_when_no_dir_dependencies(self) -> int:
         return self._primitive_value_computer.value_when_no_dir_dependencies()
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> int:
+    def value_of_any_dependency(self, tcds: Tcds) -> int:
         return self._primitive_value_computer.value_of_any_dependency(tcds)
 
 
@@ -57,7 +57,7 @@ class _PrimitiveValueComputer:
 
         return self._primitive_value
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> int:
+    def value_of_any_dependency(self, tcds: Tcds) -> int:
         if self._primitive_value is None:
             self._get_primitive_value(self._int_expression.value_of_any_dependency(tcds))
 
@@ -92,7 +92,7 @@ class _IntegerValueValidator(PreOrPostSdsValueValidator):
 
         return None
 
-    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
         if self._has_dir_dependencies:
             try:
                 x = self._value_computer.value_of_any_dependency(tcds)

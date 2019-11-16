@@ -2,8 +2,8 @@ from typing import Set, Callable, Optional, Sequence
 
 from exactly_lib.test_case.validation import pre_or_post_value_validation, pre_or_post_value_validators
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.line_matcher import line_matchers
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
 from exactly_lib.type_system.logic.impls import combinator_matchers
@@ -29,7 +29,7 @@ class LineMatcherValueFromPrimitiveDdv(LineMatcherDdv):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> LineMatcher:
+    def value_of_any_dependency(self, tcds: Tcds) -> LineMatcher:
         return self._primitive_value
 
 
@@ -55,7 +55,7 @@ class _LineMatcherCompositionDdvBase(LineMatcherDdv):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> LineMatcher:
+    def value_of_any_dependency(self, tcds: Tcds) -> LineMatcher:
         return self._mk_primitive_value([
             part.value_of_any_dependency(tcds)
             for part in self._parts

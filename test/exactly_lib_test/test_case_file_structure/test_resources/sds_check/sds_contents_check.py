@@ -16,7 +16,7 @@ def dir_contains_exactly(relativity_option: RelOptionType,
                          expected_contents: file_structure.DirContents
                          ) -> ValueAssertion[SandboxDirectoryStructure]:
     return asrt.sub_component('relativity_option=' + str(relativity_option),
-                              REL_OPTIONS_MAP[relativity_option].root_resolver.from_non_home,
+                              REL_OPTIONS_MAP[relativity_option].root_resolver.from_non_hds,
                               DirContainsExactly(expected_contents))
 
 
@@ -70,9 +70,9 @@ def sub_dir_of_sds_contains_exactly(sds__2__root_dir_path: Callable[[SandboxDire
                               DirContainsExactly(expected_contents))
 
 
-def non_home_dir_contains_exactly(sds__2__root_dir_path: Callable[[SandboxDirectoryStructure], pathlib.Path],
-                                  expected_contents: file_structure.DirContents) -> ValueAssertion:
-    return NonHomeDirContainsExactly(sds__2__root_dir_path, expected_contents)
+def non_hds_dir_contains_exactly(sds__2__root_dir_path: Callable[[SandboxDirectoryStructure], pathlib.Path],
+                                 expected_contents: file_structure.DirContents) -> ValueAssertion:
+    return NonHdsDirContainsExactly(sds__2__root_dir_path, expected_contents)
 
 
 class SubDirOfSdsContainsExactly(ValueAssertionBase[SandboxDirectoryStructure]):
@@ -94,7 +94,7 @@ class SubDirOfSdsContainsExactly(ValueAssertionBase[SandboxDirectoryStructure]):
         assertion.apply(put, sds, message_builder)
 
 
-class NonHomeDirContainsExactly(ValueAssertionBase[SandboxDirectoryStructure]):
+class NonHdsDirContainsExactly(ValueAssertionBase[SandboxDirectoryStructure]):
     def __init__(self,
                  sds__2__root_dir_path: Callable[[SandboxDirectoryStructure], pathlib.Path],
                  expected_contents: file_structure.DirContents,

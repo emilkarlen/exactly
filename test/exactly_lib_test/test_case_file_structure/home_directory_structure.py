@@ -9,7 +9,7 @@ def suite() -> unittest.TestSuite:
 
 
 class Test(unittest.TestCase):
-    def test_construct_and_get_case_home(self):
+    def test_construct_and_get_hds_case(self):
         # ARRANGE #
         case_dir = pathlib.Path('case')
         act_dir = pathlib.Path('act')
@@ -20,7 +20,7 @@ class Test(unittest.TestCase):
         self.assertEqual(case_dir,
                          actual)
 
-    def test_construct_and_get_home_act(self):
+    def test_construct_and_get_hds_act(self):
         # ARRANGE #
         case_dir = pathlib.Path('case')
         act_dir = pathlib.Path('act')

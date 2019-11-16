@@ -11,7 +11,7 @@ from exactly_lib.cli.program_modes.common.argument_parsing_of_actor import \
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
-from exactly_lib.definitions.entity.concepts import SANDBOX_CONCEPT_INFO
+from exactly_lib.definitions.entity.concepts import SDS_CONCEPT_INFO
 from exactly_lib.definitions.misc_texts import IS_A_SHELL_CMD
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.definitions.test_suite import file_names
@@ -195,7 +195,7 @@ PREPROCESSOR_OPTION_DESCRIPTION = """\
 TEXT_PARSER = TextParser({
     'phase': PHASE_NAME_DICTIONARY,
     'preprocessor': opt.PREPROCESSOR_OPTION_ARGUMENT,
-    'sandbox': formatting.concept_(SANDBOX_CONCEPT_INFO),
+    'sandbox': formatting.concept_(SDS_CONCEPT_INFO),
     'interpreter_program': common_opts.ACTOR_OPTION_ARGUMENT,
     'INTERPRETER_ACTOR_TERM': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
     'ACTOR_CONCEPT': concepts.ACTOR_CONCEPT_INFO.singular_name,

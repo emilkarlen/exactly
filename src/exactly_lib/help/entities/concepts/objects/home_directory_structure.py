@@ -9,7 +9,7 @@ from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInf
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
@@ -20,7 +20,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 class _DirInfo:
     def __init__(self,
-                 relativity_option_type: RelHomeOptionType,
+                 relativity_option_type: RelHdsOptionType,
                  dir_info: tc_fs.TcDirInfo,
                  conf_param: ConfigurationParameterInfo,
                  instruction_name: str,
@@ -36,10 +36,10 @@ class _DirInfo:
 
 class _HdsConcept(ConceptDocumentation):
     def __init__(self):
-        super().__init__(concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO)
+        super().__init__(concepts.HDS_CONCEPT_INFO)
 
         self._tp = TextParser({
-            'HDS': formatting.concept_(concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO),
+            'HDS': formatting.concept_(concepts.HDS_CONCEPT_INFO),
             'phase': phase_names.PHASE_NAME_DICTIONARY,
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
@@ -70,7 +70,7 @@ class _HdsConcept(ConceptDocumentation):
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         ret_val = [
-            concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
+            concepts.TCDS_CONCEPT_INFO.cross_reference_target,
             concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.cross_reference_target,
             types.PATH_TYPE_INFO.cross_reference_target,
         ]
@@ -122,25 +122,25 @@ class _HdsConcept(ConceptDocumentation):
         return docs.list_item(self._tp.text(x.item_name), paras)
 
 
-HOME_DIRECTORY_STRUCTURE_CONCEPT = _HdsConcept()
+HDS_CONCEPT = _HdsConcept()
 
-_HOME_CASE_DIR_INFO = _DirInfo(
-    RelHomeOptionType.REL_HOME_CASE,
+_HDS_CASE_DIR_INFO = _DirInfo(
+    RelHdsOptionType.REL_HDS_CASE,
     tc_fs.HDS_CASE_INFO,
-    conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO,
-    instruction_names.HOME_CASE_DIRECTORY_INSTRUCTION_NAME,
+    conf_params.HDS_CASE_DIRECTORY_CONF_PARAM_INFO,
+    instruction_names.HDS_CASE_DIRECTORY_INSTRUCTION_NAME,
 )
 
-_HOME_ACT_DIR_INFO = _DirInfo(
-    RelHomeOptionType.REL_HOME_ACT,
+_HDS_ACT_DIR_INFO = _DirInfo(
+    RelHdsOptionType.REL_HDS_ACT,
     tc_fs.HDS_ACT_INFO,
-    conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
-    instruction_names.HOME_ACT_DIRECTORY_INSTRUCTION_NAME,
+    conf_params.HDS_ACT_DIRECTORY_CONF_PARAM_INFO,
+    instruction_names.HDS_ACT_DIRECTORY_INSTRUCTION_NAME,
 )
 
 _ALL_DIRECTORIES = (
-    _HOME_ACT_DIR_INFO,
-    _HOME_CASE_DIR_INFO,
+    _HDS_ACT_DIR_INFO,
+    _HDS_CASE_DIR_INFO,
 )
 
 _MAIN_DESCRIPTION_REST = """\

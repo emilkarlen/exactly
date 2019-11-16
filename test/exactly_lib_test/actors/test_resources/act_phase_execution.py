@@ -16,10 +16,10 @@ from exactly_lib.util.std import StdFiles
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
-from exactly_lib_test.test_case_file_structure.test_resources import home_populators
+from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.process import capture_process_executor_result, ProcessExecutor
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
 
@@ -34,7 +34,7 @@ class HardErrorResultError(Exception):
 
 class Arrangement:
     def __init__(self,
-                 hds_contents: home_populators.HomePopulator = home_populators.empty(),
+                 hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                  environ: dict = None,
                  timeout_in_seconds: int = None,
                  atc_process_executor: AtcOsProcessExecutor = DEFAULT_ATC_OS_PROCESS_EXECUTOR,

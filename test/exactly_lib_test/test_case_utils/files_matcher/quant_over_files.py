@@ -184,7 +184,7 @@ class TestHardErrorWhenContentsOfAFileThatIsNotARegularFileIsTested(unittest.Tes
                                 the_model,
                                 arrangement=
                                 ArrangementPostAct(
-                                    home_or_sds_contents=relativity_root_conf.populator_for_relativity_option_root(
+                                    tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                                         DirContents([
                                             Dir(name_of_checked_dir, [
                                                 non_regular_file,
@@ -430,7 +430,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                         model.model_with_source_path_as_sub_dir_of_rel_root(name_of_checked_dir)(relativity_root_conf),
                         arrangement=
                         ArrangementPostAct(
-                            home_or_sds_contents=relativity_root_conf.populator_for_relativity_option_root(
+                            tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                                 DirContents([
                                     files_in_checked_dir,
                                 ])
@@ -497,7 +497,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                         model.model_with_source_path_as_sub_dir_of_rel_root(name_of_checked_dir)(relativity_root_conf),
                         arrangement=
                         ArrangementPostAct(
-                            home_or_sds_contents=relativity_root_conf.populator_for_relativity_option_root(
+                            tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                                 DirContents([
                                     files_in_checked_dir,
                                 ])
@@ -561,7 +561,7 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
             model.model_with_rel_root_as_source_path(relativity_root_conf),
             arrangement=
             ArrangementPostAct(
-                home_or_sds_contents=relativity_root_conf.populator_for_relativity_option_root(
+                tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                     DirContents([
                         File('1.txt', original_file_contents),
                         File('2.txt', original_file_contents),

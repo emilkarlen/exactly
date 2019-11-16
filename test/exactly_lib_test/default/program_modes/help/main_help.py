@@ -24,7 +24,7 @@ def suite_that_does_require_main_program_runner(main_program_runner: MainProgram
 
 
 _ENTITY_CASES = [
-    (CONCEPT_ENTITY_TYPE_NAMES, concepts.SANDBOX_CONCEPT_INFO.singular_name),
+    (CONCEPT_ENTITY_TYPE_NAMES, concepts.SDS_CONCEPT_INFO.singular_name),
     (CONF_PARAM_ENTITY_TYPE_NAMES, conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.singular_name),
     (ACTOR_ENTITY_TYPE_NAMES, actors.COMMAND_LINE_ACTOR.singular_name),
     (TYPE_ENTITY_TYPE_NAMES, types.LINE_MATCHER_TYPE_INFO.name.singular),

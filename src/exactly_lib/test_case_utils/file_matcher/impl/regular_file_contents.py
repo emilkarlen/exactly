@@ -9,7 +9,7 @@ from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case.validation.pre_or_post_value_validators import ValueValidatorFromResolverValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_system_element_matcher import ErrorMessageResolverForFailingFileProperties2
@@ -103,7 +103,7 @@ class RegularFileMatchesStringMatcherDdv(FileMatcherDdv):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> FileMatcher:
+    def value_of_any_dependency(self, tcds: Tcds) -> FileMatcher:
         return RegularFileMatchesStringMatcher(self._contents_matcher.value_of_any_dependency(tcds))
 
 

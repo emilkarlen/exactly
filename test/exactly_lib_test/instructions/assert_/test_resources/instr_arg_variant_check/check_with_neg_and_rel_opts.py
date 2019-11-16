@@ -23,7 +23,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import R
     SymbolsConfiguration
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
     MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -92,7 +92,7 @@ class InstructionChecker:
                 instruction_source,
                 ArrangementPostAct(
                     pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
-                    home_or_sds_contents=rel_opt_config.populator_for_relativity_option_root(
+                    tcds_contents=rel_opt_config.populator_for_relativity_option_root(
                         contents_of_relativity_option_root
                     ),
                     symbols=_symbol_table_of(rel_opt_config.symbols,
@@ -194,7 +194,7 @@ class InstructionChecker:
                         instruction_source,
                         ArrangementPostAct(
                             pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
-                            home_or_sds_contents=rel_opt_config.populator_for_relativity_option_root(
+                            tcds_contents=rel_opt_config.populator_for_relativity_option_root(
                                 contents_of_relativity_option_root
                             ),
                             symbols=_symbol_table_of(rel_opt_config.symbols,

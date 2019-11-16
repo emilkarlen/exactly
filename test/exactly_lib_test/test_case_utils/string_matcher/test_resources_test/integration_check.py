@@ -13,7 +13,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
@@ -29,7 +29,7 @@ from exactly_lib_test.symbol.data.test_resources import symbol_structure_asserti
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl, \
     StringMatcherResolverFromPartsTestImpl
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check as sut
@@ -41,8 +41,8 @@ from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import E
 from exactly_lib_test.test_resources.files.file_checks import FileChecker
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    sds_2_home_and_sds_assertion
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    sds_2_tcds_assertion
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant, \
     StringMatcherConstantTestImpl
@@ -72,15 +72,15 @@ class TestCaseBase(unittest.TestCase):
 
 
 class TestPopulate(TestCaseBase):
-    def test_populate_non_home(self):
+    def test_populate_non_hds(self):
         populated_dir_contents = DirContents([empty_file('non-home-file.txt')])
         self._check(
             PARSER_THAT_GIVES_MATCHER_THAT_MATCHES,
             utils.single_line_source(),
             empty_model(),
             sut.ArrangementPostAct(
-                non_home_contents=non_home_populator.rel_option(
-                    non_home_populator.RelNonHomeOptionType.REL_TMP,
+                non_hds_contents=non_hds_populator.rel_option(
+                    non_hds_populator.RelNonHdsOptionType.REL_TMP,
                     populated_dir_contents)),
             matcher_assertions.Expectation(
                 main_side_effects_on_sds=tmp_user_dir_contains_exactly(
@@ -299,7 +299,7 @@ class TestFailingExpectations(TestCaseBase):
                 empty_model(),
                 sut.ArrangementPostAct(),
                 Expectation(
-                    main_side_effects_on_home_and_sds=sds_2_home_and_sds_assertion(
+                    main_side_effects_on_tcds=sds_2_tcds_assertion(
                         act_dir_contains_exactly(
                             DirContents([empty_file('non-existing-file.txt')])))),
             )
@@ -307,7 +307,7 @@ class TestFailingExpectations(TestCaseBase):
 
 def string_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> StringMatcherResolver:
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
-        return StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(environment.home_and_sds,
+        return StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(environment.tcds,
                                                                     _ARBITRARY_STRUCTURE_RENDERER)
 
     return StringMatcherResolverFromPartsTestImpl(
@@ -414,7 +414,7 @@ class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrP
 
 class StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(StringMatcherTestImplBase):
     def __init__(self,
-                 tcds: HomeAndSds,
+                 tcds: Tcds,
                  structure: StructureRenderer,
                  ):
         super().__init__()

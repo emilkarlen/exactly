@@ -1,5 +1,5 @@
 TEST_CASE_STATUS = 'status'
-HOME_CASE_DIRECTORY = 'home'
-HOME_ACT_DIRECTORY = 'act-home'
+HDS_CASE_DIRECTORY = 'home'
+HDS_ACT_DIRECTORY = 'act-home'
 ACTOR = 'actor'
 TIMEOUT = 'timeout'

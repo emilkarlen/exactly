@@ -7,8 +7,8 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils import TmpFileSpace, TmpDirFileSpace, TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
@@ -150,9 +150,9 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
         return self.__sds
 
     @property
-    def home_and_sds(self) -> HomeAndSds:
-        return HomeAndSds(self.hds,
-                          self.sds)
+    def tcds(self) -> Tcds:
+        return Tcds(self.hds,
+                    self.sds)
 
     @property
     def phase_logging(self) -> PhaseLoggingPaths:
@@ -164,7 +164,7 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
 
     @property
     def path_resolving_environment_pre_or_post_sds(self) -> PathResolvingEnvironmentPreOrPostSds:
-        return PathResolvingEnvironmentPreOrPostSds(self.home_and_sds, self.symbols)
+        return PathResolvingEnvironmentPreOrPostSds(self.tcds, self.symbols)
 
 
 class TestCaseInstruction(Instruction):

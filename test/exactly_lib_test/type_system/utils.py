@@ -24,14 +24,14 @@ class TestResolvingDependenciesFromList(unittest.TestCase):
             ),
             (
                 'single value with single dependency',
-                [AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.HOME})],
-                {DirectoryStructurePartition.HOME},
+                [AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.HDS})],
+                {DirectoryStructurePartition.HDS},
             ),
             (
                 'multiple values with same dependency',
-                [AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.NON_HOME}),
-                 AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.NON_HOME})],
-                {DirectoryStructurePartition.NON_HOME},
+                [AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.NON_HDS}),
+                 AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.NON_HDS})],
+                {DirectoryStructurePartition.NON_HDS},
             ),
         ]
         for test_case_name, dir_dependent_values, expected_dependencies in cases:

@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 
 
 class HomeDirectoryStructure(tuple):
@@ -10,8 +10,8 @@ class HomeDirectoryStructure(tuple):
         return tuple.__new__(cls, (case_dir,
                                    act_dir,
                                    {
-                                       RelHomeOptionType.REL_HOME_CASE: case_dir,
-                                       RelHomeOptionType.REL_HOME_ACT: act_dir,
+                                       RelHdsOptionType.REL_HDS_CASE: case_dir,
+                                       RelHdsOptionType.REL_HDS_ACT: act_dir,
                                    }))
 
     @property
@@ -22,5 +22,5 @@ class HomeDirectoryStructure(tuple):
     def act_dir(self) -> pathlib.Path:
         return self[1]
 
-    def get(self, d: RelHomeOptionType) -> pathlib.Path:
+    def get(self, d: RelHdsOptionType) -> pathlib.Path:
         return self[2][d]

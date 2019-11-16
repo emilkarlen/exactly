@@ -58,7 +58,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
                 regex_line_matcher=exists_line_matches_reg_ex('REG.*EX'),
             ),
             ArrangementPostAct(
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
+                tcds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('actual-dir')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
@@ -76,7 +76,7 @@ class _ContentsDoesNotContainALineThatMatches(TestWithConfigurationAndRelativity
                 regex_line_matcher=exists_line_matches_reg_ex('REG.*EX'),
             ),
             ArrangementPostAct(
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
+                tcds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'no match')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
@@ -97,7 +97,7 @@ class _ContentsContainsALineThatMatches(TestWithConfigurationAndRelativityOption
                 regex_line_matcher=exists_line_matches_reg_ex('REG.*EX'),
             ),
             ArrangementPostAct(
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
+                tcds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'REG-matching-EX')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),

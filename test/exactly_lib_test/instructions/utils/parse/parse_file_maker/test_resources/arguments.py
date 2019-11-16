@@ -3,22 +3,22 @@ from typing import Set, List, Sequence
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType, \
-    RelNonHomeOptionType, RelHomeOptionType, RelSdsOptionType
+    RelNonHdsOptionType, RelHdsOptionType, RelSdsOptionType
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as arg_lines
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
-    conf_rel_home, conf_rel_sds, conf_rel_non_home, default_conf_rel_non_home
+    conf_rel_hds, conf_rel_sds, conf_rel_non_hds, default_conf_rel_non_hds
 
 ALLOWED_SRC_FILE_RELATIVITIES = [
-    conf_rel_home(RelHomeOptionType.REL_HOME_CASE),
-    conf_rel_home(RelHomeOptionType.REL_HOME_ACT),
+    conf_rel_hds(RelHdsOptionType.REL_HDS_CASE),
+    conf_rel_hds(RelHdsOptionType.REL_HDS_ACT),
     conf_rel_sds(RelSdsOptionType.REL_ACT),
     conf_rel_sds(RelSdsOptionType.REL_TMP),
-    conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
-    default_conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
+    conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
+    default_conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
 ]
 
 
@@ -129,8 +129,8 @@ def accepted_source_relativities(phase_is_after_act: bool) -> Set[RelOptionType]
         return set(RelOptionType)
 
 
-def accepted_non_home_source_relativities(phase_is_after_act: bool) -> Set[RelNonHomeOptionType]:
+def accepted_non_hds_source_relativities(phase_is_after_act: bool) -> Set[RelNonHdsOptionType]:
     if phase_is_after_act:
-        return set(RelNonHomeOptionType)
+        return set(RelNonHdsOptionType)
     else:
-        return set(RelNonHomeOptionType).difference({RelNonHomeOptionType.REL_RESULT})
+        return set(RelNonHdsOptionType).difference({RelNonHdsOptionType.REL_RESULT})

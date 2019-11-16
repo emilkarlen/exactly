@@ -121,7 +121,7 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
                   source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices) -> ComparisonActualFile:
-        program = self._program.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        program = self._program.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
         result = make_transformed_file_from_output_in_instruction_tmp_dir(environment,
                                                                           os_services.executable_factory__detect_ex(),
                                                                           source_info,
@@ -133,7 +133,7 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
 
         path_with_transformed_contents = (
             file_with_transformed_contents.resolve(environment.symbols)
-                .value_of_any_dependency__d(environment.home_and_sds)
+                .value_of_any_dependency__d(environment.tcds)
         )
 
         return ComparisonActualFile(

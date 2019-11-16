@@ -7,7 +7,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.test_case.actor.test_resources import test_actions
 from exactly_lib_test.test_resources import actions
@@ -18,7 +18,7 @@ class ActionToCheckThatJustReturnsSuccess(ActionToCheck):
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
-    def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self, tcds: Tcds) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def prepare(self,

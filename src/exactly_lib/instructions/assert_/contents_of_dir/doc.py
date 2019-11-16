@@ -79,7 +79,7 @@ ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfig
     rel_opts_configuration.RelOptionsConfiguration(
         rel_opts_configuration.PathRelativityVariants({
             RelOptionType.REL_CWD,
-            RelOptionType.REL_HOME_ACT,
+            RelOptionType.REL_HDS_ACT,
             RelOptionType.REL_TMP,
             RelOptionType.REL_ACT,
         },

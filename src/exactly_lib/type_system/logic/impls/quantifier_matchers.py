@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Callable, Iterator, Optional, ContextManager
 
 from exactly_lib.definitions import instruction_arguments
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
@@ -188,7 +188,7 @@ class ExistsDdv(Generic[MODEL, ELEMENT], MatcherDdv[MODEL]):
         self._element_setup = element_setup
         self._predicate = predicate
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
         return Exists(
             self._element_setup,
             self._predicate.value_of_any_dependency(tcds)
@@ -247,7 +247,7 @@ class ForAllDdv(Generic[MODEL, ELEMENT], MatcherDdv[MODEL]):
         self._element_setup = element_setup
         self._predicate = predicate
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
         return ForAll(
             self._element_setup,
             self._predicate.value_of_any_dependency(tcds)

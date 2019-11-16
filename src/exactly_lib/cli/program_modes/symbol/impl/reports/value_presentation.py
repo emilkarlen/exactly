@@ -22,9 +22,9 @@ from exactly_lib.symbol.logic.visitor import LogicValueResolverPseudoVisitor
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.program.program_value import Program
@@ -54,10 +54,10 @@ class PresentationBlockConstructor:
 
     def block_for(self, resolver: SymbolValueResolver) -> Optional[ResolvedValuePresentationBlock]:
         if isinstance(resolver, LogicValueResolver):
-            tcds = HomeAndSds(
+            tcds = Tcds(
                 HomeDirectoryStructure(
-                    pathlib.Path(symbol_reference_syntax_for_name(path.EXACTLY_DIR__REL_HOME_CASE)),
-                    pathlib.Path(symbol_reference_syntax_for_name(path.EXACTLY_DIR__REL_HOME_CASE)),
+                    pathlib.Path(symbol_reference_syntax_for_name(path.EXACTLY_DIR__REL_HDS_CASE)),
+                    pathlib.Path(symbol_reference_syntax_for_name(path.EXACTLY_DIR__REL_HDS_CASE)),
                 ),
                 SandboxDirectoryStructure(path_description.EXACTLY_SANDBOX_ROOT_DIR_NAME)
             )
@@ -90,7 +90,7 @@ class _DataTypeBlockConstructor(DataValueResolverPseudoVisitor[Optional[Resolved
 class _LogicTypeBlockConstructor(LogicValueResolverPseudoVisitor[Optional[ResolvedValuePresentationBlock]]):
     def __init__(self,
                  symbols: SymbolTable,
-                 tcds: HomeAndSds,
+                 tcds: Tcds,
                  ):
         self.symbols = symbols
         self.tcds = tcds

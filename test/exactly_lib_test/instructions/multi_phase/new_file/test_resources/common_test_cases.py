@@ -5,7 +5,7 @@ from exactly_lib.instructions.multi_phase import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data import path_resolvers
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelOptionType
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils import IS_FAILURE
@@ -15,15 +15,15 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
+from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources import validation as validation_utils
-from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_home
+from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_hds
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, Dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -43,7 +43,7 @@ class InvalidDestinationFileTestCasesData:
     def __init__(self,
                  file_contents_cases: Sequence[NameAndValue[ArgumentElements]],
                  symbols: SymbolTable,
-                 pre_existing_files: HomeOrSdsPopulator = home_and_sds_populators.empty(),
+                 pre_existing_files: TcdsPopulator = tcds_populators.empty(),
                  ):
         self.file_contents_cases = file_contents_cases
         self.symbols = symbols
@@ -62,13 +62,13 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
         cases_data = self._file_contents_cases()
 
         dst_file_relativity_cases = [
-            conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
-            conf_rel_non_home(RelNonHomeOptionType.REL_ACT),
+            conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
+            conf_rel_non_hds(RelNonHdsOptionType.REL_ACT),
         ]
 
         for rel_opt_conf in dst_file_relativity_cases:
 
-            non_home_contents = rel_opt_conf.populator_for_relativity_option_root__non_home(
+            non_hds_contents = rel_opt_conf.populator_for_relativity_option_root__non_hds(
                 dst_root_contents_before_execution)
 
             for file_contents_case in cases_data.file_contents_cases:
@@ -91,8 +91,8 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
                     self._check(source,
                                 ArrangementWithSds(
                                     pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                                    home_or_sds_contents=cases_data.pre_existing_files,
-                                    non_home_contents=non_home_contents,
+                                    tcds_contents=cases_data.pre_existing_files,
+                                    non_hds_contents=non_hds_contents,
                                     symbols=cases_data.symbols,
                                 ),
                                 expectation(

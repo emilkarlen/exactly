@@ -17,7 +17,7 @@ from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions impor
 from exactly_lib_test.test_case_file_structure.test_resources.format_rel_option import format_rel_options
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir, empty_file
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test, sds_env_utils
+from exactly_lib_test.test_resources.tcds_and_symbols import sds_test, sds_env_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueIsNone

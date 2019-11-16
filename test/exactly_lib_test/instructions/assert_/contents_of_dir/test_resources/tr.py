@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType, \
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHdsOptionType, \
     PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.parse import parse_relativity
@@ -28,7 +28,7 @@ from exactly_lib_test.test_case_utils.test_resources import relativity_options a
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     pfh_expectation_type_config
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
     MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -248,7 +248,7 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
 
 EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(
     {RelOptionType.REL_CWD,
-     RelOptionType.REL_HOME_ACT,
+     RelOptionType.REL_HDS_ACT,
      RelOptionType.REL_ACT,
      RelOptionType.REL_TMP},
     True)
@@ -268,7 +268,7 @@ ACCEPTED_REL_OPT_CONFIGURATIONS = (
 )
 
 UNACCEPTED_REL_OPT_CONFIGURATIONS = [
-    rel_opt_conf.conf_rel_home(RelHomeOptionType.REL_HOME_CASE),
+    rel_opt_conf.conf_rel_hds(RelHdsOptionType.REL_HDS_CASE),
     rel_opt_conf.conf_rel_sds(RelSdsOptionType.REL_RESULT),
 ]
 

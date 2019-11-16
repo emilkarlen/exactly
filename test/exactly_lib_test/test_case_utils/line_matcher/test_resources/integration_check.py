@@ -11,7 +11,7 @@ from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatch
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -87,7 +87,7 @@ class _Checker:
         self.parser = parser
         self.arrangement = arrangement
         self.expectation = expectation
-        self.tcds = fake_home_and_sds()
+        self.tcds = fake_tcds()
 
     def check(self):
         try:

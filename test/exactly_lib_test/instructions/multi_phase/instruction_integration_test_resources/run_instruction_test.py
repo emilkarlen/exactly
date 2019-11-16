@@ -40,7 +40,7 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
                                TestFailingExecution,
                                TestSuccessfulExecutionViaSymbolReference,
                                TestFailingValidationOfAbsolutePath,
-                               TestFailingValidationOfRelHomePath,
+                               TestFailingValidationOfRelHdsPath,
                                TestFailingValidationOfRelTmpPath,
                                TestSuccessfulValidation,
                                TestFailingValidationOfRelSymbol,
@@ -124,11 +124,11 @@ class TestFailingValidationOfAbsolutePath(TestCaseBase):
         )
 
 
-class TestFailingValidationOfRelHomePath(TestCaseBase):
+class TestFailingValidationOfRelHdsPath(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
             self,
-            source_for_interpreting(RelOptionType.REL_HOME_CASE, 'non-existing-file.py'),
+            source_for_interpreting(RelOptionType.REL_HDS_CASE, 'non-existing-file.py'),
             self.conf.arrangement(),
             self.conf.expect_failing_validation_pre_sds(),
         )

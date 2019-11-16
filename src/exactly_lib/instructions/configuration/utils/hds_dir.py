@@ -18,7 +18,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
-from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.util import strings
 
 _RELATIVITY_ROOT = 'location of the current source file - the file that contains the instruction'
@@ -51,7 +51,7 @@ class DirConfParamInstructionDocumentationBase(InstructionDocumentationWithTextP
     def see_also_targets(self) -> list:
         return cross_reference_id_list([
             self.conf_param,
-            concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO,
+            concepts.HDS_CONCEPT_INFO,
         ])
 
 
@@ -59,7 +59,7 @@ _DIR_ARG = instruction_arguments.DIR_WITHOUT_RELATIVITY_OPTIONS_ARGUMENT
 
 
 class Parser(InstructionParser):
-    def __init__(self, dir_to_set: RelHomeOptionType):
+    def __init__(self, dir_to_set: RelHdsOptionType):
         self.dir_to_set = dir_to_set
 
     def parse(self,
@@ -81,7 +81,7 @@ class Parser(InstructionParser):
 
 class _Instruction(ConfigurationPhaseInstruction):
     def __init__(self,
-                 dir_to_set: RelHomeOptionType,
+                 dir_to_set: RelHdsOptionType,
                  relativity_root: pathlib.Path,
                  argument: pathlib.Path):
         self.dir_to_set = dir_to_set

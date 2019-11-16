@@ -11,18 +11,18 @@ def suite() -> unittest.TestSuite:
 
 
 class TestCase(unittest.TestCase):
-    def test_resolve_home_directory(self):
+    def test_resolve_hds_directory(self):
         # ARRANGE #
         with tmp_file_containing('') as file_path:
             argv = [str(file_path)]
-            expected_home_path = file_path.parent.resolve()
+            expected_hds_path = file_path.parent.resolve()
             # ACT #
             result = sut.parse(test_case_handling_setup(),
                                sandbox_root_name_resolver.for_test(),
                                argv, {})
         # ASSERT #
-        self.assertEqual(expected_home_path,
-                         result.initial_home_dir_path,
+        self.assertEqual(expected_hds_path,
+                         result.initial_hds_dir_path,
                          'Initial Home Directory')
 
 

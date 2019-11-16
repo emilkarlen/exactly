@@ -72,15 +72,15 @@ def argument_configuration_for_file_creation(argument_syntax_element_name: str) 
                                           True)
 
 
-RELATIVITY_VARIANTS_FOR_SOURCE_FILES__PRE_ACT = PathRelativityVariants({RelOptionType.REL_HOME_CASE,
-                                                                        RelOptionType.REL_HOME_ACT,
+RELATIVITY_VARIANTS_FOR_SOURCE_FILES__PRE_ACT = PathRelativityVariants({RelOptionType.REL_HDS_CASE,
+                                                                        RelOptionType.REL_HDS_ACT,
                                                                         RelOptionType.REL_ACT,
                                                                         RelOptionType.REL_TMP,
                                                                         RelOptionType.REL_CWD},
                                                                        True)
 
-RELATIVITY_VARIANTS_FOR_ALL_EXCEPT_RESULT = PathRelativityVariants({RelOptionType.REL_HOME_CASE,
-                                                                    RelOptionType.REL_HOME_ACT,
+RELATIVITY_VARIANTS_FOR_ALL_EXCEPT_RESULT = PathRelativityVariants({RelOptionType.REL_HDS_CASE,
+                                                                    RelOptionType.REL_HDS_ACT,
                                                                     RelOptionType.REL_ACT,
                                                                     RelOptionType.REL_TMP,
                                                                     RelOptionType.REL_CWD},
@@ -98,8 +98,8 @@ def argument_configuration_for_source_file__pre_act(
         True)
 
 
-RELATIVITY_VARIANTS_FOR_SOURCE_FILES__POST_ACT = PathRelativityVariants({RelOptionType.REL_HOME_CASE,
-                                                                         RelOptionType.REL_HOME_ACT,
+RELATIVITY_VARIANTS_FOR_SOURCE_FILES__POST_ACT = PathRelativityVariants({RelOptionType.REL_HDS_CASE,
+                                                                         RelOptionType.REL_HDS_ACT,
                                                                          RelOptionType.REL_ACT,
                                                                          RelOptionType.REL_TMP,
                                                                          RelOptionType.REL_CWD,

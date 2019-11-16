@@ -1,4 +1,4 @@
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, StringMatcher
 
@@ -14,5 +14,5 @@ class StringMatcherConstantDdv(StringMatcherDdv):
     def structure(self) -> StructureRenderer:
         return self._value.structure()
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringMatcher:
+    def value_of_any_dependency(self, tcds: Tcds) -> StringMatcher:
         return self._value

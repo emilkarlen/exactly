@@ -35,9 +35,9 @@ class Test(unittest.TestCase):
             recorder_builder).build()
         actor = actor_that_records_property_of_env_for_each_step_post_sds(
             recorder_builder)
-        default_home_dir = _current_dir()
-        configuration_builder_with_default_timeout = ConfigurationBuilder(default_home_dir,
-                                                                          default_home_dir,
+        default_hds_dir = _current_dir()
+        configuration_builder_with_default_timeout = ConfigurationBuilder(default_hds_dir,
+                                                                          default_hds_dir,
                                                                           actor,
                                                                           default_timeout)
         arrangement = execution_check.Arrangement(test_case,
@@ -68,9 +68,9 @@ class Test(unittest.TestCase):
         test_case = test_case_builder.build()
         actor = actor_that_records_property_of_env_for_each_step_post_sds(
             recorder_builder)
-        default_home_dir = _current_dir()
-        configuration_builder_with_default_timeout = ConfigurationBuilder(default_home_dir,
-                                                                          default_home_dir,
+        default_hds_dir = _current_dir()
+        configuration_builder_with_default_timeout = ConfigurationBuilder(default_hds_dir,
+                                                                          default_hds_dir,
                                                                           actor,
                                                                           expected_timeout)
         arrangement = execution_check.Arrangement(test_case,

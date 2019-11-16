@@ -39,14 +39,14 @@ class TestIsSatisfiedBy(unittest.TestCase):
              ),
             (specific_relative_relativity(RelOptionType.REL_ACT),
              sut.PathRelativityVariants({RelOptionType.REL_CWD,
-                                         RelOptionType.REL_HOME_CASE},
+                                         RelOptionType.REL_HDS_CASE},
                                         True),
              False,
              'ACTUAL=relative, ACCEPTED actual NOT IN set of accepted (but absolute)'
              ),
-            (specific_relative_relativity(RelOptionType.REL_HOME_CASE),
+            (specific_relative_relativity(RelOptionType.REL_HDS_CASE),
              sut.PathRelativityVariants({RelOptionType.REL_CWD,
-                                         RelOptionType.REL_HOME_CASE},
+                                         RelOptionType.REL_HDS_CASE},
                                         True),
              True,
              'ACTUAL=relative, ACCEPTED actual IN set of accepted (but absolute)'

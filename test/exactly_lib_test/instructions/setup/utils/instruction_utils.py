@@ -12,8 +12,8 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.test_case_utils.path_check import PathCheck
 from exactly_lib.type_system.data import paths
 from exactly_lib_test.test_case_utils.file_properties import FileCheckThatEvaluatesTo
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    tcds_with_act_as_curr_dir
 
 
 def suite() -> unittest.TestSuite:
@@ -37,28 +37,28 @@ class TestInstruction(InstructionWithFileRefsBase):
 class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase):
     def test_successful_validation(self):
         instruction = TestInstruction(
-            (PathCheck(_resolver_of(paths.rel_home_case(paths.constant_path_part('file.txt'))),
+            (PathCheck(_resolver_of(paths.rel_hds_case(paths.constant_path_part('file.txt'))),
                        FileCheckThatEvaluatesTo(True)),))
-        with home_and_sds_with_act_as_curr_dir() as path_resolving_env:
-            home_and_sds = path_resolving_env.home_and_sds
-            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.hds, {})
+        with tcds_with_act_as_curr_dir() as path_resolving_env:
+            tcds = path_resolving_env.tcds
+            environment = InstructionEnvironmentForPreSdsStep(tcds.hds, {})
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(_env_from(home_and_sds.sds, environment))
+            post_validate = instruction.validate_post_setup(_env_from(tcds.sds, environment))
             self.assertTrue(post_validate.is_success)
 
     def test_unsuccessful_validation(self):
         instruction = TestInstruction(
-            (PathCheck(_resolver_of(paths.rel_home_case(paths.constant_path_part('file.txt'))),
+            (PathCheck(_resolver_of(paths.rel_hds_case(paths.constant_path_part('file.txt'))),
                        FileCheckThatEvaluatesTo(False)),))
-        with home_and_sds_with_act_as_curr_dir() as path_resolving_env:
-            home_and_sds = path_resolving_env.home_and_sds
-            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.hds, {})
+        with tcds_with_act_as_curr_dir() as path_resolving_env:
+            tcds = path_resolving_env.tcds
+            environment = InstructionEnvironmentForPreSdsStep(tcds.hds, {})
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertFalse(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(_env_from(home_and_sds.sds, environment))
+            post_validate = instruction.validate_post_setup(_env_from(tcds.sds, environment))
             self.assertTrue(post_validate.is_success)
 
 
@@ -67,26 +67,26 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.Test
         instruction = TestInstruction(
             (PathCheck(_resolver_of(paths.rel_cwd(paths.constant_path_part('file.txt'))),
                        FileCheckThatEvaluatesTo(True)),))
-        with home_and_sds_with_act_as_curr_dir() as path_resolving_env:
-            home_and_sds = path_resolving_env.home_and_sds
-            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.hds, {})
+        with tcds_with_act_as_curr_dir() as path_resolving_env:
+            tcds = path_resolving_env.tcds
+            environment = InstructionEnvironmentForPreSdsStep(tcds.hds, {})
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(_env_from(home_and_sds.sds, environment))
+            post_validate = instruction.validate_post_setup(_env_from(tcds.sds, environment))
             self.assertTrue(post_validate.is_success)
 
     def test_unsuccessful_validation(self):
         instruction = TestInstruction(
             (PathCheck(_resolver_of(paths.rel_cwd(paths.constant_path_part('file.txt'))),
                        FileCheckThatEvaluatesTo(False)),))
-        with home_and_sds_with_act_as_curr_dir() as path_resolving_env:
-            home_and_sds = path_resolving_env.home_and_sds
-            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.hds, {})
+        with tcds_with_act_as_curr_dir() as path_resolving_env:
+            tcds = path_resolving_env.tcds
+            environment = InstructionEnvironmentForPreSdsStep(tcds.hds, {})
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(_env_from(home_and_sds.sds, environment))
+            post_validate = instruction.validate_post_setup(_env_from(tcds.sds, environment))
             self.assertFalse(post_validate.is_success)
 
 

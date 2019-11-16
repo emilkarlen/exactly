@@ -5,7 +5,7 @@ from exactly_lib.test_case_file_structure import relativity_root, relative_path_
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencyError
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, SpecificPathRelativity, \
-    SPECIFIC_ABSOLUTE_RELATIVITY, DirectoryStructurePartition, rel_any_from_rel_home
+    SPECIFIC_ABSOLUTE_RELATIVITY, DirectoryStructurePartition, rel_any_from_rel_hds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import concrete_path_parts
 from exactly_lib.type_system.data.concrete_path_parts import PathPartDdvAsNothing
@@ -56,17 +56,17 @@ def rel_abs_path(abs_path_root: pathlib.Path,
     return absolute_file_name(str(abs_path_root / path_suffix.value()))
 
 
-def rel_home(rel_option: relativity_root.RelHomeOptionType,
-             path_suffix: PathPartDdv) -> PathDdv:
-    return _PathDdvRelHome(rel_option, path_suffix)
+def rel_hds(rel_option: relativity_root.RelHdsOptionType,
+            path_suffix: PathPartDdv) -> PathDdv:
+    return _PathDdvRelHds(rel_option, path_suffix)
 
 
-def rel_home_case(path_suffix: PathPartDdv) -> PathDdv:
-    return rel_home(relativity_root.RelHomeOptionType.REL_HOME_CASE, path_suffix)
+def rel_hds_case(path_suffix: PathPartDdv) -> PathDdv:
+    return rel_hds(relativity_root.RelHdsOptionType.REL_HDS_CASE, path_suffix)
 
 
-def rel_home_act(path_suffix: PathPartDdv) -> PathDdv:
-    return rel_home(relativity_root.RelHomeOptionType.REL_HOME_ACT, path_suffix)
+def rel_hds_act(path_suffix: PathPartDdv) -> PathDdv:
+    return rel_hds(relativity_root.RelHdsOptionType.REL_HDS_ACT, path_suffix)
 
 
 def rel_cwd(path_suffix: PathPartDdv) -> PathDdv:
@@ -119,12 +119,12 @@ class _PathDdvFromRelRootResolver(_PathDdvWithConstantLocationBase):
 
     def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         suffix = self.path_suffix_path()
-        root = self._rel_root_resolver.from_home(hds)
+        root = self._rel_root_resolver.from_hds(hds)
         return root / suffix
 
     def value_post_sds(self, sds: SandboxDirectoryStructure):
         suffix = self.path_suffix_path()
-        root = self._rel_root_resolver.from_non_home(sds)
+        root = self._rel_root_resolver.from_non_hds(sds)
         return root / suffix
 
 
@@ -148,9 +148,9 @@ class _PathDdvAbsolute(PathDdvWithPathSuffixBase):
         return self.value_when_no_dir_dependencies()
 
 
-class _PathDdvRelHome(_PathDdvWithConstantLocationBase):
+class _PathDdvRelHds(_PathDdvWithConstantLocationBase):
     def __init__(self,
-                 rel_option: relativity_root.RelHomeOptionType,
+                 rel_option: relativity_root.RelHdsOptionType,
                  path_suffix: PathPartDdv):
         super().__init__(path_suffix)
         self._rel_option = rel_option
@@ -159,19 +159,19 @@ class _PathDdvRelHome(_PathDdvWithConstantLocationBase):
         return True
 
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
-        raise DirDependencyError({DirectoryStructurePartition.HOME})
+        raise DirDependencyError({DirectoryStructurePartition.HDS})
 
     def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         suffix = self.path_suffix_path()
-        root = relative_path_options.REL_HDS_OPTIONS_MAP[self._rel_option].root_resolver.from_home(hds)
+        root = relative_path_options.REL_HDS_OPTIONS_MAP[self._rel_option].root_resolver.from_hds(hds)
         return root / suffix
 
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        raise DirDependencyError({DirectoryStructurePartition.HOME},
+        raise DirDependencyError({DirectoryStructurePartition.HDS},
                                  'This file exists pre-SDS')
 
     def _relativity(self) -> RelOptionType:
-        return rel_any_from_rel_home(self._rel_option)
+        return rel_any_from_rel_hds(self._rel_option)
 
 
 class _StackedPathDdv(PathDdvWithDescriptionBase):

@@ -5,7 +5,7 @@ from exactly_lib.definitions import expression
 from exactly_lib.symbol.logic.resolver import MatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.err_msg import diff_msg
@@ -223,7 +223,7 @@ class ComparisonMatcherDdv(Generic[T], MatcherDdv[T]):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._rhs.validator
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
         return ComparisonMatcher(
             self._expectation_type,
             self._operator,

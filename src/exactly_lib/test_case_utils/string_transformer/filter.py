@@ -1,5 +1,5 @@
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.string_transformer.impl import select
 from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer
@@ -17,6 +17,6 @@ class SelectStringTransformerDdv(StringTransformerDdv):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._line_matcher.validator
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringTransformer:
+    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformer:
         return select.SelectStringTransformer(
             self._line_matcher.value_of_any_dependency(tcds))

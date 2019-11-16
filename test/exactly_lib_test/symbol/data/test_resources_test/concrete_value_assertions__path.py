@@ -29,7 +29,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-_EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_HOME_CASE
+_EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_HDS_CASE
 _NOT_EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_ACT
 
 _PATH_SUFFIX_VARIANTS = [
@@ -116,7 +116,7 @@ class Test1NotEquals(unittest.TestCase):
             path,
             [SymbolReference('reffed-name',
                              ReferenceRestrictionsOnDirectAndIndirect(
-                                 restriction_with_relativity(RelOptionType.REL_HOME_CASE)))])
+                                 restriction_with_relativity(RelOptionType.REL_HDS_CASE)))])
         assertion = sut.equals_path_resolver(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -198,7 +198,7 @@ class Test2NotEquals(unittest.TestCase):
     def test_differs__relativity(self):
         # ARRANGE #
         expected = PathDdvTestImpl(RelOptionType.REL_ACT, paths.constant_path_part('file-name'))
-        actual = PathDdvTestImpl(RelOptionType.REL_HOME_CASE, paths.constant_path_part('file-name'))
+        actual = PathDdvTestImpl(RelOptionType.REL_HDS_CASE, paths.constant_path_part('file-name'))
         assertion = sut.matches_path_resolver(expected, asrt.ignore, empty_symbol_table())
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, path_resolvers.constant(actual))

@@ -19,17 +19,17 @@ class TestDirDependencyOfResolvingDependencies(unittest.TestCase):
                 DirDependencies.NONE,
             ),
             (
-                {DirectoryStructurePartition.HOME},
-                DirDependencies.HOME,
+                {DirectoryStructurePartition.HDS},
+                DirDependencies.HDS,
             ),
             (
-                {DirectoryStructurePartition.NON_HOME},
+                {DirectoryStructurePartition.NON_HDS},
                 DirDependencies.SDS,
             ),
             (
-                {DirectoryStructurePartition.HOME,
-                 DirectoryStructurePartition.NON_HOME},
-                DirDependencies.HOME_AND_SDS,
+                {DirectoryStructurePartition.HDS,
+                 DirectoryStructurePartition.NON_HDS},
+                DirDependencies.TCDS,
             ),
         ]
         for resolving_dependencies, expected_dir_dependency in cases:

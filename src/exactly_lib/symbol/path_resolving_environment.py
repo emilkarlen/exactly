@@ -1,8 +1,6 @@
-import pathlib
-
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -30,10 +28,6 @@ class PathResolvingEnvironmentPreSds(PathResolvingEnvironment):
     def hds(self) -> HomeDirectoryStructure:
         return self._hds
 
-    @property
-    def home_dir_path(self) -> pathlib.Path:
-        return self._hds.case_dir
-
 
 class PathResolvingEnvironmentPostSds(PathResolvingEnvironment):
     def __init__(self,
@@ -49,12 +43,12 @@ class PathResolvingEnvironmentPostSds(PathResolvingEnvironment):
 
 class PathResolvingEnvironmentPreOrPostSds(PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds):
     def __init__(self,
-                 home_and_sds: HomeAndSds,
+                 tcds: Tcds,
                  symbols: SymbolTable = None):
-        PathResolvingEnvironmentPreSds.__init__(self, home_and_sds.hds, symbols)
-        PathResolvingEnvironmentPostSds.__init__(self, home_and_sds.sds, symbols)
-        self._home_and_sds = home_and_sds
+        PathResolvingEnvironmentPreSds.__init__(self, tcds.hds, symbols)
+        PathResolvingEnvironmentPostSds.__init__(self, tcds.sds, symbols)
+        self._tcds = tcds
 
     @property
-    def home_and_sds(self) -> HomeAndSds:
-        return self._home_and_sds
+    def tcds(self) -> Tcds:
+        return self._tcds

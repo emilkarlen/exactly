@@ -121,7 +121,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
              os_services: OsServices) -> Optional[TextRenderer]:
         described_path = (
             self._path_to_create.resolve(environment.symbols)
-                .value_of_any_dependency__d(environment.home_and_sds)
+                .value_of_any_dependency__d(environment.tcds)
         )
         return self._file_maker.make(environment, os_services, described_path)
 

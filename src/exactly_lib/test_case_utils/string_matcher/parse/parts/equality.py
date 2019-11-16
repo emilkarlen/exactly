@@ -11,7 +11,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, SingleStepValidator, \
     ValidationStep, \
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
@@ -63,7 +63,7 @@ def value_resolver(expectation_type: ExpectationType,
     validator = _validator_of_expected(expected_contents)
 
     def get_matcher_value(symbols: SymbolTable) -> StringMatcherDdv:
-        def get_validator(tcds: HomeAndSds) -> FixedPreOrPostSdsValidator:
+        def get_validator(tcds: Tcds) -> FixedPreOrPostSdsValidator:
             return FixedPreOrPostSdsValidator(PathResolvingEnvironmentPreOrPostSds(tcds, symbols),
                                               validator)
 
@@ -103,7 +103,7 @@ class EqualityStringMatcherDdv(StringMatcherDdv):
     def __init__(self,
                  expectation_type: ExpectationType,
                  expected_contents: StringOrPathDdv,
-                 get_validator: Callable[[HomeAndSds], PreOrPostSdsValidatorPrimitive],
+                 get_validator: Callable[[Tcds], PreOrPostSdsValidatorPrimitive],
                  ):
         super().__init__()
         self._expectation_type = expectation_type
@@ -118,7 +118,7 @@ class EqualityStringMatcherDdv(StringMatcherDdv):
             custom_details.StringOrPathValue(self._expected_contents),
         )
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringMatcher:
+    def value_of_any_dependency(self, tcds: Tcds) -> StringMatcher:
         expected_contents = self._expected_contents.value_of_any_dependency(tcds)
         return EqualityStringMatcher(
             self._expectation_type,

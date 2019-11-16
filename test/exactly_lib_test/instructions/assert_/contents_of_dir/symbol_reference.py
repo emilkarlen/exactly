@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.assert_.contents_of_dir import parser as sut
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType, RelSdsOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHdsOptionType, RelSdsOptionType
 from exactly_lib.test_case_utils.files_matcher.impl.emptiness import emptiness_matcher
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -22,7 +22,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import argume
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     pfh_expectation_type_config, pass_or_fail_from_bool
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidatorThat
-from exactly_lib_test.test_case_utils.test_resources.relativity_options import default_conf_rel_non_home, conf_rel_sds
+from exactly_lib_test.test_case_utils.test_resources.relativity_options import default_conf_rel_non_hds, conf_rel_sds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
@@ -89,7 +89,7 @@ class TestReferencedMatcherShouldBeValidated(tr.TestCaseBaseForParser):
         )
         arguments = arguments_constructor.apply(
             pfh_expectation_type_config(ExpectationType.POSITIVE),
-            default_conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
+            default_conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
         )
 
         cases = [

@@ -10,12 +10,12 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementBase
-from exactly_lib_test.test_case_file_structure.test_resources import home_populators, home_and_sds_populators, \
+from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, tcds_populators, \
     sds_populator
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    HomeAndSdsAction
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    HdsAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -57,10 +57,10 @@ class ConfigurationBase:
         return self.instruction_setup().documentation
 
     def arrangement(self,
-                    pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-                    hds_contents: home_populators.HomePopulator = home_populators.empty(),
+                    pre_contents_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                    hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
-                    home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
+                    home_or_sds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                     environ: dict = None,
                     os_services: OsServices = new_default(),
                     symbols: SymbolTable = None):

@@ -3,8 +3,8 @@ from typing import TypeVar, Callable
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DependenciesAwareDdv, Max1DependencyDdv, \
     MultiDependenciesDdv
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
@@ -47,11 +47,11 @@ class DirDependentValueAssertionBase(ValueAssertionBase[DependenciesAwareDdv[T]]
         self._check_common_dependencies(put, value, message_builder)
         self._check_existence(put, value, message_builder)
 
-        home_and_sds = fake_home_and_sds()
-        self._check_custom_dependencies(put, value, home_and_sds, message_builder)
-        self._check_value(put, value, home_and_sds, message_builder)
+        tcds = fake_tcds()
+        self._check_custom_dependencies(put, value, tcds, message_builder)
+        self._check_value(put, value, tcds, message_builder)
 
-        self._check_custom(put, value, home_and_sds, message_builder)
+        self._check_custom(put, value, tcds, message_builder)
 
     def _check_type(self,
                     put: unittest.TestCase,
@@ -64,14 +64,14 @@ class DirDependentValueAssertionBase(ValueAssertionBase[DependenciesAwareDdv[T]]
     def _check_custom_dependencies(self,
                                    put: unittest.TestCase,
                                    actual: DependenciesAwareDdv,
-                                   home_and_sds: HomeAndSds,
+                                   tcds: Tcds,
                                    message_builder: asrt.MessageBuilder):
         raise NotImplementedError()
 
     def _check_custom(self,
                       put: unittest.TestCase,
                       actual: DependenciesAwareDdv,
-                      home_and_sds: HomeAndSds,
+                      tcds: Tcds,
                       message_builder: asrt.MessageBuilder):
         raise NotImplementedError()
 
@@ -97,7 +97,7 @@ class DirDependentValueAssertionBase(ValueAssertionBase[DependenciesAwareDdv[T]]
     def _check_value(self,
                      put: unittest.TestCase,
                      actual: DependenciesAwareDdv,
-                     home_and_sds: HomeAndSds,
+                     tcds: Tcds,
                      message_builder: asrt.MessageBuilder):
         if not self._expected.has_dir_dependency():
             expected = self._expected.value_when_no_dir_dependencies()
@@ -106,10 +106,10 @@ class DirDependentValueAssertionBase(ValueAssertionBase[DependenciesAwareDdv[T]]
                             actual.value_when_no_dir_dependencies(),
                             message_builder.for_sub_component('value_when_no_dir_dependencies'))
 
-        expected = self._expected.value_of_any_dependency(home_and_sds)
+        expected = self._expected.value_of_any_dependency(tcds)
         assertion = self._value_assertion_from_expected(expected)
         assertion.apply(put,
-                        actual.value_of_any_dependency(home_and_sds),
+                        actual.value_of_any_dependency(tcds),
                         message_builder.for_sub_component('value_of_any_dependency'))
 
 
@@ -124,7 +124,7 @@ class SingleDirDependentValueAssertion(DirDependentValueAssertionBase):
     def _check_custom_dependencies(self,
                                    put: unittest.TestCase,
                                    actual: Max1DependencyDdv,
-                                   home_and_sds: HomeAndSds,
+                                   tcds: Tcds,
                                    message_builder: asrt.MessageBuilder):
         put.assertEqual(self._expected_single_dep_value.resolving_dependency(),
                         actual.resolving_dependency(),
@@ -133,22 +133,22 @@ class SingleDirDependentValueAssertion(DirDependentValueAssertionBase):
     def _check_custom(self,
                       put: unittest.TestCase,
                       actual: Max1DependencyDdv,
-                      home_and_sds: HomeAndSds,
+                      tcds: Tcds,
                       message_builder: asrt.MessageBuilder):
         if self._expected.exists_pre_sds():
-            put.assertEqual(self._expected_single_dep_value.value_pre_sds(home_and_sds.hds),
-                            actual.value_pre_sds(home_and_sds.hds),
+            put.assertEqual(self._expected_single_dep_value.value_pre_sds(tcds.hds),
+                            actual.value_pre_sds(tcds.hds),
                             message_builder.apply('value_pre_sds'))
         else:
-            put.assertEqual(self._expected_single_dep_value.value_post_sds(home_and_sds.sds),
-                            actual.value_post_sds(home_and_sds.sds),
+            put.assertEqual(self._expected_single_dep_value.value_post_sds(tcds.sds),
+                            actual.value_post_sds(tcds.sds),
                             message_builder.apply('value_post_sds'))
-        self._check_custom_single(put, actual, home_and_sds, message_builder)
+        self._check_custom_single(put, actual, tcds, message_builder)
 
     def _check_custom_single(self,
                              put: unittest.TestCase,
                              actual: Max1DependencyDdv,
-                             home_and_sds: HomeAndSds,
+                             tcds: Tcds,
                              message_builder: asrt.MessageBuilder):
         pass
 
@@ -164,7 +164,7 @@ class MultiDirDependentValueAssertion(DirDependentValueAssertionBase):
     def _check_custom_dependencies(self,
                                    put: unittest.TestCase,
                                    actual: MultiDependenciesDdv,
-                                   home_and_sds: HomeAndSds,
+                                   tcds: Tcds,
                                    message_builder: asrt.MessageBuilder):
         put.assertEqual(self._expected_multi_dep_value.dir_dependencies(),
                         actual.dir_dependencies(),
@@ -173,17 +173,17 @@ class MultiDirDependentValueAssertion(DirDependentValueAssertionBase):
     def _check_custom(self,
                       put: unittest.TestCase,
                       actual: MultiDependenciesDdv,
-                      home_and_sds: HomeAndSds,
+                      tcds: Tcds,
                       message_builder: asrt.MessageBuilder):
         put.assertEqual(self._expected_multi_dep_value.dir_dependencies(),
                         actual.dir_dependencies(),
                         'dir_dependency')
 
-        self._check_custom_multi(put, actual, home_and_sds, message_builder)
+        self._check_custom_multi(put, actual, tcds, message_builder)
 
     def _check_custom_multi(self,
                             put: unittest.TestCase,
                             actual: MultiDependenciesDdv,
-                            home_and_sds: HomeAndSds,
+                            tcds: Tcds,
                             message_builder: asrt.MessageBuilder):
         pass

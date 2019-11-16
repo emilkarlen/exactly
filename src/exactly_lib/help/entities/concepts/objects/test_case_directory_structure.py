@@ -17,7 +17,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 class _TcdsConcept(ConceptDocumentation):
     def __init__(self):
-        super().__init__(concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO)
+        super().__init__(concepts.TCDS_CONCEPT_INFO)
 
         self._tp = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
@@ -35,8 +35,8 @@ class _TcdsConcept(ConceptDocumentation):
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
-            concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
-            concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
+            concepts.HDS_CONCEPT_INFO.cross_reference_target,
+            concepts.SDS_CONCEPT_INFO.cross_reference_target,
             syntax_elements.PATH_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
@@ -77,11 +77,11 @@ TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT = _TcdsConcept()
 
 _DIR_STRUCTURES = (
     (
-        concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO,
+        concepts.HDS_CONCEPT_INFO,
         HDS_DIR_INFOS_IN_DISPLAY_ORDER,
     ),
     (
-        concepts.SANDBOX_CONCEPT_INFO,
+        concepts.SDS_CONCEPT_INFO,
         SDS_DIR_INFOS_IN_DISPLAY_ORDER,
     ),
 )

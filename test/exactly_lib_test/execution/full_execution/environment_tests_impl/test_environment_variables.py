@@ -10,7 +10,7 @@ from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure import environment_variables
-from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import python_code_gen as py
 from exactly_lib_test.execution.test_resources import recorder as instr_setup
@@ -49,9 +49,9 @@ class Test(FullExecutionTestCaseBase):
         return full_test_case_with_instructions(
             [
                 configuration_phase_instruction_that(
-                    main_initial_action=_ConfigurationPhaseActionThatSetsHomeCaseDirToParent()),
+                    main_initial_action=_ConfigurationPhaseActionThatSetsHdsCaseDirToParent()),
                 configuration_phase_instruction_that(
-                    main_initial_action=_ConfigurationPhaseActionThatSetsHomeActDirToParentParent())
+                    main_initial_action=_ConfigurationPhaseActionThatSetsHdsActDirToParentParent())
             ],
             [setup_phase_instruction_that(
                 validate_pre_sds_initial_action=_RecordEnvVars(self.recorder,
@@ -96,21 +96,21 @@ class Test(FullExecutionTestCaseBase):
 
     def _assertions(self):
         self.__assert_test_sanity()
-        home_case_dir_after_configuration = str(self.initial_home_dir_path.parent)
-        home_act_dir_after_configuration = str(self.initial_home_dir_path.parent.parent)
+        home_case_dir_after_configuration = str(self.initial_hds_dir_path.parent)
+        home_act_dir_after_configuration = str(self.initial_hds_dir_path.parent.parent)
         for_pre_sds = {
-            environment_variables.ENV_VAR_HOME_CASE: home_case_dir_after_configuration,
-            environment_variables.ENV_VAR_HOME_ACT: home_act_dir_after_configuration,
+            environment_variables.ENV_VAR_HDS_CASE: home_case_dir_after_configuration,
+            environment_variables.ENV_VAR_HDS_ACT: home_act_dir_after_configuration,
         }
         set_at_sds_creation = {
-            environment_variables.ENV_VAR_HOME_CASE: home_case_dir_after_configuration,
-            environment_variables.ENV_VAR_HOME_ACT: home_act_dir_after_configuration,
+            environment_variables.ENV_VAR_HDS_CASE: home_case_dir_after_configuration,
+            environment_variables.ENV_VAR_HDS_ACT: home_act_dir_after_configuration,
             environment_variables.ENV_VAR_ACT: str(self.sds.act_dir),
             environment_variables.ENV_VAR_TMP: str(self.sds.user_tmp_dir),
         }
         set_after_act = {
-            environment_variables.ENV_VAR_HOME_CASE: home_case_dir_after_configuration,
-            environment_variables.ENV_VAR_HOME_ACT: home_act_dir_after_configuration,
+            environment_variables.ENV_VAR_HDS_CASE: home_case_dir_after_configuration,
+            environment_variables.ENV_VAR_HDS_ACT: home_act_dir_after_configuration,
             environment_variables.ENV_VAR_ACT: str(self.sds.act_dir),
             environment_variables.ENV_VAR_TMP: str(self.sds.user_tmp_dir),
             environment_variables.ENV_VAR_RESULT: str(self.sds.result.root_dir),
@@ -171,17 +171,17 @@ class _ActionWithPhaseStepAndRecording:
         self.my_phase_step = my_phase_step
 
 
-class _ConfigurationPhaseActionThatSetsHomeCaseDirToParent:
+class _ConfigurationPhaseActionThatSetsHdsCaseDirToParent:
     def __call__(self, configuration_builder: ConfigurationBuilder, *args):
-        configuration_builder.set_hds_dir(RelHomeOptionType.REL_HOME_CASE,
-                                          configuration_builder.get_hds_dir(RelHomeOptionType.REL_HOME_CASE).parent)
+        configuration_builder.set_hds_dir(RelHdsOptionType.REL_HDS_CASE,
+                                          configuration_builder.get_hds_dir(RelHdsOptionType.REL_HDS_CASE).parent)
 
 
-class _ConfigurationPhaseActionThatSetsHomeActDirToParentParent:
+class _ConfigurationPhaseActionThatSetsHdsActDirToParentParent:
     def __call__(self, configuration_builder: ConfigurationBuilder, *args):
-        configuration_builder.set_hds_dir(RelHomeOptionType.REL_HOME_ACT,
+        configuration_builder.set_hds_dir(RelHdsOptionType.REL_HDS_ACT,
                                           configuration_builder.get_hds_dir(
-                                              RelHomeOptionType.REL_HOME_ACT).parent.parent)
+                                              RelHdsOptionType.REL_HDS_ACT).parent.parent)
 
 
 class _RecordEnvVars(_ActionWithPhaseStepAndRecording):

@@ -1,6 +1,6 @@
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverWithRelSdsRoot
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
     MkSubDirAndMakeItCurrentDirectory
 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'

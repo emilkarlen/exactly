@@ -8,7 +8,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAnd
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import concepts as ci, syntax_elements
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
-    RelSdsOptionType, RelHomeOptionType
+    RelSdsOptionType, RelHdsOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP, REL_HDS_OPTIONS_MAP, \
     REL_CWD_INFO, REL_OPTIONS_MAP
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration, \
@@ -184,17 +184,17 @@ _REL_CWD_DESCRIPTION = """\
 {PATH} is relative the {cwd}.
 """
 
-_REL_HOME_CASE_DESCRIPTION = """\
+_REL_HDS_CASE_DESCRIPTION = """\
 {PATH} is relative the {home_case_directory}.
 """
 
-_REL_HOME_ACT_DESCRIPTION = """\
+_REL_HDS_ACT_DESCRIPTION = """\
 {PATH} is relative the {home_act_directory}.
 """
 
 _DISPLAY_ORDER = (
-    RelOptionType.REL_HOME_CASE,
-    RelOptionType.REL_HOME_ACT,
+    RelOptionType.REL_HDS_CASE,
+    RelOptionType.REL_HDS_ACT,
     RelOptionType.REL_ACT,
     RelOptionType.REL_TMP,
     RelOptionType.REL_RESULT,
@@ -209,11 +209,11 @@ def _rel_sds(rel: RelSdsOptionType,
     return _RelOptionTypeInfo(ri.option_name,
                               ri.directory_variable_name,
                               description,
-                              [ci.SANDBOX_CONCEPT_INFO],
+                              [ci.SDS_CONCEPT_INFO],
                               )
 
 
-def _rel_hds(rel: RelHomeOptionType,
+def _rel_hds(rel: RelHdsOptionType,
              description: str) -> _RelOptionTypeInfo:
     ri = REL_HDS_OPTIONS_MAP[rel]
 
@@ -239,11 +239,11 @@ _ALL = {
                                               _REL_CWD_DESCRIPTION,
                                               [REL_CWD_INFO.cross_ref_info]),
 
-    RelOptionType.REL_HOME_CASE: _rel_hds(RelHomeOptionType.REL_HOME_CASE,
-                                          _REL_HOME_CASE_DESCRIPTION),
+    RelOptionType.REL_HDS_CASE: _rel_hds(RelHdsOptionType.REL_HDS_CASE,
+                                         _REL_HDS_CASE_DESCRIPTION),
 
-    RelOptionType.REL_HOME_ACT: _rel_hds(RelHomeOptionType.REL_HOME_ACT,
-                                         _REL_HOME_ACT_DESCRIPTION),
+    RelOptionType.REL_HDS_ACT: _rel_hds(RelHdsOptionType.REL_HDS_ACT,
+                                        _REL_HDS_ACT_DESCRIPTION),
 }
 
 _DEFAULT_RELATIVITY = """\

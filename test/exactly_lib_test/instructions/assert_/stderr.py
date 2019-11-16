@@ -4,7 +4,7 @@ from typing import Callable
 from exactly_lib.instructions.assert_ import stderr as sut
 from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
@@ -15,12 +15,12 @@ from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.configur
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output.configuration import \
     ProgramOutputInstructionConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.utils import \
-    ActResultProducerFromHomeAndSds2Str
+    ActResultProducerFromTcds2Str
 from exactly_lib_test.test_case.test_resources.arrangements import ActEnvironment
-from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators as home_or_sds
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as home_or_sds
 from exactly_lib_test.test_resources.process import SubProcessResult
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    HomeAndSdsAction
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    HdsAndSdsAction
 
 
 def suite() -> unittest.TestSuite:
@@ -31,9 +31,9 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class ActResultProducerForStderr(ActResultProducerFromHomeAndSds2Str):
+class ActResultProducerForStderr(ActResultProducerFromTcds2Str):
     def apply(self, act_environment: ActEnvironment) -> SubProcessResult:
-        return SubProcessResult(stderr=self.home_and_sds_2_str(act_environment.home_and_sds))
+        return SubProcessResult(stderr=self.tcds_2_str(act_environment.tcds))
 
 
 class TestConfigurationForStderr(TestConfigurationForStdFile):
@@ -41,14 +41,14 @@ class TestConfigurationForStderr(TestConfigurationForStdFile):
         return sut.parser('the-instruction-name')
 
     def arrangement_for_contents_from_fun(self,
-                                          home_and_sds_2_str: Callable[[HomeAndSds], str],
-                                          home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
-                                          post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                                          tcds_2_str: Callable[[Tcds], str],
+                                          home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
+                                          post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
                                           symbols: SymbolTable = None,
                                           ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
-            act_result_producer=ActResultProducerForStderr(home_and_sds_2_str),
-            home_or_sds_contents=home_or_sds_contents,
+            act_result_producer=ActResultProducerForStderr(tcds_2_str),
+            tcds_contents=home_or_sds_contents,
             post_sds_population_action=post_sds_population_action,
             symbols=symbols,
         )

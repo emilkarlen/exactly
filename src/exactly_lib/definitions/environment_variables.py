@@ -5,11 +5,11 @@ from exactly_lib.test_case_file_structure import sandbox_directory_structure as 
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _DESCRIPTION_HOME = """\
-The absolute path of the directory that corresponds to the {case_home_directory} {conf_param}.
+The absolute path of the directory that corresponds to the {hds_case_directory} {conf_param}.
 """
 
 _DESCRIPTION_ACT_HOME = """\
-The absolute path of the directory that corresponds to the {act_home_directory} {conf_param}.
+The absolute path of the directory that corresponds to the {hds_act_directory} {conf_param}.
 """
 
 _DESCRIPTION_ACT = """\
@@ -25,8 +25,8 @@ The absolute path of the {result_sub_dir}/ sub directory of the {sandbox:/q}.
 """
 
 ENVIRONMENT_VARIABLES_SET_BEFORE_ACT = [
-    (environment_variables.ENV_VAR_HOME_CASE, _DESCRIPTION_HOME),
-    (environment_variables.ENV_VAR_HOME_ACT, _DESCRIPTION_ACT_HOME),
+    (environment_variables.ENV_VAR_HDS_CASE, _DESCRIPTION_HOME),
+    (environment_variables.ENV_VAR_HDS_ACT, _DESCRIPTION_ACT_HOME),
     (environment_variables.ENV_VAR_ACT, _DESCRIPTION_ACT),
     (environment_variables.ENV_VAR_TMP, _DESCRIPTION_TMP),
 
@@ -41,12 +41,12 @@ class EnvironmentVariableDescription:
     def __init__(self):
         self.text_parser = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'case_home_directory': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
-            'act_home_directory': formatting.concept_(conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO),
+            'hds_case_directory': formatting.conf_param_(conf_params.HDS_CASE_DIRECTORY_CONF_PARAM_INFO),
+            'hds_act_directory': formatting.concept_(conf_params.HDS_ACT_DIRECTORY_CONF_PARAM_INFO),
             'act_sub_dir': sds.SUB_DIRECTORY__ACT,
             'tmp_sub_dir': sds.PATH__TMP_USER,
             'result_sub_dir': sds.SUB_DIRECTORY__RESULT,
-            'sandbox': concepts.SANDBOX_CONCEPT_INFO.name,
+            'sandbox': concepts.SDS_CONCEPT_INFO.name,
             'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
         }
         )

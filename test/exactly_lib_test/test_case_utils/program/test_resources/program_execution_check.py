@@ -20,13 +20,13 @@ from exactly_lib.util.process_execution.execution_elements import ProcessExecuti
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators, \
-    home_and_sds_populators, sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
+    tcds_populators, sds_populator
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
 from exactly_lib_test.test_resources.files import tmp_dir
 from exactly_lib_test.test_resources.process import SubProcessResult
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    HomeAndSdsAction, home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    HdsAndSdsAction, tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion, \
     ValueAssertionBase
@@ -88,11 +88,11 @@ class ResultWithTransformationDataAssertion(ValueAssertionBase[ResultWithTransfo
 class Arrangement(ArrangementWithSds):
     def __init__(self,
                  output_file_to_transform: ProcOutputFile = ProcOutputFile.STDOUT,
-                 pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-                 hds_contents: home_populators.HomePopulator = home_populators.empty(),
+                 pre_contents_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                 hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
-                 non_home_contents_before_main: non_home_populator.NonHomePopulator = non_home_populator.empty(),
-                 home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
+                 non_hds_contents_before_main: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
+                 tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  executable_factory: ExecutableFactory = executable_factories.get_factory_for_current_operating_system(),
@@ -101,8 +101,8 @@ class Arrangement(ArrangementWithSds):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
                          hds_contents=hds_contents,
                          sds_contents=sds_contents_before_main,
-                         non_home_contents=non_home_contents_before_main,
-                         home_or_sds_contents=home_or_sds_contents,
+                         non_hds_contents=non_hds_contents_before_main,
+                         tcds_contents=tcds_contents,
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
                          symbols=symbols)
@@ -116,14 +116,14 @@ class Expectation:
                  validation: ValidationExpectation = all_validations_passes(),
                  symbol_references: ValueAssertion = asrt.is_empty_sequence,
                  main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
-                 main_side_effects_on_home_and_sds: ValueAssertion = asrt.anything_goes(),
+                 main_side_effects_on_tcds: ValueAssertion = asrt.anything_goes(),
                  source: ValueAssertion = asrt.anything_goes(),
                  ):
         self.source = source
         self.symbol_references = symbol_references
         self.validation = validation
         self.result = result
-        self.main_side_effects_on_home_and_sds = main_side_effects_on_home_and_sds
+        self.main_side_effects_on_tcds = main_side_effects_on_tcds
         self.main_side_effects_on_sds = main_side_effects_on_sds
 
 
@@ -160,12 +160,12 @@ class Executor:
         self.expectation.symbol_references.apply_with_message(self.put,
                                                               program_resolver.references,
                                                               'symbol-usages after parse')
-        with home_and_sds_with_act_as_curr_dir(
+        with tcds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 hds_contents=self.arrangement.hds_contents,
                 sds_contents=self.arrangement.sds_contents,
-                non_home_contents=self.arrangement.non_home_contents,
-                home_or_sds_contents=self.arrangement.home_or_sds_contents,
+                non_hds_contents=self.arrangement.non_hds_contents,
+                tcds_contents=self.arrangement.tcds_contents,
                 symbols=self.arrangement.symbols) as path_resolving_environment:
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
 
@@ -218,13 +218,13 @@ class Executor:
 
         self.expectation.result.apply(self.put, result)
         self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
-        self.expectation.main_side_effects_on_home_and_sds.apply(self.put, environment.home_and_sds)
+        self.expectation.main_side_effects_on_tcds.apply(self.put, environment.tcds)
 
     def _execute(self,
                  pgm_output_dir: pathlib.Path,
                  environment: PathResolvingEnvironmentPreOrPostSds,
                  program_resolver: ProgramResolver) -> ResultWithTransformationData:
-        program = program_resolver.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        program = program_resolver.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
         assert isinstance(program, Program)
         execution_result = pgm_execution.make_transformed_file_from_output(pgm_output_dir,
                                                                            self.arrangement.process_execution_settings,

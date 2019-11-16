@@ -33,7 +33,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
             'FAIL': exit_values.EXECUTION__FAIL.exit_identifier,
             'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
-            'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
+            'sandbox': formatting.concept_(concepts.SDS_CONCEPT_INFO),
             'ENV_VAR_RESULT': ENV_VAR_RESULT,
             'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
         })
@@ -66,7 +66,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
     @property
     def _see_also_targets_specific(self) -> List[SeeAlsoTarget]:
         return [
-            concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
+            concepts.SDS_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
             phase_infos.BEFORE_ASSERT.cross_reference_target,
             phase_infos.CLEANUP.cross_reference_target,

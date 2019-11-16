@@ -8,9 +8,9 @@ from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matche
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators as home_or_sds
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
-    HomeOrSdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as home_or_sds
+from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
+    TcdsPopulator
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
@@ -19,8 +19,8 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_constr
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success, ExpectationTypeConfigForNoneIsSuccess
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    HomeAndSdsAction
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    HdsAndSdsAction
 
 
 class TestConfiguration:
@@ -28,12 +28,12 @@ class TestConfiguration:
         return sut.string_matcher_parser()
 
     def arrangement_for_contents(self,
-                                 home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
-                                 post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                                 home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
+                                 post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
                                  symbols: SymbolTable = None,
                                  ) -> integration_check.ArrangementPostAct:
         return integration_check.ArrangementPostAct(
-            home_or_sds_contents=home_or_sds_contents,
+            tcds_contents=home_or_sds_contents,
             post_sds_population_action=post_sds_population_action,
             symbols=symbols,
         )
@@ -50,12 +50,12 @@ class TestConfiguration:
 
 class TestConfigurationForEquals(TestConfiguration):
     def arrangement_for_expected(self,
-                                 expected: HomeOrSdsPopulator,
-                                 post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                                 expected: TcdsPopulator,
+                                 post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
                                  symbols: SymbolTable = None,
                                  ) -> integration_check.ArrangementPostAct:
         return integration_check.ArrangementPostAct(
-            home_or_sds_contents=expected,
+            tcds_contents=expected,
             post_sds_population_action=post_sds_population_action,
             symbols=symbols,
         )

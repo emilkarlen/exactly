@@ -71,7 +71,7 @@ class CommandResolver(DirDepValueResolverWithValidation[CommandValue]):
                             self._arguments.arguments_list.resolve(symbols))
 
     def resolve_of_any_dep(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
-        return self.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        return self.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
 
     @property
     def validator(self) -> PreOrPostSdsValidator:

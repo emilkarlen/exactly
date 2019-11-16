@@ -254,7 +254,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
     def _get_matcher(self, environment: InstructionEnvironmentForPostSdsStep) -> FilesMatcher:
         resolver = lookups.lookup_files_matcher(environment.symbols, self.matcher_symbol_name)
         return resolver.resolve(environment.symbols) \
-            .value_of_any_dependency(environment.home_and_sds) \
+            .value_of_any_dependency(environment.tcds) \
             .construct(environment.phase_logging.space_for_instruction())
 
     def _new_model(self, environment: InstructionEnvironmentForPostSdsStep) -> FilesMatcherModel:
@@ -265,14 +265,14 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         return FilesMatcherModelForDir(
             environment.phase_logging.space_for_instruction(),
             rel_opt_conf.path_resolver_for_root_dir().resolve(environment.symbols)
-                .value_of_any_dependency__d(environment.home_and_sds),
+                .value_of_any_dependency__d(environment.tcds),
         )
 
     def _populate_root_dir(self,
                            dir_conf: RelativityOptionConfiguration,
                            environment: InstructionEnvironmentForPostSdsStep):
         populator = dir_conf.populator_for_relativity_option_root(self.actual_dir_contents)
-        populator.populate_home_or_sds(environment.home_and_sds)
+        populator.populate_tcds(environment.tcds)
 
 
 ARBITRARY_RESOLVER = FilesMatcherResolverConstantTestImpl(True,

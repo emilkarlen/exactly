@@ -11,9 +11,9 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_path import parse_string_or_here_doc_from_token_parser
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver, RegexDdv
@@ -104,7 +104,7 @@ class _ValidatorWhichCreatesRegex(PreOrPostSdsValueValidator):
         else:
             return None
 
-    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
         if self.pattern is None:
             return self._compile_and_set_pattern(self.string.value_of_any_dependency(tcds))
         else:
@@ -115,7 +115,7 @@ class _ValidatorWhichCreatesRegex(PreOrPostSdsValueValidator):
             self._compile_and_set_pattern(self.string.value_when_no_dir_dependencies())
         return self.pattern
 
-    def pattern_of_any_dependency(self, tcds: HomeAndSds) -> Pattern:
+    def pattern_of_any_dependency(self, tcds: Tcds) -> Pattern:
         if self.pattern is None:
             self._compile_and_set_pattern(self.string.value_of_any_dependency(tcds))
         return self.pattern
@@ -160,5 +160,5 @@ class _RegexDdv(RegexDdv):
     def value_when_no_dir_dependencies(self) -> Pattern:
         return self._validator.pattern_when_no_dir_dependencies()
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> Pattern:
+    def value_of_any_dependency(self, tcds: Tcds) -> Pattern:
         return self._validator.pattern_of_any_dependency(tcds)

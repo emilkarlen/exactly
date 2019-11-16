@@ -233,7 +233,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
 
     def _get_matcher(self, environment: InstructionEnvironmentForPostSdsStep) -> StringMatcher:
         matcher_resolver = lookups.lookup_string_matcher(environment.symbols, self.matcher_symbol_name)
-        return matcher_resolver.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        return matcher_resolver.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
 
     def _new_model(self, environment: InstructionEnvironmentForPostSdsStep) -> FileToCheck:
         model_builder = model_construction.model_of(self.actual_model_contents)

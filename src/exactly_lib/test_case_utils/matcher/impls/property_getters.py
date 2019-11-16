@@ -1,7 +1,7 @@
 from typing import Generic, Sequence, TypeVar, Optional
 
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterValue, \
     PropertyGetterResolver
 from exactly_lib.test_case_utils.matcher.property_matcher import MODEL
@@ -18,7 +18,7 @@ class PropertyGetterValueConstant(Generic[MODEL, T], PropertyGetterValue[MODEL, 
     def name(self) -> Optional[str]:
         return self._constant.name
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> PropertyGetter[MODEL, T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> PropertyGetter[MODEL, T]:
         return self._constant
 
 

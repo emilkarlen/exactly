@@ -23,7 +23,7 @@ from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
-from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators as home_or_sds_pop
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as home_or_sds_pop
 from exactly_lib_test.test_case_utils.test_resources import relativity_options, \
     pre_or_post_sds_validator as validator_util, parse_executable_file_executable_cases as utils
 from exactly_lib_test.test_case_utils.test_resources import validation
@@ -36,10 +36,10 @@ from exactly_lib_test.test_resources.arguments_building import CustomOptionArgum
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources.list_ddvs import empty_list_ddv
@@ -149,11 +149,11 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                  source_after_parse=has_remaining_part_of_first_line('"an argument"'),
                  ),
             Case('option_without_tail',
-                 source='%s THE_FILE' % path_texts.REL_HOME_CASE_OPTION,
+                 source='%s THE_FILE' % path_texts.REL_HDS_CASE_OPTION,
                  expectation=
                  ExpectationOnExeFile(
                      argument_resolver_value=empty_list_ddv(),
-                     path_ddv=path_of(RelOptionType.REL_HOME_CASE, 'THE_FILE'),
+                     path_ddv=path_of(RelOptionType.REL_HDS_CASE, 'THE_FILE'),
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
@@ -225,7 +225,7 @@ class TestParseWithSymbols(unittest.TestCase):
 class TestParseInvalidSyntax(unittest.TestCase):
     def test_missing_file_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_from_parse_source(ParseSource(path_texts.REL_HOME_CASE_OPTION))
+            sut.parse_from_parse_source(ParseSource(path_texts.REL_HDS_CASE_OPTION))
 
     def test_invalid_option(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -304,7 +304,7 @@ def configurations() -> Sequence[RelativityConfiguration]:
         for rel_option_type in all_except_rel_result
     ]
     return for_non_default + [
-        RelativityConfiguration(relativity_options.default_conf_rel_any(RelOptionType.REL_HOME_CASE)),
+        RelativityConfiguration(relativity_options.default_conf_rel_any(RelOptionType.REL_HDS_CASE)),
     ]
 
 
@@ -358,7 +358,7 @@ class TestParseAbsolutePath(unittest.TestCase):
         utils.check_exe_file(self, expectation_on_exe_file, exe_file)
         expected_source_after_parse.apply_with_message(self, source, 'parse source')
 
-        with home_and_sds_with_act_as_curr_dir() as environment:
+        with tcds_with_act_as_curr_dir() as environment:
             validator_util.check(self, exe_file.as_command.validator, environment, validator_expectation)
 
 

@@ -3,8 +3,8 @@ from typing import Pattern, Sequence, Set, Optional
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     ConstantPreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver, RegexDdv
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -31,7 +31,7 @@ class RegexConstantDdvTestImpl(RegexDdv):
     def value_when_no_dir_dependencies(self) -> Pattern:
         return self._value
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> Pattern:
+    def value_of_any_dependency(self, tcds: Tcds) -> Pattern:
         return self._value
 
     def validator(self) -> PreOrPostSdsValueValidator:

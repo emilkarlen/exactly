@@ -44,17 +44,17 @@ class TestCaseDefinition:
         return self._predefined_properties
 
 
-def default_conf_phase_configuration__of_home_dir(initial_home_dir_path: pathlib.Path,
-                                                  actor: Actor) -> ConfigurationBuilder:
-    return ConfigurationBuilder(initial_home_dir_path,
-                                initial_home_dir_path,
+def default_conf_phase_configuration__of_hds_dir(initial_hds_dir_path: pathlib.Path,
+                                                 actor: Actor) -> ConfigurationBuilder:
+    return ConfigurationBuilder(initial_hds_dir_path,
+                                initial_hds_dir_path,
                                 actor)
 
 
 def default_conf_phase_configuration__of_file(test_case_file_path: pathlib.Path,
                                               actor: Actor) -> ConfigurationBuilder:
-    return default_conf_phase_configuration__of_home_dir(test_case_file_path.parent.resolve(),
-                                                         actor)
+    return default_conf_phase_configuration__of_hds_dir(test_case_file_path.parent.resolve(),
+                                                        actor)
 
 
 class Configuration:

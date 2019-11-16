@@ -17,7 +17,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.test_resources.symbol_table_check_help import \
@@ -25,8 +25,8 @@ from exactly_lib_test.test_case_utils.test_resources.symbol_table_check_help imp
     get_symbol_table_from_instruction_environment_that_is_first_arg, do_fail_if_symbol_table_does_not_equal
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    sds_2_home_and_sds_assertion
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    sds_2_tcds_assertion
 
 
 def suite() -> unittest.TestSuite:
@@ -50,14 +50,14 @@ class TestCaseBase(utils.TestCaseBase):
 
 
 class TestPopulate(TestCaseBase):
-    def test_populate_non_home(self):
-        populated_dir_contents = DirContents([empty_file('non-home-file.txt')])
+    def test_populate_non_hds(self):
+        populated_dir_contents = DirContents([empty_file('non-hds-file.txt')])
         self._check(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             utils.single_line_source(),
             sut.ArrangementPostAct(
-                non_home_contents=non_home_populator.rel_option(
-                    non_home_populator.RelNonHomeOptionType.REL_TMP,
+                non_hds_contents=non_hds_populator.rel_option(
+                    non_hds_populator.RelNonHdsOptionType.REL_TMP,
                     populated_dir_contents)),
             sut.Expectation(
                 main_side_effects_on_sds=tmp_user_dir_contains_exactly(
@@ -202,7 +202,7 @@ class TestMiscCases(TestCaseBase):
                 utils.single_line_source(),
                 sut.ArrangementPostAct(),
                 Expectation(
-                    main_side_effects_on_home_and_sds=sds_2_home_and_sds_assertion(
+                    main_side_effects_on_tcds=sds_2_tcds_assertion(
                         act_dir_contains_exactly(
                             DirContents([empty_file('non-existing-file.txt')])))),
             )

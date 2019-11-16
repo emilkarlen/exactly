@@ -26,7 +26,7 @@ class _EnvironmentVariableConcept(ConceptDocumentation):
 
             'env_vars__plain': self.name().plural,
             'env_instruction': InstructionName(instruction_names.ENV_VAR_INSTRUCTION_NAME),
-            'tcds_concept': formatting.concept_(concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO),
+            'tcds_concept': formatting.concept_(concepts.TCDS_CONCEPT_INFO),
         })
 
     def purpose(self) -> DescriptionWithSubSections:
@@ -46,9 +46,9 @@ class _EnvironmentVariableConcept(ConceptDocumentation):
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         ret_val = name_and_cross_ref.cross_reference_id_list([
-            concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO,
-            conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO,
-            conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
+            concepts.TCDS_CONCEPT_INFO,
+            conf_params.HDS_CASE_DIRECTORY_CONF_PARAM_INFO,
+            conf_params.HDS_ACT_DIRECTORY_CONF_PARAM_INFO,
         ])
         ret_val += [
             phase_infos.SETUP.instruction_cross_reference_target(instruction_names.ENV_VAR_INSTRUCTION_NAME)

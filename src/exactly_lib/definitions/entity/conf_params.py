@@ -100,9 +100,9 @@ TEST_CASE_STATUS_CONF_PARAM_INFO = _conf_param_info(
     _format('The status of the test case - if it is expected to {PASS} or {FAIL}, or should be skipped.'),
 )
 
-HOME_CASE_DIRECTORY_CONF_PARAM_INFO = _of_tc_dir_info(test_case_file_structure.HDS_CASE_INFO)
+HDS_CASE_DIRECTORY_CONF_PARAM_INFO = _of_tc_dir_info(test_case_file_structure.HDS_CASE_INFO)
 
-HOME_ACT_DIRECTORY_CONF_PARAM_INFO = _of_tc_dir_info(test_case_file_structure.HDS_ACT_INFO)
+HDS_ACT_DIRECTORY_CONF_PARAM_INFO = _of_tc_dir_info(test_case_file_structure.HDS_ACT_INFO)
 
 TIMEOUT_CONF_PARAM_INFO = _conf_param_info(
     'timeout',
@@ -114,7 +114,7 @@ TIMEOUT_CONF_PARAM_INFO = _conf_param_info(
 ALL_CONF_PARAM_INFOS = (
     ACTOR_CONF_PARAM_INFO,
     TEST_CASE_STATUS_CONF_PARAM_INFO,
-    HOME_CASE_DIRECTORY_CONF_PARAM_INFO,
-    HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
+    HDS_CASE_DIRECTORY_CONF_PARAM_INFO,
+    HDS_ACT_DIRECTORY_CONF_PARAM_INFO,
     TIMEOUT_CONF_PARAM_INFO,
 )

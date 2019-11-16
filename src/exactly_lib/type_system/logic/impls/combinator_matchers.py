@@ -4,7 +4,7 @@ from typing import TypeVar, Generic, Sequence, Optional
 from exactly_lib.definitions import expression
 from exactly_lib.test_case.validation import pre_or_post_value_validators
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
@@ -91,7 +91,7 @@ class NegationDdv(Generic[T], MatcherDdv[T]):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._operand.validator
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
         return Negation(self._operand.value_of_any_dependency(tcds))
 
 
@@ -169,7 +169,7 @@ class ConjunctionDdv(Generic[T], MatcherDdv[T]):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
         return Conjunction([operand.value_of_any_dependency(tcds) for operand in self._operands])
 
 
@@ -247,5 +247,5 @@ class DisjunctionDdv(Generic[T], MatcherDdv[T]):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> MatcherWTraceAndNegation[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
         return Disjunction([operand.value_of_any_dependency(tcds) for operand in self._operands])

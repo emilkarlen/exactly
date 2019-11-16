@@ -7,7 +7,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher import file_matcher_ddvs as ddvs
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv
 from exactly_lib.type_system.value_type import ValueType
@@ -109,7 +109,7 @@ class FileMatcherResolverFromParts(FileMatcherResolver):
         self._references = references
 
     def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
-        def get_matcher(tcds: HomeAndSds) -> FileMatcher:
+        def get_matcher(tcds: Tcds) -> FileMatcher:
             environment = PathResolvingEnvironmentPreOrPostSds(tcds, symbols)
             return self._matcher(environment)
 

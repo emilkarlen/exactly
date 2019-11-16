@@ -12,10 +12,10 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def suite() -> unittest.makeSuite:
-    return unittest.makeSuite(TestPropagationOfHomeDirectoryStructureBetweenSteps)
+    return unittest.makeSuite(TestPropagationOfHdsBetweenSteps)
 
 
-class TestPropagationOfHomeDirectoryStructureBetweenSteps(unittest.TestCase):
+class TestPropagationOfHdsBetweenSteps(unittest.TestCase):
     def test(self):
         hds_with_different_sub_dirs = fake_hds()
 

@@ -86,7 +86,7 @@ class _Documentation(SyntaxElementDocumentation):
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return cross_reference_id_list([
-            concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO,
+            concepts.TCDS_CONCEPT_INFO,
             concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
             concepts.SYMBOL_CONCEPT_INFO,
             syntax_elements.STRING_SYNTAX_ELEMENT,
@@ -121,11 +121,11 @@ class _Documentation(SyntaxElementDocumentation):
     def _relativity_options_paragraph(self) -> ParagraphItem:
         return docs.simple_list_with_space_between_elements_and_content([
             docs.list_item(
-                self._options_for_directories_in_the(concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO),
+                self._options_for_directories_in_the(concepts.HDS_CONCEPT_INFO),
                 self._options_for_directories_in_the_hds(),
             ),
             docs.list_item(
-                self._options_for_directories_in_the(concepts.SANDBOX_CONCEPT_INFO),
+                self._options_for_directories_in_the(concepts.SDS_CONCEPT_INFO),
                 self._options_for_directories_in_the_sds(),
             ),
             docs.list_item(

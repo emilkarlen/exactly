@@ -13,8 +13,8 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -31,7 +31,7 @@ from exactly_lib_test.symbol.test_resources import files_matcher
 from exactly_lib_test.symbol.test_resources.files_matcher import FilesMatcherResolverConstantTestImpl, \
     FilesMatcherResolverConstantValueTestImpl
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check as sut
@@ -42,8 +42,8 @@ from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import E
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_sds, \
     RelativityOptionConfigurationForRelSds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    sds_2_home_and_sds_assertion
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    sds_2_tcds_assertion
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -71,15 +71,15 @@ class TestCaseBase(unittest.TestCase):
 
 
 class TestPopulate(TestCaseBase):
-    def test_populate_non_home(self):
+    def test_populate_non_hds(self):
         populated_dir_contents = DirContents([empty_file('non-home-file.txt')])
         self._check(
             PARSER_THAT_GIVES_MATCHER_THAT_MATCHES,
             utils.single_line_source(),
             arbitrary_model(),
             sut.ArrangementPostAct(
-                non_home_contents=non_home_populator.rel_option(
-                    non_home_populator.RelNonHomeOptionType.REL_TMP,
+                non_hds_contents=non_hds_populator.rel_option(
+                    non_hds_populator.RelNonHdsOptionType.REL_TMP,
                     populated_dir_contents)),
             matcher_assertions.Expectation(
                 main_side_effects_on_sds=tmp_user_dir_contains_exactly(
@@ -274,7 +274,7 @@ class TestFailingExpectations(TestCaseBase):
                 arbitrary_model(),
                 sut.ArrangementPostAct(),
                 Expectation(
-                    main_side_effects_on_home_and_sds=sds_2_home_and_sds_assertion(
+                    main_side_effects_on_tcds=sds_2_tcds_assertion(
                         act_dir_contains_exactly(
                             DirContents([empty_file('non-existing-file.txt')])))),
             )
@@ -300,7 +300,7 @@ class _FilesMatcherThatAssertsModelsIsExpected(FilesMatcher):
     def __init__(self,
                  put: unittest.TestCase,
                  relativity: RelativityOptionConfigurationForRelSds,
-                 tcds: HomeAndSds,
+                 tcds: Tcds,
                  ):
         self.put = put
         self.relativity = relativity
@@ -355,7 +355,7 @@ class _FilesMatcherDdvThatAssertsModelsIsExpected(FilesMatcherDdv):
         self.put = put
         self.relativity = relativity
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> FilesMatcherConstructor:
+    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
         return files_matchers.ConstantConstructor(
             _FilesMatcherThatAssertsModelsIsExpected(
                 self.put,

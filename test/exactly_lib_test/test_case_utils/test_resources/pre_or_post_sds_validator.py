@@ -5,7 +5,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds, PathResolvingEnvironment
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case_utils.test_resources.validation import Expectation, ValidationExpectation, \
@@ -98,7 +98,7 @@ class PreOrPostSdsValidatorAssertion(ValueAssertionBase[PreOrPostSdsValidator]):
 class PreOrPostSdsValidationAssertion(ValueAssertionBase[PreOrPostSdsValidator]):
     def __init__(self,
                  symbols: SymbolTable,
-                 tcds: HomeAndSds,
+                 tcds: Tcds,
                  expectation: ValidationExpectation,
                  ):
         self.symbols = symbols

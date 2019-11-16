@@ -5,7 +5,7 @@ from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
@@ -46,7 +46,7 @@ class _Ddv(FileMatcherDdv):
     def __init__(self, glob_pattern: StringDdv):
         self._glob_pattern = glob_pattern
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> FileMatcher:
+    def value_of_any_dependency(self, tcds: Tcds) -> FileMatcher:
         return FileMatcherNameGlobPattern(self._glob_pattern.value_of_any_dependency(tcds))
 
 

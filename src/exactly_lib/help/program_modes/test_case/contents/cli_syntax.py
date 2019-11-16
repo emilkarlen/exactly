@@ -7,7 +7,7 @@ from exactly_lib.cli.program_modes.test_case import argument_parsing
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_items_from_cross_refs
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
-from exactly_lib.definitions.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
+from exactly_lib.definitions.entity.concepts import SDS_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
     PREPROCESSOR_CONCEPT_INFO, ACTOR_CONCEPT_INFO
 from exactly_lib.definitions.test_suite import file_names, instruction_names, section_infos
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
@@ -87,7 +87,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             argument_parsing.TEXT_PARSER.fnap(argument_parsing.KEEPING_SANDBOX_OPTION_DESCRIPTION),
             see_also_items=[
                 CrossReferenceIdSeeAlsoItem(
-                    SANDBOX_CONCEPT_INFO.cross_reference_target),
+                    SDS_CONCEPT_INFO.cross_reference_target),
             ])
 
     def _execute_act_phase_argument(self) -> cli_syntax.DescribedArgument:

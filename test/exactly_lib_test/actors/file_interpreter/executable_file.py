@@ -7,7 +7,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_d
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.actor import ParseException
-from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.util.process_execution.commands import executable_file_command
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
@@ -15,7 +15,7 @@ from exactly_lib_test.actors.file_interpreter import common_tests
 from exactly_lib_test.actors.file_interpreter.configuration import TheConfigurationBase
 from exactly_lib_test.actors.test_resources import act_phase_execution
 from exactly_lib_test.actors.test_resources import \
-    test_validation_for_single_file_rel_home_act as single_file_rel_home
+    test_validation_for_single_file_rel_hds_act as single_file_rel_home
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
     suite_for_execution
 from exactly_lib_test.actors.test_resources.test_validation_for_single_line_source import \
@@ -26,7 +26,7 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     AtcOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
+from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -97,7 +97,7 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
                                   instr([''])]
         executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
-            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, DirContents([
+            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
                 empty_file('quoted file name.src')])),
             atc_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
@@ -125,7 +125,7 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
                                   instr([''])]
         executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
-            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, DirContents([
+            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
                 empty_file('existing-file.src')])),
             atc_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
@@ -156,7 +156,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = act_phase_execution.Arrangement(
-            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
+            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.File(
                     source_file,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
@@ -183,7 +183,7 @@ class TestSymbolUsages(unittest.TestCase):
                                             expectation)
 
 
-def _instructions_for_file_in_home_dir(home_dir_path: pathlib.Path, statements: list) -> list:
+def _instructions_for_file_in_hds_dir(home_dir_path: pathlib.Path, statements: list) -> list:
     with open(str(home_dir_path / 'sut.py'), 'w') as f:
         f.write(lines_content(statements))
     return [instr(['sut.py'])]

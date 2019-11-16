@@ -38,7 +38,7 @@ class DataValueResolver(SymbolValueResolver):
         """
         Short cut for resolving the value_of_any_dependency
         """
-        return self.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        return self.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
 
 
 def get_data_value_type(resolver: DataValueResolver) -> DataValueType:

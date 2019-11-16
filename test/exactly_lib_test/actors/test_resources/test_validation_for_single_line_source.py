@@ -7,8 +7,8 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
@@ -48,7 +48,7 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
                                        home_dir_contents: DirContents = empty_dir_contents()
                                        ):
         with home_directory_structure(
-                contents=case_home_dir_contents(home_dir_contents)) as hds:
+                contents=hds_case_dir_contents(home_dir_contents)) as hds:
             pre_sds_env = InstructionEnvironmentForPreSdsStep(hds,
                                                               {})
             executor = self.actor.parse(instructions)

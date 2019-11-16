@@ -86,7 +86,7 @@ class FileMakerForContentsFromProgram(FileMaker):
 
         program = self._program \
             .resolve(path_resolving_env.symbols) \
-            .value_of_any_dependency(path_resolving_env.home_and_sds)
+            .value_of_any_dependency(path_resolving_env.tcds)
 
         executable = os_services.executable_factory__detect_ex().make(program.command)
         storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
@@ -153,7 +153,7 @@ class FileMakerForContentsFromExistingFile(FileMaker):
 
         transformer = self._transformer \
             .resolve(path_resolving_env.symbols) \
-            .value_of_any_dependency(path_resolving_env.home_and_sds)
+            .value_of_any_dependency(path_resolving_env.tcds)
         src_path = self._src_path.resolve_value_of_any_dependency(path_resolving_env)
 
         return create_file_from_transformation_of_existing_file__dp(src_path,

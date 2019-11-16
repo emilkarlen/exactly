@@ -22,11 +22,11 @@ def _builtin(variable_name: str, relativity: RelOptionType) -> BuiltinSymbol:
                          SectionContents([]))
 
 
-SYMBOL_HOME_CASE = _builtin(environment_variables.ENV_VAR_HOME_CASE,
-                            RelOptionType.REL_HOME_CASE)
+SYMBOL_HDS_CASE = _builtin(environment_variables.ENV_VAR_HDS_CASE,
+                           RelOptionType.REL_HDS_CASE)
 
-SYMBOL_HOME_ACT = _builtin(environment_variables.ENV_VAR_HOME_ACT,
-                           RelOptionType.REL_HOME_ACT)
+SYMBOL_HDS_ACT = _builtin(environment_variables.ENV_VAR_HDS_ACT,
+                          RelOptionType.REL_HDS_ACT)
 
 SYMBOL_ACT = _builtin(environment_variables.ENV_VAR_ACT,
                       RelOptionType.REL_ACT)
@@ -38,8 +38,8 @@ SYMBOL_RESULT = _builtin(environment_variables.ENV_VAR_RESULT,
                          RelOptionType.REL_RESULT)
 
 ALL = (
-    SYMBOL_HOME_CASE,
-    SYMBOL_HOME_ACT,
+    SYMBOL_HDS_CASE,
+    SYMBOL_HDS_ACT,
     SYMBOL_ACT,
     SYMBOL_TMP,
     SYMBOL_RESULT,

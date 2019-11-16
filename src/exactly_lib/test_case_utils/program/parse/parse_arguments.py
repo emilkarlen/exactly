@@ -16,7 +16,7 @@ from exactly_lib.util.parse import token_matchers
 
 REL_OPTIONS_CONF = rel_opts_configuration.RelOptionsConfiguration(
     rel_opts_configuration.RELATIVITY_VARIANTS_FOR_ALL_EXCEPT_RESULT,
-    RelOptionType.REL_HOME_CASE)
+    RelOptionType.REL_HDS_CASE)
 
 REL_OPT_ARG_CONF = RelOptionArgumentConfiguration(REL_OPTIONS_CONF,
                                                   syntax_elements.ARGUMENT_SYNTAX_ELEMENT_NAME.name,

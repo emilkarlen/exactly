@@ -28,7 +28,7 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
     SymbolsConfiguration, conf_rel_sds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
     MkSubDirAndMakeItCurrentDirectory
 
 SOME_ACCEPTED_REL_OPT_CONFIGURATIONS = [
@@ -76,7 +76,7 @@ class MatcherChecker:
                 model,
                 ArrangementPostAct(
                     pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
-                    home_or_sds_contents=root_dir_of_dir_contents.populator_for_relativity_option_root(
+                    tcds_contents=root_dir_of_dir_contents.populator_for_relativity_option_root(
                         contents_of_relativity_option_root
                     ),
                     symbols=_symbol_table_of(root_dir_of_dir_contents.symbols,

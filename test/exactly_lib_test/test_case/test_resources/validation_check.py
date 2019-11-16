@@ -3,19 +3,19 @@ import unittest
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
+from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationResultAssertion
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 class Arrangement:
     def __init__(self,
-                 dir_contents: HomeOrSdsPopulator = home_and_sds_populators.empty,
+                 dir_contents: TcdsPopulator = tcds_populators.empty,
                  symbols: SymbolTable = None):
         self.dir_contents = dir_contents
         self.symbols = symbols
@@ -35,7 +35,7 @@ def is_success() -> Expectation:
 
 
 def fails_on(step: DirectoryStructurePartition) -> Expectation:
-    if step is DirectoryStructurePartition.HOME:
+    if step is DirectoryStructurePartition.HDS:
         return fails_pre_sds()
     else:
         return fails_post_sds()
@@ -59,7 +59,7 @@ def assert_with_files(arrangement: Arrangement,
 class ValidationCase:
     def __init__(self,
                  name: str,
-                 dir_contents_before_validation: HomeOrSdsPopulator,
+                 dir_contents_before_validation: TcdsPopulator,
                  expectation: Expectation):
         self.name = name
         self.dir_contents_before_validation = dir_contents_before_validation
@@ -85,8 +85,8 @@ def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation,
           message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-    with home_and_sds_with_act_as_curr_dir(
-            home_or_sds_contents=arrangement.dir_contents,
+    with tcds_with_act_as_curr_dir(
+            tcds_contents=arrangement.dir_contents,
             symbols=arrangement.symbols) as path_resolving_environment:
         actual_validation_result = actual.validate_pre_sds_if_applicable(path_resolving_environment)
         expectation.pre_sds.apply(put,

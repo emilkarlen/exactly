@@ -6,14 +6,14 @@ from typing import Callable
 
 from exactly_lib.test_case_file_structure import relative_path_options as rpo
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition, RelOptionType, \
-    RESOLVING_DEPENDENCY_OF, RelHomeOptionType, RelSdsOptionType
+    RESOLVING_DEPENDENCY_OF, RelHdsOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.type_system.data import paths as sut
 from exactly_lib.type_system.data.concrete_path_parts import PathPartDdvAsFixedPath
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.path_part import PathPartDdv
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.test_utils import NEA
@@ -21,35 +21,35 @@ from exactly_lib_test.test_resources.test_utils import NEA
 
 def suite() -> unittest.TestSuite:
     configs_for_constant_rel_option_type = [
-        _RelativityConfig(sut.rel_home_case,
-                          DirectoryStructurePartition.HOME,
-                          lambda home_and_sds: home_and_sds.hds.case_dir),
-        _RelativityConfig(sut.rel_home_act,
-                          DirectoryStructurePartition.HOME,
-                          lambda home_and_sds: home_and_sds.hds.act_dir),
-        _RelativityConfig(functools.partial(sut.rel_home, RelHomeOptionType.REL_HOME_CASE),
-                          DirectoryStructurePartition.HOME,
-                          lambda home_and_sds: home_and_sds.hds.case_dir,
-                          function_name='sut.rel_home(RelHomeOptionType.REL_HOME_CASE, PATH_SUFFIX)'),
-        _RelativityConfig(functools.partial(sut.rel_home, RelHomeOptionType.REL_HOME_ACT),
-                          DirectoryStructurePartition.HOME,
-                          lambda home_and_sds: home_and_sds.hds.act_dir,
-                          function_name='sut.rel_home(RelHomeOptionType.REL_HOME_ACT, PATH_SUFFIX)'),
-        _RelativityConfig(sut.rel_home_act,
-                          DirectoryStructurePartition.HOME,
-                          lambda home_and_sds: home_and_sds.hds.act_dir),
+        _RelativityConfig(sut.rel_hds_case,
+                          DirectoryStructurePartition.HDS,
+                          lambda tcds: tcds.hds.case_dir),
+        _RelativityConfig(sut.rel_hds_act,
+                          DirectoryStructurePartition.HDS,
+                          lambda tcds: tcds.hds.act_dir),
+        _RelativityConfig(functools.partial(sut.rel_hds, RelHdsOptionType.REL_HDS_CASE),
+                          DirectoryStructurePartition.HDS,
+                          lambda tcds: tcds.hds.case_dir,
+                          function_name='sut.rel_home(RelHomeOptionType.REL_HDS_CASE, PATH_SUFFIX)'),
+        _RelativityConfig(functools.partial(sut.rel_hds, RelHdsOptionType.REL_HDS_ACT),
+                          DirectoryStructurePartition.HDS,
+                          lambda tcds: tcds.hds.act_dir,
+                          function_name='sut.rel_home(RelHomeOptionType.REL_HDS_ACT, PATH_SUFFIX)'),
+        _RelativityConfig(sut.rel_hds_act,
+                          DirectoryStructurePartition.HDS,
+                          lambda tcds: tcds.hds.act_dir),
         _RelativityConfig(sut.rel_tmp_user,
-                          DirectoryStructurePartition.NON_HOME,
-                          lambda home_and_sds: home_and_sds.sds.user_tmp_dir),
+                          DirectoryStructurePartition.NON_HDS,
+                          lambda tcds: tcds.sds.user_tmp_dir),
         _RelativityConfig(sut.rel_act,
-                          DirectoryStructurePartition.NON_HOME,
-                          lambda home_and_sds: home_and_sds.sds.act_dir),
+                          DirectoryStructurePartition.NON_HDS,
+                          lambda tcds: tcds.sds.act_dir),
         _RelativityConfig(sut.rel_result,
-                          DirectoryStructurePartition.NON_HOME,
-                          lambda home_and_sds: home_and_sds.sds.result.root_dir),
+                          DirectoryStructurePartition.NON_HDS,
+                          lambda tcds: tcds.sds.result.root_dir),
         _RelativityConfig(sut.rel_cwd,
-                          DirectoryStructurePartition.NON_HOME,
-                          lambda home_and_sds: pathlib.Path().resolve()),
+                          DirectoryStructurePartition.NON_HDS,
+                          lambda tcds: pathlib.Path().resolve()),
     ]
     all_configs = configs_for_constant_rel_option_type + configs_for_rel_option_argument()
     ret_val = unittest.TestSuite()
@@ -63,11 +63,11 @@ def configs_for_rel_option_argument() -> list:
     ret_val = []
 
     for rel_option_type in RelOptionType:
-        home_and_sds_2_relativity_root = REL_OPTIONS_MAP[rel_option_type].root_resolver.from_home_and_sds
+        tcds_2_relativity_root = REL_OPTIONS_MAP[rel_option_type].root_resolver.from_tcds
         resolving_dependency = RESOLVING_DEPENDENCY_OF[rel_option_type]
         ret_val.append(_RelativityConfig(_of_rel_option__path_suffix_2_path(rel_option_type),
                                          resolving_dependency,
-                                         home_and_sds_2_relativity_root,
+                                         tcds_2_relativity_root,
                                          function_name=sut.of_rel_option.__name__,
                                          rel_option_type_for_doc=str(rel_option_type)))
     return ret_val
@@ -84,12 +84,12 @@ class _RelativityConfig:
     def __init__(self,
                  path_suffix_2_path: Callable[[PathPartDdv], PathDdv],
                  resolving_dependency: DirectoryStructurePartition,
-                 home_and_sds_2_relativity_root: types.FunctionType,
+                 tcds_2_relativity_root: types.FunctionType,
                  function_name: str = '',
                  rel_option_type_for_doc: str = ''):
         self.path_suffix_2_path = path_suffix_2_path
         self.resolving_dependency = resolving_dependency
-        self.home_and_sds_2_relativity_root = home_and_sds_2_relativity_root
+        self.tcds_2_relativity_root = tcds_2_relativity_root
         self.function_name = function_name
         if not function_name:
             self.function_name = path_suffix_2_path.__name__
@@ -97,7 +97,7 @@ class _RelativityConfig:
 
     @property
     def exists_pre_sds(self) -> bool:
-        return self.resolving_dependency is not DirectoryStructurePartition.NON_HOME
+        return self.resolving_dependency is not DirectoryStructurePartition.NON_HDS
 
     def __str__(self):
         return '_RelativityConfig(function_name={}, resolving_dependency={}, rel_option_type={})'.format(
@@ -169,7 +169,7 @@ class TestFilePath(TestForFixedRelativityBase):
              'file.txt'
              ),
         ]
-        home_and_sds = fake_home_and_sds()
+        tcds = fake_tcds()
         for path_suffix, symbol_table, expected_path_suffix in test_cases:
             with self.subTest():
                 path = self.config.path_suffix_2_path(path_suffix)
@@ -181,13 +181,13 @@ class TestFilePath(TestForFixedRelativityBase):
 
                 elif self.config.exists_pre_sds:
                     tested_path_msg = 'file_path_pre_sds'
-                    actual_path = path.value_pre_sds(home_and_sds.hds)
+                    actual_path = path.value_pre_sds(tcds.hds)
                 else:
                     tested_path_msg = 'file_path_post_sds'
-                    actual_path = path.value_post_sds(home_and_sds.sds)
-                actual_path_pre_or_post_sds = path.value_of_any_dependency(home_and_sds)
+                    actual_path = path.value_post_sds(tcds.sds)
+                actual_path_pre_or_post_sds = path.value_of_any_dependency(tcds)
                 # ASSERT #
-                expected_relativity_root = self.config.home_and_sds_2_relativity_root(home_and_sds)
+                expected_relativity_root = self.config.tcds_2_relativity_root(tcds)
                 expected_path = expected_relativity_root / expected_path_suffix
                 self.assertEqual(str(expected_path),
                                  str(actual_path),
@@ -204,15 +204,15 @@ class TestDescription(unittest.TestCase):
         path_part_component = 'path-part'
         cases = [
             NEA('rel-hds wo path suffix',
-                expected=rpo.REL_HDS_OPTIONS_MAP[RelHomeOptionType.REL_HOME_CASE].directory_variable_sym_ref,
-                actual=sut.of_rel_option(sut.RelOptionType.REL_HOME_CASE,
+                expected=rpo.REL_HDS_OPTIONS_MAP[RelHdsOptionType.REL_HDS_CASE].directory_variable_sym_ref,
+                actual=sut.of_rel_option(sut.RelOptionType.REL_HDS_CASE,
                                          sut.PathPartDdvAsNothing()),
                 ),
             NEA('rel-hds w path suffix',
                 expected=
                 str(pathlib.Path(rpo.REL_HDS_OPTIONS_MAP[
-                                     RelHomeOptionType.REL_HOME_CASE].directory_variable_sym_ref) / path_part_component),
-                actual=sut.of_rel_option(sut.RelOptionType.REL_HOME_CASE,
+                                     RelHdsOptionType.REL_HDS_CASE].directory_variable_sym_ref) / path_part_component),
+                actual=sut.of_rel_option(sut.RelOptionType.REL_HDS_CASE,
                                          PathPartDdvAsFixedPath(path_part_component)),
                 ),
             NEA('rel-sds',

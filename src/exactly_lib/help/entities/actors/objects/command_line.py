@@ -47,7 +47,7 @@ class CommandLineActorDocumentation(ActorDocumentation):
 
     def _see_also_specific(self) -> List[SeeAlsoTarget]:
         return cross_reference_id_list([
-            conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
+            conf_params.HDS_ACT_DIRECTORY_CONF_PARAM_INFO,
             concepts.SHELL_SYNTAX_CONCEPT_INFO,
         ])
 

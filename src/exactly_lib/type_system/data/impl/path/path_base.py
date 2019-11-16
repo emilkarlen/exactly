@@ -3,11 +3,11 @@ from abc import ABC
 from typing import Optional
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencyError
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity, specific_relative_relativity, \
     RelOptionType, RESOLVING_DEPENDENCY_OF, DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.impl.path import described_w_handler
 from exactly_lib.type_system.data.impl.path import describer_handlers
 from exactly_lib.type_system.data.impl.path.described_w_handler import PathDescriberHandlerForValue
@@ -41,7 +41,7 @@ class PathDdvWithDescriptionBase(PathDdv, ABC):
             self._describer_handler().value_post_sds__wo_hds(primitive, sds),
         )
 
-    def value_of_any_dependency__d(self, tcds: HomeAndSds) -> DescribedPathPrimitive:
+    def value_of_any_dependency__d(self, tcds: Tcds) -> DescribedPathPrimitive:
         primitive = self.value_of_any_dependency(tcds)
         return described_w_handler.DescribedPathPrimitiveWHandler(
             primitive,

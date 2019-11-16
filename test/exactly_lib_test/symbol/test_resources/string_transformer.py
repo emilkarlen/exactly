@@ -4,7 +4,7 @@ from exactly_lib.symbol.logic.string_transformer import StringTransformerResolve
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     constant_success_validator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
     StringTransformerModel
 from exactly_lib.type_system.logic.string_transformer_ddvs import StringTransformerConstantDdv
@@ -69,7 +69,7 @@ class StringTransformerDdvTestImpl(StringTransformerDdv):
     def validator(self) -> PreOrPostSdsValueValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringTransformer:
+    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformer:
         return self._primitive_value
 
 

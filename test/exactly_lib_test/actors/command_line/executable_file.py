@@ -7,14 +7,14 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_d
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType
 from exactly_lib.test_case_utils.parse.parse_path import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.actors.test_resources import \
-    test_validation_for_single_file_rel_home_act as single_file_rel_home
+    test_validation_for_single_file_rel_hds_act as single_file_rel_home
 from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
@@ -25,7 +25,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
+from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing_lines
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -45,7 +45,7 @@ def suite() -> unittest.TestSuite:
 
     ret_val.addTest(unittest.makeSuite(TestValidationErrorPreSds))
     ret_val.addTest(single_file_rel_home.suite_for(configuration))
-    ret_val.addTest(unittest.makeSuite(TestSuccessfulExecutionOfProgramRelHomeActWithCommandLineArguments))
+    ret_val.addTest(unittest.makeSuite(TestSuccessfulExecutionOfProgramRelHdsActWithCommandLineArguments))
     ret_val.addTest(unittest.makeSuite(TestSymbolUsages))
     ret_val.addTest(suite_for_execution(configuration))
     return ret_val
@@ -118,7 +118,7 @@ class TestValidationErrorPreSds(unittest.TestCase):
             instr([executable_file_name])
         ]
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT,
+            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT,
                                      fs.DirContents([fs.empty_file(executable_file_name)]))
         )
         expectation = Expectation(
@@ -131,14 +131,14 @@ class TestValidationErrorPreSds(unittest.TestCase):
                         expectation)
 
 
-class TestSuccessfulExecutionOfProgramRelHomeActWithCommandLineArguments(unittest.TestCase):
+class TestSuccessfulExecutionOfProgramRelHdsActWithCommandLineArguments(unittest.TestCase):
     def runTest(self):
         executor_constructor = sut.Parser()
         act_phase_instructions = [
             instr(['system-under-test first-argument "quoted argument"'])
         ]
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
+            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.python_executable_file(
                     'system-under-test',
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
@@ -173,7 +173,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
+            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.python_executable_file(
                     executable,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
@@ -212,7 +212,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
+            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.python_executable_file(
                     executable,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
@@ -249,7 +249,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
+            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.python_executable_file(
                     symbol_for_executable.value,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
@@ -289,7 +289,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
+            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.python_executable_file(
                     symbol_for_executable.value,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
@@ -321,7 +321,7 @@ class TestSymbolUsages(unittest.TestCase):
     def test_multiple_symbol_references_in_executable(self):
         sub_dir_of_home = 'sub-dir'
         dir_symbol = NameAndValue('dir_symbol_name',
-                                  paths.rel_home_act(paths.constant_path_part(sub_dir_of_home)))
+                                  paths.rel_hds_act(paths.constant_path_part(sub_dir_of_home)))
 
         executable_file_name_symbol = NameAndValue('executable_file_name_symbol_name',
                                                    'the-executable-file')
@@ -341,7 +341,7 @@ class TestSymbolUsages(unittest.TestCase):
             PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
 
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
+            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.Dir(sub_dir_of_home, [executable_file])
             ])),
             symbol_table=SymbolTable({
@@ -384,7 +384,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
+            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.python_executable_file(
                     executable_file_name,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)

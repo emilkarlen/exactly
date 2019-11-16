@@ -104,7 +104,7 @@ class TestValidateAndResolve(unittest.TestCase):
                     the_instruction_environment.path_resolving_environment_pre_or_post_sds)
 
                 actual_value = resolver_to_check.resolve(the_instruction_environment.symbols)
-                actual = actual_value.value_of_any_dependency(the_instruction_environment.home_and_sds)
+                actual = actual_value.value_of_any_dependency(the_instruction_environment.tcds)
 
                 # ASSERT #
 

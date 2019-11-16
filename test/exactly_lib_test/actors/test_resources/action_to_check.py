@@ -10,19 +10,19 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHdsOptionType
 from exactly_lib.util.simple_textstruct.file_printer_output import to_string
 from exactly_lib_test.actors.test_resources import act_phase_execution
 from exactly_lib_test.actors.test_resources.act_phase_execution import \
     assert_is_list_of_act_phase_instructions, ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode
 from exactly_lib_test.execution.test_resources import eh_assertions
-from exactly_lib_test.test_case_file_structure.test_resources import home_populators
+from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, empty_dir_contents
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.process import capture_process_executor_result
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
 
 
 class TestCaseSourceSetup:
@@ -278,8 +278,8 @@ class TestTimeoutValueIsUsed(unittest.TestCase):
     def runTest(self):
         with self.configuration.program_that_sleeps_at_least(5) as test_case_setup:
             arrangement = act_phase_execution.Arrangement(
-                hds_contents=home_populators.contents_in(RelHomeOptionType.REL_HOME_ACT,
-                                                         test_case_setup.home_act_dir_contents),
+                hds_contents=hds_populators.contents_in(RelHdsOptionType.REL_HDS_ACT,
+                                                        test_case_setup.home_act_dir_contents),
                 timeout_in_seconds=1)
             expectation = act_phase_execution.Expectation(result_of_execute=eh_assertions.is_hard_error)
             act_phase_execution.check_execution(self,

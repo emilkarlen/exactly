@@ -58,7 +58,7 @@ class DefaultActorConfShouldSucceedWhenActPhaseIsJustSpaceOrComments(SetupWithou
         ])
 
 
-class DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHome(
+class DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHds(
     SetupWithoutPreprocessorAndDefaultActor):
     def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
@@ -93,7 +93,7 @@ TESTS = [
     DefaultActorConfShouldSucceedWhenActPhaseIsEmpty(),
     DefaultActorConfShouldSucceedWhenActPhaseIsJustSpace(),
     DefaultActorConfShouldSucceedWhenActPhaseIsJustSpaceOrComments(),
-    DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHome(),
+    DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHds(),
     DefaultActorConfShouldFailWhenActPhaseIsMultipleCommandLines(),
 ]
 

@@ -1,9 +1,9 @@
 from typing import Callable
 
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib_test.test_case.test_resources.arrangements import ActResultProducer
 
 
-class ActResultProducerFromHomeAndSds2Str(ActResultProducer):
-    def __init__(self, home_and_sds_2_str: Callable[[HomeAndSds], str]):
-        self.home_and_sds_2_str = home_and_sds_2_str
+class ActResultProducerFromTcds2Str(ActResultProducer):
+    def __init__(self, tcds_2_str: Callable[[Tcds], str]):
+        self.tcds_2_str = tcds_2_str

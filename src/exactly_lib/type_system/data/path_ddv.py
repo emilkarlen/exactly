@@ -4,11 +4,11 @@ from pathlib import Path
 from typing import Optional, Set
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import Max1DependencyDdv
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity, RESOLVING_DEPENDENCY_OF, \
     DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.path_describer import PathDescriberForDdv, PathDescriberForPrimitive
 from exactly_lib.type_system.data.path_part import PathPartDdv
 
@@ -54,7 +54,7 @@ class PathDdv(Max1DependencyDdv[pathlib.Path], ABC):
         raise NotImplementedError()
 
     def exists_pre_sds(self) -> bool:
-        return self.resolving_dependency() is not DirectoryStructurePartition.NON_HOME
+        return self.resolving_dependency() is not DirectoryStructurePartition.NON_HDS
 
     def resolving_dependency(self) -> Optional[DirectoryStructurePartition]:
         relativity = self.relativity()
@@ -95,5 +95,5 @@ class PathDdv(Max1DependencyDdv[pathlib.Path], ABC):
         pass
 
     @abstractmethod
-    def value_of_any_dependency__d(self, tcds: HomeAndSds) -> DescribedPathPrimitive:
+    def value_of_any_dependency__d(self, tcds: Tcds) -> DescribedPathPrimitive:
         pass

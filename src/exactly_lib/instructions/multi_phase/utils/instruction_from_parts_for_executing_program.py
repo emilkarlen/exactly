@@ -40,7 +40,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
         command = self._program \
             .resolve(path_resolving_env.symbols) \
             .command \
-            .value_of_any_dependency(path_resolving_env.home_and_sds)
+            .value_of_any_dependency(path_resolving_env.tcds)
         executable = os_services.executable_factory__detect_ex().make(command)
         executor = spe.ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         storage_dir = instruction_log_dir(logging_paths, self.source_info)

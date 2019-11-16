@@ -103,11 +103,11 @@ class TestPathRelativityRestriction(unittest.TestCase):
         # ARRANGE #
         test_cases = [
             path_resolvers.constant(path_test_impl(relativity=RelOptionType.REL_ACT)),
-            path_resolvers.constant(path_test_impl(relativity=RelOptionType.REL_HOME_CASE)),
+            path_resolvers.constant(path_test_impl(relativity=RelOptionType.REL_HDS_CASE)),
         ]
         restriction = vr.PathRelativityRestriction(
             PathRelativityVariants(
-                {RelOptionType.REL_ACT, RelOptionType.REL_HOME_CASE, RelOptionType.REL_RESULT},
+                {RelOptionType.REL_ACT, RelOptionType.REL_HDS_CASE, RelOptionType.REL_RESULT},
                 False))
         symbols = empty_symbol_table()
         for value in test_cases:
@@ -122,7 +122,7 @@ class TestPathRelativityRestriction(unittest.TestCase):
         # ARRANGE #
         test_cases = [
             path_resolvers.constant(path_test_impl(relativity=RelOptionType.REL_ACT)),
-            path_resolvers.constant(path_test_impl(relativity=RelOptionType.REL_HOME_CASE)),
+            path_resolvers.constant(path_test_impl(relativity=RelOptionType.REL_HDS_CASE)),
         ]
         restriction = vr.PathRelativityRestriction(
             PathRelativityVariants(
@@ -213,7 +213,7 @@ class _VisitorThatRegisterClassOfVisitMethod(vr.ValueRestrictionVisitor):
 
 def path_constant_resolver() -> PathResolver:
     return path_resolvers.constant(path_test_impl('file-name-rel-home',
-                                                  relativity=RelOptionType.REL_HOME_CASE))
+                                                  relativity=RelOptionType.REL_HDS_CASE))
 
 
 class UnknownValueRestriction(ValueRestriction):

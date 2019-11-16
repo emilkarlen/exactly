@@ -8,7 +8,7 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType, \
-    PathRelativityVariants, RelHomeOptionType
+    PathRelativityVariants, RelHdsOptionType
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.file_properties import FileType
@@ -45,7 +45,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import R
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, Link, \
     empty_dir_contents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
     MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -523,7 +523,7 @@ class TestCheckForSymLink(TestCaseBase):
 
 EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(
     {RelOptionType.REL_CWD,
-     RelOptionType.REL_HOME_ACT,
+     RelOptionType.REL_HDS_ACT,
      RelOptionType.REL_ACT,
      RelOptionType.REL_TMP},
     True)
@@ -539,7 +539,7 @@ ACCEPTED_REL_OPT_CONFIGURATIONS = (
 )
 
 UNACCEPTED_REL_OPT_CONFIGURATIONS = [
-    rel_opt_conf.conf_rel_home(RelHomeOptionType.REL_HOME_CASE),
+    rel_opt_conf.conf_rel_hds(RelHdsOptionType.REL_HDS_CASE),
     rel_opt_conf.conf_rel_sds(RelSdsOptionType.REL_RESULT),
 ]
 

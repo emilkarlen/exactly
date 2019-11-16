@@ -51,6 +51,6 @@ PATH_DOCUMENTATION = TypeDocumentation(TypeCategory.DATA,
                                                            path_type_path_rendering()
                                                        ]),
                                        [
-                                           concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
+                                           concepts.TCDS_CONCEPT_INFO.cross_reference_target,
                                        ]
                                        )

@@ -59,7 +59,7 @@ def pre_or_post_sds_failure_message_or_none(path_check: PathCheck,
                                             ) -> Optional[TextRenderer]:
     described_path = (
         path_check.path_resolver.resolve(environment.symbols)
-            .value_of_any_dependency__d(environment.home_and_sds)
+            .value_of_any_dependency__d(environment.tcds)
     )
 
     return failure_message_or_none(path_check.file_properties,

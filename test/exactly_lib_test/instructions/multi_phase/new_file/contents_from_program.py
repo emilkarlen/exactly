@@ -39,7 +39,7 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
-    non_home_dir_contains_exactly, dir_contains_exactly
+    non_hds_dir_contains_exactly, dir_contains_exactly
 from exactly_lib_test.test_case_utils.parse.parse_path import path_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
@@ -54,7 +54,7 @@ from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions as f_asrt
@@ -235,10 +235,10 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
                         ),
                         Expectation(
                             main_result=IS_SUCCESS,
-                            side_effects_on_home=f_asrt.dir_is_empty(),
+                            side_effects_on_hds=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.matches_sequence(expected_symbol_references),
-                            main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
-                                                                                   fs.DirContents([expected_file])),
+                            main_side_effects_on_sds=non_hds_dir_contains_exactly(rel_opt_conf.root_dir__non_hds,
+                                                                                  fs.DirContents([expected_file])),
                         ))
 
 
@@ -311,7 +311,7 @@ class TestSuccessfulScenariosWithDifferentSourceVariants(TestCaseBase):
                         ),
                         Expectation(
                             main_result=IS_SUCCESS,
-                            side_effects_on_home=f_asrt.dir_is_empty(),
+                            side_effects_on_hds=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.matches_sequence([
                                 is_reference_to_string_transformer(to_upper_transformer.name),
                             ]),
@@ -324,13 +324,13 @@ class TestSuccessfulScenariosWithDifferentSourceVariants(TestCaseBase):
 class TestFailingValidation(TestCaseBase):
     def test_validation_of_non_existing_file_pre_sds_fails(self):
         # ARRANGE #
-        program_with_ref_to_file_in_home_ds = pgm_args.program(
+        program_with_ref_to_file_in_hds_ds = pgm_args.program(
             pgm_args.interpret_py_source_file(ab.path_rel_opt('non-existing-file',
-                                                              RelOptionType.REL_HOME_CASE))
+                                                              RelOptionType.REL_HDS_CASE))
         )
         complete_arguments = instr_args.from_program('dst-file.txt',
                                                      ProcOutputFile.STDOUT,
-                                                     program_with_ref_to_file_in_home_ds)
+                                                     program_with_ref_to_file_in_hds_ds)
         # ACT & ASSERT #
         self._check(complete_arguments.as_remaining_source,
                     ArrangementWithSds(),
@@ -338,13 +338,13 @@ class TestFailingValidation(TestCaseBase):
 
     def test_validation_of_non_existing_file_post_sds_fails(self):
         # ARRANGE #
-        program_with_ref_to_file_in_home_ds = pgm_args.program(
+        program_with_ref_to_file_in_hds_ds = pgm_args.program(
             pgm_args.interpret_py_source_file(ab.path_rel_opt('non-existing-file',
                                                               RelOptionType.REL_ACT))
         )
         complete_arguments = instr_args.from_program('dst-file.txt',
                                                      ProcOutputFile.STDOUT,
-                                                     program_with_ref_to_file_in_home_ds)
+                                                     program_with_ref_to_file_in_hds_ds)
         # ACT & ASSERT #
         self._check(complete_arguments.as_remaining_source,
                     ArrangementWithSds(),

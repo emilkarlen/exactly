@@ -9,7 +9,7 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForPrimitivePath
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv, FileMatcherModel
@@ -23,8 +23,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_util
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import ddv_assertions as asrt_file_matcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.model_construction import ModelConstructor
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
@@ -68,16 +68,16 @@ class Executor:
                                                           resolver.references,
                                                           'symbol-usages after parse')
 
-        with home_and_sds_with_act_as_curr_dir(
+        with tcds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 hds_contents=self.arrangement.hds_contents,
                 sds_contents=self.arrangement.sds_contents,
-                non_home_contents=self.arrangement.non_home_contents,
-                home_or_sds_contents=self.arrangement.home_or_sds_contents,
+                non_hds_contents=self.arrangement.non_hds_contents,
+                tcds_contents=self.arrangement.tcds_contents,
                 symbols=self.arrangement.symbols) as path_resolving_environment:
 
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
-            tcds = path_resolving_environment.home_and_sds
+            tcds = path_resolving_environment.tcds
 
             environment = PathResolvingEnvironmentPreOrPostSds(
                 tcds,
@@ -112,7 +112,7 @@ class Executor:
             self._execute_main(tcds, matcher)
 
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
-            self.expectation.main_side_effects_on_home_and_sds.apply(self.put, tcds)
+            self.expectation.main_side_effects_on_tcds.apply(self.put, tcds)
             self.expectation.symbol_usages.apply_with_message(self.put,
                                                               resolver.references,
                                                               'symbol-usages after ' +
@@ -150,7 +150,7 @@ class Executor:
     def _resolve_primitive(ddv: FileMatcherDdv,
                            environment: PathResolvingEnvironmentPreOrPostSds) -> FileMatcher:
 
-        matcher = ddv.value_of_any_dependency(environment.home_and_sds)
+        matcher = ddv.value_of_any_dependency(environment.tcds)
         assert isinstance(matcher, FileMatcher)
 
         return matcher
@@ -166,13 +166,13 @@ class Executor:
     def _execute_validate_post_setup(self,
                                      environment: PathResolvingEnvironmentPreOrPostSds,
                                      ddv: FileMatcherDdv) -> Optional[TextRenderer]:
-        result = ddv.validator().validate_post_sds_if_applicable(environment.home_and_sds)
+        result = ddv.validator().validate_post_sds_if_applicable(environment.tcds)
         self.expectation.validation_post_sds.apply(self.put, result,
                                                    asrt.MessageBuilder('result of validate/post setup'))
         return result
 
     def _execute_main(self,
-                      tcds: HomeAndSds,
+                      tcds: Tcds,
                       matcher: FileMatcher):
         model = self._new_model(tcds)
         try:
@@ -212,7 +212,7 @@ class Executor:
         else:
             self.put.fail('Unexpected HARD_ERROR')
 
-    def _new_model(self, tcds: HomeAndSds) -> FileMatcherModel:
+    def _new_model(self, tcds: Tcds) -> FileMatcherModel:
         return FileMatcherModelForPrimitivePath(
             TmpDirFileSpaceAsDirCreatedOnDemand(tcds.sds.internal_tmp_dir),
             self.model_constructor(tcds)

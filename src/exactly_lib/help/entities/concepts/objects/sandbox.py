@@ -28,7 +28,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 class _SandboxConcept(ConceptDocumentation):
     def __init__(self):
-        super().__init__(concepts.SANDBOX_CONCEPT_INFO)
+        super().__init__(concepts.SDS_CONCEPT_INFO)
 
         self._tp = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
@@ -50,7 +50,7 @@ class _SandboxConcept(ConceptDocumentation):
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
-            concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
+            concepts.TCDS_CONCEPT_INFO.cross_reference_target,
             concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
             types.PATH_TYPE_INFO.cross_reference_target,

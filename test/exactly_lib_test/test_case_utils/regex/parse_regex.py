@@ -8,8 +8,8 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.data import string_resolvers, path_resolvers
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex import parse_regex as sut
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver
@@ -20,7 +20,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     import remaining_source, remaining_source_lines
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import is_reference_to_data_type_symbol
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, here_document
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.regex.test_resources.assertions import matches_regex_resolver
@@ -66,8 +66,8 @@ class Expectation:
 
     def matches_regex_resolver(self,
                                symbols: SymbolTable,
-                               tcds: HomeAndSds) -> ValueAssertion[RegexResolver]:
-        def on_primitive_value(tcds: HomeAndSds) -> ValueAssertion[Pattern]:
+                               tcds: Tcds) -> ValueAssertion[RegexResolver]:
+        def on_primitive_value(tcds: Tcds) -> ValueAssertion[Pattern]:
             return self.pattern
 
         return matches_regex_resolver(primitive_value=on_primitive_value,
@@ -513,7 +513,7 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
         )
 
         rel_opt_cases = [
-            RelOptionType.REL_HOME_CASE,
+            RelOptionType.REL_HDS_CASE,
             RelOptionType.REL_CWD,
             RelOptionType.REL_ACT,
         ]
@@ -579,7 +579,7 @@ class TestResolvingOfSymbolReferences(unittest.TestCase):
                                                     matching_string: str,
                                                     non_matching_string: str,
                                                     symbols: SymbolTable):
-        def equals_expected_pattern_string(tcds: HomeAndSds) -> ValueAssertion[Pattern]:
+        def equals_expected_pattern_string(tcds: Tcds) -> ValueAssertion[Pattern]:
             return _AssertPattern(
                 pattern_string=expected_pattern_string,
                 matching_strings=[matching_string],
@@ -637,7 +637,7 @@ def _check(put: unittest.TestCase,
            arrangement: Arrangement,
            expectation: Expectation):
     # ARRANGE #
-    tcds = fake_home_and_sds()
+    tcds = fake_tcds()
 
     # ACT #
     actual_resolver = sut.parse_regex(source, consume_last_here_doc_line=True)

@@ -4,7 +4,7 @@ from typing import Optional
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.description import trace_renderers
@@ -67,5 +67,5 @@ class FileMatcherDdv(DirDependentValue[FileMatcher], ABC):
         return constant_success_validator()
 
     @abstractmethod
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> FileMatcher:
+    def value_of_any_dependency(self, tcds: Tcds) -> FileMatcher:
         pass

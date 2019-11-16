@@ -42,9 +42,9 @@ class ActionToCheckExecutor:
         self.environment_for_validate_post_setup = environment_for_validate_post_setup
         self.environment_for_other_steps = environment_for_other_steps
         self.os_process_executor = os_process_executor
-        self.home_and_sds = environment_for_other_steps.home_and_sds
+        self.tcds = environment_for_other_steps.tcds
         self.stdin_configuration = stdin_configuration
-        self.script_output_dir_path = environment_for_other_steps.home_and_sds.sds.test_case_dir
+        self.script_output_dir_path = environment_for_other_steps.tcds.sds.test_case_dir
         self.exe_atc_and_skip_assertions = exe_atc_and_skip_assertions
 
         self._action_to_check_outcome = None
@@ -128,7 +128,7 @@ class ActionToCheckExecutor:
         if self.exe_atc_and_skip_assertions is not None:
             yield self.exe_atc_and_skip_assertions
         else:
-            sds = self.home_and_sds.sds
+            sds = self.tcds.sds
             with open_and_make_read_only_on_close(str(sds.result.stdout_file), 'w') as f_stdout:
                 with open_and_make_read_only_on_close(str(sds.result.stderr_file), 'w') as f_stderr:
                     yield StdOutputFiles(f_stdout, f_stderr)
@@ -140,7 +140,7 @@ class ActionToCheckExecutor:
                 self._store_exit_code(exit_code_or_hard_error.exit_code)
 
     def _store_exit_code(self, exitcode: int):
-        with open_and_make_read_only_on_close(str(self.home_and_sds.sds.result.exitcode_file), 'w') as f:
+        with open_and_make_read_only_on_close(str(self.tcds.sds.result.exitcode_file), 'w') as f:
             f.write(str(exitcode))
 
     def _custom_stdin_file_name(self) -> pathlib.Path:
@@ -148,6 +148,6 @@ class ActionToCheckExecutor:
         if configuration.file_name is not None:
             return configuration.file_name
         else:
-            file_path = stdin_contents_file(self.home_and_sds.sds)
+            file_path = stdin_contents_file(self.tcds.sds)
             write_new_text_file(file_path, configuration.string_contents)
             return file_path

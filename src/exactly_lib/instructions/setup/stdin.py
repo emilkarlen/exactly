@@ -126,7 +126,7 @@ class _InstructionForFileRef(InstructionWithFileRefsBase):
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         env = environment.path_resolving_environment_pre_or_post_sds
         path = self.redirect_file.resolve(environment.symbols)
-        settings_builder.stdin.file_name = path.value_of_any_dependency(env.home_and_sds)
+        settings_builder.stdin.file_name = path.value_of_any_dependency(env.tcds)
         return sh.new_sh_success()
 
 

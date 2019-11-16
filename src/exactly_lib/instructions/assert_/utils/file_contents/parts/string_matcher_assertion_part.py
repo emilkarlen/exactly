@@ -25,7 +25,7 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
                os_services: OsServices,
                custom_environment,
                file_to_check: FileToCheck):
-        matcher = self._string_matcher.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        matcher = self._string_matcher.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
         matching_result = matcher.matches_w_trace(file_to_check)
         if not matching_result.value:
             raise pfh_exception.PfhFailException(

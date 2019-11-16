@@ -25,13 +25,13 @@ class TestEqualsPathRelativityRestriction(unittest.TestCase):
                 sut.equals_path_relativity_restriction(restriction).apply_without_message(self, restriction)
 
     def test_not_equals__different__types(self):
-        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
+        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HDS_CASE}, False))
         actual = AnyDataTypeRestriction()
         assertion = sut.equals_path_relativity_restriction(expected)
         assert_that_assertion_fails(assertion, actual)
 
     def test_not_equals__different__accepted_relativity_variants(self):
-        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
+        expected = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HDS_CASE}, False))
         actual = PathRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, False))
         assertion = sut.equals_path_relativity_restriction(expected)
         assert_that_assertion_fails(assertion, actual)

@@ -123,7 +123,7 @@ _FORMAT_MAP = {
     'full_match': FULL_MATCH_ARGUMENT,
     'not': matcher_options.NOT_ARGUMENT,
     'transform_option': option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
-    'rel_home_case_option': path_texts.REL_HOME_CASE_OPTION,
+    'rel_hds_case_option': path_texts.REL_HDS_CASE_OPTION,
     'rel_cwd_option': path_texts.REL_CWD_OPTION,
     'rel_tmp_option': path_texts.REL_TMP_OPTION,
     'rel_symbol_option': path_texts.REL_symbol_OPTION,

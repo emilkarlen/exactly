@@ -7,20 +7,20 @@ from exactly_lib.definitions.doc_format import directory_variable_name_text
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.formatting import program_name
 from exactly_lib.test_case_file_structure import environment_variables
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic import string_transformer_ddvs
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, CustomStringTransformer
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE = environment_variables.ENV_VAR_HOME_CASE
+HDS_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE = environment_variables.ENV_VAR_HDS_CASE
 
 
 class EnvVarReplacementStringTransformer(CustomStringTransformer):
     def __init__(self,
                  name: str,
-                 tcds: HomeAndSds,
+                 tcds: Tcds,
                  ):
         super().__init__(name)
         self._name_and_value_list = _derive_name_and_value_list(tcds)
@@ -34,9 +34,9 @@ def ddv(name: str) -> StringTransformerDdv:
         lambda tcds: EnvVarReplacementStringTransformer(name, tcds))
 
 
-def replace(home_and_sds: HomeAndSds,
+def replace(tcds: Tcds,
             contents: str) -> str:
-    name_and_value_list = _derive_name_and_value_list(home_and_sds)
+    name_and_value_list = _derive_name_and_value_list(tcds)
     return _replace(name_and_value_list, contents)
 
 
@@ -47,15 +47,15 @@ def _replace(name_and_value_list: Iterable[Tuple[str, str]],
     return contents
 
 
-def _derive_name_and_value_list(home_and_sds: HomeAndSds) -> iter:
-    hds = home_and_sds.hds
-    all_vars = environment_variables.replaced(home_and_sds)
+def _derive_name_and_value_list(tcds: Tcds) -> iter:
+    hds = tcds.hds
+    all_vars = environment_variables.replaced(tcds)
     if hds.case_dir == hds.act_dir:
-        return _first_is(HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE, all_vars)
+        return _first_is(HDS_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE, all_vars)
     elif _dir_is_sub_dir_of(hds.case_dir, hds.act_dir):
-        return _first_is(environment_variables.ENV_VAR_HOME_CASE, all_vars)
+        return _first_is(environment_variables.ENV_VAR_HDS_CASE, all_vars)
     elif _dir_is_sub_dir_of(hds.act_dir, hds.case_dir):
-        return _first_is(environment_variables.ENV_VAR_HOME_ACT, all_vars)
+        return _first_is(environment_variables.ENV_VAR_HDS_ACT, all_vars)
     else:
         return all_vars.items()
 
@@ -73,9 +73,9 @@ def with_replaced_env_vars_help() -> SectionContents:
     text_parser = TextParser({
         'checked_file': 'checked file',
         'program_name': program_info.PROGRAM_NAME,
-        'home_act_env_var': environment_variables.ENV_VAR_HOME_ACT,
-        'home_case_env_var': environment_variables.ENV_VAR_HOME_CASE,
-        'home_env_var_with_replacement_precedence': HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE,
+        'hds_act_env_var': environment_variables.ENV_VAR_HDS_ACT,
+        'hds_case_env_var': environment_variables.ENV_VAR_HDS_CASE,
+        'hds_env_var_with_replacement_precedence': HDS_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE,
     })
     prologue = text_parser.fnap(_WITH_REPLACED_TCDS_PATHS_PROLOGUE)
     variables_list = [docs.simple_header_only_list(map(directory_variable_name_text,
@@ -94,11 +94,11 @@ SINGLE_LINE_DESCRIPTION = """\
 Every occurrence of a string that matches the absolute path of a {TCDS} directory
 is replaced with the name of the corresponding symbol/environment variable.
 """.format(program_name=program_name(program_info.PROGRAM_NAME),
-           TCDS=concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.acronym)
+           TCDS=concepts.TCDS_CONCEPT_INFO.acronym)
 
 _WITH_REPLACED_TCDS_PATHS_PROLOGUE = """\
-If {home_case_env_var} and {home_act_env_var} are equal, then paths will be replaced with
-{home_env_var_with_replacement_precedence}.
+If {hds_case_env_var} and {hds_act_env_var} are equal, then paths will be replaced with
+{hds_env_var_with_replacement_precedence}.
 
 
 Paths that are replaced:

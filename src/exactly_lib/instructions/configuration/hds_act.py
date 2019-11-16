@@ -3,7 +3,7 @@ from exactly_lib.definitions.entity import conf_params
 from exactly_lib.instructions.configuration.utils.hds_dir import DirConfParamInstructionDocumentationBase, \
     Parser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
-from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -13,9 +13,9 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 
 def parser() -> InstructionParser:
-    return Parser(RelHomeOptionType.REL_HOME_ACT)
+    return Parser(RelHdsOptionType.REL_HDS_ACT)
 
 
 class TheInstructionDocumentation(DirConfParamInstructionDocumentationBase):
     def __init__(self, name: str):
-        super().__init__(name, conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO)
+        super().__init__(name, conf_params.HDS_ACT_DIRECTORY_CONF_PARAM_INFO)

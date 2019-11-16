@@ -74,7 +74,7 @@ PATH_TYPE_INFO = name_and_ref_target(
     ValueType.PATH,
     a_name_with_plural_s('path'),
     'A file path, with special support for directories in the ' + formatting.concept_(
-        concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO),
+        concepts.TCDS_CONCEPT_INFO),
 )
 
 LINE_MATCHER_TYPE_INFO = name_and_ref_target(

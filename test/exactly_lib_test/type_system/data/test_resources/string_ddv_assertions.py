@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.string_ddv import StringDdv, StringFragmentDdv
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import MultiDirDependentValueAssertion
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -34,7 +34,7 @@ class _AssertStringValueHasSpecifiedProperties(MultiDirDependentValueAssertion):
     def _check_custom_multi(self,
                             put: unittest.TestCase,
                             actual: MultiDependenciesDdv,
-                            home_and_sds: HomeAndSds,
+                            tcds: Tcds,
                             message_builder: asrt.MessageBuilder):
         assert isinstance(actual, StringDdv)
         fragments_assertion = asrt.matches_sequence(self._sequence_of_fragment_assertions)

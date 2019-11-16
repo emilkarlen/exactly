@@ -1,5 +1,5 @@
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue, StdinData
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv
@@ -47,7 +47,7 @@ class ProgramValue(DirDependentValue[Program]):
     def transformation(self) -> StringTransformerDdv:
         return self._transformation
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> Program:
+    def value_of_any_dependency(self, tcds: Tcds) -> Program:
         return Program(self.command.value_of_any_dependency(tcds),
                        self.stdin.value_of_any_dependency(tcds),
                        self.transformation.value_of_any_dependency(tcds))

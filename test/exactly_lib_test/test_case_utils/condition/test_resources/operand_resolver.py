@@ -3,7 +3,7 @@ from typing import Sequence, Callable, Optional, Generic
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver, T, OperandDdv
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -56,6 +56,6 @@ class _OperandDdv(Generic[T], OperandDdv[T]):
     def describer(self) -> DetailsRenderer:
         return details.String(type(self))
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> T:
+    def value_of_any_dependency(self, tcds: Tcds) -> T:
         env = PathResolvingEnvironmentPreOrPostSds(tcds, self._symbols)
         return self._resolve(env)

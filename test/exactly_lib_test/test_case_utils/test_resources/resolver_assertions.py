@@ -4,7 +4,7 @@ from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util import symbol_table
 from exactly_lib_test.symbol.test_resources.resolver_assertions import is_resolver_of_logic_type
@@ -44,7 +44,7 @@ def matches_resolver_of_logic_type2(resolver_type: Type,
                                     resolved_value: ValueAssertion = asrt.anything_goes(),
                                     references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                                     symbols: symbol_table.SymbolTable = None,
-                                    tcds: HomeAndSds = fake_tcds(),
+                                    tcds: Tcds = fake_tcds(),
                                     ) -> ValueAssertion[LogicValueResolver]:
     symbols = symbol_table.symbol_table_from_none_or_value(symbols)
 

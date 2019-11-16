@@ -34,14 +34,14 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
-    non_home_dir_contains_exactly, dir_contains_exactly
+    non_hds_dir_contains_exactly, dir_contains_exactly
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt, value_assertion as asrt
 
@@ -74,10 +74,10 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
                     ),
                     Expectation(
                         main_result=IS_SUCCESS,
-                        side_effects_on_home=f_asrt.dir_is_empty(),
+                        side_effects_on_hds=f_asrt.dir_is_empty(),
                         symbol_usages=asrt.is_empty_sequence,
-                        main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
-                                                                               fs.DirContents([expected_file])),
+                        main_side_effects_on_sds=non_hds_dir_contains_exactly(rel_opt_conf.root_dir__non_hds,
+                                                                              fs.DirContents([expected_file])),
                     ))
 
     def test_string_on_separate_line(self):
@@ -98,10 +98,10 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
             ),
             Expectation(
                 main_result=IS_SUCCESS,
-                side_effects_on_home=f_asrt.dir_is_empty(),
+                side_effects_on_hds=f_asrt.dir_is_empty(),
                 symbol_usages=asrt.is_empty_sequence,
-                main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
-                                                                       fs.DirContents([expected_file])),
+                main_side_effects_on_sds=non_hds_dir_contains_exactly(rel_opt_conf.root_dir__non_hds,
+                                                                      fs.DirContents([expected_file])),
             ))
 
     def test_contents_from_here_doc(self):
@@ -122,10 +122,10 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
                     ),
                     Expectation(
                         main_result=IS_SUCCESS,
-                        side_effects_on_home=f_asrt.dir_is_empty(),
+                        side_effects_on_hds=f_asrt.dir_is_empty(),
                         symbol_usages=asrt.is_empty_sequence,
-                        main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
-                                                                               fs.DirContents([expected_file])),
+                        main_side_effects_on_sds=non_hds_dir_contains_exactly(rel_opt_conf.root_dir__non_hds,
+                                                                              fs.DirContents([expected_file])),
                     ))
 
     def test_contents_from_here_doc_on_separate_line(self):
@@ -145,10 +145,10 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
             ),
             Expectation(
                 main_result=IS_SUCCESS,
-                side_effects_on_home=f_asrt.dir_is_empty(),
+                side_effects_on_hds=f_asrt.dir_is_empty(),
                 symbol_usages=asrt.is_empty_sequence,
-                main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
-                                                                       fs.DirContents([expected_file])),
+                main_side_effects_on_sds=non_hds_dir_contains_exactly(rel_opt_conf.root_dir__non_hds,
+                                                                      fs.DirContents([expected_file])),
             ))
 
 

@@ -12,8 +12,8 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import pfh, svh
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
@@ -21,8 +21,8 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPo
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectationSvh, \
     all_validations_passes__svh
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -39,14 +39,14 @@ class Expectation:
             main_result: ValueAssertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
             symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
             main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
-            main_side_effects_on_home_and_sds: ValueAssertion[HomeAndSds] = asrt.anything_goes(),
+            main_side_effects_on_tcds: ValueAssertion[Tcds] = asrt.anything_goes(),
             source: ValueAssertion[ParseSource] = asrt.anything_goes(),
     ):
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
         self.main_result = main_result
         self.main_side_effects_on_sds = main_side_effects_on_sds
-        self.main_side_effects_on_home_and_sds = main_side_effects_on_home_and_sds
+        self.main_side_effects_on_tcds = main_side_effects_on_tcds
         self.source = source
         self.symbol_usages = symbol_usages
 
@@ -56,7 +56,7 @@ def expectation(
         main_result: ValueAssertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
         symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
         main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
-        main_side_effects_on_home_and_sds: ValueAssertion[HomeAndSds] = asrt.anything_goes(),
+        main_side_effects_on_tcds: ValueAssertion[Tcds] = asrt.anything_goes(),
         source: ValueAssertion[ParseSource] = asrt.anything_goes(),
 ) -> Expectation:
     return Expectation(
@@ -65,7 +65,7 @@ def expectation(
         main_result=main_result,
         symbol_usages=symbol_usages,
         main_side_effects_on_sds=main_side_effects_on_sds,
-        main_side_effects_on_home_and_sds=main_side_effects_on_home_and_sds,
+        main_side_effects_on_tcds=main_side_effects_on_tcds,
         source=source,
     )
 
@@ -113,20 +113,20 @@ class Executor:
         self.expectation.symbol_usages.apply_with_message(self.put,
                                                           instruction.symbol_usages(),
                                                           'symbol-usages after parse')
-        with home_and_sds_with_act_as_curr_dir(
+        with tcds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 hds_contents=self.arrangement.hds_contents,
                 sds_contents=self.arrangement.sds_contents,
-                non_home_contents=self.arrangement.non_home_contents,
-                home_or_sds_contents=self.arrangement.home_or_sds_contents,
+                non_hds_contents=self.arrangement.non_hds_contents,
+                tcds_contents=self.arrangement.tcds_contents,
                 symbols=self.arrangement.symbols) as path_resolving_environment:
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
-            home_and_sds = path_resolving_environment.home_and_sds
+            tcds = path_resolving_environment.tcds
 
             with preserved_cwd():
-                os.chdir(str(home_and_sds.hds.case_dir))
+                os.chdir(str(tcds.hds.case_dir))
 
-                environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.hds,
+                environment = i.InstructionEnvironmentForPreSdsStep(tcds.hds,
                                                                     self.arrangement.process_execution_settings.environ,
                                                                     symbols=self.arrangement.symbols)
                 validate_result = self._execute_validate_pre_sds(environment, instruction)
@@ -140,7 +140,7 @@ class Executor:
             environment = i.InstructionEnvironmentForPostSdsStep(
                 environment.hds,
                 environment.environ,
-                home_and_sds.sds,
+                tcds.sds,
                 phase_identifier.ASSERT.identifier,
                 timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
                 symbols=self.arrangement.symbols)
@@ -151,13 +151,13 @@ class Executor:
                                                               phase_step.STEP__VALIDATE_POST_SETUP)
             if not validate_result.is_success:
                 return
-            act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
-            write_act_result(home_and_sds.sds, act_result)
+            act_result = self.arrangement.act_result_producer.apply(ActEnvironment(tcds))
+            write_act_result(tcds.sds, act_result)
 
             self._execute_main(environment, instruction)
 
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
-            self.expectation.main_side_effects_on_home_and_sds.apply(self.put, home_and_sds)
+            self.expectation.main_side_effects_on_tcds.apply(self.put, tcds)
             self.expectation.symbol_usages.apply_with_message(self.put,
                                                               instruction.symbol_usages(),
                                                               'symbol-usages after ' +

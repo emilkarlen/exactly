@@ -4,7 +4,7 @@ from exactly_lib.instructions.multi_phase import new_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -16,12 +16,12 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_populator impo
 from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
-    RelativityOptionConfigurationForRelSds, RelativityOptionConfigurationForRelNonHome
+    RelativityOptionConfigurationForRelSds, RelativityOptionConfigurationForRelNonHds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir, empty_file
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import SdsAction, \
+from exactly_lib_test.test_resources.tcds_and_symbols import sds_test
+from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import SdsAction, \
     MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_test import Arrangement, Expectation
+from exactly_lib_test.test_resources.tcds_and_symbols.sds_test import Arrangement, Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources.path_part_assertions import equals_path_part_string
@@ -139,12 +139,12 @@ class TestWithRelativityOptionBase(TestCaseForCheckOfArgumentBase):
 
 
 RELATIVITY_OPTIONS = [
-    rel_opt.default_conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
-    rel_opt.conf_rel_non_home(RelNonHomeOptionType.REL_ACT),
-    rel_opt.conf_rel_non_home(RelNonHomeOptionType.REL_TMP),
-    rel_opt.symbol_conf_rel_non_home(RelNonHomeOptionType.REL_TMP,
+    rel_opt.default_conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
+    rel_opt.conf_rel_non_hds(RelNonHdsOptionType.REL_ACT),
+    rel_opt.conf_rel_non_hds(RelNonHdsOptionType.REL_TMP),
+    rel_opt.symbol_conf_rel_non_hds(RelNonHdsOptionType.REL_TMP,
                                      'DIR_PATH_SYMBOL',
-                                     sut.RELATIVITY_VARIANTS.options.accepted_relativity_variants),
+                                    sut.RELATIVITY_VARIANTS.options.accepted_relativity_variants),
 ]
 
 
@@ -153,7 +153,7 @@ def suite_for_relativity_options() -> unittest.TestSuite:
                                for relativity_option in RELATIVITY_OPTIONS])
 
 
-def suite_for_relativity_option(relativity_option: RelativityOptionConfigurationForRelNonHome) -> unittest.TestSuite:
+def suite_for_relativity_option(relativity_option: RelativityOptionConfigurationForRelNonHds) -> unittest.TestSuite:
     test_cases = [
         test_creation_of_directory_with_single_path_component,
         test_creation_of_directory_with_multiple_path_components,

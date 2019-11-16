@@ -46,7 +46,7 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
     @property
     def _see_also_targets_specific(self) -> List[SeeAlsoTarget]:
         return [
-            concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
+            concepts.SDS_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
             phase_infos.CONFIGURATION.cross_reference_target,
             phase_infos.ACT.cross_reference_target,

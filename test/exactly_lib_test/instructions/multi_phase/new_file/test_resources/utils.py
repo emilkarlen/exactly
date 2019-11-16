@@ -2,13 +2,13 @@ from enum import Enum
 
 from exactly_lib.instructions.multi_phase import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType, \
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHdsOptionType, \
     PathRelativityVariants
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case_utils.test_resources import validation
-from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_home, \
-    default_conf_rel_non_home
+from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_hds, \
+    default_conf_rel_non_hds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -19,17 +19,17 @@ class Step(Enum):
 
 DISALLOWED_RELATIVITIES = [
     RelOptionType.REL_RESULT,
-    RelOptionType.REL_HOME_CASE,
-    RelOptionType.REL_HOME_ACT,
+    RelOptionType.REL_HDS_CASE,
+    RelOptionType.REL_HDS_ACT,
 ]
 
-AN_ALLOWED_DST_FILE_RELATIVITY = conf_rel_non_home(RelNonHomeOptionType.REL_TMP)
+AN_ALLOWED_DST_FILE_RELATIVITY = conf_rel_non_hds(RelNonHdsOptionType.REL_TMP)
 
 ALLOWED_DST_FILE_RELATIVITIES = [
-    conf_rel_non_home(RelNonHomeOptionType.REL_ACT),
-    conf_rel_non_home(RelNonHomeOptionType.REL_TMP),
-    conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
-    default_conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
+    conf_rel_non_hds(RelNonHdsOptionType.REL_ACT),
+    conf_rel_non_hds(RelNonHdsOptionType.REL_TMP),
+    conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
+    default_conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
 
 ]
 

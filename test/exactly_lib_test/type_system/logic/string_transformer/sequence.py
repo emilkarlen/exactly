@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, IdentityStringTransformer, \
     SequenceStringTransformer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -33,7 +33,7 @@ def equals_sequence_transformer(expected: SequenceStringTransformer) -> ValueAss
     )
 
 
-def make_identity_transformer(tcds: HomeAndSds) -> StringTransformer:
+def make_identity_transformer(tcds: Tcds) -> StringTransformer:
     return IdentityStringTransformer()
 
 

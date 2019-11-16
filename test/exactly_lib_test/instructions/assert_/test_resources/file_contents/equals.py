@@ -27,8 +27,8 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
-    HomeOrSdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
+    TcdsPopulator
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import contents_transformation
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
@@ -36,8 +36,8 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc i
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    HomeAndSdsAction
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    HdsAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 
@@ -45,8 +45,8 @@ from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quot
 class InstructionTestConfigurationForEquals(InstructionTestConfigurationForContentsOrEquals):
     def arrangement_for_actual_and_expected(self,
                                             actual_contents: str,
-                                            expected: HomeOrSdsPopulator,
-                                            post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                                            expected: TcdsPopulator,
+                                            post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
                                             symbols: SymbolTable = None,
                                             ) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()
@@ -80,15 +80,15 @@ def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) 
 
 
 _RELATIVITY_OPTION_CONFIGURATIONS_FOR_EXPECTED_FILE = [
-    rel_opt.conf_rel_any(RelOptionType.REL_HOME_CASE),
+    rel_opt.conf_rel_any(RelOptionType.REL_HDS_CASE),
     RelativityOptionConfigurationForRelCwdForTestCwdDir(),
     rel_opt.conf_rel_any(RelOptionType.REL_ACT),
     rel_opt.conf_rel_any(RelOptionType.REL_TMP),
-    rel_opt.default_conf_rel_any(RelOptionType.REL_HOME_CASE),
+    rel_opt.default_conf_rel_any(RelOptionType.REL_HDS_CASE),
     rel_opt.symbol_conf_rel_any(RelOptionType.REL_TMP,
                                 'EXPECTED_FILE_SYMBOL',
                                 EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants),
-    rel_opt.symbol_conf_rel_any(RelOptionType.REL_HOME_CASE,
+    rel_opt.symbol_conf_rel_any(RelOptionType.REL_HDS_CASE,
                                 'EXPECTED_FILE_SYMBOL',
                                 EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants),
 ]
@@ -119,7 +119,7 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_argument)),
             ArrangementPostAct(
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
+                tcds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('dir')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),

@@ -3,7 +3,7 @@ from pathlib import Path, PurePosixPath
 from typing import Optional
 
 from exactly_lib.definitions.path import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTION, REL_CWD_OPTION, \
-    REL_HOME_CASE_OPTION_NAME
+    REL_HDS_CASE_OPTION_NAME
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
@@ -252,8 +252,8 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
     def test_WHEN_no_relativity_option_is_given_THEN_default_relativity_SHOULD_be_used(self):
         file_name_argument = 'file-name'
         default_and_accepted_options_variants = [
-            (RelOptionType.REL_HOME_CASE,
-             {RelOptionType.REL_HOME_CASE, RelOptionType.REL_ACT}),
+            (RelOptionType.REL_HDS_CASE,
+             {RelOptionType.REL_HDS_CASE, RelOptionType.REL_ACT}),
             (RelOptionType.REL_RESULT,
              {RelOptionType.REL_RESULT, RelOptionType.REL_TMP}),
         ]
@@ -419,11 +419,11 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
         used_and_default_and_accepted_options_variants = [
             (
                 RelOptionType.REL_ACT,
-                RelOptionType.REL_HOME_CASE,
-                {RelOptionType.REL_HOME_CASE}
+                RelOptionType.REL_HDS_CASE,
+                {RelOptionType.REL_HDS_CASE}
             ),
             (
-                RelOptionType.REL_HOME_CASE,
+                RelOptionType.REL_HDS_CASE,
                 RelOptionType.REL_ACT,
                 {RelOptionType.REL_TMP}
             ),
@@ -510,7 +510,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
 
     def test_reference_restrictions_on_symbol_references_in_path_suffix_SHOULD_be_string_restrictions(self):
         rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
-        accepted_relativities = PathRelativityVariants({RelOptionType.REL_HOME_CASE,
+        accepted_relativities = PathRelativityVariants({RelOptionType.REL_HDS_CASE,
                                                         RelOptionType.REL_TMP},
                                                        True)
         relativity_of_defined_path_symbol = RelOptionType.REL_TMP
@@ -530,7 +530,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                      defined_path_symbol=defined_path_symbol.name,
                      suffix_symbol_reference=symbol_reference_syntax_for_name(suffix_symbol.name)),
                  rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
-                                                                                     RelOptionType.REL_HOME_CASE),
+                                                                                     RelOptionType.REL_HDS_CASE),
              ),
              expect(
                  resolved_path=
@@ -565,7 +565,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                      suffix_symbol_reference=symbol_reference_syntax_for_name(suffix_symbol.name),
                      suffix_string_constant=suffix_string_constant),
                  rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
-                                                                                     RelOptionType.REL_HOME_CASE),
+                                                                                     RelOptionType.REL_HDS_CASE),
              ),
              expect(
                  resolved_path=
@@ -626,7 +626,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
             accepted_relativities_variants = [
                 PathRelativityVariants({RelOptionType.REL_ACT}, True),
                 PathRelativityVariants({RelOptionType.REL_ACT}, False),
-                PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME_CASE}, False),
+                PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HDS_CASE}, False),
             ]
             for accepted_relativities in accepted_relativities_variants:
                 expected_symbol_reference = SymbolReference(symbol_name,
@@ -714,7 +714,7 @@ class TestRelativityOfSourceFileLocation(TestParsesBase):
              ),
              expect(
                  resolved_path=
-                 paths.of_rel_option(RelOptionType.REL_HOME_CASE,
+                 paths.of_rel_option(RelOptionType.REL_HDS_CASE,
                                      paths.constant_path_part(
                                          symbol.value)),
                  expected_symbol_references=
@@ -780,14 +780,14 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              'SHOULD '
              'become a symbol reference path suffix that must be a string',
              ArrangementWoSuffixRequirement(
-                 source='{rel_home_case_option} {symbol_reference}'.format(
-                     rel_home_case_option=_option_string_for_relativity(RelOptionType.REL_HOME_CASE),
+                 source='{rel_hds_case_option} {symbol_reference}'.format(
+                     rel_hds_case_option=_option_string_for_relativity(RelOptionType.REL_HDS_CASE),
                      symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              expect(
                  resolved_path=
-                 paths.of_rel_option(RelOptionType.REL_HOME_CASE,
+                 paths.of_rel_option(RelOptionType.REL_HDS_CASE,
                                      paths.constant_path_part(
                                          symbol.value)),
                  expected_symbol_references=
@@ -857,8 +857,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              ' SHOULD '
              'become a path suffix that is the literal quoted symbol reference',
              ArrangementWoSuffixRequirement(
-                 source='{rel_home_case_option} {hard_quote}{symbol_reference}{hard_quote}'.format(
-                     rel_home_case_option=_option_string_for_relativity(RelOptionType.REL_HOME_CASE),
+                 source='{rel_hds_case_option} {hard_quote}{symbol_reference}{hard_quote}'.format(
+                     rel_hds_case_option=_option_string_for_relativity(RelOptionType.REL_HDS_CASE),
                      hard_quote=HARD_QUOTE_CHAR,
                      symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
@@ -866,7 +866,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              expect(
                  resolved_path=
                  paths.of_rel_option(
-                     RelOptionType.REL_HOME_CASE,
+                     RelOptionType.REL_HDS_CASE,
                      paths.constant_path_part(symbol_reference_syntax_for_name(symbol.name))),
                  expected_symbol_references=
                  asrt.equals([]),
@@ -886,11 +886,11 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
         symbol = NameAndValue('THE_SYMBOL', 'symbol-string-value')
         symbol_1 = NameAndValue('SYMBOL_NAME_1', 'symbol-1-value')
         symbol_2 = NameAndValue('SYMBOL_NAME_2', 'symbol-2-value')
-        accepted_relativities = PathRelativityVariants({RelOptionType.REL_HOME_CASE,
+        accepted_relativities = PathRelativityVariants({RelOptionType.REL_HDS_CASE,
                                                         RelOptionType.REL_TMP},
                                                        True)
         _arg_config_for_rel_symbol_config(accepted_relativities)
-        path_rel_home = paths.of_rel_option(RelOptionType.REL_HOME_CASE,
+        path_rel_home = paths.of_rel_option(RelOptionType.REL_HDS_CASE,
                                             paths.constant_path_part('file-in-home-dir'))
         test_cases = [
             ('Symbol reference as only argument'
@@ -1087,7 +1087,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              ),
              expect(
                  resolved_path=
-                 paths.of_rel_option(RelOptionType.REL_HOME_CASE,
+                 paths.of_rel_option(RelOptionType.REL_HDS_CASE,
                                      paths.constant_path_part('suffix-from-path-symbol/string-symbol-value')),
                  expected_symbol_references=
                  asrt.matches_sequence([
@@ -1100,7 +1100,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  symbol_table=
                  symbol_table_from_entries([
                      entry(symbol_1.name,
-                           path_resolvers.constant(paths.of_rel_option(RelOptionType.REL_HOME_CASE,
+                           path_resolvers.constant(paths.of_rel_option(RelOptionType.REL_HDS_CASE,
                                                                        paths.constant_path_part(
                                                                            'suffix-from-path-symbol')))),
                      entry(symbol_2.name, string_resolvers.str_constant('string-symbol-value')),
@@ -1122,10 +1122,10 @@ class TestParseWithMandatoryPathSuffix(TestParsesBase):
         path_suffix_is_required = True
         arg_config = RelOptionArgumentConfiguration(
             RelOptionsConfiguration(
-                PathRelativityVariants({RelOptionType.REL_HOME_CASE,
+                PathRelativityVariants({RelOptionType.REL_HDS_CASE,
                                         RelOptionType.REL_ACT},
                                        True),
-                RelOptionType.REL_HOME_CASE),
+                RelOptionType.REL_HDS_CASE),
             'argument_syntax_name',
             path_suffix_is_required)
         source_cases = [
@@ -1135,7 +1135,7 @@ class TestParseWithMandatoryPathSuffix(TestParsesBase):
             ),
             NameAndValue(
                 'just relativity option',
-                value=_option_string_for(REL_HOME_CASE_OPTION_NAME),
+                value=_option_string_for(REL_HDS_CASE_OPTION_NAME),
             ),
         ]
         for case in source_cases:
@@ -1146,7 +1146,7 @@ class TestParseWithMandatoryPathSuffix(TestParsesBase):
 
     def test_relativity_and_suffix_argument_on_following_line(self):
         path_suffix_is_required = True
-        default_relativity = RelOptionType.REL_HOME_CASE
+        default_relativity = RelOptionType.REL_HDS_CASE
         arg_config = RelOptionArgumentConfiguration(
             RelOptionsConfiguration(
                 PathRelativityVariants({default_relativity,
@@ -1156,7 +1156,7 @@ class TestParseWithMandatoryPathSuffix(TestParsesBase):
             'argument_syntax_name',
             path_suffix_is_required)
 
-        option_str = _option_string_for(REL_HOME_CASE_OPTION_NAME)
+        option_str = _option_string_for(REL_HDS_CASE_OPTION_NAME)
         source_variants = [
             SourceCase('just suffix str',
                        source='\n{suffix}',
@@ -1193,8 +1193,8 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
     def test_no_argument_at_all(self):
         path_suffix_is_required = False
         default_and_accepted_options_variants = [
-            (RelOptionType.REL_HOME_CASE,
-             {RelOptionType.REL_HOME_CASE, RelOptionType.REL_ACT}),
+            (RelOptionType.REL_HDS_CASE,
+             {RelOptionType.REL_HDS_CASE, RelOptionType.REL_ACT}),
             (RelOptionType.REL_RESULT,
              {RelOptionType.REL_RESULT, RelOptionType.REL_TMP}),
         ]
@@ -1233,13 +1233,13 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
         used_and_default_and_accepted_options_variants = [
             (
                 RelOptionType.REL_ACT,
-                RelOptionType.REL_HOME_CASE,
-                {RelOptionType.REL_HOME_CASE, RelOptionType.REL_ACT}
+                RelOptionType.REL_HDS_CASE,
+                {RelOptionType.REL_HDS_CASE, RelOptionType.REL_ACT}
             ),
             (
-                RelOptionType.REL_HOME_CASE,
+                RelOptionType.REL_HDS_CASE,
                 RelOptionType.REL_ACT,
-                {RelOptionType.REL_HOME_CASE, RelOptionType.REL_ACT}),
+                {RelOptionType.REL_HDS_CASE, RelOptionType.REL_ACT}),
         ]
 
         for used_option, default_option, accepted_options in used_and_default_and_accepted_options_variants:
@@ -1286,13 +1286,13 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
         used_and_default_and_accepted_options_variants = [
             (
                 RelOptionType.REL_ACT,
-                RelOptionType.REL_HOME_CASE,
-                {RelOptionType.REL_HOME_CASE, RelOptionType.REL_ACT}
+                RelOptionType.REL_HDS_CASE,
+                {RelOptionType.REL_HDS_CASE, RelOptionType.REL_ACT}
             ),
             (
-                RelOptionType.REL_HOME_CASE,
+                RelOptionType.REL_HDS_CASE,
                 RelOptionType.REL_ACT,
-                {RelOptionType.REL_HOME_CASE, RelOptionType.REL_ACT}),
+                {RelOptionType.REL_HDS_CASE, RelOptionType.REL_ACT}),
         ]
 
         for used_option, default_option, accepted_options in used_and_default_and_accepted_options_variants:
@@ -1449,7 +1449,7 @@ def _remaining_source(ts: TokenStream) -> str:
 _ARG_CONFIG_FOR_ALL_RELATIVITIES = RelOptionArgumentConfigurationWoSuffixRequirement(
     RelOptionsConfiguration(
         PathRelativityVariants(RelOptionType, True),
-        RelOptionType.REL_HOME_CASE),
+        RelOptionType.REL_HDS_CASE),
     'argument_syntax_name')
 
 

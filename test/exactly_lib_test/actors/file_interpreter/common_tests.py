@@ -4,7 +4,7 @@ from exactly_lib.actors import file_interpreter as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.test_case_utils.parse.parse_path import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
 from exactly_lib.type_system.data import paths
@@ -19,7 +19,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
+from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
@@ -80,7 +80,7 @@ class TestValidationShouldFailWhenSourceFileIsADirectory(TestCaseBase):
         source_file = 'source-file.src'
         command_line = source_file
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
+            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.empty_dir(source_file)]))
         )
         expectation = Expectation(
@@ -106,7 +106,7 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
         )
 
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
+            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.File(
                     symbol_for_source_file.value,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
@@ -139,7 +139,7 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
     def runTest(self):
         sub_dir_of_home = 'sub-dir'
         dir_symbol = NameAndValue('dir_symbol_name',
-                                  paths.rel_home_act(paths.constant_path_part(sub_dir_of_home)))
+                                  paths.rel_hds_act(paths.constant_path_part(sub_dir_of_home)))
 
         source_file_name_symbol = NameAndValue('source_file_name_symbol_name',
                                                'the-source-file.py')
@@ -159,7 +159,7 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
             PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
 
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
+            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.Dir(sub_dir_of_home, [executable_file])
             ])),
             symbol_table=SymbolTable({

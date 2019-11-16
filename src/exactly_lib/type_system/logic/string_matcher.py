@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from typing import Optional, Iterable
 
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.description import trace_renderers
@@ -153,5 +153,5 @@ class StringMatcherDdv(MatcherDdv[FileToCheck], ABC):
         return renderers.header_only('string-matcher TODO')
 
     @abstractmethod
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> StringMatcher:
+    def value_of_any_dependency(self, tcds: Tcds) -> StringMatcher:
         pass

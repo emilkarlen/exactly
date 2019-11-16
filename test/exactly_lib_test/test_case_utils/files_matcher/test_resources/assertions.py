@@ -2,7 +2,7 @@ from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
 from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherConstructor, FilesMatcherDdv
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util import symbol_table
@@ -15,7 +15,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 def matches_files_matcher_resolver(references: ValueAssertion = asrt.is_empty_sequence,
                                    symbols: symbol_table.SymbolTable = None,
-                                   tcds: HomeAndSds = fake_tcds()
+                                   tcds: Tcds = fake_tcds()
                                    ) -> ValueAssertion[LogicValueResolver]:
     symbols = symbol_table.symbol_table_from_none_or_value(symbols)
 

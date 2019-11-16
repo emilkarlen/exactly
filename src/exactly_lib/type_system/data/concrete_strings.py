@@ -1,8 +1,8 @@
 from typing import Callable, Set
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DependenciesAwareDdv, DirDependencies
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringFragmentDdv, StringDdv
@@ -26,7 +26,7 @@ class ConstantFragmentDdv(StringFragmentDdv):
     def value_when_no_dir_dependencies(self):
         return self.string_constant
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> str:
+    def value_of_any_dependency(self, tcds: Tcds) -> str:
         return self.string_constant
 
     def describer(self) -> Renderer[str]:
@@ -53,7 +53,7 @@ class _StringFragmentDdvFromDirDependentValue(StringFragmentDdv):
     def value_when_no_dir_dependencies(self):
         return self._to_string(self.value.value_when_no_dir_dependencies())
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> str:
+    def value_of_any_dependency(self, tcds: Tcds) -> str:
         return self._to_string(self.value.value_of_any_dependency(tcds))
 
     def _to_string(self, x) -> str:
@@ -134,7 +134,7 @@ class TransformedStringFragmentDdv(StringFragmentDdv):
     def value_when_no_dir_dependencies(self) -> str:
         return self._transformer(self._string_fragment.value_when_no_dir_dependencies())
 
-    def value_of_any_dependency(self, tcds: HomeAndSds) -> str:
+    def value_of_any_dependency(self, tcds: Tcds) -> str:
         return self._transformer(self._string_fragment.value_of_any_dependency(tcds))
 
     def describer(self) -> Renderer[str]:

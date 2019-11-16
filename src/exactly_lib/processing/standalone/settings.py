@@ -19,7 +19,7 @@ class TestCaseExecutionSettings:
 
     def __init__(self,
                  test_case_file_path: pathlib.Path,
-                 initial_home_dir_path: pathlib.Path,
+                 initial_hds_dir_path: pathlib.Path,
                  output: ReportingOption,
                  handling_setup: TestCaseHandlingSetup,
                  sandbox_root_dir_resolver: SandboxRootDirNameResolver =
@@ -27,7 +27,7 @@ class TestCaseExecutionSettings:
                  run_as_part_of_explicit_suite: Optional[pathlib.Path] = None,
                  ):
         self.__test_case_file_path = test_case_file_path
-        self.__initial_home_dir_path = initial_home_dir_path
+        self.__initial_hds_dir_path = initial_hds_dir_path
         self.__output = output
         self.__handling_setup = handling_setup
         self.__sandbox_root_dir_resolver = sandbox_root_dir_resolver
@@ -38,8 +38,8 @@ class TestCaseExecutionSettings:
         return self.__test_case_file_path
 
     @property
-    def initial_home_dir_path(self) -> pathlib.Path:
-        return self.__initial_home_dir_path
+    def initial_hds_dir_path(self) -> pathlib.Path:
+        return self.__initial_hds_dir_path
 
     @property
     def reporting_option(self) -> ReportingOption:

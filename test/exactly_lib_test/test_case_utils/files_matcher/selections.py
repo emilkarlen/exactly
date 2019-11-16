@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_matcher.file_matcher_ddvs import FileMatcherDdvFromParts
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
@@ -83,7 +83,7 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
             named_matcher=name_of_referenced_symbol
         ).apply(expectation_type_config__non_is_success(ExpectationType.POSITIVE))
 
-        def get_file_matcher_successful_matcher(tcds: HomeAndSds) -> FileMatcher:
+        def get_file_matcher_successful_matcher(tcds: Tcds) -> FileMatcher:
             return FileMatcherConstant(True)
 
         cases = [

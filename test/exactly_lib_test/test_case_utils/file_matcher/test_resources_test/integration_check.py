@@ -13,8 +13,8 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import constant_success_validator, \
     PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.file_matcher_ddvs import FileMatcherValueFromPrimitiveDdv
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
@@ -27,7 +27,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbo
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check as sut
@@ -37,8 +37,8 @@ from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, is_pass, is_hard_error
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    sds_2_home_and_sds_assertion
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    sds_2_tcds_assertion
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.file_matchers import FileMatcherThatReportsHardError
 
@@ -67,15 +67,15 @@ class TestCaseBase(unittest.TestCase):
 
 
 class TestPopulate(TestCaseBase):
-    def test_populate_non_home(self):
-        populated_dir_contents = DirContents([empty_file('non-home-file.txt')])
+    def test_populate_non_hds(self):
+        populated_dir_contents = DirContents([empty_file('non-hds-file.txt')])
         self._check(
             PARSER_THAT_GIVES_MATCHER_THAT_MATCHES,
             utils.single_line_source(),
             constant_relative_file_name('file.txt'),
             sut.ArrangementPostAct(
-                non_home_contents=non_home_populator.rel_option(
-                    non_home_populator.RelNonHomeOptionType.REL_TMP,
+                non_hds_contents=non_hds_populator.rel_option(
+                    non_hds_populator.RelNonHdsOptionType.REL_TMP,
                     populated_dir_contents)),
             matcher_assertions.Expectation(
                 main_side_effects_on_sds=tmp_user_dir_contains_exactly(
@@ -244,7 +244,7 @@ class TestFailingExpectations(TestCaseBase):
                 constant_relative_file_name('file.txt'),
                 sut.ArrangementPostAct(),
                 Expectation(
-                    main_side_effects_on_home_and_sds=sds_2_home_and_sds_assertion(
+                    main_side_effects_on_tcds=sds_2_tcds_assertion(
                         act_dir_contains_exactly(
                             DirContents([empty_file('non-existing-file.txt')])))),
             )
@@ -252,7 +252,7 @@ class TestFailingExpectations(TestCaseBase):
 
 def file_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> FileMatcherResolver:
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> FileMatcher:
-        return FileMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(environment.home_and_sds)
+        return FileMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(environment.tcds)
 
     return FileMatcherResolverFromParts(
         (),
@@ -319,13 +319,13 @@ class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrP
     def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
         return None
 
-    def validate_post_sds_if_applicable(self, tcds: HomeAndSds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
         utils.raise_test_error_if_cwd_is_not_test_root(tcds.sds)
         return None
 
 
 class FileMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(FileMatcherTestImplBase):
-    def __init__(self, tcds: HomeAndSds):
+    def __init__(self, tcds: Tcds):
         super().__init__()
         self.tcds = tcds
 

@@ -18,7 +18,7 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -240,4 +240,4 @@ class TestUnset(unittest.TestCase):
 
 
 def dummy_resolving_env() -> PathResolvingEnvironmentPreOrPostSds:
-    return PathResolvingEnvironmentPreOrPostSds(fake_home_and_sds())
+    return PathResolvingEnvironmentPreOrPostSds(fake_tcds())

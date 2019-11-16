@@ -6,7 +6,7 @@ from typing import List
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_executable
 from exactly_lib.type_system.data.list_ddv import ListDdv
@@ -18,14 +18,14 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_resolver
 from exactly_lib_test.symbol.data.test_resources.list_assertions import matches_list_resolver
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
-    HomeOrSdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
+    TcdsPopulator
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.test_resources.files.file_structure import File, executable_file, empty_file, DirContents
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
+    tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -42,11 +42,11 @@ class RelativityConfiguration:
     def exists_pre_sds(self) -> bool:
         return self._rel_opt_conf.exists_pre_sds
 
-    def file_installation(self, file: File) -> HomeOrSdsPopulator:
+    def file_installation(self, file: File) -> TcdsPopulator:
         return self._rel_opt_conf.populator_for_relativity_option_root(DirContents([file]))
 
-    def installation_dir(self, home_and_sds: HomeAndSds) -> pathlib.Path:
-        return self._rel_opt_conf.population_dir(home_and_sds)
+    def installation_dir(self, tcds: Tcds) -> pathlib.Path:
+        return self._rel_opt_conf.population_dir(tcds)
 
 
 def suite_for(configuration: RelativityConfiguration) -> unittest.TestSuite:
@@ -59,7 +59,7 @@ def suite_for(configuration: RelativityConfiguration) -> unittest.TestSuite:
 
 class Arrangement:
     def __init__(self,
-                 home_or_sds_populator: HomeOrSdsPopulator,
+                 home_or_sds_populator: TcdsPopulator,
                  symbols: SymbolTable = None):
         self.home_or_sds_populator = home_or_sds_populator
         self.symbols = symbol_table_from_none_or_value(symbols)
@@ -149,8 +149,8 @@ def check(put: unittest.TestCase,
                                           'parse source')
     check_exe_file(put, expectation.expectation_on_exe_file,
                    actual_exe_file)
-    with home_and_sds_with_act_as_curr_dir(
-            home_or_sds_contents=arrangement.home_or_sds_populator) as environment:
+    with tcds_with_act_as_curr_dir(
+            tcds_contents=arrangement.home_or_sds_populator) as environment:
         os.mkdir('act-cwd')
         os.chdir('act-cwd')
         validator_util.check(put,
@@ -171,13 +171,13 @@ class CheckBase(unittest.TestCase):
 
     def _check_file_path(self, file_name: str, actual: ExecutableFileWithArgsResolver,
                          environment: PathResolvingEnvironmentPreOrPostSds):
-        self.assertEqual(self.configuration.installation_dir(environment.home_and_sds) / file_name,
+        self.assertEqual(self.configuration.installation_dir(environment.tcds) / file_name,
                          actual.executable_file.resolve_value_of_any_dependency(environment),
                          'Path string')
 
-    def _home_and_sds_and_test_as_curr_dir(self, file: File) -> PathResolvingEnvironmentPreOrPostSds:
+    def _tcds_and_test_as_curr_dir(self, file: File) -> PathResolvingEnvironmentPreOrPostSds:
         contents = self.configuration.file_installation(file)
-        return home_and_sds_with_act_as_curr_dir(home_or_sds_contents=contents)
+        return tcds_with_act_as_curr_dir(tcds_contents=contents)
 
     def _assert_passes_validation(self, actual: ExecutableFileWithArgsResolver,
                                   environment: PathResolvingEnvironmentPreOrPostSds):
@@ -206,7 +206,7 @@ class CheckExistingFile(CheckBase):
         source_assertion = has_remaining_part_of_first_line('remaining args')
         source_assertion.apply_with_message(self, source, 'source after parse')
         self._check_expectance_to_exist_pre_sds(exe_file, empty_symbol_table())
-        with self._home_and_sds_and_test_as_curr_dir(executable_file('file.exe')) as environment:
+        with self._tcds_and_test_as_curr_dir(executable_file('file.exe')) as environment:
             self._check_file_path('file.exe', exe_file, environment)
             self._assert_passes_validation(exe_file, environment)
 
@@ -221,7 +221,7 @@ class CheckExistingButNonExecutableFile(CheckBase):
         source = ParseSource(arguments_str)
         exe_file = parse_executable_file_executable.parse_from_parse_source(
             source)
-        with self._home_and_sds_and_test_as_curr_dir(empty_file('file.exe')) as environment:
+        with self._tcds_and_test_as_curr_dir(empty_file('file.exe')) as environment:
             self._assert_does_not_pass_validation(exe_file, environment)
 
 
@@ -239,7 +239,7 @@ class CheckNonExistingFile(CheckBase):
         source_assertion.apply_with_message(self, source, 'source after parse')
         symbols = empty_symbol_table()
         self._check_expectance_to_exist_pre_sds(exe_file, symbols)
-        with home_and_sds_with_act_as_curr_dir(symbols=symbols) as environment:
+        with tcds_with_act_as_curr_dir(symbols=symbols) as environment:
             self._check_file_path('file.exe', exe_file, environment)
             self._assert_does_not_pass_validation(exe_file, environment)
 

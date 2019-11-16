@@ -92,7 +92,7 @@ class ConstructorForPath(ComparisonActualFileConstructor):
                   os_services: OsServices) -> ComparisonActualFile:
         described_path = (
             self._path.resolve(environment.symbols)
-                .value_of_any_dependency__d(environment.home_and_sds)
+                .value_of_any_dependency__d(environment.tcds)
         )
         return ComparisonActualFile(
             described_path,
@@ -105,7 +105,7 @@ class ConstructorForPath(ComparisonActualFileConstructor):
     def failure_message_header(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Renderer[MajorBlock]:
         described_path = (
             self._path.resolve(environment.symbols)
-                .value_of_any_dependency__d(environment.home_and_sds)
+                .value_of_any_dependency__d(environment.tcds)
         )
 
         return path_rendering.HeaderAndPathMajorBlock(
