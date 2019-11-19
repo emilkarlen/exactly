@@ -32,7 +32,7 @@ class ObjectDdv(Generic[T], MultiDependenciesDdv[T], ABC):
         pass
 
 
-class ObjectResolver(Generic[T], ABC):
+class ObjectSdv(Generic[T], ABC):
     """Resolves an arbitrary object"""
 
     @property

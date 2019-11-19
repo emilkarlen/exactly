@@ -7,15 +7,15 @@ from exactly_lib.definitions.path import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTION,
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.symbol.data import path_resolvers, path_part_resolvers
-from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.data.path_resolver import PathResolver
+from exactly_lib.symbol.data import path_sdvs, path_part_sdvs
+from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
-from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.restriction import ReferenceRestrictions, DataTypeReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
@@ -40,17 +40,17 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restrictions import \
     string_made_up_of_just_strings_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_path_resolver, \
-    matches_path_resolver
+from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_path_sdv, \
+    matches_path_sdv
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import \
     symbol_table_with_single_string_value, symbol_table_with_single_path_value, symbol_table_with_string_values, \
     entry
-from exactly_lib_test.symbol.data.test_resources.list_resolvers import ListResolverTestImplForConstantListValue
+from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference, is_reference_to_string_made_up_of_just_plain_strings
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl
+from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSdvConstantTestImpl
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
 from exactly_lib_test.test_case_file_structure.test_resources import format_rel_option
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -97,19 +97,19 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 path_resolver: PathResolver,
+                 path_sdv: PathSdv,
                  token_stream: ValueAssertion):
-        assert isinstance(path_resolver, PathResolver)
-        self.path_resolver = path_resolver
+        assert isinstance(path_sdv, PathSdv)
+        self.path_sdv = path_sdv
         self.token_stream = token_stream
 
 
 class Expectation2:
     def __init__(self,
-                 path_resolver: ValueAssertion,
+                 path_sdv: ValueAssertion,
                  token_stream: ValueAssertion,
                  symbol_table_in_with_all_ref_restrictions_are_satisfied: SymbolTable = None):
-        self.path_resolver = path_resolver
+        self.path_sdv = path_sdv
         self.token_stream = token_stream
         self.symbol_table_in_with_all_ref_restrictions_are_satisfied = symbol_table_in_with_all_ref_restrictions_are_satisfied
 
@@ -168,8 +168,8 @@ class TestParsesBase(unittest.TestCase):
                                 arrangement.rel_option_argument_configuration,
                                 arrangement.source_file_path)
         # ASSERT #
-        equals_path_resolver(expectation.path_resolver).apply_with_message(self, actual,
-                                                                           'file-ref-resolver')
+        equals_path_sdv(expectation.path_sdv).apply_with_message(self, actual,
+                                                                           'path sdv')
         expectation.token_stream.apply_with_message(self, ts, 'token-stream')
 
     def _check2(self,
@@ -184,9 +184,9 @@ class TestParsesBase(unittest.TestCase):
         # ASSERT #
         self.__assertions_on_reference_restrictions(actual,
                                                     expectation.symbol_table_in_with_all_ref_restrictions_are_satisfied)
-        expectation.path_resolver.apply_with_message(self, actual, 'file-ref-resolver')
+        expectation.path_sdv.apply_with_message(self, actual, 'path-sdv')
         expectation.token_stream.apply_with_message(self, ts, 'token-stream')
-        self.__assertions_on_hypothetical_reference_to_resolver(
+        self.__assertions_on_hypothetical_reference_to_sdv(
             actual,
             expectation.symbol_table_in_with_all_ref_restrictions_are_satisfied)
 
@@ -206,7 +206,7 @@ class TestParsesBase(unittest.TestCase):
                                        source_file_location=source_file_location)
 
     def __assertions_on_reference_restrictions(self,
-                                               actual: PathResolver,
+                                               actual: PathSdv,
                                                symbols: SymbolTable):
         for idx, reference in enumerate(actual.references):
             assert isinstance(reference, SymbolReference)  # Type info for IDE
@@ -218,12 +218,12 @@ class TestParsesBase(unittest.TestCase):
             self.assertIsNone(result,
                               'Restriction on reference #{}: expects None=satisfaction'.format(idx))
 
-    def __assertions_on_hypothetical_reference_to_resolver(
+    def __assertions_on_hypothetical_reference_to_sdv(
             self,
-            actual: PathResolver,
+            actual: PathSdv,
             symbols: SymbolTable):
         restriction = PathRelativityRestriction(PathRelativityVariants(RelOptionType, True))
-        container = data_symbol_utils.path_resolver_container(actual)
+        container = data_symbol_utils.path_sdv_container(actual)
         result = restriction.is_satisfied_by(symbols, 'hypothetical_symbol', container)
         self.assertIsNone(result,
                           'Result of hypothetical restriction on path')
@@ -260,7 +260,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
         for default_option, accepted_options in default_and_accepted_options_variants:
             expected_path = paths.of_rel_option(default_option,
                                                 paths.constant_path_part(file_name_argument))
-            expected_path_value = path_resolvers.constant(expected_path)
+            expected_path_value = path_sdvs.constant(expected_path)
             arg_config = RelOptionArgumentConfigurationWoSuffixRequirement(
                 RelOptionsConfiguration(
                     PathRelativityVariants(accepted_options, True),
@@ -304,7 +304,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
         for rel_option_type, rel_option_info in REL_OPTIONS_MAP.items():
             expected_path = paths.of_rel_option(rel_option_type,
                                                 paths.constant_path_part(file_name_argument))
-            expected_path_resolver = path_resolvers.constant(expected_path)
+            expected_path_sdv = path_sdvs.constant(expected_path)
             option_str = _option_string_for(rel_option_info.option_name)
             source_and_token_stream_assertion_variants = [
                 (
@@ -336,14 +336,14 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
                         self._check(
                             Arrangement(argument_string,
                                         _ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(path_suffix_is_required)),
-                            Expectation(expected_path_resolver,
+                            Expectation(expected_path_sdv,
                                         token_stream_assertion))
 
     def test_parse_with_relativity_option_and_absolute_path_suffix(self):
         file_name_argument = '/an/absolute/path'
         for rel_option_type, rel_option_info in REL_OPTIONS_MAP.items():
             expected_path = paths.absolute_file_name(file_name_argument)
-            expected_path_resolver = path_resolvers.constant(expected_path)
+            expected_path_sdv = path_sdvs.constant(expected_path)
             option_str = _option_string_for(rel_option_info.option_name)
             source_and_token_stream_assertion_variants = [
                 (
@@ -375,13 +375,13 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
                         self._check(
                             Arrangement(argument_string,
                                         _ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(path_suffix_is_required)),
-                            Expectation(expected_path_resolver,
+                            Expectation(expected_path_sdv,
                                         token_stream_assertion))
 
     def test_parse_with_only_absolute_path_suffix(self):
         file_name_argument = '/an/absolute/path'
         expected_path = paths.absolute_file_name(file_name_argument)
-        expected_path_resolver = path_resolvers.constant(expected_path)
+        expected_path_sdv = path_sdvs.constant(expected_path)
         source_and_token_stream_assertion_variants = [
             (
                 '{file_name_argument} arg3 arg4',
@@ -411,7 +411,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
                     self._check(
                         Arrangement(argument_string,
                                     _ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(path_suffix_is_required)),
-                        Expectation(expected_path_resolver,
+                        Expectation(expected_path_sdv,
                                     token_stream_assertion))
 
     def test_WHEN_relativity_option_is_not_one_of_accepted_options_THEN_parse_SHOULD_fail(self):
@@ -483,7 +483,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
         expected_path = paths.of_rel_option(_ARG_CONFIG_FOR_ALL_RELATIVITIES.options.default_option,
                                             paths.constant_path_part('{rel_symbol_option}'.format(
                                                 rel_symbol_option=rel_symbol_option)))
-        expected_path_value = path_resolvers.constant(expected_path)
+        expected_path_value = path_sdvs.constant(expected_path)
         for path_suffix_is_required in [False, True]:
             with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
                 self._check(
@@ -546,8 +546,8 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                  ]),
                  symbol_table=
                  symbol_table_from_entries([
-                     entry(defined_path_symbol.name, path_resolvers.constant(relativity_path)),
-                     entry(suffix_symbol.name, string_resolvers.str_constant(suffix_symbol.value)),
+                     entry(defined_path_symbol.name, path_sdvs.constant(relativity_path)),
+                     entry(suffix_symbol.name, string_sdvs.str_constant(suffix_symbol.value)),
                  ]),
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
@@ -582,8 +582,8 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                  ]),
                  symbol_table=
                  symbol_table_from_entries([
-                     entry(defined_path_symbol.name, path_resolvers.constant(relativity_path)),
-                     entry(suffix_symbol.name, string_resolvers.str_constant(suffix_symbol.value)),
+                     entry(defined_path_symbol.name, path_sdvs.constant(relativity_path)),
+                     entry(suffix_symbol.name, string_sdvs.str_constant(suffix_symbol.value)),
                  ]),
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
@@ -633,8 +633,8 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                                                             ReferenceRestrictionsOnDirectAndIndirect(
                                                                 PathRelativityRestriction(
                                                                     accepted_relativities)))
-                expected_path_resolver = path_resolvers.rel_symbol(expected_symbol_reference,
-                                                                   path_part_resolvers.from_constant_str(
+                expected_path_sdv = path_sdvs.rel_symbol(expected_symbol_reference,
+                                                         path_part_sdvs.from_constant_str(
                                                                        file_name_argument))
                 for path_suffix_is_required in [False, True]:
                     arg_config = _arg_config_for_rel_symbol_config(accepted_relativities)
@@ -647,7 +647,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                         self._check(
                             Arrangement(argument_string,
                                         arg_config.config_for(path_suffix_is_required)),
-                            Expectation(expected_path_resolver,
+                            Expectation(expected_path_sdv,
                                         token_stream_assertion)
                         )
 
@@ -1100,10 +1100,10 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  symbol_table=
                  symbol_table_from_entries([
                      entry(symbol_1.name,
-                           path_resolvers.constant(paths.of_rel_option(RelOptionType.REL_HDS_CASE,
-                                                                       paths.constant_path_part(
+                           path_sdvs.constant(paths.of_rel_option(RelOptionType.REL_HDS_CASE,
+                                                                  paths.constant_path_part(
                                                                            'suffix-from-path-symbol')))),
-                     entry(symbol_2.name, string_resolvers.str_constant('string-symbol-value')),
+                     entry(symbol_2.name, string_sdvs.str_constant('string-symbol-value')),
                  ]),
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
@@ -1170,9 +1170,9 @@ class TestParseWithMandatoryPathSuffix(TestParsesBase):
         ]
         suffix = 'suffix'
         expected_path = paths.of_rel_option(default_relativity, paths.constant_path_part(suffix))
-        resolver_assertion = matches_path_resolver(expected_path,
-                                                   asrt.matches_sequence([]),
-                                                   empty_symbol_table())
+        sdv_assertion = matches_path_sdv(expected_path,
+                                         asrt.matches_sequence([]),
+                                         empty_symbol_table())
         for source_case in source_variants:
             with self.subTest(name=source_case.name,
                               source=source_case.source):
@@ -1183,7 +1183,7 @@ class TestParseWithMandatoryPathSuffix(TestParsesBase):
                         rel_option_argument_configuration=arg_config
                     ),
                     Expectation2(
-                        path_resolver=resolver_assertion,
+                        path_sdv=sdv_assertion,
                         token_stream=source_case.source_assertion,
                     )
                 )
@@ -1212,7 +1212,7 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
         ]
         for default_option, accepted_options in default_and_accepted_options_variants:
             expected_path = paths.of_rel_option(default_option, paths.empty_path_part())
-            expected_path_value = path_resolvers.constant(expected_path)
+            expected_path_value = path_sdvs.constant(expected_path)
             arg_config = RelOptionArgumentConfiguration(
                 RelOptionsConfiguration(
                     PathRelativityVariants(accepted_options, True),
@@ -1265,9 +1265,9 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
                            source_assertion=assert_token_stream(remaining_source=asrt.equals('  \nfollowing'))),
             ]
             expected_path = paths.of_rel_option(used_option, paths.empty_path_part())
-            resolver_assertion = matches_path_resolver(expected_path,
-                                                       asrt.matches_sequence([]),
-                                                       empty_symbol_table())
+            sdv_assertion = matches_path_sdv(expected_path,
+                                             asrt.matches_sequence([]),
+                                             empty_symbol_table())
             for source_case in source_variants:
                 with self.subTest(name=source_case.name,
                                   source=source_case.source):
@@ -1277,7 +1277,7 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
                             rel_option_argument_configuration=arg_config
                         ),
                         Expectation2(
-                            path_resolver=resolver_assertion,
+                            path_sdv=sdv_assertion,
                             token_stream=source_case.source_assertion,
                         )
                     )
@@ -1319,9 +1319,9 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
             ]
             suffix = 'suffix'
             expected_path = paths.of_rel_option(used_option, paths.constant_path_part(suffix))
-            resolver_assertion = matches_path_resolver(expected_path,
-                                                       asrt.matches_sequence([]),
-                                                       empty_symbol_table())
+            sdv_assertion = matches_path_sdv(expected_path,
+                                             asrt.matches_sequence([]),
+                                             empty_symbol_table())
             for source_case in source_variants:
                 with self.subTest(name=source_case.name,
                                   source=source_case.source):
@@ -1332,7 +1332,7 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
                             rel_option_argument_configuration=arg_config
                         ),
                         Expectation2(
-                            path_resolver=resolver_assertion,
+                            path_sdv=sdv_assertion,
                             token_stream=source_case.source_assertion,
                         )
                     )
@@ -1405,13 +1405,13 @@ class TestParsesCorrectValueFromParseSource(TestParsesBase):
             'FILE')
         for path_suffix_is_required in [False, True]:
             with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
-                actual_resolver = sut.parse_path_from_parse_source(
+                actual_sdv = sut.parse_path_from_parse_source(
                     remaining_source('file.txt'),
                     custom_configuration.config_for(path_suffix_is_required))
-                expected_resolver = path_resolvers.constant(
+                expected_sdv = path_sdvs.constant(
                     paths.rel_act(paths.constant_path_part('file.txt')))
-                assertion = equals_path_resolver(expected_resolver)
-                assertion.apply_with_message(self, actual_resolver, 'file-ref-resolver')
+                assertion = equals_path_sdv(expected_sdv)
+                assertion.apply_with_message(self, actual_sdv, 'path-sdv')
 
     def test_WHEN_an_unsupported_option_is_used_THEN_an_exception_should_be_raised(self):
         custom_configuration = RelOptionArgumentConfigurationWoSuffixRequirement(
@@ -1428,16 +1428,16 @@ class TestParsesCorrectValueFromParseSource(TestParsesBase):
 class TestTypeMustBeEitherPathOrStringErrMsgGenerator(unittest.TestCase):
     def test_SHOULD_be_able_to_generate_an_error_message_for_every_illegal_type(self):
         cases = [
-            ListResolverTestImplForConstantListValue(ListDdv([])),
-            FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
-            StringTransformerResolverConstantTestImpl(FakeStringTransformer(), []),
+            ListSdvTestImplForConstantListDdv(ListDdv([])),
+            FileMatcherSdvConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
+            StringTransformerSdvConstantTestImpl(FakeStringTransformer(), []),
         ]
-        for resolver in cases:
-            with self.subTest(invalid_type=str(resolver.value_type)):
-                resolver_container = symbol_utils.container(resolver)
+        for sdv in cases:
+            with self.subTest(invalid_type=str(sdv.value_type)):
+                symbol_container = symbol_utils.container(sdv)
                 # ACT #
                 actual = sut.type_must_be_either_path_or_string__err_msg_generator('failing_symbol',
-                                                                                   resolver_container)
+                                                                                   symbol_container)
                 # ASSERT #
                 asrt_text_doc.assert_is_valid_text_renderer(self, actual)
 
@@ -1503,9 +1503,9 @@ def expect(resolved_path: PathDdv,
            token_stream: ValueAssertion,
            ) -> Expectation2:
     return Expectation2(
-        path_resolver=matches_path_resolver(resolved_path,
-                                            expected_symbol_references,
-                                            symbol_table),
+        path_sdv=matches_path_sdv(resolved_path,
+                                  expected_symbol_references,
+                                  symbol_table),
         symbol_table_in_with_all_ref_restrictions_are_satisfied=symbol_table,
         token_stream=token_stream,
     )

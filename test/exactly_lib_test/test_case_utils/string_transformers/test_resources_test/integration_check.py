@@ -6,7 +6,7 @@ from typing import List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.string_transformer import StringTransformerModel, StringTransformerDdv
@@ -45,7 +45,7 @@ class TestCaseBase(unittest.TestCase):
     def _check(self,
                source: ParseSource,
                model: StringTransformerModel,
-               parser: Parser[StringTransformerResolver],
+               parser: Parser[StringTransformerSdv],
                arrangement: sut.Arrangement,
                expectation: sut.Expectation):
         sut.check_with_custom_parser(self.tc, source, model, parser, arrangement, expectation)
@@ -89,12 +89,12 @@ class TestSymbolReferences(TestCaseBase):
                                                                                         symbol_value)
         expectation = asrt_sym.equals_symbol_table(expected_symbol_table)
 
-        resolver_that_checks_symbols = StringTransformerResolverThatAssertsThatSymbolsAreAsExpected(self, expectation)
+        sdv_that_checks_symbols = StringTransformerSdvThatAssertsThatSymbolsAreAsExpected(self, expectation)
 
         self._check(
             utils.single_line_source(),
             arbitrary_model(),
-            ConstantParser(resolver_that_checks_symbols),
+            ConstantParser(sdv_that_checks_symbols),
             sut.Arrangement(
                 symbols=symbol_table_of_arrangement),
             sut.Expectation(is_identity_transformer=asrt.anything_goes()),
@@ -218,7 +218,7 @@ class _StringTransformerThatReportsHardError(StringTransformerTestImplBase):
         raise HardErrorException(new_single_string_text_for_test('unconditional hard error'))
 
 
-class StringTransformerResolverThatAssertsThatSymbolsAreAsExpected(StringTransformerResolver):
+class StringTransformerSdvThatAssertsThatSymbolsAreAsExpected(StringTransformerSdv):
     def __init__(self,
                  put: unittest.TestCase,
                  expectation: ValueAssertion[SymbolTable]):
@@ -261,11 +261,11 @@ def model_with_num_lines(number_of_lines: int) -> StringTransformerModel:
     return iter(['line'] * number_of_lines)
 
 
-def arbitrary_transformer() -> StringTransformerResolver:
+def arbitrary_transformer() -> StringTransformerSdv:
     return string_transformer_from_result(model_with_num_lines(1))
 
 
-def arbitrary_non_identity_transformer() -> StringTransformerResolver:
+def arbitrary_non_identity_transformer() -> StringTransformerSdv:
     return arbitrary_transformer()
 
 

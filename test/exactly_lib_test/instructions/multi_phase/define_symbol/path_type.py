@@ -6,7 +6,7 @@ from exactly_lib.instructions.multi_phase.define_symbol import REL_OPTIONS_CONFI
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.source_location import FileLocationInfo, FileSystemLocationInfo
-from exactly_lib.symbol.data import path_resolvers, path_part_resolvers
+from exactly_lib.symbol.data import path_sdvs, path_part_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
@@ -64,9 +64,9 @@ class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
     def test(self):
         instruction_argument = src('{path_type} name = {rel_act} component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_path_resolver = path_resolvers.constant(
+            expected_path_sdv = path_sdvs.constant(
                 paths.rel_act(paths.constant_path_part('component')))
-            expected_container = resolver_container(expected_path_resolver)
+            expected_container = symbol_container(expected_path_sdv)
             self._check(source,
                         ArrangementWithSds(),
                         Expectation(
@@ -84,10 +84,10 @@ class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
     def test(self):
         instruction_argument = src('{path_type} name = component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_path_resolver = path_resolvers.constant(
+            expected_path_sdv = path_sdvs.constant(
                 paths.of_rel_option(REL_OPTIONS_CONFIGURATION.default_option,
                                     paths.constant_path_part('component')))
-            expected_container = resolver_container(expected_path_resolver)
+            expected_container = symbol_container(expected_path_sdv)
             self._check(source,
                         ArrangementWithSds(),
                         Expectation(
@@ -104,12 +104,12 @@ class TestAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
     def test(self):
         instruction_argument = src('{path_type} ASSIGNED_NAME = {rel_symbol} REFERENCED_SYMBOL component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_path_resolver = path_resolvers.rel_symbol(
+            expected_path_sdv = path_sdvs.rel_symbol(
                 SymbolReference('REFERENCED_SYMBOL',
                                 ReferenceRestrictionsOnDirectAndIndirect(PathRelativityRestriction(
                                     REL_OPTIONS_CONFIGURATION.accepted_relativity_variants))),
-                path_part_resolvers.from_constant_str('component'))
-            expected_container = resolver_container(expected_path_resolver)
+                path_part_sdvs.from_constant_str('component'))
+            expected_container = symbol_container(expected_path_sdv)
             self._check(source,
                         ArrangementWithSds(),
                         Expectation(
@@ -132,10 +132,10 @@ class TestAssignmentRelativeSourceFileLocation(TestCaseBaseForParser):
                 FileLocationInfo(abs_path_of_dir_containing_last_file_base_name))
             instruction_argument = src('{path_type} name = {rel_source_file} component')
             for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-                expected_path_resolver = path_resolvers.constant(
+                expected_path_sdv = path_sdvs.constant(
                     paths.rel_abs_path(abs_path_of_dir_containing_last_file_base_name,
                                        paths.constant_path_part('component')))
-                expected_container = resolver_container(expected_path_resolver)
+                expected_container = symbol_container(expected_path_sdv)
                 self._check(source,
                             ArrangementWithSds(fs_location_info=fs_location_info),
                             Expectation(

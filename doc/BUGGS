@@ -2,7 +2,7 @@
 
 * When PathPart is absolute THEN PathDdv will be absolute
 <2018-07-18 wed>
-even if the PathResolver, and maybe also the PathDdv,
+even if the PathSdv, and maybe also the PathDdv,
 say it is relative.
 
 Solution:

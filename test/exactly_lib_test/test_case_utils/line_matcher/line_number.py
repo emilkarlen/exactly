@@ -1,14 +1,14 @@
 import unittest
 from typing import List, Optional
 
-from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.resolver_structure import SymbolValueResolver
+from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name, SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition__expr
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_resolver import \
+from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_sdv import \
     is_reference_to_symbol_in_expression
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.validation_cases import \
     failing_integer_validation_cases
@@ -47,7 +47,7 @@ class IntegrationCheckCase:
                  operator: comparators.ComparisonOperator,
                  int_expr: str,
                  result: Optional[ValueAssertion[Optional[str]]],
-                 symbols: List[NameAndValue[SymbolValueResolver]]):
+                 symbols: List[NameAndValue[SymbolDependentValue]]):
         self.name = name
         self.line_num_of_model = line_num_of_model
         self.operator = operator
@@ -83,7 +83,7 @@ class _SymbolReferencesInOperandShouldBeReported(unittest.TestCase):
         actual_line_num = 3
         int_string_symbol = NameAndValue(
             'int_string_symbol_name',
-            string_resolvers.str_constant(str(actual_line_num))
+            string_sdvs.str_constant(str(actual_line_num))
         )
 
         arguments = arg.LineNum(int_condition__expr(comparators.EQ,
@@ -98,7 +98,7 @@ class _SymbolReferencesInOperandShouldBeReported(unittest.TestCase):
             model=model_that_matches,
             arrangement=
             integration_check.Arrangement(
-                symbols=symbol_utils.symbol_table_from_name_and_resolvers([int_string_symbol])
+                symbols=symbol_utils.symbol_table_from_name_and_sdvs([int_string_symbol])
             ),
             expectation=
             integration_check.Expectation(
@@ -142,7 +142,7 @@ class _ParseAndMatchTest(unittest.TestCase):
                     unsuccessful_operator=comparators.NE,
                     int_expr=str(symbol_1),
                     symbols=[
-                        NameAndValue(symbol_1.name, string_resolvers.str_constant('72'))
+                        NameAndValue(symbol_1.name, string_sdvs.str_constant('72'))
                     ]
                 )
                 +
@@ -156,8 +156,8 @@ class _ParseAndMatchTest(unittest.TestCase):
                         symbol_2
                     ),
                     symbols=[
-                        NameAndValue(symbol_1.name, string_resolvers.str_constant('"abc"')),
-                        NameAndValue(symbol_2.name, string_resolvers.str_constant('+(20-10)')),
+                        NameAndValue(symbol_1.name, string_sdvs.str_constant('"abc"')),
+                        NameAndValue(symbol_2.name, string_sdvs.str_constant('+(20-10)')),
                     ]
                 )
         )
@@ -178,7 +178,7 @@ class _ParseAndMatchTest(unittest.TestCase):
                     remaining_source(str(arguments)),
                     (case.line_num_of_model, 'ignored line text'),
                     integration_check.Arrangement(
-                        symbols=symbol_utils.symbol_table_from_name_and_resolvers(case.symbols)
+                        symbols=symbol_utils.symbol_table_from_name_and_sdvs(case.symbols)
                     ),
                     integration_check.Expectation(
                         symbol_references=expected_symbol_references,
@@ -192,7 +192,7 @@ def successful_and_unsuccessful(name: str,
                                 successful_operator: comparators.ComparisonOperator,
                                 unsuccessful_operator: comparators.ComparisonOperator,
                                 int_expr: str,
-                                symbols: List[NameAndValue[SymbolValueResolver]]) -> List[IntegrationCheckCase]:
+                                symbols: List[NameAndValue[SymbolDependentValue]]) -> List[IntegrationCheckCase]:
     return [
         IntegrationCheckCase(
             name + '/successful: ' + successful_operator.name,

@@ -1,15 +1,15 @@
 from typing import List
 
-from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
-from exactly_lib.symbol.logic.resolver import MatcherResolver
+from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherLine
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class LineMatcherResolver(LogicValueResolver, MatcherResolver[LineMatcherLine]):
-    """ Base class for resolvers of :class:`LineMatcher`. """
+class LineMatcherSdv(LogicTypeSdv, MatcherSdv[LineMatcherLine]):
+    """ Base class for SDVs of :class:`LineMatcher`. """
 
     @property
     def logic_value_type(self) -> LogicValueType:

@@ -8,7 +8,7 @@
 
 contents case-file.txt matches @[DEFINED_IN_EACH_CASE]@
 
-# The matcher above has a regex-resolver that stores the compilation
+# The matcher above has a regex-sdv that stores the compilation
 # of the regex, so that it is not done every time it is requested.
 #
 # A consequence is that it is compiled only when used in the first test case,

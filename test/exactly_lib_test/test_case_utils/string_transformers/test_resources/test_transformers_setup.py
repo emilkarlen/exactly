@@ -24,18 +24,18 @@ TO_UPPER_CASE_TRANSFORMER = NameAndValue('TO_UPPER_CASE_TRANSFORMER',
 SYMBOL_TABLE = SymbolTable({
 
     DELETE_EVERYTHING_TRANSFORMER.name:
-        symbol_utils.container(string_transformer.StringTransformerResolverConstantTestImpl(
+        symbol_utils.container(string_transformer.StringTransformerSdvConstantTestImpl(
             DELETE_EVERYTHING_TRANSFORMER.value)),
 
     DUPLICATE_WORDS_TRANSFORMER.name:
-        symbol_utils.container(string_transformer.StringTransformerResolverConstantTestImpl(
+        symbol_utils.container(string_transformer.StringTransformerSdvConstantTestImpl(
             DUPLICATE_WORDS_TRANSFORMER.value)),
 
     DELETE_INITIAL_WORD_TRANSFORMER.name:
-        symbol_utils.container(string_transformer.StringTransformerResolverConstantTestImpl(
+        symbol_utils.container(string_transformer.StringTransformerSdvConstantTestImpl(
             DELETE_INITIAL_WORD_TRANSFORMER.value)),
 
     TO_UPPER_CASE_TRANSFORMER.name:
-        symbol_utils.container(string_transformer.StringTransformerResolverConstantTestImpl(
+        symbol_utils.container(string_transformer.StringTransformerSdvConstantTestImpl(
             TO_UPPER_CASE_TRANSFORMER.value)),
 })

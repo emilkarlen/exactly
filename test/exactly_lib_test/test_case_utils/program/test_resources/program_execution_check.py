@@ -6,7 +6,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices, new_default
@@ -135,7 +135,7 @@ def check(put: unittest.TestCase,
 
 
 def check_custom_parser(put: unittest.TestCase,
-                        parser: Parser[ProgramResolver],
+                        parser: Parser[ProgramSdv],
                         source: ParseSource,
                         arrangement: Arrangement,
                         expectation: Expectation):
@@ -152,13 +152,13 @@ class Executor:
         self.expectation = expectation
 
     def execute(self,
-                parser: Parser[ProgramResolver],
+                parser: Parser[ProgramSdv],
                 source: ParseSource):
-        program_resolver = parser.parse(source)
+        program_sdv = parser.parse(source)
         self.expectation.source.apply_with_message(self.put, source, 'source')
-        assert isinstance(program_resolver, ProgramResolver)
+        assert isinstance(program_sdv, ProgramSdv)
         self.expectation.symbol_references.apply_with_message(self.put,
-                                                              program_resolver.references,
+                                                              program_sdv.references,
                                                               'symbol-usages after parse')
         with tcds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
@@ -170,51 +170,51 @@ class Executor:
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
 
             with tmp_dir.tmp_dir() as pgm_output_dir:
-                self.check(pgm_output_dir, path_resolving_environment, program_resolver)
+                self.check(pgm_output_dir, path_resolving_environment, program_sdv)
 
     def check(self,
               pgm_output_dir: pathlib.Path,
               environment: PathResolvingEnvironmentPreOrPostSds,
-              program_resolver: ProgramResolver):
+              program_sdv: ProgramSdv):
 
         result = self._execute_pre_validate(environment,
-                                            program_resolver)
+                                            program_sdv)
         self.expectation.symbol_references.apply_with_message(self.put,
-                                                              program_resolver.references,
+                                                              program_sdv.references,
                                                               'symbol-usages after ' +
                                                               phase_step.STEP__VALIDATE_PRE_SDS)
         if result is not None:
             return
 
-        result = self._execute_post_sds_validate(environment, program_resolver)
+        result = self._execute_post_sds_validate(environment, program_sdv)
         if result is not None:
             return
         self.expectation.symbol_references.apply_with_message(self.put,
-                                                              program_resolver.references,
+                                                              program_sdv.references,
                                                               'symbol-usages after' +
                                                               phase_step.STEP__VALIDATE_POST_SETUP)
 
-        self._execute_program(pgm_output_dir, environment, program_resolver)
+        self._execute_program(pgm_output_dir, environment, program_sdv)
 
     def _execute_pre_validate(self,
                               environment: PathResolvingEnvironmentPreSds,
-                              program_resolver: ProgramResolver) -> Optional[TextRenderer]:
-        actual = program_resolver.validator.validate_pre_sds_if_applicable(environment)
+                              program_sdv: ProgramSdv) -> Optional[TextRenderer]:
+        actual = program_sdv.validator.validate_pre_sds_if_applicable(environment)
         self.expectation.validation.pre_sds.apply_with_message(self.put, actual, 'validation-pre-sds')
         return actual
 
     def _execute_post_sds_validate(self,
                                    environment: PathResolvingEnvironmentPostSds,
-                                   program_resolver: ProgramResolver) -> Optional[TextRenderer]:
-        actual = program_resolver.validator.validate_post_sds_if_applicable(environment)
+                                   program_sdv: ProgramSdv) -> Optional[TextRenderer]:
+        actual = program_sdv.validator.validate_post_sds_if_applicable(environment)
         self.expectation.validation.post_sds.apply_with_message(self.put, actual, 'validation-post-sds')
         return actual
 
     def _execute_program(self,
                          pgm_output_dir: pathlib.Path,
                          environment: PathResolvingEnvironmentPreOrPostSds,
-                         program_resolver: ProgramResolver):
-        result = self._execute(pgm_output_dir, environment, program_resolver)
+                         program_sdv: ProgramSdv):
+        result = self._execute(pgm_output_dir, environment, program_sdv)
 
         self.expectation.result.apply(self.put, result)
         self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
@@ -223,8 +223,8 @@ class Executor:
     def _execute(self,
                  pgm_output_dir: pathlib.Path,
                  environment: PathResolvingEnvironmentPreOrPostSds,
-                 program_resolver: ProgramResolver) -> ResultWithTransformationData:
-        program = program_resolver.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
+                 program_sdv: ProgramSdv) -> ResultWithTransformationData:
+        program = program_sdv.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
         assert isinstance(program, Program)
         execution_result = pgm_execution.make_transformed_file_from_output(pgm_output_dir,
                                                                            self.arrangement.process_execution_settings,

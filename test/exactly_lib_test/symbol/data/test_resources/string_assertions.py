@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
@@ -30,8 +30,8 @@ class MatchesPrimitiveValueResolvedOfAnyDependency(ValueAssertionBase):
                put: unittest.TestCase,
                value,
                message_builder: asrt.MessageBuilder):
-        put.assertIsInstance(value, StringResolver)
-        assert isinstance(value, StringResolver)  # Type info for IDE
+        put.assertIsInstance(value, StringSdv)
+        assert isinstance(value, StringSdv)  # Type info for IDE
         equals_symbol_references(self.symbol_references).apply_with_message(put,
                                                                             value.references,
                                                                             'symbol references')

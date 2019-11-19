@@ -3,7 +3,7 @@ from typing import Generic, Sequence, TypeVar, Optional
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterValue, \
-    PropertyGetterResolver
+    PropertyGetterSdv
 from exactly_lib.test_case_utils.matcher.property_matcher import MODEL
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -22,7 +22,7 @@ class PropertyGetterValueConstant(Generic[MODEL, T], PropertyGetterValue[MODEL, 
         return self._constant
 
 
-class PropertyGetterResolverConstant(Generic[MODEL, T], PropertyGetterResolver[MODEL, T]):
+class PropertyGetterSdvConstant(Generic[MODEL, T], PropertyGetterSdv[MODEL, T]):
     def __init__(self, constant: PropertyGetterValue[MODEL, T]):
         self._constant = constant
 

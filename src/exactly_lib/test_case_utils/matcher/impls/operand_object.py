@@ -7,8 +7,8 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver, OperandDdv
-from exactly_lib.test_case_utils.matcher.object import ObjectResolver, ObjectDdv
+from exactly_lib.test_case_utils.condition.comparison_structures import OperandSdv, OperandDdv
+from exactly_lib.test_case_utils.matcher.object import ObjectSdv, ObjectDdv
 from exactly_lib.test_case_utils.svh_exception import SvhException
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
@@ -38,8 +38,8 @@ class ObjectValueOfOperandDdv(Generic[T], ObjectDdv[T]):
         return self._operand.value_of_any_dependency(tcds)
 
 
-class ObjectResolverOfOperandResolver(Generic[T], ObjectResolver[T]):
-    def __init__(self, operand: OperandResolver):
+class ObjectSdvOfOperandSdv(Generic[T], ObjectSdv[T]):
+    def __init__(self, operand: OperandSdv):
         self._operand = operand
 
     @property
@@ -56,7 +56,7 @@ class ObjectResolverOfOperandResolver(Generic[T], ObjectResolver[T]):
 class _Validator(PreOrPostSdsValueValidator):
     def __init__(self,
                  symbols: SymbolTable,
-                 operand: OperandResolver,
+                 operand: OperandSdv,
                  ):
         self._symbols = symbols
         self._operand = operand

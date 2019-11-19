@@ -17,7 +17,7 @@ from exactly_lib.section_document.element_parsers.misc_utils import new_token_st
     std_error_message_text_for_token_syntax_error_from_exception
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream, TokenSyntaxError
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolUsage, SymbolReference
 from exactly_lib.test_case.os_services import OsServices
@@ -142,10 +142,10 @@ class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
         value_token = tokens_for_value.consume()
         if not tokens_for_value.is_null:
             raise SingleInstructionInvalidArgumentException(_format('Superfluous arguments.'))
-        value_resolver = parse_string.parse_string_resolver_from_token(value_token,
-                                                                       is_any_data_type())
-        executor = _SetExecutor(variable_name, value_resolver)
-        return TheInstructionEmbryo(executor, value_resolver.references)
+        value_sdv = parse_string.parse_string_sdv_from_token(value_token,
+                                                             is_any_data_type())
+        executor = _SetExecutor(variable_name, value_sdv)
+        return TheInstructionEmbryo(executor, value_sdv.references)
 
 
 UNSET_IDENTIFIER = 'unset'
@@ -158,9 +158,9 @@ PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
 class _SetExecutor(Executor):
     def __init__(self,
                  name: str,
-                 value: StringResolver):
+                 value: StringSdv):
         self.name = name
-        self.value_resolver = value
+        self.value_sdv = value
 
     def execute(self,
                 environ: Dict[str, str],
@@ -172,7 +172,7 @@ class _SetExecutor(Executor):
                        environ: Dict[str, str],
                        resolving_environment: PathResolvingEnvironmentPreOrPostSds) -> str:
         fragments = []
-        for fragment in self.value_resolver.fragments:
+        for fragment in self.value_sdv.fragments:
             if fragment.is_string_constant:
                 fragment_value = _expand_vars(fragment.string_constant, environ)
             else:

@@ -5,9 +5,9 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
-from exactly_lib_test.symbol.data.test_resources.string_resolvers import StringResolverTestImpl
+from exactly_lib_test.symbol.data.test_resources.string_sdvs import StringSdvTestImpl
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import is_reference_to_data_type_symbol
-from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_resolvers
+from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
 from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases import failing_regex_validation_cases
@@ -213,11 +213,11 @@ class ReferencedSymbolsShouldBeReportedAndUsed(integration_check.TestCaseWithChe
                     Arguments(source),
                     model_construction.of_lines(input_lines),
                     integration_check.Arrangement(
-                        symbols=symbol_table_from_name_and_resolvers([
+                        symbols=symbol_table_from_name_and_sdvs([
                             NameAndValue(symbol_in_regex.name,
-                                         StringResolverTestImpl(symbol_in_regex.value)),
+                                         StringSdvTestImpl(symbol_in_regex.value)),
                             NameAndValue(symbol_in_replacement.name,
-                                         StringResolverTestImpl(symbol_in_replacement.value)),
+                                         StringSdvTestImpl(symbol_in_replacement.value)),
                         ]),
                     ),
                     integration_check.Expectation(
@@ -242,7 +242,7 @@ class ValidationShouldFailWhenRegexIsInvalid(integration_check.TestCaseWithCheck
                     Arguments(source),
                     model_construction.arbitrary_model_constructor(),
                     integration_check.Arrangement(
-                        symbols=symbol_table_from_name_and_resolvers(regex_case.symbols)
+                        symbols=symbol_table_from_name_and_sdvs(regex_case.symbols)
                     ),
                     integration_check.Expectation(
                         symbol_references=asrt.matches_sequence(regex_case.reference_assertions),

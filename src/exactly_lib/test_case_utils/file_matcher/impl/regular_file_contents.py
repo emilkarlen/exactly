@@ -4,8 +4,8 @@ from exactly_lib.common.report_rendering import text_docs__old
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case import file_check_properties
-from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case.validation.pre_or_post_value_validators import ValueValidatorFromResolverValidator
@@ -107,8 +107,8 @@ class RegularFileMatchesStringMatcherDdv(FileMatcherDdv):
         return RegularFileMatchesStringMatcher(self._contents_matcher.value_of_any_dependency(tcds))
 
 
-class RegularFileMatchesStringMatcherResolver(FileMatcherResolver):
-    def __init__(self, contents_matcher: StringMatcherResolver):
+class RegularFileMatchesStringMatcherSdv(FileMatcherSdv):
+    def __init__(self, contents_matcher: StringMatcherSdv):
         self._contents_matcher = contents_matcher
 
     @property

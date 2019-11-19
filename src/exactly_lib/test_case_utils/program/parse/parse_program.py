@@ -3,24 +3,24 @@ from exactly_lib.definitions.entity import types
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_executable_file, parse_system_program, \
     parse_shell_command, parse_with_reference_to_program
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 
 
-def program_parser() -> Parser[ProgramResolver]:
+def program_parser() -> Parser[ProgramSdv]:
     return parser_classes.ParserFromTokenParserFunction(parse_program)
 
 
-def parse_program(parser: TokenParser) -> ProgramResolver:
+def parse_program(parser: TokenParser) -> ProgramSdv:
     """
     Consumes whole lines, so that the parser will be at the start of the following line, after the parse.
     """
     program = _parse_simple_program(parser)
 
-    def parse_transformer(_parser: TokenParser) -> ProgramResolver:
+    def parse_transformer(_parser: TokenParser) -> ProgramSdv:
         transformer = parse_string_transformer.parse_string_transformer_from_token_parser(_parser)
         parser.require_is_at_eol('Unexpected arguments after ' + types.STRING_TRANSFORMER_TYPE_INFO.name.singular)
         parser.consume_current_line_as_string_of_remaining_part_of_current_line()
@@ -31,7 +31,7 @@ def parse_program(parser: TokenParser) -> ProgramResolver:
                                                      instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
-def _parse_simple_program(parser: TokenParser) -> ProgramResolver:
+def _parse_simple_program(parser: TokenParser) -> ProgramSdv:
     return parser.parse_default_or_optional_command(parse_executable_file.parse_as_program,
                                                     _PROGRAM_VARIANT_SETUPS,
                                                     False)

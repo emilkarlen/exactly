@@ -76,7 +76,7 @@ class SymbolDefinitionInfo:
         return self.definition.name
 
     def value_type(self) -> ValueType:
-        return self.definition.resolver_container.resolver.value_type
+        return self.definition.symbol_container.sdv.value_type
 
     def type_identifier(self) -> str:
         return ANY_TYPE_INFO_DICT[self.value_type()].identifier

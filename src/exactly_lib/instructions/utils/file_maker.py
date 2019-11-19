@@ -2,10 +2,10 @@ from typing import Sequence, Optional
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.symbol.data import string_resolver
-from exactly_lib.symbol.data.path_resolver import PathResolver
-from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
-from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
+from exactly_lib.symbol.data import string_sdv
+from exactly_lib.symbol.data.path_sdv import PathSdv
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \
@@ -49,7 +49,7 @@ class FileMaker:
 
 
 class FileMakerForConstantContents(FileMaker):
-    def __init__(self, contents: string_resolver.StringResolver):
+    def __init__(self, contents: string_sdv.StringSdv):
         self._contents = contents
 
     def make(self,
@@ -71,7 +71,7 @@ class FileMakerForContentsFromProgram(FileMaker):
     def __init__(self,
                  source_info: InstructionSourceInfo,
                  output_channel: ProcOutputFile,
-                 program: ProgramResolver):
+                 program: ProgramSdv):
         self._output_channel = output_channel
         self._source_info = source_info
         self._program = program
@@ -114,8 +114,8 @@ class FileMakerForContentsFromProgram(FileMaker):
 class FileMakerForContentsFromExistingFile(FileMaker):
     def __init__(self,
                  source_info: InstructionSourceInfo,
-                 transformer: StringTransformerResolver,
-                 src_path: PathResolver):
+                 transformer: StringTransformerSdv,
+                 src_path: PathSdv):
         self._source_info = source_info
         self._transformer = transformer
         self._src_path = src_path

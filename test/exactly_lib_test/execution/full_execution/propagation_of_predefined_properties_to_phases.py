@@ -5,7 +5,7 @@ from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.execution.phase_step_simple import \
     ALL_SETUP_WITH_ENV_ARG, ALL_ASSERT_WITH_ENV_ARG, ALL_BEFORE_ASSERT_WITH_ENV_ARG, \
     ALL_CLEANUP_WITH_ENV_ARG, ALL_ACT_WITH_ENV_ARG
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util.functional import Composition
@@ -36,7 +36,7 @@ class TestPredefinedSymbols(unittest.TestCase):
             self):
         # ARRANGE #
         predefined_symbols_table = SymbolTable({
-            'predefined symbol': symbol_utils.container(string_resolvers.str_constant(
+            'predefined symbol': symbol_utils.container(string_sdvs.str_constant(
                 'predefined string value (not used by this test)'))
         })
         predefined_properties = PredefinedProperties(environ={},

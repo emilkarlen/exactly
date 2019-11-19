@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
+from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.logic_types import Quantifier
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
@@ -79,7 +79,7 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
     def runTest(self):
         # ARRANGE #
         named_transformer = NameAndValue('the_transformer',
-                                         StringTransformerConstant(
+                                         StringTransformerSdvConstant(
                                              contents_transformation.ToUppercaseStringTransformer()))
 
         actual_original_contents = lines_content(['only',

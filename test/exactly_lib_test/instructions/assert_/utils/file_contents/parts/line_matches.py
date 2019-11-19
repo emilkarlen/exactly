@@ -4,10 +4,10 @@ from typing import Callable
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.string_matcher_assertion_part import \
     StringMatcherAssertionPart
-from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
+from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
-from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
+from exactly_lib.test_case_utils.line_matcher.sdvs import LineMatcherSdvConstant
 from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches as sut
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
@@ -45,7 +45,7 @@ class Case:
 class TestCaseBase(unittest.TestCase):
     def _check_cases_with_non_empty_file(
             self,
-            get_assertion_part_function: Callable[[ExpectationType, LineMatcherResolver], FileContentsAssertionPart],
+            get_assertion_part_function: Callable[[ExpectationType, LineMatcherSdv], FileContentsAssertionPart],
             actual_file_contents: str,
             matcher_cases: list):
 
@@ -66,9 +66,9 @@ class TestCaseBase(unittest.TestCase):
                                               environment.phase_logging.space_for_instruction(),
                                               IdentityStringTransformer(),
                                               dst_file_path_getter)
-                            matcher_resolver = LineMatcherConstantResolver(case.matcher)
+                            matcher_sdv = LineMatcherSdvConstant(case.matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
-                                                                         matcher_resolver)
+                                                                         matcher_sdv)
                             # ACT #
                             actual = assertion_part.check_and_return_pfh(environment, os_services, 'custom env', ftc)
                             # ASSERT #
@@ -101,9 +101,9 @@ class TestCaseBase(unittest.TestCase):
                                               environment.phase_logging.space_for_instruction(),
                                               IdentityStringTransformer(),
                                               dst_file_path_getter)
-                            matcher_resolver = LineMatcherConstantResolver(matcher)
+                            matcher_sdv = LineMatcherSdvConstant(matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
-                                                                         matcher_resolver)
+                                                                         matcher_sdv)
                             # ACT #
                             actual = assertion_part.check_and_return_pfh(environment, os_services, 'custom env', ftc)
                             # ASSERT #
@@ -167,10 +167,10 @@ class TestAnyLineMatches(TestCaseBase):
 
 
 def assertion_part_for_every_line_matches(expectation_type: ExpectationType,
-                                          line_matcher_resolver: LineMatcherResolver) -> FileContentsAssertionPart:
-    return StringMatcherAssertionPart(sut.matcher_for_every_line_matches(expectation_type, line_matcher_resolver))
+                                          line_matcher_sdv: LineMatcherSdv) -> FileContentsAssertionPart:
+    return StringMatcherAssertionPart(sut.matcher_for_every_line_matches(expectation_type, line_matcher_sdv))
 
 
 def assertion_part_for_any_line_matches(expectation_type: ExpectationType,
-                                        line_matcher_resolver: LineMatcherResolver) -> FileContentsAssertionPart:
-    return StringMatcherAssertionPart(sut.matcher_for_any_line_matches(expectation_type, line_matcher_resolver))
+                                        line_matcher_sdv: LineMatcherSdv) -> FileContentsAssertionPart:
+    return StringMatcherAssertionPart(sut.matcher_for_any_line_matches(expectation_type, line_matcher_sdv))

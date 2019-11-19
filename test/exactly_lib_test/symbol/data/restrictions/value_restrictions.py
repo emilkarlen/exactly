@@ -1,19 +1,19 @@
 import unittest
 from typing import Optional
 
-from exactly_lib.symbol.data import path_resolvers
-from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.data.path_resolver import PathResolver
+from exactly_lib.symbol.data import path_sdvs
+from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr
 from exactly_lib.symbol.data.value_restriction import ValueRestriction, ErrorMessageWithFixTip
-from exactly_lib.symbol.resolver_structure import SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.data.test_resources.list_resolvers import ListResolverTestImplForConstantListValue
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl
+from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
+from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSdvConstantTestImpl
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
 from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
 from exactly_lib_test.type_system.logic.test_resources.values import FileMatcherTestImpl, FakeStringTransformer
 
@@ -31,9 +31,9 @@ class TestAnySymbolTypeRestriction(unittest.TestCase):
     def test_pass_WHEN_type_category_is_data(self):
         # ARRANGE #
         test_cases = [
-            string_resolvers.str_constant('string'),
-            path_constant_resolver(),
-            ListResolverTestImplForConstantListValue(ListDdv([])),
+            string_sdvs.str_constant('string'),
+            path_constant_sdv(),
+            ListSdvTestImplForConstantListDdv(ListDdv([])),
         ]
         restriction = vr.AnyDataTypeRestriction()
         symbols = empty_symbol_table()
@@ -48,8 +48,8 @@ class TestAnySymbolTypeRestriction(unittest.TestCase):
     def test_fail_WHEN_type_category_is_not_data(self):
         # ARRANGE #
         test_cases = [
-            FileMatcherResolverConstantTestImpl(FileMatcherTestImpl()),
-            StringTransformerResolverConstantTestImpl(FakeStringTransformer(), []),
+            FileMatcherSdvConstantTestImpl(FileMatcherTestImpl()),
+            StringTransformerSdvConstantTestImpl(FakeStringTransformer(), []),
         ]
         restriction = vr.AnyDataTypeRestriction()
         symbols = empty_symbol_table()
@@ -67,8 +67,8 @@ class TestStringRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            string_resolvers.str_constant('string'),
-            string_resolvers.str_constant(''),
+            string_sdvs.str_constant('string'),
+            string_sdvs.str_constant(''),
         ]
         restriction = vr.StringRestriction()
         symbols = empty_symbol_table()
@@ -83,8 +83,8 @@ class TestStringRestriction(unittest.TestCase):
     def test_fail__not_a_string(self):
         # ARRANGE #
         test_cases = [
-            path_constant_resolver(),
-            FileMatcherResolverConstantTestImpl(FileMatcherTestImpl()),
+            path_constant_sdv(),
+            FileMatcherSdvConstantTestImpl(FileMatcherTestImpl()),
         ]
         restriction = vr.StringRestriction()
         symbols = empty_symbol_table()
@@ -102,8 +102,8 @@ class TestPathRelativityRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            path_resolvers.constant(path_test_impl(relativity=RelOptionType.REL_ACT)),
-            path_resolvers.constant(path_test_impl(relativity=RelOptionType.REL_HDS_CASE)),
+            path_sdvs.constant(path_test_impl(relativity=RelOptionType.REL_ACT)),
+            path_sdvs.constant(path_test_impl(relativity=RelOptionType.REL_HDS_CASE)),
         ]
         restriction = vr.PathRelativityRestriction(
             PathRelativityVariants(
@@ -121,8 +121,8 @@ class TestPathRelativityRestriction(unittest.TestCase):
     def test_fail__relative_paths(self):
         # ARRANGE #
         test_cases = [
-            path_resolvers.constant(path_test_impl(relativity=RelOptionType.REL_ACT)),
-            path_resolvers.constant(path_test_impl(relativity=RelOptionType.REL_HDS_CASE)),
+            path_sdvs.constant(path_test_impl(relativity=RelOptionType.REL_ACT)),
+            path_sdvs.constant(path_test_impl(relativity=RelOptionType.REL_HDS_CASE)),
         ]
         restriction = vr.PathRelativityRestriction(
             PathRelativityVariants(
@@ -211,9 +211,9 @@ class _VisitorThatRegisterClassOfVisitMethod(vr.ValueRestrictionVisitor):
         return self.return_value
 
 
-def path_constant_resolver() -> PathResolver:
-    return path_resolvers.constant(path_test_impl('file-name-rel-home',
-                                                  relativity=RelOptionType.REL_HDS_CASE))
+def path_constant_sdv() -> PathSdv:
+    return path_sdvs.constant(path_test_impl('file-name-rel-home',
+                                             relativity=RelOptionType.REL_HDS_CASE))
 
 
 class UnknownValueRestriction(ValueRestriction):

@@ -4,13 +4,13 @@ from typing import List
 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.resolver_structure import SymbolValueResolver
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
-from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
+from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
@@ -20,7 +20,7 @@ from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import ddv_assertions as asrt_file_matcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import name_glob_pattern_matcher_of, \
     type_matcher_of, name_reg_ex_pattern_matcher_of
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.sdv_assertions import \
     resolved_ddv_matches_file_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -42,14 +42,14 @@ def suite() -> unittest.TestSuite:
 
 
 class Configuration(matcher_parse_check.Configuration[FileMatcherModel]):
-    def parse(self, parser: TokenParser) -> SymbolValueResolver:
-        return sut.parse_resolver(parser)
+    def parse(self, parser: TokenParser) -> SymbolDependentValue:
+        return sut.parse_sdv(parser)
 
     def is_reference_to(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_file_matcher_reference_to(symbol_name)
 
-    def resolver_of_constant_matcher(self, matcher: FileMatcher) -> SymbolValueResolver:
-        return FileMatcherConstantResolver(matcher)
+    def sdv_of_constant_matcher(self, matcher: FileMatcher) -> SymbolDependentValue:
+        return FileMatcherConstantSdv(matcher)
 
     def arbitrary_model_that_should_not_be_touched(self) -> FileMatcherModel:
         return file_matcher_models.FileMatcherModelForPrimitivePath(
@@ -70,10 +70,10 @@ DESCRIPTION_IS_SINGLE_STR = asrt.matches_sequence([asrt.is_instance(str)])
 
 class Expectation:
     def __init__(self,
-                 resolver: ValueAssertion[SymbolValueResolver],
+                 sdv: ValueAssertion[SymbolDependentValue],
                  source: ValueAssertion[ParseSource],
                  ):
-        self.selector = resolver
+        self.selector = sdv
         self.source = source
 
 
@@ -89,10 +89,10 @@ class TestCaseBase(unittest.TestCase):
     def _check_parse(self,
                      source: ParseSource,
                      expectation: Expectation):
-        parsed_selector_resolver = sut.parse_resolver_from_parse_source(source)
+        parsed_selector_sdv = sut.parse_sdv_from_parse_source(source)
 
-        expectation.selector.apply_with_message(self, parsed_selector_resolver,
-                                                'parsed selector resolver')
+        expectation.selector.apply_with_message(self, parsed_selector_sdv,
+                                                'parsed selector sdv')
 
         expectation.source.apply_with_message(self, source, 'source after parse')
 

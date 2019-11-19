@@ -5,8 +5,8 @@ from typing import List, Optional, Iterable, Callable
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data.string_or_path import StringOrPathResolver
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.data.string_or_path import StringOrPathSdv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, SingleStepValidator, \
     ValidationStep, \
@@ -20,7 +20,7 @@ from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
 from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.test_case_utils.string_matcher.resolvers import StringMatcherResolverFromParts2
+from exactly_lib.test_case_utils.string_matcher.sdvs import StringMatcherSdvFromParts2
 from exactly_lib.type_system.data.string_or_path_ddvs import StringOrPath, StringOrPathDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -45,21 +45,21 @@ EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_path.CONFIGURATION
 
 
 def parse(expectation_type: ExpectationType,
-          token_parser: TokenParser) -> StringMatcherResolver:
+          token_parser: TokenParser) -> StringMatcherSdv:
     token_parser.require_has_valid_head_token(_EXPECTED_SYNTAX_ELEMENT_FOR_EQUALS)
     expected_contents = parse_here_doc_or_path.parse_from_token_parser(
         token_parser,
         EXPECTED_FILE_REL_OPT_ARG_CONFIG,
         consume_last_here_doc_line=False)
 
-    return value_resolver(
+    return value_sdv(
         expectation_type,
         expected_contents,
     )
 
 
-def value_resolver(expectation_type: ExpectationType,
-                   expected_contents: StringOrPathResolver) -> StringMatcherResolver:
+def value_sdv(expectation_type: ExpectationType,
+              expected_contents: StringOrPathSdv) -> StringMatcherSdv:
     validator = _validator_of_expected(expected_contents)
 
     def get_matcher_value(symbols: SymbolTable) -> StringMatcherDdv:
@@ -74,7 +74,7 @@ def value_resolver(expectation_type: ExpectationType,
             get_validator,
         )
 
-    return StringMatcherResolverFromParts2(
+    return StringMatcherSdvFromParts2(
         expected_contents.references,
         SingleStepValidator(ValidationStep.PRE_SDS,
                             validator),
@@ -285,7 +285,7 @@ class EqualityStringMatcher(StringMatcher):
         return self._new_tb().append_details(self._expected_detail_renderer)
 
 
-def _validator_of_expected(expected_contents: StringOrPathResolver) -> PreOrPostSdsValidator:
+def _validator_of_expected(expected_contents: StringOrPathSdv) -> PreOrPostSdsValidator:
     return expected_contents.validator__file_must_exist_as(FileType.REGULAR, True)
 
 

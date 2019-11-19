@@ -16,7 +16,7 @@ from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
-from exactly_lib.symbol.resolver_structure import SymbolValueResolver, container_of_builtin, SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue, container_of_builtin, SymbolContainer
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case_utils.symbol.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.util import argument_parsing_utils
@@ -28,13 +28,13 @@ from exactly_lib.util.textformat.structure.document import SectionContents
 class BuiltinSymbol:
     def __init__(self,
                  name: str,
-                 resolver: SymbolValueResolver,
+                 sdv: SymbolDependentValue,
                  single_line_description: str,
                  documentation: SectionContents,
                  see_also: Sequence[SeeAlsoTarget] = (),
                  ):
         self._name = name
-        self._resolver = resolver
+        self._sdv = sdv
         self._single_line_description = single_line_description
         self._documentation = documentation
         self._see_also = see_also
@@ -45,11 +45,11 @@ class BuiltinSymbol:
 
     @property
     def container(self) -> SymbolContainer:
-        return container_of_builtin(self._resolver)
+        return container_of_builtin(self._sdv)
 
     @property
     def documentation(self) -> BuiltinSymbolDocumentation:
-        return BuiltinSymbolDocumentation(self._resolver.value_type,
+        return BuiltinSymbolDocumentation(self._sdv.value_type,
                                           self.name,
                                           self._single_line_description,
                                           self._documentation,
@@ -57,12 +57,12 @@ class BuiltinSymbol:
 
 
 def builtin_symbol_of_custom_symbol(name: str,
-                                    resolver: SymbolValueResolver,
+                                    sdv: SymbolDependentValue,
                                     documentation: CustomSymbolDocumentation
                                     ) -> BuiltinSymbol:
     return BuiltinSymbol(
         name,
-        resolver,
+        sdv,
         documentation.single_line_description,
         documentation.documentation,
         documentation.see_also
@@ -100,7 +100,7 @@ class TestSuiteDefinition(tuple):
         return self[1]
 
     @property
-    def sandbox_root_dir_resolver(self) -> SandboxRootDirNameResolver:
+    def sandbox_root_dir_sdv(self) -> SandboxRootDirNameResolver:
         return sandbox_dir_resolving.mk_tmp_dir_with_prefix(self.__get_sds_root_name_prefix())
 
     @property
@@ -111,7 +111,7 @@ class TestSuiteDefinition(tuple):
 class MainProgram:
     def __init__(self,
                  default_test_case_handling_setup: TestCaseHandlingSetup,
-                 default_case_sandbox_root_dir_name_resolver: SandboxRootDirNameResolver,
+                 default_case_sandbox_root_dir_name_sdv: SandboxRootDirNameResolver,
                  atc_os_process_executor: AtcOsProcessExecutor,
                  test_case_definition: TestCaseDefinitionForMainProgram,
                  test_suite_definition: TestSuiteDefinition,
@@ -134,7 +134,7 @@ class MainProgram:
         self._atc_os_process_executor = atc_os_process_executor
         self._default_test_case_handling_setup = default_test_case_handling_setup
         self._test_case_def_for_m_p = test_case_definition
-        self._default_case_sandbox_root_dir_name_resolver = default_case_sandbox_root_dir_name_resolver
+        self._default_case_sandbox_root_dir_name_sdv = default_case_sandbox_root_dir_name_sdv
 
         self._commands = {
             common_cli_options.HELP_COMMAND: self._parse_and_execute_help,
@@ -177,7 +177,7 @@ class MainProgram:
                                                          settings.handling_setup,
                                                          self._atc_os_process_executor,
                                                          False,
-                                                         self._test_suite_definition.sandbox_root_dir_resolver)
+                                                         self._test_suite_definition.sandbox_root_dir_sdv)
         processor = processing.Processor(default_configuration,
                                          suite_hierarchy_reading.Reader(
                                              suite_hierarchy_reading.Environment(
@@ -196,7 +196,7 @@ class MainProgram:
         from exactly_lib.cli.program_modes.test_case import argument_parsing
 
         settings = argument_parsing.parse(self._default_test_case_handling_setup,
-                                          self._default_case_sandbox_root_dir_name_resolver,
+                                          self._default_case_sandbox_root_dir_name_sdv,
                                           command_line_arguments,
                                           common_cli_options.COMMAND_DESCRIPTIONS)
         return self.execute_test_case(settings)
@@ -215,7 +215,7 @@ class MainProgram:
         from exactly_lib.cli.program_modes.symbol import argument_parsing, execution
 
         request = argument_parsing.parse(self._default_test_case_handling_setup,
-                                         self._default_case_sandbox_root_dir_name_resolver,
+                                         self._default_case_sandbox_root_dir_name_sdv,
                                          command_line_arguments,
                                          common_cli_options.COMMAND_DESCRIPTIONS)
         executor = execution.Executor(

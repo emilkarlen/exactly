@@ -3,9 +3,9 @@ from typing import List, Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.data import list_resolvers, string_resolvers
-from exactly_lib.symbol.data import path_resolvers
-from exactly_lib.symbol.data.list_resolver import Element
+from exactly_lib.symbol.data import list_sdvs, string_sdvs
+from exactly_lib.symbol.data import path_sdvs
+from exactly_lib.symbol.data.list_sdv import ElementSdv
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
@@ -46,7 +46,7 @@ def suite() -> unittest.TestSuite:
 
 class Expectation:
     def __init__(self,
-                 elements: List[Element],
+                 elements: List[ElementSdv],
                  validators: ValueAssertion[Sequence[PreOrPostSdsValidator]],
                  references: ValueAssertion[Sequence[SymbolReference]]):
         self.elements = elements
@@ -68,7 +68,7 @@ class PathCase:
     def __init__(self,
                  name: str,
                  relativity_variant: RelativityOptionConfiguration,
-                 expected_list_element: Element):
+                 expected_list_element: ElementSdv):
         self.name = name
         self.relativity_variant = relativity_variant
         self.expected_list_element = expected_list_element
@@ -127,14 +127,14 @@ class TestSingleElement(unittest.TestCase):
             Case('plain string',
                  plain_string,
                  Expectation(
-                     elements=[list_resolvers.str_element(plain_string)],
+                     elements=[list_sdvs.str_element(plain_string)],
                      validators=asrt.is_empty_sequence,
                      references=asrt.is_empty_sequence,
                  )),
             Case('symbol reference',
                  symbol_reference_syntax_for_name(symbol_name),
                  Expectation(
-                     elements=[list_resolvers.symbol_element(symbol_reference(symbol_name))],
+                     elements=[list_sdvs.symbol_element(symbol_reference(symbol_name))],
                      validators=asrt.is_empty_sequence,
                      references=asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
                          symbol_name,
@@ -156,7 +156,7 @@ class TestSingleElement(unittest.TestCase):
                      syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
                      str_with_space_and_invalid_token_syntax]),
                  Expectation(
-                     elements=[list_resolvers.str_element(str_with_space_and_invalid_token_syntax)],
+                     elements=[list_sdvs.str_element(str_with_space_and_invalid_token_syntax)],
                      validators=asrt.is_empty_sequence,
                      references=asrt.is_empty_sequence,
                  )),
@@ -165,7 +165,7 @@ class TestSingleElement(unittest.TestCase):
                      syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
                      '   ' + str_with_space_and_invalid_token_syntax + '  \t ']),
                  Expectation(
-                     elements=[list_resolvers.str_element(str_with_space_and_invalid_token_syntax)],
+                     elements=[list_sdvs.str_element(str_with_space_and_invalid_token_syntax)],
                      validators=asrt.is_empty_sequence,
                      references=asrt.is_empty_sequence,
                  )),
@@ -176,10 +176,10 @@ class TestSingleElement(unittest.TestCase):
                               symbol_reference_syntax_for_name(symbol_name),
                               'after'])]),
                  Expectation(
-                     elements=[list_resolvers.string_element(string_resolvers.from_fragments([
-                         string_resolvers.str_fragment('before'),
-                         string_resolvers.symbol_fragment(symbol_reference(symbol_name)),
-                         string_resolvers.str_fragment('after'),
+                     elements=[list_sdvs.string_element(string_sdvs.from_fragments([
+                         string_sdvs.str_fragment('before'),
+                         string_sdvs.symbol_fragment(symbol_reference(symbol_name)),
+                         string_sdvs.str_fragment('after'),
                      ]))
                      ],
                      validators=asrt.is_empty_sequence,
@@ -210,9 +210,9 @@ class TestSingleElement(unittest.TestCase):
                      rel_opts.symbol_conf_rel_hds(RelHdsOptionType.REL_HDS_ACT,
                                                   symbol_name,
                                                   sut.REL_OPTIONS_CONF.accepted_relativity_variants),
-                     list_resolvers.string_element(
-                         string_resolvers.from_path_resolver(
-                             path_resolvers.rel_symbol_with_const_file_name(
+                     list_sdvs.string_element(
+                         string_sdvs.from_path_sdv(
+                             path_sdvs.rel_symbol_with_const_file_name(
                                  SymbolReference(symbol_name,
                                                  reference_restrictions_for_path_symbol(
                                                      sut.REL_OPTIONS_CONF.accepted_relativity_variants
@@ -276,10 +276,10 @@ def is_single_validator_with(expectations: Sequence[NameAndValue[ValueAssertion[
 
 
 def list_element_for_path(relativity: RelOptionType,
-                          name: str) -> Element:
-    return list_resolvers.string_element(
-        string_resolvers.from_path_resolver(
-            path_resolvers.of_rel_option_with_const_file_name(relativity, name)))
+                          name: str) -> ElementSdv:
+    return list_sdvs.string_element(
+        string_sdvs.from_path_sdv(
+            path_sdvs.of_rel_option_with_const_file_name(relativity, name)))
 
 
 class TestMultipleElements(unittest.TestCase):
@@ -298,8 +298,8 @@ class TestMultipleElements(unittest.TestCase):
                  ab.sequence([plain_string1,
                               plain_string2]).as_str,
                  Expectation(
-                     elements=[list_resolvers.str_element(plain_string1),
-                               list_resolvers.str_element(plain_string2)],
+                     elements=[list_sdvs.str_element(plain_string1),
+                               list_sdvs.str_element(plain_string2)],
                      validators=asrt.is_empty_sequence,
                      references=asrt.is_empty_sequence,
                  )),
@@ -310,12 +310,12 @@ class TestMultipleElements(unittest.TestCase):
                               remaining_part_of_current_line_with_sym_ref,
                               ]).as_str,
                  Expectation(
-                     elements=[list_resolvers.symbol_element(symbol_reference(symbol_name_1)),
-                               list_resolvers.str_element(plain_string1),
-                               list_resolvers.string_element(string_resolvers.from_fragments([
-                                   string_resolvers.str_fragment('before'),
-                                   string_resolvers.symbol_fragment(symbol_reference(symbol_name_2)),
-                                   string_resolvers.str_fragment('after'),
+                     elements=[list_sdvs.symbol_element(symbol_reference(symbol_name_1)),
+                               list_sdvs.str_element(plain_string1),
+                               list_sdvs.string_element(string_sdvs.from_fragments([
+                                   string_sdvs.str_fragment('before'),
+                                   string_sdvs.symbol_fragment(symbol_reference(symbol_name_2)),
+                                   string_sdvs.str_fragment('after'),
                                ]))
                                ],
                      validators=asrt.is_empty_sequence,

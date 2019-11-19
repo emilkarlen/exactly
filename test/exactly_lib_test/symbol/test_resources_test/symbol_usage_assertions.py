@@ -1,9 +1,9 @@
 import unittest
 
 import exactly_lib_test.symbol.test_resources.symbol_usage_assertions
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions import reference_restrictions as r, value_restrictions as vr
-from exactly_lib.symbol.resolver_structure import container_of_builtin
+from exactly_lib.symbol.sdv_structure import container_of_builtin
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -22,7 +22,7 @@ class TestMatchesDefinition(unittest.TestCase):
         # ARRANGE #
         actual_name = 'the name'
         actual_definition = SymbolDefinition(actual_name,
-                                             container_of_builtin(string_resolvers.str_constant('s')))
+                                             container_of_builtin(string_sdvs.str_constant('s')))
 
         assertion_that_is_expected_to_succeed = asrt.is_(actual_name)
 
@@ -34,7 +34,7 @@ class TestMatchesDefinition(unittest.TestCase):
 
     def test_container_SHOULD_be_given_as_argument_to_assertion_on_container(self):
         # ARRANGE #
-        actual_container = container_of_builtin(string_resolvers.str_constant('s'))
+        actual_container = container_of_builtin(string_sdvs.str_constant('s'))
         actual_definition = SymbolDefinition('the name',
                                              actual_container)
 
@@ -48,7 +48,7 @@ class TestMatchesDefinition(unittest.TestCase):
 
     def test_arbitrary_failure(self):
         # ARRANGE #
-        actual_container = container_of_builtin(string_resolvers.str_constant('s'))
+        actual_container = container_of_builtin(string_sdvs.str_constant('s'))
         actual_definition = SymbolDefinition('the name',
                                              actual_container)
 

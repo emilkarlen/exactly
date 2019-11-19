@@ -1,20 +1,20 @@
-from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
-from exactly_lib.test_case_utils.string_transformer import resolvers
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
+from exactly_lib.test_case_utils.string_transformer import sdvs
 from exactly_lib.test_case_utils.string_transformer.impl import env_vars_replacement, case_converters
 from exactly_lib.test_case_utils.symbol.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.util.textformat.structure import document
 
 
-def to_upper_case(name: str) -> StringTransformerResolver:
-    return resolvers.StringTransformerConstant(case_converters.ToUpperCaseStringTransformer(name))
+def to_upper_case(name: str) -> StringTransformerSdv:
+    return sdvs.StringTransformerSdvConstant(case_converters.ToUpperCaseStringTransformer(name))
 
 
-def to_lower_case(name: str) -> StringTransformerResolver:
-    return resolvers.StringTransformerConstant(case_converters.ToLowerCaseStringTransformer(name))
+def to_lower_case(name: str) -> StringTransformerSdv:
+    return sdvs.StringTransformerSdvConstant(case_converters.ToLowerCaseStringTransformer(name))
 
 
-def replace_env_vars(name: str) -> StringTransformerResolver:
-    return resolvers.StringTransformerConstantOfDdv(env_vars_replacement.ddv(name))
+def replace_env_vars(name: str) -> StringTransformerSdv:
+    return sdvs.StringTransformerSdvConstantOfDdv(env_vars_replacement.ddv(name))
 
 
 def to_upper_case_doc() -> CustomSymbolDocumentation:

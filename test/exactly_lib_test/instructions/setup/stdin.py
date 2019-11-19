@@ -9,9 +9,9 @@ from exactly_lib.instructions.setup import stdin as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -191,7 +191,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
                   Arrangement(),
                   Expectation(
                       settings_builder=AssertStdinIsSetToContents(
-                          string_resolvers.str_constant(hd.contents_str_from_lines([content_line_of_here_doc])),
+                          string_sdvs.str_constant(hd.contents_str_from_lines([content_line_of_here_doc])),
                       ),
                       source=is_at_beginning_of_line(4)),
                   )
@@ -226,7 +226,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
                           ),
                           Expectation(
                               settings_builder=AssertStdinIsSetToContents(
-                                  parse_string.string_resolver_from_string(
+                                  parse_string.string_sdv_from_string(
                                       here_doc_contents_template.format(
                                           symbol=symbol_reference_syntax_for_name(symbol_name)))),
                               symbol_usages=equals_symbol_references(expected_symbol_references),
@@ -314,8 +314,8 @@ class AssertStdinFileIsSetToFile(ValueAssertionBase):
 
 class AssertStdinIsSetToContents(ValueAssertionBase):
     def __init__(self,
-                 expected_contents_resolver: StringResolver):
-        self.expected_contents_resolver = expected_contents_resolver
+                 expected_contents_sdv: StringSdv):
+        self.expected_contents_sdv = expected_contents_sdv
 
     def _apply(self,
                put: unittest.TestCase,
@@ -325,7 +325,7 @@ class AssertStdinIsSetToContents(ValueAssertionBase):
         assert isinstance(model, SettingsBuilderAssertionModel)  # Type info for IDE
         put.assertIsNone(model.actual.stdin.file_name,
                          message_builder.apply('file name should not be set when using here doc'))
-        expected_contents_str = self.expected_contents_resolver.resolve_value_of_any_dependency(
+        expected_contents_str = self.expected_contents_sdv.resolve_value_of_any_dependency(
             model.environment.path_resolving_environment_pre_or_post_sds)
         put.assertEqual(expected_contents_str,
                         model.actual.stdin.contents,

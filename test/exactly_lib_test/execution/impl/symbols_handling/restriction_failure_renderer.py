@@ -1,7 +1,7 @@
 import unittest
 from typing import Optional
 
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureOfDirectReference, \
     FailureOfIndirectReference
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
@@ -55,7 +55,7 @@ class TestRenderFailureOfIndirectReference(unittest.TestCase):
     def test_directly_referenced_symbol_is_builtin(self):
         referenced_symbol = NameAndValue('referenced symbol',
                                          symbol_utils.container_of_builtin(
-                                             string_resolvers.str_constant('referenced symbol value')))
+                                             string_sdvs.str_constant('referenced symbol value')))
         for how_to_fix in ['', 'how_to_fix']:
             with self.subTest(how_to_fix=how_to_fix):
                 error = _new_em('error message',
@@ -85,7 +85,7 @@ class TestRenderFailureOfIndirectReference(unittest.TestCase):
                 # ACT #
                 checked_symbol = NameAndValue('checked_symbol',
                                               symbol_utils.container_of_builtin(
-                                                  string_resolvers.str_constant('checked symbol value')))
+                                                  string_sdvs.str_constant('checked symbol value')))
                 symbol_table = SymbolTable({
                     checked_symbol.name: checked_symbol.value
                 })

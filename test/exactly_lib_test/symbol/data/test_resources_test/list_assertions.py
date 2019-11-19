@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.symbol.data import list_resolver as lr
-from exactly_lib.symbol.data import string_resolvers, list_resolvers
+from exactly_lib.symbol.data import list_sdv as lr
+from exactly_lib.symbol.data import string_sdvs, list_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions, \
     ReferenceRestrictionsOnDirectAndIndirect, is_any_data_type
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
@@ -30,12 +30,12 @@ class TestEqualsConstantList(unittest.TestCase):
     def test_equals(self):
         test_cases = [
             (
-                list_resolvers.empty(),
+                list_sdvs.empty(),
                 []
             ),
             (
-                list_resolvers.from_str_constants(['value 1',
-                                                   'value 2']),
+                list_sdvs.from_str_constants(['value 1',
+                                              'value 2']),
                 ['value 1', 'value 2']
             ),
         ]
@@ -46,12 +46,12 @@ class TestEqualsConstantList(unittest.TestCase):
     def test_not_equals(self):
         test_cases = [
             (
-                list_resolvers.empty(),
+                list_sdvs.empty(),
                 ['non empty']
             ),
             (
-                list_resolvers.from_str_constants(['value 1',
-                                                   'value 2 actual']),
+                list_sdvs.from_str_constants(['value 1',
+                                              'value 2 actual']),
                 ['value 1', 'value 2 expected']
             ),
         ]
@@ -64,42 +64,42 @@ class TestEqualsConstantList(unittest.TestCase):
 class TestEqualsElement(unittest.TestCase):
     def test_equals(self):
         test_cases = [
-            list_resolvers.str_element('value'),
-            list_resolvers.symbol_element(symbol_reference('symbol_name')),
+            list_sdvs.str_element('value'),
+            list_sdvs.symbol_element(symbol_reference('symbol_name')),
         ]
         for element in test_cases:
             with self.subTest(msg=str(element)):
-                sut.equals_list_resolver_element(element).apply_without_message(self, element)
+                sut.equals_list_sdv_element(element).apply_without_message(self, element)
 
     def test_string_not_equals_symbol_ref(self):
         # ARRANGE #
-        string_element = list_resolvers.str_element('value')
-        symbol_reference_element = list_resolvers.symbol_element(symbol_reference('symbol_name'))
-        assertion = sut.equals_list_resolver_element(string_element)
+        string_element = list_sdvs.str_element('value')
+        symbol_reference_element = list_sdvs.symbol_element(symbol_reference('symbol_name'))
+        assertion = sut.equals_list_sdv_element(string_element)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, symbol_reference_element)
 
     def test_symbol_ref_not_equals_string(self):
         # ARRANGE #
-        string_element = list_resolvers.str_element('value')
-        symbol_reference_element = list_resolvers.symbol_element(symbol_reference('symbol_name'))
-        assertion = sut.equals_list_resolver_element(symbol_reference_element)
+        string_element = list_sdvs.str_element('value')
+        symbol_reference_element = list_sdvs.symbol_element(symbol_reference('symbol_name'))
+        assertion = sut.equals_list_sdv_element(symbol_reference_element)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, string_element)
 
     def test_string_not_equals_string_with_different_value(self):
         # ARRANGE #
-        expected = list_resolvers.str_element('expected value')
-        actual = list_resolvers.str_element('actual value')
-        assertion = sut.equals_list_resolver_element(expected)
+        expected = list_sdvs.str_element('expected value')
+        actual = list_sdvs.str_element('actual value')
+        assertion = sut.equals_list_sdv_element(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
 
     def test_symbol_ref_not_equals_symbol_ref_with_different_symbol_name(self):
         # ARRANGE #
-        expected = list_resolvers.symbol_element(symbol_reference('expected_symbol_name'))
-        actual = list_resolvers.symbol_element(symbol_reference('actual_symbol_name'))
-        assertion = sut.equals_list_resolver_element(expected)
+        expected = list_sdvs.symbol_element(symbol_reference('expected_symbol_name'))
+        actual = list_sdvs.symbol_element(symbol_reference('actual_symbol_name'))
+        assertion = sut.equals_list_sdv_element(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
 
@@ -107,40 +107,40 @@ class TestEqualsElement(unittest.TestCase):
 class TestEqualsResolver(unittest.TestCase):
     def test_equals(self):
         cases = [
-            list_resolvers.from_str_constants(['value']),
-            list_resolvers.from_elements([list_resolvers.symbol_element(symbol_reference('symbol_name'))]),
+            list_sdvs.from_str_constants(['value']),
+            list_sdvs.from_elements([list_sdvs.symbol_element(symbol_reference('symbol_name'))]),
         ]
-        for resolver in cases:
-            with self.subTest(msg=str(resolver)):
-                sut.equals_list_resolver(resolver).apply_without_message(self, resolver)
+        for sdv in cases:
+            with self.subTest(msg=str(sdv)):
+                sut.equals_list_sdv(sdv).apply_without_message(self, sdv)
 
     def test_not_equals(self):
         string_symbol = NameAndValue('string_symbol_name', 'string symbol value')
         cases = [
             Case('different number of elements',
                  expected=
-                 list_resolvers.empty(),
+                 list_sdvs.empty(),
                  actual=
-                 list_resolvers.from_str_constants(['value']),
+                 list_sdvs.from_str_constants(['value']),
                  ),
             Case('different value of single string',
                  expected=
-                 list_resolvers.from_str_constants(['expected value']),
+                 list_sdvs.from_str_constants(['expected value']),
                  actual=
-                 list_resolvers.from_str_constants(['actual value']),
+                 list_sdvs.from_str_constants(['actual value']),
                  ),
             Case('different element types, but same resolved value',
                  expected=
-                 list_resolvers.from_str_constants([string_symbol.value]),
+                 list_sdvs.from_str_constants([string_symbol.value]),
                  actual=
-                 list_resolvers.from_elements([list_resolvers.symbol_element(su.symbol_reference(string_symbol.name))]),
+                 list_sdvs.from_elements([list_sdvs.symbol_element(su.symbol_reference(string_symbol.name))]),
                  symbols=
                  su.symbol_table_with_single_string_value(string_symbol.name, string_symbol.value),
                  ),
         ]
         for case in cases:
             with self.subTest(msg=case.name):
-                assertion = sut.equals_list_resolver(case.expected, case.symbols)
+                assertion = sut.equals_list_sdv(case.expected, case.symbols)
                 assert_that_assertion_fails(assertion, case.actual)
 
 
@@ -154,7 +154,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected_references=
                         asrt.is_empty_sequence,
                         actual=
-                        list_resolvers.empty(),
+                        list_sdvs.empty(),
                         ),
             MatchesCase('single fragment',
                         expected=
@@ -162,7 +162,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected_references=
                         asrt.is_empty_sequence,
                         actual=
-                        list_resolvers.from_str_constants(['expected value']),
+                        list_sdvs.from_str_constants(['expected value']),
                         ),
             MatchesCase('symbol reference',
                         expected=
@@ -171,19 +171,19 @@ class TestMatchesResolver(unittest.TestCase):
                         equals_symbol_references([SymbolReference(string_symbol.name,
                                                                   is_any_data_type())]),
                         actual=
-                        list_resolvers.from_elements([list_resolvers.string_element(
-                            string_resolvers.symbol_reference(
+                        list_sdvs.from_elements([list_sdvs.string_element(
+                            string_sdvs.symbol_reference(
                                 SymbolReference(string_symbol.name,
                                                 is_any_data_type()),
                             ))]),
                         symbols=
                         singleton_symbol_table_2(string_symbol.name,
-                                                 su.container(string_resolvers.str_constant(string_symbol.value))),
+                                                 su.container(string_sdvs.str_constant(string_symbol.value))),
                         ),
         ]
         for case in cases:
             with self.subTest(msg=case.name):
-                assertion = sut.matches_list_resolver(case.expected, case.expected_references, case.symbols)
+                assertion = sut.matches_list_sdv(case.expected, case.expected_references, case.symbols)
                 assertion.apply_without_message(self, case.actual)
 
     def test_not_equals(self):
@@ -195,7 +195,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected_references=
                         asrt.is_empty_sequence,
                         actual=
-                        list_resolvers.from_str_constants(['value']),
+                        list_sdvs.from_str_constants(['value']),
                         ),
             MatchesCase('different value of single string',
                         expected=
@@ -203,7 +203,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected_references=
                         asrt.is_empty_sequence,
                         actual=
-                        list_resolvers.from_str_constants(['actual value']),
+                        list_sdvs.from_str_constants(['actual value']),
                         ),
             MatchesCase('different references',
                         expected=
@@ -213,27 +213,27 @@ class TestMatchesResolver(unittest.TestCase):
                                                                   ReferenceRestrictionsOnDirectAndIndirect(
                                                                       AnyDataTypeRestriction()))]),
                         actual=
-                        list_resolvers.from_elements([list_resolvers.string_element(
-                            string_resolvers.symbol_reference(
+                        list_sdvs.from_elements([list_sdvs.string_element(
+                            string_sdvs.symbol_reference(
                                 SymbolReference(string_symbol.name,
                                                 OrReferenceRestrictions([])),
                             ))]),
                         symbols=
                         singleton_symbol_table_2(string_symbol.name,
-                                                 su.container(string_resolvers.str_constant(string_symbol.value))),
+                                                 su.container(string_sdvs.str_constant(string_symbol.value))),
                         ),
         ]
         for case in cases:
             with self.subTest(msg=case.name):
-                assertion = sut.matches_list_resolver(case.expected, case.expected_references, case.symbols)
+                assertion = sut.matches_list_sdv(case.expected, case.expected_references, case.symbols)
                 assert_that_assertion_fails(assertion, case.actual)
 
 
 class Case:
     def __init__(self,
                  name: str,
-                 expected: list_resolvers.ListResolver,
-                 actual: list_resolvers.ListResolver,
+                 expected: list_sdvs.ListSdv,
+                 actual: list_sdvs.ListSdv,
                  symbols: SymbolTable = None):
         self.name = name
         self.expected = expected
@@ -246,7 +246,7 @@ class MatchesCase:
                  name: str,
                  expected: lr.ListDdv,
                  expected_references: ValueAssertion,
-                 actual: lr.ListResolver,
+                 actual: lr.ListSdv,
                  symbols: SymbolTable = None):
         self.name = name
         self.expected = expected

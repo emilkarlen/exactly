@@ -1,8 +1,8 @@
 from typing import Sequence
 
 from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolReferences
-from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import ReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue
 from exactly_lib.util.symbol_table import Entry
 
 
@@ -43,16 +43,16 @@ class SymbolDefinition(SymbolUsage, ObjectWithSymbolReferences):
         self._container = container
 
     @property
-    def resolver_container(self) -> SymbolContainer:
+    def symbol_container(self) -> SymbolContainer:
         return self._container
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self._container.resolver.references
+        return self._container.sdv.references
 
     @property
     def symbol_table_entry(self) -> Entry:
-        return Entry(self.name, self.resolver_container)
+        return Entry(self.name, self.symbol_container)
 
 
 class SymbolUsageVisitor:
@@ -68,7 +68,7 @@ class SymbolUsageVisitor:
             return self._visit_definition(usage)
         if isinstance(usage, SymbolReference):
             return self._visit_reference(usage)
-        raise TypeError('Unknown {}: {}'.format(SymbolValueResolver, str(usage)))
+        raise TypeError('Unknown {}: {}'.format(SymbolDependentValue, str(usage)))
 
     def _visit_definition(self, usage: SymbolDefinition):
         raise NotImplementedError('abstract method')

@@ -1,12 +1,12 @@
 import unittest
 
 from exactly_lib.symbol import restriction as sut
-from exactly_lib.symbol.data import string_resolvers, path_resolvers
-from exactly_lib.symbol.logic.program.arguments_resolver import ArgumentsResolver
-from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
+from exactly_lib.symbol.data import string_sdvs, path_sdvs
+from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
+from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
-from exactly_lib.test_case_utils.program.resolvers import accumulator
-from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
+from exactly_lib.test_case_utils.program.sdvs import accumulator
+from exactly_lib.test_case_utils.program.sdvs.command_program_sdv import ProgramSdvForCommand
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
 from exactly_lib.type_system.data.list_ddv import ListDdv
@@ -14,13 +14,13 @@ from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.type_system.logic.program.command_values import CommandDriverValueForShell
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.symbol.data.test_resources.list_resolvers import ListResolverTestImplForConstantListValue
-from exactly_lib_test.symbol.test_resources.command_resolvers import CommandDriverResolverForConstantTestImpl
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
-from exactly_lib_test.symbol.test_resources.files_matcher import FilesMatcherResolverConstantTestImpl
-from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResolverConstantTestImpl
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl
+from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
+from exactly_lib_test.symbol.test_resources.command_sdvs import CommandDriverSdvForConstantTestImpl
+from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSdvConstantTestImpl
+from exactly_lib_test.symbol.test_resources.files_matcher import FilesMatcherSdvConstantTestImpl
+from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSdvConstantTestImpl
+from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSdvConstantTestImpl
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.type_system.logic.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
 from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant
@@ -36,25 +36,25 @@ def suite() -> unittest.TestSuite:
 
 
 class TestElementTypeRestriction(unittest.TestCase):
-    element_type_2_resolver_of_type = {
+    element_type_2_sdv_of_type = {
         TypeCategory.DATA:
-            string_resolvers.str_constant('string value'),
+            string_sdvs.str_constant('string value'),
 
         TypeCategory.LOGIC:
-            FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
+            FileMatcherSdvConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
     }
 
     def test_satisfied_restriction(self):
         # ARRANGE #
         symbols = empty_symbol_table()
         for expected_element_type in TypeCategory:
-            container_of_resolver = container(self.element_type_2_resolver_of_type[expected_element_type])
+            container_of_sdv = container(self.element_type_2_sdv_of_type[expected_element_type])
             with self.subTest(element_type=str(expected_element_type)):
                 restriction_to_check = sut.TypeCategoryRestriction(expected_element_type)
                 # ACT
                 error_message = restriction_to_check.is_satisfied_by(symbols,
                                                                      'symbol name',
-                                                                     container_of_resolver)
+                                                                     container_of_sdv)
                 # ASSERT #
                 self.assertIsNone(error_message)
 
@@ -68,7 +68,7 @@ class TestElementTypeRestriction(unittest.TestCase):
 
         symbols = empty_symbol_table()
         for expected_element_type, unexpected_element_type in cases.items():
-            container_of_unexpected = container(self.element_type_2_resolver_of_type[unexpected_element_type])
+            container_of_unexpected = container(self.element_type_2_sdv_of_type[unexpected_element_type])
             with self.subTest(expected_element_type=str(expected_element_type),
                               unexpected_element_type=str(unexpected_element_type)):
                 restriction_to_check = sut.TypeCategoryRestriction(expected_element_type)
@@ -81,42 +81,42 @@ class TestElementTypeRestriction(unittest.TestCase):
 
 
 class TestValueTypeRestriction(unittest.TestCase):
-    arbitrary_list_resolver = ListResolverTestImplForConstantListValue(ListDdv([]))
+    arbitrary_list_sdv = ListSdvTestImplForConstantListDdv(ListDdv([]))
 
-    value_type_2_resolver_of_type = {
+    value_type_2_sdv_of_type = {
 
         ValueType.STRING:
-            string_resolvers.str_constant('string value'),
+            string_sdvs.str_constant('string value'),
 
         ValueType.LIST:
-            arbitrary_list_resolver,
+            arbitrary_list_sdv,
 
         ValueType.PATH:
-            path_resolvers.constant(paths.rel_sandbox(RelSdsOptionType.REL_ACT, paths.empty_path_part())),
+            path_sdvs.constant(paths.rel_sandbox(RelSdsOptionType.REL_ACT, paths.empty_path_part())),
 
         ValueType.LINE_MATCHER:
-            LineMatcherResolverConstantTestImpl(LineMatcherNotImplementedTestImpl()),
+            LineMatcherSdvConstantTestImpl(LineMatcherNotImplementedTestImpl()),
 
         ValueType.FILE_MATCHER:
-            FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
+            FileMatcherSdvConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
 
         ValueType.FILES_MATCHER:
-            FilesMatcherResolverConstantTestImpl(),
+            FilesMatcherSdvConstantTestImpl(),
 
         ValueType.STRING_MATCHER:
-            StringMatcherResolverConstantTestImpl(StringMatcherConstant(None)),
+            StringMatcherSdvConstantTestImpl(StringMatcherConstant(None)),
 
         ValueType.STRING_TRANSFORMER:
-            StringTransformerResolverConstantTestImpl(FakeStringTransformer(), []),
+            StringTransformerSdvConstantTestImpl(FakeStringTransformer(), []),
 
         ValueType.PROGRAM:
-            ProgramResolverForCommand(
-                CommandResolver(
-                    CommandDriverResolverForConstantTestImpl(
+            ProgramSdvForCommand(
+                CommandSdv(
+                    CommandDriverSdvForConstantTestImpl(
                         CommandValue(
                             CommandDriverValueForShell(string_ddv_of_single_string('the shell command line')),
                             ListDdv.empty())),
-                    ArgumentsResolver(arbitrary_list_resolver),
+                    ArgumentsSdv(arbitrary_list_sdv),
                 ),
                 accumulator.empty()
             ),
@@ -126,13 +126,13 @@ class TestValueTypeRestriction(unittest.TestCase):
         # ARRANGE #
         symbols = empty_symbol_table()
         for expected_value_type in ValueType:
-            container_of_resolver = container(self.value_type_2_resolver_of_type[expected_value_type])
+            container_of_sdv = container(self.value_type_2_sdv_of_type[expected_value_type])
             with self.subTest(element_type=str(expected_value_type)):
                 restriction_to_check = sut.ValueTypeRestriction(expected_value_type)
                 # ACT
                 error_message = restriction_to_check.is_satisfied_by(symbols,
                                                                      'symbol name',
-                                                                     container_of_resolver)
+                                                                     container_of_sdv)
                 # ASSERT #
                 self.assertIsNone(error_message)
 
@@ -151,7 +151,7 @@ class TestValueTypeRestriction(unittest.TestCase):
 
         symbols = empty_symbol_table()
         for expected_value_type, unexpected_value_type in cases.items():
-            container_of_unexpected = container(self.value_type_2_resolver_of_type[unexpected_value_type])
+            container_of_unexpected = container(self.value_type_2_sdv_of_type[unexpected_value_type])
             with self.subTest(expected_element_type=str(expected_value_type),
                               unexpected_element_type=str(unexpected_value_type)):
                 restriction_to_check = sut.ValueTypeRestriction(expected_value_type)

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Sequence, List, TypeVar, Generic
 
-from exactly_lib.symbol.resolver_structure import SymbolValueResolver, SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolUsage, SymbolReference
 from exactly_lib.util import symbol_table
 from exactly_lib.util.symbol_table import Entry, SymbolTable
@@ -13,7 +13,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 class SymbolsArrAndExpectSetup:
     def __init__(self,
-                 symbols_in_arrangement: Dict[str, SymbolValueResolver],
+                 symbols_in_arrangement: Dict[str, SymbolDependentValue],
                  expected_references: Sequence[ValueAssertion[SymbolUsage]] = ()):
         self.symbols_in_arrangement = symbols_in_arrangement
         self.expected_references = expected_references
@@ -30,8 +30,8 @@ class SymbolsArrAndExpectSetup:
     def symbol_entries_for_arrangement(self) -> List[Entry]:
         return [
             Entry(symbol_name,
-                  symbol_utils.container(resolver))
-            for symbol_name, resolver in self.symbols_in_arrangement.items()
+                  symbol_utils.container(sdv))
+            for symbol_name, sdv in self.symbols_in_arrangement.items()
         ]
 
     @staticmethod
@@ -52,10 +52,10 @@ class SymbolsArrAndExpectSetup:
         )
 
 
-RESOLVER_TYPE = TypeVar('RESOLVER_TYPE')
+SDV_TYPE = TypeVar('SDV_TYPE')
 
 
-class ResolverSymbolContext(Generic[RESOLVER_TYPE], ABC):
+class SdvSymbolContext(Generic[SDV_TYPE], ABC):
     def __init__(self, name: str):
         self._name = name
 
@@ -65,17 +65,17 @@ class ResolverSymbolContext(Generic[RESOLVER_TYPE], ABC):
 
     @property
     @abstractmethod
-    def resolver(self) -> RESOLVER_TYPE:
+    def sdv(self) -> SDV_TYPE:
         pass
 
     @property
     def symbol_table_container(self) -> SymbolContainer:
-        return symbol_utils.container(self.resolver)
+        return symbol_utils.container(self.sdv)
 
     @property
-    def name_and_resolver(self) -> NameAndValue[SymbolContainer]:
+    def name_and_sdv(self) -> NameAndValue[SymbolContainer]:
         return NameAndValue(self.name,
-                            self.resolver)
+                            self.sdv)
 
     @property
     def name_and_container(self) -> NameAndValue[SymbolContainer]:

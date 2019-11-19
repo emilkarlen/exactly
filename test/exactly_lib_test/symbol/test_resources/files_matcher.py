@@ -1,7 +1,7 @@
 from typing import Sequence, Optional
 
 from exactly_lib.symbol import symbol_usage as su
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
@@ -20,8 +20,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def arbitrary_resolver() -> FilesMatcherResolver:
-    return FilesMatcherResolverConstantTestImpl(True)
+def arbitrary_sdv() -> FilesMatcherSdv:
+    return FilesMatcherSdvConstantTestImpl(True)
 
 
 class FilesMatcherTestImpl(FilesMatcher):
@@ -76,7 +76,7 @@ def value_with_result(result: bool) -> FilesMatcherDdv:
     )
 
 
-class FilesMatcherResolverConstantTestImpl(FilesMatcherResolver):
+class FilesMatcherSdvConstantTestImpl(FilesMatcherSdv):
     def __init__(self,
                  resolved_value: bool = True,
                  references: Sequence[SymbolReference] = (),
@@ -100,7 +100,7 @@ class FilesMatcherResolverConstantTestImpl(FilesMatcherResolver):
         return value_with_result(self._resolved_value)
 
 
-class FilesMatcherResolverConstantValueTestImpl(FilesMatcherResolver):
+class FilesMatcherSdvConstantValueTestImpl(FilesMatcherSdv):
     def __init__(self,
                  resolved_value: FilesMatcherDdv,
                  references: Sequence[SymbolReference] = (),

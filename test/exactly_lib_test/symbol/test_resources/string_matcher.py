@@ -1,7 +1,7 @@
 from typing import Sequence, Callable
 
 from exactly_lib.symbol import symbol_usage as su
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
@@ -14,18 +14,18 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import ResolverSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import string_matchers
 from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherDdvFromPartsTestImpl
 
 
-def arbitrary_resolver() -> StringMatcherResolver:
-    return StringMatcherResolverConstantTestImpl(string_matchers.StringMatcherConstant(None))
+def arbitrary_sdv() -> StringMatcherSdv:
+    return StringMatcherSdvConstantTestImpl(string_matchers.StringMatcherConstant(None))
 
 
-class StringMatcherResolverConstantTestImpl(StringMatcherResolver):
+class StringMatcherSdvConstantTestImpl(StringMatcherSdv):
     def __init__(self,
                  resolved_value: StringMatcher,
                  references: Sequence[SymbolReference] = (),
@@ -66,23 +66,23 @@ def is_reference_to_string_matcher__ref(name_of_matcher: str) -> ValueAssertion[
     )
 
 
-class StringMatcherSymbolContext(ResolverSymbolContext[StringMatcherResolver]):
+class StringMatcherSymbolContext(SdvSymbolContext[StringMatcherSdv]):
     def __init__(self,
                  name: str,
-                 resolver: StringMatcherResolver):
+                 sdv: StringMatcherSdv):
         super().__init__(name)
-        self._resolver = resolver
+        self._sdv = sdv
 
     @property
-    def resolver(self) -> StringMatcherResolver:
-        return self._resolver
+    def sdv(self) -> StringMatcherSdv:
+        return self._sdv
 
     @property
     def reference_assertion(self) -> ValueAssertion[SymbolReference]:
         return is_reference_to_string_matcher__ref(self.name)
 
 
-class StringMatcherResolverFromPartsTestImpl(StringMatcherResolver):
+class StringMatcherSdvFromPartsTestImpl(StringMatcherSdv):
     def __init__(self,
                  structure: StructureRenderer,
                  references: Sequence[SymbolReference],

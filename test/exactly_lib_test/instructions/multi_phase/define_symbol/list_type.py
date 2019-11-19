@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data import list_resolvers as lrs
+from exactly_lib.symbol.data import list_sdvs as lrs
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
@@ -39,19 +39,19 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
                        source_assertion=asrt_source.is_at_beginning_of_line(2)
                        ),
         ]
-        expected_resolver = lrs.empty()
-        expected_resolver_container = container(expected_resolver)
+        expected_sdv = lrs.empty()
+        expected_sdv_container = container(expected_sdv)
 
         for case in cases:
             with self.subTest(case.name):
                 expectation = Expectation(
                     symbol_usages=asrt.matches_sequence([
-                        vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_resolver_container),
+                        vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_sdv_container),
                                               ignore_source_line=True)
                     ]),
                     symbols_after_main=assert_symbol_table_is_singleton(
                         symbol_name,
-                        equals_container(expected_resolver_container),
+                        equals_container(expected_sdv_container),
                     ),
                     source=case.source_assertion
                 )
@@ -61,9 +61,9 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
         symbol_name = 'the_symbol_name'
         value_without_space = 'value_without_space'
         value_with_space = 'value with space'
-        expected_resolver = lrs.from_str_constants([value_without_space,
-                                                    value_with_space])
-        expected_resolver_container = container(expected_resolver)
+        expected_sdv = lrs.from_str_constants([value_without_space,
+                                               value_with_space])
+        expected_sdv_container = container(expected_sdv)
 
         sb = SB.new_with(symbol_name=symbol_name,
                          value_without_space=value_without_space,
@@ -90,12 +90,12 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
             with self.subTest(case.name):
                 expectation = Expectation(
                     symbol_usages=asrt.matches_sequence([
-                        vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_resolver_container),
+                        vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_sdv_container),
                                               ignore_source_line=True)
                     ]),
                     symbols_after_main=assert_symbol_table_is_singleton(
                         symbol_name,
-                        equals_container(expected_resolver_container),
+                        equals_container(expected_sdv_container),
                     ),
                     source=case.source_assertion,
                 )
@@ -112,18 +112,18 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
             ['following line'],
         )
         expected_symbol_reference = references.reference_to_any_data_type_value(referred_symbol.name)
-        expected_resolver = lrs.from_elements([lrs.symbol_element(expected_symbol_reference)])
+        expected_sdv = lrs.from_elements([lrs.symbol_element(expected_symbol_reference)])
 
-        expected_resolver_container = container(expected_resolver)
+        expected_sdv_container = container(expected_sdv)
 
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_resolver_container),
+                vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_sdv_container),
                                       ignore_source_line=True)
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 symbol_name,
-                equals_container(expected_resolver_container),
+                equals_container(expected_sdv_container),
             ),
             source=asrt_source.is_at_beginning_of_line(2),
         )

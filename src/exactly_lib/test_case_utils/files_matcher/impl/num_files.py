@@ -1,14 +1,14 @@
 from typing import Sequence, Optional
 
 from exactly_lib.definitions.primitives import files_matcher
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
-from exactly_lib.symbol.logic.resolver import MatcherResolver
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
-from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherResolverBase
+from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherSdvBase
 from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcher
@@ -21,8 +21,8 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def resolver(matcher: MatcherResolver[int]) -> FilesMatcherResolver:
-    return _NumFilesMatcherResolver(matcher)
+def sdv(matcher: MatcherSdv[int]) -> FilesMatcherSdv:
+    return _NumFilesMatcherSdv(matcher)
 
 
 class _FilesMatcher(FilesMatcher):
@@ -83,9 +83,9 @@ class _NumFilesMatcherDdv(FilesMatcherDdv):
         )
 
 
-class _NumFilesMatcherResolver(FilesMatcherResolverBase):
+class _NumFilesMatcherSdv(FilesMatcherSdvBase):
     def __init__(self,
-                 matcher: MatcherResolver[int],
+                 matcher: MatcherSdv[int],
                  ):
         self._matcher = matcher
 

@@ -6,7 +6,7 @@ from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
-from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.util import file_utils
@@ -16,7 +16,7 @@ from exactly_lib.util.logic_types import ExpectationType
 class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
     def __init__(self,
                  prefix: str,
-                 expected_contents: RegexResolver):
+                 expected_contents: RegexSdv):
         self._prefix = prefix
         self.expected_contents = expected_contents
 

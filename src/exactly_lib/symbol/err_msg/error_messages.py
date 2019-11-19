@@ -10,7 +10,7 @@ from exactly_lib.definitions import type_system
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
-from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue
 from exactly_lib.type_system.value_type import ValueType
 
 
@@ -29,13 +29,13 @@ def undefined_symbol(reference: su.SymbolReference) -> TextRenderer:
 def invalid_type_msg(expected_value_types: List[ValueType],
                      symbol_name: str,
                      container_of_actual: SymbolContainer) -> ErrorMessageWithFixTip:
-    actual = container_of_actual.resolver
-    if not isinstance(actual, SymbolValueResolver):
+    actual = container_of_actual.sdv
+    if not isinstance(actual, SymbolDependentValue):
         raise TypeError('Symbol table contains a value that is not a {}: {}'.format(
-            type(SymbolValueResolver),
+            type(SymbolDependentValue),
             str(actual)
         ))
-    assert isinstance(actual, SymbolValueResolver)  # Type info for IDE
+    assert isinstance(actual, SymbolDependentValue)  # Type info for IDE
     header_lines = _invalid_type_header_lines(expected_value_types,
                                               actual.value_type,
                                               symbol_name,

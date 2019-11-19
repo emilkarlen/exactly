@@ -2,20 +2,20 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator
 from exactly_lib.test_case_utils.program.parse import parse_program as sut
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_resolvers
+from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.parse import parse_system_program
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_execution_check as pgm_exe_check
-from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
+from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
@@ -69,11 +69,11 @@ class TestParseSymbolReferenceProgram(unittest.TestCase):
             with self.subTest(case.name):
                 python_source = 'exit({exit_code})'.format(exit_code=case.value)
 
-                resolver_of_referred_program = program_resolvers.for_py_source_on_command_line(python_source)
+                sdv_of_referred_program = program_sdvs.for_py_source_on_command_line(python_source)
 
                 program_that_executes_py_source = NameAndValue(
                     'PROGRAM_THAT_EXECUTES_PY_SOURCE',
-                    resolver_of_referred_program
+                    sdv_of_referred_program
                 )
 
                 symbols = SymbolTable({
@@ -107,7 +107,7 @@ class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestC
     def runTest(self):
         # ARRANGE #
         program_symbol = NameAndValue('A_PROGRAM',
-                                      _ProgramResolverWithoutImplementation())
+                                      _ProgramSdvWithoutImplementation())
 
         pgm_and_args_cases = [
             NameAndValue('shell command',
@@ -129,9 +129,9 @@ class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestC
                     [validation_case.value.transformer_arguments_elements]
                 ).as_remaining_source
 
-                symbols = symbol_table_from_name_and_resolvers([
+                symbols = symbol_table_from_name_and_sdvs([
                     program_symbol,
-                    validation_case.value.symbol_context.name_and_resolver,
+                    validation_case.value.symbol_context.name_and_sdv,
                 ])
 
                 with self.subTest(pgm_and_args_case=pgm_and_args_case.name,
@@ -152,7 +152,7 @@ def parse_source_of(single_line: ArgumentElementRenderer) -> ParseSource:
     return ArgumentElements([single_line]).as_remaining_source
 
 
-class _ProgramResolverWithoutImplementation(ProgramResolver):
+class _ProgramSdvWithoutImplementation(ProgramSdv):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return ()

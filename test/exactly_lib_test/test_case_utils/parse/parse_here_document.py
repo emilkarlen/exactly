@@ -242,7 +242,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 source = remaining_source_lines(case.source_lines)
                 actual = sut.parse_as_last_argument(is_mandatory, source)
                 case.expected_document_contents.apply_with_message(self, actual,
-                                                                   'resolver')
+                                                                   'sdv')
                 case.source_after_parse.apply_with_message(self, source,
                                                            'source')
 

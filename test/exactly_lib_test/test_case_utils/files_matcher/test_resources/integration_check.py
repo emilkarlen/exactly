@@ -6,7 +6,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
@@ -27,7 +27,7 @@ from exactly_lib_test.type_system.trace.test_resources import matching_result_as
 
 class TestCaseBase(unittest.TestCase):
     def _check(self,
-               parser: Parser[FilesMatcherResolver],
+               parser: Parser[FilesMatcherSdv],
                source: ParseSource,
                model: Model,
                arrangement: ArrangementPostAct,
@@ -36,7 +36,7 @@ class TestCaseBase(unittest.TestCase):
 
 
 def check(put: unittest.TestCase,
-          parser: Parser[FilesMatcherResolver],
+          parser: Parser[FilesMatcherSdv],
           source: ParseSource,
           model: Model,
           arrangement: ArrangementPostAct,
@@ -51,7 +51,7 @@ class _CheckIsDoneException(Exception):
 class _Executor:
     def __init__(self,
                  put: unittest.TestCase,
-                 parser: Parser[FilesMatcherResolver],
+                 parser: Parser[FilesMatcherSdv],
                  model: Model,
                  arrangement: ArrangementPostAct,
                  expectation: Expectation):
@@ -68,10 +68,10 @@ class _Executor:
             pass
 
     def _execute(self, source: ParseSource):
-        resolver = self._parse(source)
+        sdv = self._parse(source)
 
         self.expectation.symbol_usages.apply_with_message(self.put,
-                                                          resolver.references,
+                                                          sdv.references,
                                                           'symbol-usages after parse')
 
         with tcds_with_act_as_curr_dir(
@@ -89,9 +89,9 @@ class _Executor:
 
                 environment = PathResolvingEnvironmentPreSds(tcds.hds,
                                                              self.arrangement.symbols)
-                validate_result = self._execute_validate_pre_sds(environment, resolver)
+                validate_result = self._execute_validate_pre_sds(environment, sdv)
                 self.expectation.symbol_usages.apply_with_message(self.put,
-                                                                  resolver.references,
+                                                                  sdv.references,
                                                                   'symbol-usages after ' +
                                                                   phase_step.STEP__VALIDATE_PRE_SDS)
                 if validate_result is not None:
@@ -100,9 +100,9 @@ class _Executor:
             environment = PathResolvingEnvironmentPreOrPostSds(
                 tcds,
                 self.arrangement.symbols)
-            validate_result = self._execute_validate_post_setup(environment, resolver)
+            validate_result = self._execute_validate_post_setup(environment, sdv)
             self.expectation.symbol_usages.apply_with_message(self.put,
-                                                              resolver.references,
+                                                              sdv.references,
                                                               'symbol-usages after ' +
                                                               phase_step.STEP__VALIDATE_POST_SETUP)
             if validate_result is not None:
@@ -111,7 +111,7 @@ class _Executor:
             write_act_result(tcds.sds, act_result)
             dir_file_space, files_source = self._new_model(environment)
 
-            matcher_value = self._resolve(resolver, environment)
+            matcher_value = self._resolve(sdv, environment)
             matcher = matcher_value.value_of_any_dependency(tcds).construct(dir_file_space)
 
             self._execute_main(files_source, matcher)
@@ -119,42 +119,42 @@ class _Executor:
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
             self.expectation.main_side_effects_on_tcds.apply(self.put, tcds)
             self.expectation.symbol_usages.apply_with_message(self.put,
-                                                              resolver.references,
+                                                              sdv.references,
                                                               'symbol-usages after ' +
                                                               phase_step.STEP__MAIN)
 
-    def _parse(self, source: ParseSource) -> FilesMatcherResolver:
-        resolver = self.parser.parse(source)
-        self.put.assertIsNotNone(resolver,
+    def _parse(self, source: ParseSource) -> FilesMatcherSdv:
+        sdv = self.parser.parse(source)
+        self.put.assertIsNotNone(sdv,
                                  'Result from parser cannot be None')
-        self.put.assertIsInstance(resolver,
-                                  FilesMatcherResolver,
-                                  'The resolver must be an instance of ' + str(FilesMatcherResolver))
+        self.put.assertIsInstance(sdv,
+                                  FilesMatcherSdv,
+                                  'The SDV must be an instance of ' + str(FilesMatcherSdv))
         self.expectation.source.apply_with_message(self.put, source, 'source')
-        assert isinstance(resolver, FilesMatcherResolver)
-        return resolver
+        assert isinstance(sdv, FilesMatcherSdv)
+        return sdv
 
     def _resolve(self,
-                 resolver: FilesMatcherResolver,
+                 sdv: FilesMatcherSdv,
                  environment: PathResolvingEnvironmentPreOrPostSds) -> FilesMatcherDdv:
 
-        matcher_value = resolver.resolve(environment.symbols)
-        assert isinstance(matcher_value, FilesMatcherDdv)
+        matcher_ddv = sdv.resolve(environment.symbols)
+        assert isinstance(matcher_ddv, FilesMatcherDdv)
 
-        return matcher_value
+        return matcher_ddv
 
     def _execute_validate_pre_sds(self,
                                   environment: PathResolvingEnvironmentPreSds,
-                                  resolver: FilesMatcherResolver) -> Optional[TextRenderer]:
-        result = resolver.validator().validate_pre_sds_if_applicable(environment)
+                                  sdv: FilesMatcherSdv) -> Optional[TextRenderer]:
+        result = sdv.validator().validate_pre_sds_if_applicable(environment)
         self.expectation.validation_pre_sds.apply_with_message(self.put, result,
                                                                'result of validate/pre sds')
         return result
 
     def _execute_validate_post_setup(self,
                                      environment: PathResolvingEnvironmentPostSds,
-                                     resolver: FilesMatcherResolver) -> Optional[TextRenderer]:
-        result = resolver.validator().validate_post_sds_if_applicable(environment)
+                                     sdv: FilesMatcherSdv) -> Optional[TextRenderer]:
+        result = sdv.validator().validate_post_sds_if_applicable(environment)
         self.expectation.validation_post_sds.apply_with_message(self.put, result,
                                                                 'result of validate/post setup')
         return result
@@ -205,7 +205,7 @@ class _Executor:
             tmp_file_space,
             FilesMatcherModelForDir(
                 tmp_file_space,
-                self.model.dir_path_resolver.resolve(environment.symbols)
+                self.model.dir_path_sdv.resolve(environment.symbols)
                     .value_of_any_dependency__d(environment.tcds),
                 self.model.files_selection,
             ),

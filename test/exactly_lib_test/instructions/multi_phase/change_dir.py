@@ -13,7 +13,7 @@ from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_resolver
+from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_sdv
 from exactly_lib_test.test_case_file_structure.test_resources.format_rel_option import format_rel_options
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir, empty_file
@@ -51,7 +51,7 @@ class TestParseSet(unittest.TestCase):
                 actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
                 expected_path = _path_of(RelOptionType.REL_ACT)
-                assertion = matches_path_resolver(expected_path, asrt.is_empty)
+                assertion = matches_path_sdv(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_no_relativity_option_should_use_default_option(self):
@@ -64,7 +64,7 @@ class TestParseSet(unittest.TestCase):
                 # ASSERT #
                 expected_path = paths.of_rel_option(RelOptionType.REL_CWD,
                                                     paths.constant_path_part(arguments))
-                assertion = matches_path_resolver(expected_path, asrt.is_empty)
+                assertion = matches_path_sdv(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_no_arguments_is_rel_default_option(self):
@@ -76,7 +76,7 @@ class TestParseSet(unittest.TestCase):
                 actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
                 expected_path = _path_of(RelOptionType.REL_CWD)
-                assertion = matches_path_resolver(expected_path, asrt.is_empty)
+                assertion = matches_path_sdv(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_fail_when_superfluous_arguments(self):
@@ -98,7 +98,7 @@ class TestParseSet(unittest.TestCase):
                 # ASSERT #
                 expected_path = paths.of_rel_option(RelOptionType.REL_CWD,
                                                     paths.constant_path_part(arguments.strip()))
-                assertion = matches_path_resolver(expected_path, asrt.is_empty)
+                assertion = matches_path_sdv(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_success_when_correct_number_of_arguments__escaped(self):
@@ -111,7 +111,7 @@ class TestParseSet(unittest.TestCase):
                 # ASSERT #
                 expected_path = paths.of_rel_option(RelOptionType.REL_CWD,
                                                     paths.constant_path_part('expected argument'))
-                assertion = matches_path_resolver(expected_path, asrt.is_empty)
+                assertion = matches_path_sdv(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_rel_tmp_without_argument(self):
@@ -123,7 +123,7 @@ class TestParseSet(unittest.TestCase):
                 actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
                 expected_path = _path_of(RelOptionType.REL_TMP)
-                assertion = matches_path_resolver(expected_path, asrt.is_empty)
+                assertion = matches_path_sdv(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_rel_tmp_with_argument(self):
@@ -136,7 +136,7 @@ class TestParseSet(unittest.TestCase):
                 # ASSERT #
                 expected_path = paths.of_rel_option(RelOptionType.REL_TMP,
                                                     paths.constant_path_part('subdir'))
-                assertion = matches_path_resolver(expected_path, asrt.is_empty)
+                assertion = matches_path_sdv(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_rel_tmp_with_superfluous_argument(self):

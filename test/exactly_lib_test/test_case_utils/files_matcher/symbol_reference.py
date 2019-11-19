@@ -8,7 +8,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher, \
-    FilesMatcherResolverConstantTestImpl
+    FilesMatcherSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndExpectSetup
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
@@ -114,7 +114,7 @@ class TestReferencedMatcherShouldBeValidated(tr.TestCaseBaseForParser):
                     ArrangementPostAct(
                         symbols=SymbolTable({
                             name_of_referenced_symbol:
-                                container(FilesMatcherResolverConstantTestImpl(
+                                container(FilesMatcherSdvConstantTestImpl(
                                     resolved_value=True,
                                     validator=case.actual,
                                 ))
@@ -141,7 +141,7 @@ class TestResultShouldBeEqualToResultOfReferencedMatcher(tr.TestCaseBaseForParse
         arguments_constructor = fm_args.argument_constructor_for_symbol_reference(name_of_referenced_symbol)
 
         for result_of_referenced_matcher in [False, True]:
-            referenced_matcher = FilesMatcherResolverConstantTestImpl(
+            referenced_matcher = FilesMatcherSdvConstantTestImpl(
                 resolved_value=result_of_referenced_matcher
             )
             symbols = SymbolTable({name_of_referenced_symbol: container(referenced_matcher)})
@@ -183,7 +183,7 @@ class TestDifferentSourceVariants(tr.TestCaseBaseForParser):
 
         referenced_symbol = NameAndValue(
             'REFERENCED_FILES_MATCHER',
-            FilesMatcherResolverConstantTestImpl(
+            FilesMatcherSdvConstantTestImpl(
                 resolved_value=result_of_referenced_matcher
             ))
 

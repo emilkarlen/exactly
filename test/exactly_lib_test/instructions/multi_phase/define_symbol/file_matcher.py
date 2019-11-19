@@ -13,12 +13,12 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_container
+from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import ddv_assertions as asrt_file_matcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import file_matcher_arguments
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.sdv_assertions import \
     resolved_ddv_matches_file_matcher
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

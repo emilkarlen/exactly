@@ -48,7 +48,7 @@ class PropertyGetterValue(Generic[MODEL, T], ABC):
         return pre_or_post_value_validation.constant_success_validator()
 
 
-class PropertyGetterResolver(Generic[MODEL, T], ABC):
+class PropertyGetterSdv(Generic[MODEL, T], ABC):
     @property
     @abstractmethod
     def references(self) -> Sequence[SymbolReference]:

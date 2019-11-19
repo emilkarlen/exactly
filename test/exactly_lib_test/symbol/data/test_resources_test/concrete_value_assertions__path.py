@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.symbol.data import path_resolvers
-from exactly_lib.symbol.data.path_resolver import PathResolver
+from exactly_lib.symbol.data import path_sdvs
+from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, \
@@ -13,8 +13,8 @@ from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources import concrete_value_assertions as sut
-from exactly_lib_test.symbol.data.test_resources.path_resolvers import \
-    PathResolverTestImplWithConstantPathAndSymbolReferences
+from exactly_lib_test.symbol.data.test_resources.path_sdvs import \
+    PathSdvTestImplWithConstantPathAndSymbolReferences
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.simple_path import PathDdvTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -56,18 +56,18 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
             for path_suffix in _PATH_SUFFIX_VARIANTS:
                 for symbol_references in _SYMBOL_REFERENCES:
                     path = PathDdvTestImpl(relativity, path_suffix)
-                    path_resolver = PathResolverTestImplWithConstantPathAndSymbolReferences(path,
-                                                                                            symbol_references)
+                    path_sdv = PathSdvTestImplWithConstantPathAndSymbolReferences(path,
+                                                                                  symbol_references)
                     test_case_descr = 'relativity:{}, path-suffix: {}'.format(relativity, type(path_suffix))
-                    with self.subTest(msg=sut.equals_path_resolver.__name__ + ' :: ' + test_case_descr):
-                        assertion = sut.equals_path_resolver(path_resolver)
-                        assertion.apply_without_message(self, path_resolver)
-                    with self.subTest(msg=sut.matches_path_resolver.__name__ + ' :: ' + test_case_descr):
-                        assertion = sut.matches_path_resolver(path,
-                                                              equals_symbol_references(
-                                                                  path_resolver.references),
-                                                              symbols)
-                        assertion.apply_without_message(self, path_resolver)
+                    with self.subTest(msg=sut.equals_path_sdv.__name__ + ' :: ' + test_case_descr):
+                        assertion = sut.equals_path_sdv(path_sdv)
+                        assertion.apply_without_message(self, path_sdv)
+                    with self.subTest(msg=sut.matches_path_sdv.__name__ + ' :: ' + test_case_descr):
+                        assertion = sut.matches_path_sdv(path,
+                                                         equals_symbol_references(
+                                                             path_sdv.references),
+                                                         symbols)
+                        assertion.apply_without_message(self, path_sdv)
 
 
 class TestNotEqualsWithoutSymbolReferencesCommonToBothAssertionMethods(unittest.TestCase):
@@ -77,26 +77,26 @@ class TestNotEqualsWithoutSymbolReferencesCommonToBothAssertionMethods(unittest.
             for path_suffix in _PATH_SUFFIX_VARIANTS:
                 test_case_descr = 'relativity:{}, path-suffix: {}'.format(relativity, type(path_suffix))
                 path = PathDdvTestImpl(relativity, path_suffix)
-                path_resolver = path_resolvers.constant(path)
-                with self.subTest(msg=sut.equals_path_resolver.__name__ + ' :: ' + test_case_descr):
-                    assertion = sut.equals_path_resolver(path_resolver)
-                    assertion.apply_without_message(self, path_resolver)
-                with self.subTest(msg=sut.matches_path_resolver.__name__ + ' :: ' + test_case_descr):
-                    assertion = sut.matches_path_resolver(path,
-                                                          equals_symbol_references(path_resolver.references),
+                path_sdv = path_sdvs.constant(path)
+                with self.subTest(msg=sut.equals_path_sdv.__name__ + ' :: ' + test_case_descr):
+                    assertion = sut.equals_path_sdv(path_sdv)
+                    assertion.apply_without_message(self, path_sdv)
+                with self.subTest(msg=sut.matches_path_sdv.__name__ + ' :: ' + test_case_descr):
+                    assertion = sut.matches_path_sdv(path,
+                                                     equals_symbol_references(path_sdv.references),
                                                           symbols)
-                    assertion.apply_without_message(self, path_resolver)
+                    assertion.apply_without_message(self, path_sdv)
 
 
 class Test1NotEquals(unittest.TestCase):
     def test_differs__paths(self):
         # ARRANGE #
         symbol_references = []
-        expected = resolver_from_constants(path_with_fixed_suffix('expected'),
-                                           symbol_references)
-        actual = resolver_from_constants(path_with_fixed_suffix('not_expected'),
-                                         symbol_references)
-        assertion = sut.equals_path_resolver(expected)
+        expected = sdv_from_constants(path_with_fixed_suffix('expected'),
+                                      symbol_references)
+        actual = sdv_from_constants(path_with_fixed_suffix('not_expected'),
+                                    symbol_references)
+        assertion = sut.equals_path_sdv(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
 
@@ -107,73 +107,73 @@ class Test1NotEquals(unittest.TestCase):
                                            False)
 
         path = arbitrary_path()
-        expected = resolver_from_constants(
+        expected = sdv_from_constants(
             path,
             [SymbolReference('reffed-name',
                              ReferenceRestrictionsOnDirectAndIndirect(
                                  restriction_with_relativity(RelOptionType.REL_ACT)))])
-        actual = resolver_from_constants(
+        actual = sdv_from_constants(
             path,
             [SymbolReference('reffed-name',
                              ReferenceRestrictionsOnDirectAndIndirect(
                                  restriction_with_relativity(RelOptionType.REL_HDS_CASE)))])
-        assertion = sut.equals_path_resolver(expected)
+        assertion = sut.equals_path_sdv(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
 
     def test_value_ref__differs__symbol_name(self):
         # ARRANGE #
         path = arbitrary_path()
-        expected = resolver_from_constants(path,
-                                           [SymbolReference('expected_symbol_name',
+        expected = sdv_from_constants(path,
+                                      [SymbolReference('expected_symbol_name',
                                                             ReferenceRestrictionsOnDirectAndIndirect(
                                                                 AnyDataTypeRestriction()))])
-        actual = resolver_from_constants(path,
-                                         [SymbolReference('actual_symbol_name',
+        actual = sdv_from_constants(path,
+                                    [SymbolReference('actual_symbol_name',
                                                           ReferenceRestrictionsOnDirectAndIndirect(
                                                               AnyDataTypeRestriction()))])
-        assertion = sut.equals_path_resolver(expected)
+        assertion = sut.equals_path_sdv(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
 
     def test_differs__no_value_refs__value_refs(self):
         # ARRANGE #
         path = arbitrary_path()
-        expected = resolver_from_constants(path,
-                                           [SymbolReference('reffed-name',
+        expected = sdv_from_constants(path,
+                                      [SymbolReference('reffed-name',
                                                             ReferenceRestrictionsOnDirectAndIndirect(
                                                                 AnyDataTypeRestriction()))])
-        actual = resolver_from_constants(path, [])
+        actual = sdv_from_constants(path, [])
         # ACT & ASSERT #
-        assertion = sut.equals_path_resolver(expected)
+        assertion = sut.equals_path_sdv(expected)
         assert_that_assertion_fails(assertion, actual)
 
     def test_differs__value_refs__no_value_refs(self):
         # ARRANGE #
         path = arbitrary_path()
-        expected = resolver_from_constants(path, [])
-        actual = resolver_from_constants(path,
+        expected = sdv_from_constants(path, [])
+        actual = sdv_from_constants(path,
                                          [SymbolReference('reffed-name',
                                                           ReferenceRestrictionsOnDirectAndIndirect(
                                                               AnyDataTypeRestriction()))])
-        assertion = sut.equals_path_resolver(expected)
+        assertion = sut.equals_path_sdv(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
 
     def test_value_ref__invalid_type_of_value_restriction(self):
         # ARRANGE #
         path = arbitrary_path()
-        expected = resolver_from_constants(path,
-                                           [SymbolReference('reffed-name',
+        expected = sdv_from_constants(path,
+                                      [SymbolReference('reffed-name',
                                                             ReferenceRestrictionsOnDirectAndIndirect(
                                                                 _relativity_restriction(
                                                                     {RelOptionType.REL_ACT},
                                                                     False)))])
-        actual = resolver_from_constants(path,
-                                         [SymbolReference('reffed-name',
+        actual = sdv_from_constants(path,
+                                    [SymbolReference('reffed-name',
                                                           ReferenceRestrictionsOnDirectAndIndirect(
                                                               AnyDataTypeRestriction()))])
-        assertion = sut.equals_path_resolver(expected)
+        assertion = sut.equals_path_sdv(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
 
@@ -183,36 +183,36 @@ class Test2NotEquals(unittest.TestCase):
         # ARRANGE #
         expected = PathDdvTestImpl(RelOptionType.REL_ACT, paths.constant_path_part('file-name'))
         actual = PathDdvTestImpl(RelOptionType.REL_ACT, paths.constant_path_part('other-file-name'))
-        assertion = sut.matches_path_resolver(expected, asrt.ignore, empty_symbol_table())
+        assertion = sut.matches_path_sdv(expected, asrt.ignore, empty_symbol_table())
         # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, path_resolvers.constant(actual))
+        assert_that_assertion_fails(assertion, path_sdvs.constant(actual))
 
     def test_differs__exists_pre_sds(self):
         # ARRANGE #
         expected = PathDdvTestImpl(_EXISTS_PRE_SDS_RELATIVITY, paths.constant_path_part('file-name'))
         actual = PathDdvTestImpl(_NOT_EXISTS_PRE_SDS_RELATIVITY, paths.constant_path_part('file-name'))
-        assertion = sut.matches_path_resolver(expected, asrt.ignore, empty_symbol_table())
+        assertion = sut.matches_path_sdv(expected, asrt.ignore, empty_symbol_table())
         # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, path_resolvers.constant(actual))
+        assert_that_assertion_fails(assertion, path_sdvs.constant(actual))
 
     def test_differs__relativity(self):
         # ARRANGE #
         expected = PathDdvTestImpl(RelOptionType.REL_ACT, paths.constant_path_part('file-name'))
         actual = PathDdvTestImpl(RelOptionType.REL_HDS_CASE, paths.constant_path_part('file-name'))
-        assertion = sut.matches_path_resolver(expected, asrt.ignore, empty_symbol_table())
+        assertion = sut.matches_path_sdv(expected, asrt.ignore, empty_symbol_table())
         # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, path_resolvers.constant(actual))
+        assert_that_assertion_fails(assertion, path_sdvs.constant(actual))
 
     def test_differs__symbol_references(self):
         # ARRANGE #
         path = PathDdvTestImpl(RelOptionType.REL_ACT, paths.constant_path_part('file-name'))
-        actual = PathResolverTestImplWithConstantPathAndSymbolReferences(
+        actual = PathSdvTestImplWithConstantPathAndSymbolReferences(
             path,
             [SymbolReference('symbol_name',
                              ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))])
-        assertion = sut.matches_path_resolver(path,
-                                              asrt.matches_sequence([]),
-                                              empty_symbol_table())
+        assertion = sut.matches_path_sdv(path,
+                                         asrt.matches_sequence([]),
+                                         empty_symbol_table())
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
 
@@ -229,5 +229,5 @@ def _relativity_restriction(rel_option_types: set, absolute_is_valid: bool) -> P
     return PathRelativityRestriction(PathRelativityVariants(rel_option_types, absolute_is_valid))
 
 
-def resolver_from_constants(path: PathDdv, references: list) -> PathResolver:
-    return PathResolverTestImplWithConstantPathAndSymbolReferences(path, references)
+def sdv_from_constants(path: PathDdv, references: list) -> PathSdv:
+    return PathSdvTestImplWithConstantPathAndSymbolReferences(path, references)

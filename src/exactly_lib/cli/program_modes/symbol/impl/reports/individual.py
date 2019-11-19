@@ -167,7 +167,7 @@ class _DefinitionReport(_SuccessfulReportBase):
         ret_val = [
             DefinitionShortInfoBlock(definition),
             DefinitionSourceBlock(definition.phase,
-                                  definition.definition.resolver_container.source_location),
+                                  definition.definition.symbol_container.source_location),
         ]
         mb_resolved_value_pre_block = self._get_resolved_value_presentation()
         if mb_resolved_value_pre_block:
@@ -176,12 +176,12 @@ class _DefinitionReport(_SuccessfulReportBase):
         return ret_val
 
     def _get_resolved_value_presentation(self) -> Optional[value_presentation.ResolvedValuePresentationBlock]:
-        resolver = self.definition.definition.resolver_container.resolver
+        sdv = self.definition.definition.symbol_container.sdv
         definitions = [
             definition_info.definition
             for definition_info in self.all_definitions
         ]
-        return value_presentation.PresentationBlockConstructor(definitions).block_for(resolver)
+        return value_presentation.PresentationBlockConstructor(definitions).block_for(sdv)
 
 
 class _ReferencesReport(_SuccessfulReportBase):

@@ -24,14 +24,14 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
-from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
-from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
-from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
-from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
-from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
+from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
@@ -45,7 +45,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
-from exactly_lib.test_case_utils.string_transformer import resolvers as line_transformer_resolvers, \
+from exactly_lib.test_case_utils.string_transformer import sdvs as line_transformer_sdvs, \
     parse_string_transformer
 from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
@@ -162,7 +162,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
 
     def custom_main(self, symbols: SymbolTable):
         symbols.put(self.symbol.name,
-                    self.symbol.resolver_container)
+                    self.symbol.symbol_container)
 
 
 class EmbryoParser(embryo.InstructionEmbryoParser):
@@ -176,7 +176,7 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
         with from_parse_source(source,
                                consume_last_line_if_is_at_eol_after_parse=True,
                                consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
-            symbol_name, value_resolver = _parse(fs_location_info, token_parser)
+            symbol_name, value_sdv = _parse(fs_location_info, token_parser)
 
         remaining_source_after = source.remaining_source
         num_chars_consumed = len(remaining_source_before) - len(remaining_source_after)
@@ -186,7 +186,7 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
 
         source_info = fs_location_info.current_source_file.source_location_info_for(source_lines)
         sym_def = SymbolDefinition(symbol_name,
-                                   SymbolContainer(value_resolver,
+                                   SymbolContainer(value_sdv,
                                                    source_info))
 
         return TheInstructionEmbryo(sym_def)
@@ -197,7 +197,7 @@ PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
 
 
 def _parse(fs_location_info: FileSystemLocationInfo,
-           parser: TokenParser) -> Tuple[str, SymbolValueResolver]:
+           parser: TokenParser) -> Tuple[str, SymbolDependentValue]:
     type_str = parser.consume_mandatory_unquoted_string('SYMBOL-TYPE', True)
 
     if type_str not in _TYPE_SETUPS:
@@ -214,13 +214,13 @@ def _parse(fs_location_info: FileSystemLocationInfo,
 
     parser.consume_mandatory_constant_unquoted_string(syntax.ASSIGNMENT_ARGUMENT, True)
 
-    consumes_whole_line, value_resolver = value_parser(fs_location_info, parser)
+    consumes_whole_line, value_sdv = value_parser(fs_location_info, parser)
 
     if not consumes_whole_line and not parser.is_at_eol:
         msg = 'Superfluous arguments: ' + parser.remaining_part_of_current_line
         raise SingleInstructionInvalidArgumentException(msg)
 
-    return name_str, value_resolver
+    return name_str, value_sdv
 
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
@@ -245,22 +245,22 @@ The defined symbol is available in all following instructions and phases.
 
 
 def _parse_string(fs_location_info: FileSystemLocationInfo,
-                  token_parser: TokenParser) -> Tuple[bool, DataValueResolver]:
-    source_type, resolver = parse_string_or_here_doc_from_token_parser(token_parser)
-    return source_type == SourceType.HERE_DOC, resolver
+                  token_parser: TokenParser) -> Tuple[bool, DataTypeSdv]:
+    source_type, sdv = parse_string_or_here_doc_from_token_parser(token_parser)
+    return source_type == SourceType.HERE_DOC, sdv
 
 
-def _parse_not_whole_line(parser: Callable[[FileSystemLocationInfo, TokenParser], SymbolValueResolver]
-                          ) -> Callable[[FileSystemLocationInfo, TokenParser], Tuple[bool, SymbolValueResolver]]:
+def _parse_not_whole_line(parser: Callable[[FileSystemLocationInfo, TokenParser], SymbolDependentValue]
+                          ) -> Callable[[FileSystemLocationInfo, TokenParser], Tuple[bool, SymbolDependentValue]]:
     def f(fs_location_info: FileSystemLocationInfo,
-          tp: TokenParser) -> Tuple[bool, SymbolValueResolver]:
+          tp: TokenParser) -> Tuple[bool, SymbolDependentValue]:
         return False, parser(fs_location_info, tp)
 
     return f
 
 
 def _parse_path(fs_location_info: FileSystemLocationInfo,
-                token_parser: TokenParser) -> DataValueResolver:
+                token_parser: TokenParser) -> DataTypeSdv:
     return parse_path.parse_path_from_token_parser(
         REL_OPTION_ARGUMENT_CONFIGURATION,
         token_parser,
@@ -268,45 +268,45 @@ def _parse_path(fs_location_info: FileSystemLocationInfo,
 
 
 def _parse_list(fs_location_info: FileSystemLocationInfo,
-                token_parser: TokenParser) -> DataValueResolver:
+                token_parser: TokenParser) -> DataTypeSdv:
     return parse_list.parse_list_from_token_parser(token_parser)
 
 
 def _parse_line_matcher(fs_location_info: FileSystemLocationInfo,
-                        token_parser: TokenParser) -> LineMatcherResolver:
+                        token_parser: TokenParser) -> LineMatcherSdv:
     if token_parser.is_at_eol:
-        return parse_line_matcher.CONSTANT_TRUE_MATCHER_RESOLVER
+        return parse_line_matcher.CONSTANT_TRUE_MATCHER_SDV
     else:
         return parse_line_matcher.parse_line_matcher_from_token_parser(token_parser)
 
 
 def _parse_string_matcher(fs_location_info: FileSystemLocationInfo,
-                          token_parser: TokenParser) -> StringMatcherResolver:
+                          token_parser: TokenParser) -> StringMatcherSdv:
     return parse_string_matcher.parse_string_matcher(token_parser)
 
 
 def _parse_file_matcher(fs_location_info: FileSystemLocationInfo,
-                        token_parser: TokenParser) -> FileMatcherResolver:
+                        token_parser: TokenParser) -> FileMatcherSdv:
     if token_parser.is_at_eol:
-        return parse_file_matcher.CONSTANT_TRUE_MATCHER_RESOLVER
+        return parse_file_matcher.CONSTANT_TRUE_MATCHER_SDV
     else:
-        return parse_file_matcher.parse_resolver(token_parser)
+        return parse_file_matcher.parse_sdv(token_parser)
 
 
 def _parse_files_matcher(fs_location_info: FileSystemLocationInfo,
-                         token_parser: TokenParser) -> FilesMatcherResolver:
+                         token_parser: TokenParser) -> FilesMatcherSdv:
     return parse_files_matcher.parse_files_matcher(token_parser)
 
 
 def _parse_string_transformer(fs_location_info: FileSystemLocationInfo,
-                              token_parser: TokenParser) -> StringTransformerResolver:
+                              token_parser: TokenParser) -> StringTransformerSdv:
     if token_parser.is_at_eol:
-        return line_transformer_resolvers.StringTransformerConstant(IdentityStringTransformer())
+        return line_transformer_sdvs.StringTransformerSdvConstant(IdentityStringTransformer())
     return parse_string_transformer.parse_string_transformer_from_token_parser(token_parser)
 
 
 def _parse_program(fs_location_info: FileSystemLocationInfo,
-                   token_parser: TokenParser) -> Tuple[bool, ProgramResolver]:
+                   token_parser: TokenParser) -> Tuple[bool, ProgramSdv]:
     ret_val = parse_program.parse_program(token_parser)
     return True, ret_val
 

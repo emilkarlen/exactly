@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext, \
-    StringMatcherResolverConstantTestImpl
+    StringMatcherSdvConstantTestImpl
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import constant_validator
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, ValidationActual
@@ -17,7 +17,7 @@ class ValidationCase:
         self._expectation = expectation
         self._symbol_context = StringMatcherSymbolContext(
             'string_matcher_symbol',
-            StringMatcherResolverConstantTestImpl(
+            StringMatcherSdvConstantTestImpl(
                 StringMatcherConstant(None),
                 validator=constant_validator(actual)
             )

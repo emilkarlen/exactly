@@ -1,13 +1,13 @@
 from typing import Generic, TypeVar, Optional, Sequence
 
-from exactly_lib.symbol.logic.resolver import T, MatcherResolver
+from exactly_lib.symbol.logic.matcher import T, MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_value_validators
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterValue, \
-    PropertyGetterResolver
+    PropertyGetterSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, Failure, MatcherDdv
@@ -125,10 +125,10 @@ class PropertyMatcherDdv(Generic[MODEL, T], MatcherDdv[MODEL]):
         )
 
 
-class PropertyMatcherResolver(Generic[MODEL, T], MatcherResolver[MODEL]):
+class PropertyMatcherSdv(Generic[MODEL, T], MatcherSdv[MODEL]):
     def __init__(self,
-                 matcher: MatcherResolver[T],
-                 property_getter: PropertyGetterResolver[MODEL, T],
+                 matcher: MatcherSdv[T],
+                 property_getter: PropertyGetterSdv[MODEL, T],
                  ):
         self._matcher = matcher
         self._property_getter = property_getter

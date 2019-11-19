@@ -5,7 +5,7 @@ from exactly_lib.instructions.multi_phase import new_file as sut
 from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.data import path_resolvers
+from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType
@@ -26,7 +26,7 @@ from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.a
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl, \
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl, \
     is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -72,7 +72,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         # ARRANGE #
 
         to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                            StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
 
         src_file = fs.File('src-file.txt', 'contents of source file')
         src_file_symbol = NameAndValue('SRC_FILE_SYMBOL', src_file.name)
@@ -88,12 +88,12 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
         symbols = SymbolTable({
             src_file_symbol.name:
-                container(path_resolvers.of_rel_option(src_file_rel_conf.relativity_option,
-                                                       paths.constant_path_part(src_file_symbol.value))),
+                container(path_sdvs.of_rel_option(src_file_rel_conf.relativity_option,
+                                                  paths.constant_path_part(src_file_symbol.value))),
 
             dst_file_symbol.name:
-                container(path_resolvers.of_rel_option(dst_file_rel_option,
-                                                       paths.constant_path_part(dst_file_symbol.value))),
+                container(path_sdvs.of_rel_option(dst_file_rel_option,
+                                                  paths.constant_path_part(dst_file_symbol.value))),
 
             to_upper_transformer.name:
                 container(to_upper_transformer.value),
@@ -144,7 +144,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         # ARRANGE #
 
         arbitrary_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                             StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                             StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
 
         src_file = PathArgumentWithRelativity('src-file.txt',
                                               conf_rel_hds(RelHdsOptionType.REL_HDS_CASE))
@@ -246,7 +246,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         expected_file = fs.File('a-file-name.txt', src_file.contents.upper())
 
         to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                            StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
         symbols = SymbolTable({
             to_upper_transformer.name:
                 container(to_upper_transformer.value),
@@ -331,7 +331,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         # ARRANGE #
 
         identity_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            StringTransformerResolverConstantTestImpl(IdentityStringTransformer()))
+                                            StringTransformerSdvConstantTestImpl(IdentityStringTransformer()))
 
         symbols = SymbolTable({
             identity_transformer.name: container(identity_transformer.value),
@@ -421,7 +421,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
             step_of_expected_failure: Step):
         # ARRANGE #
         transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                   StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                   StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
         symbols = SymbolTable({
             transformer.name:
                 container(transformer.value),
@@ -475,7 +475,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingScenariosDueToInvalidDestinationFileBase):
     def _file_contents_cases(self) -> InvalidDestinationFileTestCasesData:
         arbitrary_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                             StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                             StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
 
         symbols = SymbolTable({
             arbitrary_transformer.name: container(arbitrary_transformer.value),

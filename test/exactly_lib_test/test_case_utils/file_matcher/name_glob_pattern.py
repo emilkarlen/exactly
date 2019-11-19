@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
 from exactly_lib.util.symbol_table import SymbolTable
@@ -96,7 +96,7 @@ class ParseShouldFailWhenPatternArgumentIsMissing(test_case_utils.TestWithNegati
 class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
     any_char_glob_pattern_string_symbol = NameAndValue(
         'glob_pattern_string_symbol',
-        container(string_resolvers.str_constant('*'))
+        container(string_sdvs.str_constant('*'))
     )
     argument_w_opt_neg = arg.WithOptionalNegation(
         arg.Name(arg.NameGlobPatternVariant(

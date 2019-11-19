@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Optional
 
-from exactly_lib.symbol.resolver_structure import SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.type_system import value_type
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -63,11 +63,11 @@ class TypeCategoryRestriction(ReferenceRestrictions):
         :param container: The container of the value that the restriction applies to
         :return: None if satisfied, otherwise an error message
         """
-        if container.resolver.type_category is self._type_category:
+        if container.sdv.type_category is self._type_category:
             return None
         else:
             return InvalidTypeCategoryFailure(self._type_category,
-                                              container.resolver.type_category)
+                                              container.sdv.type_category)
 
 
 class ValueTypeRestriction(ReferenceRestrictions):
@@ -92,11 +92,11 @@ class ValueTypeRestriction(ReferenceRestrictions):
         :param container: The container of the value that the restriction applies to
         :return: None if satisfied, otherwise an error message
         """
-        if container.resolver.value_type is self._expected:
+        if container.sdv.value_type is self._expected:
             return None
         else:
             return InvalidValueTypeFailure(self._expected,
-                                           container.resolver.value_type)
+                                           container.sdv.value_type)
 
 
 class DataTypeReferenceRestrictions(ReferenceRestrictions):

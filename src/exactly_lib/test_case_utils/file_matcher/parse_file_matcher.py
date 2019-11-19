@@ -14,17 +14,17 @@ from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import file_matchers
-from exactly_lib.test_case_utils.file_matcher import resolvers
+from exactly_lib.test_case_utils.file_matcher import sdvs
 from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_FILE
 from exactly_lib.test_case_utils.file_matcher.impl import name_regex, name_glob_pattern, regular_file_contents
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
-from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
+from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
@@ -32,7 +32,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-CONSTANT_TRUE_MATCHER_RESOLVER = FileMatcherConstantResolver(MATCH_EVERY_FILE)
+CONSTANT_TRUE_MATCHER_SDV = FileMatcherConstantSdv(MATCH_EVERY_FILE)
 
 NAME_MATCHER_ARGUMENT = instruction_arguments.GLOB_PATTERN
 
@@ -53,44 +53,44 @@ class FileSelectionDescriptor(ErrorMessagePartConstructor):
         return [line]
 
 
-def parse_resolver_from_parse_source(source: ParseSource) -> FileMatcherResolver:
+def parse_sdv_from_parse_source(source: ParseSource) -> FileMatcherSdv:
     return _PARSER.parse(source)
 
 
-def parser() -> parser_classes.Parser[FileMatcherResolver]:
+def parser() -> parser_classes.Parser[FileMatcherSdv]:
     return _PARSER
 
 
-class _Parser(parser_classes.Parser[FileMatcherResolver]):
-    def parse_from_token_parser(self, parser: TokenParser) -> FileMatcherResolver:
-        return parse_resolver(parser)
+class _Parser(parser_classes.Parser[FileMatcherSdv]):
+    def parse_from_token_parser(self, parser: TokenParser) -> FileMatcherSdv:
+        return parse_sdv(parser)
 
 
 _PARSER = _Parser()
 
 
-def parse_optional_selection_resolver(parser: TokenParser) -> FileMatcherResolver:
+def parse_optional_selection_sdv(parser: TokenParser) -> FileMatcherSdv:
     parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
     return parser.consume_and_handle_optional_option(
-        CONSTANT_TRUE_MATCHER_RESOLVER,
-        parse_resolver,
+        CONSTANT_TRUE_MATCHER_SDV,
+        parse_sdv,
         SELECTION_OPTION.name)
 
 
-def parse_optional_selection_resolver2(parser: TokenParser) -> Optional[FileMatcherResolver]:
+def parse_optional_selection_sdv2(parser: TokenParser) -> Optional[FileMatcherSdv]:
     parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
     return parser.consume_and_handle_optional_option(
         None,
-        parse_resolver,
+        parse_sdv,
         SELECTION_OPTION.name)
 
 
-def parse_resolver(parser: TokenParser,
-                   must_be_on_current_line: bool = True) -> FileMatcherResolver:
+def parse_sdv(parser: TokenParser,
+              must_be_on_current_line: bool = True) -> FileMatcherSdv:
     parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
@@ -98,19 +98,17 @@ def parse_resolver(parser: TokenParser,
 
 
 def _parse(parser: TokenParser,
-           must_be_on_current_line: bool) -> FileMatcherResolver:
-    ret_val = ep.parse(GRAMMAR, parser, must_be_on_current_line)
-    assert isinstance(ret_val, FileMatcherResolver), ('Must have parsed a ' + str(FileMatcherResolver))
-    return ret_val
+           must_be_on_current_line: bool) -> FileMatcherSdv:
+    return ep.parse(GRAMMAR, parser, must_be_on_current_line)
 
 
-def _parse_name_matcher(parser: TokenParser) -> FileMatcherResolver:
+def _parse_name_matcher(parser: TokenParser) -> FileMatcherSdv:
     return parser.parse_choice_of_optional_option(name_regex.parse,
                                                   name_glob_pattern.parse,
                                                   REG_EX_OPTION)
 
 
-def _parse_type_matcher(parser: TokenParser) -> FileMatcherResolver:
+def _parse_type_matcher(parser: TokenParser) -> FileMatcherSdv:
     file_type = parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE,
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE.get,
@@ -118,13 +116,13 @@ def _parse_type_matcher(parser: TokenParser) -> FileMatcherResolver:
     return _constant(FileMatcherType(file_type))
 
 
-def _parse_regular_file_contents(parser: TokenParser) -> FileMatcherResolver:
+def _parse_regular_file_contents(parser: TokenParser) -> FileMatcherSdv:
     string_matcher = parse_string_matcher.parse_string_matcher(parser)
-    return regular_file_contents.RegularFileMatchesStringMatcherResolver(string_matcher)
+    return regular_file_contents.RegularFileMatchesStringMatcherSdv(string_matcher)
 
 
-def _constant(matcher: file_matchers.FileMatcher) -> FileMatcherResolver:
-    return FileMatcherConstantResolver(matcher)
+def _constant(matcher: file_matchers.FileMatcher) -> FileMatcherSdv:
+    return FileMatcherConstantSdv(matcher)
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
@@ -232,8 +230,8 @@ REGULAR_FILE_CONTENTS_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
 )
 
 
-def _mk_reference(name: str) -> FileMatcherResolver:
-    return resolvers.FileMatcherReferenceResolver(name)
+def _mk_reference(name: str) -> FileMatcherSdv:
+    return sdvs.FileMatcherReferenceSdv(name)
 
 
 GRAMMAR = grammar.Grammar(
@@ -253,19 +251,19 @@ GRAMMAR = grammar.Grammar(
     },
     complex_expressions={
         expression.AND_OPERATOR_NAME:
-            grammar.ComplexExpression(resolvers.FileMatcherAndResolver,
+            grammar.ComplexExpression(sdvs.FileMatcherAndSdv,
                                       grammar.OperatorExpressionDescription(
                                           _TP.fnap(_AND_SED_DESCRIPTION)
                                       )),
         expression.OR_OPERATOR_NAME:
-            grammar.ComplexExpression(resolvers.FileMatcherOrResolver,
+            grammar.ComplexExpression(sdvs.FileMatcherOrSdv,
                                       grammar.OperatorExpressionDescription(
                                           _TP.fnap(_OR_SED_DESCRIPTION)
                                       )),
     },
     prefix_expressions={
         expression.NOT_OPERATOR_NAME:
-            grammar.PrefixExpression(resolvers.FileMatcherNotResolver,
+            grammar.PrefixExpression(sdvs.FileMatcherNotSdv,
                                      grammar.OperatorExpressionDescription(
                                          _TP.fnap(_NOT_SED_DESCRIPTION)
                                      ))

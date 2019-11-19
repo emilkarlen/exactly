@@ -9,8 +9,8 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeR
     StringRestriction, \
     PathRelativityRestriction, ValueRestrictionVisitor
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
-from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions, ReferenceRestrictions, Failure
+from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc

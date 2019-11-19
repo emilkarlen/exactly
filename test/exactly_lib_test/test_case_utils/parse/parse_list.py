@@ -4,10 +4,10 @@ from typing import List, Sequence
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import list_resolver as lr
-from exactly_lib.symbol.data import list_resolvers
-from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.data.list_resolver import Element
+from exactly_lib.symbol.data import list_sdv as lr
+from exactly_lib.symbol.data import list_sdvs
+from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.symbol.data.list_sdv import ElementSdv
 from exactly_lib.symbol.data.restrictions import reference_restrictions
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -19,7 +19,7 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
-from exactly_lib_test.symbol.data.test_resources.list_assertions import equals_list_resolver
+from exactly_lib_test.symbol.data.test_resources.list_assertions import equals_list_sdv
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_case_utils.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -98,7 +98,7 @@ class TestSingleElementList(unittest.TestCase):
                  remaining_source(single_token_value),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.str_element(single_token_value)],
+                             [list_sdvs.str_element(single_token_value)],
                              source=
                              assert_source(is_at_eof=asrt.is_true)),
                  ),
@@ -107,7 +107,7 @@ class TestSingleElementList(unittest.TestCase):
                  remaining_source(symbol_reference_syntax_for_name(string_symbol.name)),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.symbol_element(symbol_reference(string_symbol.name))],
+                             [list_sdvs.symbol_element(symbol_reference(string_symbol.name))],
                              source=
                              assert_source(is_at_eof=asrt.is_true),
                              references=
@@ -124,9 +124,9 @@ class TestSingleElementList(unittest.TestCase):
                  Expectation(
                      elements=
                      [
-                         list_resolvers.string_element(string_resolvers.from_fragments([
-                             string_resolvers.str_fragment(single_token_value),
-                             string_resolvers.symbol_fragment(
+                         list_sdvs.string_element(string_sdvs.from_fragments([
+                             string_sdvs.str_fragment(single_token_value),
+                             string_sdvs.symbol_fragment(
                                  SymbolReference(string_symbol.name,
                                                  reference_restrictions.is_any_data_type())
                              ),
@@ -145,7 +145,7 @@ class TestSingleElementList(unittest.TestCase):
                                   []),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.str_element(single_token_value)],
+                             [list_sdvs.str_element(single_token_value)],
                              source=
                              asrt_source.is_at_line(1, ' ')),
                  ),
@@ -155,7 +155,7 @@ class TestSingleElementList(unittest.TestCase):
                                   []),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.str_element(single_token_value)],
+                             [list_sdvs.str_element(single_token_value)],
                              source=
                              asrt_source.is_at_end_of_line(1)),
                  ),
@@ -165,7 +165,7 @@ class TestSingleElementList(unittest.TestCase):
                                   ['']),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.str_element(single_token_value)],
+                             [list_sdvs.str_element(single_token_value)],
                              source=
                              asrt_source.is_at_line(1, ' ')),
                  ),
@@ -175,7 +175,7 @@ class TestSingleElementList(unittest.TestCase):
                                   ['   ']),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.str_element(single_token_value)],
+                             [list_sdvs.str_element(single_token_value)],
                              source=
                              asrt_source.is_at_end_of_line(1)),
                  ),
@@ -185,7 +185,7 @@ class TestSingleElementList(unittest.TestCase):
                                   ['   ']),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.str_element(single_token_value)],
+                             [list_sdvs.str_element(single_token_value)],
                              source=
                              asrt_source.is_at_line(1, ' ')),
                  ),
@@ -195,7 +195,7 @@ class TestSingleElementList(unittest.TestCase):
                                   ['"   ']),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.str_element(single_token_value)],
+                             [list_sdvs.str_element(single_token_value)],
                              source=
                              asrt_source.is_at_end_of_line(1)),
                  ),
@@ -216,8 +216,8 @@ class TestMultipleElementList(unittest.TestCase):
                  remaining_source(single_token_value_1 + ' ' + single_token_value_2),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.str_element(single_token_value_1),
-                              list_resolvers.str_element(single_token_value_2)
+                             [list_sdvs.str_element(single_token_value_1),
+                              list_sdvs.str_element(single_token_value_2)
                               ],
                              source=asrt_source.is_at_end_of_line(1)),
                  ),
@@ -227,8 +227,8 @@ class TestMultipleElementList(unittest.TestCase):
                                   ['']),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.str_element(single_token_value_1),
-                              list_resolvers.str_element(single_token_value_2)
+                             [list_sdvs.str_element(single_token_value_1),
+                              list_sdvs.str_element(single_token_value_2)
                               ],
                              source=
                              asrt_source.is_at_end_of_line(1)),
@@ -239,8 +239,8 @@ class TestMultipleElementList(unittest.TestCase):
                                   ['  ']),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.str_element(single_token_value_1),
-                              list_resolvers.str_element(single_token_value_2)
+                             [list_sdvs.str_element(single_token_value_1),
+                              list_sdvs.str_element(single_token_value_2)
                               ],
                              source=
                              asrt_source.is_at_end_of_line(1)),
@@ -252,8 +252,8 @@ class TestMultipleElementList(unittest.TestCase):
                      string_constant=single_token_value)),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.symbol_element(symbol_reference(symbol_name)),
-                              list_resolvers.str_element(single_token_value)
+                             [list_sdvs.symbol_element(symbol_reference(symbol_name)),
+                              list_sdvs.str_element(single_token_value)
                               ],
                              references=
                              asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
@@ -276,12 +276,12 @@ class TestMultipleElementList(unittest.TestCase):
                  Expectation(
                      elements=
                      [
-                         list_resolvers.string_element(string_resolvers.from_fragments([
-                             string_resolvers.symbol_fragment(SymbolReference(symbol_name,
-                                                                              reference_restrictions.is_any_data_type())),
-                             string_resolvers.str_fragment(single_token_value),
+                         list_sdvs.string_element(string_sdvs.from_fragments([
+                             string_sdvs.symbol_fragment(SymbolReference(symbol_name,
+                                                                         reference_restrictions.is_any_data_type())),
+                             string_sdvs.str_fragment(single_token_value),
                          ])),
-                         list_resolvers.str_element(single_token_value_1),
+                         list_sdvs.str_element(single_token_value_1),
                      ],
                      references=
                      asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
@@ -298,7 +298,7 @@ class TestMultipleElementList(unittest.TestCase):
 
 class Expectation:
     def __init__(self,
-                 elements: List[Element],
+                 elements: List[ElementSdv],
                  source: ValueAssertion[ParseSource],
                  references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence):
         self.elements = elements
@@ -336,11 +336,11 @@ def _test_case(put: unittest.TestCase, case: Case):
 
 
 def check_elements(put: unittest.TestCase,
-                   expected_elements: List[Element],
-                   actual: lr.ListResolver):
-    expected = lr.ListResolver(expected_elements)
-    assertion = equals_list_resolver(expected)
-    assertion.apply_with_message(put, actual, 'list resolver')
+                   expected_elements: List[ElementSdv],
+                   actual: lr.ListSdv):
+    expected = lr.ListSdv(expected_elements)
+    assertion = equals_list_sdv(expected)
+    assertion.apply_with_message(put, actual, 'list sdv')
 
 
 def _src(s: str,

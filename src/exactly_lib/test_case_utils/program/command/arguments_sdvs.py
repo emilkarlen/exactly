@@ -1,0 +1,25 @@
+from exactly_lib.symbol.data import list_sdvs
+from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.symbol.data.list_sdv import ListSdv
+from exactly_lib.symbol.data.path_sdv import PathSdv
+from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
+from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.path_check import PathCheckValidator, PathCheck
+
+
+def empty() -> ArgumentsSdv:
+    return ArgumentsSdv(list_sdvs.empty(),
+                        ())
+
+
+def new_without_validation(arguments: ListSdv) -> ArgumentsSdv:
+    return ArgumentsSdv(arguments, ())
+
+
+def ref_to_file_that_must_exist(file_that_must_exist: PathSdv,
+                                file_type: FileType = FileType.REGULAR) -> ArgumentsSdv:
+    file_validator = PathCheckValidator(PathCheck(file_that_must_exist,
+                                                  file_properties.must_exist_as(file_type)))
+    return ArgumentsSdv(list_sdvs.from_string(string_sdvs.from_path_sdv(file_that_must_exist)),
+                        [file_validator])

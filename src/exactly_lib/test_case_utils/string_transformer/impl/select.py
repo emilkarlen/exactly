@@ -1,8 +1,8 @@
 from typing import Sequence
 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
-from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
+from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.line_matcher.model_construction import original_and_model_iter_from_file_line_iter
@@ -14,21 +14,21 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformerDd
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class StringTransformerSelectResolver(StringTransformerResolver):
-    def __init__(self, line_matcher_resolver: LineMatcherResolver):
-        self.line_matcher_resolver = line_matcher_resolver
+class StringTransformerSelectSdv(StringTransformerSdv):
+    def __init__(self, line_matcher_sdv: LineMatcherSdv):
+        self.line_matcher_sdv = line_matcher_sdv
 
     def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
-        return SelectStringTransformerDdv(self.line_matcher_resolver.resolve(symbols))
+        return SelectStringTransformerDdv(self.line_matcher_sdv.resolve(symbols))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self.line_matcher_resolver.references
+        return self.line_matcher_sdv.references
 
 
-def parse_select(parser: TokenParser) -> StringTransformerResolver:
+def parse_select(parser: TokenParser) -> StringTransformerSdv:
     line_matcher = parse_line_matcher.parse_line_matcher_from_token_parser(parser)
-    return StringTransformerSelectResolver(line_matcher)
+    return StringTransformerSelectSdv(line_matcher)
 
 
 class SelectStringTransformer(StringTransformer):

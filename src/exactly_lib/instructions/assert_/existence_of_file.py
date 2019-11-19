@@ -15,8 +15,8 @@ from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
     InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.path_resolver import PathResolver
-from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
+from exactly_lib.symbol.data.path_sdv import PathSdv
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -36,7 +36,7 @@ from exactly_lib.test_case_utils.err_msg2.path_rendering import HeaderAndPathMaj
     PathRepresentationsRenderersForPrimitive
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
-from exactly_lib.test_case_utils.file_matcher import resolvers  as fm_resolvers
+from exactly_lib.test_case_utils.file_matcher import sdvs  as fm_sdvs
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
@@ -168,14 +168,14 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 
     @staticmethod
     def _parse_optional_file_matcher(parser: token_stream_parser.TokenParser
-                                     ) -> Optional[FileMatcherResolver]:
+                                     ) -> Optional[FileMatcherSdv]:
         file_matcher = None
 
         if not parser.is_at_eol:
             parser.consume_mandatory_constant_unquoted_string(
                 PROPERTIES_SEPARATOR,
                 must_be_on_current_line=True)
-            file_matcher = parse_file_matcher.parse_resolver(parser, must_be_on_current_line=False)
+            file_matcher = parse_file_matcher.parse_sdv(parser, must_be_on_current_line=False)
             parser.report_superfluous_arguments_if_not_at_eol()
 
         return file_matcher
@@ -184,13 +184,13 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 class _Instruction(AssertPhaseInstruction):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 path_resolver: PathResolver,
-                 file_matcher: Optional[FileMatcherResolver]):
+                 path_sdv: PathSdv,
+                 file_matcher: Optional[FileMatcherSdv]):
         self._expectation_type = expectation_type
-        self._path_resolver = path_resolver
+        self._path_sdv = path_sdv
         self._file_matcher = file_matcher
 
-        self._symbol_usages = list(path_resolver.references)
+        self._symbol_usages = list(path_sdv.references)
         if file_matcher is not None:
             self._symbol_usages += file_matcher.references
 
@@ -215,7 +215,7 @@ class _Instruction(AssertPhaseInstruction):
         try:
             return _Assertion(environment,
                               self._expectation_type,
-                              self._path_resolver,
+                              self._path_sdv,
                               self._file_matcher).apply()
         except HardErrorException as ex:
             return pfh.new_pfh_hard_error(ex.error)
@@ -232,16 +232,16 @@ class _Assertion:
     def __init__(self,
                  environment: i.InstructionEnvironmentForPostSdsStep,
                  expectation_type: ExpectationType,
-                 path_resolver: PathResolver,
-                 file_matcher: Optional[FileMatcherResolver]
+                 path_sdv: PathSdv,
+                 file_matcher: Optional[FileMatcherSdv]
                  ):
         self.environment = environment
         self.expectation_type = expectation_type
-        self.path_resolver = path_resolver
+        self.path_sdv = path_sdv
         self.file_matcher = file_matcher
 
         self.described_path = (
-            self.path_resolver.resolve(self.environment.symbols)
+            self.path_sdv.resolve(self.environment.symbols)
                 .value_of_any_dependency__d(environment.tcds)
         )
 
@@ -300,9 +300,9 @@ class _Assertion:
             return pfh.new_pfh_fail(err_msg)
 
     def _matches_file_matcher_for_expectation_type(self) -> MatchingResult:
-        resolver = self._file_matcher_for_expectation_type()
+        sdv = self._file_matcher_for_expectation_type()
 
-        fm = resolver.resolve(self.environment.symbols).value_of_any_dependency(self.environment.tcds)
+        fm = sdv.resolve(self.environment.symbols).value_of_any_dependency(self.environment.tcds)
 
         model = file_matcher_models.FileMatcherModelForPrimitivePath(
             self.environment.phase_logging.space_for_instruction(),
@@ -310,10 +310,10 @@ class _Assertion:
 
         return fm.matches_w_trace(model)
 
-    def _file_matcher_for_expectation_type(self) -> FileMatcherResolver:
+    def _file_matcher_for_expectation_type(self) -> FileMatcherSdv:
         return (self.file_matcher
                 if self._is_positive_check()
-                else fm_resolvers.FileMatcherNotResolver(self.file_matcher)
+                else fm_sdvs.FileMatcherNotSdv(self.file_matcher)
                 )
 
     def _is_positive_check(self) -> bool:

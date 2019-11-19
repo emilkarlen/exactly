@@ -2,11 +2,11 @@ import unittest
 
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.execution.result import ExecutionFailureStatus
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
-from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
@@ -157,5 +157,5 @@ def definition_with_reference(name_of_defined: str,
                                                                                 indirect=AnyDataTypeRestriction()))
     return SymbolDefinition(name_of_defined,
                             data_symbol_utils.container(
-                                StringResolver((string_resolvers.symbol_fragment(symbol_reference),))
+                                StringSdv((string_sdvs.symbol_fragment(symbol_reference),))
                             ))

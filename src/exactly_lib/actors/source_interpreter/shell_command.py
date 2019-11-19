@@ -3,10 +3,10 @@ import shlex
 
 from exactly_lib.actors.source_interpreter import parser_and_executor as pa
 from exactly_lib.actors.util.executor_made_of_parts import parts
-from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
+from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
-from exactly_lib.test_case_utils.program.command import command_resolvers
+from exactly_lib.test_case_utils.program.command import command_sdvs
 
 ACT_PHASE_SOURCE_FILE_BASE_NAME = 'act-phase.src'
 
@@ -32,14 +32,14 @@ class Executor(pa.ExecutorBase):
                          source_info)
         self.interpreter_shell_command = interpreter_shell_command
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandSdv:
         script_file_path = self._source_file_path(script_output_dir_path)
         script_file_argument = shlex.quote(str(script_file_path))
 
-        command_line_elements = string_resolvers.from_fragments([
-            string_resolvers.str_fragment(self.interpreter_shell_command),
-            string_resolvers.str_fragment(' '),
-            string_resolvers.str_fragment(script_file_argument),
+        command_line_elements = string_sdvs.from_fragments([
+            string_sdvs.str_fragment(self.interpreter_shell_command),
+            string_sdvs.str_fragment(' '),
+            string_sdvs.str_fragment(script_file_argument),
         ])
 
-        return command_resolvers.for_shell(command_line_elements)
+        return command_sdvs.for_shell(command_line_elements)

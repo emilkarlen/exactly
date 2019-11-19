@@ -3,8 +3,8 @@ import sys
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import list_resolvers, path_resolvers
-from exactly_lib.symbol.data.path_resolver import PathResolver
+from exactly_lib.symbol.data import list_sdvs, path_sdvs
+from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.token_parser_extra import from_parse_source
 from exactly_lib.test_case_utils.program import syntax_elements
@@ -31,13 +31,13 @@ def _parse(tokens: TokenStream) -> ExecutableFileWithArgsResolver:
         parse_path.parse_path(tokens, conf=syntax_elements.REL_OPTION_ARG_CONF)  # will raise exception
     the_path = _parse_exe_path(tokens)
     return ExecutableFileWithArgsResolver(the_path,
-                                          list_resolvers.empty())
+                                          list_sdvs.empty())
 
 
-def _parse_exe_path(tokens: TokenStream) -> PathResolver:
+def _parse_exe_path(tokens: TokenStream) -> PathSdv:
     token = tokens.head
     if token.is_plain and option_parsing.matches(syntax_elements.PYTHON_EXECUTABLE_OPTION_NAME, token.string):
         tokens.consume()
-        return path_resolvers.constant(paths.absolute_file_name(sys.executable))
+        return path_sdvs.constant(paths.absolute_file_name(sys.executable))
     else:
         return parse_path.parse_path(tokens, conf=syntax_elements.REL_OPTION_ARG_CONF)

@@ -7,7 +7,7 @@ from typing import Sequence, Optional, List
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironment, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -26,8 +26,8 @@ from exactly_lib_test.common.test_resources.text_doc_assertions import new_singl
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl, \
-    StringMatcherResolverFromPartsTestImpl
+from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSdvConstantTestImpl, \
+    StringMatcherSdvFromPartsTestImpl
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
@@ -63,7 +63,7 @@ class TestCaseBase(unittest.TestCase):
         self.tc = utils.TestCaseWithTestErrorAsFailureException()
 
     def _check(self,
-               parser: Parser[StringMatcherResolver],
+               parser: Parser[StringMatcherSdv],
                source: ParseSource,
                model: ModelBuilder,
                arrangement: sut.ArrangementPostAct,
@@ -141,10 +141,10 @@ class TestSymbolReferences(TestCaseBase):
                                                                                         symbol_value)
         expectation = asrt_sym.equals_symbol_table(expected_symbol_table)
 
-        resolver_that_checks_symbols = StringMatcherResolverThatAssertsThatSymbolsAreAsExpected(self, expectation)
+        sdv_that_checks_symbols = StringMatcherSdvThatAssertsThatSymbolsAreAsExpected(self, expectation)
 
         self._check(
-            ConstantParser(resolver_that_checks_symbols),
+            ConstantParser(sdv_that_checks_symbols),
             utils.single_line_source(),
             empty_model(),
             sut.ArrangementPostAct(
@@ -206,7 +206,7 @@ class TestMisc(TestCaseBase):
         cases = [
             NameAndValue(
                 'different header',
-                StringMatcherResolverFromPartsTestImpl(
+                StringMatcherSdvFromPartsTestImpl(
                     renderers.header_only('header of ddv'),
                     (),
                     pre_or_post_validation.ConstantSuccessValidator(),
@@ -216,7 +216,7 @@ class TestMisc(TestCaseBase):
             ),
             NameAndValue(
                 'different number of children',
-                StringMatcherResolverFromPartsTestImpl(
+                StringMatcherSdvFromPartsTestImpl(
                     renderers.header_only(header),
                     (),
                     pre_or_post_validation.ConstantSuccessValidator(),
@@ -305,12 +305,12 @@ class TestFailingExpectations(TestCaseBase):
             )
 
 
-def string_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> StringMatcherResolver:
+def string_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> StringMatcherSdv:
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
         return StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(environment.tcds,
                                                                     _ARBITRARY_STRUCTURE_RENDERER)
 
-    return StringMatcherResolverFromPartsTestImpl(
+    return StringMatcherSdvFromPartsTestImpl(
         _ARBITRARY_STRUCTURE_RENDERER,
         (),
         ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(),
@@ -320,12 +320,12 @@ def string_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> String
 
 def string_matcher_that_asserts_models_is_expected(put: unittest.TestCase,
                                                    expected_model_string_contents: str
-                                                   ) -> StringMatcherResolver:
+                                                   ) -> StringMatcherSdv:
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
         return StringMatcherThatAssertsModelsIsExpected(put, expected_model_string_contents,
                                                         _ARBITRARY_STRUCTURE_RENDERER)
 
-    return StringMatcherResolverFromPartsTestImpl(
+    return StringMatcherSdvFromPartsTestImpl(
         _ARBITRARY_STRUCTURE_RENDERER,
         (),
         pre_or_post_validation.ConstantSuccessValidator(),
@@ -352,16 +352,16 @@ class _StringMatcherThatReportsHardError(StringMatcher):
 def parser_for_constant(resolved_value: StringMatcher = StringMatcherConstant(None),
                         references: Sequence[SymbolReference] = (),
                         validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()
-                        ) -> Parser[StringMatcherResolver]:
+                        ) -> Parser[StringMatcherSdv]:
     return ConstantParser(
-        StringMatcherResolverConstantTestImpl(
+        StringMatcherSdvConstantTestImpl(
             resolved_value=resolved_value,
             references=references,
             validator=validator,
         ))
 
 
-class StringMatcherResolverThatAssertsThatSymbolsAreAsExpected(StringMatcherResolver):
+class StringMatcherSdvThatAssertsThatSymbolsAreAsExpected(StringMatcherSdv):
     def __init__(self,
                  put: unittest.TestCase,
                  expectation: ValueAssertion[SymbolTable]):

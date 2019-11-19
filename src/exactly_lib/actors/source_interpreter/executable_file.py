@@ -3,9 +3,9 @@ import pathlib
 from exactly_lib.actors.source_interpreter import parser_and_executor as pa
 from exactly_lib.actors.source_interpreter.source_file_management import SourceInterpreterSetup
 from exactly_lib.actors.util.executor_made_of_parts import parts
-from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
+from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
-from exactly_lib.test_case_utils.program.command import command_resolvers
+from exactly_lib.test_case_utils.program.command import command_sdvs
 
 
 def actor(setup: SourceInterpreterSetup) -> Actor:
@@ -43,7 +43,7 @@ class ExecutorForSourceInterpreterSetup(pa.ExecutorBase):
                          source_info)
         self.script_language_setup = script_language_setup
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandSdv:
         script_file_path = self._source_file_path(script_output_dir_path)
         pgm_and_args = self.script_language_setup.command_and_args_for_executing_script_file(str(script_file_path))
-        return command_resolvers.from_program_and_arguments(pgm_and_args)
+        return command_sdvs.from_program_and_arguments(pgm_and_args)

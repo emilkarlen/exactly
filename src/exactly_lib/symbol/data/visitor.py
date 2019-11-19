@@ -1,35 +1,35 @@
 from typing import TypeVar, Generic
 
-from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
-from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.symbol.data.path_resolver import PathResolver
-from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
+from exactly_lib.symbol.data.list_sdv import ListSdv
+from exactly_lib.symbol.data.path_sdv import PathSdv
+from exactly_lib.symbol.data.string_sdv import StringSdv
 
 T = TypeVar('T')
 
 
-class DataValueResolverPseudoVisitor(Generic[T]):
+class DataTypeSdvPseudoVisitor(Generic[T]):
     """
-    Visitor of `DataValueResolver`
+    Visitor of `DataTypeSdv`
     """
 
-    def visit(self, value: DataValueResolver) -> T:
+    def visit(self, value: DataTypeSdv) -> T:
         """
         :return: Return value from _visit... method
         """
-        if isinstance(value, PathResolver):
+        if isinstance(value, PathSdv):
             return self.visit_path(value)
-        if isinstance(value, StringResolver):
+        if isinstance(value, StringSdv):
             return self.visit_string(value)
-        if isinstance(value, ListResolver):
+        if isinstance(value, ListSdv):
             return self.visit_list(value)
-        raise TypeError('Unknown {}: {}'.format(DataValueResolver, str(value)))
+        raise TypeError('Unknown {}: {}'.format(DataTypeSdv, str(value)))
 
-    def visit_string(self, value: StringResolver) -> T:
+    def visit_string(self, value: StringSdv) -> T:
         raise NotImplementedError()
 
-    def visit_path(self, value: PathResolver) -> T:
+    def visit_path(self, value: PathSdv) -> T:
         raise NotImplementedError()
 
-    def visit_list(self, value: ListResolver) -> T:
+    def visit_list(self, value: ListSdv) -> T:
         raise NotImplementedError()

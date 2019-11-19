@@ -21,7 +21,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.data.test_resources import here_doc_assertion_utils as asrt_hd
 from exactly_lib_test.symbol.data.test_resources import references
 from exactly_lib_test.symbol.data.test_resources import string_assertions as asrt_string
-from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_resolver
+from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_sdv
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import string_constant_container
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import \
     symbol_table_with_string_values_from_name_and_value, path_constant_container
@@ -455,11 +455,11 @@ def _expect_path(put: unittest.TestCase,
     put.assertTrue(actual.is_path,
                    'is_path')
     symbol_references_assertion = equals_symbol_references(expectation.common.symbol_references)
-    expected_path_resolver = matches_path_resolver(expectation.path_ddv,
-                                                   symbol_references_assertion,
-                                                   symbol_table=expectation.common.symbol_table)
-    expected_path_resolver.apply_with_message(put, actual.path_resolver,
-                                              'path_resolver')
+    expected_path_sdv = matches_path_sdv(expectation.path_ddv,
+                                         symbol_references_assertion,
+                                         symbol_table=expectation.common.symbol_table)
+    expected_path_sdv.apply_with_message(put, actual.path_sdv,
+                                         'path_sdv')
     _expect_common(put, source, actual,
                    expectation.common)
 
@@ -478,7 +478,7 @@ def _expect_here_doc(put: unittest.TestCase,
     assertion_on_here_doc = asrt_hd.matches_resolved_value(expectation.resolved_here_doc_lines,
                                                            expectation.common.symbol_references,
                                                            expectation.common.symbol_table)
-    assertion_on_here_doc.apply_with_message(put, actual.string_resolver,
+    assertion_on_here_doc.apply_with_message(put, actual.string_sdv,
                                              'here_document')
     _expect_common(put, source, actual,
                    expectation.common)
@@ -498,15 +498,15 @@ def _expect_string(put: unittest.TestCase,
     assertion_on_here_doc = asrt_string.matches_primitive_string(asrt.equals(expectation.resolved_str),
                                                                  expectation.common.symbol_references,
                                                                  expectation.common.symbol_table)
-    assertion_on_here_doc.apply_with_message(put, actual.string_resolver,
-                                             'string_resolver')
+    assertion_on_here_doc.apply_with_message(put, actual.string_sdv,
+                                             'string_sdv')
     _expect_common(put, source, actual,
                    expectation.common)
 
 
 def _expect_common(put: unittest.TestCase,
                    actual_source: ParseSource,
-                   actual_result: string_or_path.StringOrPathResolver,
+                   actual_result: string_or_path.StringOrPathSdv,
                    expectation: CommonExpectation):
     symbol_references_assertion = equals_symbol_references(expectation.symbol_references)
     symbol_references_assertion.apply_with_message(put, actual_result.symbol_usages,

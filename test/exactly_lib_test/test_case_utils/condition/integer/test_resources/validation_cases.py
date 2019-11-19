@@ -1,12 +1,12 @@
 from typing import List, Sequence
 
-from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.resolver_structure import SymbolValueResolver
+from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_resolver import \
+from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_sdv import \
     is_reference_to_symbol_in_expression
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation
@@ -19,7 +19,7 @@ class IntegerValidationCase:
     def __init__(self,
                  case_name: str,
                  integer_expr_string: str,
-                 symbols: List[NameAndValue[SymbolValueResolver]],
+                 symbols: List[NameAndValue[SymbolDependentValue]],
                  reference_assertions: List[ValueAssertion[SymbolReference]],
                  expectation: ValidationExpectation,
                  ):
@@ -31,7 +31,7 @@ class IntegerValidationCase:
 
     @property
     def symbol_table(self) -> SymbolTable:
-        return symbol_utils.symbol_table_from_name_and_resolvers(self.symbols)
+        return symbol_utils.symbol_table_from_name_and_sdvs(self.symbols)
 
     @property
     def symbol_references_expectation(self) -> ValueAssertion[Sequence[SymbolReference]]:
@@ -42,12 +42,12 @@ def failing_integer_validation_cases(symbol_in_integer_name: str = 'symbol_in_in
                                      ) -> Sequence[IntegerValidationCase]:
     non_int_string_symbol = NameAndValue(
         symbol_in_integer_name,
-        string_resolvers.str_constant('tre')
+        string_sdvs.str_constant('tre')
     )
 
     non_iterable_string_symbol = NameAndValue(
         symbol_in_integer_name,
-        string_resolvers.str_constant('1')
+        string_sdvs.str_constant('1')
     )
 
     constant_string_cases = [

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data import path_resolvers
+from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
@@ -138,8 +138,8 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
         expected_file_relativity_symbol = 'EXPECTED_RELATIVITY_SYMBOL_NAME'
         path_sym_tbl_entry_for_expected_file = data_symbol_utils.entry(
             expected_file_relativity_symbol,
-            path_resolvers.constant(paths.of_rel_option(self.relativity_of_expected_file(),
-                                                        paths.empty_path_part())))
+            path_sdvs.constant(paths.of_rel_option(self.relativity_of_expected_file(),
+                                                   paths.empty_path_part())))
 
         symbols_in_arrangement = symbol_tables.symbol_table_from_entries(
             [path_sym_tbl_entry_for_expected_file] +

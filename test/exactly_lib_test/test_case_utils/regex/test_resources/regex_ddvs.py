@@ -6,7 +6,7 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver, RegexDdv
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -38,9 +38,9 @@ class RegexConstantDdvTestImpl(RegexDdv):
         return self._validator
 
 
-class RegexResolverConstantTestImpl(RegexResolver):
+class RegexSdvConstantTestImpl(RegexSdv):
     def __init__(self,
-                 resolved_value: Pattern,
+                 resolved_value: Pattern[str],
                  references: Sequence[SymbolReference] = (),
                  resolving_dependencies: Optional[Set[DirectoryStructurePartition]] = None,
                  value_validator: PreOrPostSdsValueValidator = ConstantPreOrPostSdsValueValidator(None, None)):

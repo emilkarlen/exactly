@@ -5,8 +5,8 @@ from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base impo
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.test_resources import resolver_assertions as asrt_resolver
-from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as asrt_rs
+from exactly_lib_test.symbol.test_resources import sdv_assertions as asrt_sdv
+from exactly_lib_test.symbol.test_resources import sdv_structure_assertions as asrt_rs
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.program import is_program_reference_to
@@ -14,7 +14,7 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWi
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
-from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
+from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources.program_assertions import \
@@ -32,13 +32,13 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
     def test_assignment_of_program_without_arguments(self):
         python_source = 'exit(72)'
 
-        resolver_of_referred_program = program_resolvers.for_py_source_on_command_line(python_source)
+        sdv_of_referred_program = program_sdvs.for_py_source_on_command_line(python_source)
 
         name_of_defined_symbol = 'the_symbol'
 
         referred_symbol = NameAndValue(
             'PRE_EXISTING_PROGRAM_SYMBOL',
-            resolver_of_referred_program
+            sdv_of_referred_program
         )
 
         symbols = SymbolTable({
@@ -53,7 +53,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                                    defined_symbol=name_of_defined_symbol,
                                    program=program)
         expected_symbol_container = asrt_rs.matches_container(
-            assertion_on_resolver=asrt_resolver.matches_resolver_of_program(
+            assertion_on_sdv=asrt_sdv.matches_sdv_of_program(
                 references=asrt.matches_sequence([
                     is_program_reference_to(referred_symbol.name)
                 ]),

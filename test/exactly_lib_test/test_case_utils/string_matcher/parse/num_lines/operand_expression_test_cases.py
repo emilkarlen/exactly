@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.util.logic_types import ExpectationType
@@ -8,7 +8,7 @@ from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_resolver import \
+from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_sdv import \
     is_reference_to_symbol_in_expression
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.validation_cases import \
     failing_integer_validation_cases
@@ -42,7 +42,7 @@ class _NumLinesMatchesWithOperandAsSymbolReference(TestCaseBase):
                                          '4'])
         actual_number_of_lines = '4'
         operand_symbol = NameAndValue('operand_symbol',
-                                      string_resolvers.str_constant(
+                                      string_sdvs.str_constant(
                                           actual_number_of_lines))
 
         symbol_table_with_operand_symbol = SymbolTable({
@@ -73,7 +73,7 @@ class _NumLinesMatchesWithOperandAsSymbolReferenceAsPartOfPythonExpression(TestC
         symbol_value = '3'
         constant_value = '1'
         operand_symbol = NameAndValue('operand_symbol',
-                                      string_resolvers.str_constant(symbol_value))
+                                      string_sdvs.str_constant(symbol_value))
 
         expression_that_evaluates_to_actual_number_of_lines = '{sym_ref}+{const}'.format(
             sym_ref=symbol_reference_syntax_for_name(operand_symbol.name),

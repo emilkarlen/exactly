@@ -12,7 +12,7 @@ from exactly_lib.definitions.test_case.actors import command_line as texts
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
+from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, ParseException, Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -22,7 +22,7 @@ from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.parse_list import parse_list
 from exactly_lib.test_case_utils.parse.parse_path import parse_path_from_parse_source
-from exactly_lib.test_case_utils.program.command import command_resolvers
+from exactly_lib.test_case_utils.program.command import command_sdvs
 
 
 def actor() -> Actor:
@@ -40,20 +40,20 @@ class Parser(parts.ActorFromParts):
 
 
 class CommandConfiguration(SymbolUser):
-    def __init__(self, command_resolver: CommandResolver):
-        self._command_resolver = command_resolver
+    def __init__(self, command_sdv: CommandSdv):
+        self._command_sdv = command_sdv
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
-        return self._command_resolver.references
+        return self._command_sdv.references
 
     def validator(self) -> parts.Validator:
-        return PartsValidatorFromPreOrPostSdsValidator(self._command_resolver.validator)
+        return PartsValidatorFromPreOrPostSdsValidator(self._command_sdv.validator)
 
     def executor(self,
                  os_process_executor: AtcOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep) -> parts.Executor:
         return CommandResolverExecutor(os_process_executor,
-                                       self._command_resolver)
+                                       self._command_sdv)
 
 
 class _Parser(ExecutableObjectParser):
@@ -73,9 +73,9 @@ class _Parser(ExecutableObjectParser):
             msg = SHELL_COMMAND_MARKER + ': {COMMAND} string is missing.'.format(
                 COMMAND=texts.COMMAND)
             raise ParseException(svh.new_svh_validation_error__str(msg))
-        arg_resolver = parse_string.string_resolver_from_string(striped_argument)
-        command_resolver = command_resolvers.for_shell(arg_resolver)
-        return CommandConfiguration(command_resolver)
+        arg_sdv = parse_string.string_sdv_from_string(striped_argument)
+        command_sdv = command_sdvs.for_shell(arg_sdv)
+        return CommandConfiguration(command_sdv)
 
     @staticmethod
     def _parse_executable_file(argument: str) -> CommandConfiguration:
@@ -84,8 +84,8 @@ class _Parser(ExecutableObjectParser):
             executable = parse_path_from_parse_source(source,
                                                       RELATIVITY_CONFIGURATION)
             arguments = parse_list(source)
-            command_resolver = command_resolvers.for_executable_file(executable)
-            executable_file = command_resolver.new_with_additional_argument_list(arguments)
+            command_sdv = command_sdvs.for_executable_file(executable)
+            executable_file = command_sdv.new_with_additional_argument_list(arguments)
             return CommandConfiguration(executable_file)
         except SingleInstructionInvalidArgumentException as ex:
             raise ParseException(svh.new_svh_validation_error__str(ex.error_message))

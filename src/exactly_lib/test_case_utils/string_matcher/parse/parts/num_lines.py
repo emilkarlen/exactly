@@ -2,26 +2,26 @@ from typing import Optional
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_integer_matcher
-from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterResolver
+from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterSdv
 from exactly_lib.test_case_utils.string_matcher import delegated_matcher, matcher_options
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.logic_types import ExpectationType
 
 
 def parse(expectation_type: ExpectationType,
-          token_parser: TokenParser) -> StringMatcherResolver:
+          token_parser: TokenParser) -> StringMatcherSdv:
     matcher = parse_integer_matcher.parse(
         token_parser,
         expectation_type,
         parse_integer_matcher.validator_for_non_negative,
     )
-    return delegated_matcher.StringMatcherResolverDelegatedToMatcher(
-        property_matcher.PropertyMatcherResolver(
+    return delegated_matcher.StringMatcherSdvDelegatedToMatcher(
+        property_matcher.PropertyMatcherSdv(
             matcher,
-            _operand_from_model_resolver(),
+            _operand_from_model_sdv(),
         ),
     )
 
@@ -42,8 +42,8 @@ class _PropertyGetter(PropertyGetter[FileToCheck, int]):
         return ret_val
 
 
-def _operand_from_model_resolver() -> PropertyGetterResolver[FileToCheck, int]:
-    return property_getters.PropertyGetterResolverConstant(
+def _operand_from_model_sdv() -> PropertyGetterSdv[FileToCheck, int]:
+    return property_getters.PropertyGetterSdvConstant(
         property_getters.PropertyGetterValueConstant(
             _PropertyGetter(),
         )

@@ -5,12 +5,12 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
-from exactly_lib.symbol.data.string_resolver import StringFragmentResolver, \
-    StringResolver
+from exactly_lib.symbol.data.string_sdv import StringFragmentSdv, \
+    StringSdv
 from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, \
     symbol_reference_syntax_for_name, \
@@ -23,7 +23,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
-from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_string_resolver
+from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_string_sdv
 from exactly_lib_test.test_case_utils.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -59,9 +59,9 @@ class TestFailWhenNoArgument(unittest.TestCase):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_fragments_from_tokens(TokenStream(''))
 
-    def test_missing_argument__parse_string_resolver(self):
+    def test_missing_argument__parse_string_sdv(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_string_resolver(TokenStream(''))
+            sut.parse_string_sdv(TokenStream(''))
 
 
 def successful_parse_of_constant() -> List[TC]:
@@ -186,15 +186,15 @@ class TestParseStringResolver(unittest.TestCase):
             # ARRANGE #
             token_stream = TokenStream(tc.source_string)
             # ACT #
-            actual = sut.parse_string_resolver(token_stream, CONFIGURATION)
+            actual = sut.parse_string_sdv(token_stream, CONFIGURATION)
             # ASSERT #
-            assertion_on_result = assert_equals_string_resolver(tc.expectation.fragments)
+            assertion_on_result = assert_equals_string_sdv(tc.expectation.fragments)
             assertion_on_result.apply_with_message(self, actual, 'fragment')
             tc.expectation.token_stream.apply_with_message(self, token_stream, 'token_stream')
 
     def test_missing_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_string_resolver(TokenStream(''))
+            sut.parse_string_sdv(TokenStream(''))
 
     def test_successful_parse_of_single_symbol(self):
         cases = successful_parse_of_single_symbol()
@@ -219,12 +219,12 @@ class TestParseFromParseSource(unittest.TestCase):
                               source=case.value):
                 source = remaining_source(case.value)
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_string_resolver_from_parse_source(source, CONFIGURATION)
+                    sut.parse_string_sdv_from_parse_source(source, CONFIGURATION)
 
     def test_missing_argument(self):
         parse_source = remaining_source('')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_string_resolver_from_parse_source(parse_source, CONFIGURATION)
+            sut.parse_string_sdv_from_parse_source(parse_source, CONFIGURATION)
 
     def test_successful_parse(self):
         # ARRANGE #
@@ -234,9 +234,9 @@ class TestParseFromParseSource(unittest.TestCase):
                                         soft_quote=SOFT_QUOTE_CHAR,
                                         symbol_reference=symbol_ref))
         # ACT #
-        actual = sut.parse_string_resolver_from_parse_source(parse_source)
+        actual = sut.parse_string_sdv_from_parse_source(parse_source)
         # ASSERT #
-        assertion_on_result = assert_equals_string_resolver(single_symbol)
+        assertion_on_result = assert_equals_string_sdv(single_symbol)
         assertion_on_result.apply_with_message(self, actual, 'result')
         assertion_on_parse_source = assert_source(remaining_part_of_current_line=asrt.equals('rest'))
         assertion_on_parse_source.apply_with_message(self, parse_source, 'parse_source')
@@ -261,33 +261,33 @@ def _multi_line_source(lines: list,
     return TokenStream(all_lines)
 
 
-def assert_equals_string_resolver(fragments: list) -> ValueAssertion:
-    expected_resolver = string_resolver_from_fragments(fragments)
-    return equals_string_resolver(expected_resolver)
+def assert_equals_string_sdv(fragments: list) -> ValueAssertion:
+    expected_sdv = string_sdv_from_fragments(fragments)
+    return equals_string_sdv(expected_sdv)
 
 
-def string_resolver_from_fragments(fragments: list) -> StringResolver:
-    fragment_resolves = [fragment_resolver_from_fragment(f) for f in fragments]
-    return StringResolver(tuple(fragment_resolves))
+def string_sdv_from_fragments(fragments: list) -> StringSdv:
+    fragment_resolves = [fragment_sdv_from_fragment(f) for f in fragments]
+    return StringSdv(tuple(fragment_resolves))
 
 
-def fragment_resolver_from_fragment(fragment: Fragment) -> StringFragmentResolver:
+def fragment_sdv_from_fragment(fragment: Fragment) -> StringFragmentSdv:
     if fragment.is_constant:
-        return string_resolvers.str_fragment(fragment.value)
+        return string_sdvs.str_fragment(fragment.value)
     else:
         sr = SymbolReference(fragment.value,
                              ReferenceRestrictionsOnDirectAndIndirect(direct=AnyDataTypeRestriction(),
                                                                       indirect=None))
-        return string_resolvers.symbol_fragment(sr)
+        return string_sdvs.symbol_fragment(sr)
 
 
 def single_symbol_reference(symbol_name: str,
-                            reference_restrictions: ReferenceRestrictions = None) -> sut.StringResolver:
+                            reference_restrictions: ReferenceRestrictions = None) -> sut.StringSdv:
     if reference_restrictions is None:
         reference_restrictions = no_restrictions()
-    fragments = (string_resolvers.symbol_fragment(SymbolReference(symbol_name,
-                                                                  reference_restrictions)),)
-    return sut.StringResolver(fragments)
+    fragments = (string_sdvs.symbol_fragment(SymbolReference(symbol_name,
+                                                             reference_restrictions)),)
+    return sut.StringSdv(fragments)
 
 
 def no_restrictions() -> ReferenceRestrictions:

@@ -16,7 +16,7 @@ from exactly_lib.instructions.multi_phase.utils import instruction_part_utils
 from exactly_lib.instructions.multi_phase.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.symbol.data.path_resolver import PathResolver
+from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
@@ -61,12 +61,12 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
 
 class TheInstructionEmbryo(embryo.InstructionEmbryo):
-    def __init__(self, dir_path_resolver: PathResolver):
-        self.dir_path_resolver = dir_path_resolver
+    def __init__(self, dir_path_sdv: PathSdv):
+        self.dir_path_sdv = dir_path_sdv
 
     @property
     def symbol_usages(self) -> Sequence[SymbolUsage]:
-        return self.dir_path_resolver.references
+        return self.dir_path_sdv.references
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
@@ -79,7 +79,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
         :return: None iff success. Otherwise an error message.
         """
         described_path = (
-            self.dir_path_resolver.resolve(environment.symbols)
+            self.dir_path_sdv.resolve(environment.symbols)
                 .value_post_sds__d(environment.sds)
         )
 

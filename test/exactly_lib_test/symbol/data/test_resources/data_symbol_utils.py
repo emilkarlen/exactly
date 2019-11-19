@@ -1,15 +1,15 @@
 from typing import Iterable, Tuple
 
-from exactly_lib.symbol import resolver_structure
-from exactly_lib.symbol.data import path_resolvers
-from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
-from exactly_lib.symbol.data.path_resolver import PathResolver
+from exactly_lib.symbol import sdv_structure
+from exactly_lib.symbol.data import path_sdvs
+from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
+from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
-from exactly_lib.symbol.resolver_structure import SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.data import path_ddv as _path
@@ -17,35 +17,35 @@ from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.value_type import DataValueType
 from exactly_lib.util.symbol_table import SymbolTable, Entry
-from exactly_lib_test.symbol.data.test_resources.list_resolvers import ListResolverTestImplForConstantListValue
-from exactly_lib_test.symbol.data.test_resources.value_resolvers import ConstantValueResolver
+from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
+from exactly_lib_test.symbol.data.test_resources.sdvs import ConstantSdv
 from exactly_lib_test.symbol.test_resources.symbol_utils import single_line_sequence
 from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
 
 
-def container(value_resolver: DataValueResolver,
+def container(value_sdv: DataTypeSdv,
               line_num: int = 1,
               source_line: str = 'value def line') -> SymbolContainer:
-    return SymbolContainer(value_resolver,
+    return SymbolContainer(value_sdv,
                            single_line_sequence(line_num, source_line))
 
 
-def container_of_builtin(value_resolver: DataValueResolver) -> SymbolContainer:
-    return resolver_structure.container_of_builtin(value_resolver)
+def container_of_builtin(value_sdv: DataTypeSdv) -> SymbolContainer:
+    return sdv_structure.container_of_builtin(value_sdv)
 
 
 def string_constant_container(constant_str: str,
                               line_num: int = 1,
                               source_line: str = 'value def line') -> SymbolContainer:
-    return SymbolContainer(string_resolvers.str_constant(constant_str),
+    return SymbolContainer(string_sdvs.str_constant(constant_str),
                            single_line_sequence(line_num, source_line))
 
 
 def string_ddv_constant_container2(string_ddv: StringDdv,
                                    line_num: int = 1,
                                    source_line: str = 'value def line') -> SymbolContainer:
-    return SymbolContainer(ConstantValueResolver(DataValueType.STRING,
-                                                 string_ddv),
+    return SymbolContainer(ConstantSdv(DataValueType.STRING,
+                                       string_ddv),
                            single_line_sequence(line_num, source_line))
 
 
@@ -82,7 +82,7 @@ def symbol_table_with_string_values_from_name_and_value(name_and_value_list: ite
 def list_ddv_constant_container(list_ddv: ListDdv,
                                 line_num: int = 1,
                                 source_line: str = 'value def line') -> SymbolContainer:
-    return SymbolContainer(ListResolverTestImplForConstantListValue(list_ddv),
+    return SymbolContainer(ListSdvTestImplForConstantListDdv(list_ddv),
                            single_line_sequence(line_num, source_line))
 
 
@@ -99,14 +99,14 @@ def path_constant_container(
                                                    relativity=RelOptionType.REL_CWD),
         line_num: int = 1,
         source_line: str = 'value def line') -> SymbolContainer:
-    return SymbolContainer(path_resolvers.constant(path_value),
+    return SymbolContainer(path_sdvs.constant(path_value),
                            single_line_sequence(line_num, source_line))
 
 
-def path_resolver_container(path_resolver: PathResolver,
-                            line_num: int = 1,
-                            source_line: str = 'value def line') -> SymbolContainer:
-    return SymbolContainer(path_resolver,
+def path_sdv_container(path_sdv: PathSdv,
+                       line_num: int = 1,
+                       source_line: str = 'value def line') -> SymbolContainer:
+    return SymbolContainer(path_sdv,
                            single_line_sequence(line_num, source_line))
 
 
@@ -137,10 +137,10 @@ def symbol_reference(name: str,
 
 
 def entry(name: str,
-          value_resolver: DataValueResolver = string_resolvers.str_constant('string value'),
+          value_sdv: DataTypeSdv = string_sdvs.str_constant('string value'),
           line_num: int = 1,
           source_line: str = 'value def line') -> Entry:
-    return Entry(name, SymbolContainer(value_resolver,
+    return Entry(name, SymbolContainer(value_sdv,
                                        single_line_sequence(line_num, source_line)))
 
 
@@ -152,6 +152,6 @@ def symbol_table_from_names(names: Iterable[str]) -> SymbolTable:
 
 
 def symbol_table_from_symbol_definitions(symbols: Iterable[SymbolDefinition]) -> SymbolTable:
-    elements = [(vd.name, vd.resolver_container)
+    elements = [(vd.name, vd.symbol_container)
                 for vd in symbols]
     return SymbolTable(dict(elements))

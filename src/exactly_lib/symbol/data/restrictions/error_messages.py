@@ -1,6 +1,6 @@
 from exactly_lib.definitions import message_rendering
 from exactly_lib.symbol.err_msg.error_messages import defined_at_line__err_msg_lines
-from exactly_lib.symbol.resolver_structure import SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
 from exactly_lib.type_system.value_type import DataValueType

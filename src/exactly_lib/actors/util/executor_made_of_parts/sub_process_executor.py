@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
+from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
@@ -16,13 +16,13 @@ class SubProcessExecutor(parts.Executor):
                 environment: InstructionEnvironmentForPostSdsStep,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
-        command_resolver = self._command_to_execute(script_output_dir_path)
-        command = command_resolver.resolve_of_any_dep(environment.path_resolving_environment_pre_or_post_sds)
+        command_sdv = self._command_to_execute(script_output_dir_path)
+        command = command_sdv.resolve_of_any_dep(environment.path_resolving_environment_pre_or_post_sds)
         return self.os_process_executor.execute(command,
                                                 std_files,
                                                 environment.process_execution_settings)
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandSdv:
         """
         Called after prepare, to get the command to execute
         """
@@ -32,9 +32,9 @@ class SubProcessExecutor(parts.Executor):
 class CommandResolverExecutor(SubProcessExecutor):
     def __init__(self,
                  os_process_executor: AtcOsProcessExecutor,
-                 command_resolver: CommandResolver):
+                 command_sdv: CommandSdv):
         super().__init__(os_process_executor)
-        self.command_resolver = command_resolver
+        self.command_sdv = command_sdv
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
-        return self.command_resolver
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandSdv:
+        return self.command_sdv

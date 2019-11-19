@@ -12,7 +12,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref, \
-    FileMatcherResolverConstantValueTestImpl
+    FileMatcherSdvConstantValueTestImpl
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
@@ -60,12 +60,12 @@ class TestSymbolReferenceFromBothSelectorAndFilesMatcherShouldBeReported(unittes
 
         # ACT #
 
-        resolver = sut.files_matcher_parser().parse(source)
+        sdv = sut.files_matcher_parser().parse(source)
 
         # ASSERT #
 
         expected_symbol_usages.apply_without_message(self,
-                                                     resolver.references)
+                                                     sdv.references)
 
 
 class TestFileMatcherShouldBeValidated(unittest.TestCase):
@@ -112,7 +112,7 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
         ]
 
         for case in cases:
-            resolver_of_failing_matcher = FileMatcherResolverConstantValueTestImpl(
+            sdv_of_failing_matcher = FileMatcherSdvConstantValueTestImpl(
                 FileMatcherDdvFromParts(
                     case.actual,
                     get_file_matcher_successful_matcher
@@ -120,7 +120,7 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
                 (),
             )
             symbols = SymbolTable({
-                name_of_referenced_symbol: container(resolver_of_failing_matcher),
+                name_of_referenced_symbol: container(sdv_of_failing_matcher),
             })
 
             selection_is_empty_source = remaining_source(selection_is_empty_arguments)

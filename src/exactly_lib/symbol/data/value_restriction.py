@@ -1,7 +1,7 @@
 from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.symbol.resolver_structure import SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -36,7 +36,7 @@ class ValueRestriction:
     A restriction on a resolved symbol value in the symbol table.
 
     Since sometimes, the restriction on the resolved value can be checked
-    just by looking at the resolver - the checking method is given the resolver
+    just by looking at the SDV - the checking method is given the SDV
     instead of the resolved value.
     """
 

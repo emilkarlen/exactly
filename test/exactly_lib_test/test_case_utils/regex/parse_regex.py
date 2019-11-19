@@ -5,14 +5,14 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data import string_resolvers, path_resolvers
+from exactly_lib.symbol.data import string_sdvs, path_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex import parse_regex as sut
-from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
@@ -23,7 +23,7 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, here_document
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
-from exactly_lib_test.test_case_utils.regex.test_resources.assertions import matches_regex_resolver
+from exactly_lib_test.test_case_utils.regex.test_resources.assertions import matches_regex_sdv
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -64,17 +64,17 @@ class Expectation:
         self.validation = validation
         self.token_stream = token_stream
 
-    def matches_regex_resolver(self,
-                               symbols: SymbolTable,
-                               tcds: Tcds) -> ValueAssertion[RegexResolver]:
+    def matches_regex_sdv(self,
+                          symbols: SymbolTable,
+                          tcds: Tcds) -> ValueAssertion[RegexSdv]:
         def on_primitive_value(tcds: Tcds) -> ValueAssertion[Pattern]:
             return self.pattern
 
-        return matches_regex_resolver(primitive_value=on_primitive_value,
-                                      references=self.references,
-                                      validation=self.validation,
-                                      tcds=tcds,
-                                      symbols=symbols)
+        return matches_regex_sdv(primitive_value=on_primitive_value,
+                                 references=self.references,
+                                 validation=self.validation,
+                                 tcds=tcds,
+                                 symbols=symbols)
 
 
 class OptionCase:
@@ -251,7 +251,7 @@ class TestValidRegex(unittest.TestCase):
     def test_here_document(self):
         # ARRANGE #
         star_string_symbol = NameAndValue('STAR_SYMBOL',
-                                          container(string_resolvers.str_constant('*')))
+                                          container(string_sdvs.str_constant('*')))
 
         regex_str = '.*'
 
@@ -319,7 +319,7 @@ class TestValidRegex(unittest.TestCase):
     def test_symbol_references(self):
         # ARRANGE #
         star_string_symbol = NameAndValue('STAR_SYMBOL',
-                                          container(string_resolvers.str_constant('* ')))
+                                          container(string_sdvs.str_constant('* ')))
 
         regex_str = '.* regex'
 
@@ -379,7 +379,7 @@ class TestValidRegex(unittest.TestCase):
 
 class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
     STAR_STRING_SYMBOL = NameAndValue('STAR_SYMBOL',
-                                      container(string_resolvers.str_constant('*')))
+                                      container(string_sdvs.str_constant('*')))
 
     def test_no_symbol_references(self):
         # ARRANGE #
@@ -519,12 +519,12 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
         ]
 
         for rel_opt in rel_opt_cases:
-            path_resolver = path_resolvers.of_rel_option(rel_opt)
+            path_sdv = path_sdvs.of_rel_option(rel_opt)
 
             arrangement = Arrangement(
                 symbols=SymbolTable({
                     self.STAR_STRING_SYMBOL.name: self.STAR_STRING_SYMBOL.value,
-                    path_symbol_name: container(path_resolver),
+                    path_symbol_name: container(path_sdv),
                 })
             )
 
@@ -553,20 +553,20 @@ class TestResolvingOfSymbolReferences(unittest.TestCase):
 
         single_sym_ref_source = remaining_source(symbol_reference_syntax_for_name(STRING_SYMBOL_NAME))
 
-        actual_resolver = sut.parse_regex(single_sym_ref_source)
+        actual_sdv = sut.parse_regex(single_sym_ref_source)
 
         non_matching_string = '0'
 
         for symbol_value in ['A', 'B']:
             with self.subTest(symbol_value=symbol_value):
                 symbols = SymbolTable({
-                    STRING_SYMBOL_NAME: container(string_resolvers.str_constant(symbol_value)),
+                    STRING_SYMBOL_NAME: container(string_sdvs.str_constant(symbol_value)),
                 })
 
                 # ACT & ASSERT #
 
                 self._assert_resolved_pattern_has_pattern_string(
-                    actual_resolver,
+                    actual_sdv,
                     expected_pattern_string=symbol_value,
                     matching_string=symbol_value,
                     non_matching_string=non_matching_string,
@@ -574,7 +574,7 @@ class TestResolvingOfSymbolReferences(unittest.TestCase):
                 )
 
     def _assert_resolved_pattern_has_pattern_string(self,
-                                                    actual_resolver: RegexResolver,
+                                                    actual_sdv: RegexSdv,
                                                     expected_pattern_string: str,
                                                     matching_string: str,
                                                     non_matching_string: str,
@@ -586,13 +586,13 @@ class TestResolvingOfSymbolReferences(unittest.TestCase):
                 non_matching_string=non_matching_string,
             )
 
-        resolved_value_has_expected_pattern_string = matches_regex_resolver(
+        resolved_value_has_expected_pattern_string = matches_regex_sdv(
             primitive_value=equals_expected_pattern_string,
             references=asrt.anything_goes(),
             symbols=symbols,
         )
 
-        resolved_value_has_expected_pattern_string.apply_without_message(self, actual_resolver)
+        resolved_value_has_expected_pattern_string.apply_without_message(self, actual_sdv)
 
 
 OPTION_CASES = [
@@ -640,17 +640,17 @@ def _check(put: unittest.TestCase,
     tcds = fake_tcds()
 
     # ACT #
-    actual_resolver = sut.parse_regex(source, consume_last_here_doc_line=True)
+    actual_sdv = sut.parse_regex(source, consume_last_here_doc_line=True)
     # ASSERT #
     expectation.token_stream.apply_with_message(put,
                                                 source.token_stream,
                                                 'token stream')
 
-    resolver_assertion = expectation.matches_regex_resolver(arrangement.symbols, tcds)
+    sdv_assertion = expectation.matches_regex_sdv(arrangement.symbols, tcds)
 
-    resolver_assertion.apply_with_message(put,
-                                          actual_resolver,
-                                          'resolver')
+    sdv_assertion.apply_with_message(put,
+                                          actual_sdv,
+                                          'sdv')
 
 
 def matches_for_case_insensitive(matches_for_case_sensitive: List[str]) -> List[str]:

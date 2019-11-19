@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.condition.integer import integer_resolver
+from exactly_lib_test.test_case_utils.condition.integer import integer_sdv
 
 
 def suite() -> unittest.TestSuite:
-    return integer_resolver.suite()
+    return integer_sdv.suite()
 
 
 if __name__ == '__main__':

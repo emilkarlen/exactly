@@ -2,13 +2,13 @@ import pathlib
 import re
 import unittest
 
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_resolvers
+from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_sdvs
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as arg
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as model
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import model_construction
@@ -118,7 +118,7 @@ class ValidationShouldFailWhenRegexIsInvalid(test_case_utils.TestCaseBase):
                         ARBITRARY_MODEL,
                         arrangement=
                         ArrangementPostAct(
-                            symbols=symbol_table_from_name_and_resolvers(regex_case.symbols)
+                            symbols=symbol_table_from_name_and_sdvs(regex_case.symbols)
                         ),
                         expectation=
                         expectation(
@@ -131,7 +131,7 @@ class ValidationShouldFailWhenRegexIsInvalid(test_case_utils.TestCaseBase):
 class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
     any_char_regex_string_symbol = NameAndValue(
         'valid_regex_string_symbol',
-        container(string_resolvers.str_constant('.'))
+        container(string_sdvs.str_constant('.'))
     )
     argument_w_opt_neg = arg.WithOptionalNegation(
         name_matches_regex_arg('AB' + symbol_reference_syntax_for_name(any_char_regex_string_symbol.name))

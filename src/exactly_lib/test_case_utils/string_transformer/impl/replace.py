@@ -3,15 +3,15 @@ from typing import Pattern, Sequence
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
+from exactly_lib.symbol.data.string_sdv import StringSdv
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.regex import parse_regex
-from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver, RegexDdv
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel
@@ -25,22 +25,22 @@ _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMEN
 _PARSE_REPLACEMENT_CONFIGURATION = parse_string.Configuration('REPLACEMENT')
 
 
-def parse_replace(token_parser: TokenParser) -> StringTransformerResolver:
+def parse_replace(token_parser: TokenParser) -> StringTransformerSdv:
     token_parser.require_has_valid_head_token(syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
-    source_type, regex_resolver = parse_regex.parse_regex2(token_parser,
-                                                           must_be_on_same_line=True)
+    source_type, regex_sdv = parse_regex.parse_regex2(token_parser,
+                                                      must_be_on_same_line=True)
     token_parser.require_is_not_at_eol(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
 
     replacement = parse_string.parse_string_from_token_parser(token_parser, _PARSE_REPLACEMENT_CONFIGURATION)
 
-    return _Resolver(regex_resolver,
-                     replacement)
+    return _Sdv(regex_sdv,
+                replacement)
 
 
-class _Resolver(StringTransformerResolver):
+class _Sdv(StringTransformerSdv):
     def __init__(self,
-                 regex: RegexResolver,
-                 replacement: StringResolver
+                 regex: RegexSdv,
+                 replacement: StringSdv
                  ):
         self._regex = regex
         self._replacement = replacement

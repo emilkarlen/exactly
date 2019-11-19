@@ -5,8 +5,8 @@ from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import files_matcher as files_matcher_primitives
-from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
@@ -16,9 +16,9 @@ from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForFileWithDescriptor
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
-from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherResolverBase
+from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherSdvBase
 from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
-    resolver_validator_for_file_matcher
+    sdv_validator_for_file_matcher
 from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
@@ -43,9 +43,9 @@ _SATISFIES = 'matches'
 
 
 def quantified_matcher(quantifier: Quantifier,
-                       matcher_on_file: FileMatcherResolver) -> FilesMatcherResolver:
-    return _QuantifiedMatcherResolver(quantifier,
-                                      matcher_on_file)
+                       matcher_on_file: FileMatcherSdv) -> FilesMatcherSdv:
+    return _QuantifiedMatcherSdv(quantifier,
+                                 matcher_on_file)
 
 
 class _QuantifiedMatcher(FilesMatcher):
@@ -141,11 +141,11 @@ class _QuantifiedMatcherDdv(FilesMatcherDdv):
         return files_matchers.ConstructorFromFunction(mk_matcher)
 
 
-class _QuantifiedMatcherResolver(FilesMatcherResolverBase):
+class _QuantifiedMatcherSdv(FilesMatcherSdvBase):
     def __init__(self,
                  quantifier: Quantifier,
-                 matcher_on_file: FileMatcherResolver):
-        super().__init__(resolver_validator_for_file_matcher(matcher_on_file),
+                 matcher_on_file: FileMatcherSdv):
+        super().__init__(sdv_validator_for_file_matcher(matcher_on_file),
                          )
         self._quantifier = quantifier
         self._matcher_on_file = matcher_on_file

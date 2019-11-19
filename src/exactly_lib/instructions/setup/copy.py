@@ -15,7 +15,7 @@ from exactly_lib.instructions.utils.documentation import src_dst
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.symbol.data.path_resolver import PathResolver
+from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case import exception_detection
 from exactly_lib.test_case.os_services import OsServices
@@ -113,7 +113,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
 
 class _InstallInstructionBase(SetupPhaseInstruction):
     def __init__(self,
-                 source_path: PathResolver):
+                 source_path: PathSdv):
         self.source_path = source_path
 
     def validate_pre_sds(self,
@@ -135,7 +135,7 @@ class _InstallInstructionBase(SetupPhaseInstruction):
 
 
 class _InstallSourceWithoutExplicitDestinationInstruction(_InstallInstructionBase):
-    def __init__(self, source_path: PathResolver):
+    def __init__(self, source_path: PathSdv):
         super().__init__(source_path)
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
@@ -156,8 +156,8 @@ class _InstallSourceWithoutExplicitDestinationInstruction(_InstallInstructionBas
 
 class _InstallSourceWithExplicitDestinationInstruction(_InstallInstructionBase):
     def __init__(self,
-                 source_path: PathResolver,
-                 destination_path: PathResolver):
+                 source_path: PathSdv,
+                 destination_path: PathSdv):
         super().__init__(source_path)
         self.destination_path = destination_path
 

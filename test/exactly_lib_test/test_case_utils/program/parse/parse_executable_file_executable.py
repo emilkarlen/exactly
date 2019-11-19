@@ -7,8 +7,8 @@ from exactly_lib.definitions.path import REL_symbol_OPTION
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import path_resolvers
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import path_sdvs
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
@@ -108,7 +108,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                  source=string_formatting.file_name(sys.executable),
                  expectation=
                  ExpectationOnExeFile(
-                     argument_resolver_value=empty_list_ddv(),
+                     argument_sdv_value=empty_list_ddv(),
                      path_ddv=paths.absolute_file_name(sys.executable),
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
@@ -119,7 +119,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                  source='file arg2',
                  expectation=
                  ExpectationOnExeFile(
-                     argument_resolver_value=empty_list_ddv(),
+                     argument_sdv_value=empty_list_ddv(),
                      path_ddv=path_of_default_relativity('file'),
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
@@ -130,7 +130,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                  source='"the file"',
                  expectation=
                  ExpectationOnExeFile(
-                     argument_resolver_value=empty_list_ddv(),
+                     argument_sdv_value=empty_list_ddv(),
                      path_ddv=path_of_default_relativity('the file'),
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
@@ -141,7 +141,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                  source='"the file" "an argument"',
                  expectation=
                  ExpectationOnExeFile(
-                     argument_resolver_value=empty_list_ddv(),
+                     argument_sdv_value=empty_list_ddv(),
                      path_ddv=path_of_default_relativity('the file'),
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
@@ -152,7 +152,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                  source='%s THE_FILE' % path_texts.REL_HDS_CASE_OPTION,
                  expectation=
                  ExpectationOnExeFile(
-                     argument_resolver_value=empty_list_ddv(),
+                     argument_sdv_value=empty_list_ddv(),
                      path_ddv=path_of(RelOptionType.REL_HDS_CASE, 'THE_FILE'),
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
@@ -163,7 +163,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                  source='%s FILE tail' % path_texts.REL_CWD_OPTION,
                  expectation=
                  ExpectationOnExeFile(
-                     argument_resolver_value=empty_list_ddv(),
+                     argument_sdv_value=empty_list_ddv(),
                      path_ddv=path_of(RelOptionType.REL_CWD, 'FILE'),
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
@@ -194,8 +194,8 @@ class TestParseWithSymbols(unittest.TestCase):
                                                                                 indirect=StringRestriction()),
                                                                             )
         symbols = SymbolTable({
-            file_symbol.name: su.container(path_resolvers.constant(file_symbol.value)),
-            string_symbol.name: su.container(string_resolvers.str_constant(string_symbol.value)),
+            file_symbol.name: su.container(path_sdvs.constant(file_symbol.value)),
+            string_symbol.name: su.container(string_sdvs.str_constant(string_symbol.value)),
         })
         cases = [
             Case('symbol references in file',
@@ -210,7 +210,7 @@ class TestParseWithSymbols(unittest.TestCase):
                                             paths.constant_path_part(string_symbol.value)),
                      expected_symbol_references_of_file=[reference_of_relativity_symbol,
                                                          reference_of_path_string_symbol_as_path_component],
-                     argument_resolver_value=empty_list_ddv(),
+                     argument_sdv_value=empty_list_ddv(),
                      expected_symbol_references_of_argument=[],
                      symbol_for_value_checks=symbols,
                  ),
@@ -279,7 +279,7 @@ class NoParenthesesAndNoFollowingArguments(ExecutableTestBase):
                                       expected_symbol_references_of_argument=self.configuration.expected_symbol_references_of_argument,
                                       source=asrt_source.is_at_end_of_line(1),
                                       validation_result=self.configuration.validation_result,
-                                      argument_resolver_value=empty_list_ddv()))
+                                      argument_sdv_value=empty_list_ddv()))
 
 
 class NoParenthesesAndFollowingArguments(ExecutableTestBase):
@@ -293,7 +293,7 @@ class NoParenthesesAndFollowingArguments(ExecutableTestBase):
                                       expected_symbol_references_of_argument=self.configuration.expected_symbol_references_of_argument,
                                       source=has_remaining_part_of_first_line('arg1 -arg2'),
                                       validation_result=self.configuration.validation_result,
-                                      argument_resolver_value=empty_list_ddv()))
+                                      argument_sdv_value=empty_list_ddv()))
 
 
 def configurations() -> Sequence[RelativityConfiguration]:
@@ -312,7 +312,7 @@ class TestParseAbsolutePath(unittest.TestCase):
     def test_existing_file(self):
         arguments_str = py_exe.command_line_for_arguments(['remaining', 'args'])
         expectation_on_exe_file = ExpectationOnExeFile(
-            argument_resolver_value=empty_list_ddv(),
+            argument_sdv_value=empty_list_ddv(),
             path_ddv=paths.absolute_file_name(sys.executable),
             expected_symbol_references_of_file=[],
             expected_symbol_references_of_argument=[],
@@ -332,7 +332,7 @@ class TestParseAbsolutePath(unittest.TestCase):
         arguments_str = '{} remaining args'.format(string_formatting.file_name(non_existing_file_path_str))
 
         expectation_on_exe_file = ExpectationOnExeFile(
-            argument_resolver_value=empty_list_ddv(),
+            argument_sdv_value=empty_list_ddv(),
             path_ddv=paths.absolute_file_name(non_existing_file_path_str),
             expected_symbol_references_of_file=[],
             expected_symbol_references_of_argument=[],

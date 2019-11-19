@@ -6,7 +6,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.string_matcher.parse.parts.equality import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
-from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
+from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
@@ -272,7 +272,7 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
     def runTest(self):
         # ARRANGE #
         named_transformer = NameAndValue(_TRANSFORMER_SYMBOL_NAME,
-                                         StringTransformerConstant(
+                                         StringTransformerSdvConstant(
                                              contents_transformation.ToUppercaseStringTransformer()))
 
         contents_generator = contents_transformation.TransformedContentsSetup(

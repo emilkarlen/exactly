@@ -13,8 +13,8 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
     ActualFilePropertyDescriptorConstructorForComparisonFile, ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data import path_resolvers
-from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.data import path_sdvs
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
@@ -86,8 +86,8 @@ class Parser(ComparisonActualFileParser):
         self._checked_file = checked_file
         self._checked_file_name = process_output_files.PROC_OUTPUT_FILE_NAMES[checked_file]
         self._default = actual_files.ConstructorForPath(
-            path_resolvers.of_rel_option(RelOptionType.REL_RESULT,
-                                         paths.constant_path_part(self._checked_file_name)),
+            path_sdvs.of_rel_option(RelOptionType.REL_RESULT,
+                                    paths.constant_path_part(self._checked_file_name)),
             file_or_dir_contents_headers.target_name_of_proc_output_file_from_act_phase(checked_file),
             False,
         )
@@ -105,7 +105,7 @@ class Parser(ComparisonActualFileParser):
 class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor):
     def __init__(self,
                  checked_output: process_output_files.ProcOutputFile,
-                 program: ProgramResolver):
+                 program: ProgramSdv):
         self._checked_output = checked_output
         self._program = program
 
@@ -127,7 +127,7 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
                                                                           source_info,
                                                                           self._checked_output,
                                                                           program)
-        file_with_transformed_contents = path_resolvers.constant(
+        file_with_transformed_contents = path_sdvs.constant(
             paths.absolute_path(result.path_of_file_with_transformed_contents)
         )
 

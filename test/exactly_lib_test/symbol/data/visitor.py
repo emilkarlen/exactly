@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import Dependencie
 from exactly_lib.type_system.value_type import DataValueType
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.data.test_resources import string_resolvers, list_resolvers, path_resolvers
+from exactly_lib_test.symbol.data.test_resources import string_sdvs, list_sdvs, path_sdvs
 
 
 def suite() -> unittest.TestSuite:
@@ -17,14 +17,14 @@ def suite() -> unittest.TestSuite:
 
 class TestVisitor(unittest.TestCase):
     def _check(self,
-               resolver_class: Type,
-               resolver: sut.DataValueResolver,
+               sdv_class: Type,
+               sdv: sut.DataTypeSdv,
                expected_ret_val: str,
                ):
         # ARRANGE #
         visitor = AVisitorThatRecordsVisitedMethods(expected_ret_val)
 
-        actual_ret_val = visitor.visit(resolver)
+        actual_ret_val = visitor.visit(sdv)
 
         # ASSERT #
 
@@ -32,28 +32,28 @@ class TestVisitor(unittest.TestCase):
                          actual_ret_val,
                          'return value')
 
-        self.assertEqual([resolver_class],
+        self.assertEqual([sdv_class],
                          visitor.visited_types,
                          'visited classes')
 
     def test_visit_string(self):
         self._check(
-            sut.StringResolver,
-            string_resolvers.arbitrary_resolver(),
+            sut.StringSdv,
+            string_sdvs.arbitrary_sdv(),
             'ret val',
         )
 
     def test_visit_path(self):
         self._check(
-            sut.PathResolver,
-            path_resolvers.arbitrary_resolver(),
+            sut.PathSdv,
+            path_sdvs.arbitrary_sdv(),
             'other ret val',
         )
 
     def test_visit_list(self):
         self._check(
-            sut.ListResolver,
-            list_resolvers.arbitrary_resolver(),
+            sut.ListSdv,
+            list_sdvs.arbitrary_sdv(),
             'ret val',
         )
 
@@ -62,31 +62,31 @@ class TestVisitor(unittest.TestCase):
         visitor = AVisitorThatRecordsVisitedMethods('ret-val')
         # ACT #
         with self.assertRaises(TypeError):
-            visitor.visit(UnknownDataTypeResolverClass())
+            visitor.visit(UnknownDataTypeSdvClass())
         # ASSERT #
         self.assertIsNot(visitor.visited_types,
                          'No visit method should have been executed.')
 
 
-class AVisitorThatRecordsVisitedMethods(sut.DataValueResolverPseudoVisitor[str]):
+class AVisitorThatRecordsVisitedMethods(sut.DataTypeSdvPseudoVisitor[str]):
     def __init__(self, ret_val: str):
         self._ret_val = ret_val
         self.visited_types = []
 
-    def visit_string(self, value: sut.StringResolver) -> str:
-        self.visited_types.append(sut.StringResolver)
+    def visit_string(self, value: sut.StringSdv) -> str:
+        self.visited_types.append(sut.StringSdv)
         return self._ret_val
 
-    def visit_path(self, value: sut.PathResolver) -> str:
-        self.visited_types.append(sut.PathResolver)
+    def visit_path(self, value: sut.PathSdv) -> str:
+        self.visited_types.append(sut.PathSdv)
         return self._ret_val
 
-    def visit_list(self, value: sut.ListResolver) -> str:
-        self.visited_types.append(sut.ListResolver)
+    def visit_list(self, value: sut.ListSdv) -> str:
+        self.visited_types.append(sut.ListSdv)
         return self._ret_val
 
 
-class UnknownDataTypeResolverClass(sut.DataValueResolver):
+class UnknownDataTypeSdvClass(sut.DataTypeSdv):
     @property
     def data_value_type(self) -> DataValueType:
         raise NotImplementedError('unsupported')

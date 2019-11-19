@@ -7,9 +7,9 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
     token_parser_with_additional_error_message_format_map
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.test_case_utils.string_matcher import resolvers
+from exactly_lib.test_case_utils.string_matcher import sdvs
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.util.logic_types import ExpectationType
 
@@ -19,20 +19,20 @@ _FORMAT_MAP = {
 }
 
 
-def string_matcher_parser() -> Parser[StringMatcherResolver]:
+def string_matcher_parser() -> Parser[StringMatcherSdv]:
     return parser_classes.ParserFromTokenParserFunction(parse_string_matcher,
                                                         consume_last_line_if_is_at_eol_after_parse=False)
 
 
-def parse_string_matcher(parser: TokenParser) -> StringMatcherResolver:
-    mb_model_transformer = parse_string_transformer.parse_optional_transformer_resolver_preceding_mandatory_element(
+def parse_string_matcher(parser: TokenParser) -> StringMatcherSdv:
+    mb_model_transformer = parse_string_transformer.parse_optional_transformer_sdv_preceding_mandatory_element(
         parser,
         COMPARISON_OPERATOR,
     )
     expectation_type = parser.consume_optional_negation_operator()
     matcher_except_transformation = _StringMatcherParser(expectation_type).parse(parser)
     return (
-        resolvers.new_with_transformation(mb_model_transformer, matcher_except_transformation)
+        sdvs.new_with_transformation(mb_model_transformer, matcher_except_transformation)
         if mb_model_transformer
         else
         matcher_except_transformation
@@ -51,7 +51,7 @@ class _StringMatcherParser:
             matcher_options.NUM_LINES_ARGUMENT: self._parse_num_lines_checker,
         }
 
-    def parse(self, token_parser: TokenParser) -> StringMatcherResolver:
+    def parse(self, token_parser: TokenParser) -> StringMatcherSdv:
         token_parser = token_parser_with_additional_error_message_format_map(token_parser, _FORMAT_MAP)
         matcher_name = token_parser.consume_mandatory_unquoted_string(
             instruction_arguments.STRING_MATCHER_PRIMITIVE_SYNTAX_ELEMENT,
@@ -61,33 +61,33 @@ class _StringMatcherParser:
         else:
             return self._symbol_reference(matcher_name, token_parser)
 
-    def _parse_emptiness_checker(self, token_parser: TokenParser) -> StringMatcherResolver:
+    def _parse_emptiness_checker(self, token_parser: TokenParser) -> StringMatcherSdv:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import emptieness
         return emptieness.parse(self.expectation_type, token_parser)
 
-    def _parse_equals_checker(self, token_parser: TokenParser) -> StringMatcherResolver:
+    def _parse_equals_checker(self, token_parser: TokenParser) -> StringMatcherSdv:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import equality
         return equality.parse(self.expectation_type, token_parser)
 
-    def _parse_matches_checker(self, token_parser: TokenParser) -> StringMatcherResolver:
+    def _parse_matches_checker(self, token_parser: TokenParser) -> StringMatcherSdv:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import matches
         return matches.parse(self.expectation_type, token_parser)
 
-    def _parse_num_lines_checker(self, token_parser: TokenParser) -> StringMatcherResolver:
+    def _parse_num_lines_checker(self, token_parser: TokenParser) -> StringMatcherSdv:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import num_lines
         return num_lines.parse(self.expectation_type, token_parser)
 
-    def _parse_any_line_matches_checker(self, token_parser: TokenParser) -> StringMatcherResolver:
+    def _parse_any_line_matches_checker(self, token_parser: TokenParser) -> StringMatcherSdv:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches
         return line_matches.parse_any_line_matches_matcher(self.expectation_type, token_parser)
 
-    def _parse_every_line_matches_checker(self, token_parser: TokenParser) -> StringMatcherResolver:
+    def _parse_every_line_matches_checker(self, token_parser: TokenParser) -> StringMatcherSdv:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches
         return line_matches.parse_every_line_matches_matcher(self.expectation_type, token_parser)
 
-    def _symbol_reference(self, parsed_symbol_name: str, token_parser: TokenParser) -> StringMatcherResolver:
+    def _symbol_reference(self, parsed_symbol_name: str, token_parser: TokenParser) -> StringMatcherSdv:
         if symbol_syntax.is_symbol_name(parsed_symbol_name):
-            return resolvers.new_reference(parsed_symbol_name, self.expectation_type)
+            return sdvs.new_reference(parsed_symbol_name, self.expectation_type)
         else:
             err_msg_header = 'Neither a {matcher} nor the plain name of a {symbol}: '.format(
                 matcher=instruction_arguments.STRING_MATCHER_PRIMITIVE_SYNTAX_ELEMENT,

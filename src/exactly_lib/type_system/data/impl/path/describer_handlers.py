@@ -25,7 +25,7 @@ from exactly_lib.util.render.renderer import Renderer
 
 class PathManipulationFunctionalityForFixedDdv(PathDescriberForDdv, ABC):
     """
-    A resolver + value that has been fixed by symbols and TCDS.
+    A SDV + value that has been fixed by symbols and TCDS.
 
     Used by objects representing a primitive value.
     Acts as a helper for functionality of the path manipulations

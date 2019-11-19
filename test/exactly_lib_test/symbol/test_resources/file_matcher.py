@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.file_matcher.file_matcher_ddvs import FileMatcherValueFromPrimitiveDdv
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv
@@ -8,19 +8,19 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import ResolverSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import file_matchers
 
 
-def arbitrary_resolver() -> FileMatcherResolver:
-    return FileMatcherResolverConstantTestImpl(
+def arbitrary_sdv() -> FileMatcherSdv:
+    return FileMatcherSdvConstantTestImpl(
         file_matchers.arbitrary_file_matcher()
     )
 
 
-class FileMatcherResolverConstantTestImpl(FileMatcherResolver):
+class FileMatcherSdvConstantTestImpl(FileMatcherSdv):
     def __init__(self,
                  resolved_value: FileMatcher,
                  references: Sequence[SymbolReference] = ()):
@@ -39,7 +39,7 @@ class FileMatcherResolverConstantTestImpl(FileMatcherResolver):
         return FileMatcherValueFromPrimitiveDdv(self._resolved_value)
 
 
-class FileMatcherResolverConstantValueTestImpl(FileMatcherResolver):
+class FileMatcherSdvConstantValueTestImpl(FileMatcherSdv):
     def __init__(self,
                  resolved_value: FileMatcherDdv,
                  references: Sequence[SymbolReference] = ()):
@@ -74,16 +74,16 @@ def is_file_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
     )
 
 
-class FileMatcherSymbolContext(ResolverSymbolContext[FileMatcherResolver]):
+class FileMatcherSymbolContext(SdvSymbolContext[FileMatcherSdv]):
     def __init__(self,
                  name: str,
-                 resolver: FileMatcherResolver):
+                 sdv: FileMatcherSdv):
         super().__init__(name)
-        self._resolver = resolver
+        self._sdv = sdv
 
     @property
-    def resolver(self) -> FileMatcherResolver:
-        return self._resolver
+    def sdv(self) -> FileMatcherSdv:
+        return self._sdv
 
     @property
     def reference_assertion(self) -> ValueAssertion[SymbolReference]:

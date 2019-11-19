@@ -26,7 +26,7 @@ from exactly_lib.instructions.utils.parse.parse_file_maker import CONTENTS_ASSIG
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.path_resolver import PathResolver
+from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.symbol_usage import SymbolUsage
@@ -98,7 +98,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
 
 class TheInstructionEmbryo(embryo.InstructionEmbryo):
     def __init__(self,
-                 path_to_create: PathResolver,
+                 path_to_create: PathSdv,
                  file_maker: FileMaker):
         self._path_to_create = path_to_create
         self._validator = pre_or_post_validation.all_of([
@@ -153,7 +153,7 @@ class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo):
 
 
 class _DstFileNameValidator(PreOrPostSdsValidator):
-    def __init__(self, path_to_create: PathResolver):
+    def __init__(self, path_to_create: PathSdv):
         self._path_to_create = path_to_create
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:

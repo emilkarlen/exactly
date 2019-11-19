@@ -4,13 +4,13 @@ from typing import List, Sequence
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import path_resolvers, list_resolvers, string_resolvers
-from exactly_lib.symbol.data.path_resolvers import constant
-from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.data import path_sdvs, list_sdvs, string_sdvs
+from exactly_lib.symbol.data.path_sdvs import constant
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.program.command import arguments_resolvers
+from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.test_case_utils.program.parse import parse_with_reference_to_program as sut
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.paths import simple_of_rel_option
@@ -28,7 +28,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources import arguments_buil
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_execution_check as pgm_exe_check
-from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
+from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_validator
 from exactly_lib_test.test_case_utils.test_resources import validation
@@ -123,7 +123,7 @@ class TestSymbolReferences(unittest.TestCase):
                 # ACT #
                 actual = parser.parse(source)
                 # ASSERT #
-                self.assertIsInstance(actual, ProgramResolver)
+                self.assertIsInstance(actual, ProgramSdv)
                 assertion.apply_without_message(self, actual.references)
 
 
@@ -157,13 +157,13 @@ class TestValidation(unittest.TestCase):
 
         program_symbol_with_ref_to_non_exit_exe_file = NameAndValue(
             'PGM_WITH_REF_TO_EXE_FILE',
-            program_resolvers.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_HDS_ACT,
+            program_sdvs.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_HDS_ACT,
                                                                                  'non-existing-exe-file')))
         )
 
         program_symbol_with_ref_to_non_exiting_file_as_argument = NameAndValue(
             'PGM_WITH_REF_TO_SOURCE_FILE',
-            program_resolvers.interpret_py_source_file_that_must_exist(
+            program_sdvs.interpret_py_source_file_that_must_exist(
                 constant(simple_of_rel_option(RelOptionType.REL_HDS_ACT,
                                               'non-existing-python-file.py')))
         )
@@ -193,16 +193,16 @@ class TestValidation(unittest.TestCase):
 
             with self.subTest(case.name):
                 # ACT #
-                program_resolver = parser.parse(source)
+                program_sdv = parser.parse(source)
                 # ASSERT #
-                self.assertIsInstance(program_resolver, ProgramResolver)
+                self.assertIsInstance(program_sdv, ProgramSdv)
                 with tcds_with_act_as_curr_dir(hds_contents=case.home_contents,
                                                symbols=symbols) as environment:
                     validation_assertion = pre_or_post_sds_validator.PreOrPostSdsValidatorAssertion(
                         expected_validation,
                         environment
                     )
-                    validation_assertion.apply_without_message(self, program_resolver.validator)
+                    validation_assertion.apply_without_message(self, program_sdv.validator)
 
     def test_failing_validation_post_sds(self):
         parser = sut.program_parser()
@@ -211,13 +211,13 @@ class TestValidation(unittest.TestCase):
 
         program_symbol_with_ref_to_non_exit_exe_file = NameAndValue(
             'PGM_WITH_REF_TO_EXE_FILE',
-            program_resolvers.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_TMP,
+            program_sdvs.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_TMP,
                                                                                  'non-existing-exe-file')))
         )
 
         program_symbol_with_ref_to_non_exiting_file_as_argument = NameAndValue(
             'PGM_WITH_REF_TO_SOURCE_FILE',
-            program_resolvers.interpret_py_source_file_that_must_exist(
+            program_sdvs.interpret_py_source_file_that_must_exist(
                 constant(simple_of_rel_option(RelOptionType.REL_ACT,
                                               'non-existing-python-file.py')))
         )
@@ -247,16 +247,16 @@ class TestValidation(unittest.TestCase):
 
             with self.subTest(case.name):
                 # ACT #
-                program_resolver = parser.parse(source)
+                program_sdv = parser.parse(source)
                 # ASSERT #
-                self.assertIsInstance(program_resolver, ProgramResolver)
+                self.assertIsInstance(program_sdv, ProgramSdv)
                 with tcds_with_act_as_curr_dir(sds_contents=case.sds_contents,
                                                symbols=symbols) as environment:
                     validation_assertion = pre_or_post_sds_validator.PreOrPostSdsValidatorAssertion(
                         expected_validation,
                         environment
                     )
-                    validation_assertion.apply_without_message(self, program_resolver.validator)
+                    validation_assertion.apply_without_message(self, program_sdv.validator)
 
 
 class TestExecution(unittest.TestCase):
@@ -273,11 +273,11 @@ class TestExecution(unittest.TestCase):
             with self.subTest(case.name):
                 python_source = 'exit({exit_code})'.format(exit_code=case.value)
 
-                resolver_of_referred_program = program_resolvers.for_py_source_on_command_line(python_source)
+                sdv_of_referred_program = program_sdvs.for_py_source_on_command_line(python_source)
 
                 program_that_executes_py_source = NameAndValue(
                     'PROGRAM_THAT_EXECUTES_PY_SOURCE',
-                    resolver_of_referred_program
+                    sdv_of_referred_program
                 )
 
                 source = parse_source_of(sym_ref_args.sym_ref_cmd_line(
@@ -313,10 +313,10 @@ class TestExecution(unittest.TestCase):
 class ResolvingCase:
     def __init__(self,
                  name: str,
-                 actual_resolver: ProgramResolver,
+                 actual_sdv: ProgramSdv,
                  expected: ValueAssertion[DirDependentValue[Program]]):
         self.name = name
-        self.actual_resolver = actual_resolver
+        self.actual_sdv = actual_sdv
         self.expected = expected
 
 
@@ -339,10 +339,10 @@ class TestResolving(unittest.TestCase):
                 )
 
             return ResolvingCase('relativity=' + str(relativity),
-                                 actual_resolver=program_resolvers.with_ref_to_exe_file(
-                                     path_resolvers.constant(exe_path),
-                                     arguments_resolvers.new_without_validation(
-                                         list_resolvers.from_str_constants(expected_arguments))),
+                                 actual_sdv=program_sdvs.with_ref_to_exe_file(
+                                     path_sdvs.constant(exe_path),
+                                     arguments_sdvs.new_without_validation(
+                                         list_sdvs.from_str_constants(expected_arguments))),
                                  expected=asrt_dir_dep_val.matches_dir_dependent_value(assertion))
 
         return [case(RelOptionType.REL_HDS_ACT),
@@ -363,9 +363,9 @@ class TestResolving(unittest.TestCase):
                 transformer=asrt_line_transformer.is_identity_transformer()
             )
 
-        case = ResolvingCase('', actual_resolver=program_resolvers.with_ref_to_program(
-            string_resolvers.str_constant(the_executable_program),
-            arguments_resolvers.new_without_validation(list_resolvers.from_str_constants(expected_arguments))),
+        case = ResolvingCase('', actual_sdv=program_sdvs.with_ref_to_program(
+            string_sdvs.str_constant(the_executable_program),
+            arguments_sdvs.new_without_validation(list_sdvs.from_str_constants(expected_arguments))),
                              expected=asrt_dir_dep_val.matches_dir_dependent_value(assertion))
         return [case]
 
@@ -394,7 +394,7 @@ class TestResolving(unittest.TestCase):
                                       resolving_case=resolving_case.name):
                         program_symbol = NameAndValue(
                             'PROGRAM_SYMBOL',
-                            resolving_case.actual_resolver)
+                            resolving_case.actual_sdv)
 
                         source = parse_source_of(sym_ref_args.sym_ref_cmd_line(program_symbol.name))
 

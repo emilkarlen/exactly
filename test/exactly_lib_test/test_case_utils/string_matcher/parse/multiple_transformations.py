@@ -9,11 +9,11 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
 from exactly_lib.util.description_tree import details
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl, \
+from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSdvConstantTestImpl, \
     is_reference_to_string_matcher
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl, \
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl, \
     is_reference_to_string_transformer
-from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_resolvers
+from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration as tc
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
@@ -46,12 +46,12 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
         initial_model = model_construction.model_of(initial_model_contents)
 
         equals_expected_matcher = NameAndValue('EQUALS_EXPECTED',
-                                               StringMatcherResolverConstantTestImpl(
+                                               StringMatcherSdvConstantTestImpl(
                                                    EqualsMatcherTestImpl(model_after_2_transformations)
                                                ))
 
         prepend_transformer_symbol = NameAndValue('PREPEND_TRANSFORMER',
-                                                  StringTransformerResolverConstantTestImpl(
+                                                  StringTransformerSdvConstantTestImpl(
                                                       PrependStringToLinesTransformer(string_to_prepend))
                                                   )
 
@@ -65,12 +65,12 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
         # ACT & ASSERT #
 
         parser = sut.string_matcher_parser()
-        prepend_and_equals_expected_matcher_resolver = parser.parse(trans_and_eq_expected_matcher_source)
+        prepend_and_equals_expected_matcher_sdv = parser.parse(trans_and_eq_expected_matcher_source)
 
         prepend_and_equals_expected_matcher = NameAndValue('PREPEND_AND_EQUALS_EXPECTED',
-                                                           prepend_and_equals_expected_matcher_resolver)
+                                                           prepend_and_equals_expected_matcher_sdv)
 
-        symbols = symbol_table_from_name_and_resolvers([
+        symbols = symbol_table_from_name_and_sdvs([
             equals_expected_matcher,
             prepend_transformer_symbol,
             prepend_and_equals_expected_matcher,

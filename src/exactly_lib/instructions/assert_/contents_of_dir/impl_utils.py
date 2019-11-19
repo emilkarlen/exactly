@@ -1,8 +1,8 @@
 from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
-from exactly_lib.symbol.data.path_resolver import PathResolver
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
+from exactly_lib.symbol.data.path_sdv import PathSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -18,11 +18,11 @@ from exactly_lib.util.render import combinators as rend_comb
 
 class FilesSource:
     def __init__(self,
-                 path_of_dir: PathResolver):
+                 path_of_dir: PathSdv):
         self._path_of_dir = path_of_dir
 
     @property
-    def path_of_dir(self) -> PathResolver:
+    def path_of_dir(self) -> PathSdv:
         return self._path_of_dir
 
 
@@ -51,7 +51,7 @@ class AssertPathIsExistingDirectory(AssertionPart[FilesSource, FilesSource]):
 
 
 class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSource]):
-    def __init__(self, files_matcher: FilesMatcherResolver):
+    def __init__(self, files_matcher: FilesMatcherSdv):
         super().__init__(files_matcher.validator())
         self._files_matcher = files_matcher
 

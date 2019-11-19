@@ -63,4 +63,4 @@ class TestSuccessfulDefinition(unittest.TestCase):
 
         assert isinstance(symbol_definition, SymbolDefinition)
 
-        assertion.apply_without_message(self, symbol_definition.resolver_container.source_location)
+        assertion.apply_without_message(self, symbol_definition.symbol_container.source_location)

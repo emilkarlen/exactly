@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
@@ -113,7 +113,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
         # ARRANGE #
         tcds = fake_tcds()
         symbol_69 = NameAndValue('SYMBOL_69',
-                                 symbol_utils.container(string_resolvers.str_constant('69')),
+                                 symbol_utils.container(string_sdvs.str_constant('69')),
                                  )
         for expectation_type in ExpectationType:
             cases = [
@@ -219,11 +219,11 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                   expectation_type=expectation_type):
                     with from_parse_source(case.source) as parser:
                         # ACT #
-                        actual_resolver = sut.parse(parser, expectation_type, None)
+                        actual_sdv = sut.parse(parser, expectation_type, None)
                         # ASSERT #
-                        case.references.apply_with_message(self, actual_resolver.references, 'references')
+                        case.references.apply_with_message(self, actual_sdv.references, 'references')
 
-                        actual_ddv = actual_resolver.resolve(case.symbols)
+                        actual_ddv = actual_sdv.resolve(case.symbols)
 
                         validator = actual_ddv.validator
 
@@ -233,7 +233,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                         mb_validation_failure = validator.validate_post_sds_if_applicable(tcds)
                         self.assertIsNone(mb_validation_failure, 'post sds validation')
 
-                        actual = actual_resolver.resolve(case.symbols).value_of_any_dependency(tcds)
+                        actual = actual_sdv.resolve(case.symbols).value_of_any_dependency(tcds)
 
                     case.source_assertion.apply_with_message(self, case.source, 'source')
                     case.result.assertion(expectation_type).apply_with_message(self, actual, 'parsed value')
@@ -243,7 +243,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
         tcds = fake_tcds()
         is_text_renderer = asrt_renderer.is_renderer_of_major_blocks()
         symbol_not_an_int = NameAndValue('SYMBOL_NOT_AN_INT',
-                                         symbol_utils.container(string_resolvers.str_constant('notAnInt')),
+                                         symbol_utils.container(string_sdvs.str_constant('notAnInt')),
                                          )
         for expectation_type in ExpectationType:
             cases = [
@@ -281,10 +281,10 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                   expectation_type=expectation_type):
                     with from_parse_source(case.source) as parser:
                         # ACT #
-                        actual_resolver = sut.parse(parser, expectation_type, None)
-                        actual_ddv = actual_resolver.resolve(case.symbols)
+                        actual_sdv = sut.parse(parser, expectation_type, None)
+                        actual_ddv = actual_sdv.resolve(case.symbols)
                         # ASSERT #
-                        case.references.apply_with_message(self, actual_resolver.references, 'references')
+                        case.references.apply_with_message(self, actual_sdv.references, 'references')
 
                         mb_validation_failure = actual_ddv.validator.validate_pre_sds_if_applicable(tcds.hds)
 

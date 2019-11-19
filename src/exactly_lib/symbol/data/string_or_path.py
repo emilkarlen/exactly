@@ -1,7 +1,7 @@
 from typing import Sequence, Optional
 
-from exactly_lib.symbol.data.path_resolver import PathResolver
-from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.data.path_sdv import PathSdv
+from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.utils import DirDepValueResolver
 from exactly_lib.test_case.validation import pre_or_post_validation
@@ -11,11 +11,11 @@ from exactly_lib.type_system.data.string_or_path_ddvs import StringOrPathDdv, So
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class StringOrPathResolver(DirDepValueResolver[StringOrPathDdv]):
+class StringOrPathSdv(DirDepValueResolver[StringOrPathDdv]):
     def __init__(self,
                  source_type: SourceType,
-                 string: Optional[StringResolver],
-                 path: Optional[PathResolver]):
+                 string: Optional[StringSdv],
+                 path: Optional[PathSdv]):
         self._source_type = source_type
         self._string = string
         self._path = path
@@ -31,19 +31,19 @@ class StringOrPathResolver(DirDepValueResolver[StringOrPathDdv]):
     def is_path(self) -> bool:
         """
         Tells if the source is a path.
-        If not, it is either a string or a here doc accessed via `string_resolver`
+        If not, it is either a string or a here doc accessed via `string_sdv`
         """
         return self.source_type is SourceType.PATH
 
     @property
-    def string_resolver(self) -> StringResolver:
+    def string_sdv(self) -> StringSdv:
         """
         :return: Not None iff :class:`SourceType` is NOT `SourceType.PATH`
         """
         return self._string
 
     @property
-    def path_resolver(self) -> PathResolver:
+    def path_sdv(self) -> PathSdv:
         """
         :return: Not None iff :class:`SourceType` is `SourceType.PATH`
         """
@@ -75,6 +75,6 @@ class StringOrPathResolver(DirDepValueResolver[StringOrPathDdv]):
             return pre_or_post_validation.ConstantSuccessValidator()
         from exactly_lib.test_case_utils.path_check import PathCheck
         from exactly_lib.test_case_utils.path_check import PathCheckValidator
-        frc = PathCheck(self.path_resolver,
+        frc = PathCheck(self.path_sdv,
                         must_exist_as(file_type, follow_symlinks))
         return PathCheckValidator(frc)

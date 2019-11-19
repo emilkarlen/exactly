@@ -1,9 +1,9 @@
 import pathlib
 from typing import List, Sequence
 
-from exactly_lib.symbol.data import path_resolvers
-from exactly_lib.symbol.data.path_resolver import PathResolver
-from exactly_lib.symbol.data.path_resolver_impls.constant import PathConstant
+from exactly_lib.symbol.data import path_sdvs
+from exactly_lib.symbol.data.path_sdv import PathSdv
+from exactly_lib.symbol.data.path_sdv_impls.constant import PathConstantSdv
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case_file_structure import path_relativity
@@ -64,11 +64,11 @@ class SymbolsConfiguration:
 class NamedFileConf:
     def __init__(self,
                  name: str,
-                 resolver: PathResolver,
+                 sdv: PathSdv,
                  cl_argument: PathArgument,
                  ):
         self._name = name
-        self._resolver = resolver
+        self._sdv = sdv
         self._cl_argument = cl_argument
 
     @property
@@ -76,8 +76,8 @@ class NamedFileConf:
         return self._name
 
     @property
-    def path_resolver(self) -> PathResolver:
-        return self._resolver
+    def path_sdv(self) -> PathSdv:
+        return self._sdv
 
     @property
     def cl_argument(self) -> PathArgument:
@@ -169,10 +169,10 @@ class RelativityOptionConfiguration:
     def is_rel_cwd(self) -> bool:
         raise NotImplementedError('abstract method')
 
-    def path_resolver_for_root_dir(self) -> PathResolver:
+    def path_sdv_for_root_dir(self) -> PathSdv:
         raise NotImplementedError('abstract method')
 
-    def path_resolver_for(self, file_name: str = '') -> PathResolver:
+    def path_sdv_for(self, file_name: str = '') -> PathSdv:
         raise NotImplementedError('abstract method')
 
     @property
@@ -185,7 +185,7 @@ class RelativityOptionConfiguration:
 
     def named_file_conf(self, file_name: str) -> NamedFileConf:
         return NamedFileConf(file_name,
-                             self.path_resolver_for(file_name),
+                             self.path_sdv_for(file_name),
                              self._cli_option.file_argument(file_name))
 
     @property
@@ -237,14 +237,14 @@ class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguratio
     def relativity_option(self) -> RelOptionType:
         return self.relativity
 
-    def path_resolver_for_root_dir(self) -> PathResolver:
-        return path_resolvers.constant(
+    def path_sdv_for_root_dir(self) -> PathSdv:
+        return path_sdvs.constant(
             paths.of_rel_option(self.relativity_option,
                                 empty_path_part())
         )
 
-    def path_resolver_for(self, file_name: str = '') -> PathResolver:
-        return path_resolvers.constant(
+    def path_sdv_for(self, file_name: str = '') -> PathSdv:
+        return path_sdvs.constant(
             paths.of_rel_option(self.relativity_option,
                                 _empty_or_fixed_path_part(file_name))
         )
@@ -387,13 +387,13 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRel
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:
         return sds_populator.contents_in(self.relativity_sds, contents)
 
-    def path_resolver_for_root_dir(self) -> PathResolver:
-        return PathConstant(paths.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
-                                                empty_path_part()))
+    def path_sdv_for_root_dir(self) -> PathSdv:
+        return PathConstantSdv(paths.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
+                                                   empty_path_part()))
 
-    def path_resolver_for(self, file_name: str = '') -> PathResolver:
-        return PathConstant(paths.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
-                                                _empty_or_fixed_path_part(file_name)))
+    def path_sdv_for(self, file_name: str = '') -> PathSdv:
+        return PathConstantSdv(paths.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
+                                                   _empty_or_fixed_path_part(file_name)))
 
 
 class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
@@ -418,7 +418,7 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
         return [
             data_symbol_utils.entry(
                 self.symbol_name,
-                path_resolvers.constant(
+                path_sdvs.constant(
                     paths.of_rel_option(self.relativity,
                                         paths.empty_path_part())))
         ]

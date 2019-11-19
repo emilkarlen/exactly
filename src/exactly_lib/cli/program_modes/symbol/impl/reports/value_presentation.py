@@ -6,20 +6,20 @@ from exactly_lib.cli.program_modes.symbol.impl.report import ReportBlock
 from exactly_lib.definitions import path, type_system
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
-from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
-from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.symbol.data.path_resolver import PathResolver
-from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.data.visitor import DataValueResolverPseudoVisitor
-from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
-from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
-from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
-from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
-from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
-from exactly_lib.symbol.logic.visitor import LogicValueResolverPseudoVisitor
-from exactly_lib.symbol.resolver_structure import SymbolValueResolver
+from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
+from exactly_lib.symbol.data.list_sdv import ListSdv
+from exactly_lib.symbol.data.path_sdv import PathSdv
+from exactly_lib.symbol.data.string_sdv import StringSdv
+from exactly_lib.symbol.data.visitor import DataTypeSdvPseudoVisitor
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
+from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
+from exactly_lib.symbol.logic.visitor import LogicTypeSdvPseudoVisitor
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
@@ -48,12 +48,12 @@ class ResolvedValuePresentationBlock(ReportBlock, ABC):
 class PresentationBlockConstructor:
     def __init__(self, all_definitions: Sequence[SymbolDefinition]):
         self._symbol_table = SymbolTable({
-            definition.name: definition.resolver_container
+            definition.name: definition.symbol_container
             for definition in all_definitions
         })
 
-    def block_for(self, resolver: SymbolValueResolver) -> Optional[ResolvedValuePresentationBlock]:
-        if isinstance(resolver, LogicValueResolver):
+    def block_for(self, sdv: SymbolDependentValue) -> Optional[ResolvedValuePresentationBlock]:
+        if isinstance(sdv, LogicTypeSdv):
             tcds = Tcds(
                 HomeDirectoryStructure(
                     pathlib.Path(symbol_reference_syntax_for_name(path.EXACTLY_DIR__REL_HDS_CASE)),
@@ -62,32 +62,32 @@ class PresentationBlockConstructor:
                 SandboxDirectoryStructure(path_description.EXACTLY_SANDBOX_ROOT_DIR_NAME)
             )
             constructor = _LogicTypeBlockConstructor(self._symbol_table, tcds)
-            return constructor.visit(resolver)
-        elif isinstance(resolver, DataValueResolver):
+            return constructor.visit(sdv)
+        elif isinstance(sdv, DataTypeSdv):
             constructor = _DataTypeBlockConstructor(self._symbol_table)
-            return constructor.visit(resolver)
+            return constructor.visit(sdv)
         else:
-            raise TypeError('Unknown resolver type: ' + str(resolver))
+            raise TypeError('Unknown sdv type: ' + str(sdv))
 
 
-class _DataTypeBlockConstructor(DataValueResolverPseudoVisitor[Optional[ResolvedValuePresentationBlock]]):
+class _DataTypeBlockConstructor(DataTypeSdvPseudoVisitor[Optional[ResolvedValuePresentationBlock]]):
     def __init__(self,
                  symbols: SymbolTable,
                  ):
         self.symbols = symbols
 
-    def visit_string(self, value: StringResolver) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_string(self, value: StringSdv) -> Optional[ResolvedValuePresentationBlock]:
         return _BlockForCustomRenderer(_StringRenderer(value.resolve(self.symbols).describer()))
 
-    def visit_path(self, value: PathResolver) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_path(self, value: PathSdv) -> Optional[ResolvedValuePresentationBlock]:
         describer = value.resolve(self.symbols).describer()
         return _of_single_line_object(line_objects.StringLineObject(describer.value.render()))
 
-    def visit_list(self, value: ListResolver) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_list(self, value: ListSdv) -> Optional[ResolvedValuePresentationBlock]:
         return _BlockForCustomRenderer(_ListRenderer(value.resolve(self.symbols).describer()))
 
 
-class _LogicTypeBlockConstructor(LogicValueResolverPseudoVisitor[Optional[ResolvedValuePresentationBlock]]):
+class _LogicTypeBlockConstructor(LogicTypeSdvPseudoVisitor[Optional[ResolvedValuePresentationBlock]]):
     def __init__(self,
                  symbols: SymbolTable,
                  tcds: Tcds,
@@ -95,27 +95,27 @@ class _LogicTypeBlockConstructor(LogicValueResolverPseudoVisitor[Optional[Resolv
         self.symbols = symbols
         self.tcds = tcds
 
-    def visit_file_matcher(self, value: FileMatcherResolver) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_file_matcher(self, value: FileMatcherSdv) -> Optional[ResolvedValuePresentationBlock]:
         return None  # FIXME Restore when DDV can report structure
         return self._of_tree_structured(value.resolve(self.symbols).value_of_any_dependency(self.tcds))
 
-    def visit_files_matcher(self, value: FilesMatcherResolver) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_files_matcher(self, value: FilesMatcherSdv) -> Optional[ResolvedValuePresentationBlock]:
         return None  # FIXME Restore when DDV can report structure
         matcher_constructor = value.resolve(self.symbols).value_of_any_dependency(self.tcds)
         matcher = matcher_constructor.construct(TmpDirFileSpaceThatMustNoBeUsed())
         return self._of_tree_structured(matcher)
 
-    def visit_line_matcher(self, value: LineMatcherResolver) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_line_matcher(self, value: LineMatcherSdv) -> Optional[ResolvedValuePresentationBlock]:
         return self._of_tree_structured(value.resolve(self.symbols))
 
-    def visit_string_matcher(self, value: StringMatcherResolver) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_string_matcher(self, value: StringMatcherSdv) -> Optional[ResolvedValuePresentationBlock]:
         return self._of_tree_structured(value.resolve(self.symbols))
 
-    def visit_string_transformer(self, value: StringTransformerResolver) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_string_transformer(self, value: StringTransformerSdv) -> Optional[ResolvedValuePresentationBlock]:
         return None  # FIXME Restore when DDV can report structure
         return self._of_tree_structured(value.resolve(self.symbols).value_of_any_dependency(self.tcds))
 
-    def visit_program(self, value: ProgramResolver) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_program(self, value: ProgramSdv) -> Optional[ResolvedValuePresentationBlock]:
         return None  # FIXME Restore when DDV can report structure
         program = value.resolve(self.symbols).value_of_any_dependency(self.tcds)
         return _BlockForCustomRenderer(_ProgramRenderer(program))

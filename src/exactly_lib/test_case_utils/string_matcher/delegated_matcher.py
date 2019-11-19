@@ -1,7 +1,7 @@
 from typing import Optional, List
 
-from exactly_lib.symbol.logic.resolver import MatcherResolver
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
@@ -54,8 +54,8 @@ class StringMatcherDdvDelegatedToMatcher(StringMatcherDdv):
         return StringMatcherDelegatedToMatcher(self._delegated.value_of_any_dependency(tcds))
 
 
-class StringMatcherResolverDelegatedToMatcher(StringMatcherResolver):
-    def __init__(self, delegated: MatcherResolver[FileToCheck]):
+class StringMatcherSdvDelegatedToMatcher(StringMatcherSdv):
+    def __init__(self, delegated: MatcherSdv[FileToCheck]):
         super().__init__()
         self._delegated = delegated
 

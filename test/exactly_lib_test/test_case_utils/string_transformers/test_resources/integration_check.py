@@ -3,7 +3,7 @@ from typing import Optional, Sequence, Callable
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.type_system.logic.hard_error import HardErrorException
@@ -57,7 +57,7 @@ def check(put: unittest.TestCase,
 def check_with_custom_parser(put: unittest.TestCase,
                              source: ParseSource,
                              model: StringTransformerModel,
-                             parser: Parser[StringTransformerResolver],
+                             parser: Parser[StringTransformerSdv],
                              arrangement: Arrangement,
                              expectation: Expectation):
     _Checker(put, source, model, parser, arrangement, expectation).check()
@@ -91,7 +91,7 @@ class _Checker:
                  put: unittest.TestCase,
                  source: ParseSource,
                  model: StringTransformerModel,
-                 parser: Parser[StringTransformerResolver],
+                 parser: Parser[StringTransformerSdv],
                  arrangement: Arrangement,
                  expectation: Expectation):
         self.put = put
@@ -109,13 +109,13 @@ class _Checker:
             pass
 
     def _check(self):
-        transformer_resolver = self._parse()
+        transformer_sdv = self._parse()
 
         self.expectation.symbol_references.apply_with_message(self.put,
-                                                              transformer_resolver.references,
+                                                              transformer_sdv.references,
                                                               'reference')
 
-        transformer_value = self._resolve_ddv(transformer_resolver)
+        transformer_value = self._resolve_ddv(transformer_sdv)
 
         self._check_validation_pre_sds(transformer_value)
         self._check_validation_post_sds(transformer_value)
@@ -124,21 +124,21 @@ class _Checker:
 
         self._check_application(transformer)
 
-    def _parse(self) -> StringTransformerResolver:
-        resolver = self.parser.parse(self.source)
-        asrt.is_instance(StringTransformerResolver).apply_with_message(self.put,
-                                                                       resolver,
-                                                                       'resolver')
-        assert isinstance(resolver, StringTransformerResolver)
+    def _parse(self) -> StringTransformerSdv:
+        sdv = self.parser.parse(self.source)
+        asrt.is_instance(StringTransformerSdv).apply_with_message(self.put,
+                                                                  sdv,
+                                                                  'SDV')
+        assert isinstance(sdv, StringTransformerSdv)
 
         self.expectation.source.apply_with_message(self.put,
                                                    self.source,
                                                    'source after parse')
 
-        return resolver
+        return sdv
 
-    def _resolve_ddv(self, transformer_resolver: StringTransformerResolver) -> StringTransformerDdv:
-        transformer_ddv = transformer_resolver.resolve(self.arrangement.symbols)
+    def _resolve_ddv(self, transformer_sdv: StringTransformerSdv) -> StringTransformerDdv:
+        transformer_ddv = transformer_sdv.resolve(self.arrangement.symbols)
 
         asrt.is_instance(StringTransformerDdv).apply_with_message(self.put,
                                                                   transformer_ddv,

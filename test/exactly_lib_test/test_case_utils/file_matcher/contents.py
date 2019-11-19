@@ -6,7 +6,7 @@ from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
+from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
@@ -157,7 +157,7 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
         # ARRANGE #
 
         named_transformer = NameAndValue('the_transformer',
-                                         StringTransformerConstant(
+                                         StringTransformerSdvConstant(
                                              EveryLineEmptyStringTransformer()))
 
         checked_file = File('actual.txt', 'some\ntext')

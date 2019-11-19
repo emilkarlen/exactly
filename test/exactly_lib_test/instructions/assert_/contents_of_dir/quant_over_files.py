@@ -7,8 +7,8 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
-from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
+from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
+from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import instruction_arguments as args
@@ -394,7 +394,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         ])
 
         symbol_table_with_file_matcher = SymbolTable({
-            name_starts_with_selected.name: container(FileMatcherConstantResolver(name_starts_with_selected.value))
+            name_starts_with_selected.name: container(FileMatcherConstantSdv(name_starts_with_selected.value))
         })
         relativity_root_conf = tr.DEFAULT_REL_OPT_CONFIG
 
@@ -462,7 +462,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         ])
 
         symbol_table_with_file_matcher = SymbolTable({
-            name_starts_with_selected.name: container(FileMatcherConstantResolver(name_starts_with_selected.value))
+            name_starts_with_selected.name: container(FileMatcherConstantSdv(name_starts_with_selected.value))
         })
         relativity_root_conf = tr.DEFAULT_REL_OPT_CONFIG
 
@@ -532,7 +532,7 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
             ToUppercaseStringTransformer())
 
         symbol_table_with_lines_transformer = SymbolTable({
-            transform_to_uppercase.name: container(StringTransformerConstant(transform_to_uppercase.value))
+            transform_to_uppercase.name: container(StringTransformerSdvConstant(transform_to_uppercase.value))
         })
         expected_symbol_references = asrt.matches_sequence([
             is_reference_to_string_transformer(transform_to_uppercase.name)

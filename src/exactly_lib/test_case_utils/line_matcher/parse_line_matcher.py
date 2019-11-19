@@ -6,18 +6,18 @@ from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
+from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import line_matchers
-from exactly_lib.test_case_utils.line_matcher import resolvers
+from exactly_lib.test_case_utils.line_matcher import sdvs
 from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
-from exactly_lib.test_case_utils.matcher.impls import combinator_resolvers
+from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs
 from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 from .impl import delegated
 
-CONSTANT_TRUE_MATCHER_RESOLVER = resolvers.LineMatcherConstantResolver(line_matchers.LineMatcherConstant(True))
+CONSTANT_TRUE_MATCHER_SDV = sdvs.LineMatcherSdvConstant(line_matchers.LineMatcherConstant(True))
 
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
@@ -28,12 +28,12 @@ _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMEN
 LINE_MATCHER_ARGUMENT = a.Named(types.LINE_MATCHER_TYPE_INFO.syntax_element_name)
 
 
-def parser() -> Parser[LineMatcherResolver]:
+def parser() -> Parser[LineMatcherSdv]:
     return _PARSER
 
 
-class _Parser(Parser[LineMatcherResolver]):
-    def parse_from_token_parser(self, parser: TokenParser) -> LineMatcherResolver:
+class _Parser(Parser[LineMatcherSdv]):
+    def parse_from_token_parser(self, parser: TokenParser) -> LineMatcherSdv:
         return parse_line_matcher_from_token_parser(parser)
 
 
@@ -41,12 +41,12 @@ _PARSER = _Parser()
 
 
 def parse_line_matcher_from_token_parser(parser: TokenParser,
-                                         must_be_on_current_line: bool = True) -> LineMatcherResolver:
+                                         must_be_on_current_line: bool = True) -> LineMatcherSdv:
     return parse_expression.parse(GRAMMAR, parser,
                                   must_be_on_current_line=must_be_on_current_line)
 
 
-def parse_regex(parser: TokenParser) -> LineMatcherResolver:
+def parse_regex(parser: TokenParser) -> LineMatcherSdv:
     return matches_regex.parse(parser)
 
 
@@ -109,20 +109,20 @@ _CONCEPT = grammar.Concept(
 )
 
 
-def _mk_reference(name: str) -> LineMatcherResolver:
-    return resolvers.LineMatcherReferenceResolver(name)
+def _mk_reference(name: str) -> LineMatcherSdv:
+    return sdvs.LineMatcherReferenceSdv(name)
 
 
-def _mk_negation(operand: LineMatcherResolver) -> LineMatcherResolver:
-    return delegated.LineMatcherResolverDelegatedToMatcher(combinator_resolvers.Negation(operand))
+def _mk_negation(operand: LineMatcherSdv) -> LineMatcherSdv:
+    return delegated.LineMatcherSdvDelegatedToMatcher(combinator_sdvs.Negation(operand))
 
 
-def _mk_conjunction(operands: Sequence[LineMatcherResolver]) -> LineMatcherResolver:
-    return delegated.LineMatcherResolverDelegatedToMatcher(combinator_resolvers.Conjunction(operands))
+def _mk_conjunction(operands: Sequence[LineMatcherSdv]) -> LineMatcherSdv:
+    return delegated.LineMatcherSdvDelegatedToMatcher(combinator_sdvs.Conjunction(operands))
 
 
-def _mk_disjunction(operands: Sequence[LineMatcherResolver]) -> LineMatcherResolver:
-    return delegated.LineMatcherResolverDelegatedToMatcher(combinator_resolvers.Disjunction(operands))
+def _mk_disjunction(operands: Sequence[LineMatcherSdv]) -> LineMatcherSdv:
+    return delegated.LineMatcherSdvDelegatedToMatcher(combinator_sdvs.Disjunction(operands))
 
 
 GRAMMAR = grammar.Grammar(

@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.symbol.logic.logic_value_resolver import LogicValueResolver
+from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
@@ -9,8 +9,8 @@ from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class StringMatcherResolver(LogicValueResolver):
-    """ Base class for resolvers of :class:`StringMatcherValue`. """
+class StringMatcherSdv(LogicTypeSdv):
+    """ Base class for SVDs of :class:`StringMatcherDdv`. """
 
     @property
     def logic_value_type(self) -> LogicValueType:

@@ -7,7 +7,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.util.string import lines_content
 
@@ -21,7 +21,7 @@ class HereDocumentContentsParsingException(SingleInstructionInvalidArgumentExcep
 
 
 def parse_as_last_argument(here_document_is_mandatory: bool,
-                           source: ParseSource) -> StringResolver:
+                           source: ParseSource) -> StringSdv:
     """
     Expects the here-document marker to be the ane and only token remaining on the current line.
     Consumes current line and all lines included in the here-document.
@@ -38,7 +38,7 @@ def parse_as_last_argument(here_document_is_mandatory: bool,
 
 def parse_as_last_argument_from_token_parser(here_document_is_mandatory: bool,
                                              token_parser: TokenParser,
-                                             consume_last_line: bool = True) -> Optional[StringResolver]:
+                                             consume_last_line: bool = True) -> Optional[StringSdv]:
     """
     Expects the here-document marker to be the ane and only token remaining on the current line.
     Consumes current line and all lines included in the here-document.
@@ -73,35 +73,35 @@ def parse_as_last_argument_from_token_parser(here_document_is_mandatory: bool,
     marker = marker_match.group(2)
 
     token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
-    string_resolver = _parse_document_lines_from_token_parser(marker, token_parser)
+    string_sdv = _parse_document_lines_from_token_parser(marker, token_parser)
     if consume_last_line:
         token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
-    return string_resolver
+    return string_sdv
 
 
-def _parse_document_lines(marker: str, source: ParseSource) -> StringResolver:
+def _parse_document_lines(marker: str, source: ParseSource) -> StringSdv:
     here_doc = []
     source.consume_current_line()
     while source.has_current_line:
         line = source.current_line_text
         source.consume_current_line()
         if line == marker:
-            return _resolver_from_lines(here_doc)
+            return _sdv_from_lines(here_doc)
         here_doc.append(line)
     raise HereDocumentContentsParsingException("End Of File reached without finding Marker: '{}'".format(marker))
 
 
-def _parse_document_lines_from_token_parser(marker: str, token_parser: TokenParser) -> StringResolver:
+def _parse_document_lines_from_token_parser(marker: str, token_parser: TokenParser) -> StringSdv:
     here_doc = []
     while token_parser.has_current_line:
         line = token_parser.consume_remaining_part_of_current_line_as_string()
         if line == marker:
-            return _resolver_from_lines(here_doc)
+            return _sdv_from_lines(here_doc)
         here_doc.append(line)
         token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
     raise HereDocumentContentsParsingException("End Of File reached without finding Marker: '{}'".format(marker))
 
 
-def _resolver_from_lines(lines: list) -> StringResolver:
+def _sdv_from_lines(lines: list) -> StringSdv:
     lines_string = lines_content(lines)
-    return parse_string.string_resolver_from_string(lines_string)
+    return parse_string.string_sdv_from_string(lines_string)

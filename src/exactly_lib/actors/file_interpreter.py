@@ -17,12 +17,12 @@ from exactly_lib.section_document.element_parsers.misc_utils import \
     std_error_message_text_for_token_syntax_error_from_exception
 from exactly_lib.section_document.element_parsers.token_stream import TokenSyntaxError
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import list_resolvers
-from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.symbol.data.path_resolver import PathResolver
-from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.logic.program.command_resolver import CommandResolver
+from exactly_lib.symbol.data import list_sdvs
+from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.symbol.data.list_sdv import ListSdv
+from exactly_lib.symbol.data.path_sdv import PathSdv
+from exactly_lib.symbol.data.string_sdv import StringSdv
+from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, ParseException, Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -33,7 +33,7 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.parse import parse_string, parse_path, parse_list
 from exactly_lib.test_case_utils.path_check import PathCheckValidator, PathCheck
-from exactly_lib.test_case_utils.program.command import command_resolvers
+from exactly_lib.test_case_utils.program.command import command_sdvs
 from exactly_lib.util.process_execution import commands
 from exactly_lib.util.process_execution.command import Command, ProgramAndArguments
 
@@ -63,14 +63,14 @@ class ParserForInterpreterThatIsAShellCommand(parts.ActorFromParts):
 
 
 class _SourceInfo(SymbolUser):
-    def __init__(self, file_name: PathResolver):
+    def __init__(self, file_name: PathSdv):
         self.path = file_name
 
 
 class _SourceInfoForInterpreterThatIsAnExecutableFile(_SourceInfo):
     def __init__(self,
-                 file_name: PathResolver,
-                 arguments: ListResolver):
+                 file_name: PathSdv,
+                 arguments: ListSdv):
         super().__init__(file_name)
         self.arguments = arguments
 
@@ -80,8 +80,8 @@ class _SourceInfoForInterpreterThatIsAnExecutableFile(_SourceInfo):
 
 class _SourceInfoForInterpreterThatIsAShellCommand(_SourceInfo):
     def __init__(self,
-                 file_name: PathResolver,
-                 arguments: StringResolver):
+                 file_name: PathSdv,
+                 arguments: StringSdv):
         super().__init__(file_name)
         self.arguments = arguments
 
@@ -99,12 +99,12 @@ class _Parser(ExecutableObjectParser):
         single_line = single_line.strip()
         source = ParseSource(single_line)
         try:
-            source_file_resolver = parse_path.parse_path_from_parse_source(source,
-                                                                           RELATIVITY_CONFIGURATION)
+            source_file_sdv = parse_path.parse_path_from_parse_source(source,
+                                                                      RELATIVITY_CONFIGURATION)
             if self.is_shell:
-                return self._shell(source_file_resolver, source)
+                return self._shell(source_file_sdv, source)
             else:
-                return self._executable_file(source_file_resolver, source)
+                return self._executable_file(source_file_sdv, source)
         except TokenSyntaxError as ex:
             raise ParseException(
                 svh.new_svh_validation_error__str(std_error_message_text_for_token_syntax_error_from_exception(ex)))
@@ -112,7 +112,7 @@ class _Parser(ExecutableObjectParser):
             raise ParseException(svh.new_svh_validation_error__str(ex.error_message))
 
     @staticmethod
-    def _executable_file(source_file: PathResolver,
+    def _executable_file(source_file: PathSdv,
                          source: ParseSource,
                          ) -> _SourceInfoForInterpreterThatIsAnExecutableFile:
         arguments = parse_list.parse_list(source)
@@ -120,13 +120,13 @@ class _Parser(ExecutableObjectParser):
                                                                arguments)
 
     @staticmethod
-    def _shell(source_file: PathResolver,
+    def _shell(source_file: PathSdv,
                source: ParseSource,
                ) -> _SourceInfoForInterpreterThatIsAShellCommand:
         stripped_arguments_string = source.remaining_source.strip()
-        arg_resolver = parse_string.string_resolver_from_string(stripped_arguments_string)
+        arg_sdv = parse_string.string_sdv_from_string(stripped_arguments_string)
         return _SourceInfoForInterpreterThatIsAShellCommand(source_file,
-                                                            arg_resolver)
+                                                            arg_sdv)
 
 
 class _Validator(parts.Validator):
@@ -161,13 +161,13 @@ class _ProgramExecutor(SubProcessExecutor):
         self.interpreter = interpreter
         self.source = source
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
-        arguments = list_resolvers.concat([
-            list_resolvers.from_strings([string_resolvers.from_path_resolver(self.source.path)]),
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandSdv:
+        arguments = list_sdvs.concat([
+            list_sdvs.from_strings([string_sdvs.from_path_sdv(self.source.path)]),
             self.source.arguments,
         ])
 
-        return command_resolvers \
+        return command_sdvs \
             .from_program_and_arguments(self.interpreter) \
             .new_with_additional_argument_list(arguments)
 
@@ -182,19 +182,19 @@ class _ShellSubProcessExecutor(SubProcessExecutor):
         self.shell_command_of_interpreter = shell_command_of_interpreter
         self.source = source
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
-        command_line_elements = list_resolvers.from_strings([
-            string_resolvers.str_constant(self.shell_command_of_interpreter),
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandSdv:
+        command_line_elements = list_sdvs.from_strings([
+            string_sdvs.str_constant(self.shell_command_of_interpreter),
 
-            string_resolvers.from_fragments([
-                string_resolvers.transformed_fragment(
-                    string_resolvers.path_fragment(self.source.path),
+            string_sdvs.from_fragments([
+                string_sdvs.transformed_fragment(
+                    string_sdvs.path_fragment(self.source.path),
                     shlex.quote)
             ]),
 
             self.source.arguments,
         ])
-        return command_resolvers.for_shell(string_resolvers.from_list_resolver(command_line_elements))
+        return command_sdvs.for_shell(string_sdvs.from_list_sdv(command_line_elements))
 
 
 class _CommandTranslator(commands.CommandDriverVisitor):

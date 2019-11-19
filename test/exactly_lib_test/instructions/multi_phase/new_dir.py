@@ -60,7 +60,7 @@ class TestParse(unittest.TestCase):
         arguments = '  expected-argument  '
         instruction_embryo = self._parse_arguments(arguments)
         symbols = empty_symbol_table()
-        path = instruction_embryo.dir_path_resolver.resolve(symbols)
+        path = instruction_embryo.dir_path_sdv.resolve(symbols)
         equals_path_part_string('expected-argument').apply_with_message(self,
                                                                         path.path_suffix(),
                                                                         'path_suffix')
@@ -69,7 +69,7 @@ class TestParse(unittest.TestCase):
         arguments = 'expected-argument'
         instruction_embryo = self._parse_arguments(arguments)
         symbols = empty_symbol_table()
-        path = instruction_embryo.dir_path_resolver.resolve(symbols)
+        path = instruction_embryo.dir_path_sdv.resolve(symbols)
         equals_path_part_string('expected-argument').apply_with_message(self,
                                                                         path.path_suffix(),
                                                                         'path_suffix')
@@ -78,7 +78,7 @@ class TestParse(unittest.TestCase):
         arguments = '"expected argument"'
         instruction_embryo = self._parse_arguments(arguments)
         symbols = empty_symbol_table()
-        path = instruction_embryo.dir_path_resolver.resolve(symbols)
+        path = instruction_embryo.dir_path_sdv.resolve(symbols)
         equals_path_part_string('expected argument').apply_with_message(self,
                                                                         path.path_suffix(),
                                                                         'path_suffix')

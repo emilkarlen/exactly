@@ -2,10 +2,10 @@ import unittest
 from typing import List, Callable, Dict
 
 from exactly_lib.instructions.multi_phase import new_file as sut
-from exactly_lib.symbol.data import path_resolvers
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import path_sdvs
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.resolver_structure import SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -32,7 +32,7 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
@@ -45,7 +45,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources import arguments_buil
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
-from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
+from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.arguments_building import Stringable
@@ -82,7 +82,7 @@ class TestSymbolUsages(TestCaseBase):
         dst_file_symbol = NameAndValue('DST_FILE_SYMBOL', 'dst-file-name.txt')
 
         to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                            StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
 
         transformed_shell_contents_arguments = TransformableContentsConstructor(
             output_from_program(ProcOutputFile.STDOUT,
@@ -102,11 +102,11 @@ class TestSymbolUsages(TestCaseBase):
 
         symbols = SymbolTable({
             dst_file_symbol.name:
-                container(path_resolvers.of_rel_option(RelOptionType.REL_ACT,
-                                                       paths.constant_path_part(dst_file_symbol.value))),
+                container(path_sdvs.of_rel_option(RelOptionType.REL_ACT,
+                                                  paths.constant_path_part(dst_file_symbol.value))),
 
             text_printed_by_shell_command_symbol.name:
-                container(string_resolvers.str_constant(text_printed_by_shell_command_symbol.value)),
+                container(string_sdvs.str_constant(text_printed_by_shell_command_symbol.value)),
 
             to_upper_transformer.name:
                 container(to_upper_transformer.value),
@@ -152,7 +152,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
     def test_with_transformation(self):
         text_printed_by_program = 'the text printed by the program'
         transformer = NameAndValue('TO_UPPER_CASE',
-                                   StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                   StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
         self._test(
             text_printed_by_program=text_printed_by_program,
             expected_file_contents=text_printed_by_program.upper(),
@@ -186,7 +186,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
 
             program_that_executes_py_source_symbol = NameAndValue(
                 'PROGRAM_THAT_EXECUTES_PY_SOURCE',
-                program_resolvers.for_py_source_on_command_line(python_source)
+                program_sdvs.for_py_source_on_command_line(python_source)
             )
 
             symbols_dict = {
@@ -251,7 +251,7 @@ class TestSuccessfulScenariosWithDifferentSourceVariants(TestCaseBase):
         expected_file = fs.File(file_arg.name, expected_file_contents)
 
         to_upper_transformer = NameAndValue('TO_UPPER_CASE',
-                                            StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                            StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
         symbols = SymbolTable({
             to_upper_transformer.name: container(to_upper_transformer.value)
         })
@@ -355,7 +355,7 @@ class TestFailingScenarios(TestCaseBase):
     def _expect_failure(self, failing_program_as_single_line: Stringable):
         failing_program = ArgumentElements([failing_program_as_single_line])
         transformer = NameAndValue('TRANSFORMER',
-                                   StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                   StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
         symbols = SymbolTable({
             transformer.name: container(transformer.value)
         })
@@ -398,7 +398,7 @@ class TestFailingScenarios(TestCaseBase):
 class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingScenariosDueToInvalidDestinationFileBase):
     def _file_contents_cases(self) -> InvalidDestinationFileTestCasesData:
         arbitrary_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                             StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                             StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
 
         symbols = SymbolTable({
             arbitrary_transformer.name: container(arbitrary_transformer.value),

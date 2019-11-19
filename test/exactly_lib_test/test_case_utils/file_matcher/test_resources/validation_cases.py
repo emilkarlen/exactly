@@ -1,7 +1,7 @@
 from typing import Sequence, List
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case_utils.file_matcher import resolvers
+from exactly_lib.test_case_utils.file_matcher import sdvs
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
@@ -25,7 +25,7 @@ class ValidationCaseSvh:
         self._expectation = expectation
         self._symbol_context = FileMatcherSymbolContext(
             symbol_name,
-            resolvers.FileMatcherResolverFromParts(
+            sdvs.FileMatcherSdvFromParts(
                 [],
                 validator=constant_validator(actual),
                 matcher=get_matcher

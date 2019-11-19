@@ -3,14 +3,14 @@ from typing import Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import ConstantPreOrPostSdsValueValidator
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to, \
-    successful_matcher_with_validation, resolver_of_unconditionally_matching_matcher
+    successful_matcher_with_validation, sdv_of_unconditionally_matching_matcher
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_containers
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
@@ -144,7 +144,7 @@ class _TestStringTransformerValidatorIsApplied(TestCaseBase):
         line_matcher_symbol = NameAndValue(
             'valid_line_matcher',
             symbol_utils.container(
-                resolver_of_unconditionally_matching_matcher()
+                sdv_of_unconditionally_matching_matcher()
             )
         )
 
@@ -204,9 +204,9 @@ class _TestSymbolReferencesBase(_TestCaseBase):
                                                                                     line_matcher)
                     ).apply(expectation_type)
                     source = self.configuration.arguments_for(arguments_for_implicit_file).as_remaining_source
-                    resolver = parser.parse(source)
-                    assert isinstance(resolver, StringMatcherResolver)  # Sanity check
-                    expected_symbols.apply_without_message(self, resolver.references)
+                    sdv = parser.parse(source)
+                    assert isinstance(sdv, StringMatcherSdv)  # Sanity check
+                    expected_symbols.apply_without_message(self, sdv.references)
 
 
 class _TestSymbolReferenceForStringTransformerIsReported(_TestSymbolReferencesBase):

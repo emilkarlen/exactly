@@ -2,8 +2,8 @@ from typing import Sequence, Optional
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_validation as validation
@@ -12,7 +12,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
-    resolver_validator_for_file_matcher
+    sdv_validator_for_file_matcher
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
@@ -24,10 +24,10 @@ from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def sub_set_selection_matcher(selector: FileMatcherResolver,
-                              matcher_on_selection: FilesMatcherResolver) -> FilesMatcherResolver:
-    return _SubSetSelectorMatcherResolver(selector,
-                                          matcher_on_selection)
+def sub_set_selection_matcher(selector: FileMatcherSdv,
+                              matcher_on_selection: FilesMatcherSdv) -> FilesMatcherSdv:
+    return _SubSetSelectorMatcherSdv(selector,
+                                     matcher_on_selection)
 
 
 class _SubSetSelectorMatcher(WithCachedNameAndTreeStructureDescriptionBase, FilesMatcher):
@@ -102,10 +102,10 @@ class _SubSetSelectorMatcherDdv(FilesMatcherDdv):
         return files_matchers.ConstructorFromFunction(mk_matcher)
 
 
-class _SubSetSelectorMatcherResolver(FilesMatcherResolver):
+class _SubSetSelectorMatcherSdv(FilesMatcherSdv):
     def __init__(self,
-                 selector: FileMatcherResolver,
-                 matcher_on_selection: FilesMatcherResolver):
+                 selector: FileMatcherSdv,
+                 matcher_on_selection: FilesMatcherSdv):
         self._selector = selector
         self._matcher_on_selection = matcher_on_selection
         self._references = references_from_objects_with_symbol_references([
@@ -113,7 +113,7 @@ class _SubSetSelectorMatcherResolver(FilesMatcherResolver):
         ])
 
         self._validator = validation.AndValidator([
-            resolver_validator_for_file_matcher(selector),
+            sdv_validator_for_file_matcher(selector),
             self._matcher_on_selection.validator(),
         ])
 

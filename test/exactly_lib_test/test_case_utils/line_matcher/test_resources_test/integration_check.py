@@ -6,7 +6,7 @@ from typing import List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
+from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.hard_error import HardErrorException
@@ -18,7 +18,7 @@ from exactly_lib_test.section_document.test_resources.parser_classes import Cons
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
 from exactly_lib_test.symbol.test_resources.line_matcher import line_matcher_from_primitive_value, \
-    resolver_of_unconditionally_matching_matcher, ddv_of_unconditionally_matching_matcher
+    sdv_of_unconditionally_matching_matcher, ddv_of_unconditionally_matching_matcher
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check as sut
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import Expectation, is_pass
@@ -46,7 +46,7 @@ class TestCaseBase(unittest.TestCase):
     def _check(self,
                source: ParseSource,
                model: LineMatcherLine,
-               parser: Parser[LineMatcherResolver],
+               parser: Parser[LineMatcherSdv],
                arrangement: sut.Arrangement,
                expectation: sut.Expectation):
         sut.check_with_custom_parser(self.tc, source, model, parser, arrangement, expectation)
@@ -90,12 +90,12 @@ class TestSymbolReferences(TestCaseBase):
                                                                                         symbol_value)
         expectation = asrt_sym.equals_symbol_table(expected_symbol_table)
 
-        resolver_that_checks_symbols = LineMatcherResolverThatAssertsThatSymbolsAreAsExpected(self, expectation)
+        sdv_that_checks_symbols = LineMatcherSdvThatAssertsThatSymbolsAreAsExpected(self, expectation)
 
         self._check(
             utils.single_line_source(),
             ARBITRARY_MODEL,
-            ConstantParser(resolver_that_checks_symbols),
+            ConstantParser(sdv_that_checks_symbols),
             sut.Arrangement(
                 symbols=symbol_table_of_arrangement),
             sut.Expectation(),
@@ -192,7 +192,7 @@ class _LineMatcherThatReportsHardError(LineMatcherTestImplBase):
         raise HardErrorException(new_single_string_text_for_test('unconditional hard error'))
 
 
-class LineMatcherResolverThatAssertsThatSymbolsAreAsExpected(LineMatcherResolver):
+class LineMatcherSdvThatAssertsThatSymbolsAreAsExpected(LineMatcherSdv):
     def __init__(self,
                  put: unittest.TestCase,
                  expectation: ValueAssertion[SymbolTable]):
@@ -213,7 +213,7 @@ ARBITRARY_MODEL = (1, 'line of arbitrary model')
 
 PARSER_THAT_GIVES_MATCHER_THAT_MATCHES = ConstantParser(line_matcher_from_primitive_value())
 
-_MATCHER_THAT_MATCHES = resolver_of_unconditionally_matching_matcher()
+_MATCHER_THAT_MATCHES = sdv_of_unconditionally_matching_matcher()
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

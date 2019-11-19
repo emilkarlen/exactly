@@ -3,7 +3,7 @@ from typing import List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -24,7 +24,7 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
 
 
 class TestConfiguration:
-    def new_parser(self) -> Parser[StringMatcherResolver]:
+    def new_parser(self) -> Parser[StringMatcherSdv]:
         return sut.string_matcher_parser()
 
     def arrangement_for_contents(self,

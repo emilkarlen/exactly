@@ -1,7 +1,7 @@
 from typing import Sequence, Optional
 
 from exactly_lib.definitions import expression
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -14,8 +14,8 @@ from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def negation_matcher(matcher_to_negate: FilesMatcherResolver) -> FilesMatcherResolver:
-    return _NegationMatcherResolver(matcher_to_negate)
+def negation_matcher(matcher_to_negate: FilesMatcherSdv) -> FilesMatcherSdv:
+    return _NegationMatcherSdv(matcher_to_negate)
 
 
 class _NegationMatcher(FilesMatcher):
@@ -55,8 +55,8 @@ class _NegationMatcherDdv(FilesMatcherDdv):
         return files_matchers.ConstructorFromFunction(mk_matcher)
 
 
-class _NegationMatcherResolver(FilesMatcherResolver):
-    def __init__(self, matcher_to_negate: FilesMatcherResolver):
+class _NegationMatcherSdv(FilesMatcherSdv):
+    def __init__(self, matcher_to_negate: FilesMatcherSdv):
         self._matcher_to_negate = matcher_to_negate
 
     @property

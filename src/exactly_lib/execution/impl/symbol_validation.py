@@ -6,7 +6,7 @@ from exactly_lib.execution.impl.single_instruction_executor import \
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.err_msg import error_messages
 from exactly_lib.symbol.err_msg import restriction_failures
-from exactly_lib.symbol.resolver_structure import SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -34,12 +34,12 @@ def _validate_symbol_definition(symbol_table: SymbolTable,
                                 definition: su.SymbolDefinition,
                                 ) -> Optional[PartialInstructionControlledFailureInfo]:
     if symbol_table.contains(definition.name):
-        already_defined_resolver_container = symbol_table.lookup(definition.name)
-        assert isinstance(already_defined_resolver_container, SymbolContainer), \
+        already_defined_sdv_container = symbol_table.lookup(definition.name)
+        assert isinstance(already_defined_sdv_container, SymbolContainer), \
             'Value in SymTbl must be ResolverContainer'
         return PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum.VALIDATION_ERROR,
-            error_messages.duplicate_symbol_definition(already_defined_resolver_container.source_location,
+            error_messages.duplicate_symbol_definition(already_defined_sdv_container.source_location,
                                                        definition.name))
     else:
         for referenced_value in definition.references:
@@ -70,11 +70,11 @@ def _validate_symbol_reference(symbol_table: SymbolTable,
 
 def _validate_reference(symbol_reference: su.SymbolReference,
                         symbols: SymbolTable) -> Optional[TextRenderer]:
-    referenced_resolver_container = symbols.lookup(symbol_reference.name)
-    assert isinstance(referenced_resolver_container, SymbolContainer), \
+    referenced_sdv_container = symbols.lookup(symbol_reference.name)
+    assert isinstance(referenced_sdv_container, SymbolContainer), \
         'Values in SymbolTable must be SymbolContainer'
     result = symbol_reference.restrictions.is_satisfied_by(symbols, symbol_reference.name,
-                                                           referenced_resolver_container)
+                                                           referenced_sdv_container)
     if result is None:
         return None
     return restriction_failures.ErrorMessage(symbol_reference.name,

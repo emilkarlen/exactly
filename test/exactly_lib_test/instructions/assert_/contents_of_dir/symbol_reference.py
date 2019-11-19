@@ -13,7 +13,7 @@ from exactly_lib_test.instructions.assert_.test_resources import instruction_che
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher, \
-    FilesMatcherResolverConstantTestImpl
+    FilesMatcherSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndExpectSetup
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
@@ -130,7 +130,7 @@ class TestReferencedMatcherShouldBeValidated(tr.TestCaseBaseForParser):
                     ArrangementPostAct(
                         symbols=SymbolTable({
                             name_of_referenced_symbol:
-                                container(FilesMatcherResolverConstantTestImpl(
+                                container(FilesMatcherSdvConstantTestImpl(
                                     resolved_value=True,
                                     validator=case.actual,
                                 ))
@@ -160,7 +160,7 @@ class TestResultShouldBeEqualToResultOfReferencedMatcher(tr.TestCaseBaseForParse
         )
 
         for result_of_referenced_matcher in [False, True]:
-            referenced_matcher = FilesMatcherResolverConstantTestImpl(
+            referenced_matcher = FilesMatcherSdvConstantTestImpl(
                 resolved_value=result_of_referenced_matcher
             )
             symbols = SymbolTable({name_of_referenced_symbol: container(referenced_matcher)})
@@ -204,7 +204,7 @@ class TestDifferentSourceVariants(tr.TestCaseBaseForParser):
 
         referenced_symbol = NameAndValue(
             'REFERENCED_FILES_MATCHER',
-            FilesMatcherResolverConstantTestImpl(
+            FilesMatcherSdvConstantTestImpl(
                 resolved_value=result_of_referenced_matcher
             ))
 

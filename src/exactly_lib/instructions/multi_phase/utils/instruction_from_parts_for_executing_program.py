@@ -6,7 +6,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import Ma
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
@@ -20,7 +20,7 @@ from exactly_lib.util.process_execution.sub_process_execution import ResultAndSt
 class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
     def __init__(self,
                  source_info: InstructionSourceInfo,
-                 program: ProgramResolver):
+                 program: ProgramSdv):
         self.source_info = source_info
         self._program = program
 
@@ -58,7 +58,7 @@ class ResultAndStderrTranslator(MainStepResultTranslator):
 class InstructionEmbryoParser(instruction_embryo.InstructionEmbryoParserWoFileSystemLocationInfo):
     def __init__(self,
                  instruction_name: str,
-                 program_parser: Parser[ProgramResolver]):
+                 program_parser: Parser[ProgramSdv]):
         self.instruction_name = instruction_name
         self.program_parser = program_parser
 
@@ -70,7 +70,7 @@ class InstructionEmbryoParser(instruction_embryo.InstructionEmbryoParserWoFileSy
 
 
 def parts_parser(instruction_name: str,
-                 program_parser: Parser[ProgramResolver]
+                 program_parser: Parser[ProgramSdv]
                  ) -> InstructionPartsParser:
     return PartsParserFromEmbryoParser(InstructionEmbryoParser(instruction_name,
                                                                program_parser),

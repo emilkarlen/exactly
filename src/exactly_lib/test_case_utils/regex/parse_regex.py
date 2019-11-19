@@ -8,7 +8,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
@@ -16,7 +16,7 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_path import parse_string_or_here_doc_from_token_parser
-from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver, RegexDdv
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
 from exactly_lib.util import strings
@@ -39,19 +39,19 @@ MISSING_STRING_ARGUMENT_FOR_REGEX_ERR_MSG = 'Missing {} argument for {}'.format(
 )
 
 
-def regex_parser() -> Parser[RegexResolver]:
+def regex_parser() -> Parser[RegexSdv]:
     return _PARSER
 
 
 def parse_regex(parser: TokenParser,
                 must_be_on_same_line: bool = True,
-                consume_last_here_doc_line: bool = False) -> RegexResolver:
+                consume_last_here_doc_line: bool = False) -> RegexSdv:
     return parse_regex2(parser, must_be_on_same_line, consume_last_here_doc_line)[1]
 
 
 def parse_regex2(parser: TokenParser,
                  must_be_on_same_line: bool = True,
-                 consume_last_here_doc_line: bool = False) -> Tuple[SourceType, RegexResolver]:
+                 consume_last_here_doc_line: bool = False) -> Tuple[SourceType, RegexSdv]:
     if must_be_on_same_line:
         parser.require_is_not_at_eol(MISSING_REGEX_ARGUMENT_ERR_MSG)
 
@@ -63,16 +63,16 @@ def parse_regex2(parser: TokenParser,
 
     source_type, regex_pattern = parse_string_or_here_doc_from_token_parser(parser,
                                                                             consume_last_here_doc_line)
-    return source_type, _RegexResolver(is_ignore_case, regex_pattern)
+    return source_type, _RegexSdv(is_ignore_case, regex_pattern)
 
 
 _PARSER = parser_classes.ParserFromTokenParserFunction(parse_regex)
 
 
-class _RegexResolver(RegexResolver):
+class _RegexSdv(RegexSdv):
     def __init__(self,
                  is_ignore_case: bool,
-                 string: StringResolver):
+                 string: StringSdv):
         self._is_ignore_case = is_ignore_case
         self._string = string
         self._value = None

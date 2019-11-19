@@ -14,7 +14,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import Pa
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -30,7 +30,7 @@ def embryo_parser(instruction_name: str) -> spe_parts.InstructionEmbryoParser:
                                              program_parser())
 
 
-def program_parser() -> Parser[ProgramResolver]:
+def program_parser() -> Parser[ProgramSdv]:
     return parse_program.program_parser()
 
 

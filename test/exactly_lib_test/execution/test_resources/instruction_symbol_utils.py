@@ -21,7 +21,7 @@ class _SetupPhaseInstructionThatSetsSymbol(SetupPhaseInstruction):
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         environment.symbols.put(self.symbol_definition.name,
-                                self.symbol_definition.resolver_container)
+                                self.symbol_definition.symbol_container)
         return sh.new_sh_success()
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:

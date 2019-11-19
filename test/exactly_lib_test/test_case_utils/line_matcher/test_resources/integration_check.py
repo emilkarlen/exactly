@@ -3,7 +3,7 @@ from typing import Optional, Sequence
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
+from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
 from exactly_lib.type_system.logic.hard_error import HardErrorException
@@ -63,7 +63,7 @@ def check(put: unittest.TestCase,
 def check_with_custom_parser(put: unittest.TestCase,
                              source: ParseSource,
                              model: LineMatcherLine,
-                             parser: Parser[LineMatcherResolver],
+                             parser: Parser[LineMatcherSdv],
                              arrangement: Arrangement,
                              expectation: Expectation):
     _Checker(put, source, model, parser, arrangement, expectation).check()
@@ -78,7 +78,7 @@ class _Checker:
                  put: unittest.TestCase,
                  source: ParseSource,
                  model: LineMatcherLine,
-                 parser: Parser[LineMatcherResolver],
+                 parser: Parser[LineMatcherSdv],
                  arrangement: Arrangement,
                  expectation: Expectation):
         self.put = put
@@ -96,13 +96,13 @@ class _Checker:
             pass
 
     def _check(self):
-        matcher_resolver = self._parse()
+        matcher_sdv = self._parse()
 
         self.expectation.symbol_references.apply_with_message(self.put,
-                                                              matcher_resolver.references,
+                                                              matcher_sdv.references,
                                                               'reference')
 
-        matcher_value = self._resolve_value(matcher_resolver)
+        matcher_value = self._resolve_value(matcher_sdv)
 
         structure_tree_of_ddv = matcher_value.structure().render()
 
@@ -128,21 +128,21 @@ class _Checker:
 
         self._check_application(matcher)
 
-    def _parse(self) -> LineMatcherResolver:
-        resolver = self.parser.parse(self.source)
-        asrt.is_instance(LineMatcherResolver).apply_with_message(self.put,
-                                                                 resolver,
-                                                                 'resolver')
-        assert isinstance(resolver, LineMatcherResolver)
+    def _parse(self) -> LineMatcherSdv:
+        sdv = self.parser.parse(self.source)
+        asrt.is_instance(LineMatcherSdv).apply_with_message(self.put,
+                                                            sdv,
+                                                            'SDV')
+        assert isinstance(sdv, LineMatcherSdv)
 
         self.expectation.source.apply_with_message(self.put,
                                                    self.source,
                                                    'source after parse')
 
-        return resolver
+        return sdv
 
-    def _resolve_value(self, matcher_resolver: LineMatcherResolver) -> LineMatcherDdv:
-        matcher_ddv = matcher_resolver.resolve(self.arrangement.symbols)
+    def _resolve_value(self, matcher_sdv: LineMatcherSdv) -> LineMatcherDdv:
+        matcher_ddv = matcher_sdv.resolve(self.arrangement.symbols)
 
         asrt.is_instance(LineMatcherDdv).apply_with_message(self.put,
                                                             matcher_ddv,

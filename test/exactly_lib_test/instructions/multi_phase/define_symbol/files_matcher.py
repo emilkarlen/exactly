@@ -20,16 +20,16 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.files_matcher import FilesMatcherResolverConstantTestImpl, \
+from exactly_lib_test.symbol.test_resources.files_matcher import FilesMatcherSdvConstantTestImpl, \
     is_reference_to_files_matcher
-from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_container
+from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.condition.integer.test_resources import arguments_building as int_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax as fm_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as arg_syntax
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fsm_args
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.assertions import matches_files_matcher_resolver
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.assertions import matches_files_matcher_sdv
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_confs, matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success
@@ -65,7 +65,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # EXPECTATION #
 
         expected_container = matches_container(
-            matches_files_matcher_resolver()
+            matches_files_matcher_sdv()
         )
 
         expectation = Expectation(
@@ -87,7 +87,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         defined_name = 'defined_name'
 
         referenced_symbol = NameAndValue('referenced_name',
-                                         ARBITRARY_RESOLVER)
+                                         ARBITRARY_SDV)
 
         symbols = SymbolTable({
             referenced_symbol.name:
@@ -107,7 +107,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # EXPECTATION #
 
         expected_container = matches_container(
-            matches_files_matcher_resolver(
+            matches_files_matcher_sdv(
                 references=asrt.matches_sequence([
                     is_reference_to_files_matcher(referenced_symbol.name)
                 ]),
@@ -135,7 +135,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         defined_name = 'defined_name'
 
         expected_container = matches_container(
-            matches_files_matcher_resolver()
+            matches_files_matcher_sdv()
         )
 
         not_num_files_beginning_with_a_eq_1_arg = self._not_num_files_beginning_with_a_eq_1_arg()
@@ -252,8 +252,8 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         return matcher_to_apply.matches_emr(model)
 
     def _get_matcher(self, environment: InstructionEnvironmentForPostSdsStep) -> FilesMatcher:
-        resolver = lookups.lookup_files_matcher(environment.symbols, self.matcher_symbol_name)
-        return resolver.resolve(environment.symbols) \
+        sdv = lookups.lookup_files_matcher(environment.symbols, self.matcher_symbol_name)
+        return sdv.resolve(environment.symbols) \
             .value_of_any_dependency(environment.tcds) \
             .construct(environment.phase_logging.space_for_instruction())
 
@@ -264,7 +264,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
 
         return FilesMatcherModelForDir(
             environment.phase_logging.space_for_instruction(),
-            rel_opt_conf.path_resolver_for_root_dir().resolve(environment.symbols)
+            rel_opt_conf.path_sdv_for_root_dir().resolve(environment.symbols)
                 .value_of_any_dependency__d(environment.tcds),
         )
 
@@ -275,8 +275,8 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         populator.populate_tcds(environment.tcds)
 
 
-ARBITRARY_RESOLVER = FilesMatcherResolverConstantTestImpl(True,
-                                                          references=[])
+ARBITRARY_SDV = FilesMatcherSdvConstantTestImpl(True,
+                                                references=[])
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

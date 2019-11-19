@@ -7,9 +7,9 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic import string_transformers
-from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
-from exactly_lib.test_case_utils.string_transformer import resolvers
+from exactly_lib.test_case_utils.string_transformer import sdvs
 from exactly_lib.test_case_utils.string_transformer.impl import select, replace
 from exactly_lib.test_case_utils.string_transformer.impl.replace import REPLACE_REPLACEMENT_ARGUMENT
 from exactly_lib.test_case_utils.string_transformer.names import REPLACE_TRANSFORMER_NAME, SELECT_TRANSFORMER_NAME, \
@@ -18,41 +18,41 @@ from exactly_lib.type_system.logic.string_transformer import IdentityStringTrans
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-IDENTITY_TRANSFORMER_RESOLVER = resolvers.StringTransformerConstant(IdentityStringTransformer())
+IDENTITY_TRANSFORMER_SDV = sdvs.StringTransformerSdvConstant(IdentityStringTransformer())
 
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
 STRING_TRANSFORMER_ARGUMENT = a.Named(types.STRING_TRANSFORMER_TYPE_INFO.syntax_element_name)
 
 
-def parser() -> Parser[StringTransformerResolver]:
+def parser() -> Parser[StringTransformerSdv]:
     return _PARSER
 
 
-class _Parser(Parser[StringTransformerResolver]):
-    def parse_from_token_parser(self, parser: TokenParser) -> StringTransformerResolver:
+class _Parser(Parser[StringTransformerSdv]):
+    def parse_from_token_parser(self, parser: TokenParser) -> StringTransformerSdv:
         return parse_string_transformer_from_token_parser(parser)
 
 
 _PARSER = _Parser()
 
 
-def parse_string_transformer(source: ParseSource) -> StringTransformerResolver:
+def parse_string_transformer(source: ParseSource) -> StringTransformerSdv:
     with token_stream_parser.from_parse_source(source) as tp:
-        return parse_optional_transformer_resolver(tp)
+        return parse_optional_transformer_sdv(tp)
 
 
-def parse_optional_transformer_resolver(token_parser: TokenParser) -> StringTransformerResolver:
+def parse_optional_transformer_sdv(token_parser: TokenParser) -> StringTransformerSdv:
     """
     :return: The identity transformer, if transformer option is not given.
     """
     return token_parser.consume_and_handle_optional_option2(
         parse_string_transformer_from_token_parser,
-        IDENTITY_TRANSFORMER_RESOLVER,
+        IDENTITY_TRANSFORMER_SDV,
         instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
-def parse_optional_transformer_resolver2(token_parser: TokenParser) -> Optional[StringTransformerResolver]:
+def parse_optional_transformer_sdv2(token_parser: TokenParser) -> Optional[StringTransformerSdv]:
     """
     :return: The identity transformer, if transformer option is not given.
     """
@@ -61,14 +61,14 @@ def parse_optional_transformer_resolver2(token_parser: TokenParser) -> Optional[
         instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
-def parse_optional_transformer_resolver_preceding_mandatory_element(parser: TokenParser,
-                                                                    mandatory_element_name: str
-                                                                    ) -> Optional[StringTransformerResolver]:
+def parse_optional_transformer_sdv_preceding_mandatory_element(parser: TokenParser,
+                                                               mandatory_element_name: str
+                                                               ) -> Optional[StringTransformerSdv]:
     parser.require_existing_valid_head_token(mandatory_element_name)
-    return parse_optional_transformer_resolver2(parser)
+    return parse_optional_transformer_sdv2(parser)
 
 
-def parse_string_transformer_from_token_parser(parser: TokenParser) -> StringTransformerResolver:
+def parse_string_transformer_from_token_parser(parser: TokenParser) -> StringTransformerSdv:
     return parse_expression.parse(GRAMMAR, parser)
 
 
@@ -141,8 +141,8 @@ _CONCEPT = grammar.Concept(
 )
 
 
-def _mk_reference(name: str) -> StringTransformerResolver:
-    return resolvers.StringTransformerReference(name)
+def _mk_reference(name: str) -> StringTransformerSdv:
+    return sdvs.StringTransformerSdvReference(name)
 
 
 GRAMMAR = grammar.Grammar(
@@ -158,7 +158,7 @@ GRAMMAR = grammar.Grammar(
     },
     complex_expressions={
         SEQUENCE_OPERATOR_NAME: grammar.ComplexExpression(
-            string_transformers.StringTransformerSequenceResolver,
+            string_transformers.StringTransformerSequenceSdv,
             _SEQUENCE_SYNTAX_DESCRIPTION,
         ),
     },

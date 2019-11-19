@@ -4,13 +4,13 @@ from typing import Optional
 from exactly_lib.instructions.assert_ import existence_of_file as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType, \
     PathRelativityVariants, RelHdsOptionType
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
+from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
@@ -26,7 +26,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources import file_matcher as asrt_file_matcher
-from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_resolvers
+from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import symbol_path_argument, \
@@ -189,7 +189,7 @@ class HardErrorInFileMatcherTest(unittest.TestCase):
         error_message = 'error message from file matcher'
         file_matcher_that_raises_hard_error = NameAndValue(
             'file_matcher_that_raises_hard_error',
-            self._resolver_of_matcher_that_causes_hard_error(error_message)
+            self._sdv_of_matcher_that_causes_hard_error(error_message)
         )
 
         path_relativity = conf_rel_sds(RelSdsOptionType.REL_ACT)
@@ -208,7 +208,7 @@ class HardErrorInFileMatcherTest(unittest.TestCase):
             sut.Parser(),
             remaining_source(str(argument)),
             ArrangementPostAct(
-                symbols=symbol_table_from_name_and_resolvers([
+                symbols=symbol_table_from_name_and_sdvs([
                     file_matcher_that_raises_hard_error
                 ]),
                 sds_contents=path_relativity.populator_for_relativity_option_root__sds(
@@ -225,8 +225,8 @@ class HardErrorInFileMatcherTest(unittest.TestCase):
             ))
 
     @staticmethod
-    def _resolver_of_matcher_that_causes_hard_error(err_msg: str) -> FileMatcherResolver:
-        return FileMatcherConstantResolver(FileMatcherThatReportsHardError(err_msg))
+    def _sdv_of_matcher_that_causes_hard_error(err_msg: str) -> FileMatcherSdv:
+        return FileMatcherConstantSdv(FileMatcherThatReportsHardError(err_msg))
 
 
 class ArgumentsConstructorWithFileMatcher(InstructionArgumentsVariantConstructor):

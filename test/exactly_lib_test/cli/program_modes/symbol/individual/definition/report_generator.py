@@ -7,18 +7,18 @@ from exactly_lib.cli.program_modes.symbol.impl.reports import value_presentation
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import DefinitionsResolver, SymbolDefinitionInfo
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol import restriction
-from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
-from exactly_lib.symbol.resolver_structure import SymbolValueResolver
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import PhaseEnum
-from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
+from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.section_document.test_resources import source_location_assertions as asrt_source_loc
-from exactly_lib_test.symbol.data.test_resources import string_resolvers, list_resolvers, path_resolvers
+from exactly_lib_test.symbol.data.test_resources import string_sdvs, list_sdvs, path_sdvs
 from exactly_lib_test.symbol.test_resources import symbol_utils, line_matcher, string_matcher, file_matcher, \
     files_matcher, string_transformer
-from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
+from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -36,16 +36,16 @@ def suite() -> unittest.TestSuite:
 
 class TestDefinition(unittest.TestCase):
     def _check(self,
-               cases: Sequence[SymbolValueResolver],
+               cases: Sequence[SymbolDependentValue],
                non_standard_blocks: Sequence[ValueAssertion[ReportBlock]],
                ):
         # ARRANGE #
 
         symbol_name = 'the_symbol_name'
 
-        for resolver in cases:
-            with self.subTest(str(resolver.value_type)):
-                symbol_definition = _symbol_definition(symbol_name, resolver)
+        for sdv in cases:
+            with self.subTest(str(sdv.value_type)):
+                symbol_definition = _symbol_definition(symbol_name, sdv)
                 definitions_resolver = _ConstantDefinitionsResolver([symbol_definition])
 
                 report_generator = sut.IndividualReportGenerator(symbol_name, False)
@@ -87,7 +87,7 @@ class TestReferences(unittest.TestCase):
 
         symbol_name = 'the_symbol_name'
 
-        symbol_definition = _symbol_definition(symbol_name, _ARBITRARY_STRING_RESOLVER)
+        symbol_definition = _symbol_definition(symbol_name, _ARBITRARY_STRING_SDV)
         definitions_resolver = _ConstantDefinitionsResolver([symbol_definition])
 
         report_generator = sut.IndividualReportGenerator(symbol_name, True)
@@ -112,12 +112,12 @@ class TestReferences(unittest.TestCase):
 
         referenced_symbol = NameAndValue(
             'referenced_symbol',
-            _ARBITRARY_STRING_RESOLVER,
+            _ARBITRARY_STRING_SDV,
         )
 
         referencing_symbol = NameAndValue(
             'referencing_symbol',
-            string_matcher.StringMatcherResolverConstantTestImpl(
+            string_matcher.StringMatcherSdvConstantTestImpl(
                 string_matchers.StringMatcherConstant(None),
                 [SymbolReference(referenced_symbol.name,
                                  restriction.ValueTypeRestriction(ValueType.STRING))]),
@@ -160,8 +160,8 @@ def _rendered_blocks_are_major_blocks(put: unittest.TestCase, blocks: Sequence[R
     IS_SEQUENCE_OF_MAJOR_BLOCKS.apply_with_message(put, rendered_blocks, 'text blocks')
 
 
-def _arbitrary_string_transformer() -> StringTransformerResolver:
-    return StringTransformerConstant(MyToUppercaseTransformer())
+def _arbitrary_string_transformer() -> StringTransformerSdv:
+    return StringTransformerSdvConstant(MyToUppercaseTransformer())
 
 
 class _ConstantDefinitionsResolver(DefinitionsResolver):
@@ -173,14 +173,14 @@ class _ConstantDefinitionsResolver(DefinitionsResolver):
 
 
 def _symbol_definition(name: str,
-                       resolver: SymbolValueResolver,
+                       sdv: SymbolDependentValue,
                        references: Sequence[SymbolReference] = ()
                        ) -> SymbolDefinitionInfo:
     return SymbolDefinitionInfo(
         phase_identifier.SETUP,
         SymbolDefinition(
             name,
-            symbol_utils.container(resolver),
+            symbol_utils.container(sdv),
         ),
         [
             symbol_info.ContextAnd(
@@ -231,7 +231,7 @@ def _matches_definition_source_block(expected: SymbolDefinitionInfo) -> ValueAss
             asrt.sub_component(
                 'source_location_info',
                 _get_source_block_source_location_info,
-                asrt_source_loc.equals_source_location_info(expected.definition.resolver_container.source_location),
+                asrt_source_loc.equals_source_location_info(expected.definition.symbol_container.source_location),
             ),
         ],
     )
@@ -259,22 +259,22 @@ _SOURCE_INFO_WITH_SOURCE = symbol_info.SourceInfo.of_lines(
     ['the reference source line']
 )
 
-_ARBITRARY_STRING_RESOLVER = string_resolvers.arbitrary_resolver()
+_ARBITRARY_STRING_SDV = string_sdvs.arbitrary_sdv()
 
 _RESOLVERS_OF_TYPES_WITHOUT_RENDERING_OF_RESOLVED_VALUE = [
-    program_resolvers.arbitrary_resolver(),
+    program_sdvs.arbitrary_sdv(),
 
-    file_matcher.arbitrary_resolver(),
-    string_transformer.arbitrary_resolver(),
+    file_matcher.arbitrary_sdv(),
+    string_transformer.arbitrary_sdv(),
 
-    files_matcher.arbitrary_resolver(),
+    files_matcher.arbitrary_sdv(),
 ]
 
 _RESOLVERS_OF_TYPES_WITH_RENDERING_OF_RESOLVED_VALUE = [
-    _ARBITRARY_STRING_RESOLVER,
-    list_resolvers.arbitrary_resolver(),
-    path_resolvers.arbitrary_resolver(),
+    _ARBITRARY_STRING_SDV,
+    list_sdvs.arbitrary_sdv(),
+    path_sdvs.arbitrary_sdv(),
 
-    line_matcher.arbitrary_resolver(),
-    string_matcher.arbitrary_resolver(),
+    line_matcher.arbitrary_sdv(),
+    string_matcher.arbitrary_sdv(),
 ]

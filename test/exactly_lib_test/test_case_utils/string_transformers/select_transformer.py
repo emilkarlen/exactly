@@ -6,9 +6,9 @@ from exactly_lib.test_case_utils.string_transformer import parse_string_transfor
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib_test.section_document.test_resources import parse_source
 from exactly_lib_test.symbol.test_resources import symbol_syntax
-from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResolverConstantTestImpl, \
+from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSdvConstantTestImpl, \
     LineMatcherConstantTestImpl, is_line_matcher_reference_to__ref
-from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_resolvers
+from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -53,7 +53,7 @@ class TestSelectTransformer(integration_check.TestCaseWithCheckMethods):
         # ARRANGE #
         line_matcher = NameAndValue(
             'line_matcher_symbol',
-            LineMatcherResolverConstantTestImpl(
+            LineMatcherSdvConstantTestImpl(
                 LineMatcherConstantTestImpl(False),
             ),
         )
@@ -67,7 +67,7 @@ class TestSelectTransformer(integration_check.TestCaseWithCheckMethods):
             Arguments(arguments),
             model_construction.of_lines([]),
             integration_check.Arrangement(
-                symbols=symbol_table_from_name_and_resolvers([
+                symbols=symbol_table_from_name_and_sdvs([
                     line_matcher,
                 ])
             ),
@@ -82,7 +82,7 @@ class TestSelectTransformer(integration_check.TestCaseWithCheckMethods):
     def test_every_line_SHOULD_be_filtered(self):
         line_matcher = NameAndValue(
             'line_matcher_symbol',
-            LineMatcherResolverConstantTestImpl(
+            LineMatcherSdvConstantTestImpl(
                 sub_string_line_matcher('MATCH'),
             ),
         )
@@ -121,7 +121,7 @@ class TestSelectTransformer(integration_check.TestCaseWithCheckMethods):
                     Arguments(arguments),
                     model_construction.of_lines(case.actual),
                     integration_check.Arrangement(
-                        symbols=symbol_table_from_name_and_resolvers([
+                        symbols=symbol_table_from_name_and_sdvs([
                             line_matcher,
                         ])
                     ),
@@ -184,9 +184,9 @@ class TestSelectTransformer(integration_check.TestCaseWithCheckMethods):
                     Arguments(arguments),
                     model_construction.of_lines(input_lines),
                     integration_check.Arrangement(
-                        symbols=symbol_table_from_name_and_resolvers([
+                        symbols=symbol_table_from_name_and_sdvs([
                             NameAndValue(line_matcher_name,
-                                         LineMatcherResolverConstantTestImpl(
+                                         LineMatcherSdvConstantTestImpl(
                                              line_matcher,
                                          ),
                                          ),

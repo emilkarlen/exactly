@@ -1,12 +1,12 @@
 import itertools
 import unittest
 
-from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
+from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.type_system.logic.string_transformer import StringTransformerModel, \
     IdentityStringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
-from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_resolvers
+from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_sdvs
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as st_args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
@@ -76,7 +76,7 @@ class ResultShouldBeCompositionOfSequencedTransformers(integration_check.TestCas
                     model_construction.of_lines(initial_model_lines),
                     Arrangement(
                         SymbolTable({
-                            symbol.name: container(StringTransformerConstant(symbol.value))
+                            symbol.name: container(StringTransformerSdvConstant(symbol.value))
                             for symbol in sequenced_transformer_symbols
                         })
                     ),
@@ -94,13 +94,13 @@ class ValidatorShouldValidateSequencedTransformers(integration_check.TestCaseWit
     def runTest(self):
         successful_transformer = NameAndValue(
             'successful_transformer',
-            StringTransformerConstant(IdentityStringTransformer())
+            StringTransformerSdvConstant(IdentityStringTransformer())
         )
         for case in validation_cases.failing_validation_cases('failing_transformer'):
             failing_symbol_context = case.value.symbol_context
 
-            symbols = symbol_table_from_name_and_resolvers([
-                failing_symbol_context.name_and_resolver,
+            symbols = symbol_table_from_name_and_sdvs([
+                failing_symbol_context.name_and_sdv,
                 successful_transformer,
             ])
 

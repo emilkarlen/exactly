@@ -6,7 +6,7 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case.result import svh
-from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherResolver
+from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherSdv
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import Failure
@@ -18,7 +18,7 @@ class Instruction(Generic[T], AssertPhaseInstruction):
     """Makes an instruction of a :class:`Matcher`"""
 
     def __init__(self,
-                 matcher: PropertyMatcherResolver[None, T],
+                 matcher: PropertyMatcherSdv[None, T],
                  err_msg_constructor: Callable[[Failure[T]], ErrorMessageResolver],
                  ):
         self._matcher = matcher

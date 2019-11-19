@@ -4,7 +4,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.string_matcher.emptiness_matcher import EmptinessStringMatcher
-from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
+from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherResolverConstantTestImpl, \
+from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSdvConstantTestImpl, \
     is_reference_to_string_matcher
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
@@ -39,7 +39,7 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
 
 SYMBOL_FOR_EMPTINESS_MATCHER = NameAndValue(
     'SYMBOL_NAME',
-    StringMatcherResolverConstantTestImpl(EmptinessStringMatcher(ExpectationType.POSITIVE))
+    StringMatcherSdvConstantTestImpl(EmptinessStringMatcher(ExpectationType.POSITIVE))
 )
 
 
@@ -104,7 +104,7 @@ class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgum
     def runTest(self):
         # ARRANGE #
         named_transformer = NameAndValue('the_transformer',
-                                         StringTransformerConstant(
+                                         StringTransformerSdvConstant(
                                              EveryLineEmptyStringTransformer()))
 
         original_file_contents = 'some\ntext'

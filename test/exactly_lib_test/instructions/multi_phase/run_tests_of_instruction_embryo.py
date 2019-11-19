@@ -33,7 +33,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators im
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
-from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
+from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt, \
@@ -313,7 +313,7 @@ class TestProgramViaSymbolReference(TestCaseBase):
 
     program_that_executes_py_pgm_symbol = NameAndValue(
         'PROGRAM_THAT_EXECUTES_PY_FILE',
-        program_resolvers.interpret_py_source_file_that_must_exist(py_file_conf.path_resolver)
+        program_sdvs.interpret_py_source_file_that_must_exist(py_file_conf.path_sdv)
     )
 
     symbols_dict = SymbolTable({

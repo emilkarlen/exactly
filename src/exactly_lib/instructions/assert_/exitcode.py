@@ -24,7 +24,7 @@ from exactly_lib.test_case_utils.err_msg.property_description import \
 from exactly_lib.test_case_utils.matcher.impls import err_msg
 from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_integer_matcher
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterValue, PropertyGetter
-from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherResolver
+from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherSdv
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import Failure
@@ -87,9 +87,9 @@ class Parser(InstructionParserThatConsumesCurrentLine):
             expectation_type,
             _must_be_within_byte_range,
         )
-        property_matcher = PropertyMatcherResolver(
+        property_matcher = PropertyMatcherSdv(
             matcher,
-            property_getters.PropertyGetterResolverConstant(_ExitCodeGetterValue()),
+            property_getters.PropertyGetterSdvConstant(_ExitCodeGetterValue()),
         )
         parser.report_superfluous_arguments_if_not_at_eol()
         return instruction_of_matcher.Instruction(

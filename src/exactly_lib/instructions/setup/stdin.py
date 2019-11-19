@@ -14,8 +14,8 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.path_resolver import PathResolver
-from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.data.path_sdv import PathSdv
+from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -90,13 +90,13 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
                 token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
 
             if string_or_path.is_path:
-                return _InstructionForFileRef(string_or_path.path_resolver)
+                return _InstructionForFileRef(string_or_path.path_sdv)
             else:
-                return _InstructionForStringResolver(string_or_path.string_resolver)
+                return _InstructionForStringResolver(string_or_path.string_sdv)
 
 
 class _InstructionForStringResolver(SetupPhaseInstruction):
-    def __init__(self, contents: StringResolver):
+    def __init__(self, contents: StringSdv):
         self.contents = contents
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
@@ -112,7 +112,7 @@ class _InstructionForStringResolver(SetupPhaseInstruction):
 
 
 class _InstructionForFileRef(InstructionWithFileRefsBase):
-    def __init__(self, redirect_file: PathResolver):
+    def __init__(self, redirect_file: PathSdv):
         super().__init__((PathCheck(redirect_file,
                                     file_properties.must_exist_as(FileType.REGULAR)),))
         self.redirect_file = redirect_file

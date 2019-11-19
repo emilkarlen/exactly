@@ -1,12 +1,12 @@
 import unittest
 
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_resolvers
+from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_sdvs
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg, integration_check
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import test_case_utils
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import Arrangement, Expectation
@@ -130,7 +130,7 @@ class ValidationShouldFailWhenRegexIsInvalid(test_case_utils.TestWithNegationArg
                     ARBITRARY,
                     arrangement=
                     Arrangement(
-                        symbols=symbol_table_from_name_and_resolvers(regex_case.symbols)
+                        symbols=symbol_table_from_name_and_sdvs(regex_case.symbols)
                     ),
                     expectation=
                     Expectation(
@@ -143,7 +143,7 @@ class ValidationShouldFailWhenRegexIsInvalid(test_case_utils.TestWithNegationArg
 class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
     any_char_regex_string_symbol = NameAndValue(
         'valid_regex_string_symbol',
-        container(string_resolvers.str_constant('.'))
+        container(string_sdvs.str_constant('.'))
     )
     argument_w_opt_neg = arg.WithOptionalNegation(
         arg.Matches('AB' + symbol_reference_syntax_for_name(any_char_regex_string_symbol.name))

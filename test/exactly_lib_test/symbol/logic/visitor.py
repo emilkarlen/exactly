@@ -9,7 +9,7 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, file_matcher, \
     files_matcher, string_transformer
-from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
+from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 
 
 def suite() -> unittest.TestSuite:
@@ -18,14 +18,14 @@ def suite() -> unittest.TestSuite:
 
 class TestVisitor(unittest.TestCase):
     def _check(self,
-               resolver_class: Type,
-               resolver: sut.LogicValueResolver,
+               sdv_class: Type,
+               sdv: sut.LogicTypeSdv,
                expected_ret_val: str,
                ):
         # ARRANGE #
         visitor = AVisitorThatRecordsVisitedMethods(expected_ret_val)
 
-        actual_ret_val = visitor.visit(resolver)
+        actual_ret_val = visitor.visit(sdv)
 
         # ASSERT #
 
@@ -33,49 +33,49 @@ class TestVisitor(unittest.TestCase):
                          actual_ret_val,
                          'return value')
 
-        self.assertEqual([resolver_class],
+        self.assertEqual([sdv_class],
                          visitor.visited_types,
                          'visited classes')
 
     def test_visit_file_matcher(self):
         self._check(
-            sut.FileMatcherResolver,
-            file_matcher.arbitrary_resolver(),
+            sut.FileMatcherSdv,
+            file_matcher.arbitrary_sdv(),
             'ret val',
         )
 
     def test_visit_files_matcher(self):
         self._check(
-            sut.FilesMatcherResolver,
-            files_matcher.arbitrary_resolver(),
+            sut.FilesMatcherSdv,
+            files_matcher.arbitrary_sdv(),
             'other ret val',
         )
 
     def test_visit_line_matcher(self):
         self._check(
-            sut.LineMatcherResolver,
-            line_matcher.arbitrary_resolver(),
+            sut.LineMatcherSdv,
+            line_matcher.arbitrary_sdv(),
             'ret val',
         )
 
     def test_visit_string_matcher(self):
         self._check(
-            sut.StringMatcherResolver,
-            string_matcher.arbitrary_resolver(),
+            sut.StringMatcherSdv,
+            string_matcher.arbitrary_sdv(),
             'ret val',
         )
 
     def test_visit_string_transformer(self):
         self._check(
-            sut.StringTransformerResolver,
-            string_transformer.arbitrary_resolver(),
+            sut.StringTransformerSdv,
+            string_transformer.arbitrary_sdv(),
             'ret val',
         )
 
     def test_visit_program(self):
         self._check(
-            sut.ProgramResolver,
-            program_resolvers.arbitrary_resolver(),
+            sut.ProgramSdv,
+            program_sdvs.arbitrary_sdv(),
             'ret val',
         )
 
@@ -84,43 +84,43 @@ class TestVisitor(unittest.TestCase):
         visitor = AVisitorThatRecordsVisitedMethods('ret-val')
         # ACT #
         with self.assertRaises(TypeError):
-            visitor.visit(UnknownLogicTypeResolverClass())
+            visitor.visit(UnknownLogicTypeSdvClass())
         # ASSERT #
         self.assertIsNot(visitor.visited_types,
                          'No visit method should have been executed.')
 
 
-class AVisitorThatRecordsVisitedMethods(sut.LogicValueResolverPseudoVisitor[str]):
+class AVisitorThatRecordsVisitedMethods(sut.LogicTypeSdvPseudoVisitor[str]):
     def __init__(self, ret_val: str):
         self._ret_val = ret_val
         self.visited_types = []
 
-    def visit_file_matcher(self, value: sut.FileMatcherResolver) -> str:
-        self.visited_types.append(sut.FileMatcherResolver)
+    def visit_file_matcher(self, value: sut.FileMatcherSdv) -> str:
+        self.visited_types.append(sut.FileMatcherSdv)
         return self._ret_val
 
-    def visit_files_matcher(self, value: sut.FilesMatcherResolver) -> str:
-        self.visited_types.append(sut.FilesMatcherResolver)
+    def visit_files_matcher(self, value: sut.FilesMatcherSdv) -> str:
+        self.visited_types.append(sut.FilesMatcherSdv)
         return self._ret_val
 
-    def visit_line_matcher(self, value: sut.LineMatcherResolver) -> str:
-        self.visited_types.append(sut.LineMatcherResolver)
+    def visit_line_matcher(self, value: sut.LineMatcherSdv) -> str:
+        self.visited_types.append(sut.LineMatcherSdv)
         return self._ret_val
 
-    def visit_string_matcher(self, value: sut.StringMatcherResolver) -> str:
-        self.visited_types.append(sut.StringMatcherResolver)
+    def visit_string_matcher(self, value: sut.StringMatcherSdv) -> str:
+        self.visited_types.append(sut.StringMatcherSdv)
         return self._ret_val
 
-    def visit_string_transformer(self, value: sut.StringTransformerResolver) -> str:
-        self.visited_types.append(sut.StringTransformerResolver)
+    def visit_string_transformer(self, value: sut.StringTransformerSdv) -> str:
+        self.visited_types.append(sut.StringTransformerSdv)
         return self._ret_val
 
-    def visit_program(self, value: sut.ProgramResolver) -> str:
-        self.visited_types.append(sut.ProgramResolver)
+    def visit_program(self, value: sut.ProgramSdv) -> str:
+        self.visited_types.append(sut.ProgramSdv)
         return self._ret_val
 
 
-class UnknownLogicTypeResolverClass(sut.LogicValueResolver):
+class UnknownLogicTypeSdvClass(sut.LogicTypeSdv):
     @property
     def logic_value_type(self) -> LogicValueType:
         raise NotImplementedError('unsupported')

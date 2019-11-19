@@ -1,13 +1,13 @@
-from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.symbol.data.path_resolver import PathResolver
-from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
-from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
-from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
-from exactly_lib.symbol.logic.string_transformer import StringTransformerResolver
-from exactly_lib.symbol.resolver_structure import SymbolContainer
+from exactly_lib.symbol.data.list_sdv import ListSdv
+from exactly_lib.symbol.data.path_sdv import PathSdv
+from exactly_lib.symbol.data.string_sdv import StringSdv
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
+from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
@@ -16,10 +16,10 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformerDd
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def lookup_string(symbols: SymbolTable, name: str) -> StringResolver:
+def lookup_string(symbols: SymbolTable, name: str) -> StringSdv:
     container = lookup_container(symbols, name)
-    ret_val = container.resolver
-    assert isinstance(ret_val, StringResolver), 'Referenced symbol must be StringResolver'
+    ret_val = container.sdv
+    assert isinstance(ret_val, StringSdv), 'Referenced symbol must be StringSdv'
     return ret_val
 
 
@@ -27,10 +27,10 @@ def lookup_and_resolve_string(symbols: SymbolTable, name: str) -> StringDdv:
     return lookup_string(symbols, name).resolve(symbols)
 
 
-def lookup_list(symbols: SymbolTable, name: str) -> ListResolver:
+def lookup_list(symbols: SymbolTable, name: str) -> ListSdv:
     container = lookup_container(symbols, name)
-    ret_val = container.resolver
-    assert isinstance(ret_val, ListResolver), 'Referenced symbol must be ListResolver'
+    ret_val = container.sdv
+    assert isinstance(ret_val, ListSdv), 'Referenced symbol must be ListSdv'
     return ret_val
 
 
@@ -38,10 +38,10 @@ def lookup_and_resolve_list(symbols: SymbolTable, name: str) -> ListDdv:
     return lookup_list(symbols, name).resolve(symbols)
 
 
-def lookup_path(symbols: SymbolTable, name: str) -> PathResolver:
+def lookup_path(symbols: SymbolTable, name: str) -> PathSdv:
     container = lookup_container(symbols, name)
-    ret_val = container.resolver
-    assert isinstance(ret_val, PathResolver), 'Referenced symbol must be PathResolver'
+    ret_val = container.sdv
+    assert isinstance(ret_val, PathSdv), 'Referenced symbol must be PathSdv'
     return ret_val
 
 
@@ -49,38 +49,38 @@ def lookup_and_resolve_path(symbols: SymbolTable, name: str) -> PathDdv:
     return lookup_path(symbols, name).resolve(symbols)
 
 
-def lookup_line_matcher(symbols: SymbolTable, name: str) -> LineMatcherResolver:
+def lookup_line_matcher(symbols: SymbolTable, name: str) -> LineMatcherSdv:
     container = lookup_container(symbols, name)
-    ret_val = container.resolver
-    assert isinstance(ret_val, LineMatcherResolver), 'Referenced symbol must be LineMatcherResolver'
+    ret_val = container.sdv
+    assert isinstance(ret_val, LineMatcherSdv), 'Referenced symbol must be LineMatcherSdv'
     return ret_val
 
 
-def lookup_file_matcher(symbols: SymbolTable, name: str) -> FileMatcherResolver:
+def lookup_file_matcher(symbols: SymbolTable, name: str) -> FileMatcherSdv:
     container = lookup_container(symbols, name)
-    ret_val = container.resolver
-    assert isinstance(ret_val, FileMatcherResolver), 'Referenced symbol must be FileMatcherResolver'
+    ret_val = container.sdv
+    assert isinstance(ret_val, FileMatcherSdv), 'Referenced symbol must be FileMatcherSdv'
     return ret_val
 
 
-def lookup_files_matcher(symbols: SymbolTable, name: str) -> FilesMatcherResolver:
+def lookup_files_matcher(symbols: SymbolTable, name: str) -> FilesMatcherSdv:
     container = lookup_container(symbols, name)
-    ret_val = container.resolver
-    assert isinstance(ret_val, FilesMatcherResolver), 'Referenced symbol must be FilesMatcherResolver'
+    ret_val = container.sdv
+    assert isinstance(ret_val, FilesMatcherSdv), 'Referenced symbol must be FilesMatcherSdv'
     return ret_val
 
 
-def lookup_string_matcher(symbols: SymbolTable, name: str) -> StringMatcherResolver:
+def lookup_string_matcher(symbols: SymbolTable, name: str) -> StringMatcherSdv:
     container = lookup_container(symbols, name)
-    ret_val = container.resolver
-    assert isinstance(ret_val, StringMatcherResolver), 'Referenced symbol must be StringMatcherResolver'
+    ret_val = container.sdv
+    assert isinstance(ret_val, StringMatcherSdv), 'Referenced symbol must be StringMatcherSdv'
     return ret_val
 
 
-def lookup_string_transformer(symbols: SymbolTable, name: str) -> StringTransformerResolver:
+def lookup_string_transformer(symbols: SymbolTable, name: str) -> StringTransformerSdv:
     container = lookup_container(symbols, name)
-    ret_val = container.resolver
-    assert isinstance(ret_val, StringTransformerResolver), 'Referenced symbol must be ' + str(StringTransformerResolver)
+    ret_val = container.sdv
+    assert isinstance(ret_val, StringTransformerSdv), 'Referenced symbol must be ' + str(StringTransformerSdv)
     return ret_val
 
 
@@ -88,10 +88,10 @@ def lookup_and_resolve_string_transformer(symbols: SymbolTable, name: str) -> St
     return lookup_string_transformer(symbols, name).resolve(symbols)
 
 
-def lookup_program(symbols: SymbolTable, name: str) -> ProgramResolver:
+def lookup_program(symbols: SymbolTable, name: str) -> ProgramSdv:
     container = lookup_container(symbols, name)
-    ret_val = container.resolver
-    assert isinstance(ret_val, ProgramResolver), 'Referenced symbol must be ProgramResolver'
+    ret_val = container.sdv
+    assert isinstance(ret_val, ProgramSdv), 'Referenced symbol must be ProgramSdv'
     return ret_val
 
 

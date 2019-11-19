@@ -11,8 +11,8 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phase_identifier import Phase
@@ -20,16 +20,16 @@ from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionSo
 from exactly_lib.test_case.phases.common import instruction_log_dir
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_utils.program.command import command_resolvers
-from exactly_lib.test_case_utils.program.resolvers import accumulator
-from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
+from exactly_lib.test_case_utils.program.command import command_sdvs
+from exactly_lib.test_case_utils.program.sdvs import accumulator
+from exactly_lib.test_case_utils.program.sdvs.command_program_sdv import ProgramSdvForCommand
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.section_document.test_resources.parse_source import source4
-from exactly_lib_test.test_case_utils.test_resources import command_resolvers as test_command_resolvers
+from exactly_lib_test.test_case_utils.test_resources import command_sdvs as test_command_sdvs
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
@@ -45,7 +45,7 @@ class Configuration(ConfigurationBase):
     def run_sub_process_test(self,
                              put: unittest.TestCase,
                              source: ParseSource,
-                             program_parser: Parser[ProgramResolver],
+                             program_parser: Parser[ProgramSdv],
                              arrangement,
                              expectation,
                              instruction_name: str = 'instruction-name'):
@@ -64,7 +64,7 @@ class Configuration(ConfigurationBase):
 
     def _parser(self,
                 instruction_name: str,
-                program_parser: Parser[ProgramResolver]) -> InstructionParser:
+                program_parser: Parser[ProgramSdv]) -> InstructionParser:
         parts_parser = spe_parts.parts_parser(instruction_name, program_parser)
         return self.instruction_from_parts_parser(parts_parser)
 
@@ -285,29 +285,29 @@ class _InstructionLogDirContainsOutFiles(ValueAssertionBase[SandboxDirectoryStru
                                                                                       message_builder)
 
 
-class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(Parser[ProgramResolver]):
+class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(Parser[ProgramSdv]):
     def __init__(self, validator: pre_or_post_validation.PreOrPostSdsValidator):
         super().__init__()
         self.validator = validator
 
-    def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
+    def parse_from_token_parser(self, parser: TokenParser) -> ProgramSdv:
         instruction_argument = parser.consume_current_line_as_string_of_remaining_part_of_current_line()
-        return ProgramResolverForCommand(
-            test_command_resolvers.for_py_source_on_command_line(instruction_argument),
+        return ProgramSdvForCommand(
+            test_command_sdvs.for_py_source_on_command_line(instruction_argument),
             accumulator.new_with_validators([self.validator]))
 
 
-class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(Parser[ProgramResolver]):
+class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(Parser[ProgramSdv]):
     def __init__(self, validator: pre_or_post_validation.PreOrPostSdsValidator):
         super().__init__()
         self.validator = validator
 
-    def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
+    def parse_from_token_parser(self, parser: TokenParser) -> ProgramSdv:
         instruction_argument = parser.consume_current_line_as_string_of_remaining_part_of_current_line()
-        argument_resolver = string_resolvers.str_constant(instruction_argument)
-        return ProgramResolverForCommand(
-            command_resolvers.for_shell(argument_resolver,
-                                        validators=[self.validator]),
+        argument_sdv = string_sdvs.str_constant(instruction_argument)
+        return ProgramSdvForCommand(
+            command_sdvs.for_shell(argument_sdv,
+                                   validators=[self.validator]),
             accumulator.empty())
 
 

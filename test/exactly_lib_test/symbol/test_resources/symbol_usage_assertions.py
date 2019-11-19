@@ -1,4 +1,4 @@
-from exactly_lib.symbol import resolver_structure as rs, symbol_usage as su
+from exactly_lib.symbol import sdv_structure as rs, symbol_usage as su
 from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -15,8 +15,8 @@ def matches_definition(name: ValueAssertion[str],
                                su.SymbolDefinition.name.fget,
                                asrt.is_instance_with(str,
                                                      name)),
-            asrt.sub_component('resolver_container',
-                               su.SymbolDefinition.resolver_container.fget,
+            asrt.sub_component('symbol_container',
+                               su.SymbolDefinition.symbol_container.fget,
                                asrt.is_instance_with(rs.SymbolContainer,
                                                      container)),
 

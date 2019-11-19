@@ -8,7 +8,7 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.instructions.utils.file_maker import FileMaker, FileMakerForConstantContents, \
     FileMakerForContentsFromProgram, FileMakerForContentsFromExistingFile
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.parse import parse_here_document
@@ -17,8 +17,8 @@ from exactly_lib.test_case_utils.parse.parse_string import parse_string_from_tok
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.program.parse import parse_program
-from exactly_lib.test_case_utils.string_transformer.parse_string_transformer import parse_optional_transformer_resolver, \
-    IDENTITY_TRANSFORMER_RESOLVER
+from exactly_lib.test_case_utils.string_transformer.parse_string_transformer import parse_optional_transformer_sdv, \
+    IDENTITY_TRANSFORMER_SDV
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import is_option_string
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
@@ -137,7 +137,7 @@ def parse_file_contents(instruction_config: InstructionConfig,
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
     if parser.is_at_eol:
-        return FileMakerForConstantContents(string_resolvers.str_constant(''))
+        return FileMakerForConstantContents(string_sdvs.str_constant(''))
     else:
         parser.consume_mandatory_constant_unquoted_string(CONTENTS_ASSIGNMENT_TOKEN, True)
         return parse_file_maker(instruction_config, parser)
@@ -178,10 +178,10 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
     def _parse_file(my_parser: TokenParser) -> FileMaker:
         src_file = parse_path_from_token_parser(instruction_config.src_rel_opt_arg_conf,
                                                 my_parser)
-        contents_transformer = parse_optional_transformer_resolver(parser)
+        contents_transformer = parse_optional_transformer_sdv(parser)
         my_parser.report_superfluous_arguments_if_not_at_eol()
         return FileMakerForContentsFromExistingFile(instruction_config.source_info,
-                                                    IDENTITY_TRANSFORMER_RESOLVER
+                                                    IDENTITY_TRANSFORMER_SDV
                                                     if contents_transformer is None
                                                     else
                                                     contents_transformer,

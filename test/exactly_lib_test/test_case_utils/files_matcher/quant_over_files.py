@@ -2,15 +2,15 @@ import shlex
 import unittest
 
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherResolver
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
+from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
-from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
+from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -126,11 +126,11 @@ class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
 
         # ACT #
 
-        matcher_resolver = sut.files_matcher_parser().parse(source)
+        matcher_sdv = sut.files_matcher_parser().parse(source)
 
-        assert isinstance(matcher_resolver, FilesMatcherResolver)
+        assert isinstance(matcher_sdv, FilesMatcherSdv)
 
-        actual_symbol_references = matcher_resolver.references
+        actual_symbol_references = matcher_sdv.references
 
         # ASSERT #
 
@@ -400,7 +400,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         ])
 
         symbol_table_with_file_matcher = SymbolTable({
-            name_starts_with_selected.name: container(FileMatcherConstantResolver(name_starts_with_selected.value))
+            name_starts_with_selected.name: container(FileMatcherConstantSdv(name_starts_with_selected.value))
         })
         relativity_root_conf = AN_ACCEPTED_SDS_REL_OPT_CONFIG
 
@@ -467,7 +467,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         ])
 
         symbol_table_with_file_matcher = SymbolTable({
-            name_starts_with_selected.name: container(FileMatcherConstantResolver(name_starts_with_selected.value))
+            name_starts_with_selected.name: container(FileMatcherConstantSdv(name_starts_with_selected.value))
         })
         relativity_root_conf = AN_ACCEPTED_SDS_REL_OPT_CONFIG
 
@@ -537,7 +537,7 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
             ToUppercaseStringTransformer())
 
         symbol_table_with_lines_transformer = SymbolTable({
-            transform_to_uppercase.name: container(StringTransformerConstant(transform_to_uppercase.value))
+            transform_to_uppercase.name: container(StringTransformerSdvConstant(transform_to_uppercase.value))
         })
         expected_symbol_references = asrt.matches_sequence([
             is_reference_to_string_transformer(transform_to_uppercase.name)

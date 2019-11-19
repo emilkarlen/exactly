@@ -1,6 +1,6 @@
 from typing import Sequence, Set, Optional
 
-from exactly_lib.symbol.logic.line_matcher import LineMatcherResolver
+from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     constant_success_validator
@@ -14,15 +14,15 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import ResolverSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.line_matcher_base_class import LineMatcherTestImplBase
 from exactly_lib_test.util.render.test_resources import renderers
 
 
-def arbitrary_resolver() -> LineMatcherResolver:
-    return LineMatcherResolverConstantTestImpl(
+def arbitrary_sdv() -> LineMatcherSdv:
+    return LineMatcherSdvConstantTestImpl(
         LineMatcherConstantTestImpl(True)
     )
 
@@ -76,7 +76,7 @@ class LineMatcherDdvTestImpl(LineMatcherDdv):
         return self._primitive_value
 
 
-class LineMatcherResolverConstantTestImpl(LineMatcherResolver):
+class LineMatcherSdvConstantTestImpl(LineMatcherSdv):
     def __init__(self,
                  resolved_value: LineMatcher,
                  references: Sequence[SymbolReference] = ()):
@@ -95,7 +95,7 @@ class LineMatcherResolverConstantTestImpl(LineMatcherResolver):
         return LineMatcherDdvTestImpl(self._resolved_value)
 
 
-class LineMatcherResolverConstantValueTestImpl(LineMatcherResolver):
+class LineMatcherSdvConstantValueTestImpl(LineMatcherSdv):
     def __init__(self,
                  resolved_value: LineMatcherDdv,
                  references: Sequence[SymbolReference] = ()):
@@ -131,7 +131,7 @@ def is_line_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
 
 
 def successful_matcher_with_validation(validator: PreOrPostSdsValueValidator):
-    return LineMatcherResolverConstantValueTestImpl(
+    return LineMatcherSdvConstantValueTestImpl(
         LineMatcherDdvTestImpl(
             LineMatcherConstantTestImpl(True),
             validator
@@ -142,16 +142,16 @@ def successful_matcher_with_validation(validator: PreOrPostSdsValueValidator):
 def line_matcher_from_primitive_value(resolved_value: LineMatcher = LineMatcherConstantTestImpl(True),
                                       references: Sequence[SymbolReference] = (),
                                       validator: PreOrPostSdsValueValidator = constant_success_validator(),
-                                      ) -> LineMatcherResolver:
-    return LineMatcherResolverConstantValueTestImpl(
+                                      ) -> LineMatcherSdv:
+    return LineMatcherSdvConstantValueTestImpl(
         LineMatcherDdvTestImpl(resolved_value,
                                validator),
         references=references,
     )
 
 
-def resolver_of_unconditionally_matching_matcher() -> LineMatcherResolver:
-    return LineMatcherResolverConstantTestImpl(LineMatcherConstantTestImpl(True))
+def sdv_of_unconditionally_matching_matcher() -> LineMatcherSdv:
+    return LineMatcherSdvConstantTestImpl(LineMatcherConstantTestImpl(True))
 
 
 def ddv_of_unconditionally_matching_matcher() -> LineMatcherDdv:
@@ -160,16 +160,16 @@ def ddv_of_unconditionally_matching_matcher() -> LineMatcherDdv:
     )
 
 
-class LineMatcherSymbolContext(ResolverSymbolContext[LineMatcherResolver]):
+class LineMatcherSymbolContext(SdvSymbolContext[LineMatcherSdv]):
     def __init__(self,
                  name: str,
-                 resolver: LineMatcherResolver):
+                 sdv: LineMatcherSdv):
         super().__init__(name)
-        self._resolver = resolver
+        self._sdv = sdv
 
     @property
-    def resolver(self) -> LineMatcherResolver:
-        return self._resolver
+    def sdv(self) -> LineMatcherSdv:
+        return self._sdv
 
     @property
     def reference_assertion(self) -> ValueAssertion[SymbolReference]:

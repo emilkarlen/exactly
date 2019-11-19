@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition, RelOptionType, \
     RelNonHdsOptionType, RelHdsOptionType
@@ -19,7 +19,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.symbol.test_resources import resolver_assertions as asrt_resolver
+from exactly_lib_test.symbol.test_resources import sdv_assertions as asrt_sdv
 from exactly_lib_test.test_case.test_resources import validation_check
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val, \
     tcds_populators
@@ -173,7 +173,7 @@ class TestSuccessfulParse(unittest.TestCase):
 
 
 def check_parsing_of_program(put: unittest.TestCase,
-                             parser: Parser[ProgramResolver],
+                             parser: Parser[ProgramSdv],
                              mk_argument_elements: Callable[[ArgumentElementRenderer], ArgumentElements],
                              program_case: ProgramNameCase,
                              argument_case: ArgumentsCase,
@@ -193,7 +193,7 @@ def check_parsing_of_program(put: unittest.TestCase,
                 transformer=asrt_line_transformer.is_identity_transformer()
             )
 
-        expectation = asrt_resolver.matches_resolver_of_program(
+        expectation = asrt_sdv.matches_sdv_of_program(
             references=expected_references_assertion,
             resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_value(
                 resolved_value=expected_program,
@@ -278,10 +278,10 @@ class TestValidationAfterSuccessfulParse(unittest.TestCase):
 
                 with self.subTest(relativity=relativity_conf.option_string,
                                   file_do_existence_case=file_existence_case.name):
-                    program_resolver = sut.program_parser().parse(source)
+                    program_sdv = sut.program_parser().parse(source)
                     validation_check.check(
                         self,
-                        program_resolver.validator,
+                        program_sdv.validator,
                         arrangement,
                         expectation,
                     )
@@ -301,13 +301,13 @@ class TestValidationAfterSuccessfulParse(unittest.TestCase):
 
         # ACT #
 
-        program_resolver = sut.program_parser().parse(source)
+        program_sdv = sut.program_parser().parse(source)
 
         # ASSERT #
 
         validation_check.check(
             self,
-            program_resolver.validator,
+            program_sdv.validator,
             arrangement,
             expectation,
         )

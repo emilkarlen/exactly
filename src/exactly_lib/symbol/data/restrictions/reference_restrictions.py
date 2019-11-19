@@ -2,13 +2,13 @@ from typing import Callable, List, Optional, Sequence
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.symbol.data.data_value_resolver import DataValueResolver
+from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
 from exactly_lib.symbol.err_msg.error_messages import defined_at_line__err_msg_lines
-from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import Failure, \
     DataTypeReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory
 from exactly_lib.util.symbol_table import SymbolTable
@@ -87,7 +87,7 @@ class ReferenceRestrictionsOnDirectAndIndirect(DataTypeReferenceRestrictions):
             return FailureOfDirectReference(result)
         if self._indirect is None:
             return None
-        return self.check_indirect(symbol_table, container.resolver.references)
+        return self.check_indirect(symbol_table, container.sdv.references)
 
     @property
     def direct(self) -> ValueRestriction:
@@ -124,7 +124,7 @@ class ReferenceRestrictionsOnDirectAndIndirect(DataTypeReferenceRestrictions):
                     meaning_of_failure=self._meaning_of_failure_of_indirect_reference)
             result = self._check_indirect(symbol_table,
                                           path_to_referring_symbol + (reference.name,),
-                                          container.resolver.references)
+                                          container.sdv.references)
             if result is not None:
                 return result
         return None
@@ -163,30 +163,30 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
                         symbol_table: SymbolTable,
                         symbol_name: str,
                         container: SymbolContainer) -> Optional[Failure]:
-        resolver = container.resolver
-        assert isinstance(resolver, SymbolValueResolver)  # Type info for IDE
-        if resolver.type_category is not TypeCategory.DATA:
-            return self._no_satisfied_restriction(symbol_name, resolver, container)
-        assert isinstance(resolver, DataValueResolver)  # Type info for IDE
+        sdv = container.sdv
+        assert isinstance(sdv, SymbolDependentValue)  # Type info for IDE
+        if sdv.type_category is not TypeCategory.DATA:
+            return self._no_satisfied_restriction(symbol_name, sdv, container)
+        assert isinstance(sdv, DataTypeSdv)  # Type info for IDE
         for part in self._parts:
-            if part.selector == resolver.data_value_type:
+            if part.selector == sdv.data_value_type:
                 return part.restriction.is_satisfied_by(symbol_table, symbol_name, container)
-        return self._no_satisfied_restriction(symbol_name, resolver, container)
+        return self._no_satisfied_restriction(symbol_name, sdv, container)
 
     def _no_satisfied_restriction(self,
                                   symbol_name: str,
-                                  resolver: SymbolValueResolver,
+                                  sdv: SymbolDependentValue,
                                   value: SymbolContainer) -> FailureOfDirectReference:
         if self._sym_name_and_container_2_err_msg_if_no_matching_part is not None:
             msg = self._sym_name_and_container_2_err_msg_if_no_matching_part(symbol_name, value)
         else:
-            msg = text_docs.single_pre_formatted_line_object(self._default_error_message(symbol_name, value, resolver))
+            msg = text_docs.single_pre_formatted_line_object(self._default_error_message(symbol_name, value, sdv))
         return FailureOfDirectReference(ErrorMessageWithFixTip(msg))
 
     def _default_error_message(self,
                                symbol_name: str,
                                container: SymbolContainer,
-                               resolver: SymbolValueResolver) -> str:
+                               sdv: SymbolDependentValue) -> str:
         from exactly_lib.definitions.test_case.instructions import define_symbol
         accepted_value_types = ', '.join([define_symbol.DATA_TYPE_INFO_DICT[part.selector].identifier
                                           for part in self._parts])
@@ -197,7 +197,7 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
                  [
                      '',
                      'Accepted : ' + accepted_value_types,
-                     'Found    : ' + define_symbol.ANY_TYPE_INFO_DICT[resolver.value_type].identifier,
+                     'Found    : ' + define_symbol.ANY_TYPE_INFO_DICT[sdv.value_type].identifier,
                  ])
         return '\n'.join(lines)
 

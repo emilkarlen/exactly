@@ -19,9 +19,9 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_container
+from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher, \
-    StringMatcherResolverConstantTestImpl
+    StringMatcherSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
@@ -29,7 +29,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import \
     ImplicitActualFileArgumentsConstructor
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.assertions import matches_string_matcher_resolver
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.assertions import matches_string_matcher_sdv
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
@@ -62,7 +62,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # EXPECTATION #
 
         expected_container = matches_container(
-            matches_string_matcher_resolver()
+            matches_string_matcher_sdv()
         )
 
         expectation = Expectation(
@@ -84,7 +84,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         defined_name = 'defined_name'
 
         referenced_symbol = NameAndValue('referenced_name',
-                                         ARBITRARY_RESOLVER)
+                                         ARBITRARY_SDV)
 
         symbols = SymbolTable({
             referenced_symbol.name:
@@ -104,7 +104,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # EXPECTATION #
 
         expected_container = matches_container(
-            matches_string_matcher_resolver(
+            matches_string_matcher_sdv(
                 references=asrt.matches_sequence([
                     is_reference_to_string_matcher(referenced_symbol.name)
                 ]),
@@ -130,7 +130,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         defined_name = 'defined_name'
 
         expected_container = matches_container(
-            matches_string_matcher_resolver()
+            matches_string_matcher_sdv()
         )
 
         not_num_lines_eq_1_matcher_arg = self._not_num_lines_eq_1_matcher_arg()
@@ -232,16 +232,16 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         return matcher_to_apply.matches_emr(model)
 
     def _get_matcher(self, environment: InstructionEnvironmentForPostSdsStep) -> StringMatcher:
-        matcher_resolver = lookups.lookup_string_matcher(environment.symbols, self.matcher_symbol_name)
-        return matcher_resolver.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
+        matcher_sdv = lookups.lookup_string_matcher(environment.symbols, self.matcher_symbol_name)
+        return matcher_sdv.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
 
     def _new_model(self, environment: InstructionEnvironmentForPostSdsStep) -> FileToCheck:
         model_builder = model_construction.model_of(self.actual_model_contents)
         return model_construction.ModelConstructor(model_builder, environment.sds).construct()
 
 
-ARBITRARY_RESOLVER = StringMatcherResolverConstantTestImpl(StringMatcherConstant(None),
-                                                           [])
+ARBITRARY_SDV = StringMatcherSdvConstantTestImpl(StringMatcherConstant(None),
+                                                 [])
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

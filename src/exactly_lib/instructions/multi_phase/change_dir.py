@@ -16,7 +16,7 @@ from exactly_lib.instructions.multi_phase.utils.assert_phase_info import IsAHelp
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.symbol.data.path_resolver import PathResolver
+from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
@@ -76,7 +76,7 @@ Omitting the {dir_argument} is the same as giving ".".
 
 
 class InstructionEmbryo(embryo.InstructionEmbryo):
-    def __init__(self, destination: PathResolver):
+    def __init__(self, destination: PathSdv):
         self.destination = destination
 
     @property

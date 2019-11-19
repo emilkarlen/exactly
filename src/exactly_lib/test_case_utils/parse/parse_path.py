@@ -17,23 +17,23 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
     LookAheadState
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import path_resolvers, path_part_resolvers
-from exactly_lib.symbol.data.path_resolver import PathResolver, PathPartResolver
+from exactly_lib.symbol.data import path_sdvs, path_part_sdvs
+from exactly_lib.symbol.data.path_sdv import PathSdv, PathPartSdv
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart, string_made_up_by_just_strings
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
-from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.err_msg.error_messages import invalid_type_msg
 from exactly_lib.symbol.err_msg.restriction_failures import ErrorMessageForDirectReference
-from exactly_lib.symbol.resolver_structure import SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse.parse_relativity import parse_explicit_relativity_info
-from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver_from_token, \
-    parse_fragments_from_token, string_resolver_from_fragments
+from exactly_lib.test_case_utils.parse.parse_string import parse_string_sdv_from_token, \
+    parse_fragments_from_token, string_sdv_from_fragments
 from exactly_lib.test_case_utils.parse.path_from_symbol_reference import \
-    _ResolverThatIsIdenticalToReferencedPathOrWithStringValueAsSuffix
+    _SdvThatIsIdenticalToReferencedPathOrWithStringValueAsSuffix
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
 from exactly_lib.type_system.data import paths
@@ -87,7 +87,7 @@ NON_HDS_CONFIG = non_hds_config(instruction_arguments.PATH_SYNTAX_ELEMENT_NAME)
 
 
 def parse_path_from_parse_source(source: ParseSource,
-                                 conf: RelOptionArgumentConfiguration) -> PathResolver:
+                                 conf: RelOptionArgumentConfiguration) -> PathSdv:
     """
     :param source: Has a current line
     :raises SingleInstructionInvalidArgumentException: If cannot parse a PathDdv
@@ -99,7 +99,7 @@ def parse_path_from_parse_source(source: ParseSource,
 def parse_path_from_token_parser(conf: RelOptionArgumentConfiguration,
                                  token_parser: TokenParser,
                                  source_file_location: Optional[pathlib.Path] = None
-                                 ) -> PathResolver:
+                                 ) -> PathSdv:
     """
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
@@ -108,7 +108,7 @@ def parse_path_from_token_parser(conf: RelOptionArgumentConfiguration,
 
 def parse_path(tokens: TokenStream,
                conf: RelOptionArgumentConfiguration,
-               source_file_location: Optional[pathlib.Path] = None) -> PathResolver:
+               source_file_location: Optional[pathlib.Path] = None) -> PathSdv:
     """
     :param tokens: Argument list
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
@@ -126,7 +126,7 @@ class _Conf:
 
 
 def _parse_path(tokens: TokenStream,
-                conf: _Conf) -> PathResolver:
+                conf: _Conf) -> PathSdv:
     """
     :param tokens: Argument list
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
@@ -143,7 +143,7 @@ def _parse_path(tokens: TokenStream,
 
 
 def _parse_with_required_suffix(tokens: TokenStream,
-                                conf: _Conf) -> PathResolver:
+                                conf: _Conf) -> PathSdv:
     """
     :param tokens: Argument list
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
@@ -155,7 +155,7 @@ def _parse_with_required_suffix(tokens: TokenStream,
 
 
 def _parse_with_optional_suffix(tokens: TokenStream,
-                                conf: _Conf) -> PathResolver:
+                                conf: _Conf) -> PathSdv:
     """
     :param tokens: Argument list
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
@@ -167,7 +167,7 @@ def _parse_with_optional_suffix(tokens: TokenStream,
 
 
 def _parse_with_non_empty_token_stream(tokens: TokenStream,
-                                       conf: _Conf) -> PathResolver:
+                                       conf: _Conf) -> PathSdv:
     initial_argument_string = tokens.remaining_part_of_current_line
     relativity_info = parse_explicit_relativity_info(conf.rel_opt_conf.options,
                                                      conf.source_file_location,
@@ -177,8 +177,8 @@ def _parse_with_non_empty_token_stream(tokens: TokenStream,
         if relativity_info is None:
             return _result_from_no_arguments(conf.rel_opt_conf)
         else:
-            path_part_resolver2_path_resolver = _path_constructor(relativity_info)
-            return path_part_resolver2_path_resolver(path_part_resolvers.empty())
+            path_part_sdv2_path_sdv = _path_constructor(relativity_info)
+            return path_part_sdv2_path_sdv(path_part_sdvs.empty())
 
     if tokens.look_ahead_state is LookAheadState.NULL:
         raise SingleInstructionInvalidArgumentException(
@@ -194,11 +194,11 @@ def _parse_with_non_empty_token_stream(tokens: TokenStream,
     if relativity_info is None:
         return _without_explicit_relativity(token, conf.rel_opt_conf)
     else:
-        path_part_2_path_resolver = _path_constructor(relativity_info)
-        return _with_explicit_relativity(token, path_part_2_path_resolver)
+        path_part_2_path_sdv = _path_constructor(relativity_info)
+        return _with_explicit_relativity(token, path_part_2_path_sdv)
 
 
-def _without_explicit_relativity(path_argument: Token, conf: RelOptionArgumentConfiguration) -> PathResolver:
+def _without_explicit_relativity(path_argument: Token, conf: RelOptionArgumentConfiguration) -> PathSdv:
     string_fragments = parse_fragments_from_token(path_argument)
     if _string_fragments_is_constant(string_fragments):
         return _just_string_argument(path_argument.string, conf)
@@ -207,50 +207,50 @@ def _without_explicit_relativity(path_argument: Token, conf: RelOptionArgumentCo
 
 
 def _with_explicit_relativity(path_argument: Token,
-                              path_part_2_path_resolver: types.FunctionType) -> PathResolver:
-    string_resolver = _parse_string_resolver(path_argument)
-    if string_resolver.is_string_constant:
-        path_argument_str = string_resolver.string_constant
+                              path_part_2_path_sdv: types.FunctionType) -> PathSdv:
+    string_sdv = _parse_string_sdv(path_argument)
+    if string_sdv.is_string_constant:
+        path_argument_str = string_sdv.string_constant
         path_argument_path = pathlib.PurePath(path_argument_str)
         if path_argument_path.is_absolute():
-            return path_resolvers.constant(paths.absolute_file_name(path_argument_str))
-        path_suffix = path_part_resolvers.from_constant_str(path_argument_str)
-        return path_part_2_path_resolver(path_suffix)
+            return path_sdvs.constant(paths.absolute_file_name(path_argument_str))
+        path_suffix = path_part_sdvs.from_constant_str(path_argument_str)
+        return path_part_2_path_sdv(path_suffix)
     else:
-        path_suffix = path_part_resolvers.from_string(string_resolver)
-        return path_part_2_path_resolver(path_suffix)
+        path_suffix = path_part_sdvs.from_string(string_sdv)
+        return path_part_2_path_sdv(path_suffix)
 
 
 def _just_string_argument(argument: str,
-                          conf: RelOptionArgumentConfiguration) -> PathResolver:
+                          conf: RelOptionArgumentConfiguration) -> PathSdv:
     argument_path = pathlib.PurePath(argument)
     if argument_path.is_absolute():
         #  TODO Should we check if absolute paths are allowed according to RelOptionArgumentConfiguration??
-        return path_resolvers.constant(paths.absolute_file_name(argument))
+        return path_sdvs.constant(paths.absolute_file_name(argument))
     path_suffix = paths.constant_path_part(argument)
-    return path_resolvers.constant(paths.of_rel_option(conf.options.default_option,
-                                                       path_suffix))
+    return path_sdvs.constant(paths.of_rel_option(conf.options.default_option,
+                                                  path_suffix))
 
 
 def _just_argument_with_symbol_references(string_fragments: list,
-                                          conf: RelOptionArgumentConfiguration) -> PathResolver:
+                                          conf: RelOptionArgumentConfiguration) -> PathSdv:
     if _first_fragment_is_symbol_that_can_act_as_path(string_fragments):
         path_or_str_sym_ref, path_suffix = _extract_parts_that_can_act_as_path_and_suffix(string_fragments,
                                                                                           conf)
-        return _ResolverThatIsIdenticalToReferencedPathOrWithStringValueAsSuffix(
+        return _SdvThatIsIdenticalToReferencedPathOrWithStringValueAsSuffix(
             path_or_str_sym_ref,
             path_suffix,
             conf.options.default_option)
     else:
         #  TODO Check if fragments represent an absolute path
-        path_suffix = _path_suffix_resolver_from_fragments(string_fragments)
-        return _PathResolverOfRelativityOptionAndSuffixResolver(conf.options.default_option,
-                                                                path_suffix)
+        path_suffix = _path_suffix_sdv_from_fragments(string_fragments)
+        return _PathSdvOfRelativityOptionAndSuffixSdv(conf.options.default_option,
+                                                      path_suffix)
 
 
-def _result_from_no_arguments(conf: RelOptionArgumentConfiguration) -> PathResolver:
-    return path_resolvers.constant(paths.of_rel_option(conf.options.default_option,
-                                                       paths.empty_path_part()))
+def _result_from_no_arguments(conf: RelOptionArgumentConfiguration) -> PathSdv:
+    return path_sdvs.constant(paths.of_rel_option(conf.options.default_option,
+                                                  paths.empty_path_part()))
 
 
 def _raise_missing_arguments_exception(conf: _Conf):
@@ -259,15 +259,15 @@ def _raise_missing_arguments_exception(conf: _Conf):
 
 
 def _path_constructor(relativity_info: Union[RelOptionType, SymbolReference, pathlib.Path]
-                      ) -> Callable[[PathPartResolver], PathResolver]:
+                      ) -> Callable[[PathPartSdv], PathSdv]:
     if isinstance(relativity_info, RelOptionType):
-        return lambda path_suffix_resolver: _PathResolverOfRelativityOptionAndSuffixResolver(relativity_info,
-                                                                                             path_suffix_resolver)
+        return lambda path_suffix_sdv: _PathSdvOfRelativityOptionAndSuffixSdv(relativity_info,
+                                                                              path_suffix_sdv)
     elif isinstance(relativity_info, SymbolReference):
-        return functools.partial(path_resolvers.rel_symbol, relativity_info)
+        return functools.partial(path_sdvs.rel_symbol, relativity_info)
     elif isinstance(relativity_info, pathlib.Path):
-        return lambda path_suffix_resolver: _PathResolverOfAbsPathAndSuffixResolver(relativity_info,
-                                                                                    path_suffix_resolver)
+        return lambda path_suffix_sdv: _PathSdvOfAbsPathAndSuffixSdv(relativity_info,
+                                                                     path_suffix_sdv)
 
     else:
         raise TypeError("You promised you shouldn't give me a  " + str(relativity_info))
@@ -275,13 +275,13 @@ def _path_constructor(relativity_info: Union[RelOptionType, SymbolReference, pat
 
 def _extract_parts_that_can_act_as_path_and_suffix(string_fragments: list,
                                                    conf: RelOptionArgumentConfiguration
-                                                   ) -> (SymbolReference, PathPartResolver):
+                                                   ) -> (SymbolReference, PathPartSdv):
     path_or_string_symbol = SymbolReference(
         string_fragments[0].value,
         path_or_string_reference_restrictions(conf.options.accepted_relativity_variants),
     )
-    path_part_resolver = _path_suffix_resolver_from_fragments(string_fragments[1:])
-    return path_or_string_symbol, path_part_resolver
+    path_part_sdv = _path_suffix_sdv_from_fragments(string_fragments[1:])
+    return path_or_string_symbol, path_part_sdv
 
 
 def path_or_string_reference_restrictions(
@@ -303,41 +303,41 @@ def path_relativity_restriction(accepted_relativity_variants: PathRelativityVari
         PathRelativityRestriction(accepted_relativity_variants))
 
 
-class _PathResolverOfRelativityOptionAndSuffixResolver(PathResolver):
+class _PathSdvOfRelativityOptionAndSuffixSdv(PathSdv):
     def __init__(self,
                  relativity: RelOptionType,
-                 path_suffix_resolver: PathPartResolver):
+                 path_suffix_sdv: PathPartSdv):
         self.relativity = relativity
-        self.path_suffix_resolver = path_suffix_resolver
+        self.path_suffix_sdv = path_suffix_sdv
 
     def resolve(self, symbols: SymbolTable) -> PathDdv:
         return paths.of_rel_option(self.relativity,
-                                   self.path_suffix_resolver.resolve(symbols))
+                                   self.path_suffix_sdv.resolve(symbols))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self.path_suffix_resolver.references
+        return self.path_suffix_sdv.references
 
 
-class _PathResolverOfAbsPathAndSuffixResolver(PathResolver):
+class _PathSdvOfAbsPathAndSuffixSdv(PathSdv):
     def __init__(self,
                  abs_path_root: pathlib.Path,
-                 path_suffix_resolver: PathPartResolver):
+                 path_suffix_sdv: PathPartSdv):
         self.abs_path_root = abs_path_root
-        self.path_suffix_resolver = path_suffix_resolver
+        self.path_suffix_sdv = path_suffix_sdv
         if not self.abs_path_root.is_absolute():
             raise ValueError('abs_path_root is not absolute: ' + str(abs_path_root))
 
     def resolve(self, symbols: SymbolTable) -> PathDdv:
-        return paths.rel_abs_path(self.abs_path_root, self.path_suffix_resolver.resolve(symbols))
+        return paths.rel_abs_path(self.abs_path_root, self.path_suffix_sdv.resolve(symbols))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self.path_suffix_resolver.references
+        return self.path_suffix_sdv.references
 
 
-def _parse_string_resolver(token: Token) -> StringResolver:
-    return parse_string_resolver_from_token(token, PATH_COMPONENT_STRING_REFERENCES_RESTRICTION)
+def _parse_string_sdv(token: Token) -> StringSdv:
+    return parse_string_sdv_from_token(token, PATH_COMPONENT_STRING_REFERENCES_RESTRICTION)
 
 
 def _string_fragments_is_constant(fragments: list) -> bool:
@@ -353,11 +353,11 @@ def _first_fragment_is_symbol_that_can_act_as_path(fragments: list) -> bool:
     return fragment2.is_constant and fragment2.value.startswith('/')
 
 
-def _path_suffix_resolver_from_fragments(fragments: list) -> PathPartResolver:
+def _path_suffix_sdv_from_fragments(fragments: list) -> PathPartSdv:
     if not fragments:
-        return path_part_resolvers.empty()
-    string_resolver = string_resolver_from_fragments(fragments, PATH_COMPONENT_STRING_REFERENCES_RESTRICTION)
-    return path_part_resolvers.from_string(string_resolver)
+        return path_part_sdvs.empty()
+    string_sdv = string_sdv_from_fragments(fragments, PATH_COMPONENT_STRING_REFERENCES_RESTRICTION)
+    return path_part_sdvs.from_string(string_sdv)
 
 
 PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(

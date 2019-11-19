@@ -1,6 +1,6 @@
 from typing import Optional
 
-from exactly_lib.symbol import resolver_structure as vs
+from exactly_lib.symbol import sdv_structure as vs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction

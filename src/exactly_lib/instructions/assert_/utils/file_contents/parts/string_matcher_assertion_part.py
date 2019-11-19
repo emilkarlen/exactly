@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart, \
     FileToCheck
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -12,7 +12,7 @@ from exactly_lib.util.render import combinators as rend_comb
 
 
 class StringMatcherAssertionPart(FileContentsAssertionPart):
-    def __init__(self, string_matcher: StringMatcherResolver):
+    def __init__(self, string_matcher: StringMatcherSdv):
         super().__init__(string_matcher.validator)
         self._string_matcher = string_matcher
 

@@ -28,9 +28,7 @@ class RegexDdv(MultiDependenciesDdv[Pattern], ABC):
         raise NotImplementedError('abstract method')
 
 
-class RegexResolver:
-    """ Base class for resolvers of :class:`StringMatcherValue`. """
-
+class RegexSdv:
     @property
     def references(self) -> Sequence[SymbolReference]:
         raise NotImplementedError('abstract method')

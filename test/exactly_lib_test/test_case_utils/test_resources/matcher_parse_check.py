@@ -5,7 +5,7 @@ from exactly_lib.definitions import expression
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.resolver_structure import SymbolValueResolver, SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
@@ -24,20 +24,20 @@ MODEL = TypeVar('MODEL')
 
 
 class Configuration(Generic[MODEL]):
-    def parse(self, parser: TokenParser) -> SymbolValueResolver:
+    def parse(self, parser: TokenParser) -> SymbolDependentValue:
         raise NotImplementedError('abstract method')
 
     def is_reference_to(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         raise NotImplementedError('abstract method')
 
-    def resolver_of_constant_matcher(self, matcher: MatcherWTrace[MODEL]) -> SymbolValueResolver:
+    def sdv_of_constant_matcher(self, matcher: MatcherWTrace[MODEL]) -> SymbolDependentValue:
         raise NotImplementedError('abstract method')
 
-    def resolver_of_constant_result_matcher(self, result: bool) -> SymbolValueResolver:
-        return self.resolver_of_constant_matcher(self.constant_matcher(result))
+    def sdv_of_constant_result_matcher(self, result: bool) -> SymbolDependentValue:
+        return self.sdv_of_constant_matcher(self.constant_matcher(result))
 
-    def container_with_resolver_of_constant_matcher(self, matcher: MatcherWTrace[MODEL]) -> SymbolContainer:
-        return container(self.resolver_of_constant_matcher(matcher))
+    def container_with_sdv_of_constant_matcher(self, matcher: MatcherWTrace[MODEL]) -> SymbolContainer:
+        return container(self.sdv_of_constant_matcher(matcher))
 
     def arbitrary_model_that_should_not_be_touched(self) -> MODEL:
         raise NotImplementedError('abstract method')
@@ -61,9 +61,9 @@ class ExecutionExpectation:
 
 class Expectation:
     def __init__(self,
-                 resolver: ValueAssertion[SymbolValueResolver],
+                 sdv: ValueAssertion[SymbolDependentValue],
                  token_stream: ValueAssertion[TokenParser] = asrt.anything_goes()):
-        self.resolver = resolver
+        self.sdv = sdv
         self.token_stream = token_stream
 
 
@@ -78,11 +78,11 @@ class TestParseStandardExpressionsBase(unittest.TestCase):
                source: TokenParser,
                expectation: Expectation):
         # ACT #
-        actual_resolver = self.conf.parse(source)
+        actual_sdv = self.conf.parse(source)
         # ASSERT #
-        expectation.resolver.apply_with_message(self,
-                                                actual_resolver,
-                                                'resolver')
+        expectation.sdv.apply_with_message(self,
+                                           actual_sdv,
+                                           'SDV')
         expectation.token_stream.apply_with_message(self,
                                                     source.token_stream,
                                                     'token stream')
@@ -93,7 +93,7 @@ class TestParseStandardExpressionsBase(unittest.TestCase):
                          expectations: Sequence[ExecutionExpectation]):
         conf = self.conf
         # ACT #
-        actual_resolver = conf.parse(remaining_source(source))
+        actual_sdv = conf.parse(remaining_source(source))
         # ASSERT #
         references_expectation = asrt.matches_sequence([
             conf.is_reference_to(reference)
@@ -101,7 +101,7 @@ class TestParseStandardExpressionsBase(unittest.TestCase):
         ])
         references_expectation.apply_with_message(
             self,
-            actual_resolver.references,
+            actual_sdv.references,
             'references',
         )
         model = conf.arbitrary_model_that_should_not_be_touched()
@@ -111,15 +111,15 @@ class TestParseStandardExpressionsBase(unittest.TestCase):
                 self.assertEqual(len(references),
                                  len(expectation.operands),
                                  'test case setup: number of operands must equal number of references')
-                symbols = symbol_utils.symbol_table_from_name_and_resolvers(
+                symbols = symbol_utils.symbol_table_from_name_and_sdvs(
                     [
                         NameAndValue(sym_name,
-                                     conf.resolver_of_constant_result_matcher(result)
+                                     conf.sdv_of_constant_result_matcher(result)
                                      )
                         for sym_name, result in zip(references, expectation.operands)
                     ]
                 )
-                ddv = actual_resolver.resolve(symbols)
+                ddv = actual_sdv.resolve(symbols)
                 matcher = ddv.value_of_any_dependency(self.TCDS)
                 self.assertIsInstance(matcher, MatcherWTrace,
                                       'primitive value should be instance of ' + str(type(MatcherWTrace)))

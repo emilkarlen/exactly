@@ -6,13 +6,13 @@ from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.resolver_structure import SymbolValueResolver
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
-from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
+from exactly_lib.test_case_utils.line_matcher.sdvs import LineMatcherSdvConstant
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
@@ -20,7 +20,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     assert_token_stream
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
     import remaining_source
-from exactly_lib_test.symbol.test_resources import resolver_assertions
+from exactly_lib_test.symbol.test_resources import sdv_assertions
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.ddv_assertions import ddv_matches_line_matcher
@@ -42,14 +42,14 @@ def suite() -> unittest.TestSuite:
 
 
 class Configuration(matcher_parse_check.Configuration[LineMatcherLine]):
-    def parse(self, parser: TokenParser) -> SymbolValueResolver:
+    def parse(self, parser: TokenParser) -> SymbolDependentValue:
         return sut.parse_line_matcher_from_token_parser(parser)
 
     def is_reference_to(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_line_matcher_reference_to(symbol_name)
 
-    def resolver_of_constant_matcher(self, matcher: LineMatcher) -> SymbolValueResolver:
-        return LineMatcherConstantResolver(matcher)
+    def sdv_of_constant_matcher(self, matcher: LineMatcher) -> SymbolDependentValue:
+        return LineMatcherSdvConstant(matcher)
 
     def constant_matcher(self, result: bool) -> LineMatcher:
         return LineMatcherConstant(result)
@@ -63,10 +63,10 @@ class TestLineNumberParser(unittest.TestCase):
                source: TokenParser,
                expectation: Expectation):
         # ACT #
-        actual_resolver = line_number.parse_line_number(source)
+        actual_sdv = line_number.parse_line_number(source)
         # ASSERT #
-        expectation.resolver.apply_with_message(self, actual_resolver,
-                                                'resolver')
+        expectation.sdv.apply_with_message(self, actual_sdv,
+                                           'SDV')
         expectation.token_stream.apply_with_message(self,
                                                     source.token_stream,
                                                     'token stream')
@@ -103,8 +103,8 @@ class TestLineNumberParser(unittest.TestCase):
 
         expected_integer_matcher = _ExpectedEquivalentLineNumMatcher(comparators.LT,
                                                                      69)
-        expected_resolver = resolved_value_is_line_number_matcher(expected_integer_matcher,
-                                                                  [
+        expected_sdv = resolved_value_is_line_number_matcher(expected_integer_matcher,
+                                                             [
                                                                       model_of(60),
                                                                       model_of(69),
                                                                       model_of(72),
@@ -140,7 +140,7 @@ class TestLineNumberParser(unittest.TestCase):
         for case in cases:
             with self.subTest(case_name=case.name):
                 self._check(case.source,
-                            Expectation(expected_resolver,
+                            Expectation(expected_sdv,
                                         case.source_assertion))
 
 
@@ -161,8 +161,8 @@ class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase)
         expected_integer_matcher = _ExpectedEquivalentLineNumMatcher(comparator,
                                                                      rhs)
 
-        expected_resolver = resolved_value_is_line_number_matcher(expected_integer_matcher,
-                                                                  [
+        expected_sdv = resolved_value_is_line_number_matcher(expected_integer_matcher,
+                                                             [
                                                                       model_of(69),
                                                                       model_of(72),
                                                                       model_of(80),
@@ -174,17 +174,17 @@ class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase)
             remaining_source(argument_syntax.syntax_for_line_number_matcher(comparator,
                                                                             str(rhs))),
             Expectation(
-                resolver=expected_resolver),
+                sdv=expected_sdv),
         )
 
 
 def resolved_value_is_line_number_matcher(equivalent: Matcher[LineMatcherLine],
                                           model_infos: List[ModelInfo],
                                           references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence
-                                          ) -> ValueAssertion[SymbolValueResolver]:
+                                          ) -> ValueAssertion[SymbolDependentValue]:
     expected_matcher = is_equivalent_to(equivalent,
                                         model_infos)
-    return resolver_assertions.matches_resolver_of_line_matcher(
+    return sdv_assertions.matches_sdv_of_line_matcher(
         references,
         ddv_matches_line_matcher(expected_matcher)
     )

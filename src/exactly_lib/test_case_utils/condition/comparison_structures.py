@@ -77,7 +77,7 @@ class OperandDdv(Generic[T], MultiDependenciesDdv[T], ABC):
         pass
 
 
-class OperandResolver(Generic[T], ABC):
+class OperandSdv(Generic[T], ABC):
     """Resolves an operand used in a comparision"""
 
     @property

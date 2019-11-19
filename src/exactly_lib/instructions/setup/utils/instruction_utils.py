@@ -19,7 +19,7 @@ class InstructionWithFileRefsBase(SetupPhaseInstruction):
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         for path_check in self.path_check_list:
             assert isinstance(path_check, PathCheck)
-            path = path_check.path_resolver.resolve(environment.symbols)
+            path = path_check.path_sdv.resolve(environment.symbols)
             if path.exists_pre_sds():
                 result = pre_sds_validate(path_check, environment.path_resolving_environment)
                 if not result.is_success:
@@ -30,7 +30,7 @@ class InstructionWithFileRefsBase(SetupPhaseInstruction):
                             environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         for path_check in self.path_check_list:
             assert isinstance(path_check, PathCheck)
-            path = path_check.path_resolver.resolve(environment.symbols)
+            path = path_check.path_sdv.resolve(environment.symbols)
             if not path.exists_pre_sds():
                 result = pre_or_post_sds_validate(path_check,
                                                   environment.path_resolving_environment_pre_or_post_sds)

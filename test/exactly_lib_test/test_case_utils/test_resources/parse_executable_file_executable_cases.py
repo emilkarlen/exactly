@@ -15,8 +15,8 @@ from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, symbo
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_resolver
-from exactly_lib_test.symbol.data.test_resources.list_assertions import matches_list_resolver
+from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_sdv
+from exactly_lib_test.symbol.data.test_resources.list_assertions import matches_list_sdv
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
     TcdsPopulator
@@ -77,7 +77,7 @@ class ExpectationOnExeFile:
     def __init__(self,
                  path_ddv: PathDdv,
                  expected_symbol_references_of_file: List[SymbolReference],
-                 argument_resolver_value: ListDdv,
+                 argument_sdv_value: ListDdv,
                  expected_symbol_references_of_argument: List[SymbolReference],
                  symbol_for_value_checks: SymbolTable = None):
         self.symbol_for_value_checks = symbol_for_value_checks
@@ -87,7 +87,7 @@ class ExpectationOnExeFile:
         self.expected_symbol_references_of_file = expected_symbol_references_of_file
         if self.expected_symbol_references_of_file is None:
             self.expected_symbol_references_of_file = []
-        self.argument_resolver_value = argument_resolver_value
+        self.argument_sdv_value = argument_sdv_value
         self.expected_symbol_references_of_argument = expected_symbol_references_of_argument
         if self.expected_symbol_references_of_argument is None:
             self.expected_symbol_references_of_argument = []
@@ -99,34 +99,34 @@ class Expectation:
                  validation_result: validation.Expectation,
                  path_ddv: PathDdv,
                  expected_symbol_references_of_file: List[SymbolReference],
-                 argument_resolver_value: ListDdv,
+                 argument_sdv_value: ListDdv,
                  expected_symbol_references_of_argument: List[SymbolReference]):
         self.source = source
         self.validation_result = validation_result
         self.expectation_on_exe_file = ExpectationOnExeFile(path_ddv=path_ddv,
                                                             expected_symbol_references_of_file=expected_symbol_references_of_file,
-                                                            argument_resolver_value=argument_resolver_value,
+                                                            argument_sdv_value=argument_sdv_value,
                                                             expected_symbol_references_of_argument=expected_symbol_references_of_argument)
 
 
 def check_exe_file(put: unittest.TestCase,
                    expectation: ExpectationOnExeFile,
                    actual: ExecutableFileWithArgsResolver):
-    path_resolver_assertion = matches_path_resolver(
+    path_sdv_assertion = matches_path_sdv(
         expectation.path_ddv,
         expected_symbol_references=equals_symbol_references(expectation.expected_symbol_references_of_file),
         symbol_table=expectation.symbol_for_value_checks)
-    path_resolver_assertion.apply_with_message(put, actual.executable_file,
-                                               'path_resolver')
+    path_sdv_assertion.apply_with_message(put, actual.executable_file,
+                                               'path sdv')
     path_symbols = equals_symbol_references(expectation.expected_symbol_references_of_file)
     path_symbols.apply_with_message(put, actual.executable_file.references,
-                                    'path-resolver/references')
-    arguments_resolver_assertion = matches_list_resolver(
-        expectation.argument_resolver_value,
+                                    'path-sdv/references')
+    arguments_sdv_assertion = matches_list_sdv(
+        expectation.argument_sdv_value,
         expected_symbol_references=equals_symbol_references(expectation.expected_symbol_references_of_argument),
         symbols=expectation.symbol_for_value_checks,
     )
-    arguments_resolver_assertion.apply_with_message(put, actual.arguments,
+    arguments_sdv_assertion.apply_with_message(put, actual.arguments,
                                                     'arguments')
     assertion_on_all_references = equals_symbol_references(expectation.expected_symbol_references_of_file +
                                                            expectation.expected_symbol_references_of_argument)

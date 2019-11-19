@@ -6,7 +6,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
-from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
+from exactly_lib.test_case_utils.line_matcher.sdvs import LineMatcherSdvConstant
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources import \
@@ -15,14 +15,14 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
-from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_container
+from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import ddv_assertions as asrt_line_matcher
-from exactly_lib_test.test_case_utils.line_matcher.test_resources.resolver_assertions import \
+from exactly_lib_test.test_case_utils.line_matcher.test_resources.sdv_assertions import \
     resolved_ddv_matches_line_matcher
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -126,14 +126,14 @@ class TestSuccessfulScenarios(TestCaseBase):
 
         # EXPECTATION #
 
-        symbol_table = SymbolTable({symbol.name: container(LineMatcherConstantResolver(symbol.value)), })
+        symbol_table = SymbolTable({symbol.name: container(LineMatcherSdvConstant(symbol.value)), })
 
-        expected_matcher_resolver = parse_line_matcher.parser().parse(remaining_source(matcher_argument))
+        expected_matcher_sdv = parse_line_matcher.parser().parse(remaining_source(matcher_argument))
 
-        expected_matcher = expected_matcher_resolver.resolve(symbol_table).value_of_any_dependency(fake_tcds())
+        expected_matcher = expected_matcher_sdv.resolve(symbol_table).value_of_any_dependency(fake_tcds())
 
         expected_container = matches_container(
-            assertion_on_resolver=
+            assertion_on_sdv=
             resolved_ddv_matches_line_matcher(
                 asrt_line_matcher.ddv_matches_line_matcher(
                     asrt_matcher.is_equivalent_to(expected_matcher,

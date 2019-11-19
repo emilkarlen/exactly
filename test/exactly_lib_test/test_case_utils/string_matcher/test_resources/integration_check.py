@@ -5,7 +5,7 @@ from typing import Optional
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.string_matcher import StringMatcherResolver
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -16,7 +16,7 @@ from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.assertions import matches_string_matcher_resolver, \
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.assertions import matches_string_matcher_sdv, \
     matches_string_matcher_attributes
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder, \
     ModelConstructor
@@ -30,7 +30,7 @@ from exactly_lib_test.util.description_tree.test_resources import described_tree
 
 class TestCaseBase(unittest.TestCase):
     def _check(self,
-               parser: Parser[StringMatcherResolver],
+               parser: Parser[StringMatcherSdv],
                source: ParseSource,
                model: ModelBuilder,
                arrangement: ArrangementPostAct,
@@ -39,7 +39,7 @@ class TestCaseBase(unittest.TestCase):
 
 
 def check(put: unittest.TestCase,
-          parser: Parser[StringMatcherResolver],
+          parser: Parser[StringMatcherSdv],
           source: ParseSource,
           model: ModelBuilder,
           arrangement: ArrangementPostAct,
@@ -54,7 +54,7 @@ class _CheckIsDoneException(Exception):
 class Executor:
     def __init__(self,
                  put: unittest.TestCase,
-                 parser: Parser[StringMatcherResolver],
+                 parser: Parser[StringMatcherSdv],
                  model: ModelBuilder,
                  arrangement: ArrangementPostAct,
                  expectation: Expectation):
@@ -71,15 +71,15 @@ class Executor:
             pass
 
     def _execute(self, source: ParseSource):
-        resolver = self._parse(source)
+        sdv = self._parse(source)
 
         self.expectation.symbol_usages.apply_with_message(self.put,
-                                                          resolver.references,
+                                                          sdv.references,
                                                           'symbol-usages after parse')
 
         matches_string_matcher_attributes(
-            references=asrt.anything_goes()).apply_with_message(self.put, resolver,
-                                                                'resolver structure')
+            references=asrt.anything_goes()).apply_with_message(self.put, sdv,
+                                                                'SDV structure')
 
         with tcds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
@@ -96,9 +96,9 @@ class Executor:
 
                 environment = PathResolvingEnvironmentPreSds(tcds.hds,
                                                              self.arrangement.symbols)
-                validate_result = self._execute_validate_pre_sds(environment, resolver)
+                validate_result = self._execute_validate_pre_sds(environment, sdv)
                 self.expectation.symbol_usages.apply_with_message(self.put,
-                                                                  resolver.references,
+                                                                  sdv.references,
                                                                   'symbol-usages after ' +
                                                                   phase_step.STEP__VALIDATE_PRE_SDS)
                 if validate_result is not None:
@@ -107,56 +107,56 @@ class Executor:
             environment = PathResolvingEnvironmentPreOrPostSds(
                 tcds,
                 self.arrangement.symbols)
-            validate_result = self._execute_validate_post_setup(environment, resolver)
+            validate_result = self._execute_validate_post_setup(environment, sdv)
             self.expectation.symbol_usages.apply_with_message(self.put,
-                                                              resolver.references,
+                                                              sdv.references,
                                                               'symbol-usages after ' +
                                                               phase_step.STEP__VALIDATE_POST_SETUP)
             if validate_result is not None:
                 return
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(tcds))
             write_act_result(tcds.sds, act_result)
-            matcher = self._resolve(resolver, environment)
+            matcher = self._resolve(sdv, environment)
             model = self._new_model(environment.sds)
             self._execute_main(model, matcher)
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
             self.expectation.main_side_effects_on_tcds.apply(self.put, tcds)
             self.expectation.symbol_usages.apply_with_message(self.put,
-                                                              resolver.references,
+                                                              sdv.references,
                                                               'symbol-usages after ' +
                                                               phase_step.STEP__MAIN)
 
-    def _parse(self, source: ParseSource) -> StringMatcherResolver:
-        resolver = self.parser.parse(source)
-        self.put.assertIsNotNone(resolver,
+    def _parse(self, source: ParseSource) -> StringMatcherSdv:
+        sdv = self.parser.parse(source)
+        self.put.assertIsNotNone(sdv,
                                  'Result from parser cannot be None')
-        self.put.assertIsInstance(resolver,
-                                  StringMatcherResolver,
-                                  'The resolver must be an instance of ' + str(StringMatcherResolver))
+        self.put.assertIsInstance(sdv,
+                                  StringMatcherSdv,
+                                  'The SDV must be an instance of ' + str(StringMatcherSdv))
         self.expectation.source.apply_with_message(self.put, source, 'source')
-        assert isinstance(resolver, StringMatcherResolver)
-        return resolver
+        assert isinstance(sdv, StringMatcherSdv)
+        return sdv
 
     def _resolve(self,
-                 resolver: StringMatcherResolver,
+                 sdv: StringMatcherSdv,
                  environment: PathResolvingEnvironmentPreOrPostSds) -> StringMatcher:
 
-        resolver_health_check = matches_string_matcher_resolver(references=asrt.anything_goes(),
-                                                                symbols=environment.symbols,
-                                                                tcds=environment.tcds)
-        resolver_health_check.apply_with_message(self.put, resolver,
-                                                 'resolver structure')
+        sdv_health_check = matches_string_matcher_sdv(references=asrt.anything_goes(),
+                                                      symbols=environment.symbols,
+                                                      tcds=environment.tcds)
+        sdv_health_check.apply_with_message(self.put, sdv,
+                                                 'SDV structure')
 
-        matcher_value = resolver.resolve(environment.symbols)
-        assert isinstance(matcher_value, StringMatcherDdv)
+        matcher_ddv = sdv.resolve(environment.symbols)
+        assert isinstance(matcher_ddv, StringMatcherDdv)
 
-        structure_tree_of_ddv = matcher_value.structure().render()
+        structure_tree_of_ddv = matcher_ddv.structure().render()
 
         asrt_d_tree.matches_node().apply_with_message(self.put,
                                                       structure_tree_of_ddv,
-                                                      'structure of ddv')
+                                                      'structure of DDV')
 
-        matcher = matcher_value.value_of_any_dependency(environment.tcds)
+        matcher = matcher_ddv.value_of_any_dependency(environment.tcds)
         assert isinstance(matcher, StringMatcher)
 
         structure_tree_of_primitive = matcher.structure().render()
@@ -175,16 +175,16 @@ class Executor:
 
     def _execute_validate_pre_sds(self,
                                   environment: PathResolvingEnvironmentPreSds,
-                                  resolver: StringMatcherResolver) -> Optional[str]:
-        result = resolver.validator.validate_pre_sds_if_applicable(environment)
+                                  sdv: StringMatcherSdv) -> Optional[str]:
+        result = sdv.validator.validate_pre_sds_if_applicable(environment)
         self.expectation.validation_pre_sds.apply(self.put, result,
                                                   asrt.MessageBuilder('result of validate/pre sds'))
         return result
 
     def _execute_validate_post_setup(self,
                                      environment: PathResolvingEnvironmentPostSds,
-                                     resolver: StringMatcherResolver) -> Optional[str]:
-        result = resolver.validator.validate_post_sds_if_applicable(environment)
+                                     sdv: StringMatcherSdv) -> Optional[str]:
+        result = sdv.validator.validate_post_sds_if_applicable(environment)
         self.expectation.validation_post_sds.apply(self.put, result,
                                                    asrt.MessageBuilder('result of validate/post setup'))
         return result

@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Sequence
 
-from exactly_lib.symbol.data.path_resolver import PathResolver
+from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
+from exactly_lib.symbol.sdv_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -60,7 +60,7 @@ class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndValidation, A
 
 class ConstructorForPath(ComparisonActualFileConstructor):
     def __init__(self,
-                 path: PathResolver,
+                 path: PathSdv,
                  object_name: ToStringObject,
                  file_access_needs_to_be_verified: bool,
                  ):

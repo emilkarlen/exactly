@@ -3,15 +3,15 @@ from typing import Pattern, Optional
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.file_matcher import FileMatcherResolver
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
-from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherResolverFromValueParts
+from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherSdvFromValueParts
 from exactly_lib.test_case_utils.regex import parse_regex
-from exactly_lib.test_case_utils.regex.regex_ddv import RegexResolver, RegexDdv
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -22,20 +22,20 @@ from exactly_lib.util.description_tree import details
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def parse(token_parser: TokenParser) -> FileMatcherResolver:
+def parse(token_parser: TokenParser) -> FileMatcherSdv:
     token_parser.require_has_valid_head_token(syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
-    source_type, regex_resolver = parse_regex.parse_regex2(token_parser,
-                                                           must_be_on_same_line=True)
+    source_type, regex_sdv = parse_regex.parse_regex2(token_parser,
+                                                      must_be_on_same_line=True)
 
-    return resolver(regex_resolver)
+    return sdv(regex_sdv)
 
 
-def resolver(regex_resolver: RegexResolver) -> FileMatcherResolver:
+def sdv(regex_sdv: RegexSdv) -> FileMatcherSdv:
     def get_value(symbols: SymbolTable) -> FileMatcherDdv:
-        return _Ddv(regex_resolver.resolve(symbols))
+        return _Ddv(regex_sdv.resolve(symbols))
 
-    return FileMatcherResolverFromValueParts(
-        regex_resolver.references,
+    return FileMatcherSdvFromValueParts(
+        regex_sdv.references,
         get_value,
     )
 
