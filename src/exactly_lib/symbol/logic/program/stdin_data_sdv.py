@@ -5,7 +5,7 @@ from exactly_lib.symbol.object_with_symbol_references import references_from_obj
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue
+from exactly_lib.type_system.logic.program.stdin_data import StdinDataDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -32,8 +32,8 @@ class StdinDataSdv(ObjectWithTypedSymbolReferences):
     def references(self) -> Sequence[SymbolReference]:
         return references_from_objects_with_symbol_references(self._fragments)
 
-    def resolve_value(self, symbols: SymbolTable) -> StdinDataValue:
-        return StdinDataValue([f.resolve(symbols) for f in self._fragments])
+    def resolve_value(self, symbols: SymbolTable) -> StdinDataDdv:
+        return StdinDataDdv([f.resolve(symbols) for f in self._fragments])
 
 
 def no_stdin() -> StdinDataSdv:

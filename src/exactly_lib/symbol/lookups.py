@@ -11,7 +11,7 @@ from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
-from exactly_lib.type_system.logic.program.program_value import ProgramValue
+from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -95,7 +95,7 @@ def lookup_program(symbols: SymbolTable, name: str) -> ProgramSdv:
     return ret_val
 
 
-def lookup_and_resolve_program(symbols: SymbolTable, name: str) -> ProgramValue:
+def lookup_and_resolve_program(symbols: SymbolTable, name: str) -> ProgramDdv:
     return lookup_program(symbols, name).resolve(symbols)
 
 

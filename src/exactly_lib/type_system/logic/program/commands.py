@@ -1,12 +1,12 @@
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
-from exactly_lib.type_system.logic.program.command_value import CommandDriverValue
+from exactly_lib.type_system.logic.program.command import CommandDriverDdv
 from exactly_lib.util.process_execution import commands
 from exactly_lib.util.process_execution.command import CommandDriver
 
 
-class CommandDriverValueForShell(CommandDriverValue):
+class CommandDriverDdvForShell(CommandDriverDdv):
     def __init__(self, command_line: StringDdv):
         self._command_line = command_line
 
@@ -14,7 +14,7 @@ class CommandDriverValueForShell(CommandDriverValue):
         return commands.CommandDriverForShell(self._command_line.value_of_any_dependency(tcds))
 
 
-class CommandDriverValueForExecutableFile(CommandDriverValue):
+class CommandDriverDdvForExecutableFile(CommandDriverDdv):
     def __init__(self, exe_file: PathDdv):
         self._exe_file = exe_file
 
@@ -22,7 +22,7 @@ class CommandDriverValueForExecutableFile(CommandDriverValue):
         return commands.CommandDriverForExecutableFile(self._exe_file.value_of_any_dependency(tcds))
 
 
-class CommandDriverValueForSystemProgram(CommandDriverValue):
+class CommandDriverDdvForSystemProgram(CommandDriverDdv):
     def __init__(self, program: StringDdv):
         self._program = program
 

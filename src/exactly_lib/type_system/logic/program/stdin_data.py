@@ -25,7 +25,7 @@ class StdinData(tuple):
         return len(self.fragments) == 0
 
 
-class StdinDataValue(DirDependentValue[StdinData]):
+class StdinDataDdv(DirDependentValue[StdinData]):
     def __init__(self, fragments: Sequence[StringOrPathDdv]):
         self._fragments = fragments
 

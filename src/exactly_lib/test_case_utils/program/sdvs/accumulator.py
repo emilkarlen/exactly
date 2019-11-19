@@ -13,7 +13,7 @@ from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsValidatorFromValueValidator
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
-from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue
+from exactly_lib.type_system.logic.program.stdin_data import StdinDataDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -54,7 +54,7 @@ class ProgramElementsSdvAccumulator(ObjectWithSymbolReferencesAndValidation):
     def validator(self) -> PreOrPostSdsValidator:
         return pre_or_post_validation.all_of(self.validators)
 
-    def resolve_stdin_data(self, symbols: SymbolTable) -> StdinDataValue:
+    def resolve_stdin_data(self, symbols: SymbolTable) -> StdinDataDdv:
         return self.stdin.resolve_value(symbols)
 
     def resolve_transformations(self, symbols: SymbolTable) -> StringTransformerDdv:

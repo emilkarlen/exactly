@@ -10,14 +10,14 @@ from exactly_lib.symbol.utils import DirDepValueResolver
 from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
-from exactly_lib.type_system.logic.program.command_value import CommandValue, CommandDriverValue
+from exactly_lib.type_system.logic.program.command import CommandDdv, CommandDriverDdv
 from exactly_lib.util.process_execution.command import Command
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class CommandDriverSdv(DirDepValueResolver[CommandDriverValue]):
+class CommandDriverSdv(DirDepValueResolver[CommandDriverDdv]):
     """
-    Resolves a :class:`CommandDriverValue`,
+    Resolves a :class:`CommandDriverDdv`,
     and supplies a validator of the ingredients involved.
     """
 
@@ -28,7 +28,7 @@ class CommandDriverSdv(DirDepValueResolver[CommandDriverValue]):
     def validators(self) -> Sequence[PreOrPostSdsValidator]:
         return self._validators
 
-    def resolve(self, symbols: SymbolTable) -> CommandDriverValue:
+    def resolve(self, symbols: SymbolTable) -> CommandDriverDdv:
         raise NotImplementedError('abstract method')
 
     @property
@@ -36,9 +36,9 @@ class CommandDriverSdv(DirDepValueResolver[CommandDriverValue]):
         raise NotImplementedError('abstract method')
 
 
-class CommandSdv(DirDepValueResolverWithValidation[CommandValue]):
+class CommandSdv(DirDepValueResolverWithValidation[CommandDdv]):
     """
-    Resolves a :class:`CommandValue`,
+    Resolves a :class:`CommandDdv`,
     and supplies a validator of the ingredients involved.
 
     This class works a bit like a immutable builder of Command - new arguments
@@ -64,9 +64,9 @@ class CommandSdv(DirDepValueResolverWithValidation[CommandValue]):
     def new_with_additional_argument_list(self, additional_arguments: ListSdv) -> 'CommandSdv':
         return self.new_with_additional_arguments(arguments_sdvs.new_without_validation(additional_arguments))
 
-    def resolve(self, symbols: SymbolTable) -> CommandValue:
-        return CommandValue(self._driver.resolve(symbols),
-                            self._arguments.arguments_list.resolve(symbols))
+    def resolve(self, symbols: SymbolTable) -> CommandDdv:
+        return CommandDdv(self._driver.resolve(symbols),
+                          self._arguments.arguments_list.resolve(symbols))
 
     def resolve_of_any_dep(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
         return self.resolve(environment.symbols).value_of_any_dependency(environment.tcds)

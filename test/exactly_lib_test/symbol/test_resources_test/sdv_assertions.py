@@ -8,7 +8,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data.concrete_strings import ConstantFragmentDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
-from exactly_lib.type_system.logic.program.program_value import ProgramValue
+from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.type_system.value_type import ValueType, DataValueType, TypeCategory, LogicValueType
 from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2
@@ -244,7 +244,7 @@ class _ProgramResolverTestImpl(LogicTypeSdv):
     def references(self) -> Sequence[SymbolReference]:
         return self.explicit_references
 
-    def resolve(self, symbols: SymbolTable) -> ProgramValue:
+    def resolve(self, symbols: SymbolTable) -> ProgramDdv:
         raise NotImplementedError('not used')
 
 

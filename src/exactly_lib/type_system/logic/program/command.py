@@ -6,19 +6,19 @@ from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.util.process_execution.command import Command, CommandDriver
 
 
-class CommandDriverValue(DirDependentValue[CommandDriver], ABC):
+class CommandDriverDdv(DirDependentValue[CommandDriver], ABC):
     pass
 
 
-class CommandValue(DirDependentValue[Command]):
+class CommandDdv(DirDependentValue[Command]):
     def __init__(self,
-                 command_driver: CommandDriverValue,
+                 command_driver: CommandDriverDdv,
                  arguments: ListDdv):
         self._command_driver = command_driver
         self._arguments = arguments
 
     @property
-    def command_driver(self) -> CommandDriverValue:
+    def command_driver(self) -> CommandDriverDdv:
         return self._command_driver
 
     @property

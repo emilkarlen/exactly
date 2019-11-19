@@ -11,7 +11,7 @@ from exactly_lib.test_case.validation import pre_or_post_validation
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.program.sdvs import accumulator
 from exactly_lib.test_case_utils.program.sdvs.accumulator import ProgramElementsSdvAccumulator
-from exactly_lib.type_system.logic.program.program_value import ProgramValue
+from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -44,12 +44,12 @@ class ProgramSdvForCommand(ProgramSdv):
     def validator(self) -> PreOrPostSdsValidator:
         return pre_or_post_validation.all_of(self._validators)
 
-    def resolve(self, symbols: SymbolTable) -> ProgramValue:
+    def resolve(self, symbols: SymbolTable) -> ProgramDdv:
         acc = self._accumulated_elements
         accumulated_command = self._command.new_with_additional_arguments(acc.arguments)
-        return ProgramValue(accumulated_command.resolve(symbols),
-                            acc.resolve_stdin_data(symbols),
-                            acc.resolve_transformations(symbols))
+        return ProgramDdv(accumulated_command.resolve(symbols),
+                          acc.resolve_stdin_data(symbols),
+                          acc.resolve_transformations(symbols))
 
     @property
     def _validators(self) -> Sequence[PreOrPostSdsValidator]:

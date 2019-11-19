@@ -14,7 +14,7 @@ from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSds
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.test_case_utils.program.sdvs import accumulator
 from exactly_lib.test_case_utils.program.sdvs.accumulator import ProgramElementsSdvAccumulator
-from exactly_lib.type_system.logic.program.program_value import ProgramValue
+from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -53,7 +53,7 @@ class ProgramSdvForSymbolReference(ProgramSdv):
             self._accumulated_elements.validator,
         ])
 
-    def resolve(self, symbols: SymbolTable) -> ProgramValue:
+    def resolve(self, symbols: SymbolTable) -> ProgramDdv:
         program_of_symbol = lookups.lookup_program(symbols, self._symbol_name)
         acc = self._accumulated_elements
         accumulated_program = program_of_symbol.new_accumulated(acc.stdin,
@@ -62,13 +62,13 @@ class ProgramSdvForSymbolReference(ProgramSdv):
                                                                 acc.validators)
         assert isinstance(accumulated_program, ProgramSdv)  # Type info for IDE
 
-        program_value = accumulated_program.resolve(symbols)
+        program_ddv = accumulated_program.resolve(symbols)
 
-        assert isinstance(program_value, ProgramValue)  # Type info for IDE
+        assert isinstance(program_ddv, ProgramDdv)  # Type info for IDE
 
-        return ProgramValue(program_value.command,
-                            program_value.stdin,
-                            program_value.transformation)
+        return ProgramDdv(program_ddv.command,
+                          program_ddv.stdin,
+                          program_ddv.transformation)
 
 
 def plain(symbol_name: str,

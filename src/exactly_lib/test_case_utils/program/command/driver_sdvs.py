@@ -6,8 +6,8 @@ from exactly_lib.symbol.logic.program.command_sdv import CommandDriverSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.program.validators import ExistingExecutableFileValidator
-from exactly_lib.type_system.logic.program import command_values
-from exactly_lib.type_system.logic.program.command_value import CommandDriverValue
+from exactly_lib.type_system.logic.program import commands
+from exactly_lib.type_system.logic.program.command import CommandDriverDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -25,8 +25,8 @@ class CommandDriverSdvForExecutableFile(CommandDriverSdv):
     def executable_file(self) -> PathSdv:
         return self._executable_file
 
-    def resolve(self, symbols: SymbolTable) -> CommandDriverValue:
-        return command_values.CommandDriverValueForExecutableFile(self._executable_file.resolve(symbols))
+    def resolve(self, symbols: SymbolTable) -> CommandDriverDdv:
+        return commands.CommandDriverDdvForExecutableFile(self._executable_file.resolve(symbols))
 
 
 class CommandDriverSdvForSystemProgram(CommandDriverSdv):
@@ -44,8 +44,8 @@ class CommandDriverSdvForSystemProgram(CommandDriverSdv):
     def program(self) -> StringSdv:
         return self._program
 
-    def resolve(self, symbols: SymbolTable) -> CommandDriverValue:
-        return command_values.CommandDriverValueForSystemProgram(self._program.resolve(symbols))
+    def resolve(self, symbols: SymbolTable) -> CommandDriverDdv:
+        return commands.CommandDriverDdvForSystemProgram(self._program.resolve(symbols))
 
 
 class CommandDriverSdvForShell(CommandDriverSdv):
@@ -59,5 +59,5 @@ class CommandDriverSdvForShell(CommandDriverSdv):
     def references(self) -> Sequence[SymbolReference]:
         return self._command_line.references
 
-    def resolve(self, symbols: SymbolTable) -> CommandDriverValue:
-        return command_values.CommandDriverValueForShell(self._command_line.resolve(symbols))
+    def resolve(self, symbols: SymbolTable) -> CommandDriverDdv:
+        return commands.CommandDriverDdvForShell(self._command_line.resolve(symbols))

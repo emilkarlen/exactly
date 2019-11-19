@@ -14,7 +14,7 @@ from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.test_case_utils.program.parse import parse_with_reference_to_program as sut
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.paths import simple_of_rel_option
-from exactly_lib.type_system.logic.program.program_value import Program
+from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref

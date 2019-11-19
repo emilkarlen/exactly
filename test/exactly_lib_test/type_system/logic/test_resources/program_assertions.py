@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.type_system.logic.program.program_value import Program
-from exactly_lib.type_system.logic.program.stdin_data_values import StdinData
+from exactly_lib.type_system.logic.program.program import Program
+from exactly_lib.type_system.logic.program.stdin_data import StdinData
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.process_execution.command import Command
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

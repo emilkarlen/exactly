@@ -27,7 +27,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
-from exactly_lib.type_system.logic.program.program_value import Program
+from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.description_tree import simple_textstruct_rendering as rendering
 from exactly_lib.util.description_tree.tree import Node

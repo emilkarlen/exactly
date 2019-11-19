@@ -12,7 +12,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case_utils.program.execution import store_result_in_instruction_tmp_dir as pgm_execution
 from exactly_lib.test_case_utils.program.parse import parse_program as sut
-from exactly_lib.type_system.logic.program.program_value import Program
+from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.util import file_utils
 from exactly_lib.util.process_execution import executable_factories
 from exactly_lib.util.process_execution.executable_factory import ExecutableFactory

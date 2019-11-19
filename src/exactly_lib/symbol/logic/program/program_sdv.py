@@ -9,12 +9,12 @@ from exactly_lib.symbol.sdv_with_validation import DirDepValueResolverWithValida
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
-from exactly_lib.type_system.logic.program.program_value import ProgramValue
+from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class ProgramSdv(LogicTypeSdv, DirDepValueResolverWithValidation[ProgramValue]):
+class ProgramSdv(LogicTypeSdv, DirDepValueResolverWithValidation[ProgramDdv]):
     @property
     def logic_value_type(self) -> LogicValueType:
         return LogicValueType.PROGRAM
@@ -31,7 +31,7 @@ class ProgramSdv(LogicTypeSdv, DirDepValueResolverWithValidation[ProgramValue]):
     def validator(self) -> PreOrPostSdsValidator:
         raise NotImplementedError('abstract method')
 
-    def resolve(self, symbols: SymbolTable) -> ProgramValue:
+    def resolve(self, symbols: SymbolTable) -> ProgramDdv:
         raise NotImplementedError('abstract method')
 
     def new_accumulated(self,

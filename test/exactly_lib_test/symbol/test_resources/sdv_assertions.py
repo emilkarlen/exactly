@@ -18,7 +18,7 @@ from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv
 from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcher
-from exactly_lib.type_system.logic.program.program_value import ProgramValue
+from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.type_system.value_type import TypeCategory, ValueType, LogicValueType, DataValueType
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
@@ -175,7 +175,7 @@ def matches_sdv_of_program(references: ValueAssertion[Sequence[SymbolReference]]
                            symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolDependentValue]:
     return matches_sdv(is_sdv_of_program_type(),
                        references,
-                       asrt.is_instance_with(ProgramValue, resolved_program_value),
+                       asrt.is_instance_with(ProgramDdv, resolved_program_value),
                        custom,
                        symbol_table_from_none_or_value(symbols))
 

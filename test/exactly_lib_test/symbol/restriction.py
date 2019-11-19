@@ -10,8 +10,8 @@ from exactly_lib.test_case_utils.program.sdvs.command_program_sdv import Program
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
 from exactly_lib.type_system.data.list_ddv import ListDdv
-from exactly_lib.type_system.logic.program.command_value import CommandValue
-from exactly_lib.type_system.logic.program.command_values import CommandDriverValueForShell
+from exactly_lib.type_system.logic.program.command import CommandDdv
+from exactly_lib.type_system.logic.program.commands import CommandDriverDdvForShell
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
@@ -113,8 +113,8 @@ class TestValueTypeRestriction(unittest.TestCase):
             ProgramSdvForCommand(
                 CommandSdv(
                     CommandDriverSdvForConstantTestImpl(
-                        CommandValue(
-                            CommandDriverValueForShell(string_ddv_of_single_string('the shell command line')),
+                        CommandDdv(
+                            CommandDriverDdvForShell(string_ddv_of_single_string('the shell command line')),
                             ListDdv.empty())),
                     ArgumentsSdv(arbitrary_list_sdv),
                 ),

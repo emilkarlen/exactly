@@ -1,7 +1,7 @@
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.type_system.logic.program.command_value import CommandValue
-from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue, StdinData
+from exactly_lib.type_system.logic.program.command import CommandDdv
+from exactly_lib.type_system.logic.program.stdin_data import StdinDataDdv, StdinData
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv
 from exactly_lib.util.process_execution.command import Command
 
@@ -26,21 +26,21 @@ class Program(tuple):
         return self[2]
 
 
-class ProgramValue(DirDependentValue[Program]):
+class ProgramDdv(DirDependentValue[Program]):
     def __init__(self,
-                 command: CommandValue,
-                 stdin: StdinDataValue,
+                 command: CommandDdv,
+                 stdin: StdinDataDdv,
                  transformation: StringTransformerDdv):
         self._command = command
         self._stdin = stdin
         self._transformation = transformation
 
     @property
-    def command(self) -> CommandValue:
+    def command(self) -> CommandDdv:
         return self._command
 
     @property
-    def stdin(self) -> StdinDataValue:
+    def stdin(self) -> StdinDataDdv:
         return self._stdin
 
     @property
