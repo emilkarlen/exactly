@@ -12,8 +12,9 @@ from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_s
     is_reference_to_symbol_in_expression
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.validation_cases import \
     failing_integer_validation_cases
-from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg, integration_check
-from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import main_result_is_success, \
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import main_result_is_success, \
     main_result_is_failure
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

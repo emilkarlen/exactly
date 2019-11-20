@@ -7,9 +7,10 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_sdvs
-from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg, integration_check
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import test_case_utils
-from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import Arrangement, Expectation
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser
@@ -79,7 +80,7 @@ class TestParseAndExecuteValidArguments(unittest.TestCase):
                     model = (line_number, case.line)
                     with self.subTest(name=case.name,
                                       expectation_type=expectation_type):
-                        _check_with_source_variants(
+                        integration_check.check_with_source_variants(
                             self,
                             matcher_arguments,
                             model,
@@ -123,7 +124,8 @@ class ValidationShouldFailWhenRegexIsInvalid(test_case_utils.TestWithNegationArg
 
             with self.subTest(expectation_type=maybe_not.expectation_type,
                               validation_case=regex_case.case_name):
-                self._check_with_source_variants(
+                integration_check.check_with_source_variants(
+                    self,
                     arguments=
                     Arguments(str(argument_w_opt_neg.get(maybe_not.expectation_type))),
                     model=
@@ -155,7 +157,8 @@ class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
     }))
 
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        self._check_with_source_variants(
+        integration_check.check_with_source_variants(
+            self,
             arguments=
             Arguments(str(self.argument_w_opt_neg.get(maybe_not.expectation_type))),
             model=

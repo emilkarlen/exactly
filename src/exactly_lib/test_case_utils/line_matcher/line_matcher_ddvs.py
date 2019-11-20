@@ -1,8 +1,7 @@
-from typing import Set, Callable, Optional, Sequence
+from typing import Callable, Sequence
 
 from exactly_lib.test_case.validation import pre_or_post_value_validation, pre_or_post_value_validators
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.line_matcher import line_matchers
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
@@ -14,13 +13,9 @@ class LineMatcherValueFromPrimitiveDdv(LineMatcherDdv):
     def __init__(self,
                  primitive_value: LineMatcher,
                  validator: PreOrPostSdsValueValidator =
-                 pre_or_post_value_validation.constant_success_validator(),
-                 resolving_dependencies: Optional[Set[DirectoryStructurePartition]] = None):
+                 pre_or_post_value_validation.constant_success_validator()):
         self._primitive_value = primitive_value
         self._validator = validator
-        self._resolving_dependencies = (set()
-                                        if resolving_dependencies is None
-                                        else resolving_dependencies)
 
     def structure(self) -> StructureRenderer:
         return self._primitive_value.structure()
