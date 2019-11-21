@@ -1,13 +1,15 @@
 import unittest
-from typing import Callable
+from typing import Callable, Sequence
 
+from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.string_matcher_assertion_part import \
     StringMatcherAssertionPart
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.test_case.os_services import new_default
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
-from exactly_lib.test_case_utils.line_matcher.sdvs import LineMatcherSdvConstant
+from exactly_lib.test_case.result import pfh
+from exactly_lib.test_case_utils.matcher.impls import sdv_components
+from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches as sut
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
@@ -22,7 +24,7 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
     PassOrFail, pfh_expectation_type_config
 from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing
 from exactly_lib_test.type_system.data.test_resources import described_path
-from exactly_lib_test.type_system.logic.test_resources.values import is_identical_to, LineMatcherFromPredicates
+from exactly_lib_test.type_system.logic.test_resources.values import is_identical_to, line_matcher_from_predicates
 
 
 def suite() -> unittest.TestSuite:
@@ -47,7 +49,7 @@ class TestCaseBase(unittest.TestCase):
             self,
             get_assertion_part_function: Callable[[ExpectationType, LineMatcherSdv], FileContentsAssertionPart],
             actual_file_contents: str,
-            matcher_cases: list):
+            matcher_cases: Sequence[Case]):
 
         environment = fake_post_sds_environment()
         checked_file_describer = FilePropertyDescriptorConstructorTestImpl()
@@ -66,7 +68,9 @@ class TestCaseBase(unittest.TestCase):
                                               environment.phase_logging.space_for_instruction(),
                                               IdentityStringTransformer(),
                                               dst_file_path_getter)
-                            matcher_sdv = LineMatcherSdvConstant(case.matcher)
+                            matcher_sdv = LineMatcherSdv(
+                                sdv_components.matcher_sdv_from_constant_primitive(case.matcher)
+                            )
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_sdv)
                             # ACT #
@@ -76,17 +80,19 @@ class TestCaseBase(unittest.TestCase):
                                 expectation_type).main_result(case.expected_result_for_positive_expectation)
                             pfh_assertion.apply_without_message(self, actual)
 
-    def _check_cases_for_no_lines(self,
-                                  get_assertion_part_function,
-                                  expected_result_when_positive_expectation: PassOrFail):
+    def _check_cases_for_no_lines(
+            self,
+            get_assertion_part_function:
+            Callable[[ExpectationType, LineMatcherSdv], AssertionPart[FileToCheck, pfh.PassOrFailOrHardError]],
+            expected_result_when_positive_expectation: PassOrFail):
         empty_file_contents = ''
         environment = fake_post_sds_environment()
         checked_file_describer = FilePropertyDescriptorConstructorTestImpl()
         os_services = new_default()
 
         matchers = [
-            ('unconditionally true', LineMatcherConstant(True)),
-            ('unconditionally false', LineMatcherConstant(False)),
+            ('unconditionally true', MatcherWithConstantResult(True)),
+            ('unconditionally false', MatcherWithConstantResult(False)),
         ]
         with destination_file_path_getter_that_gives_seq_of_unique_paths() as dst_file_path_getter:
             # This test is expected to not create files using the above object,
@@ -101,7 +107,9 @@ class TestCaseBase(unittest.TestCase):
                                               environment.phase_logging.space_for_instruction(),
                                               IdentityStringTransformer(),
                                               dst_file_path_getter)
-                            matcher_sdv = LineMatcherSdvConstant(matcher)
+                            matcher_sdv = LineMatcherSdv(
+                                sdv_components.matcher_sdv_from_constant_primitive(matcher)
+                            )
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_sdv)
                             # ACT #
@@ -122,13 +130,13 @@ class TestEveryLineMatches(TestCaseBase):
 
         matcher_cases = [
             Case('matches both lines',
-                 matcher=LineMatcherFromPredicates(lambda x: x in (1, 2),
-                                                   lambda x: x in ('a', 'b')),
+                 matcher=line_matcher_from_predicates(lambda x: x in (1, 2),
+                                                      lambda x: x in ('a', 'b')),
                  expected_result_for_positive_expectation=PassOrFail.PASS),
             Case(
                 'matches first line',
-                matcher=LineMatcherFromPredicates(lambda x: x == 1,
-                                                  lambda x: x in ('a', 'b')),
+                matcher=line_matcher_from_predicates(lambda x: x == 1,
+                                                     lambda x: x in ('a', 'b')),
                 expected_result_for_positive_expectation=PassOrFail.FAIL),
         ]
 

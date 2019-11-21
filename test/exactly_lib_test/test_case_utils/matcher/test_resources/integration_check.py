@@ -3,10 +3,12 @@ from typing import Optional, Sequence, TypeVar, Generic
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MatcherWTraceAndNegation, \
+    MatcherWTrace
+from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
@@ -59,21 +61,31 @@ MODEL = TypeVar('MODEL')
 def check(put: unittest.TestCase,
           source: ParseSource,
           model: MODEL,
-          parser: Parser[MatcherSdv[MODEL]],
+          parser: Parser[MatcherTypeSdv[MODEL]],
           arrangement: Arrangement,
+          expected_logic_value_type: LogicValueType,
+          expected_value_type: ValueType,
           expectation: Expectation):
-    _Checker(put, source, model, parser, arrangement, expectation).check()
+    _Checker(put, source, model, parser, arrangement,
+             expected_logic_value_type,
+             expected_value_type,
+             expectation).check()
 
 
 def check_with_source_variants(put: unittest.TestCase,
                                arguments: Arguments,
                                model: MODEL,
-                               parser: Parser[MatcherSdv[MODEL]],
+                               parser: Parser[MatcherTypeSdv[MODEL]],
                                arrangement: Arrangement,
+                               expected_logic_value_type: LogicValueType,
+                               expected_value_type: ValueType,
                                expectation: Expectation):
     for source in equivalent_source_variants__with_source_check__for_expression_parser(
             put, arguments):
-        check(put, source, model, parser, arrangement, expectation)
+        check(put, source, model, parser, arrangement,
+              expected_logic_value_type,
+              expected_value_type,
+              expectation)
 
 
 class _CheckIsDoneException(Exception):
@@ -85,14 +97,18 @@ class _Checker(Generic[MODEL]):
                  put: unittest.TestCase,
                  source: ParseSource,
                  model: MODEL,
-                 parser: Parser[MatcherSdv[MODEL]],
+                 parser: Parser[MatcherTypeSdv[MODEL]],
                  arrangement: Arrangement,
+                 expected_logic_value_type: LogicValueType,
+                 expected_value_type: ValueType,
                  expectation: Expectation):
         self.put = put
         self.source = source
         self.model = model
         self.parser = parser
         self.arrangement = arrangement
+        self.expected_logic_value_type = expected_logic_value_type
+        self.expected_value_type = expected_value_type
         self.expectation = expectation
         self.tcds = fake_tcds()
 
@@ -135,20 +151,26 @@ class _Checker(Generic[MODEL]):
 
         self._check_application(matcher)
 
-    def _parse(self) -> MatcherSdv[MODEL]:
+    def _parse(self) -> MatcherTypeSdv[MODEL]:
         sdv = self.parser.parse(self.source)
-        asrt.is_instance(MatcherSdv).apply_with_message(self.put,
-                                                        sdv,
-                                                        'SDV')
-        assert isinstance(sdv, MatcherSdv)
+        asrt.is_instance(MatcherTypeSdv).apply_with_message(self.put,
+                                                            sdv,
+                                                            'SDV')
+        assert isinstance(sdv, MatcherTypeSdv)
 
+        self.put.assertIs(self.expected_logic_value_type,
+                          sdv.logic_value_type,
+                          'logic value type')
+        self.put.assertIs(self.expected_value_type,
+                          sdv.value_type,
+                          'logic type')
         self.expectation.source.apply_with_message(self.put,
                                                    self.source,
                                                    'source after parse')
 
         return sdv
 
-    def _resolve_ddv(self, matcher_sdv: MatcherSdv[MODEL]) -> MatcherDdv[MODEL]:
+    def _resolve_ddv(self, matcher_sdv: MatcherTypeSdv[MODEL]) -> MatcherDdv[MODEL]:
         matcher_ddv = matcher_sdv.resolve(self.arrangement.symbols)
 
         asrt.is_instance(MatcherDdv).apply_with_message(self.put,
@@ -159,14 +181,14 @@ class _Checker(Generic[MODEL]):
 
         return matcher_ddv
 
-    def _resolve_primitive_value(self, matcher_ddv: MatcherDdv[MODEL]) -> MatcherWTraceAndNegation[MODEL]:
+    def _resolve_primitive_value(self, matcher_ddv: MatcherDdv[MODEL]) -> MatcherWTrace[MODEL]:
         ret_val = matcher_ddv.value_of_any_dependency(self.tcds)
 
-        asrt.is_instance(MatcherWTraceAndNegation).apply_with_message(self.put,
-                                                                      ret_val,
-                                                                      'primitive value')
+        asrt.is_instance(MatcherWTrace).apply_with_message(self.put,
+                                                           ret_val,
+                                                           'primitive value')
 
-        assert isinstance(ret_val, MatcherWTraceAndNegation)
+        assert isinstance(ret_val, MatcherWTrace)
 
         return ret_val
 

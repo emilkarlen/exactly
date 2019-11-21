@@ -15,17 +15,16 @@ from exactly_lib.type_system.logic.program.commands import CommandDriverDdvForSh
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
+from exactly_lib_test.symbol.test_resources import line_matcher
 from exactly_lib_test.symbol.test_resources.command_sdvs import CommandDriverSdvForConstantTestImpl
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.files_matcher import FilesMatcherSdvConstantTestImpl
-from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.type_system.logic.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
 from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant
-from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer, \
-    LineMatcherNotImplementedTestImpl
+from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer
 
 
 def suite() -> unittest.TestSuite:
@@ -95,7 +94,7 @@ class TestValueTypeRestriction(unittest.TestCase):
             path_sdvs.constant(paths.rel_sandbox(RelSdsOptionType.REL_ACT, paths.empty_path_part())),
 
         ValueType.LINE_MATCHER:
-            LineMatcherSdvConstantTestImpl(LineMatcherNotImplementedTestImpl()),
+            line_matcher.arbitrary_sdv(),
 
         ValueType.FILE_MATCHER:
             FileMatcherSdvConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),

@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolContext, \
-    line_matcher_from_primitive_value
+    sdv_from_primitive_value
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_validator import constant_validator
@@ -17,7 +17,7 @@ class ValidationCase:
         self._expectation = expectation
         self._symbol_context = LineMatcherSymbolContext(
             'line_matcher_symbol',
-            line_matcher_from_primitive_value(
+            sdv_from_primitive_value(
                 validator=constant_validator(actual)
             )
         )

@@ -9,7 +9,6 @@ from exactly_lib.test_case_utils.matcher.impls import parse_integer_matcher, pro
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterSdv
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib.util.logic_types import ExpectationType
-from . import delegated
 
 
 def parse_line_number(parser: TokenParser) -> LineMatcherSdv:
@@ -18,7 +17,7 @@ def parse_line_number(parser: TokenParser) -> LineMatcherSdv:
         ExpectationType.POSITIVE,
         parse_integer_matcher.validator_for_non_negative,
     )
-    return delegated.LineMatcherSdvDelegatedToMatcher(
+    return LineMatcherSdv(
         property_matcher.PropertyMatcherSdv(
             matcher,
             _operand_from_model_sdv(),

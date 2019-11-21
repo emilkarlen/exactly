@@ -17,7 +17,8 @@ from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv
-from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcher
+from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv
 from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.type_system.value_type import TypeCategory, ValueType, LogicValueType, DataValueType
@@ -103,9 +104,9 @@ def is_sdv_of_program_type() -> ValueAssertion[rs.SymbolDependentValue]:
 
 
 def matches_sdv_of_string(references: ValueAssertion[Sequence[SymbolReference]],
-                               resolved_value: ValueAssertion[StringDdv],
-                               custom: ValueAssertion[StringSdv] = asrt.anything_goes(),
-                               symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolDependentValue]:
+                          resolved_value: ValueAssertion[StringDdv],
+                          custom: ValueAssertion[StringSdv] = asrt.anything_goes(),
+                          symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolDependentValue]:
     return matches_sdv(is_sdv_of_string_type(),
                        references,
                        asrt.is_instance_with(StringDdv, resolved_value),
@@ -152,7 +153,7 @@ def matches_sdv_of_line_matcher(references: ValueAssertion[Sequence[SymbolRefere
                                 symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolDependentValue]:
     return matches_sdv(is_sdv_of_line_matcher_type(),
                        references,
-                       asrt.is_instance_with(LineMatcherDdv, resolved_value),
+                       asrt.is_instance_with(MatcherDdv, resolved_value),
                        custom,
                        symbol_table_from_none_or_value(symbols))
 
@@ -160,7 +161,7 @@ def matches_sdv_of_line_matcher(references: ValueAssertion[Sequence[SymbolRefere
 def matches_sdv_of_string_transformer(references: ValueAssertion[Sequence[SymbolReference]],
                                       resolved_value: ValueAssertion[StringTransformerDdv],
                                       custom: ValueAssertion[
-                                               StringTransformerSdv] = asrt.anything_goes(),
+                                          StringTransformerSdv] = asrt.anything_goes(),
                                       symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolDependentValue]:
     return matches_sdv(is_sdv_of_string_transformer_type(),
                        references,

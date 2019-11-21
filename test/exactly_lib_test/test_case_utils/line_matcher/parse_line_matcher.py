@@ -6,13 +6,13 @@ from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
-from exactly_lib.test_case_utils.line_matcher.sdvs import LineMatcherSdvConstant
+from exactly_lib.test_case_utils.line_matcher.line_matchers import line_matcher_constant
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
@@ -24,6 +24,7 @@ from exactly_lib_test.symbol.test_resources import sdv_assertions
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.ddv_assertions import ddv_matches_line_matcher
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.int_expr_matcher import \
     ComparisonMatcherForEquivalenceChecks
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
@@ -49,10 +50,12 @@ class Configuration(matcher_parse_check.Configuration[LineMatcherLine]):
         return is_line_matcher_reference_to(symbol_name)
 
     def sdv_of_constant_matcher(self, matcher: LineMatcher) -> SymbolDependentValue:
-        return LineMatcherSdvConstant(matcher)
+        return LineMatcherSdv(
+            matchers.sdv_from_primitive_value(matcher)
+        )
 
     def constant_matcher(self, result: bool) -> LineMatcher:
-        return LineMatcherConstant(result)
+        return line_matcher_constant(result)
 
     def arbitrary_model_that_should_not_be_touched(self) -> LineMatcherLine:
         return 1, 'arbitrary line'
@@ -105,11 +108,11 @@ class TestLineNumberParser(unittest.TestCase):
                                                                      69)
         expected_sdv = resolved_value_is_line_number_matcher(expected_integer_matcher,
                                                              [
-                                                                      model_of(60),
-                                                                      model_of(69),
-                                                                      model_of(72),
+                                                                 model_of(60),
+                                                                 model_of(69),
+                                                                 model_of(72),
 
-                                                                  ])
+                                                             ])
 
         text_on_following_line = 'text on following line'
 
@@ -163,11 +166,11 @@ class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase)
 
         expected_sdv = resolved_value_is_line_number_matcher(expected_integer_matcher,
                                                              [
-                                                                      model_of(69),
-                                                                      model_of(72),
-                                                                      model_of(80),
+                                                                 model_of(69),
+                                                                 model_of(72),
+                                                                 model_of(80),
 
-                                                                  ])
+                                                             ])
 
         # ACT & ASSERT #
         self._check(

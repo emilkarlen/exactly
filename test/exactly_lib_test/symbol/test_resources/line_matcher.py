@@ -1,117 +1,25 @@
-from typing import Sequence, Set, Optional
+from typing import Sequence
 
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
     constant_success_validator
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.line_matcher.line_matcher_ddvs import LineMatcherValueFromPrimitiveDdv
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherDdv, LineMatcherLine
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.test_case_utils.matcher.impls import sdv_components, constant, ddv_components
+from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherLine
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.line_matcher_base_class import LineMatcherTestImplBase
-from exactly_lib_test.util.render.test_resources import renderers
 
 
 def arbitrary_sdv() -> LineMatcherSdv:
-    return LineMatcherSdvConstantTestImpl(
-        LineMatcherConstantTestImpl(True)
+    return LineMatcherSdv(
+        sdv_components.matcher_sdv_from_constant_primitive(constant.MatcherWithConstantResult(True))
     )
-
-
-class LineMatcherConstantTestImpl(LineMatcherTestImplBase):
-    """Matcher with constant result."""
-
-    def __init__(self, result: bool):
-        super().__init__()
-        self._result = result
-
-    @property
-    def name(self) -> str:
-        return self.option_description
-
-    def _structure(self) -> StructureRenderer:
-        return renderers.structure_renderer_for_arbitrary_object(self)
-
-    @property
-    def option_description(self) -> str:
-        return 'any line' if self._result else 'no line'
-
-    @property
-    def result_constant(self) -> bool:
-        return self._result
-
-    def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
-        return self._new_tb().build_result(self._result)
-
-    def matches(self, line: LineMatcherLine) -> bool:
-        return self._result
-
-
-class LineMatcherDdvTestImpl(LineMatcherDdv):
-    def __init__(self,
-                 primitive_value: LineMatcher,
-                 validator: PreOrPostSdsValueValidator = constant_success_validator(),
-                 resolving_dependencies: Optional[Set[DirectoryStructurePartition]] = None):
-        self._primitive_value = primitive_value
-        self._validator = validator
-        self._resolving_dependencies = resolving_dependencies
-
-    def structure(self) -> StructureRenderer:
-        return self._primitive_value.structure()
-
-    @property
-    def validator(self) -> PreOrPostSdsValueValidator:
-        return self._validator
-
-    def value_of_any_dependency(self, tcds: Tcds) -> LineMatcher:
-        return self._primitive_value
-
-
-class LineMatcherSdvConstantTestImpl(LineMatcherSdv):
-    def __init__(self,
-                 resolved_value: LineMatcher,
-                 references: Sequence[SymbolReference] = ()):
-        self._resolved_value = resolved_value
-        self._references = list(references)
-
-    @property
-    def resolved_value(self) -> LineMatcher:
-        return self._resolved_value
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._references
-
-    def resolve(self, symbols: SymbolTable) -> LineMatcherDdv:
-        return LineMatcherDdvTestImpl(self._resolved_value)
-
-
-class LineMatcherSdvConstantValueTestImpl(LineMatcherSdv):
-    def __init__(self,
-                 resolved_value: LineMatcherDdv,
-                 references: Sequence[SymbolReference] = ()):
-        self._resolved_value = resolved_value
-        self._references = list(references)
-
-    @property
-    def resolved_value(self) -> LineMatcher:
-        return self._resolved_value
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._references
-
-    def resolve(self, symbols: SymbolTable) -> LineMatcherDdv:
-        return self._resolved_value
 
 
 IS_LINE_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.LINE_MATCHER)
@@ -131,32 +39,36 @@ def is_line_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
 
 
 def successful_matcher_with_validation(validator: PreOrPostSdsValueValidator):
-    return LineMatcherSdvConstantValueTestImpl(
-        LineMatcherDdvTestImpl(
-            LineMatcherConstantTestImpl(True),
-            validator
+    return LineMatcherSdv(
+        matchers.sdv_from_primitive_value(
+            matchers.MatcherWithConstantResult(True),
+            (),
+            validator,
         )
     )
 
 
-def line_matcher_from_primitive_value(resolved_value: LineMatcher = LineMatcherConstantTestImpl(True),
-                                      references: Sequence[SymbolReference] = (),
-                                      validator: PreOrPostSdsValueValidator = constant_success_validator(),
-                                      ) -> LineMatcherSdv:
-    return LineMatcherSdvConstantValueTestImpl(
-        LineMatcherDdvTestImpl(resolved_value,
-                               validator),
-        references=references,
+def sdv_from_primitive_value(
+        primitive_value: MatcherWTraceAndNegation[LineMatcherLine] = matchers.MatcherWithConstantResult(True),
+        references: Sequence[SymbolReference] = (),
+        validator: PreOrPostSdsValueValidator = constant_success_validator(),
+) -> LineMatcherSdv:
+    return LineMatcherSdv(
+        matchers.sdv_from_primitive_value(
+            primitive_value,
+            references,
+            validator,
+        )
     )
 
 
 def sdv_of_unconditionally_matching_matcher() -> LineMatcherSdv:
-    return LineMatcherSdvConstantTestImpl(LineMatcherConstantTestImpl(True))
+    return LineMatcherSdv(matchers.sdv_of_unconditionally_matching_matcher())
 
 
 def ddv_of_unconditionally_matching_matcher() -> LineMatcherDdv:
-    return LineMatcherValueFromPrimitiveDdv(
-        LineMatcherConstantTestImpl(True)
+    return ddv_components.MatcherDdvFromConstantPrimitive(
+        constant.MatcherWithConstantResult(False)
     )
 
 

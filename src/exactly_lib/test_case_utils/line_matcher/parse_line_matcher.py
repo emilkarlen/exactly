@@ -8,16 +8,17 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
-from exactly_lib.test_case_utils.line_matcher import line_matchers
-from exactly_lib.test_case_utils.line_matcher import sdvs
 from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
-from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs
+from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs, sdv_components, constant
+from exactly_lib.test_case_utils.matcher.impls.symbol_reference import MatcherReferenceSdv
 from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
-from .impl import delegated
 
-CONSTANT_TRUE_MATCHER_SDV = sdvs.LineMatcherSdvConstant(line_matchers.LineMatcherConstant(True))
+CONSTANT_TRUE_MATCHER_SDV = LineMatcherSdv(
+    sdv_components.matcher_sdv_from_constant_primitive(constant.MatcherWithConstantResult(True))
+)
 
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
@@ -110,19 +111,19 @@ _CONCEPT = grammar.Concept(
 
 
 def _mk_reference(name: str) -> LineMatcherSdv:
-    return sdvs.LineMatcherReferenceSdv(name)
+    return LineMatcherSdv(MatcherReferenceSdv(name, ValueType.LINE_MATCHER))
 
 
 def _mk_negation(operand: LineMatcherSdv) -> LineMatcherSdv:
-    return delegated.LineMatcherSdvDelegatedToMatcher(combinator_sdvs.Negation(operand))
+    return LineMatcherSdv(combinator_sdvs.Negation(operand))
 
 
 def _mk_conjunction(operands: Sequence[LineMatcherSdv]) -> LineMatcherSdv:
-    return delegated.LineMatcherSdvDelegatedToMatcher(combinator_sdvs.Conjunction(operands))
+    return LineMatcherSdv(combinator_sdvs.Conjunction(operands))
 
 
 def _mk_disjunction(operands: Sequence[LineMatcherSdv]) -> LineMatcherSdv:
-    return delegated.LineMatcherSdvDelegatedToMatcher(combinator_sdvs.Disjunction(operands))
+    return LineMatcherSdv(combinator_sdvs.Disjunction(operands))
 
 
 GRAMMAR = grammar.Grammar(

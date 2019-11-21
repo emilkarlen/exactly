@@ -1,8 +1,9 @@
 import unittest
+from abc import ABC
 from typing import List, Tuple
 
 from exactly_lib.definitions import expression
-from exactly_lib.type_system.logic.matcher_base_class import Matcher, MatcherWTrace, MatchingResult, T
+from exactly_lib.type_system.logic.matcher_base_class import Matcher, MatcherWTrace
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -11,64 +12,13 @@ from exactly_lib_test.type_system.trace.test_resources import trace_rendering_as
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 
-class MatcherThatRegistersModelArgument(Matcher):
-    def __init__(self, constant_result: bool):
-        self._constant_result = constant_result
-        self._registered_argument = None
-
-    @property
-    def name(self) -> str:
-        return str(type(self))
-
-    def matches(self, model: T) -> bool:
-        raise NotImplementedError('unsupported')
-
-    @property
-    def option_description(self) -> str:
-        raise NotImplementedError('unsupported')
-
-    def register_argument(self, argument):
-        self._registered_argument = argument
-
-    @property
-    def registered_argument(self):
-        return self._registered_argument
-
-
-class MatcherWTraceThatRegistersModelArgument(MatcherWTrace):
-    def __init__(self, constant_result: bool):
-        self._constant_result = constant_result
-        self._registered_argument = None
-
-    @property
-    def name(self) -> str:
-        return str(type(self)) + ': ' + str(self._constant_result)
-
-    @property
-    def option_description(self) -> str:
-        return str(type(self)) + ': ' + str(self._constant_result)
-
-    def register_argument(self, argument):
-        self._registered_argument = argument
-
-    @property
-    def registered_argument(self):
-        return self._registered_argument
-
-    def matches_w_trace(self, model) -> MatchingResult:
-        return self._new_tb().build_result(self.matches(model))
-
-    def matches(self, model) -> bool:
-        self.register_argument(model)
-        return self._constant_result
-
-
 class MatcherConfiguration:
     def matcher_with_constant_result(self,
                                      name: str,
                                      result: bool) -> Matcher:
         """
         :param name: The name of the matcher in the trace
+        :param result: Constant result
         """
         raise NotImplementedError('abstract method')
 
@@ -76,7 +26,8 @@ class MatcherConfiguration:
         raise NotImplementedError('abstract method')
 
     def matcher_that_registers_model_argument_and_returns_constant(self,
-                                                                   result: bool) -> MatcherThatRegistersModelArgument:
+                                                                   registry: List,
+                                                                   result: bool) -> Matcher:
         raise NotImplementedError('abstract method')
 
 
@@ -150,6 +101,68 @@ class TestCaseBase(unittest.TestCase):
                 expectation.apply_without_message(self,
                                                   actual_result)
 
+    def _check_model_argument_SHOULD_be_given_as_argument_to_both_matcher(self,
+                                                                          result_of_1st: bool,
+                                                                          result_of_2nd: bool):
+        # ARRANGE #
+        conf = self.configuration
+        model_that_should_be_registered = conf.irrelevant_model()
+        first__registry = []
+        first = conf.matcher_that_registers_model_argument_and_returns_constant(first__registry, result_of_1st)
+        second__registry = []
+        second = conf.matcher_that_registers_model_argument_and_returns_constant(second__registry, result_of_2nd)
+
+        matcher_to_check = self.new_combinator_to_check([first, second])
+
+        # ACT #
+
+        matcher_to_check.matches(model_that_should_be_registered)
+
+        # ASSERT #
+
+        expected_registered_models = asrt.matches_sequence([asrt.is_(model_that_should_be_registered)])
+
+        expected_registered_models.apply_with_message(self, first__registry,
+                                                      'first matcher should have received the argument')
+
+        expected_registered_models.apply_with_message(self, second__registry,
+                                                      'second matcher should have received the argument')
+
+    def _check_evaluation_SHOULD_be_lazy_so_that_only_first_operand_is_applied(self,
+                                                                               result_of_1st: bool,
+                                                                               result_of_2nd: bool):
+        # ARRANGE #
+        conf = self.configuration
+        model_that_should_be_registered = conf.irrelevant_model()
+        first__registry = []
+        first = conf.matcher_that_registers_model_argument_and_returns_constant(first__registry, result_of_1st)
+        second__registry = []
+        second = conf.matcher_that_registers_model_argument_and_returns_constant(second__registry, result_of_2nd)
+
+        matcher_to_check = self.new_combinator_to_check([first, second])
+
+        # ACT #
+
+        matcher_to_check.matches(model_that_should_be_registered)
+
+        # ASSERT #
+
+        expected_registered_models_of_applied_operand = asrt.matches_sequence(
+            [asrt.is_(model_that_should_be_registered)])
+        expected_registered_models_of_non_applied_operand = asrt.is_empty_sequence
+
+        expected_registered_models_of_applied_operand.apply_with_message(
+            self,
+            first__registry,
+            'first matcher should have received the argument',
+        )
+
+        expected_registered_models_of_non_applied_operand.apply_with_message(
+            self,
+            second__registry,
+            'second matcher should not have been invoked',
+        )
+
     def _check_case(self, case: Case):
         self._check(case.name,
                     case.constructor_argument,
@@ -204,7 +217,7 @@ class TestCaseBase(unittest.TestCase):
         )
 
 
-class TestAndBase(TestCaseBase):
+class TestAndBase(TestCaseBase, ABC):
     @property
     def trace_operator_name(self) -> str:
         return expression.AND_OPERATOR_NAME
@@ -269,30 +282,14 @@ class TestAndBase(TestCaseBase):
         for case in cases:
             self._check_case(case)
 
-    def test_model_argument_SHOULD_be_given_as_argument_to_every_sub_matcher(self):
-        # ARRANGE #
-        conf = self.configuration
-        model_that_should_be_registered = conf.irrelevant_model()
-        first = conf.matcher_that_registers_model_argument_and_returns_constant(True)
-        second = conf.matcher_that_registers_model_argument_and_returns_constant(True)
+    def test_model_argument_SHOULD_be_given_as_argument_to_every_operand(self):
+        self._check_model_argument_SHOULD_be_given_as_argument_to_both_matcher(True, True)
 
-        matcher_to_check = self.new_combinator_to_check([first, second])
-
-        # ACT #
-
-        matcher_to_check.matches(model_that_should_be_registered)
-
-        # ASSERT #
-
-        self.assertIs(model_that_should_be_registered,
-                      first.registered_argument,
-                      'first matcher should have received the argument')
-        self.assertIs(model_that_should_be_registered,
-                      second.registered_argument,
-                      'second matcher should have received the argument')
+    def test_evaluation_SHOULD_be_lazy(self):
+        self._check_evaluation_SHOULD_be_lazy_so_that_only_first_operand_is_applied(False, True)
 
 
-class TestOrBase(TestCaseBase):
+class TestOrBase(TestCaseBase, ABC):
     @property
     def trace_operator_name(self) -> str:
         return expression.OR_OPERATOR_NAME
@@ -354,27 +351,11 @@ class TestOrBase(TestCaseBase):
         for case in cases:
             self._check_case(case)
 
-    def test_model_argument_SHOULD_be_given_as_argument_to_every_sub_matcher(self):
-        # ARRANGE #
-        conf = self.configuration
-        model_that_should_be_registered = conf.irrelevant_model()
-        first = conf.matcher_that_registers_model_argument_and_returns_constant(False)
-        second = conf.matcher_that_registers_model_argument_and_returns_constant(False)
+    def test_model_argument_SHOULD_be_given_as_argument_to_every_operand(self):
+        self._check_model_argument_SHOULD_be_given_as_argument_to_both_matcher(False, False)
 
-        matcher_to_check = self.new_combinator_to_check([first, second])
-
-        # ACT #
-
-        matcher_to_check.matches(model_that_should_be_registered)
-
-        # ASSERT #
-
-        self.assertIs(model_that_should_be_registered,
-                      first.registered_argument,
-                      'first matcher should have received the argument')
-        self.assertIs(model_that_should_be_registered,
-                      second.registered_argument,
-                      'second matcher should have received the argument')
+    def test_evaluation_SHOULD_be_lazy(self):
+        self._check_evaluation_SHOULD_be_lazy_so_that_only_first_operand_is_applied(True, False)
 
 
 class TestNotBase(TestCaseBase):
@@ -398,11 +379,12 @@ class TestNotBase(TestCaseBase):
         for case in cases:
             self._check_case(case)
 
-    def test_model_argument_SHOULD_be_given_as_argument_to_every_sub_matcher(self):
+    def test_model_argument_SHOULD_be_given_as_argument_to_every_operand(self):
         # ARRANGE #
         conf = self.configuration
         model_that_should_be_registered = conf.irrelevant_model()
-        sub_matcher = conf.matcher_that_registers_model_argument_and_returns_constant(False)
+        operand_model_registry = []
+        sub_matcher = conf.matcher_that_registers_model_argument_and_returns_constant(operand_model_registry, False)
 
         matcher_to_check = self.new_combinator_to_check(sub_matcher)
 
@@ -411,10 +393,10 @@ class TestNotBase(TestCaseBase):
         matcher_to_check.matches(model_that_should_be_registered)
 
         # ASSERT #
+        expected_registered_models = asrt.matches_sequence([asrt.is_(model_that_should_be_registered)])
 
-        self.assertIs(model_that_should_be_registered,
-                      sub_matcher.registered_argument,
-                      'sub_matcher matcher should have received the argument')
+        expected_registered_models.apply_with_message(self, operand_model_registry,
+                                                      'operand matcher should have received the argument')
 
 
 def child_1_to_n(child_results: List[bool]) -> List[MatcherNameAndResult]:

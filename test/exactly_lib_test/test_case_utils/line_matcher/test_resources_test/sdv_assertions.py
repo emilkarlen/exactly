@@ -1,13 +1,12 @@
 import unittest
 
 from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
-from exactly_lib.test_case_utils.line_matcher.sdvs import LineMatcherSdvConstant
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.test_resources import line_matcher
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSdvConstantTestImpl
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import sdv_assertions as sut
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -31,7 +30,7 @@ class TestResolvedValueMatchesLineMatcher(unittest.TestCase):
                          )),
 
         ]
-        sdv = LineMatcherSdvConstant(LineMatcherConstant(False))
+        sdv = line_matcher.arbitrary_sdv()
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_to_check = sut.resolved_ddv_matches_line_matcher(asrt.anything_goes(),
@@ -64,13 +63,13 @@ class TestResolvedValueMatchesLineMatcher(unittest.TestCase):
         # ARRANGE #
         actual_reference = data_symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
-        actual_sdv = LineMatcherSdvConstantTestImpl(
-            LineMatcherConstant(False),
+        actual_sdv = line_matcher.sdv_from_primitive_value(
+            matchers.MatcherWithConstantResult(False),
             references=actual_references)
         assertion_to_check = sut.resolved_ddv_matches_line_matcher(asrt.anything_goes(),
                                                                    references=asrt.matches_sequence([
-                                                                         asrt.is_(actual_reference)
-                                                                     ]),
+                                                                       asrt.is_(actual_reference)
+                                                                   ]),
                                                                    )
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, actual_sdv)
@@ -79,8 +78,8 @@ class TestResolvedValueMatchesLineMatcher(unittest.TestCase):
         # ARRANGE #
         actual_reference = data_symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
-        actual_sdv = LineMatcherSdvConstantTestImpl(
-            LineMatcherConstant(False),
+        actual_sdv = line_matcher.sdv_from_primitive_value(
+            matchers.MatcherWithConstantResult(False),
             references=actual_references)
 
         cases = [
@@ -101,7 +100,7 @@ class TestResolvedValueMatchesLineMatcher(unittest.TestCase):
                 assert_that_assertion_fails(assertion_to_check, actual_sdv)
 
 
-ARBITRARY_LINE_MATCHER_SDV = LineMatcherSdvConstantTestImpl(LineMatcherConstant(False), [])
+ARBITRARY_LINE_MATCHER_SDV = line_matcher.sdv_from_primitive_value(matchers.MatcherWithConstantResult(False), [])
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

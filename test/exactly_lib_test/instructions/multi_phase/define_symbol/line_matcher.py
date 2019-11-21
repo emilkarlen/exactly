@@ -5,8 +5,7 @@ from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
-from exactly_lib.test_case_utils.line_matcher.sdvs import LineMatcherSdvConstant
+from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources import \
@@ -61,7 +60,7 @@ class TestSuccessfulScenarios(TestCaseBase):
 
         # EXPECTATION #
 
-        expected_equivalent = LineMatcherConstant(True)
+        expected_equivalent = constant.MatcherWithConstantResult(True)
         models_for_equivalence_check = [
             asrt_matcher.ModelInfo((1, '')),
             asrt_matcher.ModelInfo((1, '  ')),
@@ -105,8 +104,9 @@ class TestSuccessfulScenarios(TestCaseBase):
             asrt_matcher.ModelInfo((1, 'no match')),
         ]
 
-        symbol = NameAndValue('the_symbol_name',
-                              LineMatcherConstant(True))
+        symbol = NameAndValue(
+            'the_symbol_name',
+            parse_line_matcher.CONSTANT_TRUE_MATCHER_SDV)
 
         regex_matcher_syntax = argument_syntax.syntax_for_regex_matcher(regex_str)
 
@@ -126,7 +126,7 @@ class TestSuccessfulScenarios(TestCaseBase):
 
         # EXPECTATION #
 
-        symbol_table = SymbolTable({symbol.name: container(LineMatcherSdvConstant(symbol.value)), })
+        symbol_table = SymbolTable({symbol.name: container(symbol.value), })
 
         expected_matcher_sdv = parse_line_matcher.parser().parse(remaining_source(matcher_argument))
 

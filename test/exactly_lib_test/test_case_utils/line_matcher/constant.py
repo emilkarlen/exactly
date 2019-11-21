@@ -41,17 +41,11 @@ class TestConstant(unittest.TestCase):
         for case in cases:
             constant_result, line, expected_result = case.value
             with self.subTest(case_name=case.name):
-                matcher = sut.LineMatcherConstant(constant_result)
+                matcher = sut.line_matcher_constant(constant_result)
                 # ACT #
-                actual_result_constant = matcher.result_constant
-
                 actual_result = matcher.matches(line)
 
                 # ASSERT #
-
-                self.assertEqual(constant_result,
-                                 actual_result_constant,
-                                 'result constant')
 
                 self.assertEqual(expected_result,
                                  actual_result,

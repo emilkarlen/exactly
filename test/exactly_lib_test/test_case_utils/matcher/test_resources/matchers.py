@@ -1,5 +1,6 @@
-from typing import TypeVar, Generic, Sequence
+from typing import TypeVar, Generic, Sequence, Optional, List
 
+from exactly_lib.definitions.primitives import boolean
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import pre_or_post_value_validation
@@ -7,7 +8,10 @@ from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrP
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation
+from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MatchingResult, \
+    Failure
+from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
 
 MODEL = TypeVar('MODEL')
@@ -72,3 +76,73 @@ class MatcherSdvOfConstantDdvTestImpl(Generic[MODEL], MatcherSdv[MODEL]):
 
     def resolve(self, symbols: SymbolTable) -> MatcherDdv[MODEL]:
         return self._resolved_value
+
+
+class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
+    def __init__(self,
+                 name: str,
+                 result: bool,
+                 ):
+        self._name = name
+
+        self._matching_result = MatchingResult(
+            result,
+            renderers.Constant(
+                tree.Node(name, result,
+                          (tree.StringDetail(boolean.BOOLEANS[result]),),
+                          ())
+            ),
+        )
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def option_description(self) -> str:
+        return self.name
+
+    @property
+    def negation(self) -> 'MatcherWithConstantResult[MODEL]':
+        return MatcherWithConstantResult(not self._matching_result.value)
+
+    def matches_w_trace(self, model: MODEL) -> MatchingResult:
+        return self._matching_result
+
+    def matches_w_failure(self, model: MODEL) -> Optional[Failure[MODEL]]:
+        raise NotImplementedError('deprecated')
+
+    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
+        raise NotImplementedError('deprecated')
+
+
+class MatcherThatRegistersModelArgument(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
+    def __init__(self,
+                 registry: List[MODEL],
+                 constant_result: bool):
+        self._registry = registry
+        self._constant_result = constant_result
+
+    @property
+    def name(self) -> str:
+        return str(type(self))
+
+    @property
+    def option_description(self) -> str:
+        raise NotImplementedError('this method should not be used')
+
+    @property
+    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
+        return MatcherThatRegistersModelArgument(self._registry, not self._constant_result)
+
+    def matches(self, model: MODEL) -> bool:
+        self._registry.append(model)
+        return self._constant_result
+
+    def matches_w_trace(self, model: MODEL) -> MatchingResult:
+        self._registry.append(model)
+        return MatchingResult(self._constant_result,
+                              renderers.Constant(tree.Node(self.name,
+                                                           self._constant_result,
+                                                           (),
+                                                           ())))

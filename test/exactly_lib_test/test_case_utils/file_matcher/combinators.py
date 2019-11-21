@@ -1,9 +1,10 @@
 import pathlib
 import unittest
+from typing import List
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib.test_case_utils.file_matcher.impl import combinators
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as models
 from exactly_lib_test.test_case_utils.test_resources import matcher_combinators_check
@@ -24,13 +25,13 @@ class FileMatcherConfiguration(matcher_combinators_check.MatcherConfiguration):
 
     def matcher_with_constant_result(self,
                                      name: str,
-                                     result: bool):
+                                     result: bool) -> FileMatcher:
         return FileMatcherConstantWithName(name, result)
 
-    def matcher_that_registers_model_argument_and_returns_constant(
-            self, result: bool
-    ) -> matcher_combinators_check.MatcherThatRegistersModelArgument:
-        return FileMatcherThatRegistersModelArgument(result)
+    def matcher_that_registers_model_argument_and_returns_constant(self,
+                                                                   registry: List,
+                                                                   result: bool) -> FileMatcher:
+        return FileMatcherThatRegistersModelArgument(registry, result)
 
 
 class TestAnd(matcher_combinators_check.TestAndBase):
@@ -66,11 +67,13 @@ class TestNot(matcher_combinators_check.TestNotBase):
         return combinators.FileMatcherNot(constructor_argument)
 
 
-class FileMatcherThatRegistersModelArgument(sut.FileMatcherImplBase,
-                                            matcher_combinators_check.MatcherThatRegistersModelArgument):
-    def __init__(self, constant_result: bool):
+class FileMatcherThatRegistersModelArgument(sut.FileMatcherImplBase):
+    def __init__(self,
+                 registry: List[FileMatcherModel],
+                 constant_result: bool):
         sut.FileMatcherImplBase.__init__(self)
-        matcher_combinators_check.MatcherThatRegistersModelArgument.__init__(self, constant_result)
+        self._registry = registry
+        self._constant_result = constant_result
 
     @property
     def name(self) -> str:
@@ -81,9 +84,9 @@ class FileMatcherThatRegistersModelArgument(sut.FileMatcherImplBase,
         raise NotImplementedError('this method should not be used')
 
     def matches(self, model: FileMatcherModel) -> bool:
-        self.register_argument(model)
+        self._registry.append(model)
         return self._constant_result
 
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
-        self.register_argument(model)
+        self._registry.append(model)
         return self._new_tb().build_result(self._constant_result)

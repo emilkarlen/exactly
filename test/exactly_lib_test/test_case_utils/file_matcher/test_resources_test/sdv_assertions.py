@@ -2,11 +2,9 @@ import unittest
 
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
 from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
-from exactly_lib.test_case_utils.line_matcher.sdvs import LineMatcherSdvConstant
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, string_sdvs
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSdvConstantTestImpl
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import sdv_assertions as sut
@@ -32,9 +30,7 @@ class TestResolvedValueMatchesFileMatcher(unittest.TestCase):
                          )),
 
         ]
-        actual = LineMatcherConstant(False)
-
-        sdv_of_actual = LineMatcherSdvConstant(actual)
+        sdv_of_actual = string_sdvs.arbitrary_sdv()
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_equals_expected = sut.resolved_ddv_matches_file_matcher(asrt.fail('unconditional'),
@@ -69,8 +65,8 @@ class TestResolvedValueMatchesFileMatcher(unittest.TestCase):
         sdv = fake(references=actual_references)
         assertion_to_check = sut.resolved_ddv_matches_file_matcher(asrt.anything_goes(),
                                                                    references=asrt.matches_sequence([
-                                                                         asrt.is_(actual_reference)
-                                                                     ]),
+                                                                       asrt.is_(actual_reference)
+                                                                   ]),
                                                                    )
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, sdv)
