@@ -9,9 +9,9 @@ from exactly_lib.symbol.logic.string_transformers import StringTransformerSequen
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.sdv_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, \
-    PreOrPostSdsValidatorFromValueValidator
+from exactly_lib.test_case.validation import sdv_validation
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator, \
+    SdvValidatorFromDdvValidator
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.type_system.logic.program.stdin_data import StdinDataDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
@@ -27,7 +27,7 @@ class ProgramElementsSdvAccumulator(ObjectWithSymbolReferencesAndValidation):
                  stdin: StdinDataSdv,
                  arguments: ArgumentsSdv,
                  transformations: Sequence[StringTransformerSdv],
-                 validators: Sequence[PreOrPostSdsValidator]):
+                 validators: Sequence[SdvValidator]):
         self.stdin = stdin
         self.arguments = arguments
         self.transformations = transformations
@@ -37,7 +37,7 @@ class ProgramElementsSdvAccumulator(ObjectWithSymbolReferencesAndValidation):
                         additional_stdin: StdinDataSdv,
                         additional_arguments: ArgumentsSdv,
                         additional_transformations: Sequence[StringTransformerSdv],
-                        additional_validation: Sequence[PreOrPostSdsValidator],
+                        additional_validation: Sequence[SdvValidator],
                         ) -> 'ProgramElementsSdvAccumulator':
         """Creates a new accumulated instance."""
         return ProgramElementsSdvAccumulator(self.stdin.new_accumulated(additional_stdin),
@@ -51,8 +51,8 @@ class ProgramElementsSdvAccumulator(ObjectWithSymbolReferencesAndValidation):
         return references_from_objects_with_symbol_references(objects_with_refs)
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return pre_or_post_validation.all_of(self.validators)
+    def validator(self) -> SdvValidator:
+        return sdv_validation.all_of(self.validators)
 
     def resolve_stdin_data(self, symbols: SymbolTable) -> StdinDataDdv:
         return self.stdin.resolve_value(symbols)
@@ -62,9 +62,9 @@ class ProgramElementsSdvAccumulator(ObjectWithSymbolReferencesAndValidation):
 
     @staticmethod
     def _validators_of_transformers(transformations: Sequence[StringTransformerSdv]
-                                    ) -> List[PreOrPostSdsValidator]:
+                                    ) -> List[SdvValidator]:
         return [
-            PreOrPostSdsValidatorFromValueValidator(lambda symbols: transformation.resolve(symbols).validator())
+            SdvValidatorFromDdvValidator(lambda symbols: transformation.resolve(symbols).validator())
             for transformation in transformations
         ]
 
@@ -76,7 +76,7 @@ def empty() -> ProgramElementsSdvAccumulator:
                                          ())
 
 
-def new_with_validators(validators: Sequence[PreOrPostSdsValidator]) -> ProgramElementsSdvAccumulator:
+def new_with_validators(validators: Sequence[SdvValidator]) -> ProgramElementsSdvAccumulator:
     return ProgramElementsSdvAccumulator(stdin_data_sdv.no_stdin(),
                                          arguments_sdvs.empty(),
                                          (),
@@ -84,7 +84,7 @@ def new_with_validators(validators: Sequence[PreOrPostSdsValidator]) -> ProgramE
 
 
 def new_with_arguments_and_validators(arguments: ListSdv,
-                                      validators: Sequence[PreOrPostSdsValidator]) -> ProgramElementsSdvAccumulator:
+                                      validators: Sequence[SdvValidator]) -> ProgramElementsSdvAccumulator:
     return ProgramElementsSdvAccumulator(stdin_data_sdv.no_stdin(),
                                          arguments_sdvs.new_without_validation(arguments),
                                          (),

@@ -3,7 +3,7 @@ from typing import Sequence, Optional
 from exactly_lib.definitions import expression
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -63,7 +63,7 @@ class _NegationMatcherSdv(FilesMatcherSdv):
     def references(self) -> Sequence[SymbolReference]:
         return self._matcher_to_negate.references
 
-    def validator(self) -> PreOrPostSdsValidator:
+    def validator(self) -> SdvValidator:
         return self._matcher_to_negate.validator()
 
     def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:

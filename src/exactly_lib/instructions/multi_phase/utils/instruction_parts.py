@@ -7,7 +7,7 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.result import pfh, sh
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 
 
 class MainStepExecutor:
@@ -44,13 +44,13 @@ class InstructionParts(tuple):
     """
 
     def __new__(cls,
-                validator: PreOrPostSdsValidator,
+                validator: SdvValidator,
                 executor: MainStepExecutor,
                 symbol_usages: tuple = ()):
         return tuple.__new__(cls, (validator, executor, list(symbol_usages)))
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
+    def validator(self) -> SdvValidator:
         return self[0]
 
     @property

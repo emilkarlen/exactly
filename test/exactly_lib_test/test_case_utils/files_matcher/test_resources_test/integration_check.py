@@ -11,8 +11,8 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironment
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import sdv_validation
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
@@ -283,7 +283,7 @@ class TestFailingExpectations(TestCaseBase):
 def _files_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> FilesMatcherSdv:
     return FilesMatcherSdvConstantTestImpl(
         True,
-        validator=_ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation()
+        validator=_ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsSdvValidation()
     )
 
 
@@ -386,7 +386,7 @@ class _FilesMatcherThatReportsHardError(FilesMatcher):
         )
 
 
-class _ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrPostSdsValidator):
+class _ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsSdvValidation(SdvValidator):
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
         return None
 
@@ -397,7 +397,7 @@ class _ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOr
 
 def parser_for_constant(resolved_value: bool,
                         references: Sequence[SymbolReference] = (),
-                        validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()
+                        validator: SdvValidator = sdv_validation.ConstantSuccessSdvValidator()
                         ) -> Parser[FilesMatcherSdv]:
     return ConstantParser(
         FilesMatcherSdvConstantTestImpl(
@@ -422,9 +422,9 @@ class _FilesMatcherSdvThatAssertsThatSymbolsAreAsExpected(FilesMatcherSdv):
     def references(self) -> List[SymbolReference]:
         return []
 
-    def validator(self) -> PreOrPostSdsValidator:
-        return ValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(self._put,
-                                                                         self._expectation)
+    def validator(self) -> SdvValidator:
+        return SdvValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(self._put,
+                                                                            self._expectation)
 
     def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
         self._expectation.apply_with_message(self._put, symbols, 'symbols given to resolve')
@@ -432,7 +432,7 @@ class _FilesMatcherSdvThatAssertsThatSymbolsAreAsExpected(FilesMatcherSdv):
         return files_matcher.value_with_result(True)
 
 
-class ValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(PreOrPostSdsValidator):
+class SdvValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(SdvValidator):
     def __init__(self,
                  put: unittest.TestCase,
                  expectation: ValueAssertion[SymbolTable]):
@@ -452,7 +452,7 @@ class ValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(PreOrPostSdsVali
         return None
 
 
-class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrPostSdsValidator):
+class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsSdvValidation(SdvValidator):
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
         return None
 

@@ -3,9 +3,9 @@ from typing import Optional, List
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import pre_or_post_validation
+from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -64,8 +64,8 @@ class StringMatcherSdvDelegatedToMatcher(StringMatcherSdv):
         return list(self._delegated.references)
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return pre_or_post_validation.PreOrPostSdsValidatorFromValueValidator(self._value_validator)
+    def validator(self) -> SdvValidator:
+        return sdv_validation.SdvValidatorFromDdvValidator(self._value_validator)
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
         return StringMatcherDdvDelegatedToMatcher(self._delegated.resolve(symbols))

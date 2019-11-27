@@ -5,7 +5,7 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator, ConstantSuccessSdvValidator
 
 
 class MainStepExecutorEmbryo:
@@ -40,8 +40,8 @@ class InstructionEmbryo(MainStepExecutorEmbryo):
         return []
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return ConstantSuccessValidator()
+    def validator(self) -> SdvValidator:
+        return ConstantSuccessSdvValidator()
 
 
 class InstructionEmbryoParser:

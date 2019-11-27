@@ -7,8 +7,8 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.sdv_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.utils import DirDepValueResolver
-from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import sdv_validation
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.type_system.logic.program.command import CommandDdv, CommandDriverDdv
 from exactly_lib.util.process_execution.command import Command
@@ -21,11 +21,11 @@ class CommandDriverSdv(DirDepValueResolver[CommandDriverDdv]):
     and supplies a validator of the ingredients involved.
     """
 
-    def __init__(self, validators: Sequence[PreOrPostSdsValidator] = ()):
+    def __init__(self, validators: Sequence[SdvValidator] = ()):
         self._validators = validators
 
     @property
-    def validators(self) -> Sequence[PreOrPostSdsValidator]:
+    def validators(self) -> Sequence[SdvValidator]:
         return self._validators
 
     def resolve(self, symbols: SymbolTable) -> CommandDriverDdv:
@@ -72,11 +72,11 @@ class CommandSdv(DirDepValueResolverWithValidation[CommandDdv]):
         return self.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return pre_or_post_validation.all_of(self.validators)
+    def validator(self) -> SdvValidator:
+        return sdv_validation.all_of(self.validators)
 
     @property
-    def validators(self) -> Sequence[PreOrPostSdsValidator]:
+    def validators(self) -> Sequence[SdvValidator]:
         return tuple(self._driver.validators) + tuple(self._arguments.validators)
 
     @property

@@ -4,13 +4,13 @@ from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 
 
 class ArgumentsSdv(ObjectWithTypedSymbolReferences):
     def __init__(self,
                  arguments: ListSdv,
-                 validators: Sequence[PreOrPostSdsValidator] = ()):
+                 validators: Sequence[SdvValidator] = ()):
         self._arguments = arguments
         self._validators = validators
 
@@ -25,7 +25,7 @@ class ArgumentsSdv(ObjectWithTypedSymbolReferences):
         return self._arguments
 
     @property
-    def validators(self) -> Sequence[PreOrPostSdsValidator]:
+    def validators(self) -> Sequence[SdvValidator]:
         return self._validators
 
     @property

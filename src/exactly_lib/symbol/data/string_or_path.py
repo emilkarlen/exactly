@@ -4,8 +4,8 @@ from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.utils import DirDepValueResolver
-from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import sdv_validation
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_utils.file_properties import FileType, must_exist_as
 from exactly_lib.type_system.data.string_or_path_ddvs import StringOrPathDdv, SourceType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -70,9 +70,9 @@ class StringOrPathSdv(DirDepValueResolver[StringOrPathDdv]):
     def validator__file_must_exist_as(self,
                                       file_type: FileType,
                                       follow_symlinks: bool = True
-                                      ) -> PreOrPostSdsValidator:
+                                      ) -> SdvValidator:
         if not self.is_path:
-            return pre_or_post_validation.ConstantSuccessValidator()
+            return sdv_validation.ConstantSuccessSdvValidator()
         from exactly_lib.test_case_utils.path_check import PathCheck
         from exactly_lib.test_case_utils.path_check import PathCheckValidator
         frc = PathCheck(self.path_sdv,

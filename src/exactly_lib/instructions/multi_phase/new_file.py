@@ -33,8 +33,8 @@ from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
     InstructionSourceInfo
-from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import sdv_validation
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
@@ -101,8 +101,8 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
                  path_to_create: PathSdv,
                  file_maker: FileMaker):
         self._path_to_create = path_to_create
-        self._validator = pre_or_post_validation.all_of([
-            _DstFileNameValidator(path_to_create),
+        self._validator = sdv_validation.all_of([
+            _DstFileNameSdvValidator(path_to_create),
             file_maker.validator,
         ])
         self._file_maker = file_maker
@@ -112,7 +112,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
         return tuple(self._path_to_create.references) + tuple(self._file_maker.symbol_references)
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
+    def validator(self) -> SdvValidator:
         return self._validator
 
     def main(self,
@@ -152,7 +152,7 @@ class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo):
             return TheInstructionEmbryo(path_to_create, file_maker)
 
 
-class _DstFileNameValidator(PreOrPostSdsValidator):
+class _DstFileNameSdvValidator(SdvValidator):
     def __init__(self, path_to_create: PathSdv):
         self._path_to_create = path_to_create
 

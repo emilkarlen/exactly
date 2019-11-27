@@ -8,8 +8,8 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
-from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import sdv_validation
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers
 from exactly_lib.test_case_utils.err_msg2 import path_rendering, header_rendering
@@ -83,8 +83,8 @@ class ConstructorForPath(ComparisonActualFileConstructor):
         return self._path.references
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return pre_or_post_validation.ConstantSuccessValidator()
+    def validator(self) -> SdvValidator:
+        return sdv_validation.ConstantSuccessSdvValidator()
 
     def construct(self,
                   source_info: InstructionSourceInfo,

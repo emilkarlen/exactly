@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
@@ -52,7 +52,7 @@ def fails_post_sds() -> Expectation:
 
 
 def assert_with_files(arrangement: Arrangement,
-                      expectation: Expectation) -> ValueAssertion[PreOrPostSdsValidator]:
+                      expectation: Expectation) -> ValueAssertion[SdvValidator]:
     return ValidatorAssertion(arrangement, expectation)
 
 
@@ -66,7 +66,7 @@ class ValidationCase:
         self.expectation = expectation
 
 
-class ValidatorAssertion(ValueAssertionBase[PreOrPostSdsValidator]):
+class ValidatorAssertion(ValueAssertionBase[SdvValidator]):
     def __init__(self,
                  arrangement: Arrangement,
                  expectation: Expectation):
@@ -75,13 +75,13 @@ class ValidatorAssertion(ValueAssertionBase[PreOrPostSdsValidator]):
 
     def _apply(self,
                put: unittest.TestCase,
-               value: PreOrPostSdsValidator,
+               value: SdvValidator,
                message_builder: asrt.MessageBuilder):
         check(put, value, self.arrangement, self.expectation, message_builder)
 
 
 def check(put: unittest.TestCase,
-          actual: PreOrPostSdsValidator,
+          actual: SdvValidator,
           arrangement: Arrangement,
           expectation: Expectation,
           message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):

@@ -4,8 +4,8 @@ from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import sdv_validation
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherDdv
@@ -29,7 +29,7 @@ class StringMatcherSdvConstantTestImpl(StringMatcherSdv):
     def __init__(self,
                  resolved_value: StringMatcher,
                  references: Sequence[SymbolReference] = (),
-                 validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()):
+                 validator: SdvValidator = sdv_validation.ConstantSuccessSdvValidator()):
         self._resolved_value = resolved_value
         self._references = list(references)
         self._validator = validator
@@ -43,7 +43,7 @@ class StringMatcherSdvConstantTestImpl(StringMatcherSdv):
         return self._references
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
+    def validator(self) -> SdvValidator:
         return self._validator
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
@@ -86,7 +86,7 @@ class StringMatcherSdvFromPartsTestImpl(StringMatcherSdv):
     def __init__(self,
                  structure: StructureRenderer,
                  references: Sequence[SymbolReference],
-                 validator: PreOrPostSdsValidator,
+                 validator: SdvValidator,
                  matcher: Callable[[PathResolvingEnvironmentPreOrPostSds], StringMatcher]):
         self._structure = structure
         self._matcher = matcher
@@ -106,7 +106,7 @@ class StringMatcherSdvFromPartsTestImpl(StringMatcherSdv):
         return self._references
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
+    def validator(self) -> SdvValidator:
         return self._validator
 
     def __str__(self):

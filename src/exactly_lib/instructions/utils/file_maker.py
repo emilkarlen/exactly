@@ -10,8 +10,8 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \
     instruction_log_dir
-from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator, \
+from exactly_lib.test_case.validation import sdv_validation
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator, ConstantSuccessSdvValidator, \
     ValidationStep
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file__dp
@@ -33,8 +33,8 @@ class FileMaker:
         raise NotImplementedError('abstract method')
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return ConstantSuccessValidator()
+    def validator(self) -> SdvValidator:
+        return ConstantSuccessSdvValidator()
 
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
@@ -103,7 +103,7 @@ class FileMakerForContentsFromProgram(FileMaker):
                                                                     program.transformation)
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
+    def validator(self) -> SdvValidator:
         return self._program.validator
 
     @property
@@ -125,10 +125,10 @@ class FileMakerForContentsFromExistingFile(FileMaker):
                                     file_properties.must_exist_as(file_properties.FileType.REGULAR,
                                                                       follow_symlinks=True)))
 
-        self._validator = pre_or_post_validation.AndValidator([
-            pre_or_post_validation.SingleStepValidator(ValidationStep.PRE_SDS,
-                                                       self._src_file_validator),
-            pre_or_post_validation.PreOrPostSdsValidatorFromValueValidator(
+        self._validator = sdv_validation.AndSdvValidator([
+            sdv_validation.SingleStepSdvValidator(ValidationStep.PRE_SDS,
+                                                  self._src_file_validator),
+            sdv_validation.SdvValidatorFromDdvValidator(
                 lambda symbols: self._transformer.resolve(symbols).validator(),
             )
         ])
@@ -138,7 +138,7 @@ class FileMakerForContentsFromExistingFile(FileMaker):
         return tuple(self._transformer.references) + tuple(self._src_path.references)
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
+    def validator(self) -> SdvValidator:
         return self._validator
 
     def make(self,

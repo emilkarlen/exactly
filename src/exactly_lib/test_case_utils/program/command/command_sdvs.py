@@ -5,7 +5,7 @@ from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.test_case_utils.program.command import driver_sdvs as drivers
 from exactly_lib.util.process_execution.command import ProgramAndArguments
@@ -13,7 +13,7 @@ from exactly_lib.util.process_execution.command import ProgramAndArguments
 
 def for_shell(command_line: StringSdv,
               arguments: ArgumentsSdv = arguments_sdvs.empty(),
-              validators: Sequence[PreOrPostSdsValidator] = ()) -> CommandSdv:
+              validators: Sequence[SdvValidator] = ()) -> CommandSdv:
     return CommandSdv(drivers.CommandDriverSdvForShell(command_line,
                                                        validators),
                       arguments)

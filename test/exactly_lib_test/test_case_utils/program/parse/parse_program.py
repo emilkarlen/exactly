@@ -4,7 +4,7 @@ from typing import Sequence
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator, ConstantSuccessSdvValidator
 from exactly_lib.test_case_utils.program.parse import parse_program as sut
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
@@ -158,8 +158,8 @@ class _ProgramSdvWithoutImplementation(ProgramSdv):
         return ()
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return ConstantSuccessValidator()
+    def validator(self) -> SdvValidator:
+        return ConstantSuccessSdvValidator()
 
 
 if __name__ == '__main__':

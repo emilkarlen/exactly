@@ -5,8 +5,8 @@ from exactly_lib.instructions.multi_phase.utils.instruction_embryo import Instru
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidatorThat
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
+from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import SdvValidatorThat
 from exactly_lib_test.test_resources.actions import do_return, action_of, do_nothing
 
 
@@ -18,17 +18,17 @@ def instruction_embryo_that(validate_pre_sds_initial_action=do_nothing,
                             main_initial_action=None,
                             symbol_usages_initial_action=None,
                             symbol_usages=do_return([])) -> InstructionEmbryo:
-    return _InstructionEmbryoThat(ValidatorThat(pre_sds_action=validate_pre_sds_initial_action,
-                                                pre_sds_return_value=validate_pre_sds_return_value,
-                                                post_setup_action=validate_post_sds_initial_action,
-                                                post_setup_return_value=validate_post_sds_return_value),
+    return _InstructionEmbryoThat(SdvValidatorThat(pre_sds_action=validate_pre_sds_initial_action,
+                                                   pre_sds_return_value=validate_pre_sds_return_value,
+                                                   post_setup_action=validate_post_sds_initial_action,
+                                                   post_setup_return_value=validate_post_sds_return_value),
                                   action_of(main_initial_action, main),
                                   action_of(symbol_usages_initial_action, symbol_usages))
 
 
 class _InstructionEmbryoThat(InstructionEmbryo):
     def __init__(self,
-                 validator: PreOrPostSdsValidator,
+                 validator: SdvValidator,
                  main,
                  symbol_usages: Callable[[], Sequence[SymbolUsage]]):
         self._validator = validator
@@ -40,7 +40,7 @@ class _InstructionEmbryoThat(InstructionEmbryo):
         return self._symbol_usages()
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
+    def validator(self) -> SdvValidator:
         return self._validator
 
     def main(self,

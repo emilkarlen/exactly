@@ -8,7 +8,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, \
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator, \
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util.std import StdFiles
 
@@ -39,7 +39,7 @@ class UnconditionallySuccessfulValidator(Validator):
 
 
 class PartsValidatorFromPreOrPostSdsValidator(Validator):
-    def __init__(self, validator_that_must_validate_pre_sds: PreOrPostSdsValidator):
+    def __init__(self, validator_that_must_validate_pre_sds: SdvValidator):
         self.validator = PreOrPostSdsSvhValidationErrorValidator(validator_that_must_validate_pre_sds)
 
     def validate_pre_sds(self,

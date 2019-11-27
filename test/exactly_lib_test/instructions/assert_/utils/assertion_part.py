@@ -7,7 +7,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.validation.pre_or_post_validation import ConstantSuccessValidator
+from exactly_lib.test_case.validation.sdv_validation import ConstantSuccessSdvValidator
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
@@ -16,7 +16,7 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh, svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
-from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidatorThat
+from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import SdvValidatorThat
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -154,8 +154,8 @@ class TestSequence(unittest.TestCase):
             ),
             NameAndValue(
                 'validation of every assertion_part is successful',
-                sut.SequenceOfCooperativeAssertionParts([PartForValidation(ValidatorThat()),
-                                                         PartForValidation(ValidatorThat())])
+                sut.SequenceOfCooperativeAssertionParts([PartForValidation(SdvValidatorThat()),
+                                                         PartForValidation(SdvValidatorThat())])
             ),
         ]
         validation_environment = self.environment.path_resolving_environment_pre_or_post_sds
@@ -177,8 +177,8 @@ class TestSequence(unittest.TestCase):
     def test_WHEN_a_validator_fails_pre_sds_THEN_validation_SHOULD_fail_pre_sds(self):
         # ARRANGE #
         the_error_message = 'the error message'
-        assertion_part_with_successful_validation = PartForValidation(ValidatorThat())
-        assertion_part_with_unsuccessful_validation = PartForValidation(ValidatorThat(
+        assertion_part_with_successful_validation = PartForValidation(SdvValidatorThat())
+        assertion_part_with_unsuccessful_validation = PartForValidation(SdvValidatorThat(
             pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message))
         )
         sequence_checker = sut.SequenceOfCooperativeAssertionParts([assertion_part_with_successful_validation,
@@ -195,8 +195,8 @@ class TestSequence(unittest.TestCase):
     def test_WHEN_a_validator_fails_post_setup_THEN_validation_SHOULD_fail_post_setup(self):
         # ARRANGE #
         the_error_message = 'the error message'
-        assertion_part_with_successful_validation = PartForValidation(ValidatorThat())
-        assertion_part_with_unsuccessful_validation = PartForValidation(ValidatorThat(
+        assertion_part_with_successful_validation = PartForValidation(SdvValidatorThat())
+        assertion_part_with_unsuccessful_validation = PartForValidation(SdvValidatorThat(
             post_setup_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message))
         )
         sequence_checker = sut.SequenceOfCooperativeAssertionParts([assertion_part_with_successful_validation,
@@ -299,7 +299,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
 
     def test_WHEN_a_successful_validator_is_given_THEN_validation_SHOULD_succeed(self):
         # ARRANGE #
-        assertion_part_without_validation = PartForValidation(ConstantSuccessValidator())
+        assertion_part_without_validation = PartForValidation(ConstantSuccessSdvValidator())
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_without_validation,
                                                                 'custom environment',
                                                                 lambda env: 'argument to assertion_part')
@@ -318,7 +318,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
     def test_WHEN_given_validator_fails_pre_sds_THEN_validation_SHOULD_fail_pre_sds(self):
         # ARRANGE #
         the_error_message = 'the error message'
-        assertion_part = PartForValidation(ValidatorThat(
+        assertion_part = PartForValidation(SdvValidatorThat(
             pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message))
         )
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
@@ -335,7 +335,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
     def test_WHEN_given_validator_fails_post_setup_THEN_validation_SHOULD_fail_post_setup(self):
         # ARRANGE #
         the_error_message = 'the error message'
-        assertion_part = PartForValidation(ValidatorThat(
+        assertion_part = PartForValidation(SdvValidatorThat(
             post_setup_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message))
         )
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,

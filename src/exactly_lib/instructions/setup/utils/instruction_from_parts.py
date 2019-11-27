@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
+from exactly_lib.test_case.validation.sdv_validation import PreOrPostSdsSvhValidationErrorValidator
 
 
 class SetupPhaseInstructionFromParts(SetupPhaseInstruction):

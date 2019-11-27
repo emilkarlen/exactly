@@ -12,8 +12,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case.result.pfh import PassOrFailOrHardErrorEnum
-from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, \
+from exactly_lib.test_case.validation import sdv_validation
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator, \
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.test_case_utils.pfh_exception import translate_pfh_exception_to_pfh
 from exactly_lib.util.render import combinators as rend_comb
@@ -37,11 +37,11 @@ class AssertionPart(Generic[A, B], ObjectWithSymbolReferencesAndValidation, ABC)
     :raises PfhException: The check is unsuccessful.
     """
 
-    def __init__(self, validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()):
+    def __init__(self, validator: SdvValidator = sdv_validation.ConstantSuccessSdvValidator()):
         self._validator = validator
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
+    def validator(self) -> SdvValidator:
         return self._validator
 
     @abstractmethod
@@ -97,7 +97,7 @@ class IdentityAssertionPart(Generic[A], AssertionPart[A, A]):
 
 class IdentityAssertionPartWithValidationAndReferences(Generic[A], IdentityAssertionPart[A]):
     def __init__(self,
-                 validator: PreOrPostSdsValidator,
+                 validator: SdvValidator,
                  references: Sequence[SymbolReference]):
         super().__init__(validator)
         self._references = references
@@ -125,7 +125,7 @@ class SequenceOfCooperativeAssertionParts(AssertionPart[A, B]):
     """
 
     def __init__(self, assertion_parts: Sequence[AssertionPart]):
-        super().__init__(pre_or_post_validation.AndValidator([c.validator for c in assertion_parts]))
+        super().__init__(sdv_validation.AndSdvValidator([c.validator for c in assertion_parts]))
         self._assertion_parts = tuple(assertion_parts)
         self._references = references_from_objects_with_symbol_references(assertion_parts)
 

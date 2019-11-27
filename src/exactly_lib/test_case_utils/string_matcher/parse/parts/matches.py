@@ -3,7 +3,7 @@ from typing import Optional
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
-from exactly_lib.test_case.validation import pre_or_post_validation
+from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_getters
@@ -55,7 +55,7 @@ def value_sdv(expectation_type: ExpectationType,
 
     return sdvs.StringMatcherSdvFromParts2(
         contents_matcher.references,
-        pre_or_post_validation.PreOrPostSdsValidatorFromValueValidator(get_value_validator),
+        sdv_validation.SdvValidatorFromDdvValidator(get_value_validator),
         get_value,
     )
 

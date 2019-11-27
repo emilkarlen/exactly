@@ -16,7 +16,7 @@ class ValidationStep(Enum):
     POST_SDS = 2
 
 
-class PreOrPostSdsValidator:
+class SdvValidator:
     """
     Validates an object - usually a path - either pre or post creation of SDS.
 
@@ -87,7 +87,7 @@ class PreOrPostSdsValidatorPrimitive(ABC):
 class FixedPreOrPostSdsValidator(PreOrPostSdsValidatorPrimitive):
     def __init__(self,
                  environment: PathResolvingEnvironmentPreOrPostSds,
-                 validator: PreOrPostSdsValidator):
+                 validator: SdvValidator):
         self._environment = environment
         self._validator = validator
 
@@ -98,16 +98,16 @@ class FixedPreOrPostSdsValidator(PreOrPostSdsValidatorPrimitive):
         return self._validator.validate_post_sds_if_applicable(self._environment)
 
 
-def all_of(validators: Sequence[PreOrPostSdsValidator]) -> PreOrPostSdsValidator:
+def all_of(validators: Sequence[SdvValidator]) -> SdvValidator:
     if len(validators) == 0:
-        return ConstantSuccessValidator()
+        return ConstantSuccessSdvValidator()
     elif len(validators) == 1:
         return validators[0]
     else:
-        return AndValidator(validators)
+        return AndSdvValidator(validators)
 
 
-class ConstantSuccessValidator(PreOrPostSdsValidator):
+class ConstantSuccessSdvValidator(SdvValidator):
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
         return None
 
@@ -115,7 +115,7 @@ class ConstantSuccessValidator(PreOrPostSdsValidator):
         return None
 
 
-class SingleStepValidator(PreOrPostSdsValidator):
+class SingleStepSdvValidator(SdvValidator):
     """
     Validator that just applies validation at a single step,
     and ignores the other.
@@ -123,7 +123,8 @@ class SingleStepValidator(PreOrPostSdsValidator):
 
     def __init__(self,
                  step_to_apply: ValidationStep,
-                 validator: PreOrPostSdsValidator):
+                 validator: SdvValidator,
+                 ):
         self.step_to_apply = step_to_apply
         self.validator = validator
 
@@ -138,9 +139,8 @@ class SingleStepValidator(PreOrPostSdsValidator):
         return None
 
 
-class AndValidator(PreOrPostSdsValidator):
-    def __init__(self,
-                 validators: Iterable[PreOrPostSdsValidator]):
+class AndSdvValidator(SdvValidator):
+    def __init__(self, validators: Iterable[SdvValidator]):
         self.validators = validators
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
@@ -163,8 +163,7 @@ class PreOrPostSdsSvhValidationErrorValidator:
     A validator that translates error messages to a svh.ValidationError
     """
 
-    def __init__(self,
-                 validator: PreOrPostSdsValidator):
+    def __init__(self, validator: SdvValidator):
         self.validator = validator
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds
@@ -192,7 +191,7 @@ class PreOrPostSdsSvhValidationForSuccessOrHardError:
     A validator that translates error messages to a sh.HardError
     """
 
-    def __init__(self, validator: PreOrPostSdsValidator):
+    def __init__(self, validator: SdvValidator):
         self.validator = validator
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> sh.SuccessOrHardError:
@@ -211,7 +210,7 @@ class PreOrPostSdsSvhValidationForSuccessOrHardError:
         return sh.new_sh_success()
 
 
-class ValidatorOfReferredResolverBase(PreOrPostSdsValidator):
+class SdvValidatorOfReferredSdvBase(SdvValidator):
     """
     Validates an object using a referred resolvers validator.
     """
@@ -225,11 +224,11 @@ class ValidatorOfReferredResolverBase(PreOrPostSdsValidator):
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
         return self._referred_validator(environment).validate_post_sds_if_applicable(environment)
 
-    def _referred_validator(self, environment: PathResolvingEnvironment) -> PreOrPostSdsValidator:
+    def _referred_validator(self, environment: PathResolvingEnvironment) -> SdvValidator:
         raise NotImplementedError('abstract method')
 
 
-class PreOrPostSdsValidatorFromValueValidator(PreOrPostSdsValidator):
+class SdvValidatorFromDdvValidator(SdvValidator):
     def __init__(self, get_value_validator: Callable[[SymbolTable], DdvValidator]):
         self._get_value_validator = get_value_validator
         self._value_validator = None

@@ -4,7 +4,7 @@ from exactly_lib.definitions.primitives import files_matcher
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import pre_or_post_validation
+from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
@@ -90,7 +90,7 @@ class _NumFilesMatcherSdv(FilesMatcherSdvBase):
         self._matcher = matcher
 
         super().__init__(
-            pre_or_post_validation.PreOrPostSdsValidatorFromValueValidator(self._get_validator)
+            sdv_validation.SdvValidatorFromDdvValidator(self._get_validator)
         )
 
     @property
@@ -102,7 +102,7 @@ class _NumFilesMatcherSdv(FilesMatcherSdvBase):
             self._matcher.resolve(symbols),
         )
 
-    def _get_validator(self, symbols: SymbolTable) -> pre_or_post_validation.DdvValidator:
+    def _get_validator(self, symbols: SymbolTable) -> sdv_validation.DdvValidator:
         return self._matcher.resolve(symbols).validator
 
 

@@ -4,7 +4,7 @@ from exactly_lib.symbol.data.string_or_path import StringOrPathSdv
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.type_system.logic.program.stdin_data import StdinDataDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -12,7 +12,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 class StdinDataSdv(ObjectWithTypedSymbolReferences):
     def __init__(self,
                  fragments: Sequence[StringOrPathSdv],
-                 validators: Sequence[PreOrPostSdsValidator] = ()):
+                 validators: Sequence[SdvValidator] = ()):
         self._validators = validators
         self._fragments = fragments
 
@@ -25,7 +25,7 @@ class StdinDataSdv(ObjectWithTypedSymbolReferences):
         return StdinDataSdv(fragments, validators)
 
     @property
-    def validators(self) -> Sequence[PreOrPostSdsValidator]:
+    def validators(self) -> Sequence[SdvValidator]:
         return self._validators
 
     @property

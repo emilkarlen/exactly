@@ -6,7 +6,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
-from exactly_lib.test_case.validation import pre_or_post_validation as ppv, ddv_validation as ddv_v
+from exactly_lib.test_case.validation import sdv_validation as ppv, ddv_validation as ddv_v
 from exactly_lib.test_case_utils.line_matcher.model_construction import model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
 from exactly_lib.test_case_utils.line_matcher.trace_rendering import LineMatcherLineRenderer
@@ -85,11 +85,11 @@ def matcher_for_every_line_matches(expectation_type: ExpectationType,
     )
 
 
-def _validator_for_line_matcher(line_matcher_sdv: LineMatcherSdv) -> ppv.PreOrPostSdsValidator:
+def _validator_for_line_matcher(line_matcher_sdv: LineMatcherSdv) -> ppv.SdvValidator:
     def get_validator(symbols: SymbolTable) -> ddv_v.DdvValidator:
         return line_matcher_sdv.resolve(symbols).validator
 
-    return ppv.PreOrPostSdsValidatorFromValueValidator(get_validator)
+    return ppv.SdvValidatorFromDdvValidator(get_validator)
 
 
 def _element_setup() -> quantifier_matchers.ElementSetup[FileToCheck, LineMatcherLine]:

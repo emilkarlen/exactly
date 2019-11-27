@@ -29,7 +29,7 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.result import svh
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
+from exactly_lib.test_case.validation.sdv_validation import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.parse import parse_string, parse_path, parse_list
 from exactly_lib.test_case_utils.path_check import PathCheckValidator, PathCheck

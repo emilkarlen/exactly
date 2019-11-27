@@ -8,9 +8,9 @@ from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironment
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, \
-    ValidatorOfReferredResolverBase
+from exactly_lib.test_case.validation import sdv_validation
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator, \
+    SdvValidatorOfReferredSdvBase
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.test_case_utils.program.sdvs import accumulator
 from exactly_lib.test_case_utils.program.sdvs.accumulator import ProgramElementsSdvAccumulator
@@ -33,7 +33,7 @@ class ProgramSdvForSymbolReference(ProgramSdv):
                         additional_stdin: StdinDataSdv,
                         additional_arguments: ArgumentsSdv,
                         additional_transformations: Sequence[StringTransformerSdv],
-                        additional_validation: Sequence[PreOrPostSdsValidator],
+                        additional_validation: Sequence[SdvValidator],
                         ):
         return ProgramSdvForSymbolReference(
             self._symbol_name,
@@ -47,8 +47,8 @@ class ProgramSdvForSymbolReference(ProgramSdv):
         return [self._symbol_reference] + list(self._accumulated_elements.references)
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return pre_or_post_validation.all_of([
+    def validator(self) -> SdvValidator:
+        return sdv_validation.all_of([
             _ValidatorOfReferredProgram(self._symbol_name),
             self._accumulated_elements.validator,
         ])
@@ -77,7 +77,7 @@ def plain(symbol_name: str,
                                         accumulator.new_with_arguments(arguments))
 
 
-class _ValidatorOfReferredProgram(ValidatorOfReferredResolverBase):
-    def _referred_validator(self, environment: PathResolvingEnvironment) -> PreOrPostSdsValidator:
+class _ValidatorOfReferredProgram(SdvValidatorOfReferredSdvBase):
+    def _referred_validator(self, environment: PathResolvingEnvironment) -> SdvValidator:
         program_of_symbol = lookups.lookup_program(environment.symbols, self.symbol_name)
         return program_of_symbol.validator

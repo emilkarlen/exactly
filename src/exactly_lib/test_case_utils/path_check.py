@@ -7,7 +7,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FilePropertiesCheck
-from exactly_lib.test_case_utils.path_validator import PathValidatorBase
+from exactly_lib.test_case_utils.path_validator import PathSdvValidatorBase
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 
 
@@ -19,7 +19,7 @@ class PathCheck:
         self.file_properties = check
 
 
-class PathCheckValidator(PathValidatorBase):
+class PathCheckValidator(PathSdvValidatorBase):
     def __init__(self, path_check: PathCheck):
         super().__init__(path_check.path_sdv)
         self.path_check = path_check

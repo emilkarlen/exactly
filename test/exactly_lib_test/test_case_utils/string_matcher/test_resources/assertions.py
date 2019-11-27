@@ -4,7 +4,7 @@ from exactly_lib.symbol import sdv_structure
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherDdv
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
@@ -48,7 +48,7 @@ def matches_string_matcher_sdv(primitive_value: ValueAssertion[StringMatcher] = 
 
             asrt.sub_component('validator',
                                lambda sdv: sdv.validator,
-                               asrt.is_instance(PreOrPostSdsValidator)
+                               asrt.is_instance(SdvValidator)
                                ),
 
             asrt.sub_component('resolved value',
@@ -73,7 +73,7 @@ def matches_string_matcher_attributes(references: ValueAssertion[Sequence[Symbol
 
             asrt.sub_component('validator',
                                lambda sdv: sdv.validator,
-                               asrt.is_instance(PreOrPostSdsValidator)
+                               asrt.is_instance(SdvValidator)
                                ),
         ])
     )

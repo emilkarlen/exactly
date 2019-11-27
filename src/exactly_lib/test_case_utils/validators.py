@@ -4,7 +4,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.result import svh
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_utils import svh_exception
 
 
@@ -66,7 +66,7 @@ class SvhValidatorViaExceptionsFromPreAndPostSdsValidators(SvhValidatorViaExcept
             self._post_setup.validate_post_setup(environment)
 
 
-class PreOrPostSdsValidatorFromValidatorViaExceptions(PreOrPostSdsValidator):
+class SdvValidatorFromSdvValidatorViaExceptions(SdvValidator):
     def __init__(self, adapted: SvhValidatorViaExceptions):
         self._adapted = adapted
 

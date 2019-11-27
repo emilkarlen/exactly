@@ -2,8 +2,8 @@ from abc import ABC
 from typing import Callable
 
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import sdv_validation
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherConstructor
 from exactly_lib.util.file_utils import TmpDirFileSpace
 
@@ -26,9 +26,9 @@ class ConstructorFromFunction(FilesMatcherConstructor):
 
 class FilesMatcherSdvBase(FilesMatcherSdv, ABC):
     def __init__(self,
-                 validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator(),
+                 validator: SdvValidator = sdv_validation.ConstantSuccessSdvValidator(),
                  ):
         self._validator = validator
 
-    def validator(self) -> PreOrPostSdsValidator:
+    def validator(self) -> SdvValidator:
         return self._validator

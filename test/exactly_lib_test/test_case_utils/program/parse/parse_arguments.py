@@ -8,8 +8,8 @@ from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.list_sdv import ElementSdv
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import sdv_validation
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType
 from exactly_lib.test_case_utils.parse.parse_relativity import reference_restrictions_for_path_symbol
 from exactly_lib.test_case_utils.program import syntax_elements
@@ -47,7 +47,7 @@ def suite() -> unittest.TestSuite:
 class Expectation:
     def __init__(self,
                  elements: List[ElementSdv],
-                 validators: ValueAssertion[Sequence[PreOrPostSdsValidator]],
+                 validators: ValueAssertion[Sequence[SdvValidator]],
                  references: ValueAssertion[Sequence[SymbolReference]]):
         self.elements = elements
         self.validators = validators
@@ -266,11 +266,11 @@ class TestSingleElement(unittest.TestCase):
                 _test_case(self, _case)
 
 
-def is_single_validator_with(expectations: Sequence[NameAndValue[ValueAssertion[PreOrPostSdsValidator]]]
-                             ) -> ValueAssertion[Sequence[PreOrPostSdsValidator]]:
+def is_single_validator_with(expectations: Sequence[NameAndValue[ValueAssertion[SdvValidator]]]
+                             ) -> ValueAssertion[Sequence[SdvValidator]]:
     return asrt.and_([
         asrt.len_equals(1),
-        asrt.on_transformed(pre_or_post_validation.all_of,
+        asrt.on_transformed(sdv_validation.all_of,
                             asrt.all_named(expectations))
     ])
 

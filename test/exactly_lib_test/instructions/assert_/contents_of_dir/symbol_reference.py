@@ -21,7 +21,7 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPo
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fm_args
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     pfh_expectation_type_config, pass_or_fail_from_bool
-from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidatorThat
+from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import SdvValidatorThat
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import default_conf_rel_non_hds, conf_rel_sds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -102,7 +102,7 @@ class TestReferencedMatcherShouldBeValidated(tr.TestCaseBaseForParser):
                     symbol_usages=expected_symbol_usages,
                 ),
                 actual=
-                ValidatorThat(
+                SdvValidatorThat(
                     pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test(err_msg_from_validator)
                 )
                 ),
@@ -115,7 +115,7 @@ class TestReferencedMatcherShouldBeValidated(tr.TestCaseBaseForParser):
                     symbol_usages=expected_symbol_usages,
                 ),
                 actual=
-                ValidatorThat(
+                SdvValidatorThat(
                     post_setup_return_value=asrt_text_doc.new_single_string_text_for_test(err_msg_from_validator)
                 )
                 ),

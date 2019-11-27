@@ -8,7 +8,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.data.string_or_path import StringOrPathSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator, SingleStepValidator, \
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator, SingleStepSdvValidator, \
     ValidationStep, \
     PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -76,8 +76,8 @@ def value_sdv(expectation_type: ExpectationType,
 
     return StringMatcherSdvFromParts2(
         expected_contents.references,
-        SingleStepValidator(ValidationStep.PRE_SDS,
-                            validator),
+        SingleStepSdvValidator(ValidationStep.PRE_SDS,
+                               validator),
         get_matcher_value,
     )
 
@@ -285,7 +285,7 @@ class EqualityStringMatcher(StringMatcher):
         return self._new_tb().append_details(self._expected_detail_renderer)
 
 
-def _validator_of_expected(expected_contents: StringOrPathSdv) -> PreOrPostSdsValidator:
+def _validator_of_expected(expected_contents: StringOrPathSdv) -> SdvValidator:
     return expected_contents.validator__file_must_exist_as(FileType.REGULAR, True)
 
 

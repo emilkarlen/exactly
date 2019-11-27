@@ -5,7 +5,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
     PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
     constant_success_validator
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.symbol_table import SymbolTable
@@ -14,7 +14,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 class DdvValidatorFromSdvValidator(DdvValidator):
     def __init__(self,
                  symbols: SymbolTable,
-                 adapted: PreOrPostSdsValidator):
+                 adapted: SdvValidator):
         self._symbols = symbols
         self._adapted = adapted
 

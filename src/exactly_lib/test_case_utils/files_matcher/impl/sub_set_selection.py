@@ -6,8 +6,8 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import pre_or_post_validation as validation
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation import sdv_validation as validation
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
@@ -112,7 +112,7 @@ class _SubSetSelectorMatcherSdv(FilesMatcherSdv):
             selector, matcher_on_selection
         ])
 
-        self._validator = validation.AndValidator([
+        self._validator = validation.AndSdvValidator([
             sdv_validator_for_file_matcher(selector),
             self._matcher_on_selection.validator(),
         ])
@@ -121,7 +121,7 @@ class _SubSetSelectorMatcherSdv(FilesMatcherSdv):
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    def validator(self) -> PreOrPostSdsValidator:
+    def validator(self) -> SdvValidator:
         return self._validator
 
     def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:

@@ -7,7 +7,7 @@ from exactly_lib.symbol.logic.program.stdin_data_sdv import StdinDataSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
@@ -28,7 +28,7 @@ class ProgramSdv(LogicTypeSdv, DirDepValueResolverWithValidation[ProgramDdv]):
         raise NotImplementedError('abstract method')
 
     @property
-    def validator(self) -> PreOrPostSdsValidator:
+    def validator(self) -> SdvValidator:
         raise NotImplementedError('abstract method')
 
     def resolve(self, symbols: SymbolTable) -> ProgramDdv:
@@ -38,7 +38,7 @@ class ProgramSdv(LogicTypeSdv, DirDepValueResolverWithValidation[ProgramDdv]):
                         additional_stdin: StdinDataSdv,
                         additional_arguments: ArgumentsSdv,
                         additional_transformations: Sequence[StringTransformerSdv],
-                        additional_validation: Sequence[PreOrPostSdsValidator],
+                        additional_validation: Sequence[SdvValidator],
                         ):
         raise NotImplementedError('abstract method')
 

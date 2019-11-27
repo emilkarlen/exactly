@@ -1,7 +1,7 @@
 from exactly_lib.symbol import sdv_structure
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherConstructor, FilesMatcherDdv
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
@@ -67,7 +67,7 @@ def matches_files_matcher_sdv(references: ValueAssertion = asrt.is_empty_sequenc
 
             asrt.sub_component('validator',
                                lambda sdv: sdv.validator(),
-                               asrt.is_instance(PreOrPostSdsValidator)
+                               asrt.is_instance(SdvValidator)
                                ),
 
             asrt.sub_component('resolved value',

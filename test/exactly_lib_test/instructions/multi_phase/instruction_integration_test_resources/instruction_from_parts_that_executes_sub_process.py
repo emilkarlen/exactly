@@ -18,7 +18,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionSourceInfo
 from exactly_lib.test_case.phases.common import instruction_log_dir
-from exactly_lib.test_case.validation import pre_or_post_validation
+from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.program.command import command_sdvs
 from exactly_lib.test_case_utils.program.sdvs import accumulator
@@ -106,7 +106,7 @@ class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
 class TestResultIsValidationErrorWhenPreSdsValidationFails(TestCaseBase):
     def runTest(self):
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            ConstantResultValidator(
+            ConstantResultSdvValidator(
                 pre_sds=asrt_text_doc.new_single_string_text_for_test('validation error message')
             )
         )
@@ -124,7 +124,7 @@ class TestResultIsValidationErrorWhenPreSdsValidationFails(TestCaseBase):
 class TestResultIsValidationErrorWhenPostSetupValidationFails(TestCaseBase):
     def runTest(self):
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            ConstantResultValidator(
+            ConstantResultSdvValidator(
                 post_setup=asrt_text_doc.new_single_string_text_for_test('validation error message post setup')
             )
         )
@@ -139,7 +139,7 @@ class TestResultIsValidationErrorWhenPostSetupValidationFails(TestCaseBase):
 class TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero(TestCaseBase):
     def runTest(self):
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            pre_or_post_validation.ConstantSuccessValidator())
+            sdv_validation.ConstantSuccessSdvValidator())
         self.conf.run_sub_process_test(
             self,
             source4(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
@@ -151,7 +151,7 @@ class TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero(TestCaseBase):
 class TestInstructionIsSuccessfulWhenExitStatusFromShellCommandIsZero(TestCaseBase):
     def runTest(self):
         execution_setup_parser = _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
-            pre_or_post_validation.ConstantSuccessValidator())
+            sdv_validation.ConstantSuccessSdvValidator())
         command_that_exits_with_code = shell_commands.command_that_exits_with_code(0)
         self.conf.run_sub_process_test(
             self,
@@ -166,7 +166,7 @@ class TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero(TestCaseBase):
         script_that_exists_with_non_zero_status = 'import sys; sys.exit(1)'
 
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            pre_or_post_validation.ConstantSuccessValidator())
+            sdv_validation.ConstantSuccessSdvValidator())
         self.conf.run_sub_process_test(
             self,
             source4(script_that_exists_with_non_zero_status),
@@ -183,7 +183,7 @@ class TestInstructionIsErrorWhenProcessTimesOut(TestCaseBase):
         source = source4(program_source_as_single_line)
 
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            pre_or_post_validation.ConstantSuccessValidator())
+            sdv_validation.ConstantSuccessSdvValidator())
         self.conf.run_sub_process_test(
             self,
             source,
@@ -205,7 +205,7 @@ class TestEnvironmentVariablesArePassedToSubProcess(TestCaseBase):
         source = source4(program_source_as_single_line)
 
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            pre_or_post_validation.ConstantSuccessValidator())
+            sdv_validation.ConstantSuccessSdvValidator())
         instruction_name = 'name-of-the-instruction'
         source_info = InstructionSourceInfo(source.current_line_number,
                                             instruction_name)
@@ -229,7 +229,7 @@ class TestOutputIsStoredInFilesInInstructionLogDir(TestCaseBase):
         program_source_as_single_line = program.replace('\n', ';')
         source = source4(program_source_as_single_line)
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            pre_or_post_validation.ConstantSuccessValidator())
+            sdv_validation.ConstantSuccessSdvValidator())
         instruction_name = 'name-of-the-instruction'
         source_info = InstructionSourceInfo(source.current_line_number,
                                             instruction_name)
@@ -252,7 +252,7 @@ class TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessag
         program = py.program_that_prints_and_exits_with_exit_code(sub_process_result)
         program_source_as_single_line = program.replace('\n', ';')
         program_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            pre_or_post_validation.ConstantSuccessValidator())
+            sdv_validation.ConstantSuccessSdvValidator())
         source = source4(program_source_as_single_line)
         self.conf.run_sub_process_test(
             self,
@@ -286,7 +286,7 @@ class _InstructionLogDirContainsOutFiles(ValueAssertionBase[SandboxDirectoryStru
 
 
 class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(Parser[ProgramSdv]):
-    def __init__(self, validator: pre_or_post_validation.PreOrPostSdsValidator):
+    def __init__(self, validator: sdv_validation.SdvValidator):
         super().__init__()
         self.validator = validator
 
@@ -298,7 +298,7 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(P
 
 
 class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(Parser[ProgramSdv]):
-    def __init__(self, validator: pre_or_post_validation.PreOrPostSdsValidator):
+    def __init__(self, validator: sdv_validation.SdvValidator):
         super().__init__()
         self.validator = validator
 
@@ -314,7 +314,7 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(P
 SCRIPT_THAT_EXISTS_WITH_STATUS_0 = 'import sys; sys.exit(0)'
 
 
-class ConstantResultValidator(pre_or_post_validation.PreOrPostSdsValidator):
+class ConstantResultSdvValidator(sdv_validation.SdvValidator):
     def __init__(self,
                  pre_sds: Optional[TextRenderer] = None,
                  post_setup: Optional[TextRenderer] = None):

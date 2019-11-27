@@ -4,11 +4,11 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 
 
-class PathValidatorBase(PreOrPostSdsValidator):
+class PathSdvValidatorBase(SdvValidator):
     """
     Validates existence of the resolved path of a `PathDdv`.
     """

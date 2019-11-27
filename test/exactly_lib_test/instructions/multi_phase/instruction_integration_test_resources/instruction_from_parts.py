@@ -23,7 +23,7 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
     equals_string_restriction
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
-from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidatorThat
+from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import SdvValidatorThat
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -116,7 +116,7 @@ class TestSymbolUsagesOfHardCodedInstruction(TestCaseBase):
                 symbol_name,
                 equals_string_restriction(string_restriction))
         ])
-        parts = instruction_parts.InstructionParts(ValidatorThat(),
+        parts = instruction_parts.InstructionParts(SdvValidatorThat(),
                                                    MainStepExecutorThat(),
                                                    symbol_usages=(symbol_reference,))
         instruction = self.conf.new_instruction_from_parts(parts)
@@ -142,7 +142,7 @@ class TestSymbolUsagesOfInstructionFromParser(TestCaseBase):
                 symbol_name,
                 equals_string_restriction(string_restriction))
         ])
-        parts = instruction_parts.InstructionParts(ValidatorThat(),
+        parts = instruction_parts.InstructionParts(SdvValidatorThat(),
                                                    MainStepExecutorThat(),
                                                    symbol_usages=(symbol_reference,))
         parser = self.conf.instruction_parser_from_parts_parser(PartsParserThatGives(parts))
@@ -160,7 +160,7 @@ class TestFailureOfValidatePreSdsOfInstructionFromParser(TestCaseBase):
         # ARRANGE #
         the_error_message = 'the error message'
         parts = instruction_parts.InstructionParts(
-            ValidatorThat(
+            SdvValidatorThat(
                 pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message)
             ),
             MainStepExecutorThat())
@@ -182,7 +182,7 @@ class TestFailureOfValidatePostSetupOfInstructionFromParser(TestCaseBase):
         # ARRANGE #
         the_error_message = 'the error message'
         parts = instruction_parts.InstructionParts(
-            ValidatorThat(
+            SdvValidatorThat(
                 post_setup_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message)
             ),
             MainStepExecutorThat())
@@ -203,7 +203,7 @@ class TestFailureOfMainOfInstructionFromParser(TestCaseBase):
         # ARRANGE #
         the_error_message = 'the error message'
         parts = instruction_parts.InstructionParts(
-            ValidatorThat(),
+            SdvValidatorThat(),
             MainStepExecutorThat(assertion_return_value=pfh.new_pfh_fail__str(the_error_message),
                                  non_assertion_return_value=sh.new_sh_hard_error__str(the_error_message)))
         parser = self.conf.instruction_parser_from_parts_parser(PartsParserThatGives(parts))
@@ -222,7 +222,7 @@ class TestFailureOfMainOfInstructionFromParser(TestCaseBase):
 
 def instruction_parts_that_records_execution_steps(recorder: list) -> instruction_parts.InstructionParts:
     return instruction_parts.InstructionParts(
-        ValidatorThat(
+        SdvValidatorThat(
             pre_sds_action=record_value(recorder,
                                         VALIDATE_STEP_PRE_SDS_IF_APPLICABLE),
             post_setup_action=record_value(recorder,
