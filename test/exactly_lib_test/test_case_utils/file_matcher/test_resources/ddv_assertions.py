@@ -1,4 +1,4 @@
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.impl import name_glob_pattern, file_type, name_regex
 from exactly_lib.test_case_utils.file_properties import FileType
@@ -33,7 +33,7 @@ def is_name_regex(name_pattern: ValueAssertion[str] = asrt.anything_goes()) -> V
 
 def matches_file_matcher_ddv__deep(
         primitive_value: ValueAssertion[FileMatcher] = asrt.anything_goes(),
-        validator: ValueAssertion[PreOrPostSdsValueValidator] = asrt.anything_goes(),
+        validator: ValueAssertion[DdvValidator] = asrt.anything_goes(),
         tcds: Tcds = fake_tcds(),
 ) -> ValueAssertion[FileMatcherDdv]:
     def resolve_primitive_value(value: FileMatcherDdv):
@@ -54,7 +54,7 @@ def matches_file_matcher_ddv__deep(
             asrt.sub_component(
                 'validator',
                 get_validator,
-                asrt.is_instance_with(PreOrPostSdsValueValidator,
+                asrt.is_instance_with(DdvValidator,
                                       validator)
             ),
         ]
@@ -62,7 +62,7 @@ def matches_file_matcher_ddv__deep(
 
 
 def matches_file_matcher_ddv(
-        validator: ValueAssertion[PreOrPostSdsValueValidator] = asrt.anything_goes(),
+        validator: ValueAssertion[DdvValidator] = asrt.anything_goes(),
 ) -> ValueAssertion[FileMatcherDdv]:
     def get_validator(value: FileMatcherDdv):
         return value.validator()
@@ -72,6 +72,6 @@ def matches_file_matcher_ddv(
         asrt.sub_component(
             'validator',
             get_validator,
-            asrt.is_instance_with(PreOrPostSdsValueValidator,
+            asrt.is_instance_with(DdvValidator,
                                   validator)
         ))

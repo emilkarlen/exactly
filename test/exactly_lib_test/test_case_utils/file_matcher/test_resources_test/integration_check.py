@@ -11,8 +11,8 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_value_validation import constant_success_validator, \
-    PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import constant_success_validator, \
+    DdvValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.file_matcher_ddvs import FileMatcherValueFromPrimitiveDdv
@@ -288,7 +288,7 @@ class FileMatcherTestImplBase(FileMatcherImplBase):
 
 def parser_for_constant(resolved_value: FileMatcher = FileMatcherConstant(True),
                         references: Sequence[SymbolReference] = (),
-                        validator: PreOrPostSdsValueValidator = constant_success_validator()
+                        validator: DdvValidator = constant_success_validator()
                         ) -> Parser[FileMatcherSdv]:
     return ConstantParser(
         FileMatcherSdvFromParts(
@@ -315,7 +315,7 @@ class FileMatcherSdvThatAssertsThatSymbolsAreAsExpected(FileMatcherSdv):
         return FileMatcherValueFromPrimitiveDdv(FileMatcherConstant(True))
 
 
-class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(PreOrPostSdsValueValidator):
+class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(DdvValidator):
     def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
         return None
 

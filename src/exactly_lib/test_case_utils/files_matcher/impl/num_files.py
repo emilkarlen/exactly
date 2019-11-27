@@ -102,7 +102,7 @@ class _NumFilesMatcherSdv(FilesMatcherSdvBase):
             self._matcher.resolve(symbols),
         )
 
-    def _get_validator(self, symbols: SymbolTable) -> pre_or_post_validation.PreOrPostSdsValueValidator:
+    def _get_validator(self, symbols: SymbolTable) -> pre_or_post_validation.DdvValidator:
         return self._matcher.resolve(symbols).validator
 
 

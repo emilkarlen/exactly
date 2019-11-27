@@ -1,8 +1,8 @@
 from typing import Pattern, Sequence, Set, Optional
 
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
-    ConstantPreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
+    ConstantDdvValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
@@ -15,7 +15,7 @@ class RegexConstantDdvTestImpl(RegexDdv):
     def __init__(self,
                  value: Pattern[str],
                  resolving_dependencies: Optional[Set[DirectoryStructurePartition]] = None,
-                 validator: PreOrPostSdsValueValidator = ConstantPreOrPostSdsValueValidator(None, None),
+                 validator: DdvValidator = ConstantDdvValidator(None, None),
                  ):
         self._value = value
         self._validator = validator
@@ -34,7 +34,7 @@ class RegexConstantDdvTestImpl(RegexDdv):
     def value_of_any_dependency(self, tcds: Tcds) -> Pattern:
         return self._value
 
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._validator
 
 
@@ -43,7 +43,7 @@ class RegexSdvConstantTestImpl(RegexSdv):
                  resolved_value: Pattern[str],
                  references: Sequence[SymbolReference] = (),
                  resolving_dependencies: Optional[Set[DirectoryStructurePartition]] = None,
-                 value_validator: PreOrPostSdsValueValidator = ConstantPreOrPostSdsValueValidator(None, None)):
+                 value_validator: DdvValidator = ConstantDdvValidator(None, None)):
         self._references = list(references)
         self._resolving_dependencies = resolving_dependencies
         self._value_validator = value_validator

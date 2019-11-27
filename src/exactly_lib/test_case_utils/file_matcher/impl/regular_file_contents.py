@@ -7,8 +7,8 @@ from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
-from exactly_lib.test_case.validation.pre_or_post_value_validators import ValueValidatorFromResolverValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
+from exactly_lib.test_case.validation.ddv_validators import DdvValidatorFromSdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
@@ -96,11 +96,11 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
 class RegularFileMatchesStringMatcherDdv(FileMatcherDdv):
     def __init__(self,
                  contents_matcher: string_matcher.StringMatcherDdv,
-                 validator: PreOrPostSdsValueValidator):
+                 validator: DdvValidator):
         self._contents_matcher = contents_matcher
         self._validator = validator
 
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> FileMatcher:
@@ -118,7 +118,7 @@ class RegularFileMatchesStringMatcherSdv(FileMatcherSdv):
     def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
         return RegularFileMatchesStringMatcherDdv(
             self._contents_matcher.resolve(symbols),
-            ValueValidatorFromResolverValidator(
+            DdvValidatorFromSdvValidator(
                 symbols,
                 self._contents_matcher.validator
             )

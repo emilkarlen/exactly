@@ -1,8 +1,8 @@
 from abc import ABC
 from typing import List, Callable
 
-from exactly_lib.test_case.validation import pre_or_post_value_validators
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation import ddv_validators
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.impl.combinators import FileMatcherNot, FileMatcherAnd, FileMatcherOr
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
@@ -24,12 +24,12 @@ class FileMatcherCompositionDdvBase(FileMatcherDdv, ABC):
         self._parts = parts
         if not parts:
             raise ValueError('Composition must have at least one element')
-        self._validator = pre_or_post_value_validators.all_of([
+        self._validator = ddv_validators.all_of([
             part.validator()
             for part in parts
         ])
 
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> FileMatcher:
@@ -59,13 +59,13 @@ class FileMatcherOrValue(FileMatcherCompositionDdvBase):
 
 class FileMatcherDdvFromParts(FileMatcherDdv):
     def __init__(self,
-                 validator: PreOrPostSdsValueValidator,
+                 validator: DdvValidator,
                  matcher: Callable[[Tcds], FileMatcher],
                  ):
         self._validator = validator
         self._matcher = matcher
 
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> FileMatcher:

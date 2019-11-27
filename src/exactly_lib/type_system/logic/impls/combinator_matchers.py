@@ -2,8 +2,8 @@ from abc import ABC
 from typing import TypeVar, Generic, Sequence, Optional
 
 from exactly_lib.definitions import expression
-from exactly_lib.test_case.validation import pre_or_post_value_validators
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation import ddv_validators
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
@@ -88,7 +88,7 @@ class NegationDdv(Generic[T], MatcherDdv[T]):
         return Negation.new_structure_tree(self._operand)
 
     @property
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._operand.validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
@@ -157,7 +157,7 @@ class Conjunction(_CombinatorBase[MODEL]):
 class ConjunctionDdv(Generic[T], MatcherDdv[T]):
     def __init__(self, operands: Sequence[MatcherDdv[T]]):
         self._operands = operands
-        self._validator = pre_or_post_value_validators.all_of(
+        self._validator = ddv_validators.all_of(
             [matcher.validator
              for matcher in operands]
         )
@@ -166,7 +166,7 @@ class ConjunctionDdv(Generic[T], MatcherDdv[T]):
         return Conjunction.new_structure_tree(self._operands)
 
     @property
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
@@ -235,7 +235,7 @@ class Disjunction(_CombinatorBase[MODEL]):
 class DisjunctionDdv(Generic[T], MatcherDdv[T]):
     def __init__(self, operands: Sequence[MatcherDdv[T]]):
         self._operands = operands
-        self._validator = pre_or_post_value_validators.all_of(
+        self._validator = ddv_validators.all_of(
             [matcher.validator
              for matcher in operands]
         )
@@ -244,7 +244,7 @@ class DisjunctionDdv(Generic[T], MatcherDdv[T]):
         return Disjunction.new_structure_tree(self._operands)
 
     @property
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:

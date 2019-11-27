@@ -5,7 +5,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def sdv_validator_for_file_matcher(file_matcher: FileMatcherSdv) -> PreOrPostSdsValidator:
-    def get_validator_of_selector(symbols: SymbolTable) -> validation.PreOrPostSdsValueValidator:
+    def get_validator_of_selector(symbols: SymbolTable) -> validation.DdvValidator:
         return file_matcher.resolve(symbols).validator()
 
     return validation.PreOrPostSdsValidatorFromValueValidator(get_validator_of_selector)

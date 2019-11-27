@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_value_validation import ConstantPreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import ConstantDdvValidator
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_utils
@@ -94,7 +94,7 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
                     validation_pre_sds=assert_failing_validation,
                     symbol_usages=asserted_symbol_references
                 ),
-                actual=ConstantPreOrPostSdsValueValidator(
+                actual=ConstantDdvValidator(
                     pre_sds_result=failing_validation_result
                 )
                 ),
@@ -104,7 +104,7 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
                     validation_post_sds=assert_failing_validation,
                     symbol_usages=asserted_symbol_references
                 ),
-                actual=ConstantPreOrPostSdsValueValidator(
+                actual=ConstantDdvValidator(
                     post_sds_result=failing_validation_result
                 )
                 ),

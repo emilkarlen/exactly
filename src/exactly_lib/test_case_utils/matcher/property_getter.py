@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Generic, Sequence, TypeVar, Optional
 
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import pre_or_post_value_validation
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation import ddv_validation
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -44,8 +44,8 @@ class PropertyGetterValue(Generic[MODEL, T], ABC):
         pass
 
     @property
-    def validator(self) -> PreOrPostSdsValueValidator:
-        return pre_or_post_value_validation.constant_success_validator()
+    def validator(self) -> DdvValidator:
+        return ddv_validation.constant_success_validator()
 
 
 class PropertyGetterSdv(Generic[MODEL, T], ABC):

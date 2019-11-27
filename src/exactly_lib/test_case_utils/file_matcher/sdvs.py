@@ -6,7 +6,7 @@ from exactly_lib.symbol.object_with_symbol_references import references_from_obj
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher import file_matcher_ddvs as ddvs
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv
@@ -102,7 +102,7 @@ class FileMatcherOrSdv(FileMatcherSdv):
 class FileMatcherSdvFromParts(FileMatcherSdv):
     def __init__(self,
                  references: Sequence[SymbolReference],
-                 validator: PreOrPostSdsValueValidator,
+                 validator: DdvValidator,
                  matcher: Callable[[PathResolvingEnvironmentPreOrPostSds], FileMatcher]):
         self._matcher = matcher
         self._validator = validator

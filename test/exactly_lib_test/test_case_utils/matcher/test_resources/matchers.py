@@ -3,8 +3,8 @@ from typing import TypeVar, Generic, Sequence, Optional, List
 from exactly_lib.definitions.primitives import boolean
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import pre_or_post_value_validation
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation import ddv_validation
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -20,7 +20,7 @@ MODEL = TypeVar('MODEL')
 def sdv_from_primitive_value(
         primitive_value: MatcherWTraceAndNegation[MODEL] = MatcherWithConstantResult(True),
         references: Sequence[SymbolReference] = (),
-        validator: PreOrPostSdsValueValidator = pre_or_post_value_validation.constant_success_validator(),
+        validator: DdvValidator = ddv_validation.constant_success_validator(),
 ) -> MatcherSdv[MODEL]:
     return MatcherSdvOfConstantDdvTestImpl(
         MatcherDdvOfConstantMatcherTestImpl(primitive_value,
@@ -42,8 +42,8 @@ def ddv_of_unconditionally_matching_matcher() -> MatcherDdv[MODEL]:
 class MatcherDdvOfConstantMatcherTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     def __init__(self,
                  primitive_value: MatcherWTraceAndNegation[MODEL],
-                 validator: PreOrPostSdsValueValidator =
-                 pre_or_post_value_validation.constant_success_validator(),
+                 validator: DdvValidator =
+                 ddv_validation.constant_success_validator(),
                  ):
         self._primitive_value = primitive_value
         self._validator = validator
@@ -52,7 +52,7 @@ class MatcherDdvOfConstantMatcherTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
         return self._primitive_value.structure()
 
     @property
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:

@@ -5,7 +5,7 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.test_case_file_structure.tcds import Tcds
 
 
-class PreOrPostSdsValueValidator:
+class DdvValidator:
     """
     EXPERIMENTING WITH VALIDATOR THAT IS RESOLVED À LA SYMBOL VALUE.
 
@@ -42,7 +42,7 @@ class PreOrPostSdsValueValidator:
         return self.validate_post_sds_if_applicable(tcds)
 
 
-class ConstantPreOrPostSdsValueValidator(PreOrPostSdsValueValidator):
+class ConstantDdvValidator(DdvValidator):
     def __init__(self,
                  pre_sds_result: Optional[TextRenderer] = None,
                  post_sds_result: Optional[TextRenderer] = None):
@@ -56,5 +56,5 @@ class ConstantPreOrPostSdsValueValidator(PreOrPostSdsValueValidator):
         return self._post_sds_result
 
 
-def constant_success_validator() -> PreOrPostSdsValueValidator:
-    return ConstantPreOrPostSdsValueValidator(None, None)
+def constant_success_validator() -> DdvValidator:
+    return ConstantDdvValidator(None, None)

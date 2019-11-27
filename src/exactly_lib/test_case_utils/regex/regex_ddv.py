@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence, Set, Pattern
 
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -18,7 +18,7 @@ class RegexDdv(MultiDependenciesDdv[Pattern], ABC):
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         raise NotImplementedError('abstract method')
 
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         raise NotImplementedError('abstract method')
 
     def value_when_no_dir_dependencies(self) -> Pattern:

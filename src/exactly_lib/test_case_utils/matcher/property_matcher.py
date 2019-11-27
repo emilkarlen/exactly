@@ -2,8 +2,8 @@ from typing import Generic, TypeVar, Optional, Sequence
 
 from exactly_lib.symbol.logic.matcher import T, MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import pre_or_post_value_validators
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation import ddv_validators
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterValue, \
@@ -100,7 +100,7 @@ class PropertyMatcherDdv(Generic[MODEL, T], MatcherDdv[MODEL]):
                  ):
         self._matcher = matcher
         self._property_getter = property_getter
-        self._validator = pre_or_post_value_validators.all_of([
+        self._validator = ddv_validators.all_of([
             self._matcher.validator,
             self._property_getter.validator,
         ])
@@ -115,7 +115,7 @@ class PropertyMatcherDdv(Generic[MODEL, T], MatcherDdv[MODEL]):
                                                   self._matcher.structure())
 
     @property
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> PropertyMatcher[MODEL, T]:

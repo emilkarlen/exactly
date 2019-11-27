@@ -6,7 +6,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironment
 from exactly_lib.test_case.result import sh, svh
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -230,7 +230,7 @@ class ValidatorOfReferredResolverBase(PreOrPostSdsValidator):
 
 
 class PreOrPostSdsValidatorFromValueValidator(PreOrPostSdsValidator):
-    def __init__(self, get_value_validator: Callable[[SymbolTable], PreOrPostSdsValueValidator]):
+    def __init__(self, get_value_validator: Callable[[SymbolTable], DdvValidator]):
         self._get_value_validator = get_value_validator
         self._value_validator = None
         self._hds = None
@@ -242,7 +242,7 @@ class PreOrPostSdsValidatorFromValueValidator(PreOrPostSdsValidator):
         tcds = Tcds(self._hds, environment.sds)
         return self._get_validator(environment.symbols).validate_post_sds_if_applicable(tcds)
 
-    def _get_validator(self, symbols: SymbolTable) -> PreOrPostSdsValueValidator:
+    def _get_validator(self, symbols: SymbolTable) -> DdvValidator:
         if self._value_validator is None:
             self._value_validator = self._get_value_validator(symbols)
 

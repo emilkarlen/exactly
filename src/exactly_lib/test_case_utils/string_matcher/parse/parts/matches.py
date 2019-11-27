@@ -4,7 +4,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.test_case.validation import pre_or_post_validation
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_getters
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
@@ -38,7 +38,7 @@ def parse(expectation_type: ExpectationType,
 def value_sdv(expectation_type: ExpectationType,
               is_full_match: bool,
               contents_matcher: RegexSdv) -> StringMatcherSdv:
-    def get_value_validator(symbols: SymbolTable) -> PreOrPostSdsValueValidator:
+    def get_value_validator(symbols: SymbolTable) -> DdvValidator:
         return contents_matcher.resolve(symbols).validator()
 
     def get_value(symbols: SymbolTable) -> StringMatcherDdv:

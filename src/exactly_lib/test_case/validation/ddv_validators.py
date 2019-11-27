@@ -3,15 +3,15 @@ from typing import Optional, Sequence, Iterable
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
-from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
     constant_success_validator
+from exactly_lib.test_case.validation.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class ValueValidatorFromResolverValidator(PreOrPostSdsValueValidator):
+class DdvValidatorFromSdvValidator(DdvValidator):
     def __init__(self,
                  symbols: SymbolTable,
                  adapted: PreOrPostSdsValidator):
@@ -27,7 +27,7 @@ class ValueValidatorFromResolverValidator(PreOrPostSdsValueValidator):
         return self._adapted.validate_post_sds_if_applicable(environment)
 
 
-def all_of(validators: Sequence[PreOrPostSdsValueValidator]) -> PreOrPostSdsValueValidator:
+def all_of(validators: Sequence[DdvValidator]) -> DdvValidator:
     if len(validators) == 0:
         return constant_success_validator()
     elif len(validators) == 1:
@@ -36,9 +36,9 @@ def all_of(validators: Sequence[PreOrPostSdsValueValidator]) -> PreOrPostSdsValu
         return AndValidator(validators)
 
 
-class AndValidator(PreOrPostSdsValueValidator):
+class AndValidator(DdvValidator):
     def __init__(self,
-                 validators: Iterable[PreOrPostSdsValueValidator]):
+                 validators: Iterable[DdvValidator]):
         self.validators = validators
 
     def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:

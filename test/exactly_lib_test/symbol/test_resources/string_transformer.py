@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
@@ -61,12 +61,12 @@ class StringTransformerConstantSequenceTestImpl(StringTransformerTestImplBase):
 class StringTransformerDdvTestImpl(StringTransformerDdv):
     def __init__(self,
                  primitive_value: StringTransformer,
-                 validator: PreOrPostSdsValueValidator = constant_success_validator(),
+                 validator: DdvValidator = constant_success_validator(),
                  ):
         self._primitive_value = primitive_value
         self._validator = validator
 
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> StringTransformer:
@@ -113,7 +113,7 @@ class StringTransformerSdvConstantValueTestImpl(StringTransformerSdv):
 
 def string_transformer_from_primitive_value(primitive_value: StringTransformer = StringTransformerIdentityTestImpl(),
                                             references: Sequence[SymbolReference] = (),
-                                            validator: PreOrPostSdsValueValidator = constant_success_validator(),
+                                            validator: DdvValidator = constant_success_validator(),
                                             ) -> StringTransformerSdv:
     return StringTransformerSdvConstantValueTestImpl(
         StringTransformerDdvTestImpl(
@@ -126,7 +126,7 @@ def string_transformer_from_primitive_value(primitive_value: StringTransformer =
 
 def string_transformer_from_result(result: StringTransformerModel,
                                    references: Sequence[SymbolReference] = (),
-                                   validator: PreOrPostSdsValueValidator = constant_success_validator(),
+                                   validator: DdvValidator = constant_success_validator(),
                                    ) -> StringTransformerSdv:
     return StringTransformerSdvConstantValueTestImpl(
         StringTransformerDdvTestImpl(
@@ -139,7 +139,7 @@ def string_transformer_from_result(result: StringTransformerModel,
 
 def string_transformer_from_repeatable_result(result: Sequence[str],
                                               references: Sequence[SymbolReference] = (),
-                                              validator: PreOrPostSdsValueValidator = constant_success_validator(),
+                                              validator: DdvValidator = constant_success_validator(),
                                               ) -> StringTransformerSdv:
     return StringTransformerSdvConstantValueTestImpl(
         StringTransformerDdvTestImpl(

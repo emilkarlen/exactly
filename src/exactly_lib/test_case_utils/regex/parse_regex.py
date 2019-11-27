@@ -10,7 +10,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -86,7 +86,7 @@ class _RegexSdv(RegexSdv):
                          self._string.resolve(symbols))
 
 
-class _ValidatorWhichCreatesRegex(PreOrPostSdsValueValidator):
+class _ValidatorWhichCreatesRegex(DdvValidator):
     def __init__(self,
                  is_ignore_case: bool,
                  string: StringDdv):
@@ -154,7 +154,7 @@ class _RegexDdv(RegexDdv):
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self._validator.resolving_dependencies()
 
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._validator
 
     def value_when_no_dir_dependencies(self) -> Pattern:

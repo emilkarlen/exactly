@@ -7,7 +7,7 @@ from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.regex import parse_regex
@@ -66,7 +66,7 @@ class _Ddv(StringTransformerDdv):
         self._regex = regex
         self._replacement = replacement
 
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._regex.validator()
 
     def value_of_any_dependency(self, tcds: Tcds) -> StringTransformer:

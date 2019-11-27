@@ -9,7 +9,7 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_value_validation import ConstantPreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import ConstantDdvValidator
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation, MatcherDdv
@@ -162,7 +162,7 @@ class TestDefault(TestCaseBase):
                                           _constant_line_matcher_type_parser_of_matcher_ddv(
                                               matchers.MatcherDdvOfConstantMatcherTestImpl(
                                                   matchers.MatcherWithConstantResult(True),
-                                                  ConstantPreOrPostSdsValueValidator(
+                                                  ConstantDdvValidator(
                                                       pre_sds_result=rend_comb.ConstantSequenceR([])
                                                   )
                                               )
@@ -178,7 +178,7 @@ class TestDefault(TestCaseBase):
                                           _constant_line_matcher_type_parser_of_matcher_ddv(
                                               matchers.MatcherDdvOfConstantMatcherTestImpl(
                                                   matchers.MatcherWithConstantResult(True),
-                                                  ConstantPreOrPostSdsValueValidator(
+                                                  ConstantDdvValidator(
                                                       post_sds_result=rend_comb.ConstantSequenceR([])
                                                   )
                                               )

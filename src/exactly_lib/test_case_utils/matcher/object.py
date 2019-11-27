@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Generic, TypeVar, Set, Sequence
 
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import pre_or_post_value_validation
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation import ddv_validation
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -24,8 +24,8 @@ class ObjectDdv(Generic[T], MultiDependenciesDdv[T], ABC):
         return set()
 
     @property
-    def validator(self) -> PreOrPostSdsValueValidator:
-        return pre_or_post_value_validation.constant_success_validator()
+    def validator(self) -> DdvValidator:
+        return ddv_validation.constant_success_validator()
 
     @abstractmethod
     def value_of_any_dependency(self, tcds: Tcds) -> T:

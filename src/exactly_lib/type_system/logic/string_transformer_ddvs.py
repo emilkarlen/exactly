@@ -1,7 +1,7 @@
 from typing import Sequence, Callable
 
-from exactly_lib.test_case.validation import pre_or_post_value_validators
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation import ddv_validators
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic import string_transformer
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer
@@ -25,12 +25,12 @@ class StringTransformerConstantDdv(StringTransformerDdv):
 class StringTransformerSequenceDdv(StringTransformerDdv):
     def __init__(self, transformers: Sequence[StringTransformerDdv]):
         self._transformers = transformers
-        self._validator = pre_or_post_value_validators.AndValidator([
+        self._validator = ddv_validators.AndValidator([
             transformer.validator()
             for transformer in transformers
         ])
 
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> string_transformer.SequenceStringTransformer:

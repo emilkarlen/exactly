@@ -4,7 +4,7 @@ from typing import TypeVar, Generic, Optional, Sequence, Callable
 from exactly_lib.definitions import expression
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.description_tree import custom_details
@@ -220,7 +220,7 @@ class ComparisonMatcherDdv(Generic[T], MatcherDdv[T]):
         )
 
     @property
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._rhs.validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:

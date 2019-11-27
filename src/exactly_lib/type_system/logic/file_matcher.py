@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -63,7 +63,7 @@ class FileMatcher(MatcherWTraceAndNegation[FileMatcherModel], ABC):
 
 
 class FileMatcherDdv(DirDependentValue[FileMatcher], ABC):
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return constant_success_validator()
 
     @abstractmethod

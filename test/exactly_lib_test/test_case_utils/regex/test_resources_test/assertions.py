@@ -4,7 +4,7 @@ from typing import Sequence, Pattern
 
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_value_validation import ConstantPreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import ConstantDdvValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -221,7 +221,7 @@ class TestMatchesRegexResolver(unittest.TestCase):
 
         sdv_of_actual = RegexSdvConstantTestImpl(
             ARBITRARY_PATTERN,
-            value_validator=ConstantPreOrPostSdsValueValidator(
+            value_validator=ConstantDdvValidator(
                 pre_sds_result=asrt_validation.new_single_string_text_for_test('expected failure')
             ),
         )
@@ -240,7 +240,7 @@ class TestMatchesRegexResolver(unittest.TestCase):
 
         sdv_of_actual = RegexSdvConstantTestImpl(
             ARBITRARY_PATTERN,
-            value_validator=ConstantPreOrPostSdsValueValidator(
+            value_validator=ConstantDdvValidator(
                 post_sds_result=asrt_validation.new_single_string_text_for_test('expected failure')
             ),
         )

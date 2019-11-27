@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, constant, ddv_components
 from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherLine
@@ -38,7 +38,7 @@ def is_line_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
     )
 
 
-def successful_matcher_with_validation(validator: PreOrPostSdsValueValidator):
+def successful_matcher_with_validation(validator: DdvValidator):
     return LineMatcherSdv(
         matchers.sdv_from_primitive_value(
             matchers.MatcherWithConstantResult(True),
@@ -51,7 +51,7 @@ def successful_matcher_with_validation(validator: PreOrPostSdsValueValidator):
 def sdv_from_primitive_value(
         primitive_value: MatcherWTraceAndNegation[LineMatcherLine] = matchers.MatcherWithConstantResult(True),
         references: Sequence[SymbolReference] = (),
-        validator: PreOrPostSdsValueValidator = constant_success_validator(),
+        validator: DdvValidator = constant_success_validator(),
 ) -> LineMatcherSdv:
     return LineMatcherSdv(
         matchers.sdv_from_primitive_value(

@@ -3,7 +3,7 @@ from typing import Generic, TypeVar, Sequence, Set, Optional
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -18,7 +18,7 @@ T = TypeVar('T')
 
 class ObjectValueOfOperandDdv(Generic[T], ObjectDdv[T]):
     def __init__(self,
-                 validator: PreOrPostSdsValueValidator,
+                 validator: DdvValidator,
                  operand: OperandDdv[T],
                  ):
         self._validator = validator
@@ -31,7 +31,7 @@ class ObjectValueOfOperandDdv(Generic[T], ObjectDdv[T]):
         return self._operand.resolving_dependencies()
 
     @property
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> T:
@@ -53,7 +53,7 @@ class ObjectSdvOfOperandSdv(Generic[T], ObjectSdv[T]):
         )
 
 
-class _Validator(PreOrPostSdsValueValidator):
+class _Validator(DdvValidator):
     def __init__(self,
                  symbols: SymbolTable,
                  operand: OperandSdv,

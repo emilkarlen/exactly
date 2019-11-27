@@ -1,4 +1,4 @@
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.string_transformer.impl import select
 from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv
@@ -14,7 +14,7 @@ class SelectStringTransformerDdv(StringTransformerDdv):
     def __init__(self, line_matcher: LineMatcherDdv):
         self._line_matcher = line_matcher
 
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._line_matcher.validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> StringTransformer:

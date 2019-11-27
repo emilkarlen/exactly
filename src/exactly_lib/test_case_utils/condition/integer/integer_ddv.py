@@ -2,7 +2,7 @@ from typing import Callable, Optional, Set
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -22,8 +22,8 @@ class IntegerDdv(OperandDdv[int]):
                  custom_integer_validator: Optional[CustomIntegerValidator] = None):
         self._describer = details.String(strings.AsToStringObject(int_expression.describer()))
         self._primitive_value_computer = _PrimitiveValueComputer(int_expression)
-        self._validator = _IntegerValueValidator(self._primitive_value_computer,
-                                                 custom_integer_validator)
+        self._validator = _IntegerDdvValidator(self._primitive_value_computer,
+                                               custom_integer_validator)
 
     def describer(self) -> DetailsRenderer:
         return self._describer
@@ -31,7 +31,7 @@ class IntegerDdv(OperandDdv[int]):
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self._primitive_value_computer.resolving_dependencies()
 
-    def validator(self) -> PreOrPostSdsValueValidator:
+    def validator(self) -> DdvValidator:
         return self._validator
 
     def value_when_no_dir_dependencies(self) -> int:
@@ -71,7 +71,7 @@ class _PrimitiveValueComputer:
             raise NotAnIntegerException(msg)
 
 
-class _IntegerValueValidator(PreOrPostSdsValueValidator):
+class _IntegerDdvValidator(DdvValidator):
     def __init__(self,
                  value_computer: _PrimitiveValueComputer,
                  custom_validator: Optional[CustomIntegerValidator]):

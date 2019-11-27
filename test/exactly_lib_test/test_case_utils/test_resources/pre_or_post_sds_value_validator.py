@@ -2,8 +2,8 @@ import unittest
 from typing import Optional, Callable, Any
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.test_case.validation.pre_or_post_value_validation import PreOrPostSdsValueValidator, \
-    ConstantPreOrPostSdsValueValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
+    ConstantDdvValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
@@ -14,7 +14,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 
 def check(put: unittest.TestCase,
-          validator: PreOrPostSdsValueValidator,
+          validator: DdvValidator,
           tcds: Tcds,
           expectation: Expectation):
     def _check(f: Callable[[Any], Optional[TextRenderer]],
@@ -48,7 +48,7 @@ def check(put: unittest.TestCase,
            tcds)
 
 
-class ValidatorThat(PreOrPostSdsValueValidator):
+class ValidatorThat(DdvValidator):
     def __init__(self,
                  pre_sds_action: Callable[[HomeDirectoryStructure], None] = do_nothing,
                  pre_sds_return_value: Optional[TextRenderer] = None,
@@ -69,14 +69,14 @@ class ValidatorThat(PreOrPostSdsValueValidator):
         return self.post_setup_return_value
 
 
-def constant_validator(result: ValidationActual) -> PreOrPostSdsValueValidator:
-    return ConstantPreOrPostSdsValueValidator(
+def constant_validator(result: ValidationActual) -> DdvValidator:
+    return ConstantDdvValidator(
         pre_sds_result=asrt_text_doc.new_single_string_text_for_test__optional(result.pre_sds),
         post_sds_result=asrt_text_doc.new_single_string_text_for_test__optional(result.post_sds),
     )
 
 
-class PreOrPostSdsValidatorAssertion(ValueAssertionBase[PreOrPostSdsValueValidator]):
+class PreOrPostSdsValidatorAssertion(ValueAssertionBase[DdvValidator]):
     def __init__(self,
                  expectation: ValidationExpectation,
                  tcds: Tcds):
@@ -85,7 +85,7 @@ class PreOrPostSdsValidatorAssertion(ValueAssertionBase[PreOrPostSdsValueValidat
 
     def _apply(self,
                put: unittest.TestCase,
-               value: PreOrPostSdsValueValidator,
+               value: DdvValidator,
                message_builder: MessageBuilder):
         pre_sds_result = value.validate_pre_sds_if_applicable(self.tcds.hds)
         self.expectation.pre_sds.apply_with_message(put,
@@ -99,7 +99,7 @@ class PreOrPostSdsValidatorAssertion(ValueAssertionBase[PreOrPostSdsValueValidat
                                                          'post sds validation')
 
 
-class PreOrPostSdsValueValidationAssertion(ValueAssertionBase[PreOrPostSdsValueValidator]):
+class PreOrPostSdsValueValidationAssertion(ValueAssertionBase[DdvValidator]):
     def __init__(self,
                  tcds: Tcds,
                  expectation: ValidationExpectation,
@@ -109,7 +109,7 @@ class PreOrPostSdsValueValidationAssertion(ValueAssertionBase[PreOrPostSdsValueV
 
     def _apply(self,
                put: unittest.TestCase,
-               value: PreOrPostSdsValueValidator,
+               value: DdvValidator,
                message_builder: MessageBuilder):
         validation_result = value.validate_pre_sds_if_applicable(self.tcds.hds)
         self.expectation.pre_sds.apply_with_message(put,
