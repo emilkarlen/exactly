@@ -6,23 +6,23 @@ from exactly_lib.type_system.description import trace_renderers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation, T
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation, MODEL
 
 
-class MatcherImplBase(Generic[T],
-                      MatcherWTraceAndNegation[T],
+class MatcherImplBase(Generic[MODEL],
+                      MatcherWTraceAndNegation[MODEL],
                       WithCachedNameAndTreeStructureDescriptionBase,
                       ABC):
     def __init__(self):
         WithCachedNameAndTreeStructureDescriptionBase.__init__(self)
 
-    def matches_emr(self, model: T) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
         raise NotImplementedError('deprecated')
 
-    def matches(self, model: T) -> bool:
+    def matches(self, model: MODEL) -> bool:
         raise NotImplementedError('abstract method')
 
-    def matches_w_trace(self, model: T) -> MatchingResult:
+    def matches_w_trace(self, model: MODEL) -> MatchingResult:
         mb_emr = self.matches_emr(model)
 
         tb = self._new_tb()
@@ -38,5 +38,5 @@ class MatcherImplBase(Generic[T],
         return TraceBuilder(self.name)
 
     @property
-    def negation(self) -> MatcherWTraceAndNegation[T]:
+    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return combinator_matchers.Negation(self)

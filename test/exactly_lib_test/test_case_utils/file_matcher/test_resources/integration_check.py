@@ -13,7 +13,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForPrimitivePath
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation, MatcherDdv
 from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.test_resources import sdv_assertions
@@ -141,7 +141,7 @@ class Executor:
                                             'SDV structure')
 
         matcher_ddv = sdv.resolve(environment.symbols)
-        assert isinstance(matcher_ddv, FileMatcherDdv)
+        assert isinstance(matcher_ddv, MatcherDdv)
 
         return matcher_ddv
 
@@ -157,7 +157,7 @@ class Executor:
     def _execute_validate_pre_sds(self,
                                   environment: PathResolvingEnvironmentPreOrPostSds,
                                   ddv: FileMatcherDdv) -> Optional[TextRenderer]:
-        result = ddv.validator().validate_pre_sds_if_applicable(environment.hds)
+        result = ddv.validator.validate_pre_sds_if_applicable(environment.hds)
         self.expectation.validation_pre_sds.apply(self.put, result,
                                                   asrt.MessageBuilder('result of validate/pre sds'))
         return result
@@ -165,7 +165,7 @@ class Executor:
     def _execute_validate_post_setup(self,
                                      environment: PathResolvingEnvironmentPreOrPostSds,
                                      ddv: FileMatcherDdv) -> Optional[TextRenderer]:
-        result = ddv.validator().validate_post_sds_if_applicable(environment.tcds)
+        result = ddv.validator.validate_post_sds_if_applicable(environment.tcds)
         self.expectation.validation_post_sds.apply(self.put, result,
                                                    asrt.MessageBuilder('result of validate/post setup'))
         return result

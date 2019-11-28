@@ -3,7 +3,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
+from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
@@ -52,7 +52,7 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
                          )),
 
         ]
-        sdv_of_actual = FileMatcherConstantSdv(FileMatcherTestImpl())
+        sdv_of_actual = file_matcher_constant_sdv(FileMatcherTestImpl())
 
         for case in cases:
             with self.subTest(name=case.name):

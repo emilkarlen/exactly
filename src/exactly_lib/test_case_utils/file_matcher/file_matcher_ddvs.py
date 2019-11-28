@@ -4,11 +4,12 @@ from typing import List, Callable
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.file_matcher.impl.ddv_base_class import FileMatcherDdvImplBase
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
 from exactly_lib.type_system.logic.impls import combinator_matchers
 
 
-class FileMatcherValueFromPrimitiveDdv(FileMatcherDdv):
+class FileMatcherValueFromPrimitiveDdv(FileMatcherDdvImplBase):
     def __init__(self, primitive_value: FileMatcher):
         self._primitive_value = primitive_value
 
@@ -16,7 +17,7 @@ class FileMatcherValueFromPrimitiveDdv(FileMatcherDdv):
         return self._primitive_value
 
 
-class FileMatcherCompositionDdvBase(FileMatcherDdv, ABC):
+class FileMatcherCompositionDdvBase(FileMatcherDdvImplBase, ABC):
     def __init__(self,
                  parts: List[FileMatcherDdv],
                  mk_primitive_value: Callable[[List[FileMatcher]], FileMatcher]):
@@ -25,10 +26,11 @@ class FileMatcherCompositionDdvBase(FileMatcherDdv, ABC):
         if not parts:
             raise ValueError('Composition must have at least one element')
         self._validator = ddv_validators.all_of([
-            part.validator()
+            part.validator
             for part in parts
         ])
 
+    @property
     def validator(self) -> DdvValidator:
         return self._validator
 
@@ -57,7 +59,7 @@ class FileMatcherOrValue(FileMatcherCompositionDdvBase):
                          lambda values: combinator_matchers.Disjunction(values))
 
 
-class FileMatcherDdvFromParts(FileMatcherDdv):
+class FileMatcherDdvFromParts(FileMatcherDdvImplBase):
     def __init__(self,
                  validator: DdvValidator,
                  matcher: Callable[[Tcds], FileMatcher],
@@ -65,6 +67,7 @@ class FileMatcherDdvFromParts(FileMatcherDdv):
         self._validator = validator
         self._matcher = matcher
 
+    @property
     def validator(self) -> DdvValidator:
         return self._validator
 

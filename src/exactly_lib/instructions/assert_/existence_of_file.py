@@ -36,7 +36,7 @@ from exactly_lib.test_case_utils.err_msg2.path_rendering import HeaderAndPathMaj
     PathRepresentationsRenderersForPrimitive
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
-from exactly_lib.test_case_utils.file_matcher import sdvs  as fm_sdvs
+from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
@@ -225,7 +225,7 @@ class _Instruction(AssertPhaseInstruction):
         if self._file_matcher is None:
             return ddv_validation.constant_success_validator()
         else:
-            return self._file_matcher.resolve(environment.symbols).validator()
+            return self._file_matcher.resolve(environment.symbols).validator
 
 
 class _Assertion:
@@ -313,7 +313,7 @@ class _Assertion:
     def _file_matcher_for_expectation_type(self) -> FileMatcherSdv:
         return (self.file_matcher
                 if self._is_positive_check()
-                else fm_sdvs.FileMatcherNotSdv(self.file_matcher)
+                else FileMatcherSdv(combinator_sdvs.Negation(self.file_matcher.matcher))
                 )
 
     def _is_positive_check(self) -> bool:

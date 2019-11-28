@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from exactly_lib.common.report_rendering import text_docs__old
 from exactly_lib.definitions import actual_file_attributes
@@ -6,12 +6,13 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case.validation.ddv_validators import DdvValidatorFromSdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils.file_matcher.impl.ddv_base_class import FileMatcherDdvImplBase
 from exactly_lib.test_case_utils.file_system_element_matcher import ErrorMessageResolverForFailingFileProperties2
+from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -91,13 +92,14 @@ class RegularFileMatchesStringMatcher(MatcherImplBase[FileMatcherModel]):
         )
 
 
-class RegularFileMatchesStringMatcherDdv(FileMatcherDdv):
+class RegularFileMatchesStringMatcherDdv(FileMatcherDdvImplBase):
     def __init__(self,
                  contents_matcher: string_matcher.StringMatcherDdv,
                  validator: DdvValidator):
         self._contents_matcher = contents_matcher
         self._validator = validator
 
+    @property
     def validator(self) -> DdvValidator:
         return self._validator
 
@@ -105,19 +107,19 @@ class RegularFileMatchesStringMatcherDdv(FileMatcherDdv):
         return RegularFileMatchesStringMatcher(self._contents_matcher.value_of_any_dependency(tcds))
 
 
-class RegularFileMatchesStringMatcherSdv(FileMatcherSdv):
-    def __init__(self, contents_matcher: StringMatcherSdv):
-        self._contents_matcher = contents_matcher
-
-    @property
-    def references(self) -> List[SymbolReference]:
-        return self._contents_matcher.references
-
-    def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
+def regular_file_matches_string_matcher_sdv(contents_matcher: StringMatcherSdv) -> FileMatcherSdv:
+    def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
         return RegularFileMatchesStringMatcherDdv(
-            self._contents_matcher.resolve(symbols),
+            contents_matcher.resolve(symbols),
             DdvValidatorFromSdvValidator(
                 symbols,
-                self._contents_matcher.validator
+                contents_matcher.validator
             )
         )
+
+    return FileMatcherSdv(
+        sdv_components.MatcherSdvFromParts(
+            contents_matcher.references,
+            make_ddv,
+        )
+    )

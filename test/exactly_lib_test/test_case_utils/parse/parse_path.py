@@ -49,7 +49,7 @@ from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImp
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference, is_reference_to_string_made_up_of_just_plain_strings
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSdvConstantTestImpl
+from exactly_lib_test.symbol.test_resources.file_matcher import file_matcher_sdv_constant_test_impl
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
 from exactly_lib_test.test_case_file_structure.test_resources import format_rel_option
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
@@ -1429,7 +1429,7 @@ class TestTypeMustBeEitherPathOrStringErrMsgGenerator(unittest.TestCase):
     def test_SHOULD_be_able_to_generate_an_error_message_for_every_illegal_type(self):
         cases = [
             ListSdvTestImplForConstantListDdv(ListDdv([])),
-            FileMatcherSdvConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
+            file_matcher_sdv_constant_test_impl(FileMatcherThatSelectsAllFilesTestImpl()),
             StringTransformerSdvConstantTestImpl(FakeStringTransformer(), []),
         ]
         for sdv in cases:

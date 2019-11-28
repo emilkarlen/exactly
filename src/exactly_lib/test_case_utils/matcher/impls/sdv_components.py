@@ -1,20 +1,20 @@
 from typing import Sequence, Callable, Generic
 
-from exactly_lib.symbol.logic.matcher import MatcherSdv, T
+from exactly_lib.symbol.logic.matcher import MatcherSdv, MODEL
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation
 from exactly_lib.util.symbol_table import SymbolTable
 from . import ddv_components
 
 
-class MatcherSdvFromParts(Generic[T], MatcherSdv[T]):
+class MatcherSdvFromParts(Generic[MODEL], MatcherSdv[MODEL]):
     def __init__(self,
                  references: Sequence[SymbolReference],
-                 make_ddv: Callable[[SymbolTable], MatcherDdv[T]]):
+                 make_ddv: Callable[[SymbolTable], MatcherDdv[MODEL]]):
         self._make_ddv = make_ddv
         self._references = references
 
-    def resolve(self, symbols: SymbolTable) -> MatcherDdv[T]:
+    def resolve(self, symbols: SymbolTable) -> MatcherDdv[MODEL]:
         return self._make_ddv(symbols)
 
     @property
@@ -25,11 +25,11 @@ class MatcherSdvFromParts(Generic[T], MatcherSdv[T]):
         return str(type(self))
 
 
-class MatcherSdvFromConstantDdv(Generic[T], MatcherSdv[T]):
-    def __init__(self, ddv: MatcherDdv[T]):
+class MatcherSdvFromConstantDdv(Generic[MODEL], MatcherSdv[MODEL]):
+    def __init__(self, ddv: MatcherDdv[MODEL]):
         self._ddv = ddv
 
-    def resolve(self, symbols: SymbolTable) -> MatcherDdv[T]:
+    def resolve(self, symbols: SymbolTable) -> MatcherDdv[MODEL]:
         return self._ddv
 
     @property
@@ -40,7 +40,7 @@ class MatcherSdvFromConstantDdv(Generic[T], MatcherSdv[T]):
         return str(type(self)) + '\'' + str(self._ddv) + '\''
 
 
-def matcher_sdv_from_constant_primitive(primitive: MatcherWTraceAndNegation[T]) -> MatcherSdv[T]:
+def matcher_sdv_from_constant_primitive(primitive: MatcherWTraceAndNegation[MODEL]) -> MatcherSdv[MODEL]:
     return MatcherSdvFromConstantDdv(
         ddv_components.MatcherDdvFromConstantPrimitive(primitive)
     )

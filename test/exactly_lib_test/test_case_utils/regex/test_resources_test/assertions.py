@@ -8,7 +8,7 @@ from exactly_lib.test_case.validation.ddv_validation import ConstantDdvValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
+from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
@@ -61,7 +61,7 @@ class TestMatchesRegexResolver(unittest.TestCase):
                          )),
 
         ]
-        sdv_of_actual = FileMatcherConstantSdv(FileMatcherTestImpl())
+        sdv_of_actual = file_matcher_constant_sdv(FileMatcherTestImpl())
 
         for case in cases:
             with self.subTest(name=case.name):

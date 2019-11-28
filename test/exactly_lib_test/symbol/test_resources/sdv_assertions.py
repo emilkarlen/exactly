@@ -142,7 +142,7 @@ def matches_sdv_of_file_matcher(references: ValueAssertion[Sequence[SymbolRefere
                                 symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolDependentValue]:
     return matches_sdv(is_sdv_of_file_matcher_type(),
                        references,
-                       asrt.is_instance_with(FileMatcherDdv, resolved_value),
+                       asrt.is_instance_with(MatcherDdv, resolved_value),
                        custom,
                        symbol_table_from_none_or_value(symbols))
 

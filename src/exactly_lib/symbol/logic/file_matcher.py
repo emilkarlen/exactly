@@ -1,14 +1,18 @@
 from typing import List
 
-from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
+from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class FileMatcherSdv(LogicTypeSdv):
+class FileMatcherSdv(MatcherTypeSdv[FileMatcherModel]):
     """ Base class for SDVs of :class:`FileMatcher`. """
+
+    def __init__(self, matcher: MatcherSdv[FileMatcherModel]):
+        self._matcher = matcher
 
     @property
     def logic_value_type(self) -> LogicValueType:
@@ -19,8 +23,12 @@ class FileMatcherSdv(LogicTypeSdv):
         return ValueType.FILE_MATCHER
 
     @property
+    def matcher(self) -> MatcherSdv[FileMatcherModel]:
+        return self._matcher
+
+    @property
     def references(self) -> List[SymbolReference]:
-        raise NotImplementedError('abstract method')
+        return list(self._matcher.references)
 
     def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
-        raise NotImplementedError('abstract method')
+        return self._matcher.resolve(symbols)

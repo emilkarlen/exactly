@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
+from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import line_matcher
@@ -50,7 +50,7 @@ class TestResolvedValueMatchesLineMatcher(unittest.TestCase):
                          )),
 
         ]
-        sdv_of_actual = FileMatcherConstantSdv(FileMatcherTestImpl())
+        sdv_of_actual = file_matcher_constant_sdv(FileMatcherTestImpl())
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_equals_expected = sut.resolved_ddv_matches_line_matcher(

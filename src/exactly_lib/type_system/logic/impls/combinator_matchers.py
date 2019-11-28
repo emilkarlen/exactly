@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import TypeVar, Generic, Sequence, Optional
+from typing import Generic, Sequence, Optional
 
 from exactly_lib.definitions import expression
 from exactly_lib.test_case.validation import ddv_validators
@@ -12,10 +12,8 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation, \
-    MatcherDdv, T
+    MatcherDdv, MODEL
 from exactly_lib.util.description_tree import renderers
-
-MODEL = TypeVar('MODEL')
 
 
 class _CombinatorBase(Generic[MODEL],
@@ -80,8 +78,8 @@ class Negation(_CombinatorBase[MODEL]):
         return self._negated,
 
 
-class NegationDdv(Generic[T], MatcherDdv[T]):
-    def __init__(self, operand: MatcherDdv[T]):
+class NegationDdv(Generic[MODEL], MatcherDdv[MODEL]):
+    def __init__(self, operand: MatcherDdv[MODEL]):
         self._operand = operand
 
     def structure(self) -> StructureRenderer:
@@ -91,7 +89,7 @@ class NegationDdv(Generic[T], MatcherDdv[T]):
     def validator(self) -> DdvValidator:
         return self._operand.validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return Negation(self._operand.value_of_any_dependency(tcds))
 
 
@@ -154,8 +152,8 @@ class Conjunction(_CombinatorBase[MODEL]):
         return self._parts
 
 
-class ConjunctionDdv(Generic[T], MatcherDdv[T]):
-    def __init__(self, operands: Sequence[MatcherDdv[T]]):
+class ConjunctionDdv(Generic[MODEL], MatcherDdv[MODEL]):
+    def __init__(self, operands: Sequence[MatcherDdv[MODEL]]):
         self._operands = operands
         self._validator = ddv_validators.all_of(
             [matcher.validator
@@ -169,7 +167,7 @@ class ConjunctionDdv(Generic[T], MatcherDdv[T]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return Conjunction([operand.value_of_any_dependency(tcds) for operand in self._operands])
 
 
@@ -232,8 +230,8 @@ class Disjunction(_CombinatorBase[MODEL]):
         return self._parts
 
 
-class DisjunctionDdv(Generic[T], MatcherDdv[T]):
-    def __init__(self, operands: Sequence[MatcherDdv[T]]):
+class DisjunctionDdv(Generic[MODEL], MatcherDdv[MODEL]):
+    def __init__(self, operands: Sequence[MatcherDdv[MODEL]]):
         self._operands = operands
         self._validator = ddv_validators.all_of(
             [matcher.validator
@@ -247,5 +245,5 @@ class DisjunctionDdv(Generic[T], MatcherDdv[T]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return Disjunction([operand.value_of_any_dependency(tcds) for operand in self._operands])

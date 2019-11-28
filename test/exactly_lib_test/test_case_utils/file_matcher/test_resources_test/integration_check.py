@@ -9,28 +9,28 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv, MODEL
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import constant_success_validator, \
     DdvValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.file_matcher.file_matcher_ddvs import FileMatcherValueFromPrimitiveDdv
-from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherSdvFromParts
-from exactly_lib.test_case_utils.matcher.impls import constant
+from exactly_lib.test_case_utils.matcher.impls import constant, ddv_components
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv, FileMatcherModel
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSdvConstantTestImpl
+from exactly_lib_test.symbol.test_resources.file_matcher import file_matcher_sdv_constant_test_impl
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check as sut
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import file_matcher_sdv_from_parts
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.model_construction import ModelConstructor, \
     constant_relative_file_name
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
@@ -136,7 +136,7 @@ class TestSymbolReferences(TestCaseBase):
                                                                                         symbol_value)
         expectation = asrt_sym.equals_symbol_table(expected_symbol_table)
 
-        sdv_that_checks_symbols = FileMatcherSdvThatAssertsThatSymbolsAreAsExpected(self, expectation)
+        sdv_that_checks_symbols = FileMatcherSdv(MatcherSdvThatAssertsThatSymbolsAreAsExpected(self, expectation))
 
         self._check(
             ConstantParser(sdv_that_checks_symbols),
@@ -254,7 +254,7 @@ def file_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> FileMatc
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> FileMatcher:
         return FileMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(environment.tcds)
 
-    return FileMatcherSdvFromParts(
+    return file_matcher_sdv_from_parts(
         (),
         ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(),
         get_matcher,
@@ -291,14 +291,14 @@ def parser_for_constant(resolved_value: FileMatcher = constant.MatcherWithConsta
                         validator: DdvValidator = constant_success_validator()
                         ) -> Parser[FileMatcherSdv]:
     return ConstantParser(
-        FileMatcherSdvFromParts(
+        file_matcher_sdv_from_parts(
             references=references,
             validator=validator,
             matcher=lambda tcds: resolved_value,
         ))
 
 
-class FileMatcherSdvThatAssertsThatSymbolsAreAsExpected(FileMatcherSdv):
+class MatcherSdvThatAssertsThatSymbolsAreAsExpected(MatcherSdv[MODEL]):
     def __init__(self,
                  put: unittest.TestCase,
                  expectation: ValueAssertion[SymbolTable]):
@@ -309,10 +309,10 @@ class FileMatcherSdvThatAssertsThatSymbolsAreAsExpected(FileMatcherSdv):
     def references(self) -> List[SymbolReference]:
         return []
 
-    def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
+    def resolve(self, symbols: SymbolTable) -> MatcherDdv[MODEL]:
         self._expectation.apply_with_message(self._put, symbols, 'symbols given to resolve')
 
-        return FileMatcherValueFromPrimitiveDdv(constant.MatcherWithConstantResult(True))
+        return ddv_components.MatcherDdvFromConstantPrimitive(constant.MatcherWithConstantResult(True))
 
 
 class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(DdvValidator):
@@ -335,7 +335,7 @@ class FileMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(FileMatcherTestImplBase
 
 PARSER_THAT_GIVES_MATCHER_THAT_MATCHES = parser_for_constant()
 
-_MATCHER_THAT_MATCHES = FileMatcherSdvConstantTestImpl(constant.MatcherWithConstantResult(True))
+_MATCHER_THAT_MATCHES = file_matcher_sdv_constant_test_impl(constant.MatcherWithConstantResult(True))
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

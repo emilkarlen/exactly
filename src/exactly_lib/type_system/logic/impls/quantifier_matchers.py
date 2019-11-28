@@ -10,7 +10,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation, \
-    MatcherDdv, T
+    MatcherDdv
 from exactly_lib.util import strings
 from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -188,7 +188,7 @@ class ExistsDdv(Generic[MODEL, ELEMENT], MatcherDdv[MODEL]):
         self._element_setup = element_setup
         self._predicate = predicate
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return Exists(
             self._element_setup,
             self._predicate.value_of_any_dependency(tcds)
@@ -247,7 +247,7 @@ class ForAllDdv(Generic[MODEL, ELEMENT], MatcherDdv[MODEL]):
         self._element_setup = element_setup
         self._predicate = predicate
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return ForAll(
             self._element_setup,
             self._predicate.value_of_any_dependency(tcds)

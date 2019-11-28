@@ -1,10 +1,10 @@
 from typing import Sequence, List
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case_utils.file_matcher import sdvs
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matchers
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_validator import constant_validator
@@ -25,7 +25,7 @@ class ValidationCaseSvh:
         self._expectation = expectation
         self._symbol_context = FileMatcherSymbolContext(
             symbol_name,
-            sdvs.FileMatcherSdvFromParts(
+            file_matchers.file_matcher_sdv_from_parts(
                 [],
                 validator=constant_validator(actual),
                 matcher=get_matcher

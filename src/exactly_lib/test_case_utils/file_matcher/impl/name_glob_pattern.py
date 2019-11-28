@@ -7,7 +7,8 @@ from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherSdvFromValueParts
+from exactly_lib.test_case_utils.file_matcher.impl.ddv_base_class import FileMatcherDdvImplBase
+from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_sdv_from_ddv_parts
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.data.string_ddv import StringDdv
@@ -35,13 +36,13 @@ def sdv(glob_pattern: StringSdv) -> FileMatcherSdv:
     def get_value(symbols: SymbolTable) -> FileMatcherDdv:
         return _Ddv(glob_pattern.resolve(symbols))
 
-    return FileMatcherSdvFromValueParts(
+    return file_matcher_sdv_from_ddv_parts(
         glob_pattern.references,
         get_value,
     )
 
 
-class _Ddv(FileMatcherDdv):
+class _Ddv(FileMatcherDdvImplBase):
     def __init__(self, glob_pattern: StringDdv):
         self._glob_pattern = glob_pattern
 

@@ -2,11 +2,11 @@ from typing import Generic, Optional
 
 from exactly_lib.definitions.primitives import boolean
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, T, MatchingResult, Failure
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MODEL, MatchingResult, Failure
 from exactly_lib.util.description_tree import renderers, tree
 
 
-class MatcherWithConstantResult(Generic[T], MatcherWTraceAndNegation[T]):
+class MatcherWithConstantResult(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
     NAME = 'constant'
 
     def __init__(self, result: bool):
@@ -29,14 +29,14 @@ class MatcherWithConstantResult(Generic[T], MatcherWTraceAndNegation[T]):
         return self.name
 
     @property
-    def negation(self) -> 'MatcherWithConstantResult[T]':
+    def negation(self) -> 'MatcherWithConstantResult[MODEL]':
         return MatcherWithConstantResult(not self._result)
 
-    def matches_w_trace(self, model: T) -> MatchingResult:
+    def matches_w_trace(self, model: MODEL) -> MatchingResult:
         return self._matching_result
 
-    def matches_w_failure(self, model: T) -> Optional[Failure[T]]:
+    def matches_w_failure(self, model: MODEL) -> Optional[Failure[MODEL]]:
         raise NotImplementedError('deprecated')
 
-    def matches_emr(self, model: T) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
         raise NotImplementedError('deprecated')

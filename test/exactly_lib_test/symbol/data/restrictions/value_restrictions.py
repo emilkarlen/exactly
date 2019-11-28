@@ -12,7 +12,7 @@ from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSdvConstantTestImpl
+from exactly_lib_test.symbol.test_resources.file_matcher import file_matcher_sdv_constant_test_impl
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
 from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
 from exactly_lib_test.type_system.logic.test_resources.values import FileMatcherTestImpl, FakeStringTransformer
@@ -48,7 +48,7 @@ class TestAnySymbolTypeRestriction(unittest.TestCase):
     def test_fail_WHEN_type_category_is_not_data(self):
         # ARRANGE #
         test_cases = [
-            FileMatcherSdvConstantTestImpl(FileMatcherTestImpl()),
+            file_matcher_sdv_constant_test_impl(FileMatcherTestImpl()),
             StringTransformerSdvConstantTestImpl(FakeStringTransformer(), []),
         ]
         restriction = vr.AnyDataTypeRestriction()
@@ -84,7 +84,7 @@ class TestStringRestriction(unittest.TestCase):
         # ARRANGE #
         test_cases = [
             path_constant_sdv(),
-            FileMatcherSdvConstantTestImpl(FileMatcherTestImpl()),
+            file_matcher_sdv_constant_test_impl(FileMatcherTestImpl()),
         ]
         restriction = vr.StringRestriction()
         symbols = empty_symbol_table()

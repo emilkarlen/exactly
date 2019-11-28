@@ -9,7 +9,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
-from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
+from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
@@ -49,7 +49,7 @@ class Configuration(matcher_parse_check.Configuration[FileMatcherModel]):
         return is_file_matcher_reference_to(symbol_name)
 
     def sdv_of_constant_matcher(self, matcher: FileMatcher) -> SymbolDependentValue:
-        return FileMatcherConstantSdv(matcher)
+        return file_matcher_constant_sdv(matcher)
 
     def arbitrary_model_that_should_not_be_touched(self) -> FileMatcherModel:
         return file_matcher_models.FileMatcherModelForPrimitivePath(

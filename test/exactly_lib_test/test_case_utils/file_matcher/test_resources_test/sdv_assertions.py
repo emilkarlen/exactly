@@ -1,12 +1,13 @@
 import unittest
 
-from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, string_sdvs
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSdvConstantTestImpl
+from exactly_lib_test.symbol.test_resources.file_matcher import file_matcher_sdv_constant_test_impl
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import sdv_assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -50,10 +51,10 @@ class TestResolvedValueMatchesFileMatcher(unittest.TestCase):
                          )),
 
         ]
-        sdv = FileMatcherConstantSdv(constant.MatcherWithConstantResult(True))
+        sdv = file_matcher_constant_sdv(constant.MatcherWithConstantResult(True))
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.resolved_ddv_matches_file_matcher(asrt.is_instance(FileMatcherDdv),
+                assertion_to_check = sut.resolved_ddv_matches_file_matcher(asrt.is_instance(MatcherDdv),
                                                                            symbols=case.value)
                 # ACT & ASSERT #
                 assertion_to_check.apply_without_message(self, sdv)
@@ -95,12 +96,12 @@ class TestResolvedValueMatchesFileMatcher(unittest.TestCase):
                 assert_that_assertion_fails(assertion_to_check, sdv)
 
 
-def fake(references: list = None) -> FileMatcherSdvConstantTestImpl:
-    return FileMatcherSdvConstantTestImpl(constant.MatcherWithConstantResult(False),
-                                          references if references else [])
+def fake(references: list = None) -> FileMatcherSdv:
+    return file_matcher_sdv_constant_test_impl(constant.MatcherWithConstantResult(False),
+                                               references if references else [])
 
 
-ARBITRARY_FILE_MATCHER_SDV = FileMatcherSdvConstantTestImpl(constant.MatcherWithConstantResult(False), [])
+ARBITRARY_FILE_MATCHER_SDV = file_matcher_sdv_constant_test_impl(constant.MatcherWithConstantResult(False), [])
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

@@ -1,4 +1,5 @@
-from typing import TypeVar, Generic, Sequence, Optional, List
+from typing import Generic, Callable
+from typing import TypeVar, Sequence, Optional, List
 
 from exactly_lib.definitions.primitives import boolean
 from exactly_lib.symbol.logic.matcher import MatcherSdv
@@ -10,8 +11,9 @@ from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConsta
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MatchingResult, \
-    Failure, T
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, \
+    Failure
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
@@ -79,6 +81,25 @@ class MatcherSdvOfConstantDdvTestImpl(Generic[MODEL], MatcherSdv[MODEL]):
 
     def resolve(self, symbols: SymbolTable) -> MatcherDdv[MODEL]:
         return self._resolved_value
+
+
+class MatcherDdvFromPartsTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
+    def __init__(self,
+                 make_primitive: Callable[[Tcds], MatcherWTraceAndNegation[MODEL]],
+                 validator: DdvValidator = ddv_validation.constant_success_validator(),
+                 ):
+        self._make_primitive = make_primitive
+        self._validator = validator
+
+    def structure(self) -> StructureRenderer:
+        return renderers.header_only('ddv-from-parts')
+
+    @property
+    def validator(self) -> DdvValidator:
+        return self._validator
+
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
+        return self._make_primitive(tcds)
 
 
 class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
@@ -151,7 +172,7 @@ class MatcherThatRegistersModelArgument(Generic[MODEL], MatcherWTraceAndNegation
                                                            ())))
 
 
-class MatcherThatReportsHardError(Generic[T], MatcherWTraceAndNegation[T]):
+class MatcherThatReportsHardError(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
     def __init__(self, error_message: str = 'unconditional hard error'):
         super().__init__()
         self.error_message = error_message
@@ -168,11 +189,11 @@ class MatcherThatReportsHardError(Generic[T], MatcherWTraceAndNegation[T]):
         return renderers_tr.structure_renderer_for_arbitrary_object(self)
 
     @property
-    def negation(self) -> MatcherWTraceAndNegation[T]:
+    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return self
 
-    def matches_w_trace(self, model: T) -> MatchingResult:
+    def matches_w_trace(self, model: MODEL) -> MatchingResult:
         raise HardErrorException(new_single_string_text_for_test(self.error_message))
 
-    def matches(self, model: T) -> bool:
+    def matches(self, model: MODEL) -> bool:
         raise HardErrorException(new_single_string_text_for_test(self.error_message))

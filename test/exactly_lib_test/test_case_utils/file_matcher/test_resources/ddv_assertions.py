@@ -3,7 +3,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.impl import name_glob_pattern, file_type, name_regex
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherDdv
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -41,10 +41,10 @@ def matches_file_matcher_ddv__deep(
         return value.value_of_any_dependency(tcds)
 
     def get_validator(value: FileMatcherDdv):
-        return value.validator()
+        return value.validator
 
     return asrt.is_instance_with__many(
-        FileMatcherDdv,
+        MatcherDdv,
         [
             asrt.sub_component(
                 'primitive value',
@@ -66,10 +66,10 @@ def matches_file_matcher_ddv(
         validator: ValueAssertion[DdvValidator] = asrt.anything_goes(),
 ) -> ValueAssertion[FileMatcherDdv]:
     def get_validator(value: FileMatcherDdv):
-        return value.validator()
+        return value.validator
 
     return asrt.is_instance_with(
-        FileMatcherDdv,
+        MatcherDdv,
         asrt.sub_component(
             'validator',
             get_validator,

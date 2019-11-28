@@ -1,6 +1,6 @@
 from typing import Generic, TypeVar, Optional, Sequence
 
-from exactly_lib.symbol.logic.matcher import T, MatcherSdv
+from exactly_lib.symbol.logic.matcher import MODEL, MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
@@ -14,15 +14,15 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, Mat
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 
-MODEL = TypeVar('MODEL')
+PROP_TYPE = TypeVar('PROP_TYPE')
 
 
-class PropertyMatcher(Generic[MODEL, T], MatcherWTrace[MODEL]):
+class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTrace[MODEL]):
     """Matches a property of a model"""
 
     def __init__(self,
-                 matcher: MatcherWTrace[T],
-                 property_getter: PropertyGetter[MODEL, T],
+                 matcher: MatcherWTrace[PROP_TYPE],
+                 property_getter: PropertyGetter[MODEL, PROP_TYPE],
                  ):
         self._matcher = matcher
         self._property_getter = property_getter
@@ -55,7 +55,7 @@ class PropertyMatcher(Generic[MODEL, T], MatcherWTrace[MODEL]):
         return self.new_structure_tree(self._property_getter.name,
                                        self._matcher.structure())
 
-    def matches_emr(self, model: T) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
         return (
             None
             if self.matches_w_trace(model).value
@@ -63,7 +63,7 @@ class PropertyMatcher(Generic[MODEL, T], MatcherWTrace[MODEL]):
             err_msg_resolvers.constant('False')
         )
 
-    def matches_w_failure(self, model: MODEL) -> Optional[Failure[T]]:
+    def matches_w_failure(self, model: MODEL) -> Optional[Failure[MODEL]]:
         """
         :raises HardErrorException
         """
@@ -93,10 +93,10 @@ class PropertyMatcher(Generic[MODEL, T], MatcherWTrace[MODEL]):
         )
 
 
-class PropertyMatcherDdv(Generic[MODEL, T], MatcherDdv[MODEL]):
+class PropertyMatcherDdv(Generic[MODEL, PROP_TYPE], MatcherDdv[MODEL]):
     def __init__(self,
-                 matcher: MatcherDdv[T],
-                 property_getter: PropertyGetterValue[MODEL, T],
+                 matcher: MatcherDdv[PROP_TYPE],
+                 property_getter: PropertyGetterValue[MODEL, PROP_TYPE],
                  ):
         self._matcher = matcher
         self._property_getter = property_getter
@@ -118,17 +118,17 @@ class PropertyMatcherDdv(Generic[MODEL, T], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> PropertyMatcher[MODEL, T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> PropertyMatcher[MODEL, PROP_TYPE]:
         return PropertyMatcher(
             self._matcher.value_of_any_dependency(tcds),
             self._property_getter.value_of_any_dependency(tcds),
         )
 
 
-class PropertyMatcherSdv(Generic[MODEL, T], MatcherSdv[MODEL]):
+class PropertyMatcherSdv(Generic[MODEL, PROP_TYPE], MatcherSdv[MODEL]):
     def __init__(self,
-                 matcher: MatcherSdv[T],
-                 property_getter: PropertyGetterSdv[MODEL, T],
+                 matcher: MatcherSdv[PROP_TYPE],
+                 property_getter: PropertyGetterSdv[MODEL, PROP_TYPE],
                  ):
         self._matcher = matcher
         self._property_getter = property_getter
@@ -138,7 +138,7 @@ class PropertyMatcherSdv(Generic[MODEL, T], MatcherSdv[MODEL]):
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    def resolve(self, symbols: SymbolTable) -> PropertyMatcherDdv[MODEL, T]:
+    def resolve(self, symbols: SymbolTable) -> PropertyMatcherDdv[MODEL, PROP_TYPE]:
         return PropertyMatcherDdv(
             self._matcher.resolve(symbols),
             self._property_getter.resolve(symbols),

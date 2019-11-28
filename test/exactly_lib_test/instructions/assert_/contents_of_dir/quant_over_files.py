@@ -7,7 +7,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
+from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -394,7 +394,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         ])
 
         symbol_table_with_file_matcher = SymbolTable({
-            name_starts_with_selected.name: container(FileMatcherConstantSdv(name_starts_with_selected.value))
+            name_starts_with_selected.name: container(file_matcher_constant_sdv(name_starts_with_selected.value))
         })
         relativity_root_conf = tr.DEFAULT_REL_OPT_CONFIG
 
@@ -462,7 +462,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         ])
 
         symbol_table_with_file_matcher = SymbolTable({
-            name_starts_with_selected.name: container(FileMatcherConstantSdv(name_starts_with_selected.value))
+            name_starts_with_selected.name: container(file_matcher_constant_sdv(name_starts_with_selected.value))
         })
         relativity_root_conf = tr.DEFAULT_REL_OPT_CONFIG
 

@@ -7,7 +7,8 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherSdvFromValueParts
+from exactly_lib.test_case_utils.file_matcher.impl.ddv_base_class import FileMatcherDdvImplBase
+from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_sdv_from_ddv_parts
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
@@ -33,16 +34,17 @@ def sdv(regex_sdv: RegexSdv) -> FileMatcherSdv:
     def get_value(symbols: SymbolTable) -> FileMatcherDdv:
         return _Ddv(regex_sdv.resolve(symbols))
 
-    return FileMatcherSdvFromValueParts(
+    return file_matcher_sdv_from_ddv_parts(
         regex_sdv.references,
         get_value,
     )
 
 
-class _Ddv(FileMatcherDdv):
+class _Ddv(FileMatcherDdvImplBase):
     def __init__(self, regex: RegexDdv):
         self._regex = regex
 
+    @property
     def validator(self) -> DdvValidator:
         return self._regex.validator()
 

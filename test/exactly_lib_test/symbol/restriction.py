@@ -17,7 +17,7 @@ from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
 from exactly_lib_test.symbol.test_resources import line_matcher
 from exactly_lib_test.symbol.test_resources.command_sdvs import CommandDriverSdvForConstantTestImpl
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSdvConstantTestImpl
+from exactly_lib_test.symbol.test_resources.file_matcher import file_matcher_sdv_constant_test_impl
 from exactly_lib_test.symbol.test_resources.files_matcher import FilesMatcherSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
@@ -40,7 +40,7 @@ class TestElementTypeRestriction(unittest.TestCase):
             string_sdvs.str_constant('string value'),
 
         TypeCategory.LOGIC:
-            FileMatcherSdvConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
+            file_matcher_sdv_constant_test_impl(FileMatcherThatSelectsAllFilesTestImpl()),
     }
 
     def test_satisfied_restriction(self):
@@ -97,7 +97,7 @@ class TestValueTypeRestriction(unittest.TestCase):
             line_matcher.arbitrary_sdv(),
 
         ValueType.FILE_MATCHER:
-            FileMatcherSdvConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
+            file_matcher_sdv_constant_test_impl(FileMatcherThatSelectsAllFilesTestImpl()),
 
         ValueType.FILES_MATCHER:
             FilesMatcherSdvConstantTestImpl(),

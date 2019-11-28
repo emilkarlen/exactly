@@ -23,6 +23,10 @@ class LineMatcherSdv(MatcherTypeSdv[LineMatcherLine]):
         return ValueType.LINE_MATCHER
 
     @property
+    def matcher(self) -> MatcherSdv[LineMatcherLine]:
+        return self._matcher
+
+    @property
     def references(self) -> List[SymbolReference]:
         return list(self._matcher.references)
 

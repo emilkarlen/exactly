@@ -12,20 +12,20 @@ from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.with_option_description import WithOptionDescription
 
-T = TypeVar('T')
+MODEL = TypeVar('MODEL')
 
 
-class Failure(Generic[T]):
+class Failure(Generic[MODEL]):
     def __init__(self,
                  expectation_type: ExpectationType,
                  expected: str,
-                 actual: T):
+                 actual: MODEL):
         self.expectation_type = expectation_type
         self.expected = expected
         self.actual = actual
 
 
-class Matcher(Generic[T], WithOptionDescription, ABC):
+class Matcher(Generic[MODEL], WithOptionDescription, ABC):
     """Matches a model."""
 
     @property
@@ -33,10 +33,10 @@ class Matcher(Generic[T], WithOptionDescription, ABC):
     def name(self) -> str:
         pass
 
-    def matches(self, model: T) -> bool:
+    def matches(self, model: MODEL) -> bool:
         return self.matches_emr(model) is None
 
-    def matches_emr(self, model: T) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
         raise NotImplementedError('abstract method')
 
 
@@ -61,34 +61,34 @@ class MatchingResult:
         return self._trace
 
 
-class MatcherWTrace(Generic[T], Matcher[T], WithNameAndTreeStructureDescription, ABC):
+class MatcherWTrace(Generic[MODEL], Matcher[MODEL], WithNameAndTreeStructureDescription, ABC):
     @abstractmethod
-    def matches_w_trace(self, model: T) -> MatchingResult:
+    def matches_w_trace(self, model: MODEL) -> MatchingResult:
         pass
 
-    def matches(self, model: T) -> bool:
+    def matches(self, model: MODEL) -> bool:
         return self.matches_w_trace(model).value
 
 
-class MatcherWTraceAndNegation(Generic[T], MatcherWTrace[T], ABC):
+class MatcherWTraceAndNegation(Generic[MODEL], MatcherWTrace[MODEL], ABC):
     @property
     @abstractmethod
-    def negation(self) -> 'MatcherWTraceAndNegation[T]':
+    def negation(self) -> 'MatcherWTraceAndNegation[MODEL]':
         pass
 
-    def matches_w_failure(self, model: T) -> Optional[Failure[T]]:
+    def matches_w_failure(self, model: MODEL) -> Optional[Failure[MODEL]]:
         """
         :raises HardErrorException
         """
         raise NotImplementedError('deprecated')
 
 
-class MatcherDdv(Generic[T],
-                 DirDependentValue[T],
+class MatcherDdv(Generic[MODEL],
+                 DirDependentValue[MODEL],
                  WithTreeStructureDescription,
                  ABC):
     @abstractmethod
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         pass
 
     @property

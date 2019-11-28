@@ -12,7 +12,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref, \
-    FileMatcherSdvConstantValueTestImpl
+    file_matcher_sdv_constant_value_test_impl
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
@@ -112,7 +112,7 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
         ]
 
         for case in cases:
-            sdv_of_failing_matcher = FileMatcherSdvConstantValueTestImpl(
+            sdv_of_failing_matcher = file_matcher_sdv_constant_value_test_impl(
                 FileMatcherDdvFromParts(
                     case.actual,
                     get_file_matcher_successful_matcher

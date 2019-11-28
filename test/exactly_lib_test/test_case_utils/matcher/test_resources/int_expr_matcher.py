@@ -2,7 +2,7 @@ from typing import Optional
 
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import Matcher, T
+from exactly_lib.type_system.logic.matcher_base_class import Matcher, MODEL
 
 
 class ComparisonMatcherForEquivalenceChecks(Matcher[int]):
@@ -22,7 +22,7 @@ class ComparisonMatcherForEquivalenceChecks(Matcher[int]):
     def matches(self, model: int) -> bool:
         return self._operator.operator_fun(model, self._constant_rhs)
 
-    def matches_emr(self, model: T) -> Optional[ErrorMessageResolver]:
+    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
         raise NotImplementedError('unsupported')
 
     @property

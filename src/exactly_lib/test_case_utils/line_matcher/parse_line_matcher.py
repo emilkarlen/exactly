@@ -115,15 +115,15 @@ def _mk_reference(name: str) -> LineMatcherSdv:
 
 
 def _mk_negation(operand: LineMatcherSdv) -> LineMatcherSdv:
-    return LineMatcherSdv(combinator_sdvs.Negation(operand))
+    return LineMatcherSdv(combinator_sdvs.Negation(operand.matcher))
 
 
 def _mk_conjunction(operands: Sequence[LineMatcherSdv]) -> LineMatcherSdv:
-    return LineMatcherSdv(combinator_sdvs.Conjunction(operands))
+    return LineMatcherSdv(combinator_sdvs.Conjunction([operand.matcher for operand in operands]))
 
 
 def _mk_disjunction(operands: Sequence[LineMatcherSdv]) -> LineMatcherSdv:
-    return LineMatcherSdv(combinator_sdvs.Disjunction(operands))
+    return LineMatcherSdv(combinator_sdvs.Disjunction([operand.matcher for operand in operands]))
 
 
 GRAMMAR = grammar.Grammar(

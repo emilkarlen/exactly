@@ -1,6 +1,6 @@
-from typing import Generic
+from typing import Generic, Callable
 
-from exactly_lib.symbol.logic.matcher import T
+from exactly_lib.symbol.logic.matcher import MODEL
 from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -8,9 +8,9 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation
 
 
-class MatcherDdvFromConstantPrimitive(Generic[T], MatcherDdv[T]):
+class MatcherDdvFromConstantPrimitive(Generic[MODEL], MatcherDdv[MODEL]):
     def __init__(self,
-                 primitive_value: MatcherWTraceAndNegation[T],
+                 primitive_value: MatcherWTraceAndNegation[MODEL],
                  validator: DdvValidator =
                  ddv_validation.constant_success_validator(),
                  ):
@@ -24,5 +24,24 @@ class MatcherDdvFromConstantPrimitive(Generic[T], MatcherDdv[T]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherDdv[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherDdv[MODEL]:
+        return self._primitive_value
+
+
+class MatcherDdvFromParts(Generic[MODEL], MatcherDdv[MODEL]):
+    def __init__(self,
+                 make_primitive: Callable[[Tcds], MatcherWTraceAndNegation[MODEL]],
+                 validator: DdvValidator = ddv_validation.constant_success_validator(),
+                 ):
+        self._make_primitive = make_primitive
+        self._validator = validator
+
+    def structure(self) -> StructureRenderer:
+        return self._primitive_value.structure()
+
+    @property
+    def validator(self) -> DdvValidator:
+        return self._validator
+
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherDdv[MODEL]:
         return self._primitive_value

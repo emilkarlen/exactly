@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
+from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer, SequenceStringTransformer
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
@@ -56,7 +56,7 @@ class TestResolvedValueMatchesStringTransformer(unittest.TestCase):
         ]
         actual = FileMatcherTestImpl()
 
-        sdv_of_actual = FileMatcherConstantSdv(actual)
+        sdv_of_actual = file_matcher_constant_sdv(actual)
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_equals_expected = sut.resolved_value_matches_string_transformer(

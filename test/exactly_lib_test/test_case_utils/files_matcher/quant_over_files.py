@@ -8,7 +8,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
+from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
@@ -400,7 +400,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         ])
 
         symbol_table_with_file_matcher = SymbolTable({
-            name_starts_with_selected.name: container(FileMatcherConstantSdv(name_starts_with_selected.value))
+            name_starts_with_selected.name: container(file_matcher_constant_sdv(name_starts_with_selected.value))
         })
         relativity_root_conf = AN_ACCEPTED_SDS_REL_OPT_CONFIG
 
@@ -467,7 +467,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         ])
 
         symbol_table_with_file_matcher = SymbolTable({
-            name_starts_with_selected.name: container(FileMatcherConstantSdv(name_starts_with_selected.value))
+            name_starts_with_selected.name: container(file_matcher_constant_sdv(name_starts_with_selected.value))
         })
         relativity_root_conf = AN_ACCEPTED_SDS_REL_OPT_CONFIG
 

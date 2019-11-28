@@ -11,7 +11,7 @@ from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherDdv, T
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherDdv, MODEL
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.description_tree import renderers
@@ -130,7 +130,7 @@ class MatchesRegexDdv(MatcherDdv[str]):
     def validator(self) -> DdvValidator:
         return self._regex.validator()
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return MatchesRegex(
             self._expectation_type,
             self._is_full_match,
