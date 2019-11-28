@@ -7,7 +7,6 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherSdvFromValueParts
 from exactly_lib.test_case_utils.regex import parse_regex
@@ -78,10 +77,7 @@ class FileMatcherBaseNameRegExPattern(FileMatcherImplBase):
         return 'base name matches regular expression ' + self.reg_ex_pattern
 
     def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
-        if self.matches(model):
-            return None
-        else:
-            return err_msg_resolvers.constant(str(model.path.primitive.name))
+        raise NotImplementedError('deprecated')
 
     def matches(self, model: FileMatcherModel) -> bool:
         return self._compiled_reg_ex.search(model.path.primitive.name) is not None

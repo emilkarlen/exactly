@@ -5,7 +5,6 @@ from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.description.trace_building import TraceBuilder
@@ -51,22 +50,7 @@ class FileMatcherType(FileMatcherImplBase):
         )
 
     def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
-        path = model.path.primitive
-        try:
-            stat_result = self._stat_method(path)
-        except OSError as ex:
-            return err_msg_resolvers.sequence_of_parts([
-                err_msg_resolvers.of_path(model.path.describer),
-                err_msg_resolvers.constant(str(ex))
-            ])
-        file_type = file_properties.lookup_file_type(stat_result)
-        if file_type is self._file_type:
-            return None
-        else:
-            return err_msg_resolvers.sequence_of_parts([
-                err_msg_resolvers.of_path(model.path.describer),
-                _FileTypeErrorMessageResolver(file_type)
-            ])
+        raise NotImplementedError('deprecated')
 
     def matches(self, model: FileMatcherModel) -> bool:
         return self._path_predicate(model.path.primitive)

@@ -5,7 +5,6 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.description import trace_renderers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
@@ -37,11 +36,7 @@ class FileMatcher(MatcherWTraceAndNegation[FileMatcherModel], ABC):
     """Matches a path of an existing file."""
 
     def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
-        """"Want this variant to replace the bool variant."""
-        if self.matches(model):
-            return None
-        else:
-            return err_msg_resolvers.constant('Failure of: ' + self.option_description)
+        raise NotImplementedError('deprecated')
 
     def matches(self, model: FileMatcherModel) -> bool:
         raise NotImplementedError('abstract method')

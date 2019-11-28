@@ -44,12 +44,10 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
         return 'contents matches STRING-MATCHER'
 
     def matches(self, model: FileMatcherModel) -> bool:
-        return self.matches_emr(model) is None
+        return self.matches_w_trace(model).value
 
     def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
-        self._hard_error_if_not_regular_file(model)
-        model = self._string_matcher_model(model)
-        return self._string_matcher.matches_emr(model)
+        raise NotImplementedError('deprecated')
 
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         self._hard_error_if_not_regular_file(model)

@@ -7,7 +7,6 @@ from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherSdvFromValueParts
 from exactly_lib.test_case_utils.parse import parse_string
@@ -78,10 +77,7 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
         return ' '.join([self.name, self._glob_pattern])
 
     def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
-        if self.matches(model):
-            return None
-        else:
-            return err_msg_resolvers.of_path(model.path.describer)
+        raise NotImplementedError('deprecated')
 
     def matches(self, model: FileMatcherModel) -> bool:
         return model.path.primitive.match(self._glob_pattern)

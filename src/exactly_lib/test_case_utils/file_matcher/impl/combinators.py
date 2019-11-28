@@ -29,7 +29,7 @@ class FileMatcherDelegatedToMatcherWTrace(FileMatcher):
         return self._delegated.matches(model)
 
     def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
-        return self._delegated.matches_emr(model)
+        raise NotImplementedError('deprecated')
 
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         return self._delegated.matches_w_trace(model)

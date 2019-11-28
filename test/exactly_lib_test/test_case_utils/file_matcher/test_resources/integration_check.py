@@ -11,7 +11,6 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForPrimitivePath
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
@@ -139,7 +138,7 @@ class Executor:
             symbols=environment.symbols)
 
         sdv_health_check.apply_with_message(self.put, sdv,
-                                                 'SDV structure')
+                                            'SDV structure')
 
         matcher_ddv = sdv.resolve(environment.symbols)
         assert isinstance(matcher_ddv, FileMatcherDdv)
@@ -176,31 +175,20 @@ class Executor:
                       matcher: FileMatcher):
         model = self._new_model(tcds)
         try:
-            main_result__emr = matcher.matches_emr(model)
             main_result__trace = matcher.matches_w_trace(model)
 
-            self._check_main_result(main_result__emr, main_result__trace)
+            self._check_main_result(main_result__trace)
         except HardErrorException as ex:
             self._check_hard_error(ex)
 
-    def _check_main_result(self,
-                           result: Optional[ErrorMessageResolver],
-                           result__trace: MatchingResult,
-                           ):
+    def _check_main_result(self, result: MatchingResult):
         if self.expectation.is_hard_error is not None:
             self.put.fail('HARD_ERROR not reported (raised)')
 
         if self.expectation.main_result is None:
-            self.put.assertIsNone(result,
-                                  'result from main')
-            self._assert_is_matching_result_for(True, result__trace)
+            self._assert_is_matching_result_for(True, result)
         else:
-            self.put.assertIsNotNone(result,
-                                     'result from main')
-            self._assert_is_matching_result_for(False, result__trace)
-            err_msg = result.resolve()
-            self.expectation.main_result.apply_with_message(self.put, err_msg,
-                                                            'error result of main')
+            self._assert_is_matching_result_for(False, result)
 
     def _check_hard_error(self, result: HardErrorException):
         if self.expectation.is_hard_error is not None:
