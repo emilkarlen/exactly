@@ -11,8 +11,8 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case.validation.ddv_validators import DdvValidatorFromSdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_system_element_matcher import ErrorMessageResolverForFailingFileProperties2
+from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic import string_matcher
@@ -23,14 +23,14 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class RegularFileMatchesStringMatcher(FileMatcherImplBase):
+class RegularFileMatchesStringMatcher(MatcherImplBase[FileMatcherModel]):
     NAME = ' '.join((file_check_properties.REGULAR_FILE_CONTENTS,
                      syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.singular_name)
                     )
 
-    def __init__(self, string_matcher: string_matcher.StringMatcher):
+    def __init__(self, matcher: string_matcher.StringMatcher):
         super().__init__()
-        self._string_matcher = string_matcher
+        self._string_matcher = matcher
         self._expected_file_type = file_properties.FileType.REGULAR
         self._is_regular_file_check = file_properties.ActualFilePropertiesResolver(self._expected_file_type,
                                                                                    follow_symlinks=True)

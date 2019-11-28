@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
 from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
+from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, string_sdvs
@@ -50,7 +50,7 @@ class TestResolvedValueMatchesFileMatcher(unittest.TestCase):
                          )),
 
         ]
-        sdv = FileMatcherConstantSdv(FileMatcherConstant(True))
+        sdv = FileMatcherConstantSdv(constant.MatcherWithConstantResult(True))
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_to_check = sut.resolved_ddv_matches_file_matcher(asrt.is_instance(FileMatcherDdv),
@@ -96,11 +96,11 @@ class TestResolvedValueMatchesFileMatcher(unittest.TestCase):
 
 
 def fake(references: list = None) -> FileMatcherSdvConstantTestImpl:
-    return FileMatcherSdvConstantTestImpl(FileMatcherConstant(False),
+    return FileMatcherSdvConstantTestImpl(constant.MatcherWithConstantResult(False),
                                           references if references else [])
 
 
-ARBITRARY_FILE_MATCHER_SDV = FileMatcherSdvConstantTestImpl(FileMatcherConstant(False), [])
+ARBITRARY_FILE_MATCHER_SDV = FileMatcherSdvConstantTestImpl(constant.MatcherWithConstantResult(False), [])
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

@@ -1,9 +1,9 @@
-from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
+from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 
 
-class FileMatcherThatMatchesAnyFileWhosNameStartsWith(FileMatcherImplBase):
+class FileMatcherThatMatchesAnyFileWhosNameStartsWith(MatcherImplBase[FileMatcherModel]):
     def __init__(self, prefix_of_name_for_match: str):
         super().__init__()
         self._prefix_of_name_for_match = prefix_of_name_for_match

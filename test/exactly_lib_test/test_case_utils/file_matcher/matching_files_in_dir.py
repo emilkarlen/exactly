@@ -1,11 +1,12 @@
 import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
+from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.single_dir_checks import single_dir_setup
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir
-from exactly_lib_test.type_system.logic.test_resources.file_matchers import ConstantResultMatcher
+from exactly_lib_test.type_system.logic.test_resources.file_matchers import constant_result
 
 
 def suite() -> unittest.TestSuite:
@@ -36,13 +37,13 @@ class TestMatchingFilesInDir(unittest.TestCase):
                              actual_matching_file_base_names)
 
     def test_match_every_file(self):
-        self._check(ConstantResultMatcher(True),
+        self._check(constant_result(True),
                     {self.file_1_name,
                      self.dir_2_name,
                      self.file_3_name})
 
     def test_match_no_file(self):
-        self._check(ConstantResultMatcher(False),
+        self._check(constant_result(False),
                     set())
 
     def test_match_some_files(self):
@@ -50,7 +51,7 @@ class TestMatchingFilesInDir(unittest.TestCase):
                     {self.file_1_name})
 
 
-class BaseNameMatcher(sut.FileMatcherImplBase):
+class BaseNameMatcher(MatcherImplBase[FileMatcherModel]):
     def __init__(self, base_name_that_matches: str):
         super().__init__()
         self.base_name_that_matches = base_name_that_matches

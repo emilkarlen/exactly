@@ -13,7 +13,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForPrimitivePath
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.test_resources import sdv_assertions
@@ -150,7 +150,7 @@ class Executor:
                            environment: PathResolvingEnvironmentPreOrPostSds) -> FileMatcher:
 
         matcher = ddv.value_of_any_dependency(environment.tcds)
-        assert isinstance(matcher, FileMatcher)
+        assert isinstance(matcher, MatcherWTraceAndNegation)
 
         return matcher
 

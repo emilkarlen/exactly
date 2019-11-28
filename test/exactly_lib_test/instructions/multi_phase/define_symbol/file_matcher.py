@@ -4,8 +4,8 @@ from exactly_lib.definitions.primitives.file_matcher import NAME_MATCHER_NAME
 from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
@@ -48,7 +48,7 @@ class TestSuccessfulScenarios(TestCaseBase):
         cases = [
             NIE('empty RHS SHOULD give selection of all files',
                 asrt_matcher.is_equivalent_to(
-                    file_matchers.FileMatcherConstant(True),
+                    constant.MatcherWithConstantResult(True),
                     [asrt_matcher.ModelInfo(file_matcher.FileMatcherModelThatMustNotBeAccessed())]
                 ),
                 '',

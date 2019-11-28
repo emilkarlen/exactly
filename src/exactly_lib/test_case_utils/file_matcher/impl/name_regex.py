@@ -7,8 +7,8 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherSdvFromValueParts
+from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
@@ -50,7 +50,7 @@ class _Ddv(FileMatcherDdv):
         return FileMatcherBaseNameRegExPattern(self._regex.value_of_any_dependency(tcds))
 
 
-class FileMatcherBaseNameRegExPattern(FileMatcherImplBase):
+class FileMatcherBaseNameRegExPattern(MatcherImplBase[FileMatcherModel]):
     """Matches the base name of a path on a regular expression."""
 
     VARIANT_NAME = 'matches ' + syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name

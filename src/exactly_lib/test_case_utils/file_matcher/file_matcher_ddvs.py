@@ -4,8 +4,8 @@ from typing import List, Callable
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.file_matcher.impl.combinators import FileMatcherNot, FileMatcherAnd, FileMatcherOr
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
+from exactly_lib.type_system.logic.impls import combinator_matchers
 
 
 class FileMatcherValueFromPrimitiveDdv(FileMatcherDdv):
@@ -42,19 +42,19 @@ class FileMatcherCompositionDdvBase(FileMatcherDdv, ABC):
 class FileMatcherNotValue(FileMatcherCompositionDdvBase):
     def __init__(self, matcher: FileMatcherDdv):
         super().__init__([matcher],
-                         lambda values: FileMatcherNot(values[0]))
+                         lambda values: combinator_matchers.Negation(values[0]))
 
 
 class FileMatcherAndValue(FileMatcherCompositionDdvBase):
     def __init__(self, parts: List[FileMatcherDdv]):
         super().__init__(parts,
-                         lambda values: FileMatcherAnd(values))
+                         lambda values: combinator_matchers.Conjunction(values))
 
 
 class FileMatcherOrValue(FileMatcherCompositionDdvBase):
     def __init__(self, parts: List[FileMatcherDdv]):
         super().__init__(parts,
-                         lambda values: FileMatcherOr(values))
+                         lambda values: combinator_matchers.Disjunction(values))
 
 
 class FileMatcherDdvFromParts(FileMatcherDdv):

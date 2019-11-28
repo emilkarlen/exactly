@@ -9,10 +9,13 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MatchingResult, \
-    Failure
+    Failure, T
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
+from exactly_lib_test.util.render.test_resources import renderers as renderers_tr
 
 MODEL = TypeVar('MODEL')
 
@@ -146,3 +149,30 @@ class MatcherThatRegistersModelArgument(Generic[MODEL], MatcherWTraceAndNegation
                                                            self._constant_result,
                                                            (),
                                                            ())))
+
+
+class MatcherThatReportsHardError(Generic[T], MatcherWTraceAndNegation[T]):
+    def __init__(self, error_message: str = 'unconditional hard error'):
+        super().__init__()
+        self.error_message = error_message
+
+    @property
+    def name(self) -> str:
+        return str(type(self))
+
+    @property
+    def option_description(self) -> str:
+        return 'unconditional HARD ERROR'
+
+    def _structure(self) -> StructureRenderer:
+        return renderers_tr.structure_renderer_for_arbitrary_object(self)
+
+    @property
+    def negation(self) -> MatcherWTraceAndNegation[T]:
+        return self
+
+    def matches_w_trace(self, model: T) -> MatchingResult:
+        raise HardErrorException(new_single_string_text_for_test(self.error_message))
+
+    def matches(self, model: T) -> bool:
+        raise HardErrorException(new_single_string_text_for_test(self.error_message))

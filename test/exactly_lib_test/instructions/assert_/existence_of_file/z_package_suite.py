@@ -34,6 +34,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.arguments_building
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.validation_cases import failing_validation_cases__svh
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.parse.parse_path import path_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
@@ -50,7 +51,6 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
-from exactly_lib_test.type_system.logic.test_resources.file_matchers import FileMatcherThatReportsHardError
 
 
 def suite() -> unittest.TestSuite:
@@ -226,7 +226,7 @@ class HardErrorInFileMatcherTest(unittest.TestCase):
 
     @staticmethod
     def _sdv_of_matcher_that_causes_hard_error(err_msg: str) -> FileMatcherSdv:
-        return FileMatcherConstantSdv(FileMatcherThatReportsHardError(err_msg))
+        return FileMatcherConstantSdv(matchers.MatcherThatReportsHardError(err_msg))
 
 
 class ArgumentsConstructorWithFileMatcher(InstructionArgumentsVariantConstructor):

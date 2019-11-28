@@ -2,13 +2,13 @@ import pathlib
 import unittest
 from typing import List
 
-from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
-from exactly_lib.test_case_utils.file_matcher.impl import combinators
+from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcher
+from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as models
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.test_resources import matcher_combinators_check
-from exactly_lib_test.type_system.logic.test_resources.file_matchers import FileMatcherConstantWithName
 
 
 def suite() -> unittest.TestSuite:
@@ -26,7 +26,7 @@ class FileMatcherConfiguration(matcher_combinators_check.MatcherConfiguration):
     def matcher_with_constant_result(self,
                                      name: str,
                                      result: bool) -> FileMatcher:
-        return FileMatcherConstantWithName(name, result)
+        return matchers.ConstantMatcherWithCustomName(name, result)
 
     def matcher_that_registers_model_argument_and_returns_constant(self,
                                                                    registry: List,
@@ -42,7 +42,7 @@ class TestAnd(matcher_combinators_check.TestAndBase):
         return FileMatcherConfiguration()
 
     def new_combinator_to_check(self, constructor_argument):
-        return combinators.FileMatcherAnd(constructor_argument)
+        return combinator_matchers.Conjunction(constructor_argument)
 
 
 class TestOr(matcher_combinators_check.TestOrBase):
@@ -53,7 +53,7 @@ class TestOr(matcher_combinators_check.TestOrBase):
         return FileMatcherConfiguration()
 
     def new_combinator_to_check(self, constructor_argument):
-        return combinators.FileMatcherOr(constructor_argument)
+        return combinator_matchers.Disjunction(constructor_argument)
 
 
 class TestNot(matcher_combinators_check.TestNotBase):
@@ -64,14 +64,14 @@ class TestNot(matcher_combinators_check.TestNotBase):
         return FileMatcherConfiguration()
 
     def new_combinator_to_check(self, constructor_argument):
-        return combinators.FileMatcherNot(constructor_argument)
+        return combinator_matchers.Negation(constructor_argument)
 
 
-class FileMatcherThatRegistersModelArgument(sut.FileMatcherImplBase):
+class FileMatcherThatRegistersModelArgument(MatcherImplBase[FileMatcherModel]):
     def __init__(self,
                  registry: List[FileMatcherModel],
                  constant_result: bool):
-        sut.FileMatcherImplBase.__init__(self)
+        MatcherImplBase.__init__(self)
         self._registry = registry
         self._constant_result = constant_result
 

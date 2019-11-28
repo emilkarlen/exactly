@@ -32,11 +32,11 @@ def matches_sdv(sdv_type: ValueAssertion[rs.SymbolDependentValue],
                 resolved_value: ValueAssertion,
                 custom: ValueAssertion[rs.SymbolDependentValue] = asrt.anything_goes(),
                 symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolDependentValue]:
-    return _MatchesSymbolValueResolver(sdv_type,
-                                       references,
-                                       resolved_value,
-                                       custom,
-                                       symbol_table_from_none_or_value(symbols))
+    return _MatchesSdv(sdv_type,
+                       references,
+                       resolved_value,
+                       custom,
+                       symbol_table_from_none_or_value(symbols))
 
 
 def is_sdv_of_data_type(data_value_type: DataValueType,
@@ -181,7 +181,7 @@ def matches_sdv_of_program(references: ValueAssertion[Sequence[SymbolReference]]
                        symbol_table_from_none_or_value(symbols))
 
 
-class _MatchesSymbolValueResolver(ValueAssertionBase[rs.SymbolDependentValue]):
+class _MatchesSdv(ValueAssertionBase[rs.SymbolDependentValue]):
     """Implements as class to make it possible to set break points"""
 
     def __init__(self,

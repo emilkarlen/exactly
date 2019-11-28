@@ -7,8 +7,8 @@ from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherSdvFromValueParts
+from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
@@ -49,7 +49,7 @@ class _Ddv(FileMatcherDdv):
         return FileMatcherNameGlobPattern(self._glob_pattern.value_of_any_dependency(tcds))
 
 
-class FileMatcherNameGlobPattern(FileMatcherImplBase):
+class FileMatcherNameGlobPattern(MatcherImplBase[FileMatcherModel]):
     """Matches the name (whole path, not just base name) of a path on a shell glob pattern."""
 
     NAME = 'name matches ' + syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument.name

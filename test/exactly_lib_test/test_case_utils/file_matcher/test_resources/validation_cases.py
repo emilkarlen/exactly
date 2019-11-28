@@ -2,7 +2,7 @@ from typing import Sequence, List
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.file_matcher import sdvs
-from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
+from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
@@ -20,7 +20,7 @@ class ValidationCaseSvh:
                  actual: ValidationActual,
                  ):
         def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> FileMatcher:
-            return FileMatcherConstant(True)
+            return constant.MatcherWithConstantResult(True)
 
         self._expectation = expectation
         self._symbol_context = FileMatcherSymbolContext(

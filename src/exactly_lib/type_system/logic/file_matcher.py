@@ -1,16 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
-from exactly_lib.type_system.description import trace_renderers
-from exactly_lib.type_system.description.trace_building import TraceBuilder
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.util.file_utils import TmpDirFileSpace
 
 
@@ -32,29 +28,7 @@ class FileMatcherModel(ABC):
         pass
 
 
-class FileMatcher(MatcherWTraceAndNegation[FileMatcherModel], ABC):
-    """Matches a path of an existing file."""
-
-    def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
-        raise NotImplementedError('deprecated')
-
-    def matches(self, model: FileMatcherModel) -> bool:
-        raise NotImplementedError('abstract method')
-
-    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
-        mb_emr = self.matches_emr(model)
-
-        tb = self._new_tb()
-
-        if mb_emr is None:
-            return tb.build_result(True)
-        else:
-            tb.details.append(
-                trace_renderers.DetailsRendererOfErrorMessageResolver(mb_emr))
-            return tb.build_result(False)
-
-    def _new_tb(self) -> TraceBuilder:
-        return TraceBuilder(self.name)
+FileMatcher = MatcherWTraceAndNegation[FileMatcherModel]
 
 
 class FileMatcherDdv(DirDependentValue[FileMatcher], ABC):

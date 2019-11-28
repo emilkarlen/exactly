@@ -8,10 +8,10 @@ from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
-from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
 from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherConstantSdv
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -58,7 +58,7 @@ class Configuration(matcher_parse_check.Configuration[FileMatcherModel]):
         )
 
     def constant_matcher(self, result: bool) -> FileMatcher:
-        return file_matchers.FileMatcherConstant(result)
+        return constant.MatcherWithConstantResult(result)
 
 
 NON_MATCHER_ARGUMENTS = 'not_a_matcher argument'

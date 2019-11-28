@@ -3,6 +3,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.impl import name_glob_pattern, file_type, name_regex
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -48,7 +49,7 @@ def matches_file_matcher_ddv__deep(
             asrt.sub_component(
                 'primitive value',
                 resolve_primitive_value,
-                asrt.is_instance_with(FileMatcher,
+                asrt.is_instance_with(MatcherWTraceAndNegation,
                                       primitive_value)
             ),
             asrt.sub_component(

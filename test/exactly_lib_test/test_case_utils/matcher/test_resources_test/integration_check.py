@@ -10,24 +10,21 @@ from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import ConstantDdvValidator
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation, MatcherDdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers, integration_check as sut
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation
+from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import MatcherThatReportsHardError
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_hard_error
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.util.render.test_resources import renderers
 
 EXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.LINE_MATCHER
 UNEXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.FILE_MATCHER
@@ -189,7 +186,7 @@ class TestDefault(TestCaseBase):
 
     def test_expects_no_hard_error(self):
         parser_that_gives_value_that_causes_hard_error = _constant_line_matcher_type_parser_of_matcher_sdv(
-            matchers.sdv_from_primitive_value(_MatcherThatReportsHardError())
+            matchers.sdv_from_primitive_value(MatcherThatReportsHardError())
         )
         with self.assertRaises(utils.TestError):
             self._check_line_matcher_type(
@@ -277,29 +274,6 @@ class _MatcherTypeSdvTestImpl(MatcherTypeSdv[int]):
 
     def resolve(self, symbols: SymbolTable) -> MatcherDdv[int]:
         return self._matcher.resolve(symbols)
-
-
-class _MatcherThatReportsHardError(MatcherWTraceAndNegation[int]):
-    @property
-    def name(self) -> str:
-        return str(type(self))
-
-    @property
-    def option_description(self) -> str:
-        return 'unconditional HARD ERROR'
-
-    def _structure(self) -> StructureRenderer:
-        return renderers.structure_renderer_for_arbitrary_object(self)
-
-    @property
-    def negation(self) -> MatcherWTraceAndNegation[int]:
-        return self
-
-    def matches_w_trace(self, model: int) -> MatchingResult:
-        raise HardErrorException(new_single_string_text_for_test('unconditional hard error'))
-
-    def matches(self, model: int) -> bool:
-        raise HardErrorException(new_single_string_text_for_test('unconditional hard error'))
 
 
 class _MatcherSdvThatAssertsThatSymbolsAreAsExpected(MatcherSdv[int]):

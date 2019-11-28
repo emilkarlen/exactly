@@ -1,4 +1,4 @@
-from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
+from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
@@ -20,7 +20,7 @@ class FileMatcherModelThatMustNotBeAccessed(FileMatcherModel):
         raise NotImplementedError('must not be used')
 
 
-class FileMatcherThatSelectsAllFilesTestImpl(FileMatcherImplBase):
+class FileMatcherThatSelectsAllFilesTestImpl(MatcherImplBase[FileMatcherModel]):
 
     @property
     def name(self) -> str:

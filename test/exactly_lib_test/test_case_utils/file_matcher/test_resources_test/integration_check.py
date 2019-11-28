@@ -16,9 +16,9 @@ from exactly_lib.test_case.validation.ddv_validation import constant_success_val
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.file_matcher_ddvs import FileMatcherValueFromPrimitiveDdv
-from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
-from exactly_lib.test_case_utils.file_matcher.impl.impl_base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.sdvs import FileMatcherSdvFromParts
+from exactly_lib.test_case_utils.matcher.impls import constant
+from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv, FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable
@@ -33,6 +33,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check as sut
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.model_construction import ModelConstructor, \
     constant_relative_file_name
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, is_pass, is_hard_error
@@ -40,7 +41,6 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, em
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     sds_2_tcds_assertion
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.file_matchers import FileMatcherThatReportsHardError
 
 
 def suite() -> unittest.TestSuite:
@@ -151,7 +151,7 @@ class TestSymbolReferences(TestCaseBase):
 class TestHardError(TestCaseBase):
     def test_expected_hard_error_is_detected(self):
         parser_that_gives_value_that_causes_hard_error = parser_for_constant(
-            FileMatcherThatReportsHardError()
+            matchers.MatcherThatReportsHardError()
         )
         self._check(
             parser_that_gives_value_that_causes_hard_error,
@@ -261,7 +261,7 @@ def file_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> FileMatc
     )
 
 
-class FileMatcherTestImplBase(FileMatcherImplBase):
+class FileMatcherTestImplBase(MatcherImplBase[FileMatcherModel]):
     def __init__(self, result: bool = True):
         super().__init__()
         self._result = result
@@ -286,7 +286,7 @@ class FileMatcherTestImplBase(FileMatcherImplBase):
         return str(self)
 
 
-def parser_for_constant(resolved_value: FileMatcher = FileMatcherConstant(True),
+def parser_for_constant(resolved_value: FileMatcher = constant.MatcherWithConstantResult(True),
                         references: Sequence[SymbolReference] = (),
                         validator: DdvValidator = constant_success_validator()
                         ) -> Parser[FileMatcherSdv]:
@@ -312,7 +312,7 @@ class FileMatcherSdvThatAssertsThatSymbolsAreAsExpected(FileMatcherSdv):
     def resolve(self, symbols: SymbolTable) -> FileMatcherDdv:
         self._expectation.apply_with_message(self._put, symbols, 'symbols given to resolve')
 
-        return FileMatcherValueFromPrimitiveDdv(FileMatcherConstant(True))
+        return FileMatcherValueFromPrimitiveDdv(constant.MatcherWithConstantResult(True))
 
 
 class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsValidation(DdvValidator):
@@ -335,7 +335,7 @@ class FileMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(FileMatcherTestImplBase
 
 PARSER_THAT_GIVES_MATCHER_THAT_MATCHES = parser_for_constant()
 
-_MATCHER_THAT_MATCHES = FileMatcherSdvConstantTestImpl(FileMatcherConstant(True))
+_MATCHER_THAT_MATCHES = FileMatcherSdvConstantTestImpl(constant.MatcherWithConstantResult(True))
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
