@@ -27,7 +27,7 @@ def parse_line_number(parser: TokenParser) -> LineMatcherSdv:
 
 def _operand_from_model_sdv() -> PropertyGetterSdv[LineMatcherLine, int]:
     return property_getters.PropertyGetterSdvConstant(
-        property_getters.PropertyGetterValueConstant(
+        property_getters.PropertyGetterDdvConstant(
             _PropertyGetter(),
         )
     )

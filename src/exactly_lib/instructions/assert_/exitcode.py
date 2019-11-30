@@ -23,7 +23,7 @@ from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.matcher.impls import err_msg
 from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_integer_matcher
-from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterValue, PropertyGetter
+from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterDdv, PropertyGetter
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherSdv
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
@@ -89,7 +89,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         )
         property_matcher = PropertyMatcherSdv(
             matcher,
-            property_getters.PropertyGetterSdvConstant(_ExitCodeGetterValue()),
+            property_getters.PropertyGetterSdvConstant(_ExitCodeGetterDdv()),
         )
         parser.report_superfluous_arguments_if_not_at_eol()
         return instruction_of_matcher.Instruction(
@@ -159,7 +159,7 @@ class _ExitCodeGetter(PropertyGetter[None, int]):
             raise HardErrorException(msg)
 
 
-class _ExitCodeGetterValue(PropertyGetterValue[None, int]):
+class _ExitCodeGetterDdv(PropertyGetterDdv[None, int]):
     @property
     def name(self) -> Optional[str]:
         return _ExitCodeGetter.NAME

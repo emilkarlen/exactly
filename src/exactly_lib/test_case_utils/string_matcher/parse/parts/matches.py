@@ -47,7 +47,7 @@ def value_sdv(expectation_type: ExpectationType,
         return StringMatcherDdvDelegatedToMatcher(
             property_matcher.PropertyMatcherDdv(
                 regex_matcher,
-                property_getters.PropertyGetterValueConstant(
+                property_getters.PropertyGetterDdvConstant(
                     _PropertyGetter(),
                 ),
             ),

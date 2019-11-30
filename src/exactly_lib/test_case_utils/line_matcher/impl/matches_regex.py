@@ -29,7 +29,7 @@ def sdv(regex: RegexSdv) -> LineMatcherSdv:
         regex_matcher = matches_regex.MatchesRegexDdv(ExpectationType.POSITIVE, regex_ddv, False)
         return property_matcher.PropertyMatcherDdv(
             regex_matcher,
-            property_getters.PropertyGetterValueConstant(
+            property_getters.PropertyGetterDdvConstant(
                 _PropertyGetter(),
             ),
         )

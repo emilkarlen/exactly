@@ -29,7 +29,7 @@ class PropertyGetter(Generic[MODEL, T], ABC):
         pass
 
 
-class PropertyGetterValue(Generic[MODEL, T], ABC):
+class PropertyGetterDdv(Generic[MODEL, T], ABC):
     @property
     @abstractmethod
     def name(self) -> Optional[str]:
@@ -55,5 +55,5 @@ class PropertyGetterSdv(Generic[MODEL, T], ABC):
         pass
 
     @abstractmethod
-    def resolve(self, symbols: SymbolTable) -> PropertyGetterValue[MODEL, T]:
+    def resolve(self, symbols: SymbolTable) -> PropertyGetterDdv[MODEL, T]:
         pass

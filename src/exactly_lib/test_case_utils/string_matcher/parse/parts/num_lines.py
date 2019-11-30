@@ -44,7 +44,7 @@ class _PropertyGetter(PropertyGetter[FileToCheck, int]):
 
 def _operand_from_model_sdv() -> PropertyGetterSdv[FileToCheck, int]:
     return property_getters.PropertyGetterSdvConstant(
-        property_getters.PropertyGetterValueConstant(
+        property_getters.PropertyGetterDdvConstant(
             _PropertyGetter(),
         )
     )

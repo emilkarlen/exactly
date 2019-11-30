@@ -6,7 +6,7 @@ from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterValue, \
+from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterDdv, \
     PropertyGetterSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -96,7 +96,7 @@ class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTrace[MODEL]):
 class PropertyMatcherDdv(Generic[MODEL, PROP_TYPE], MatcherDdv[MODEL]):
     def __init__(self,
                  matcher: MatcherDdv[PROP_TYPE],
-                 property_getter: PropertyGetterValue[MODEL, PROP_TYPE],
+                 property_getter: PropertyGetterDdv[MODEL, PROP_TYPE],
                  ):
         self._matcher = matcher
         self._property_getter = property_getter
