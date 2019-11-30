@@ -1,0 +1,12 @@
+[setup]
+
+def file-matcher CONTENTS = contents equals 'expected'
+
+def file-matcher NAME_GLOB   = name *.txt
+def file-matcher NAME_REGEX  = name -regex [a-z]+
+def file-matcher TYPE        = type file
+def file-matcher SYM_REF     = TYPE
+
+def file-matcher NEGATION    = ! type file
+def file-matcher CONJUNCTION = TYPE && name *.and
+def file-matcher DISJUNCTION = TYPE || name *.or
