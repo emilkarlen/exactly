@@ -9,6 +9,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherSdvBase
+from exactly_lib.test_case_utils.matcher.impls import property_matcher_describers
 from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcher
@@ -66,7 +67,11 @@ class _FilesMatcher(FilesMatcher):
         if self._expectation_type is ExpectationType.NEGATIVE:
             matcher = matcher.negation
 
-        return PropertyMatcher(matcher, _PropertyGetter())
+        return PropertyMatcher(
+            matcher,
+            _PropertyGetter(),
+            property_matcher_describers.NamedWithMatcherAsChild(files_matcher.NUM_FILES_CHECK_ARGUMENT),
+        )
 
 
 class _NumFilesMatcherDdv(FilesMatcherDdv):
@@ -107,9 +112,5 @@ class _NumFilesMatcherSdv(FilesMatcherSdvBase):
 
 
 class _PropertyGetter(PropertyGetter[FilesMatcherModel, int]):
-    @property
-    def name(self) -> Optional[str]:
-        return files_matcher.NUM_FILES_CHECK_ARGUMENT
-
     def get_from(self, model: FilesMatcherModel) -> int:
         return len(list(model.files()))

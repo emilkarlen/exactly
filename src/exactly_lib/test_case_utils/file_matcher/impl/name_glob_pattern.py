@@ -88,7 +88,6 @@ class FileMatcherNameGlobPattern(MatcherImplBase[FileMatcherModel]):
             custom_details.actual(
                 custom_details.PathValueAndPrimitiveDetailsRenderer(model.path.describer)
             )
-
         )
         if model.path.primitive.match(self._glob_pattern):
             return tb.build_result(True)

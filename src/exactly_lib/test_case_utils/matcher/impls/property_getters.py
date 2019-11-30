@@ -1,4 +1,4 @@
-from typing import Generic, Sequence, TypeVar, Optional
+from typing import Generic, Sequence, TypeVar
 
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -13,10 +13,6 @@ T = TypeVar('T')
 class PropertyGetterDdvConstant(Generic[PROP_TYPE, T], PropertyGetterDdv[PROP_TYPE, T]):
     def __init__(self, constant: PropertyGetter[PROP_TYPE, T]):
         self._constant = constant
-
-    @property
-    def name(self) -> Optional[str]:
-        return self._constant.name
 
     def value_of_any_dependency(self, tcds: Tcds) -> PropertyGetter[PROP_TYPE, T]:
         return self._constant

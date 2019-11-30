@@ -10,11 +10,19 @@ from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, 
     PropertyGetterSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, Failure, MatcherDdv
-from exactly_lib.util.description_tree import renderers
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, Failure, MatcherDdv, \
+    TraceRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 
 PROP_TYPE = TypeVar('PROP_TYPE')
+
+
+class PropertyMatcherDescriber:
+    def trace(self, matcher_result: MatchingResult) -> TraceRenderer:
+        pass
+
+    def structure(self, matcher: StructureRenderer) -> StructureRenderer:
+        pass
 
 
 class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTrace[MODEL]):
@@ -23,37 +31,24 @@ class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTrace[MODEL]):
     def __init__(self,
                  matcher: MatcherWTrace[PROP_TYPE],
                  property_getter: PropertyGetter[MODEL, PROP_TYPE],
+                 describer: PropertyMatcherDescriber,
                  ):
         self._matcher = matcher
         self._property_getter = property_getter
+        self._describer = describer
+        self._structure = self._describer.structure(self._matcher.structure())
 
     @property
     def name(self) -> str:
         """TODO Temp helper that should be removed after usages removed"""
-        return self._property_getter.name
+        return 'PropertyMatcher deprecated'
 
     @property
     def option_description(self) -> str:
-        return self._property_getter.name
-
-    @staticmethod
-    def new_structure_tree(property_getter_name: Optional[str],
-                           matcher: StructureRenderer) -> StructureRenderer:
-        return (
-            matcher
-            if property_getter_name is None
-            else
-            renderers.NodeRendererFromParts(
-                property_getter_name,
-                None,
-                (),
-                (matcher,)
-            )
-        )
+        return 'PropertyMatcher deprecated'
 
     def structure(self) -> StructureRenderer:
-        return self.new_structure_tree(self._property_getter.name,
-                                       self._matcher.structure())
+        return self._structure
 
     def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
         return (
@@ -76,20 +71,9 @@ class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTrace[MODEL]):
         :raises HardErrorException
         """
         matcher_result = self._matcher.matches_w_trace(self._property_getter.get_from(model))
-        property_getter_name = self._property_getter.name
-        return (
-            matcher_result
-            if property_getter_name is None
-            else
-            MatchingResult(
-                matcher_result.value,
-                renderers.NodeRendererFromParts(
-                    self._property_getter.name,
-                    matcher_result.value,
-                    (),
-                    (matcher_result.trace,)
-                )
-            )
+        return MatchingResult(
+            matcher_result.value,
+            self._describer.trace(matcher_result)
         )
 
 
@@ -97,9 +81,11 @@ class PropertyMatcherDdv(Generic[MODEL, PROP_TYPE], MatcherDdv[MODEL]):
     def __init__(self,
                  matcher: MatcherDdv[PROP_TYPE],
                  property_getter: PropertyGetterDdv[MODEL, PROP_TYPE],
+                 describer: PropertyMatcherDescriber,
                  ):
         self._matcher = matcher
         self._property_getter = property_getter
+        self._describer = describer
         self._validator = ddv_validators.all_of([
             self._matcher.validator,
             self._property_getter.validator,
@@ -111,8 +97,7 @@ class PropertyMatcherDdv(Generic[MODEL, PROP_TYPE], MatcherDdv[MODEL]):
         return self._property_getter.name
 
     def structure(self) -> StructureRenderer:
-        return PropertyMatcher.new_structure_tree(self._property_getter.name,
-                                                  self._matcher.structure())
+        return self._describer.structure(self._matcher.structure())
 
     @property
     def validator(self) -> DdvValidator:
@@ -122,6 +107,7 @@ class PropertyMatcherDdv(Generic[MODEL, PROP_TYPE], MatcherDdv[MODEL]):
         return PropertyMatcher(
             self._matcher.value_of_any_dependency(tcds),
             self._property_getter.value_of_any_dependency(tcds),
+            self._describer,
         )
 
 
@@ -129,9 +115,11 @@ class PropertyMatcherSdv(Generic[MODEL, PROP_TYPE], MatcherSdv[MODEL]):
     def __init__(self,
                  matcher: MatcherSdv[PROP_TYPE],
                  property_getter: PropertyGetterSdv[MODEL, PROP_TYPE],
+                 describer: PropertyMatcherDescriber,
                  ):
         self._matcher = matcher
         self._property_getter = property_getter
+        self._describer = describer
         self._references = list(matcher.references) + list(property_getter.references)
 
     @property
@@ -142,4 +130,5 @@ class PropertyMatcherSdv(Generic[MODEL, PROP_TYPE], MatcherSdv[MODEL]):
         return PropertyMatcherDdv(
             self._matcher.resolve(symbols),
             self._property_getter.resolve(symbols),
+            self._describer,
         )

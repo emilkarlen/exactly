@@ -7,6 +7,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case.instructions import instruction_names
@@ -21,7 +22,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import negation_of_predicate, pfh_exception
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
-from exactly_lib.test_case_utils.matcher.impls import err_msg
+from exactly_lib.test_case_utils.matcher.impls import err_msg, property_matcher_describers
 from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_integer_matcher
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterDdv, PropertyGetter
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherSdv
@@ -41,7 +42,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name))
 
 
-_PROPERTY_NAME = 'exit code'
+_PROPERTY_NAME = misc_texts.EXIT_CODE.singular
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
@@ -90,6 +91,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         property_matcher = PropertyMatcherSdv(
             matcher,
             property_getters.PropertyGetterSdvConstant(_ExitCodeGetterDdv()),
+            property_matcher_describers.NamedWithMatcherAsChild(instruction_names.EXIT_CODE_INSTRUCTION_NAME)
         )
         parser.report_superfluous_arguments_if_not_at_eol()
         return instruction_of_matcher.Instruction(
@@ -106,14 +108,8 @@ def _mk_error_message(failure: Failure[int]) -> ErrorMessageResolver:
 
 
 class _ExitCodeGetter(PropertyGetter[None, int]):
-    NAME = instruction_names.EXIT_CODE_INSTRUCTION_NAME
-
     def __init__(self, sds: SandboxDirectoryStructure):
         self._sds = sds
-
-    @property
-    def name(self) -> Optional[str]:
-        return self.NAME
 
     def get_from(self, model: None) -> int:
         sds = self._sds
@@ -160,10 +156,6 @@ class _ExitCodeGetter(PropertyGetter[None, int]):
 
 
 class _ExitCodeGetterDdv(PropertyGetterDdv[None, int]):
-    @property
-    def name(self) -> Optional[str]:
-        return _ExitCodeGetter.NAME
-
     def value_of_any_dependency(self, tcds: Tcds) -> PropertyGetter[None, int]:
         return _ExitCodeGetter(tcds.sds)
 

@@ -12,6 +12,7 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.matcher.impls import parse_integer_matcher as sut
 from exactly_lib.test_case_utils.matcher.impls.comparison_matcher import ComparisonMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, Matcher
+from exactly_lib.util.description_tree import details
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable, singleton_symbol_table_2
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -303,5 +304,5 @@ def matcher_of(operator: comparators.ComparisonOperator,
     return ComparisonMatcher(expectation_type,
                              operator,
                              constant_rhs,
-                             str,
+                             details.String,
                              )

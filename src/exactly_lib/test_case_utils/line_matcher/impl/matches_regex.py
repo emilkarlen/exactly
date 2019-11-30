@@ -1,10 +1,8 @@
-from typing import Optional
-
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.test_case_utils.matcher import property_matcher
-from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_getters
+from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_getters, property_matcher_describers
 from exactly_lib.test_case_utils.matcher.impls.sdv_components import MatcherSdvFromParts
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.regex import parse_regex
@@ -32,6 +30,7 @@ def sdv(regex: RegexSdv) -> LineMatcherSdv:
             property_getters.PropertyGetterDdvConstant(
                 _PropertyGetter(),
             ),
+            property_matcher_describers.IdenticalToMatcher(),
         )
 
     matcher_sdv = MatcherSdvFromParts(regex.references, get_ddv)
@@ -39,9 +38,5 @@ def sdv(regex: RegexSdv) -> LineMatcherSdv:
 
 
 class _PropertyGetter(PropertyGetter[LineMatcherLine, str]):
-    @property
-    def name(self) -> Optional[str]:
-        return None
-
     def get_from(self, model: LineMatcherLine) -> str:
         return model[1]

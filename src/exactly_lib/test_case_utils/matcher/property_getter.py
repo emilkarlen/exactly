@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generic, Sequence, TypeVar, Optional
+from typing import Generic, Sequence, TypeVar
 
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import ddv_validation
@@ -12,15 +12,6 @@ T = TypeVar('T')
 
 
 class PropertyGetter(Generic[MODEL, T], ABC):
-    @property
-    @abstractmethod
-    def name(self) -> Optional[str]:
-        """
-        :return: None iff the getter should not be included in the structure / trace -
-        it serves as an implementation detail
-        """
-        pass
-
     @abstractmethod
     def get_from(self, model: MODEL) -> T:
         """
@@ -30,15 +21,6 @@ class PropertyGetter(Generic[MODEL, T], ABC):
 
 
 class PropertyGetterDdv(Generic[MODEL, T], ABC):
-    @property
-    @abstractmethod
-    def name(self) -> Optional[str]:
-        """
-        :return: None iff the getter should not be included in the structure / trace -
-        it serves as an implementation detail
-        """
-        pass
-
     @abstractmethod
     def value_of_any_dependency(self, tcds: Tcds) -> PropertyGetter[MODEL, T]:
         pass

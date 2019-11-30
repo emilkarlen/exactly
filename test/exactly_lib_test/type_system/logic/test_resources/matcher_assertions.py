@@ -1,7 +1,7 @@
 import unittest
 from typing import List, Generic, TypeVar, Callable
 
-from exactly_lib.type_system.logic.matcher_base_class import Matcher
+from exactly_lib.type_system.logic.matcher_base_class import Matcher, MatcherWTrace
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
@@ -20,33 +20,33 @@ class ModelInfo(Generic[MODEL]):
         return self._mk_description_of_model(self.model)
 
 
-def is_equivalent_to(expected_equivalent: Matcher[MODEL],
-                     model_infos: List[ModelInfo[MODEL]]) -> ValueAssertion[Matcher[MODEL]]:
+def is_equivalent_to(expected_equivalent: MatcherWTrace[MODEL],
+                     model_infos: List[ModelInfo[MODEL]]) -> ValueAssertion[MatcherWTrace[MODEL]]:
     return MatcherEquivalenceAssertion(expected_equivalent, model_infos)
 
 
-class MatcherEquivalenceAssertion(Generic[MODEL], ValueAssertionBase[Matcher[MODEL]]):
+class MatcherEquivalenceAssertion(Generic[MODEL], ValueAssertionBase[MatcherWTrace[MODEL]]):
     def __init__(self,
-                 expected_equivalent: Matcher[MODEL],
+                 expected_equivalent: MatcherWTrace[MODEL],
                  model_infos: List[ModelInfo[MODEL]]):
         self.expected_equivalent = expected_equivalent
         self._model_infos = model_infos
 
     def _apply(self,
                put: unittest.TestCase,
-               value,
+               value: MatcherWTrace[MODEL],
                message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, Matcher)
         assert isinstance(value, Matcher)  # Type info for IDE
 
         # Check description
 
-        actual_name = value.name
-        expected_name = self.expected_equivalent.name
+        actual_structure = value.structure().render()
+        expected_structure = self.expected_equivalent.structure().render()
 
-        put.assertEqual(expected_name,
-                        actual_name,
-                        message_builder.apply('name'))
+        put.assertEqual(expected_structure.header,
+                        actual_structure.header,
+                        message_builder.apply('header'))
 
         # Check applications
 
@@ -59,9 +59,9 @@ class MatcherEquivalenceAssertion(Generic[MODEL], ValueAssertionBase[Matcher[MOD
         application_assertions.apply(put, value, message_builder.for_sub_component('application'))
 
 
-class MatcherEquivalenceOfCaseAssertion(Generic[MODEL], ValueAssertionBase[Matcher[MODEL]]):
+class MatcherEquivalenceOfCaseAssertion(Generic[MODEL], ValueAssertionBase[MatcherWTrace[MODEL]]):
     def __init__(self,
-                 expected_equivalent: Matcher[MODEL],
+                 expected_equivalent: MatcherWTrace[MODEL],
                  model_info: ModelInfo[MODEL]):
         self._expected_equivalent = expected_equivalent
         self._model_info = model_info
@@ -70,11 +70,11 @@ class MatcherEquivalenceOfCaseAssertion(Generic[MODEL], ValueAssertionBase[Match
                put: unittest.TestCase,
                value,
                message_builder: asrt.MessageBuilder):
-        put.assertIsInstance(value, Matcher)
-        assert isinstance(value, Matcher)  # Type info for IDE
+        put.assertIsInstance(value, MatcherWTrace)
+        assert isinstance(value, MatcherWTrace)  # Type info for IDE
 
-        expected = self._expected_equivalent.matches(self._model_info.model)
-        actual = value.matches(self._model_info.model)
-        put.assertEqual(expected,
-                        actual,
+        expected = self._expected_equivalent.matches_w_trace(self._model_info.model)
+        actual = value.matches_w_trace(self._model_info.model)
+        put.assertEqual(expected.value,
+                        actual.value,
                         message_builder.apply('model=' + self._model_info.description_of_model))

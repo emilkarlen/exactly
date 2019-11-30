@@ -15,7 +15,8 @@ from exactly_lib.test_case_utils.line_matcher.impl import line_number
 from exactly_lib.test_case_utils.line_matcher.line_matchers import line_matcher_constant
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
-from exactly_lib.type_system.logic.matcher_base_class import Matcher
+from exactly_lib.type_system.logic.matcher_base_class import Matcher, MatcherWTrace, MODEL, MatchingResult
+from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
@@ -193,7 +194,7 @@ def resolved_value_is_line_number_matcher(equivalent: Matcher[LineMatcherLine],
     )
 
 
-class _ExpectedEquivalentLineNumMatcher(Matcher[LineMatcherLine]):
+class _ExpectedEquivalentLineNumMatcher(MatcherWTrace[LineMatcherLine]):
     NAME = ' '.join((line_matcher.LINE_NUMBER_MATCHER_NAME,
                      syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name))
 
@@ -211,6 +212,13 @@ class _ExpectedEquivalentLineNumMatcher(Matcher[LineMatcherLine]):
 
     def matches_emr(self, model: LineMatcherLine) -> Optional[ErrorMessageResolver]:
         return self._matcher.matches_emr(model[0])
+
+    def matches_w_trace(self, model: MODEL) -> MatchingResult:
+        value = self.matches(model)
+        return MatchingResult(
+            value,
+            renderers.Constant(tree.Node(self.NAME, value, (), ())),
+        )
 
     @property
     def option_description(self) -> str:

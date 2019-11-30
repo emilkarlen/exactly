@@ -47,7 +47,7 @@ class HeaderAndValue(DetailsRenderer):
         return [
             tree.HeaderAndValueDetail(
                 self._header,
-                self._value.render()
+                self._value.render(),
             )
         ]
 
