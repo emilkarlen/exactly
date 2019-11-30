@@ -1,5 +1,4 @@
 import unittest
-from typing import Optional
 
 from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -9,8 +8,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
@@ -240,16 +239,16 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
     def __init__(self,
                  matcher_symbol_name: str,
                  actual_dir_contents: DirContents,
-                 expected_matcher_result: Optional[ValueAssertion[str]]):
+                 expected_matcher_result: ValueAssertion[MatchingResult]):
         super().__init__(matcher_symbol_name,
                          expected_matcher_result)
         self.actual_dir_contents = actual_dir_contents
 
     def _apply_matcher(self,
-                       environment: InstructionEnvironmentForPostSdsStep) -> Optional[ErrorMessageResolver]:
+                       environment: InstructionEnvironmentForPostSdsStep) -> MatchingResult:
         matcher_to_apply = self._get_matcher(environment)
         model = self._new_model(environment)
-        return matcher_to_apply.matches_emr(model)
+        return matcher_to_apply.matches_w_trace(model)
 
     def _get_matcher(self, environment: InstructionEnvironmentForPostSdsStep) -> FilesMatcher:
         sdv = lookups.lookup_files_matcher(environment.symbols, self.matcher_symbol_name)

@@ -25,7 +25,6 @@ from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import E
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def check(put: unittest.TestCase,
@@ -185,10 +184,9 @@ class Executor:
         if self.expectation.is_hard_error is not None:
             self.put.fail('HARD_ERROR not reported (raised)')
 
-        if self.expectation.main_result is None:
-            self._assert_is_matching_result_for(True, result)
-        else:
-            self._assert_is_matching_result_for(False, result)
+        self.expectation.main_result.apply_with_message(self.put,
+                                                        result,
+                                                        'main result')
 
     def _check_hard_error(self, result: HardErrorException):
         if self.expectation.is_hard_error is not None:
@@ -205,11 +203,3 @@ class Executor:
             TmpDirFileSpaceAsDirCreatedOnDemand(tcds.sds.internal_tmp_dir),
             self.model_constructor(tcds)
         )
-
-    def _assert_is_matching_result_for(self,
-                                       expected_value: bool,
-                                       actual: MatchingResult,
-                                       ):
-        asrt_matching_result.matches_value(expected_value).apply_with_message(self.put,
-                                                                              actual,
-                                                                              'matching result')

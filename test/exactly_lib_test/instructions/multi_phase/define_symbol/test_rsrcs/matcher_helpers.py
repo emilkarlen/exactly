@@ -1,9 +1,8 @@
 import unittest
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
 
@@ -11,7 +10,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 class AssertApplicationOfMatcherInSymbolTable(ValueAssertionBase[InstructionEnvironmentForPostSdsStep], ABC):
     def __init__(self,
                  matcher_symbol_name: str,
-                 expected_matcher_result: Optional[ValueAssertion[str]]):
+                 expected_matcher_result: ValueAssertion[MatchingResult]):
         self.matcher_symbol_name = matcher_symbol_name
         self.expected_matcher_result = expected_matcher_result
 
@@ -21,25 +20,8 @@ class AssertApplicationOfMatcherInSymbolTable(ValueAssertionBase[InstructionEnvi
                message_builder: MessageBuilder):
         result = self._apply_matcher(value)
 
-        check_result(put,
-                     self.expected_matcher_result,
-                     result)
+        self.expected_matcher_result.apply_with_message(put, result, 'matching result')
 
     @abstractmethod
-    def _apply_matcher(self,
-                       environment: InstructionEnvironmentForPostSdsStep) -> Optional[ErrorMessageResolver]:
+    def _apply_matcher(self, environment: InstructionEnvironmentForPostSdsStep) -> MatchingResult:
         pass
-
-
-def check_result(put: unittest.TestCase,
-                 expected_matcher_result: Optional[ValueAssertion[str]],
-                 actual_result: Optional[ErrorMessageResolver]):
-    if expected_matcher_result is None:
-        put.assertIsNone(actual_result,
-                         'result from main')
-    else:
-        put.assertIsNotNone(actual_result,
-                            'result from main')
-        err_msg = actual_result.resolve()
-        expected_matcher_result.apply_with_message(put, err_msg,
-                                                   'error result of main')

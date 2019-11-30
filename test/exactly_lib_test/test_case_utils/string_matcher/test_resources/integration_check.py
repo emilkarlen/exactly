@@ -24,7 +24,6 @@ from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import E
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 
@@ -145,7 +144,7 @@ class Executor:
                                                       symbols=environment.symbols,
                                                       tcds=environment.tcds)
         sdv_health_check.apply_with_message(self.put, sdv,
-                                                 'SDV structure')
+                                            'SDV structure')
 
         matcher_ddv = sdv.resolve(environment.symbols)
         assert isinstance(matcher_ddv, StringMatcherDdv)
@@ -199,16 +198,11 @@ class Executor:
         except HardErrorException as ex:
             self._check_hard_error(ex)
 
-    def _check_main_result(self,
-                           result__trace: MatchingResult,
-                           ):
+    def _check_main_result(self, result: MatchingResult):
         if self.expectation.is_hard_error is not None:
             self.put.fail('HARD_ERROR not reported (raised)')
 
-        if self.expectation.main_result is None:
-            self._assert_is_matching_result_for(True, result__trace)
-        else:
-            self._assert_is_matching_result_for(False, result__trace)
+        self.expectation.main_result.apply_with_message(self.put, result, 'matching result')
 
     def _check_hard_error(self, result: HardErrorException):
         if self.expectation.is_hard_error is not None:
@@ -221,11 +215,3 @@ class Executor:
 
     def _new_model(self, sds: SandboxDirectoryStructure) -> FileToCheck:
         return ModelConstructor(self.model_builder, sds).construct()
-
-    def _assert_is_matching_result_for(self,
-                                       expected_value: bool,
-                                       actual: MatchingResult,
-                                       ):
-        asrt_matching_result.matches_value(expected_value).apply_with_message(self.put,
-                                                                              actual,
-                                                                              'matching result')

@@ -1,5 +1,4 @@
 import unittest
-from typing import Optional
 
 from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -7,7 +6,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.symbol import lookups
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.string import lines_content
@@ -220,16 +219,16 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
     def __init__(self,
                  matcher_symbol_name: str,
                  actual_model_contents: str,
-                 expected_matcher_result: Optional[ValueAssertion[str]]):
+                 expected_matcher_result: ValueAssertion[MatchingResult]):
         super().__init__(matcher_symbol_name,
                          expected_matcher_result)
         self.actual_model_contents = actual_model_contents
 
     def _apply_matcher(self,
-                       environment: InstructionEnvironmentForPostSdsStep) -> Optional[ErrorMessageResolver]:
+                       environment: InstructionEnvironmentForPostSdsStep) -> MatchingResult:
         matcher_to_apply = self._get_matcher(environment)
         model = self._new_model(environment)
-        return matcher_to_apply.matches_emr(model)
+        return matcher_to_apply.matches_w_trace(model)
 
     def _get_matcher(self, environment: InstructionEnvironmentForPostSdsStep) -> StringMatcher:
         matcher_sdv = lookups.lookup_string_matcher(environment.symbols, self.matcher_symbol_name)

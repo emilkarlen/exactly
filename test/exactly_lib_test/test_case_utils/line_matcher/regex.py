@@ -17,7 +17,8 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
 from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases import failing_regex_validation_cases
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    ExpectationTypeConfigForNoneIsSuccess, PassOrFail, MAIN_RESULT_ASSERTION_ERR_MSG_FOR_MATCHER
+    ExpectationTypeConfigForNoneIsSuccess, PassOrFail, \
+    MAIN_RESULT_ASSERTION__FROM_BOOL
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -86,7 +87,7 @@ class TestParseAndExecuteValidArguments(unittest.TestCase):
                             model,
                             Arrangement(),
                             Expectation(
-                                main_result=MAIN_RESULT_ASSERTION_ERR_MSG_FOR_MATCHER[expectation_type][case.result]
+                                main_result=MAIN_RESULT_ASSERTION__FROM_BOOL[expectation_type][case.result]
                             )
                         )
 

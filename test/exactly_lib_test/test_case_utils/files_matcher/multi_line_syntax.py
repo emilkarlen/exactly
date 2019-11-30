@@ -1,10 +1,9 @@
 import unittest
-from typing import Optional
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.primitives.files_matcher import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source_lines
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
@@ -29,7 +28,7 @@ class TestParseValidMultiLineSyntax(unittest.TestCase):
     def _check_sub_test(
             self,
             case: SourceCase,
-            result_of_main: ValueAssertion[Optional[ErrorMessageResolver]]):
+            result_of_main: ValueAssertion[MatchingResult]):
         with self.subTest(case.name):
             integration_check.check(
                 self,

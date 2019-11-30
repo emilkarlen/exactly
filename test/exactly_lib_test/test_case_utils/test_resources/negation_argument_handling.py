@@ -1,14 +1,15 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import List, Sequence, TypeVar, Generic, Optional
+from typing import List, Sequence, TypeVar, Generic
 
 from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.test_case.result import pfh
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.logic_types import ExpectationType, from_is_negated
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 class PassOrFail(Enum):
@@ -116,10 +117,10 @@ class ExpectationTypeConfigForPfh(ExpectationTypeConfig[pfh.PassOrFailOrHardErro
         return _MAIN_RESULT_ASSERTION_FOR_PFH[self._expectation_type_of_test_case][expected_result_of_positive_test]
 
 
-class ExpectationTypeConfigForNoneIsSuccess(ExpectationTypeConfig[Optional[ErrorMessageResolver]]):
+class ExpectationTypeConfigForNoneIsSuccess(ExpectationTypeConfig[MatchingResult]):
     def main_result(self, expected_result_of_positive_test: PassOrFail
-                    ) -> Optional[ValueAssertion[ErrorMessageResolver]]:
-        return _MAIN_RESULT_ASSERTION_ERR_MSG_FOR_FAIL[self._expectation_type_of_test_case][
+                    ) -> ValueAssertion[MatchingResult]:
+        return _MAIN_RESULT_ASSERTION__FROM_PASS_OR_FAIL[self._expectation_type_of_test_case][
             expected_result_of_positive_test]
 
 
@@ -150,24 +151,24 @@ _MAIN_RESULT_ASSERTION_FOR_PFH = {
 
 _ASSERT_IS_FAILURE_FOR_ERR_MSG = asrt.is_instance(str)
 
-_MAIN_RESULT_ASSERTION_ERR_MSG_FOR_FAIL = {
+_MAIN_RESULT_ASSERTION__FROM_PASS_OR_FAIL = {
     ExpectationType.POSITIVE: {
-        PassOrFail.PASS: None,
-        PassOrFail.FAIL: _ASSERT_IS_FAILURE_FOR_ERR_MSG,
+        PassOrFail.PASS: asrt_matching_result.matches_value(True),
+        PassOrFail.FAIL: asrt_matching_result.matches_value(False),
     },
     ExpectationType.NEGATIVE: {
-        PassOrFail.PASS: _ASSERT_IS_FAILURE_FOR_ERR_MSG,
-        PassOrFail.FAIL: None,
+        PassOrFail.PASS: asrt_matching_result.matches_value(False),
+        PassOrFail.FAIL: asrt_matching_result.matches_value(True),
     },
 }
 
-MAIN_RESULT_ASSERTION_ERR_MSG_FOR_MATCHER = {
+MAIN_RESULT_ASSERTION__FROM_BOOL = {
     ExpectationType.POSITIVE: {
-        True: None,
-        False: _ASSERT_IS_FAILURE_FOR_ERR_MSG,
+        True: asrt_matching_result.matches_value(True),
+        False: asrt_matching_result.matches_value(False),
     },
     ExpectationType.NEGATIVE: {
-        True: _ASSERT_IS_FAILURE_FOR_ERR_MSG,
-        False: None,
+        True: asrt_matching_result.matches_value(False),
+        False: asrt_matching_result.matches_value(True),
     },
 }

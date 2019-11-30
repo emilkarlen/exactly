@@ -33,7 +33,7 @@ class Expectation:
             source: ValueAssertion[ParseSource] = asrt.anything_goes(),
             symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
             validation: ValidationExpectation = all_validations_passes(),
-            main_result: Optional[ValueAssertion[Optional[str]]] = None,
+            main_result: ValueAssertion[MatchingResult] = asrt_matching_result.matches_value(True),
             is_hard_error: Optional[ValueAssertion[str]] = None,
     ):
         self.source = source
@@ -46,13 +46,12 @@ class Expectation:
 is_pass = Expectation
 
 
-def main_result_is_success() -> Optional[ValueAssertion[Optional[str]]]:
-    return None
+def main_result_is_success() -> ValueAssertion[MatchingResult]:
+    return asrt_matching_result.matches_value(True)
 
 
-def main_result_is_failure(error_message: ValueAssertion[Optional[str]] = asrt.is_instance(str)
-                           ) -> Optional[ValueAssertion[Optional[str]]]:
-    return error_message
+def main_result_is_failure() -> ValueAssertion[MatchingResult]:
+    return asrt_matching_result.matches_value(False)
 
 
 MODEL = TypeVar('MODEL')
@@ -223,15 +222,14 @@ class _Checker(Generic[MODEL]):
             self._check_hard_error(ex)
 
     def _check_application_result(self,
-                                  result__trace: MatchingResult,
+                                  result: MatchingResult,
                                   ):
         if self.expectation.is_hard_error is not None:
             self.put.fail('HARD_ERROR not reported (raised)')
 
-        if self.expectation.main_result is None:
-            self._assert_is_matching_result_for(True, result__trace)
-        else:
-            self._assert_is_matching_result_for(False, result__trace)
+        self.expectation.main_result.apply_with_message(self.put,
+                                                        result,
+                                                        'main result')
 
     def _check_hard_error(self, result: HardErrorException):
         if self.expectation.is_hard_error is None:
@@ -241,11 +239,3 @@ class _Checker(Generic[MODEL]):
             assertion_on_text_renderer.apply_with_message(self.put, result.error,
                                                           'error message for hard error')
             raise _CheckIsDoneException()
-
-    def _assert_is_matching_result_for(self,
-                                       expected_value: bool,
-                                       actual: MatchingResult,
-                                       ):
-        asrt_matching_result.matches_value(expected_value).apply_with_message(self.put,
-                                                                              actual,
-                                                                              'matching result')
