@@ -96,8 +96,7 @@ class _LogicTypeBlockConstructor(LogicTypeSdvPseudoVisitor[Optional[ResolvedValu
         self.tcds = tcds
 
     def visit_file_matcher(self, value: FileMatcherSdv) -> Optional[ResolvedValuePresentationBlock]:
-        return None  # FIXME Restore when DDV can report structure
-        return self._of_tree_structured(value.resolve(self.symbols).value_of_any_dependency(self.tcds))
+        return self._of_tree_structured(value.resolve(self.symbols))
 
     def visit_files_matcher(self, value: FilesMatcherSdv) -> Optional[ResolvedValuePresentationBlock]:
         return None  # FIXME Restore when DDV can report structure
