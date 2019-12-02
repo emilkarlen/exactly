@@ -1,11 +1,15 @@
 import unittest
 
-from exactly_lib.test_case_utils.file_matcher.impl import file_type
+from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as model
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as arg
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check, model_construction
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
+from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir
-from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
@@ -20,126 +24,104 @@ class TestFileType(unittest.TestCase):
                base_name_of_file_to_check: str,
                dir_contents: DirContents):
 
-        matcher_to_check = file_type.FileMatcherType(file_type_to_check_for)
-        self.assertIsInstance(matcher_to_check.option_description,
-                              str,
-                              'option_description')
         # ACT #
-        with tmp_dir(dir_contents) as tmp_dir_path:
-            file_path_to_check = tmp_dir_path / base_name_of_file_to_check
-
-            with self.subTest('match'):
-                actual_result = matcher_to_check.matches_w_trace(
-                    model.with_dir_space_that_must_not_be_used(file_path_to_check))
-
-                # ASSERT #
-
-                self.assertEqual(file_type_to_check_for,
-                                 matcher_to_check.file_type,
-                                 'file type')
-                asrt_matching_result.matches_value(expected_result).apply_with_message(self,
-                                                                                       actual_result,
-                                                                                       'matching result')
+        integration_check.check_equivalent_source_variants__for_expression_parser(
+            self,
+            sut.parser(),
+            ArgumentElements(arg.Type(file_type_to_check_for).elements).as_arguments,
+            model_construction.constant_relative_file_name(base_name_of_file_to_check),
+            ArrangementPostAct(
+                non_hds_contents=sds_populator.cwd_contents(dir_contents),
+            ),
+            matcher_assertions.expectation(
+                main_result=asrt_matching_result.matches_value(expected_result),
+            )
+        )
 
     def test_regular(self):
         file_to_check = 'file-to-check.txt'
         cases = [
-            NameAndValue('match',
-                         (
-                             DirContents([empty_file(file_to_check)]),
-                             True,
-                         )),
-            NameAndValue('match: symlink to regular',
-                         (
-                             DirContents([empty_file('the file.txt'),
-                                          sym_link(file_to_check, 'the file.txt')]),
-                             True,
-                         )),
-            NameAndValue('not match: actual is directory',
-                         (
-                             DirContents([empty_dir(file_to_check)]),
-                             False,
-                         )),
-            NameAndValue('not match: actual is broken symlink',
-                         (
-                             DirContents([empty_file('the file.txt'),
-                                          sym_link(file_to_check, 'name-of-non-existing-file')]),
-                             False,
-                         )),
+            NEA('match',
+                True,
+                DirContents([empty_file(file_to_check)]),
+                ),
+            NEA('match: symlink to regular',
+                True,
+                DirContents([empty_file('the file.txt'),
+                             sym_link(file_to_check, 'the file.txt')]),
+                ),
+            NEA('not match: actual is directory',
+                False,
+                DirContents([empty_dir(file_to_check)]),
+                ),
+            NEA('not match: actual is broken symlink',
+                False,
+                DirContents([empty_file('the file.txt'),
+                             sym_link(file_to_check, 'name-of-non-existing-file')]),
+                ),
         ]
         for case in cases:
-            dir_contents, expected_result = case.value
             with self.subTest(case_name=case.name):
                 self._check(file_type_to_check_for=FileType.REGULAR,
-                            expected_result=expected_result,
+                            expected_result=case.expected,
                             base_name_of_file_to_check=file_to_check,
-                            dir_contents=dir_contents)
+                            dir_contents=case.actual)
 
     def test_directory(self):
         dir_to_check = 'dir-to-check'
         cases = [
-            NameAndValue('match',
-                         (
-                             DirContents([empty_dir(dir_to_check)]),
-                             True,
-                         )),
-            NameAndValue('match: symlink to directory',
-                         (
-                             DirContents([empty_dir('the dir'),
-                                          sym_link(dir_to_check, 'the dir')]),
-                             True,
-                         )),
-            NameAndValue('not match: actual is regular',
-                         (
-                             DirContents([empty_file(dir_to_check)]),
-                             False,
-                         )),
-            NameAndValue('not match: actual is broken symlink',
-                         (
-                             DirContents([empty_file('the file.txt'),
-                                          sym_link(dir_to_check, 'name-of-non-existing-file')]),
-                             False,
-                         )),
+            NEA('match',
+                True,
+                DirContents([empty_dir(dir_to_check)]),
+                ),
+            NEA('match: symlink to directory',
+                True,
+                DirContents([empty_dir('the dir'),
+                             sym_link(dir_to_check, 'the dir')]),
+                ),
+            NEA('not match: actual is regular',
+                False,
+                DirContents([empty_file(dir_to_check)]),
+                ),
+            NEA('not match: actual is broken symlink',
+                False,
+                DirContents([empty_file('the file.txt'),
+                             sym_link(dir_to_check, 'name-of-non-existing-file')]),
+                ),
         ]
         for case in cases:
-            dir_contents, expected_result = case.value
             with self.subTest(case_name=case.name):
                 self._check(file_type_to_check_for=FileType.DIRECTORY,
-                            expected_result=expected_result,
+                            expected_result=case.expected,
                             base_name_of_file_to_check=dir_to_check,
-                            dir_contents=dir_contents)
+                            dir_contents=case.actual)
 
     def test_symlink(self):
         link_target = 'link-target-file'
         file_to_check = 'file-to-check'
         cases = [
-            NameAndValue('match: symlink to regular',
-                         (
-                             DirContents([empty_file(link_target),
-                                          sym_link(file_to_check, link_target)]),
-                             True,
-                         )),
-            NameAndValue('match: symlink to directory',
-                         (
-                             DirContents([empty_dir(link_target),
-                                          sym_link(file_to_check, link_target)]),
-                             True,
-                         )),
-            NameAndValue('match: broken symlink',
-                         (
-                             DirContents([sym_link(file_to_check, 'non-existing-target-file')]),
-                             True,
-                         )),
-            NameAndValue('not match: actual is regular',
-                         (
-                             DirContents([empty_file(file_to_check)]),
-                             False,
-                         )),
+            NEA('match: symlink to regular',
+                True,
+                DirContents([empty_file(link_target),
+                             sym_link(file_to_check, link_target)]),
+                ),
+            NEA('match: symlink to directory',
+                True,
+                DirContents([empty_dir(link_target),
+                             sym_link(file_to_check, link_target)]),
+                ),
+            NEA('match: broken symlink',
+                True,
+                DirContents([sym_link(file_to_check, 'non-existing-target-file')]),
+                ),
+            NEA('not match: actual is regular',
+                False,
+                DirContents([empty_file(file_to_check)]),
+                ),
         ]
         for case in cases:
-            dir_contents, expected_result = case.value
             with self.subTest(case_name=case.name):
                 self._check(file_type_to_check_for=FileType.SYMLINK,
-                            expected_result=expected_result,
+                            expected_result=case.expected,
                             base_name_of_file_to_check=file_to_check,
-                            dir_contents=dir_contents)
+                            dir_contents=case.actual)

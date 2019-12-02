@@ -1,33 +1,34 @@
 import pathlib
-import re
 import unittest
 
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_utils.file_matcher.impl.name_regex import FileMatcherBaseNameRegExPattern
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_sdvs
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as arg
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as model
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as test_case_utils
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import ArrangementPostAct
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.test_utils import Actual, ARBITRARY_MODEL
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
+from exactly_lib_test.test_case_utils.regex.test_resources.argument_syntax import reg_ex_args_list
 from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases import failing_regex_validation_cases
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess, PassOrFail
 from exactly_lib_test.test_resources.matcher_argument import NameRegexComponent
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestRegExPatternOnBaseName),
+        TestRegExPatternOnBaseName(),
         ParseShouldFailWhenRegexArgumentIsMissing(),
         TestWithSymbolReferences(),
         ValidationShouldFailWhenRegexIsInvalid(),
@@ -38,57 +39,70 @@ def name_matches_regex_arg(regex: str) -> arg.FileMatcherArg:
     return arg.Name(arg.NameRegexVariant(NameRegexComponent(regex)))
 
 
-class TestRegExPatternOnBaseName(unittest.TestCase):
+class TestRegExPatternOnBaseName(test_case_utils.TestCaseBase):
     def runTest(self):
+        # ARRANGE #
         cases = [
-            NameAndValue('match basename with exact match',
-                         (
-                             '.*name',
-                             pathlib.Path('file name'),
-                             True,
-                         )),
-            NameAndValue('match basename with substring match',
-                         (
-                             'PA..ERN',
-                             pathlib.Path('before PATTERN after'),
-                             True,
-                         )),
-            NameAndValue('match name with pattern that matches path components',
-                         (
-                             'dir-name',
-                             pathlib.Path('dir-name') / pathlib.Path('base-name'),
-                             False,
-                         )),
-            NameAndValue('not match, because pattern is not in path',
-                         (
-                             'PATTERN',
-                             pathlib.Path('not the pattern'),
-                             False,
-                         )),
+            NEA('match basename with exact match',
+                True,
+                Actual(
+                    Arguments(argument_syntax.base_name_reg_ex_pattern_matcher_of(
+                        reg_ex_args_list('.*name'),
+                    )),
+                    pathlib.Path('file name'),
+                ),
+                ),
+            NEA('match basename with substring match',
+                True,
+                Actual(
+                    Arguments(argument_syntax.base_name_reg_ex_pattern_matcher_of(
+                        reg_ex_args_list('PA..ERN')
+                    )),
+                    pathlib.Path('before PATTERN after'),
+                ),
+                ),
+            NEA('match name with pattern that matches path components',
+                False,
+                Actual(
+                    Arguments(argument_syntax.base_name_reg_ex_pattern_matcher_of(
+                        reg_ex_args_list('dir-name')
+                    )),
+                    pathlib.Path('dir-name') / pathlib.Path('base-name'),
+                ),
+                ),
+            NEA('not match, because pattern is not in path',
+                False,
+                Actual(
+                    Arguments(argument_syntax.base_name_reg_ex_pattern_matcher_of(
+                        reg_ex_args_list('PATTERN')
+                    )),
+                    pathlib.Path('not the pattern'),
+                ),
+                ),
+            NEA('not match, because pattern with unexpected case is in base name',
+                False,
+                Actual(
+                    Arguments(argument_syntax.base_name_reg_ex_pattern_matcher_of(
+                        reg_ex_args_list('base name')
+                    )),
+                    pathlib.Path('THE BASE NAME'),
+                ),
+                ),
+            NEA('match, because pattern with unexpected case is in base name, but test is case insensitive',
+                True,
+                Actual(
+                    Arguments(argument_syntax.base_name_reg_ex_pattern_matcher_of(
+                        reg_ex_args_list('base name',
+                                         ignore_case=True)
+                    )),
+                    pathlib.Path('THE BASE NAME'),
+                ),
+                ),
         ]
-        for case in cases:
-            reg_ex_pattern, path, expected_result = case.value
-            with self.subTest(case_name=case.name,
-                              glob_pattern=reg_ex_pattern):
-                matcher = FileMatcherBaseNameRegExPattern(re.compile(reg_ex_pattern))
-                # ACT #
-                actual_reg_ex_pattern = matcher.reg_ex_pattern
 
-                actual_result = matcher.matches(model.with_dir_space_that_must_not_be_used(path))
+        # ACT & ASSERT #
 
-                # ASSERT #
-
-                self.assertIsInstance(matcher.option_description,
-                                      str,
-                                      'option_description')
-
-                self.assertEqual(reg_ex_pattern,
-                                 actual_reg_ex_pattern,
-                                 'reg-ex pattern')
-
-                self.assertEqual(expected_result,
-                                 actual_result,
-                                 'result')
+        self._check_cases__with_source_variants(cases)
 
 
 class ParseShouldFailWhenRegexArgumentIsMissing(test_case_utils.TestWithNegationArgumentBase):
@@ -154,6 +168,3 @@ class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
                 main_result=maybe_not.main_result(PassOrFail.PASS)
             )
         )
-
-
-ARBITRARY_MODEL = model_construction.constant_relative_file_name('arbitrary-file.txt')

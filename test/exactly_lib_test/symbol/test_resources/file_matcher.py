@@ -2,8 +2,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.file_matcher.file_matcher_ddvs import FileMatcherValueFromPrimitiveDdv
-from exactly_lib.test_case_utils.matcher.impls import sdv_components
+from exactly_lib.test_case_utils.matcher.impls import sdv_components, ddv_components
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -24,7 +23,7 @@ def arbitrary_sdv() -> FileMatcherSdv:
 def file_matcher_sdv_constant_test_impl(resolved_value: FileMatcher,
                                         references: Sequence[SymbolReference] = ()) -> FileMatcherSdv:
     return file_matcher_sdv_constant_value_test_impl(
-        FileMatcherValueFromPrimitiveDdv(resolved_value),
+        ddv_components.MatcherDdvFromConstantPrimitive(resolved_value),
         references,
     )
 

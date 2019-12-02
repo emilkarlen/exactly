@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Any
 
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderer import DetailsRenderer, NodeRenderer
@@ -53,7 +53,7 @@ class HeaderAndValue(DetailsRenderer):
 
 
 class Tree(DetailsRenderer):
-    def __init__(self, tree_: NodeRenderer[None]):
+    def __init__(self, tree_: NodeRenderer[Any]):
         self._tree = tree_
 
     def render(self) -> Sequence[Detail]:

@@ -3,21 +3,22 @@ import unittest
 
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_utils.file_matcher.impl.name_glob_pattern import FileMatcherNameGlobPattern
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as arg
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as model
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as test_case_utils
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import ArrangementPostAct
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.test_utils import Actual
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess, PassOrFail
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -29,57 +30,39 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class TestGlobPattern(unittest.TestCase):
+class TestGlobPattern(test_case_utils.TestCaseBase):
     def runTest(self):
+        # ARRANGE #
         cases = [
-            NameAndValue('match basename with exact match',
-                         (
-                             'pattern',
-                             pathlib.Path('pattern'),
-                             True,
-                         )),
-            NameAndValue('match basename with substring exact match',
-                         (
-                             '*PATTERN*',
-                             pathlib.Path('before PATTERN after'),
-                             True,
-                         )),
-            NameAndValue('match name with pattern that matches path components',
-                         (
-                             'dir-name/*.txt',
-                             pathlib.Path('dir-name') / pathlib.Path('file.txt'),
-                             True,
-                         )),
-            NameAndValue('not match, because pattern is not in path',
-                         (
-                             'PATTERN',
-                             pathlib.Path('not the pattern'),
-                             False,
-                         )),
+            NEA('match basename with exact match',
+                True,
+                Actual(
+                    Arguments(argument_syntax.name_glob_pattern_matcher_of('pattern')),
+                    pathlib.Path('pattern'),
+                )),
+            NEA('match basename with substring exact match',
+                True,
+                Actual(
+                    Arguments(argument_syntax.name_glob_pattern_matcher_of('*PATTERN*')),
+                    pathlib.Path('before PATTERN after'),
+                )),
+            NEA('match name with pattern that matches path components',
+                True,
+                Actual(
+                    Arguments(argument_syntax.name_glob_pattern_matcher_of('dir-name/*.txt')),
+                    pathlib.Path('dir-name') / pathlib.Path('file.txt'),
+                )),
+            NEA('not match, because pattern is not in path',
+                False,
+                Actual(
+                    Arguments(argument_syntax.name_glob_pattern_matcher_of('PATTERN')),
+                    pathlib.Path('not the pattern'),
+                )),
         ]
-        for case in cases:
-            glob_pattern, path, expected_result = case.value
-            with self.subTest(case_name=case.name,
-                              glob_pattern=glob_pattern):
-                matcher = FileMatcherNameGlobPattern(glob_pattern)
-                # ACT #
-                actual_glob_pattern = matcher.glob_pattern
 
-                actual_result = matcher.matches(model.with_dir_space_that_must_not_be_used(path))
+        # ACT & ASSERT #
 
-                # ASSERT #
-
-                self.assertIsInstance(matcher.option_description,
-                                      str,
-                                      'option_description')
-
-                self.assertEqual(glob_pattern,
-                                 actual_glob_pattern,
-                                 'glob pattern')
-
-                self.assertEqual(expected_result,
-                                 actual_result,
-                                 'result')
+        self._check_cases__with_source_variants(cases)
 
 
 class ParseShouldFailWhenPatternArgumentIsMissing(test_case_utils.TestWithNegationArgumentBase):
@@ -121,6 +104,3 @@ class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
                 main_result=maybe_not.main_result(PassOrFail.PASS)
             )
         )
-
-
-ARBITRARY_MODEL = model_construction.constant_relative_file_name('arbitrary-file.txt')

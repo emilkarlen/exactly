@@ -1,11 +1,14 @@
+import pathlib
 import unittest
 
 from exactly_lib.definitions.primitives.file_matcher import NAME_MATCHER_NAME
 from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.file_matcher import parse_file_matcher, file_matcher_models
 from exactly_lib.test_case_utils.matcher.impls import constant
+from exactly_lib.util import file_utils
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
@@ -16,12 +19,14 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import ddv_assertions as asrt_file_matcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import file_matcher_arguments
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.sdv_assertions import \
     resolved_ddv_matches_file_matcher
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.data.test_resources import described_path
 from exactly_lib_test.type_system.logic.test_resources import file_matcher
 from exactly_lib_test.type_system.logic.test_resources import matcher_assertions as asrt_matcher
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
@@ -45,6 +50,17 @@ class TestCaseBase(unittest.TestCase):
 class TestSuccessfulScenarios(TestCaseBase):
     def test_successful_parse(self):
         name_pattern = 'the name pattern'
+        non_matching_name = 'non-matching name'
+
+        glob_pattern_arguments = file_matcher_arguments(name_pattern=name_pattern)
+        expected_glob_pattern_matcher_sdv = parse_file_matcher.parser().parse(remaining_source(glob_pattern_arguments))
+
+        expected_glob_pattern_matcher = (
+            expected_glob_pattern_matcher_sdv
+                .resolve(empty_symbol_table())
+                .value_of_any_dependency(fake_tcds())
+        )
+
         cases = [
             NIE('empty RHS SHOULD give selection of all files',
                 asrt_matcher.is_equivalent_to(
@@ -54,12 +70,22 @@ class TestSuccessfulScenarios(TestCaseBase):
                 '',
                 ),
             NIE('name pattern in RHS SHOULD give selection of name pattern',
-                asrt_file_matcher.is_name_glob_pattern(asrt.equals(name_pattern)),
-                file_matcher_arguments(name_pattern=name_pattern),
+                asrt_matcher.is_equivalent_to(
+                    expected_glob_pattern_matcher,
+                    [
+                        asrt_matcher.ModelInfo(
+                            file_matcher_models.FileMatcherModelForPrimitivePath(
+                                file_utils.TmpDirFileSpaceThatMustNoBeUsed(),
+                                described_path.new_primitive(pathlib.Path(name_pattern)),
+                            )),
+                        asrt_matcher.ModelInfo(
+                            file_matcher_models.FileMatcherModelForPrimitivePath(
+                                file_utils.TmpDirFileSpaceThatMustNoBeUsed(),
+                                described_path.new_primitive(pathlib.Path(non_matching_name)),
+                            )),
+                    ]
                 ),
-            NIE('file type in RHS SHOULD give selection of name pattern',
-                asrt_file_matcher.is_type_matcher(FileType.REGULAR),
-                file_matcher_arguments(type_match=FileType.REGULAR),
+                glob_pattern_arguments,
                 ),
         ]
         # ARRANGE #

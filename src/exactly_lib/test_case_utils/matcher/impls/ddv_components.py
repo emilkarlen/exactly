@@ -11,8 +11,7 @@ from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, Matcher
 class MatcherDdvFromConstantPrimitive(Generic[MODEL], MatcherDdv[MODEL]):
     def __init__(self,
                  primitive_value: MatcherWTraceAndNegation[MODEL],
-                 validator: DdvValidator =
-                 ddv_validation.constant_success_validator(),
+                 validator: DdvValidator = ddv_validation.constant_success_validator(),
                  ):
         self._primitive_value = primitive_value
         self._validator = validator

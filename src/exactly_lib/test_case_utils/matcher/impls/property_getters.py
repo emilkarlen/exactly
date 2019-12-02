@@ -28,3 +28,9 @@ class PropertyGetterSdvConstant(Generic[PROP_TYPE, T], PropertyGetterSdv[PROP_TY
 
     def resolve(self, symbols: SymbolTable) -> PropertyGetterDdv[PROP_TYPE, T]:
         return self._constant
+
+
+def sdv_of_constant_primitive(constant: PropertyGetter[PROP_TYPE, T]) -> PropertyGetterSdv[PROP_TYPE, T]:
+    return PropertyGetterSdvConstant(
+        PropertyGetterDdvConstant(constant)
+    )

@@ -47,8 +47,7 @@ def ddv_of_unconditionally_matching_matcher() -> MatcherDdv[MODEL]:
 class MatcherDdvOfConstantMatcherTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     def __init__(self,
                  primitive_value: MatcherWTraceAndNegation[MODEL],
-                 validator: DdvValidator =
-                 ddv_validation.constant_success_validator(),
+                 validator: DdvValidator = ddv_validation.constant_success_validator(),
                  ):
         self._primitive_value = primitive_value
         self._validator = validator

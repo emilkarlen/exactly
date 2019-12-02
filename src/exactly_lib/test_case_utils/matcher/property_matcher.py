@@ -10,8 +10,9 @@ from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, 
     PropertyGetterSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, Failure, MatcherDdv, \
-    TraceRenderer
+    TraceRenderer, MatcherWTraceAndNegation
 from exactly_lib.util.symbol_table import SymbolTable
 
 PROP_TYPE = TypeVar('PROP_TYPE')
@@ -25,7 +26,7 @@ class PropertyMatcherDescriber:
         pass
 
 
-class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTrace[MODEL]):
+class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTraceAndNegation[MODEL]):
     """Matches a property of a model"""
 
     def __init__(self,
@@ -49,6 +50,10 @@ class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTrace[MODEL]):
 
     def structure(self) -> StructureRenderer:
         return self._structure
+
+    @property
+    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
+        return combinator_matchers.Negation(self)
 
     def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
         return (

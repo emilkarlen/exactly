@@ -1,12 +1,14 @@
-from typing import Optional, Pattern, Match, Set
+from typing import Optional, Pattern, Match, Set, Sequence
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import str_matcher
+from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.regex.regex_ddv import RegexDdv
+from exactly_lib.test_case_utils.regex.regex_ddv import RegexDdv, RegexSdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -17,11 +19,12 @@ from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 class MatchesRegex(MatcherWTraceAndNegation[str]):
     NAME = ' '.join((
-        str_matcher.REGEX_MATCH_CHECK_ARGUMENT,
+        str_matcher.MATCH_REGEX_OR_GLOB_PATTERN_CHECK_ARGUMENT,
         syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
     ))
 
@@ -135,4 +138,26 @@ class MatchesRegexDdv(MatcherDdv[str]):
             self._expectation_type,
             self._is_full_match,
             self._regex.value_of_any_dependency(tcds),
+        )
+
+
+class MatchesRegexSdv(MatcherSdv[str]):
+    def __init__(self,
+                 expectation_type: ExpectationType,
+                 regex: RegexSdv,
+                 is_full_match: bool,
+                 ):
+        self._expectation_type = expectation_type
+        self._regex = regex
+        self._is_full_match = is_full_match
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._regex.references
+
+    def resolve(self, symbols: SymbolTable) -> MatcherDdv[MODEL]:
+        return MatchesRegexDdv(
+            self._expectation_type,
+            self._regex.resolve(symbols),
+            self._is_full_match,
         )

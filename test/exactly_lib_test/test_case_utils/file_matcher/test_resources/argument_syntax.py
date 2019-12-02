@@ -5,7 +5,6 @@ from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.parse import token
 
@@ -46,21 +45,12 @@ def name_glob_pattern_matcher_of(pattern: str) -> str:
     return file_matcher.NAME_MATCHER_NAME + ' ' + pattern_arg
 
 
-def name_reg_ex_pattern_matcher_of(pattern: str,
-                                   ignore_case: bool = False) -> str:
-    pattern_arg = pattern
-    if ' ' in pattern_arg and pattern_arg[0] not in token.QUOTE_CHARS:
-        pattern_arg = token.HARD_QUOTE_CHAR + pattern_arg + token.HARD_QUOTE_CHAR
-
+def base_name_reg_ex_pattern_matcher_of(regex_args: List[str]) -> str:
     args = [
         file_matcher.NAME_MATCHER_NAME,
         option_syntax.option_syntax(parse_file_matcher.REG_EX_OPTION),
     ]
-    if ignore_case:
-        args.append(option_syntax.option_syntax(parse_regex.IGNORE_CASE_OPTION_NAME))
-
-    args.append(pattern_arg)
-
+    args += regex_args
     return ' '.join(args)
 
 

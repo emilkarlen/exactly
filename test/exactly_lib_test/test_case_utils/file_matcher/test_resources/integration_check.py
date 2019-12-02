@@ -21,6 +21,9 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPo
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import ddv_assertions as asrt_file_matcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.model_construction import ModelConstructor
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
@@ -34,6 +37,18 @@ def check(put: unittest.TestCase,
           arrangement: ArrangementPostAct,
           expectation: Expectation):
     Executor(put, parser, model, arrangement, expectation).execute(source)
+
+
+def check_equivalent_source_variants__for_expression_parser(
+        put: unittest.TestCase,
+        parser: Parser[FileMatcherSdv],
+        arguments: Arguments,
+        model: ModelConstructor,
+        arrangement: ArrangementPostAct,
+        expectation: Expectation):
+    for source in equivalent_source_variants__with_source_check__for_expression_parser(
+            put, arguments):
+        Executor(put, parser, model, arrangement, expectation).execute(source)
 
 
 class _CheckIsDoneException(Exception):

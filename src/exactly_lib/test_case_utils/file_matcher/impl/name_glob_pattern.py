@@ -1,15 +1,14 @@
 from typing import Optional
 
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.definitions.primitives import file_matcher
+from exactly_lib.definitions.primitives import file_matcher, str_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.file_matcher.impl.ddv_base_class import FileMatcherDdvImplBase
+from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase
 from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_sdv_from_ddv_parts
-from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
@@ -18,7 +17,9 @@ from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolve
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util import strings
-from exactly_lib.util.description_tree import details
+from exactly_lib.util.description_tree import details, renderers
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
+from exactly_lib.util.render import strings as string_rendering
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -33,12 +34,12 @@ _PARSE_STRING_CONFIGURATION = parse_string.Configuration(syntax_elements.GLOB_PA
 
 
 def sdv(glob_pattern: StringSdv) -> FileMatcherSdv:
-    def get_value(symbols: SymbolTable) -> FileMatcherDdv:
+    def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
         return _Ddv(glob_pattern.resolve(symbols))
 
     return file_matcher_sdv_from_ddv_parts(
         glob_pattern.references,
-        get_value,
+        make_ddv,
     )
 
 
@@ -46,24 +47,31 @@ class _Ddv(FileMatcherDdvImplBase):
     def __init__(self, glob_pattern: StringDdv):
         self._glob_pattern = glob_pattern
 
+    def structure(self) -> StructureRenderer:
+        return FileMatcherNameGlobPattern.new_structure_tree(
+            details.String(strings.Repr(string_rendering.AsToStringObject(self._glob_pattern.describer())))
+        )
+
     def value_of_any_dependency(self, tcds: Tcds) -> FileMatcher:
         return FileMatcherNameGlobPattern(self._glob_pattern.value_of_any_dependency(tcds))
 
 
-class FileMatcherNameGlobPattern(MatcherImplBase[FileMatcherModel]):
+class FileMatcherNameGlobPattern(FileMatcherImplBase):
     """Matches the name (whole path, not just base name) of a path on a shell glob pattern."""
 
-    NAME = 'name matches ' + syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument.name
-    VARIANT_NAME = 'matches ' + syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument.name
+    NAME = file_matcher.NAME_MATCHER_NAME
+
+    _SUB_MATCHER_NAME = ' '.join((
+        str_matcher.MATCH_REGEX_OR_GLOB_PATTERN_CHECK_ARGUMENT,
+        syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.singular_name,
+    ))
 
     def __init__(self, glob_pattern: str):
         super().__init__()
         self._glob_pattern = glob_pattern
-        self._renderer_of_variant = details.HeaderAndValue(
-            self.VARIANT_NAME,
-            details.String(strings.Repr(glob_pattern))
+        self._renderer_of_expected = custom_details.expected(
+            self._sub_matcher_renderer(details.String(strings.Repr(glob_pattern)))
         )
-        self._renderer_of_expected = custom_details.expected(self._renderer_of_variant)
 
     @property
     def glob_pattern(self) -> str:
@@ -77,6 +85,25 @@ class FileMatcherNameGlobPattern(MatcherImplBase[FileMatcherModel]):
     def option_description(self) -> str:
         return ' '.join([self.name, self._glob_pattern])
 
+    @staticmethod
+    def _sub_matcher_renderer(glob_pattern: DetailsRenderer) -> DetailsRenderer:
+        return details.HeaderAndValue(
+            FileMatcherNameGlobPattern._SUB_MATCHER_NAME,
+            glob_pattern,
+        )
+
+    @staticmethod
+    def new_structure_tree(glob_pattern: DetailsRenderer) -> StructureRenderer:
+        return renderers.NodeRendererFromParts(
+            FileMatcherNameGlobPattern.NAME,
+            None,
+            (FileMatcherNameGlobPattern._sub_matcher_renderer(glob_pattern),),
+            (),
+        )
+
+    def _structure(self) -> StructureRenderer:
+        return self.new_structure_tree(details.String(strings.Repr(self._glob_pattern)))
+
     def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
         raise NotImplementedError('deprecated')
 
@@ -89,17 +116,7 @@ class FileMatcherNameGlobPattern(MatcherImplBase[FileMatcherModel]):
                 custom_details.PathValueAndPrimitiveDetailsRenderer(model.path.describer)
             )
         )
-        if model.path.primitive.match(self._glob_pattern):
-            return tb.build_result(True)
-        else:
-            return tb.build_result(False)
-
-    def _structure(self) -> StructureRenderer:
-        return (
-            self._new_structure_builder()
-                .append_details(self._renderer_of_variant)
-                .build()
-        )
+        return tb.build_result(model.path.primitive.match(self._glob_pattern))
 
     def __tb_with_expected(self) -> TraceBuilder:
-        return self._new_tb().append_details(self._renderer_of_expected)
+        return TraceBuilder(self.NAME).append_details(self._renderer_of_expected)

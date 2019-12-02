@@ -1,12 +1,12 @@
 from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.definitions.primitives.file_or_dir_contents import EMPTINESS_CHECK_ARGUMENT
-from exactly_lib.definitions.primitives.str_matcher import REGEX_MATCH_CHECK_ARGUMENT
+from exactly_lib.definitions.primitives.str_matcher import MATCH_REGEX_OR_GLOB_PATTERN_CHECK_ARGUMENT
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 NOT_ARGUMENT = NEGATION_ARGUMENT_STR
 EMPTY_ARGUMENT = EMPTINESS_CHECK_ARGUMENT
 EQUALS_ARGUMENT = 'equals'
-MATCHES_ARGUMENT = REGEX_MATCH_CHECK_ARGUMENT
+MATCHES_ARGUMENT = MATCH_REGEX_OR_GLOB_PATTERN_CHECK_ARGUMENT
 
 FULL_MATCH_ARGUMENT_OPTION = a.OptionName(long_name='full')
 

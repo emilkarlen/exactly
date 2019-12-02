@@ -8,6 +8,7 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.type_system.data import string_or_path_ddvs
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForDdv
+from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.util.description_tree import tree, details
 from exactly_lib.util.description_tree.details import HeaderAndValue
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -228,3 +229,11 @@ class ComparatorExpression(DetailsRenderer):
                 self._rhs.render(),
             ]))
         ]
+
+
+class WithTreeStructure(DetailsRenderer):
+    def __init__(self, tree_structured: WithTreeStructureDescription):
+        self._tree_structured = tree_structured
+
+    def render(self) -> Sequence[Detail]:
+        return [tree.TreeDetail(self._tree_structured.structure().render())]

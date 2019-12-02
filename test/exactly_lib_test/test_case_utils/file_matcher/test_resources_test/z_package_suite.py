@@ -1,12 +1,11 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.file_matcher.test_resources_test import ddv_assertions, integration_check
+from exactly_lib_test.test_case_utils.file_matcher.test_resources_test import integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources_test import sdv_assertions
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        ddv_assertions.suite(),
         sdv_assertions.suite(),
         integration_check.suite(),
     ])

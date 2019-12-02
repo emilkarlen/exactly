@@ -1,12 +1,9 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.file_matcher.file_matcher_ddvs import FileMatcherDdvFromParts
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
-from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.test_case_utils.matcher.impls import constant, ddv_components
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
@@ -83,9 +80,6 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
             named_matcher=name_of_referenced_symbol
         ).apply(expectation_type_config__non_is_success(ExpectationType.POSITIVE))
 
-        def get_file_matcher_successful_matcher(tcds: Tcds) -> FileMatcher:
-            return constant.MatcherWithConstantResult(True)
-
         cases = [
             NEA('pre sds validation',
                 expected=
@@ -113,9 +107,9 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
 
         for case in cases:
             sdv_of_failing_matcher = file_matcher_sdv_constant_value_test_impl(
-                FileMatcherDdvFromParts(
+                ddv_components.MatcherDdvFromConstantPrimitive(
+                    constant.MatcherWithConstantResult(True),
                     case.actual,
-                    get_file_matcher_successful_matcher
                 ),
                 (),
             )
