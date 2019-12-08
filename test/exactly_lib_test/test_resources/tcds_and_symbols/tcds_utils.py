@@ -26,12 +26,12 @@ def sds_2_tcds_assertion(assertion_on_sds: ValueAssertion[SandboxDirectoryStruct
                               assertion_on_sds)
 
 
-class HdsAndSdsAction:
+class TcdsAction:
     def apply(self, environment: PathResolvingEnvironmentPreOrPostSds):
         pass
 
 
-class HdsAndSdsActionFromSdsAction(HdsAndSdsAction):
+class TcdsActionFromSdsAction(TcdsAction):
     def __init__(self, sds_action: SdsAction):
         self.sds_action = sds_action
 
@@ -45,7 +45,7 @@ def tcds_with_act_as_curr_dir(
         sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
         non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
         tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
-        pre_contents_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+        pre_contents_population_action: TcdsAction = TcdsAction(),
         symbols: SymbolTable = None) -> ContextManager[PathResolvingEnvironmentPreOrPostSds]:
     symbols = symbol_table_from_none_or_value(symbols)
     prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
@@ -63,5 +63,5 @@ def tcds_with_act_as_curr_dir(
                 yield ret_val
 
 
-SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR = HdsAndSdsActionFromSdsAction(
+SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR = TcdsActionFromSdsAction(
     MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs())

@@ -15,7 +15,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    HdsAndSdsActionFromSdsAction
+    TcdsActionFromSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -58,7 +58,7 @@ class TestCaseBase(unittest.TestCase):
             sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty()):
         return self.conf.arrangement(
             sds_contents_before_main=sds_contents_before_main,
-            pre_contents_population_action=HdsAndSdsActionFromSdsAction(new_dir.SETUP_CWD_ACTION),
+            pre_contents_population_action=TcdsActionFromSdsAction(new_dir.SETUP_CWD_ACTION),
             symbols=self.relativity_option.symbols.in_arrangement())
 
     def shortDescription(self):

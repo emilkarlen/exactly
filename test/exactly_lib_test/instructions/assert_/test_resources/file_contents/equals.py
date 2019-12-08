@@ -37,7 +37,7 @@ from exactly_lib_test.test_case_utils.test_resources import relativity_options a
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    HdsAndSdsAction
+    TcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 
@@ -46,7 +46,7 @@ class InstructionTestConfigurationForEquals(InstructionTestConfigurationForConte
     def arrangement_for_actual_and_expected(self,
                                             actual_contents: str,
                                             expected: TcdsPopulator,
-                                            post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                                            post_sds_population_action: TcdsAction = TcdsAction(),
                                             symbols: SymbolTable = None,
                                             ) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()

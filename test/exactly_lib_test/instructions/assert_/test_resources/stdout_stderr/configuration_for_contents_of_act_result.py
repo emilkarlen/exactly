@@ -7,7 +7,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import tcds_popula
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.process import SubProcessResult
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import HdsAndSdsAction
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import TcdsAction
 
 
 class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
@@ -16,7 +16,7 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
 
     def arrangement_for_contents(self,
                                  actual_contents: str,
-                                 post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                                 post_sds_population_action: TcdsAction = TcdsAction(),
                                  home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
                                  symbols: SymbolTable = None,
                                  ) -> instruction_check.ArrangementPostAct:
@@ -30,7 +30,7 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
     def arrangement_for_actual_and_expected(self,
                                             actual_contents: str,
                                             expected: TcdsPopulator,
-                                            post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                                            post_sds_population_action: TcdsAction = TcdsAction(),
                                             symbols: SymbolTable = None,
                                             ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(

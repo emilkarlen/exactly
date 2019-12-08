@@ -15,7 +15,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import hds_populat
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    HdsAndSdsAction
+    TcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -57,7 +57,7 @@ class ConfigurationBase:
         return self.instruction_setup().documentation
 
     def arrangement(self,
-                    pre_contents_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                    pre_contents_population_action: TcdsAction = TcdsAction(),
                     hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     home_or_sds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),

@@ -16,7 +16,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     pfh_expectation_type_config
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    HdsAndSdsAction
+    TcdsAction
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 
@@ -27,7 +27,7 @@ class InstructionTestConfiguration:
 
     def arrangement_for_contents(self,
                                  actual_contents: str,
-                                 post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                                 post_sds_population_action: TcdsAction = TcdsAction(),
                                  home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
                                  symbols: SymbolTable = None,
                                  ) -> instruction_check.ArrangementPostAct:
@@ -47,7 +47,7 @@ class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfigurati
     def arrangement_for_contents_from_fun(self,
                                           tcds_2_str: Callable[[Tcds], str],
                                           home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
-                                          post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                                          post_sds_population_action: TcdsAction = TcdsAction(),
                                           symbols: SymbolTable = None,
                                           ) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()

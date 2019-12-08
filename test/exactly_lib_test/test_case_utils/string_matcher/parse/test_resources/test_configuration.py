@@ -20,7 +20,7 @@ from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import E
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success, ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    HdsAndSdsAction
+    TcdsAction
 
 
 class TestConfiguration:
@@ -29,7 +29,7 @@ class TestConfiguration:
 
     def arrangement_for_contents(self,
                                  home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
-                                 post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                                 post_sds_population_action: TcdsAction = TcdsAction(),
                                  symbols: SymbolTable = None,
                                  ) -> integration_check.ArrangementPostAct:
         return integration_check.ArrangementPostAct(
@@ -51,7 +51,7 @@ class TestConfiguration:
 class TestConfigurationForEquals(TestConfiguration):
     def arrangement_for_expected(self,
                                  expected: TcdsPopulator,
-                                 post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                                 post_sds_population_action: TcdsAction = TcdsAction(),
                                  symbols: SymbolTable = None,
                                  ) -> integration_check.ArrangementPostAct:
         return integration_check.ArrangementPostAct(

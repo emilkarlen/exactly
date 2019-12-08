@@ -26,7 +26,7 @@ from exactly_lib_test.test_case_utils.test_resources.validation import Validatio
 from exactly_lib_test.test_resources.files import tmp_dir
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    HdsAndSdsAction, tcds_with_act_as_curr_dir
+    TcdsAction, tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion, \
     ValueAssertionBase
@@ -88,7 +88,7 @@ class ResultWithTransformationDataAssertion(ValueAssertionBase[ResultWithTransfo
 class Arrangement(ArrangementWithSds):
     def __init__(self,
                  output_file_to_transform: ProcOutputFile = ProcOutputFile.STDOUT,
-                 pre_contents_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                 pre_contents_population_action: TcdsAction = TcdsAction(),
                  hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  non_hds_contents_before_main: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),

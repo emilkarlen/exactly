@@ -20,7 +20,7 @@ from exactly_lib_test.test_case.test_resources.arrangements import ActEnvironmen
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as home_or_sds
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    HdsAndSdsAction
+    TcdsAction
 
 
 def suite() -> unittest.TestSuite:
@@ -43,7 +43,7 @@ class TestConfigurationForStderr(TestConfigurationForStdFile):
     def arrangement_for_contents_from_fun(self,
                                           tcds_2_str: Callable[[Tcds], str],
                                           home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
-                                          post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                                          post_sds_population_action: TcdsAction = TcdsAction(),
                                           symbols: SymbolTable = None,
                                           ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(

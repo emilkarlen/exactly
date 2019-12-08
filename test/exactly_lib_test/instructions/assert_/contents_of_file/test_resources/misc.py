@@ -17,7 +17,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    HdsAndSdsAction
+    TcdsAction
 
 
 class TestConfigurationForFile(InstructionTestConfigurationForEquals):
@@ -31,7 +31,7 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
         return Arguments(self.FILE_NAME_REL_CWD + ' ' + additional_arguments)
 
     def arrangement_for_contents(self, actual_contents: str,
-                                 post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                                 post_sds_population_action: TcdsAction = TcdsAction(),
                                  home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
                                  symbols: SymbolTable = None,
                                  ) -> instruction_check.ArrangementPostAct:
@@ -45,7 +45,7 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
     def arrangement_for_contents_from_fun(self,
                                           tcds_2_str: Callable[[Tcds], str],
                                           home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
-                                          post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                                          post_sds_population_action: TcdsAction = TcdsAction(),
                                           symbols: SymbolTable = None,
                                           ) -> instruction_check.ArrangementPostAct:
         act_result_producer = _ActResultProducer(tcds_2_str, self.FILE_NAME_REL_ACT)
@@ -59,7 +59,7 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
     def arrangement_for_actual_and_expected(self,
                                             actual_contents: str,
                                             expected: TcdsPopulator,
-                                            post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                                            post_sds_population_action: TcdsAction = TcdsAction(),
                                             symbols: SymbolTable = None,
                                             ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(

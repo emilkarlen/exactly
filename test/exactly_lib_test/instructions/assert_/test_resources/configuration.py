@@ -16,7 +16,7 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPo
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, tcds_populators, \
     sds_populator
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    HdsAndSdsAction
+    TcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -70,7 +70,7 @@ class AssertConfigurationBase(ConfigurationBase):
         )
 
     def arrangement(self,
-                    pre_contents_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                    pre_contents_population_action: TcdsAction = TcdsAction(),
                     hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     home_or_sds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),

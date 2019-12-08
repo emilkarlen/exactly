@@ -2,10 +2,10 @@ import os
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolver
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import HdsAndSdsAction
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import TcdsAction
 
 
-class MkSubDirAndMakeItCurrentDirectory(HdsAndSdsAction):
+class MkSubDirAndMakeItCurrentDirectory(TcdsAction):
     def __init__(self, sub_dir_resolver: SdsSubDirResolver):
         self.sub_dir_resolver = sub_dir_resolver
 
@@ -14,7 +14,7 @@ class MkSubDirAndMakeItCurrentDirectory(HdsAndSdsAction):
         os.chdir(str(sub_dir))
 
 
-class ChangeDirectoryToDirectory(HdsAndSdsAction):
+class ChangeDirectoryToDirectory(TcdsAction):
     def __init__(self, sub_dir_resolver: SdsSubDirResolver):
         self.sub_dir_resolver = sub_dir_resolver
 

@@ -29,7 +29,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_value_on_command_line
 from exactly_lib_test.test_resources.tcds_and_symbols import tcds_test
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    HdsAndSdsAction
+    TcdsAction
 
 
 def suite() -> unittest.TestSuite:
@@ -42,7 +42,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class ExecuteAction(HdsAndSdsAction):
+class ExecuteAction(TcdsAction):
     def __init__(self, instruction_embryo: TheInstructionEmbryo):
         self.instruction_embryo = instruction_embryo
 

@@ -8,7 +8,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_hds_pop
     tcds_populators, sds_populator
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    HdsAndSdsAction
+    TcdsAction
 
 
 class ActEnvironment(tuple):
@@ -45,14 +45,14 @@ class ArrangementBase:
 
 class ArrangementWithSds(ArrangementBase):
     def __init__(self,
-                 pre_contents_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                 pre_contents_population_action: TcdsAction = TcdsAction(),
                  hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                  sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
                  non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  os_services: OsServices = new_default(),
                  process_execution_settings=with_no_timeout(),
-                 post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                 post_sds_population_action: TcdsAction = TcdsAction(),
                  symbols: SymbolTable = None,
                  fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
                  ):
@@ -71,12 +71,12 @@ class ArrangementWithSds(ArrangementBase):
 
 class ArrangementPostAct(ArrangementWithSds):
     def __init__(self,
-                 pre_contents_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                 pre_contents_population_action: TcdsAction = TcdsAction(),
                  hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                  sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
                  non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
-                 post_sds_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                 post_sds_population_action: TcdsAction = TcdsAction(),
                  act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),

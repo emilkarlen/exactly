@@ -25,14 +25,14 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_hds_pop
     tcds_populators, sds_populator
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    HdsAndSdsAction, tcds_with_act_as_curr_dir
+    TcdsAction, tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class Arrangement(ArrangementWithSds):
     def __init__(self,
-                 pre_contents_population_action: HdsAndSdsAction = HdsAndSdsAction(),
+                 pre_contents_population_action: TcdsAction = TcdsAction(),
                  hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  non_hds_contents_before_main: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
