@@ -84,7 +84,7 @@ class MatcherWTraceAndNegation(Generic[MODEL], MatcherWTrace[MODEL], ABC):
 
 
 class MatcherDdv(Generic[MODEL],
-                 DirDependentValue[MODEL],
+                 DirDependentValue[MatcherWTraceAndNegation[MODEL]],
                  WithTreeStructureDescription,
                  ABC):
     @abstractmethod
