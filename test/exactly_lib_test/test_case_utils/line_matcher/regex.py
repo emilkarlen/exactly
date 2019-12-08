@@ -2,7 +2,6 @@ import unittest
 
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -12,8 +11,6 @@ from exactly_lib_test.test_case_utils.line_matcher.test_resources import integra
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import test_case_utils
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
-from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
 from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases import failing_regex_validation_cases
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -78,31 +75,18 @@ class TestParseAndExecuteValidArguments(unittest.TestCase):
                 argument = argument_w_opt_neg.get(expectation_type)
                 matcher_arguments = Arguments(str(argument))
                 for line_number in (1, 2):
-                    model = (line_number, case.line)
+                    model_constructor = integration_check.constant_model((line_number, case.line))
                     with self.subTest(name=case.name,
                                       expectation_type=expectation_type):
                         integration_check.check_with_source_variants(
                             self,
                             matcher_arguments,
-                            model,
+                            model_constructor,
                             Arrangement(),
                             Expectation(
                                 main_result=MAIN_RESULT_ASSERTION__FROM_BOOL[expectation_type][case.result]
                             )
                         )
-
-
-def _check_with_source_variants(put: unittest.TestCase,
-                                arguments: Arguments,
-                                model: LineMatcherLine,
-                                arrangement: Arrangement,
-                                expectation: Expectation):
-    for source in equivalent_source_variants__with_source_check__for_expression_parser(put, arguments):
-        integration_check.check(put,
-                                source,
-                                model,
-                                arrangement,
-                                expectation)
 
 
 class ParseShouldFailWhenRegexArgumentIsMissing(test_case_utils.TestWithNegationArgumentBase):
@@ -129,8 +113,8 @@ class ValidationShouldFailWhenRegexIsInvalid(test_case_utils.TestWithNegationArg
                     self,
                     arguments=
                     Arguments(str(argument_w_opt_neg.get(maybe_not.expectation_type))),
-                    model=
-                    ARBITRARY,
+                    model_constructor=
+                    CONSTRUCTOR_OF_ARBITRARY_MODEL,
                     arrangement=
                     Arrangement(
                         symbols=symbol_table_from_name_and_sdvs(regex_case.symbols)
@@ -162,8 +146,8 @@ class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
             self,
             arguments=
             Arguments(str(self.argument_w_opt_neg.get(maybe_not.expectation_type))),
-            model=
-            self.matching_model_of_positive_check,
+            model_constructor=
+            integration_check.constant_model(self.matching_model_of_positive_check),
             arrangement=self.arrangement,
             expectation=Expectation(
                 symbol_references=asrt.matches_sequence([
@@ -174,7 +158,7 @@ class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
         )
 
 
-ARBITRARY = (1, 'arbitrary line contents')
+CONSTRUCTOR_OF_ARBITRARY_MODEL = integration_check.constant_model((1, 'arbitrary line contents'))
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

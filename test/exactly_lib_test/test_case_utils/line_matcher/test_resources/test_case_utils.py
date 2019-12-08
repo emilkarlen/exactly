@@ -4,9 +4,9 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import ModelConstructor
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success, ExpectationTypeConfigForNoneIsSuccess
@@ -15,10 +15,10 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
 class TestCaseBase(unittest.TestCase):
     def _check(self,
                source: ParseSource,
-               model: LineMatcherLine,
+               model_constructor: ModelConstructor,
                arrangement: Arrangement,
                expectation: Expectation):
-        integration_check.check(self, source, model, arrangement, expectation)
+        integration_check.check(self, source, model_constructor, arrangement, expectation)
 
     def _assert_failing_parse(self, source: ParseSource):
         with self.assertRaises(SingleInstructionInvalidArgumentException):

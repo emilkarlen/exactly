@@ -1,9 +1,11 @@
 import pathlib
-from typing import Callable
+from typing import Callable, TypeVar
 
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib_test.type_system.data.test_resources import described_path
+
+MODEL = TypeVar('MODEL')
 
 ModelConstructor = Callable[[Tcds], DescribedPathPrimitive]
 

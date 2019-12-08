@@ -1,10 +1,11 @@
 import unittest
-from typing import List, Optional
+from typing import List
 
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name, SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.condition import comparators
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition__expr
@@ -14,6 +15,7 @@ from exactly_lib_test.test_case_utils.condition.integer.test_resources.validatio
     failing_integer_validation_cases
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import ARBITRARY_MODEL
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import main_result_is_success, \
     main_result_is_failure
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -47,7 +49,7 @@ class IntegrationCheckCase:
                  line_num_of_model: int,
                  operator: comparators.ComparisonOperator,
                  int_expr: str,
-                 result: Optional[ValueAssertion[Optional[str]]],
+                 result: ValueAssertion[MatchingResult],
                  symbols: List[NameAndValue[SymbolDependentValue]]):
         self.name = name
         self.line_num_of_model = line_num_of_model
@@ -66,7 +68,7 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
                     self,
                     source=
                     remaining_source(str(arguments)),
-                    model=_ARBITRARY_MODEL,
+                    model_constructor=ARBITRARY_MODEL,
                     arrangement=
                     integration_check.Arrangement(
                         symbols=case.symbol_table
@@ -90,13 +92,13 @@ class _SymbolReferencesInOperandShouldBeReported(unittest.TestCase):
         arguments = arg.LineNum(int_condition__expr(comparators.EQ,
                                                     symbol_reference_syntax_for_name(int_string_symbol.name)))
 
-        model_that_matches = (actual_line_num, 'the line')
+        model_that_matches = integration_check.constant_model((actual_line_num, 'the line'))
 
         integration_check.check(
             self,
             source=
             remaining_source(str(arguments)),
-            model=model_that_matches,
+            model_constructor=model_that_matches,
             arrangement=
             integration_check.Arrangement(
                 symbols=symbol_utils.symbol_table_from_name_and_sdvs([int_string_symbol])
@@ -177,7 +179,7 @@ class _ParseAndMatchTest(unittest.TestCase):
                 integration_check.check(
                     self,
                     remaining_source(str(arguments)),
-                    (case.line_num_of_model, 'ignored line text'),
+                    integration_check.constant_model((case.line_num_of_model, 'ignored line text')),
                     integration_check.Arrangement(
                         symbols=symbol_utils.symbol_table_from_name_and_sdvs(case.symbols)
                     ),
@@ -212,6 +214,3 @@ def successful_and_unsuccessful(name: str,
             symbols,
         ),
     ]
-
-
-_ARBITRARY_MODEL = (1, 'arbitrary model line')

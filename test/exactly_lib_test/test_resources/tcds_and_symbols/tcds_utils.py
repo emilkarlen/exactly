@@ -1,6 +1,7 @@
 import os
 from contextlib import contextmanager
 from time import strftime, localtime
+from typing import ContextManager
 
 from exactly_lib import program_info
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -45,7 +46,7 @@ def tcds_with_act_as_curr_dir(
         non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
         tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
         pre_contents_population_action: HdsAndSdsAction = HdsAndSdsAction(),
-        symbols: SymbolTable = None) -> PathResolvingEnvironmentPreOrPostSds:
+        symbols: SymbolTable = None) -> ContextManager[PathResolvingEnvironmentPreOrPostSds]:
     symbols = symbol_table_from_none_or_value(symbols)
     prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
     with home_directory_structure(prefix=prefix + '-home') as hds:

@@ -36,14 +36,14 @@ def test_case_dir_contains_exactly(expected_contents: file_structure.DirContents
 
 def tmp_user_dir_contains_exactly(expected_contents: file_structure.DirContents
                                   ) -> ValueAssertion[SandboxDirectoryStructure]:
-    return asrt.sub_component('tmp/usr dir',
+    return asrt.sub_component('user tmp dir',
                               SandboxDirectoryStructure.user_tmp_dir.fget,
                               DirContainsExactly(expected_contents))
 
 
 def tmp_internal_dir_contains_exactly(expected_contents: file_structure.DirContents
                                       ) -> ValueAssertion[SandboxDirectoryStructure]:
-    return asrt.sub_component('tmp/internal dir',
+    return asrt.sub_component('internal tmp dir',
                               SandboxDirectoryStructure.internal_tmp_dir.fget,
                               DirContainsExactly(expected_contents))
 

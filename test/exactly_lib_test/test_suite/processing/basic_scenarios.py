@@ -367,11 +367,8 @@ class ExpectedSuiteReporting(tuple):
 
     @staticmethod
     def check_list(put: unittest.TestCase,
-                   expected: list,
+                   expected: List['ExpectedSuiteReporting'],
                    actual: ExecutionTracingRootSuiteReporter):
-        """
-        :param expected: [ExpectedSuiteReporting]
-        """
         for i, (e, a) in enumerate(zip(expected, actual.sub_suite_reporters)):
             e.check(put, a, 'Suite at index ' + str(i) + ': ')
         put.assertEqual(len(expected),

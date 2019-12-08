@@ -1,21 +1,26 @@
 import unittest
-from typing import Optional, Sequence, TypeVar, Generic
+from typing import Optional, Sequence, TypeVar, Generic, Callable
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MatcherWTraceAndNegation, \
     MatcherWTrace
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.test_case.test_resources.arrangements import ActResultProducer, ActEnvironment
+from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
+    tcds_populators
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
@@ -23,8 +28,18 @@ from exactly_lib_test.util.description_tree.test_resources import described_tree
 
 
 class Arrangement:
-    def __init__(self, symbols: Optional[SymbolTable] = None):
+    def __init__(self,
+                 symbols: Optional[SymbolTable] = None,
+                 hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
+                 non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
+                 tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
+                 act_result: Optional[ActResultProducer] = None,
+                 ):
         self.symbols = symbol_table_from_none_or_value(symbols)
+        self.hds_contents = hds_contents
+        self.non_hds_contents = non_hds_contents
+        self.tcds_contents = tcds_contents
+        self.act_result = act_result
 
 
 class Expectation:
@@ -57,15 +72,22 @@ def main_result_is_failure() -> ValueAssertion[MatchingResult]:
 MODEL = TypeVar('MODEL')
 
 
+def constant_model(model: MODEL) -> Callable[[Tcds], MODEL]:
+    def ret_val(tcds: Tcds) -> MODEL:
+        return model
+
+    return ret_val
+
+
 def check(put: unittest.TestCase,
           source: ParseSource,
-          model: MODEL,
+          model_constructor: Callable[[Tcds], MODEL],
           parser: Parser[MatcherTypeSdv[MODEL]],
           arrangement: Arrangement,
           expected_logic_value_type: LogicValueType,
           expected_value_type: ValueType,
           expectation: Expectation):
-    _Checker(put, source, model, parser, arrangement,
+    _Checker(put, source, model_constructor, parser, arrangement,
              expected_logic_value_type,
              expected_value_type,
              expectation).check()
@@ -73,7 +95,7 @@ def check(put: unittest.TestCase,
 
 def check_with_source_variants(put: unittest.TestCase,
                                arguments: Arguments,
-                               model: MODEL,
+                               model_constructor: Callable[[Tcds], MODEL],
                                parser: Parser[MatcherTypeSdv[MODEL]],
                                arrangement: Arrangement,
                                expected_logic_value_type: LogicValueType,
@@ -81,7 +103,7 @@ def check_with_source_variants(put: unittest.TestCase,
                                expectation: Expectation):
     for source in equivalent_source_variants__with_source_check__for_expression_parser(
             put, arguments):
-        check(put, source, model, parser, arrangement,
+        check(put, source, model_constructor, parser, arrangement,
               expected_logic_value_type,
               expected_value_type,
               expectation)
@@ -95,7 +117,7 @@ class _Checker(Generic[MODEL]):
     def __init__(self,
                  put: unittest.TestCase,
                  source: ParseSource,
-                 model: MODEL,
+                 model_constructor: Callable[[Tcds], MODEL],
                  parser: Parser[MatcherTypeSdv[MODEL]],
                  arrangement: Arrangement,
                  expected_logic_value_type: LogicValueType,
@@ -103,13 +125,14 @@ class _Checker(Generic[MODEL]):
                  expectation: Expectation):
         self.put = put
         self.source = source
-        self.model = model
+        self.model_constructor = model_constructor
         self.parser = parser
         self.arrangement = arrangement
         self.expected_logic_value_type = expected_logic_value_type
         self.expected_value_type = expected_value_type
         self.expectation = expectation
-        self.tcds = fake_tcds()
+        self.hds = None
+        self.tcds = None
 
     def check(self):
         try:
@@ -124,24 +147,49 @@ class _Checker(Generic[MODEL]):
                                                               matcher_sdv.references,
                                                               'reference')
 
-        matcher_value = self._resolve_ddv(matcher_sdv)
+        matcher_ddv = self._resolve_ddv(matcher_sdv)
 
-        structure_tree_of_ddv = matcher_value.structure().render()
+        structure_tree_of_ddv = matcher_ddv.structure().render()
 
         asrt_d_tree.matches_node().apply_with_message(self.put,
                                                       structure_tree_of_ddv,
-                                                      'structure of ddv')
+                                                      'sanity of structure of ddv')
 
-        self._check_validation_pre_sds(matcher_value)
-        self._check_validation_post_sds(matcher_value)
+        with tcds_with_act_as_curr_dir(
+                # pre_contents_population_action=self.arrangement.pre_contents_population_action,
+                hds_contents=self.arrangement.hds_contents,
+                non_hds_contents=self.arrangement.non_hds_contents,
+                tcds_contents=self.arrangement.tcds_contents,
+                symbols=self.arrangement.symbols) as path_resolving_environment:
+            self.hds = path_resolving_environment.hds
 
-        matcher = self._resolve_primitive_value(matcher_value)
+            self._check_with_hds(matcher_ddv)
+
+            self.tcds = path_resolving_environment.tcds
+
+            self._produce_act_result()
+
+            self._check_with_sds(matcher_ddv)
+
+    def _produce_act_result(self):
+        if self.arrangement.act_result:
+            act_result = self.arrangement.act_result.apply(ActEnvironment(self.tcds))
+            write_act_result(self.tcds.sds, act_result)
+
+    def _check_with_hds(self, ddv: MatcherDdv[MODEL]):
+        self._check_validation_pre_sds(ddv)
+
+    def _check_with_sds(self, ddv: MatcherDdv[MODEL]):
+        self._check_validation_post_sds(ddv)
+
+        matcher = self._resolve_primitive_value(ddv)
         structure_tree_of_primitive = matcher.structure().render()
 
         asrt_d_tree.matches_node().apply_with_message(self.put,
                                                       structure_tree_of_primitive,
-                                                      'structure of primitive')
+                                                      'sanity of structure of primitive')
 
+        structure_tree_of_ddv = ddv.structure().render()
         structure_equals_ddv = asrt_d_tree.header_data_and_children_equal_as(structure_tree_of_ddv)
         structure_equals_ddv.apply_with_message(
             self.put,
@@ -193,7 +241,7 @@ class _Checker(Generic[MODEL]):
 
     def _check_validation_pre_sds(self, matcher_ddv: MatcherDdv[MODEL]):
         validator = matcher_ddv.validator
-        result = validator.validate_pre_sds_if_applicable(self.tcds.hds)
+        result = validator.validate_pre_sds_if_applicable(self.hds)
 
         self.expectation.validation.pre_sds.apply_with_message(self.put,
                                                                result,
@@ -215,7 +263,8 @@ class _Checker(Generic[MODEL]):
 
     def _check_application(self, matcher: MatcherWTraceAndNegation[MODEL]):
         try:
-            main_result__trace = matcher.matches_w_trace(self.model)
+            model = self.model_constructor(self.tcds)
+            main_result__trace = matcher.matches_w_trace(model)
 
             self._check_application_result(main_result__trace)
         except HardErrorException as ex:

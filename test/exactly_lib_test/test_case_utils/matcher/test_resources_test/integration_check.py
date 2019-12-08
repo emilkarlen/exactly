@@ -1,16 +1,28 @@
 """
 Test of test-infrastructure: instruction_check.
 """
+import pathlib
 import unittest
-from typing import List, Sequence
+from typing import List, Sequence, Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.ddv_validation import ConstantDdvValidator
-from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv
+from exactly_lib.test_case.validation.ddv_validation import ConstantDdvValidator, DdvValidator
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType
+from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.matcher.impls import constant
+from exactly_lib.type_system.description.trace_building import TraceBuilder
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MODEL, \
+    MatchingResult, Failure
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.symbol_table import SymbolTable
@@ -18,12 +30,22 @@ from exactly_lib_test.section_document.test_resources.parser_classes import Cons
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
+from exactly_lib_test.test_case.test_resources.arrangements import ActResultProducerFromActResult
+from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_contents_check, \
+    hds_populators
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_contents_assertions as asrt_tcds_contents
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
+    tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers, integration_check as sut
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import MatcherThatReportsHardError
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_hard_error
+from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, File
+from exactly_lib_test.test_resources.process import SubProcessResult
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import sds_2_tcds_assertion
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 EXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.LINE_MATCHER
@@ -40,6 +62,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestFailingExpectations))
     ret_val.addTest(unittest.makeSuite(TestSymbolReferences))
     ret_val.addTest(unittest.makeSuite(TestHardError))
+    ret_val.addTest(unittest.makeSuite(TestPopulateDirectoriesAndCwd))
     return ret_val
 
 
@@ -53,7 +76,7 @@ class TestCaseBase(unittest.TestCase):
                                  parser: Parser[MatcherTypeSdv[int]],
                                  arrangement: sut.Arrangement,
                                  expectation: sut.Expectation):
-        sut.check(self.tc, source, model, parser, arrangement,
+        sut.check(self.tc, source, sut.constant_model(model), parser, arrangement,
                   EXPECTED_LOGIC_TYPE_FOR_TEST,
                   EXPECTED_VALUE_TYPE_FOR_TEST,
                   expectation)
@@ -97,6 +120,19 @@ class TestSymbolReferences(TestCaseBase):
 
 
 class TestHardError(TestCaseBase):
+    def test_expected_hard_error_is_detected(self):
+        parser_that_gives_value_that_causes_hard_error = _constant_line_matcher_type_parser_of_matcher(
+            matchers.MatcherThatReportsHardError()
+        )
+        self._check_line_matcher_type(
+            utils.single_line_source(),
+            ARBITRARY_MODEL,
+            parser_that_gives_value_that_causes_hard_error,
+            sut.Arrangement(),
+            sut.Expectation(
+                is_hard_error=is_hard_error(),
+            ))
+
     def test_missing_hard_error_is_detected(self):
         with self.assertRaises(utils.TestError):
             self._check_line_matcher_type(
@@ -115,7 +151,7 @@ class TestTypes(TestCaseBase):
             sut.check(
                 self.tc,
                 utils.single_line_source(),
-                ARBITRARY_MODEL,
+                ARBITRARY_MODEL_CONSTRUCTOR,
                 PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
                 sut.Arrangement(),
                 UNEXPECTED_LOGIC_TYPE_FOR_TEST,
@@ -128,7 +164,7 @@ class TestTypes(TestCaseBase):
             sut.check(
                 self.tc,
                 utils.single_line_source(),
-                ARBITRARY_MODEL,
+                ARBITRARY_MODEL_CONSTRUCTOR,
                 PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
                 sut.Arrangement(),
                 EXPECTED_LOGIC_TYPE_FOR_TEST,
@@ -218,6 +254,22 @@ class TestDefault(TestCaseBase):
             sut.Arrangement(),
             sut.Expectation())
 
+    def test_tcds_directories_are_empty(self):
+        all_tcds_dirs_are_empty = asrt.and_([
+            dir_is_empty(tcds_dir)
+            for tcds_dir in RelOptionType
+        ])
+
+        self._check_line_matcher_type(
+            utils.single_line_source(),
+            ARBITRARY_MODEL,
+            parser_of_matcher_that_is_an_assertion_on_tcds(
+                self,
+                all_tcds_dirs_are_empty,
+            ),
+            sut.Arrangement(),
+            sut.Expectation())
+
 
 class TestFailingExpectations(TestCaseBase):
     def test_fail_due_to_unexpected_result_from_pre_validation(self):
@@ -252,6 +304,100 @@ class TestFailingExpectations(TestCaseBase):
                 Expectation(
                     main_result=matcher_assertions.is_arbitrary_matching_failure()),
             )
+
+
+class TestPopulateDirectoriesAndCwd(TestCaseBase):
+    def test_that_cwd_for_main_and_post_validation_is_test_root(self):
+        def make_primitive(tcds: Tcds) -> MatcherWTraceAndNegation[int]:
+            return MatcherThatAssertsThatCwdIsIsActDir(self, tcds)
+
+        self._check_line_matcher_type(
+            utils.single_line_source(),
+            ARBITRARY_MODEL,
+            _constant_line_matcher_type_parser_of_matcher_ddv(
+                matchers.MatcherDdvFromPartsTestImpl(
+                    make_primitive,
+                    ValidatorThatAssertsThatCwdIsIsActDirAtPostSdsValidation(self),
+                )
+            ),
+            sut.Arrangement(),
+            Expectation())
+
+    def test_populate_hds(self):
+        populated_dir_contents = DirContents([empty_file('hds-file.txt')])
+        the_hds_dir = RelHdsOptionType.REL_HDS_CASE
+        self._check_line_matcher_type(
+            utils.single_line_source(),
+            ARBITRARY_MODEL,
+            parser_of_matcher_that_is_an_assertion_on_tcds(
+                self,
+                hds_contents_check.hds_2_tcds_assertion(
+                    hds_contents_check.dir_contains_exactly(the_hds_dir,
+                                                            populated_dir_contents)
+                )
+            ),
+            sut.Arrangement(
+                hds_contents=hds_populators.contents_in(
+                    the_hds_dir,
+                    populated_dir_contents)),
+            Expectation(),
+        )
+
+    def test_populate_non_hds(self):
+        populated_dir_contents = DirContents([empty_file('non-home-file.txt')])
+        self._check_line_matcher_type(
+            utils.single_line_source(),
+            ARBITRARY_MODEL,
+            parser_of_matcher_that_is_an_assertion_on_tcds(
+                self,
+                sds_2_tcds_assertion(
+                    tmp_user_dir_contains_exactly(populated_dir_contents)
+                )
+            ),
+            sut.Arrangement(
+                non_hds_contents=non_hds_populator.rel_option(
+                    non_hds_populator.RelNonHdsOptionType.REL_TMP,
+                    populated_dir_contents)),
+            Expectation(),
+        )
+
+    def test_populate_result_dir_with_act_result(self):
+        act_result = SubProcessResult(
+            exitcode=72,
+            stdout='the stdout',
+            stderr='the stderr',
+        )
+
+        result_dir_contains_files_corresponding_to_act_result = asrt_tcds_contents.dir_contains_exactly(
+            RelOptionType.REL_RESULT,
+            DirContents([
+                File(sds.RESULT_FILE__EXITCODE, str(act_result.exitcode)),
+                File(sds.RESULT_FILE__STDOUT, str(act_result.stdout)),
+                File(sds.RESULT_FILE__STDERR, str(act_result.stderr)),
+            ])
+        )
+
+        all_tcds_dirs_but_result_dir_are_empty = asrt.and_([
+            dir_is_empty(tcds_dir)
+            for tcds_dir in RelOptionType if tcds_dir is not RelOptionType.REL_RESULT
+        ])
+
+        self._check_line_matcher_type(
+            utils.single_line_source(),
+            ARBITRARY_MODEL,
+            parser_of_matcher_that_is_an_assertion_on_tcds(
+                self,
+                asrt.and_([
+                    result_dir_contains_files_corresponding_to_act_result,
+                    all_tcds_dirs_but_result_dir_are_empty,
+                ]
+                )
+            ),
+            sut.Arrangement(
+                act_result=ActResultProducerFromActResult(act_result)
+            ),
+            Expectation(),
+        )
 
 
 class _MatcherTypeSdvTestImpl(MatcherTypeSdv[int]):
@@ -297,15 +443,21 @@ def _line_matcher_type_sdv(matcher: MatcherSdv[int]) -> MatcherTypeSdv[int]:
     return _MatcherTypeSdvTestImpl(matcher)
 
 
-def _constant_line_matcher_type_parser_of_matcher_sdv(matcher: MatcherSdv[int]) -> Parser[_MatcherTypeSdvTestImpl]:
+def _constant_line_matcher_type_parser_of_matcher_sdv(matcher: MatcherSdv[int]) -> Parser[MatcherTypeSdv[int]]:
     return ConstantParser(_line_matcher_type_sdv(matcher))
 
 
-def _constant_line_matcher_type_parser_of_matcher_ddv(matcher: MatcherDdv[int]) -> Parser[_MatcherTypeSdvTestImpl]:
+def _constant_line_matcher_type_parser_of_matcher_ddv(matcher: MatcherDdv[int]) -> Parser[MatcherTypeSdv[int]]:
     return ConstantParser(_line_matcher_type_sdv(matchers.MatcherSdvOfConstantDdvTestImpl(matcher)))
 
 
+def _constant_line_matcher_type_parser_of_matcher(matcher: MatcherWTraceAndNegation[int]
+                                                  ) -> Parser[MatcherTypeSdv[int]]:
+    return ConstantParser(_line_matcher_type_sdv(matchers.sdv_from_primitive_value(matcher)))
+
+
 ARBITRARY_MODEL = 0
+ARBITRARY_MODEL_CONSTRUCTOR = sut.constant_model(ARBITRARY_MODEL)
 
 PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION = \
     _constant_line_matcher_type_parser_of_matcher_sdv(
@@ -313,6 +465,84 @@ PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION 
     )
 
 _MATCHER_THAT_MATCHES = _line_matcher_type_sdv(matchers.sdv_from_primitive_value())
+
+
+def dir_is_empty(tcds_dir: RelOptionType) -> ValueAssertion[Tcds]:
+    return asrt.sub_component(str(tcds_dir),
+                              REL_OPTIONS_MAP[tcds_dir].root_resolver.from_tcds,
+                              file_assertions.dir_is_empty())
+
+
+def parser_of_matcher_that_is_an_assertion_on_tcds(put: unittest.TestCase,
+                                                   assertion: ValueAssertion[Tcds],
+                                                   ) -> Parser[MatcherTypeSdv[int]]:
+    return _constant_line_matcher_type_parser_of_matcher_ddv(
+        _MatcherDdvThatIsAssertionOnTcds(put, assertion)
+    )
+
+
+class ValidatorThatAssertsThatCwdIsIsActDirAtPostSdsValidation(DdvValidator):
+    def __init__(self, put: unittest.TestCase):
+        self._put = put
+
+    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
+        return None
+
+    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+        cwd = pathlib.Path.cwd()
+        self._put.assertEqual(cwd, tcds.sds.act_dir, 'current directory at validation post-sds')
+        return None
+
+
+class MatcherThatAssertsThatCwdIsIsActDir(MatcherWTraceAndNegation[int]):
+    def __init__(self,
+                 put: unittest.TestCase,
+                 tcds: Tcds,
+                 ):
+        self._put = put
+        self._tcds = tcds
+
+    @property
+    def negation(self) -> MatcherWTraceAndNegation[int]:
+        raise NotImplementedError('unsupported')
+
+    def matches_w_failure(self, model: MODEL) -> Optional[Failure[MODEL]]:
+        raise NotImplementedError('unsupported')
+
+    def matches_w_trace(self, model: MODEL) -> MatchingResult:
+        cwd = pathlib.Path.cwd()
+        self._put.assertEqual(cwd, self._tcds.sds.act_dir, 'current directory at matcher application')
+        return TraceBuilder(self.name).build_result(True)
+
+    @property
+    def name(self) -> str:
+        return str(type(self))
+
+    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
+        raise NotImplementedError('unsupported')
+
+    @property
+    def option_description(self) -> str:
+        return self.name
+
+
+class _MatcherDdvThatIsAssertionOnTcds(MatcherDdv[int]):
+    MATCHER = constant.MatcherWithConstantResult(True)
+
+    def __init__(self,
+                 put: unittest.TestCase,
+                 assertion: ValueAssertion[Tcds],
+                 ):
+        self._put = put
+        self._assertion = assertion
+
+    def structure(self) -> StructureRenderer:
+        return self.MATCHER.structure()
+
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[int]:
+        self._assertion.apply_with_message(self._put, tcds, 'assertion on tcds')
+        return self.MATCHER
+
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
