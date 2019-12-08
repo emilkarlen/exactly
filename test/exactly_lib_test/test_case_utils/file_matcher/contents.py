@@ -4,23 +4,22 @@ from typing import List
 from exactly_lib.definitions import expression
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import model_construction
+from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHdsPopulator
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax, integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as tc
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, elements
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args as sm_args, \
     EqualsStringAssertionArgumentsConstructor
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.files.file_structure import empty_file, File, DirContents, empty_dir, \
@@ -57,9 +56,9 @@ def source_for(argument_tail: str, following_lines=()) -> ParseSource:
     return arguments_for(argument_tail).followed_by_lines(following_lines).as_remaining_source
 
 
-def single_file_in_current_dir(f: FileSystemElement) -> sds_populator.SdsPopulator:
-    return sds_populator.contents_in(
-        RelSdsOptionType.REL_ACT,
+def single_file_in_current_dir(f: FileSystemElement) -> NonHdsPopulator:
+    return non_hds_populator.rel_option(
+        RelNonHdsOptionType.REL_ACT,
         DirContents([f])
     )
 
@@ -76,14 +75,14 @@ class EmbeddedStringMatcherShouldBeValidated(tc.TestCaseBase):
                     source_for(
                         sm_args(symbol_context.name)
                     ),
-                    model=
-                    model_construction.constant_relative_file_name('non-existing.txt'),
+                    model_constructor=
+                    integration_check.constant_relative_file_name('non-existing.txt'),
                     arrangement=
-                    ArrangementPostAct(
+                    Arrangement(
                         symbols=symbols,
                     ),
                     expectation=
-                    expectation(
+                    Expectation(
                         validation=case.value.expectation,
                         symbol_references=symbol_context.references_assertion,
                     ),
@@ -97,10 +96,10 @@ class TestHardErrorWhenActualFileDoesNotExist(tc.TestWithNegationArgumentBase):
             source_for(
                 sm_args('{maybe_not} {empty}',
                         maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-            model=
-            model_construction.constant_relative_file_name('non-existing.txt'),
+            model_constructor=
+            integration_check.constant_relative_file_name('non-existing.txt'),
             arrangement=
-            ArrangementPostAct(),
+            Arrangement(),
             expectation=
             Expectation(
                 is_hard_error=matcher_assertions.is_hard_error()
@@ -117,11 +116,11 @@ class TestHardErrorWhenActualFileIsADirectory(tc.TestWithNegationArgumentBase):
             source_for(
                 sm_args('{maybe_not} {empty}',
                         maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-            model=
-            model_construction.constant_relative_file_name(checked_file.name),
+            model_constructor=
+            integration_check.constant_relative_file_name(checked_file.name),
             arrangement=
-            ArrangementPostAct(
-                sds_contents=single_file_in_current_dir(checked_file)
+            Arrangement(
+                non_hds_contents=single_file_in_current_dir(checked_file)
             ),
             expectation=
             Expectation(
@@ -139,11 +138,11 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
             arguments_for(
                 sm_args('{maybe_not} {empty}',
                         maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-            model=
-            model_construction.constant_relative_file_name(checked_file.name),
+            model_constructor=
+            integration_check.constant_relative_file_name(checked_file.name),
             arrangement=
-            ArrangementPostAct(
-                sds_contents=single_file_in_current_dir(checked_file)
+            Arrangement(
+                non_hds_contents=single_file_in_current_dir(checked_file)
             ),
             expectation=
             Expectation(
@@ -166,7 +165,7 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
             named_transformer.name: container(named_transformer.value)
         })
 
-        expected_symbol_reference_to_transformer = is_reference_to_string_transformer(named_transformer.name)
+        expected_symbol_reference_to_transformer = is_reference_to_string_transformer__ref(named_transformer.name)
 
         expected_symbol_usages = asrt.matches_sequence([expected_symbol_reference_to_transformer])
 
@@ -178,17 +177,17 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
                 sm_args('{transform_option} {the_transformer} {maybe_not} {empty}',
                         the_transformer=named_transformer.name,
                         maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-            model=
-            model_construction.constant_relative_file_name(checked_file.name),
+            model_constructor=
+            integration_check.constant_relative_file_name(checked_file.name),
             arrangement=
-            ArrangementPostAct(
-                sds_contents=single_file_in_current_dir(checked_file),
+            Arrangement(
+                non_hds_contents=single_file_in_current_dir(checked_file),
                 symbols=symbols,
             ),
             expectation=
             Expectation(
                 main_result=maybe_not.pass__if_positive__fail__if_negative,
-                symbol_usages=expected_symbol_usages),
+                symbol_references=expected_symbol_usages),
         )
 
 
@@ -208,11 +207,11 @@ class TestComplexMatcher(tc.TestWithNegationArgumentBase):
                     argument_syntax.name_glob_pattern_matcher_of(checked_file.name),
                 ]
             ).as_remaining_source,
-            model=
-            model_construction.constant_relative_file_name(checked_file.name),
+            model_constructor=
+            integration_check.constant_relative_file_name(checked_file.name),
             arrangement=
-            ArrangementPostAct(
-                sds_contents=single_file_in_current_dir(checked_file)
+            Arrangement(
+                non_hds_contents=single_file_in_current_dir(checked_file)
             ),
             expectation=
             Expectation(
@@ -239,11 +238,11 @@ class TestComplexMatcherWithParenthesis(tc.TestWithNegationArgumentBase):
                     ')',
                 ]
             ).as_remaining_source,
-            model=
-            model_construction.constant_relative_file_name(checked_file.name),
+            model_constructor=
+            integration_check.constant_relative_file_name(checked_file.name),
             arrangement=
-            ArrangementPostAct(
-                sds_contents=single_file_in_current_dir(checked_file)
+            Arrangement(
+                non_hds_contents=single_file_in_current_dir(checked_file)
             ),
             expectation=
             Expectation(
@@ -267,11 +266,11 @@ class TestEvaluationIsLazyFromLeftToRight(tc.TestCaseBase):
                             surrounded_by_hard_quotes_str('expected contents')))),
                 ]
             ).as_remaining_source,
-            model=
-            model_construction.constant_relative_file_name(checked_file.name),
+            model_constructor=
+            integration_check.constant_relative_file_name(checked_file.name),
             arrangement=
-            ArrangementPostAct(
-                sds_contents=single_file_in_current_dir(checked_file)
+            Arrangement(
+                non_hds_contents=single_file_in_current_dir(checked_file)
             ),
             expectation=
             Expectation(

@@ -1,13 +1,12 @@
 import unittest
 
-from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as arg
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check, model_construction
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
-from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
@@ -25,15 +24,14 @@ class TestFileType(unittest.TestCase):
                dir_contents: DirContents):
 
         # ACT #
-        integration_check.check_equivalent_source_variants__for_expression_parser(
+        integration_check.check_with_source_variants(
             self,
-            sut.parser(),
             ArgumentElements(arg.Type(file_type_to_check_for).elements).as_arguments,
-            model_construction.constant_relative_file_name(base_name_of_file_to_check),
-            ArrangementPostAct(
-                non_hds_contents=sds_populator.cwd_contents(dir_contents),
+            integration_check.constant_relative_file_name(base_name_of_file_to_check),
+            Arrangement(
+                non_hds_contents=non_hds_populator.rel_option(RelNonHdsOptionType.REL_CWD, dir_contents),
             ),
-            matcher_assertions.expectation(
+            Expectation(
                 main_result=asrt_matching_result.matches_value(expected_result),
             )
         )

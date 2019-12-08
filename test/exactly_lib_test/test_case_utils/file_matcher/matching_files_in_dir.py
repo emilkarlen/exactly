@@ -1,4 +1,5 @@
 import unittest
+from typing import AbstractSet
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
@@ -20,7 +21,7 @@ class TestMatchingFilesInDir(unittest.TestCase):
 
     def _check(self,
                matcher: sut.FileMatcher,
-               expected_matching_file_base_names: set):
+               expected_matching_file_base_names: AbstractSet[str]):
         dir_contents = DirContents([
             empty_file(self.file_1_name),
             empty_dir(self.dir_2_name),

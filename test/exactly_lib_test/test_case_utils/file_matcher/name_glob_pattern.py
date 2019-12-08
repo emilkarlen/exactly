@@ -7,14 +7,12 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as arg
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import model_construction
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax, integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as test_case_utils
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import ArrangementPostAct
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import Expectation, Arrangement
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.test_utils import Actual
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess, PassOrFail
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -86,7 +84,7 @@ class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
             'AB' + symbol_reference_syntax_for_name(any_char_glob_pattern_string_symbol.name))
         )
     )
-    arrangement = ArrangementPostAct(symbols=SymbolTable({
+    arrangement = Arrangement(symbols=SymbolTable({
         any_char_glob_pattern_string_symbol.name: any_char_glob_pattern_string_symbol.value,
     }))
 
@@ -94,10 +92,10 @@ class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
         self._check_with_source_variants(
             arguments=
             Arguments(str(self.argument_w_opt_neg.get(maybe_not.expectation_type))),
-            model=
-            model_construction.constant_relative_file_name('ABC'),
+            model_constructor=
+            integration_check.constant_relative_file_name('ABC'),
             arrangement=self.arrangement,
-            expectation=expectation(
+            expectation=Expectation(
                 symbol_references=asrt.matches_sequence([
                     is_reference_to_valid_regex_string_part(self.any_char_glob_pattern_string_symbol.name),
                 ]),

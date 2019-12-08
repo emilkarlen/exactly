@@ -6,16 +6,13 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import model_construction
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.model_construction import ModelConstructor
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import ModelConstructor
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.test_utils import Actual
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success, ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.test_utils import NEA
@@ -26,13 +23,12 @@ from exactly_lib_test.type_system.trace.test_resources import matching_result_as
 class TestCaseBase(unittest.TestCase):
     def _check(self,
                source: ParseSource,
-               model: ModelConstructor,
-               arrangement: ArrangementPostAct,
+               model_constructor: ModelConstructor,
+               arrangement: Arrangement,
                expectation: Expectation):
         integration_check.check(self,
-                                sut.parser(),
                                 source,
-                                model,
+                                model_constructor,
                                 arrangement,
                                 expectation)
 
@@ -42,14 +38,13 @@ class TestCaseBase(unittest.TestCase):
 
     def _check_with_source_variants(self,
                                     arguments: Arguments,
-                                    model: ModelConstructor,
-                                    arrangement: ArrangementPostAct,
+                                    model_constructor: ModelConstructor,
+                                    arrangement: Arrangement,
                                     expectation: Expectation):
         for source in equivalent_source_variants__with_source_check__for_expression_parser(self, arguments):
             integration_check.check(self,
-                                    sut.parser(),
                                     source,
-                                    model,
+                                    model_constructor,
                                     arrangement,
                                     expectation)
 
@@ -60,10 +55,10 @@ class TestCaseBase(unittest.TestCase):
                 self._check_with_source_variants(
                     arguments=
                     case.actual.arguments,
-                    model=
-                    model_construction.constant_model(described_path.new_primitive(case.actual.path)),
-                    arrangement=ArrangementPostAct(),
-                    expectation=expectation(
+                    model_constructor=
+                    integration_check.constant_path(described_path.new_primitive(case.actual.path)),
+                    arrangement=Arrangement(),
+                    expectation=Expectation(
                         main_result=asrt_matching_result.matches_value(case.expected)
                     )
                 )
