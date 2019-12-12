@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Sequence, Dict
+from typing import Sequence, Dict, List
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.primitives import files_matcher as files_matcher_primitives
@@ -13,7 +13,65 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources import argumen
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import \
     file_matcher_arguments
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import ExpectationTypeConfig
+from exactly_lib_test.test_resources.matcher_argument import MatcherArg
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+
+
+class FilesMatcherArg(MatcherArg, ABC):
+    pass
+
+
+class SymbolReference(FilesMatcherArg):
+    def __init__(self, symbol_name: str):
+        self.symbol_name = symbol_name
+
+    @property
+    def elements(self) -> List:
+        return [self.symbol_name]
+
+
+class Empty(FilesMatcherArg):
+
+    @property
+    def elements(self) -> List:
+        return [files_matcher_primitives.EMPTINESS_CHECK_ARGUMENT]
+
+
+class Quantification(FilesMatcherArg):
+    def __init__(self,
+                 quantifier: Quantifier,
+                 element_matcher: fm_args.FileMatcherArg,
+                 ):
+        self.quantifier = quantifier
+        self.element_matcher = element_matcher
+
+    @property
+    def elements(self) -> List:
+        return (
+                [
+                    instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier],
+                    files_matcher_primitives.QUANTIFICATION_OVER_FILE_ARGUMENT,
+                    instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+                ] +
+                self.element_matcher.elements
+        )
+
+
+class Selection(FilesMatcherArg):
+    def __init__(self,
+                 selector: fm_args.FileMatcherArg,
+                 on_selection: FilesMatcherArg,
+                 ):
+        self.selector = selector
+        self.on_selection = on_selection
+
+    @property
+    def elements(self) -> List:
+        return (
+                [option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name)]
+                + self.selector.elements +
+                self.on_selection.elements
+        )
 
 
 class AssertionVariantArgumentsConstructor:

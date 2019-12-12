@@ -3,28 +3,24 @@ import unittest
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
-from exactly_lib.test_case_utils.matcher.impls import constant, ddv_components
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref, \
-    file_matcher_sdv_constant_value_test_impl
+from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.condition.integer.test_resources import arguments_building as int_args
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args2, validation_cases
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax as fm_args
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fsm_args, model
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_confs, matcher_assertions
-from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success
-from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_validator import ValidatorThat
 from exactly_lib_test.test_resources.files.file_structure import Dir, empty_file, DirContents
-from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -69,55 +65,17 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
 
-        err_msg_from_validator = 'error from validator'
-
         name_of_referenced_symbol = 'FILE_MATCHER_WITH_VALIDATION_FAILURE'
 
-        expected_symbol_usages = asrt.matches_sequence(
-            [is_file_matcher_reference_to__ref(name_of_referenced_symbol)])
+        selection_is_empty_arguments = fsm_args.Selection(
+            fm_args2.SymbolReference(name_of_referenced_symbol),
+            args.Empty()
+        )
 
-        selection_is_empty_arguments = fsm_args.argument_constructor_for_emptiness_check(
-            named_matcher=name_of_referenced_symbol
-        ).apply(expectation_type_config__non_is_success(ExpectationType.POSITIVE))
+        for case in validation_cases.failing_validation_cases(name_of_referenced_symbol):
+            symbol_context = case.value.symbol_context
 
-        cases = [
-            NEA('pre sds validation',
-                expected=
-                Expectation(
-                    validation_pre_sds=asrt_validation.matches_validation_failure(asrt.equals(err_msg_from_validator)),
-                    symbol_usages=expected_symbol_usages,
-                ),
-                actual=
-                ValidatorThat(
-                    pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test(err_msg_from_validator)
-                )
-                ),
-            NEA('post sds validation',
-                expected=
-                Expectation(
-                    validation_post_sds=asrt_validation.matches_validation_failure(asrt.equals(err_msg_from_validator)),
-                    symbol_usages=expected_symbol_usages,
-                ),
-                actual=
-                ValidatorThat(
-                    post_setup_return_value=asrt_text_doc.new_single_string_text_for_test(err_msg_from_validator)
-                )
-                ),
-        ]
-
-        for case in cases:
-            sdv_of_failing_matcher = file_matcher_sdv_constant_value_test_impl(
-                ddv_components.MatcherDdvFromConstantPrimitive(
-                    constant.MatcherWithConstantResult(True),
-                    case.actual,
-                ),
-                (),
-            )
-            symbols = SymbolTable({
-                name_of_referenced_symbol: container(sdv_of_failing_matcher),
-            })
-
-            selection_is_empty_source = remaining_source(selection_is_empty_arguments)
+            selection_is_empty_source = remaining_source(str(selection_is_empty_arguments))
 
             # ACT & ASSERT #
             with self.subTest(case.name):
@@ -127,9 +85,12 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
                     selection_is_empty_source,
                     model.arbitrary_model(),
                     ArrangementPostAct(
-                        symbols=symbols,
+                        symbols=symbol_context.symbol_table,
                     ),
-                    expectation=case.expected
+                    expectation(
+                        validation=case.value.expectation,
+                        symbol_references=symbol_context.references_assertion,
+                    ),
                 )
 
 

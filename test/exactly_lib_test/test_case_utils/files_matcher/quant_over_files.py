@@ -20,7 +20,7 @@ from exactly_lib_test.symbol.test_resources.string_transformer import is_referen
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, validation_cases
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import expression, integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import model
@@ -30,6 +30,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_bui
     files_matcher_setup_without_references
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.check_with_neg_and_rel_opts import \
     MatcherChecker
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import arbitrary_model
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.arguments import file_contents_arg2
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.misc import \
     FileMatcherThatMatchesAnyFileWhosNameStartsWith
@@ -38,7 +39,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.conten
     ToUppercaseStringTransformer
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions as asrt_matcher
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
+from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File, Dir, empty_dir, sym_link
@@ -52,6 +53,7 @@ def suite() -> unittest.TestSuite:
 
         unittest.makeSuite(TestSymbolReferences),
 
+        unittest.makeSuite(TestFileMatcherShouldBeValidated),
         unittest.makeSuite(TestFailingValidationPreSdsDueToInvalidIntegerArgumentOfNumLines),
 
         unittest.makeSuite(TestHardErrorWhenContentsOfAFileThatIsNotARegularFileIsTested),
@@ -82,14 +84,44 @@ class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
     pass
 
 
+class TestFileMatcherShouldBeValidated(unittest.TestCase):
+    def test(self):
+        symbol_name = 'the_string_matcher'
+        for quantifier in Quantifier:
+            arguments = args.Quantification(
+                quantifier,
+                fm_args.SymbolReference(symbol_name))
+
+            for case in validation_cases.failing_validation_cases(symbol_name):
+                symbol_context = case.value.symbol_context
+
+                with self.subTest(quantifier=quantifier,
+                                  validation_case=case.name):
+                    integration_check.check(
+                        self,
+                        sut.files_matcher_parser(),
+                        source=remaining_source(str(arguments)),
+                        model=arbitrary_model(),
+                        arrangement=
+                        ArrangementPostAct(
+                            symbols=symbol_context.symbol_table
+                        ),
+                        expectation=
+                        expectation(
+                            validation=case.value.expectation,
+                            symbol_references=symbol_context.references_assertion,
+                        ),
+                    )
+
+
 class TestFailingValidationPreSdsDueToInvalidIntegerArgumentOfNumLines(expression.TestFailingValidationPreSdsAbstract):
     def _conf(self) -> expression.Configuration:
         return expression.Configuration(sut.files_matcher_parser(),
-                                        TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck(),
+                                        TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumLinesCheck(),
                                         invalid_integers_according_to_custom_validation=[-1, -2])
 
 
-class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck(
+class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumLinesCheck(
     expression.InstructionArgumentsVariantConstructor):
     """
     Constructs the instruction argument for a given comparision condition string.
