@@ -8,11 +8,10 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds, PathResolvingEnvironment, PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import sdv_validation
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -209,7 +208,6 @@ class TestMisc(TestCaseBase):
                 StringMatcherSdvFromPartsTestImpl(
                     renderers.header_only('header of ddv'),
                     (),
-                    sdv_validation.ConstantSuccessSdvValidator(),
                     lambda x: StringMatcherConstantTestImpl(True,
                                                             tree.Node('header of primitive', None, (), ())),
                 ),
@@ -219,7 +217,6 @@ class TestMisc(TestCaseBase):
                 StringMatcherSdvFromPartsTestImpl(
                     renderers.header_only(header),
                     (),
-                    sdv_validation.ConstantSuccessSdvValidator(),
                     lambda x: StringMatcherConstantTestImpl(True,
                                                             tree.Node(header, None, (),
                                                                       (tree.Node(header, None, (), ()),))),
@@ -313,8 +310,8 @@ def string_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> String
     return StringMatcherSdvFromPartsTestImpl(
         _ARBITRARY_STRUCTURE_RENDERER,
         (),
-        ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsSdvValidation(),
         get_matcher,
+        ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsSdvValidation(),
     )
 
 
@@ -328,7 +325,6 @@ def string_matcher_that_asserts_models_is_expected(put: unittest.TestCase,
     return StringMatcherSdvFromPartsTestImpl(
         _ARBITRARY_STRUCTURE_RENDERER,
         (),
-        sdv_validation.ConstantSuccessSdvValidator(),
         get_matcher,
     )
 
@@ -351,13 +347,11 @@ class _StringMatcherThatReportsHardError(StringMatcher):
 
 def parser_for_constant(resolved_value: StringMatcher = StringMatcherConstant(None),
                         references: Sequence[SymbolReference] = (),
-                        validator: SdvValidator = sdv_validation.ConstantSuccessSdvValidator()
                         ) -> Parser[StringMatcherSdv]:
     return ConstantParser(
         StringMatcherSdvConstantTestImpl(
             resolved_value=resolved_value,
             references=references,
-            validator=validator,
         ))
 
 
@@ -377,38 +371,13 @@ class StringMatcherSdvThatAssertsThatSymbolsAreAsExpected(StringMatcherSdv):
 
         return StringMatcherConstantDdv(StringMatcherConstant(None))
 
-    @property
-    def validator(self) -> SdvValidator:
-        return SdvValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(self._put,
-                                                                            self._expectation)
 
-
-class SdvValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(SdvValidator):
-    def __init__(self,
-                 put: unittest.TestCase,
-                 expectation: ValueAssertion[SymbolTable]):
-        self._put = put
-        self._expectation = expectation
-
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
-        return self._apply(environment)
-
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
-        return self._apply(environment)
-
-    def _apply(self, environment: PathResolvingEnvironment) -> Optional[TextRenderer]:
-        self._expectation.apply_with_message(self._put, environment.symbols,
-                                             'symbols given to validator')
-
+class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsSdvValidation(DdvValidator):
+    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
         return None
 
-
-class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsSdvValidation(SdvValidator):
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
-        return None
-
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
-        utils.raise_test_error_if_cwd_is_not_test_root(environment.sds)
+    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+        utils.raise_test_error_if_cwd_is_not_test_root(tcds.sds)
         return None
 
 

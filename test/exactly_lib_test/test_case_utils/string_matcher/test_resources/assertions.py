@@ -4,7 +4,7 @@ from exactly_lib.symbol import sdv_structure
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherDdv
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
@@ -25,16 +25,25 @@ def matches_string_matcher_sdv(primitive_value: ValueAssertion[StringMatcher] = 
     def resolve_value(sdv: LogicTypeSdv):
         return sdv.resolve(symbols)
 
+    def get_validator(ddv: StringMatcherDdv):
+        return ddv.validator
+
     def resolve_primitive_value(ddv: StringMatcherDdv):
         return ddv.value_of_any_dependency(tcds)
 
-    resolved_value_assertion = asrt.is_instance_with(
+    resolved_value_assertion = asrt.is_instance_with__many(
         StringMatcherDdv,
-        asrt.sub_component('primitive value',
-                           resolve_primitive_value,
-                           asrt.is_instance_with(StringMatcher,
-                                                 primitive_value))
-    )
+        [
+            asrt.sub_component('validator',
+                               get_validator,
+                               asrt.is_instance(DdvValidator)
+                               ),
+
+            asrt.sub_component('primitive value',
+                               resolve_primitive_value,
+                               asrt.is_instance_with(StringMatcher,
+                                                     primitive_value)),
+        ])
 
     return asrt.is_instance_with(
         StringMatcherSdv,
@@ -45,11 +54,6 @@ def matches_string_matcher_sdv(primitive_value: ValueAssertion[StringMatcher] = 
             asrt.sub_component('references',
                                sdv_structure.get_references,
                                references),
-
-            asrt.sub_component('validator',
-                               lambda sdv: sdv.validator,
-                               asrt.is_instance(SdvValidator)
-                               ),
 
             asrt.sub_component('resolved value',
                                resolve_value,
@@ -70,10 +74,5 @@ def matches_string_matcher_attributes(references: ValueAssertion[Sequence[Symbol
             asrt.sub_component('references',
                                sdv_structure.get_references,
                                references),
-
-            asrt.sub_component('validator',
-                               lambda sdv: sdv.validator,
-                               asrt.is_instance(SdvValidator)
-                               ),
         ])
     )

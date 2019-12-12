@@ -1,6 +1,7 @@
 import unittest
 from typing import Sequence
 
+from exactly_lib.symbol import sdv_structure
 from exactly_lib.symbol import sdv_structure as rs
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv, get_data_value_type
 from exactly_lib.symbol.data.list_sdv import ListSdv
@@ -72,6 +73,10 @@ def is_sdv_of_logic_type(logic_value_type: LogicValueType,
                                      asrt.sub_component('value_type',
                                                         rs.get_value_type,
                                                         asrt.is_(value_type)),
+
+                                     asrt.sub_component('references',
+                                                        sdv_structure.get_references,
+                                                        asrt.is_sequence_of(asrt.is_instance(SymbolReference))),
                                  ]))
 
 

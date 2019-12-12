@@ -9,7 +9,6 @@ from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
-from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherSdvBase
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel, FilesMatcher, \
     FilesMatcherConstructor, FilesMatcherDdv
@@ -27,7 +26,7 @@ def emptiness_matcher() -> FilesMatcherSdv:
     return _EmptinessMatcherSdv()
 
 
-class _EmptinessMatcherSdv(FilesMatcherSdvBase):
+class _EmptinessMatcherSdv(FilesMatcherSdv):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return ()

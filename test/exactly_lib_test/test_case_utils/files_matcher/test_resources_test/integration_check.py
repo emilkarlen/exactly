@@ -8,11 +8,10 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds, PathResolvingEnvironment
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import sdv_validation
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
+from exactly_lib.test_case.validation import ddv_validation
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
@@ -29,7 +28,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbo
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
 from exactly_lib_test.symbol.test_resources import files_matcher
 from exactly_lib_test.symbol.test_resources.files_matcher import FilesMatcherSdvConstantTestImpl, \
-    FilesMatcherSdvConstantValueTestImpl
+    FilesMatcherSdvConstantDdvTestImpl
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
@@ -157,8 +156,8 @@ class TestSymbolReferences(TestCaseBase):
 class TestHardError(TestCaseBase):
     def test_expected_hard_error_is_detected(self):
         parser_that_gives_value_that_causes_hard_error = parser_for_constant_sdv(
-            FilesMatcherSdvConstantValueTestImpl(
-                files_matcher.constant_value(
+            FilesMatcherSdvConstantDdvTestImpl(
+                files_matcher.constant_ddv(
                     _FilesMatcherThatReportsHardError()
                 )
             )
@@ -290,7 +289,7 @@ def _files_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> FilesM
 def _files_matcher_that_asserts_models_is_expected(put: unittest.TestCase,
                                                    relativity: RelativityOptionConfigurationForRelSds,
                                                    ) -> FilesMatcherSdv:
-    return FilesMatcherSdvConstantValueTestImpl(
+    return FilesMatcherSdvConstantDdvTestImpl(
         _FilesMatcherDdvThatAssertsModelsIsExpected(put,
                                                     relativity),
     )
@@ -386,18 +385,18 @@ class _FilesMatcherThatReportsHardError(FilesMatcher):
         )
 
 
-class _ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsSdvValidation(SdvValidator):
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
+class _ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsSdvValidation(DdvValidator):
+    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
         return None
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
-        utils.raise_test_error_if_cwd_is_not_test_root(environment.sds)
+    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+        utils.raise_test_error_if_cwd_is_not_test_root(tcds.sds)
         return None
 
 
 def parser_for_constant(resolved_value: bool,
                         references: Sequence[SymbolReference] = (),
-                        validator: SdvValidator = sdv_validation.ConstantSuccessSdvValidator()
+                        validator: DdvValidator = ddv_validation.constant_success_validator()
                         ) -> Parser[FilesMatcherSdv]:
     return ConstantParser(
         FilesMatcherSdvConstantTestImpl(
@@ -422,43 +421,10 @@ class _FilesMatcherSdvThatAssertsThatSymbolsAreAsExpected(FilesMatcherSdv):
     def references(self) -> List[SymbolReference]:
         return []
 
-    def validator(self) -> SdvValidator:
-        return SdvValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(self._put,
-                                                                            self._expectation)
-
     def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
         self._expectation.apply_with_message(self._put, symbols, 'symbols given to resolve')
 
         return files_matcher.value_with_result(True)
-
-
-class SdvValidatorThatAssertsThatSymbolsInEnvironmentAreAsExpected(SdvValidator):
-    def __init__(self,
-                 put: unittest.TestCase,
-                 expectation: ValueAssertion[SymbolTable]):
-        self._put = put
-        self._expectation = expectation
-
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
-        return self._apply(environment)
-
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
-        return self._apply(environment)
-
-    def _apply(self, environment: PathResolvingEnvironment) -> Optional[TextRenderer]:
-        self._expectation.apply_with_message(self._put, environment.symbols,
-                                             'symbols given to validator')
-
-        return None
-
-
-class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsSdvValidation(SdvValidator):
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
-        return None
-
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
-        utils.raise_test_error_if_cwd_is_not_test_root(environment.sds)
-        return None
 
 
 PARSER_THAT_GIVES_MATCHER_THAT_MATCHES = parser_for_constant(True)

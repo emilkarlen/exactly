@@ -3,7 +3,7 @@ from typing import Sequence, Optional
 from exactly_lib.definitions import expression
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -41,11 +41,15 @@ class _NegationMatcher(FilesMatcher):
 
 
 class _NegationMatcherDdv(FilesMatcherDdv):
-    def __init__(self, matcher_to_negate: FilesMatcherDdv):
-        self._matcher_to_negate = matcher_to_negate
+    def __init__(self, operand: FilesMatcherDdv):
+        self._operand = operand
+
+    @property
+    def validator(self) -> DdvValidator:
+        return self._operand.validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
-        matcher_to_negate = self._matcher_to_negate.value_of_any_dependency(tcds)
+        matcher_to_negate = self._operand.value_of_any_dependency(tcds)
 
         def mk_matcher(tmp_files_space: TmpDirFileSpace) -> FilesMatcher:
             return _NegationMatcher(
@@ -62,9 +66,6 @@ class _NegationMatcherSdv(FilesMatcherSdv):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._matcher_to_negate.references
-
-    def validator(self) -> SdvValidator:
-        return self._matcher_to_negate.validator()
 
     def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
         return _NegationMatcherDdv(self._matcher_to_negate.resolve(symbols))

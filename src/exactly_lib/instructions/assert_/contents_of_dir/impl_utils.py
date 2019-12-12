@@ -6,6 +6,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case_utils import file_properties, pfh_exception as pfh_ex_method
 from exactly_lib.test_case_utils import path_check
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
@@ -52,7 +53,9 @@ class AssertPathIsExistingDirectory(AssertionPart[FilesSource, FilesSource]):
 
 class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSource]):
     def __init__(self, files_matcher: FilesMatcherSdv):
-        super().__init__(files_matcher.validator())
+        super().__init__(sdv_validation.SdvValidatorFromDdvValidator(
+            lambda symbols: files_matcher.resolve(symbols).validator
+        ))
         self._files_matcher = files_matcher
 
     @property

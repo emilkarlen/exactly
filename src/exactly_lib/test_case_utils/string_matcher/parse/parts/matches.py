@@ -1,8 +1,6 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
-from exactly_lib.test_case.validation import sdv_validation
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_getters, property_matcher_describers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
@@ -36,10 +34,7 @@ def parse(expectation_type: ExpectationType,
 def value_sdv(expectation_type: ExpectationType,
               is_full_match: bool,
               contents_matcher: RegexSdv) -> StringMatcherSdv:
-    def get_value_validator(symbols: SymbolTable) -> DdvValidator:
-        return contents_matcher.resolve(symbols).validator()
-
-    def get_value(symbols: SymbolTable) -> StringMatcherDdv:
+    def get_ddv(symbols: SymbolTable) -> StringMatcherDdv:
         regex_ddv = contents_matcher.resolve(symbols)
         regex_matcher = matches_regex.MatchesRegexDdv(expectation_type, regex_ddv, is_full_match)
         return StringMatcherDdvDelegatedToMatcher(
@@ -52,11 +47,7 @@ def value_sdv(expectation_type: ExpectationType,
             ),
         )
 
-    return sdvs.StringMatcherSdvFromParts2(
-        contents_matcher.references,
-        sdv_validation.SdvValidatorFromDdvValidator(get_value_validator),
-        get_value,
-    )
+    return sdvs.StringMatcherSdvFromParts2(contents_matcher.references, get_ddv)
 
 
 class _PropertyGetter(PropertyGetter[FileToCheck, str]):

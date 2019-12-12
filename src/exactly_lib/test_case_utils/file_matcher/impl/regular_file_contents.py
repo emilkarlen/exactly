@@ -7,7 +7,6 @@ from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
-from exactly_lib.test_case.validation.ddv_validators import DdvValidatorFromSdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.description_tree import custom_details
@@ -102,10 +101,8 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
 class RegularFileMatchesStringMatcherDdv(FileMatcherDdvImplBase):
     def __init__(self,
                  contents_matcher: string_matcher.StringMatcherDdv,
-                 validator: DdvValidator,
                  ):
         self._contents_matcher = contents_matcher
-        self._validator = validator
 
     def structure(self) -> StructureRenderer:
         return RegularFileMatchesStringMatcher.new_structure_tree(
@@ -114,7 +111,7 @@ class RegularFileMatchesStringMatcherDdv(FileMatcherDdvImplBase):
 
     @property
     def validator(self) -> DdvValidator:
-        return self._validator
+        return self._contents_matcher.validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> FileMatcher:
         return RegularFileMatchesStringMatcher(self._contents_matcher.value_of_any_dependency(tcds))
@@ -122,13 +119,8 @@ class RegularFileMatchesStringMatcherDdv(FileMatcherDdvImplBase):
 
 def regular_file_matches_string_matcher_sdv(contents_matcher: StringMatcherSdv) -> FileMatcherSdv:
     def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
-        return RegularFileMatchesStringMatcherDdv(
-            contents_matcher.resolve(symbols),
-            DdvValidatorFromSdvValidator(
-                symbols,
-                contents_matcher.validator
-            )
-        )
+        contents_matcher_ddv = contents_matcher.resolve(symbols)
+        return RegularFileMatchesStringMatcherDdv(contents_matcher_ddv)
 
     return FileMatcherSdv(
         sdv_components.MatcherSdvFromParts(

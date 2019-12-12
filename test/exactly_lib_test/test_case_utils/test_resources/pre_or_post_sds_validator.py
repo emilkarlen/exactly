@@ -4,7 +4,9 @@ from typing import Callable, Optional
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds, PathResolvingEnvironment
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
@@ -65,8 +67,36 @@ class SdvValidatorThat(SdvValidator):
         return self.post_setup_return_value
 
 
+class DdvValidatorThat(DdvValidator):
+    def __init__(self,
+                 pre_sds_action=do_nothing,
+                 pre_sds_return_value: Optional[TextRenderer] = None,
+                 post_setup_action=do_nothing,
+                 post_setup_return_value: Optional[TextRenderer] = None,
+                 ):
+        self.post_setup_return_value = post_setup_return_value
+        self.pre_sds_return_value = pre_sds_return_value
+        self.post_setup_action = post_setup_action
+        self.pre_sds_action = pre_sds_action
+
+    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
+        self.pre_sds_action(hds)
+        return self.pre_sds_return_value
+
+    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+        self.post_setup_action(tcds)
+        return self.post_setup_return_value
+
+
 def constant_validator(result: ValidationActual) -> SdvValidator:
     return SdvValidatorThat(
+        pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test__optional(result.pre_sds),
+        post_setup_return_value=asrt_text_doc.new_single_string_text_for_test__optional(result.post_sds),
+    )
+
+
+def constant_ddv_validator(result: ValidationActual) -> DdvValidator:
+    return DdvValidatorThat(
         pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test__optional(result.pre_sds),
         post_setup_return_value=asrt_text_doc.new_single_string_text_for_test__optional(result.post_sds),
     )

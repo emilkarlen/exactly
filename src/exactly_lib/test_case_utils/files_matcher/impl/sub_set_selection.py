@@ -6,13 +6,11 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import sdv_validation as validation
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
+from exactly_lib.test_case.validation import ddv_validators
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
-from exactly_lib.test_case_utils.files_matcher.impl.validator_for_file_matcher import \
-    sdv_validator_for_file_matcher
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
@@ -88,6 +86,14 @@ class _SubSetSelectorMatcherDdv(FilesMatcherDdv):
                  ):
         self._selector = selector
         self._matcher_on_selection = matcher_on_selection
+        self._validator = ddv_validators.AndValidator([
+            selector.validator,
+            matcher_on_selection.validator,
+        ])
+
+    @property
+    def validator(self) -> DdvValidator:
+        return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
         selector = self._selector.value_of_any_dependency(tcds)
@@ -112,17 +118,9 @@ class _SubSetSelectorMatcherSdv(FilesMatcherSdv):
             selector, matcher_on_selection
         ])
 
-        self._validator = validation.AndSdvValidator([
-            sdv_validator_for_file_matcher(selector),
-            self._matcher_on_selection.validator(),
-        ])
-
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
-
-    def validator(self) -> SdvValidator:
-        return self._validator
 
     def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
         return _SubSetSelectorMatcherDdv(

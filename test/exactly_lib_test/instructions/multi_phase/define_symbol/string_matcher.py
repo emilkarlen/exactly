@@ -239,8 +239,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         return model_construction.ModelConstructor(model_builder, environment.sds).construct()
 
 
-ARBITRARY_SDV = StringMatcherSdvConstantTestImpl(StringMatcherConstant(None),
-                                                 [])
+ARBITRARY_SDV = StringMatcherSdvConstantTestImpl(StringMatcherConstant(None))
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

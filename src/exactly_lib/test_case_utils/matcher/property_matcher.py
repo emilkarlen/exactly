@@ -96,11 +96,6 @@ class PropertyMatcherDdv(Generic[MODEL, PROP_TYPE], MatcherDdv[MODEL]):
             self._property_getter.validator,
         ])
 
-    @property
-    def name(self) -> str:
-        """TODO Temp helper that should be removed after usages removed"""
-        return self._property_getter.name
-
     def structure(self) -> StructureRenderer:
         return self._describer.structure(self._matcher.structure())
 

@@ -2,6 +2,8 @@ import pathlib
 from abc import ABC, abstractmethod
 from typing import Iterator, Optional
 
+from exactly_lib.test_case.validation import ddv_validation
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
@@ -78,6 +80,10 @@ class FilesMatcherConstructor(ABC):
 
 
 class FilesMatcherDdv(DirDependentValue[FilesMatcherConstructor], ABC):
+    @property
+    def validator(self) -> DdvValidator:
+        return ddv_validation.constant_success_validator()
+
     @abstractmethod
     def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
         pass

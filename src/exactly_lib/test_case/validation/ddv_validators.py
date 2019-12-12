@@ -5,7 +5,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
     PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
     constant_success_validator
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidator, PreOrPostSdsValidatorPrimitive
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.symbol_table import SymbolTable
@@ -54,3 +54,17 @@ class AndValidator(DdvValidator):
             if result is not None:
                 return result
         return None
+
+
+class FixedPreOrPostSdsValidator(PreOrPostSdsValidatorPrimitive):
+    def __init__(self,
+                 tcds: Tcds,
+                 validator: DdvValidator):
+        self._tcds = tcds
+        self._validator = validator
+
+    def validate_pre_sds_if_applicable(self) -> Optional[TextRenderer]:
+        return self._validator.validate_pre_sds_if_applicable(self._tcds.hds)
+
+    def validate_post_sds_if_applicable(self) -> Optional[TextRenderer]:
+        return self._validator.validate_post_sds_if_applicable(self._tcds)

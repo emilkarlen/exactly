@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Callable, Iterator, Optional, ContextManager
 
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
@@ -188,16 +189,20 @@ class ExistsDdv(Generic[MODEL, ELEMENT], MatcherDdv[MODEL]):
         self._element_setup = element_setup
         self._predicate = predicate
 
+    def structure(self) -> StructureRenderer:
+        return _QuantifierBase.new_structure_tree(Quantifier.EXISTS,
+                                                  self._element_setup,
+                                                  self._predicate)
+
+    @property
+    def validator(self) -> DdvValidator:
+        return self._predicate.validator
+
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return Exists(
             self._element_setup,
             self._predicate.value_of_any_dependency(tcds)
         )
-
-    def structure(self) -> StructureRenderer:
-        return _QuantifierBase.new_structure_tree(Quantifier.EXISTS,
-                                                  self._element_setup,
-                                                  self._predicate)
 
 
 class ForAll(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
@@ -247,13 +252,17 @@ class ForAllDdv(Generic[MODEL, ELEMENT], MatcherDdv[MODEL]):
         self._element_setup = element_setup
         self._predicate = predicate
 
+    def structure(self) -> StructureRenderer:
+        return _QuantifierBase.new_structure_tree(Quantifier.ALL,
+                                                  self._element_setup,
+                                                  self._predicate)
+
+    @property
+    def validator(self) -> DdvValidator:
+        return self._predicate.validator
+
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return ForAll(
             self._element_setup,
             self._predicate.value_of_any_dependency(tcds)
         )
-
-    def structure(self) -> StructureRenderer:
-        return _QuantifierBase.new_structure_tree(Quantifier.ALL,
-                                                  self._element_setup,
-                                                  self._predicate)

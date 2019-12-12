@@ -4,11 +4,10 @@ from exactly_lib.definitions.primitives import files_matcher
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import sdv_validation
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
-from exactly_lib.test_case_utils.files_matcher.impl.files_matchers import FilesMatcherSdvBase
 from exactly_lib.test_case_utils.matcher.impls import property_matcher_describers
 from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
@@ -75,9 +74,12 @@ class _FilesMatcher(FilesMatcher):
 
 
 class _NumFilesMatcherDdv(FilesMatcherDdv):
-    def __init__(self,
-                 matcher: MatcherDdv[int]):
+    def __init__(self, matcher: MatcherDdv[int]):
         self._matcher = matcher
+
+    @property
+    def validator(self) -> DdvValidator:
+        return self._matcher.validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
         return files_matchers.ConstantConstructor(
@@ -88,15 +90,9 @@ class _NumFilesMatcherDdv(FilesMatcherDdv):
         )
 
 
-class _NumFilesMatcherSdv(FilesMatcherSdvBase):
-    def __init__(self,
-                 matcher: MatcherSdv[int],
-                 ):
+class _NumFilesMatcherSdv(FilesMatcherSdv):
+    def __init__(self, matcher: MatcherSdv[int]):
         self._matcher = matcher
-
-        super().__init__(
-            sdv_validation.SdvValidatorFromDdvValidator(self._get_validator)
-        )
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -106,9 +102,6 @@ class _NumFilesMatcherSdv(FilesMatcherSdvBase):
         return _NumFilesMatcherDdv(
             self._matcher.resolve(symbols),
         )
-
-    def _get_validator(self, symbols: SymbolTable) -> sdv_validation.DdvValidator:
-        return self._matcher.resolve(symbols).validator
 
 
 class _PropertyGetter(PropertyGetter[FilesMatcherModel, int]):

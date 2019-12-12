@@ -332,7 +332,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         )
         assertion.apply_without_message(self, actual)
 
-    def test_WHEN_given_validator_fails_post_setup_THEN_validation_SHOULD_fail_post_setup(self):
+    def test_WHEN_given_validator_fails_post_setup_THEN_main_SHOULD_report_hard_error(self):
         # ARRANGE #
         the_error_message = 'the error message'
         assertion_part = PartForValidation(SdvValidatorThat(
@@ -341,18 +341,24 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
                                                                 'custom environment',
                                                                 lambda env: 'argument to assertion_part')
-        # ACT #
-        pre_sds_result = instruction.validate_pre_sds(self.environment)
-        post_sds_result = instruction.validate_post_setup(self.environment)
-        # ASSERT #
-        asrt_svh.is_success().apply_with_message(self, pre_sds_result,
-                                                 'pre sds validation should succeed')
-
-        assertion = asrt_svh.is_validation_error(
+        is_validation_success = asrt_svh.is_success()
+        main_result_is_hard_error = asrt_pfh.is_hard_error(
             asrt_text_doc.is_single_pre_formatted_text_that_equals(the_error_message)
         )
-        assertion.apply_with_message(self, post_sds_result,
-                                     'post setup validation should fail')
+
+        # ACT & ASSERT #
+
+        pre_sds_result = instruction.validate_pre_sds(self.environment)
+        is_validation_success.apply_with_message(self, pre_sds_result,
+                                                 'pre sds validation should succeed')
+        post_sds_result = instruction.validate_post_setup(self.environment)
+        is_validation_success.apply_with_message(self, post_sds_result,
+                                                 'post setup validation should succeed')
+        main_result = instruction.main(self.environment, self.the_os_services)
+
+        main_result_is_hard_error.apply_with_message(self,
+                                                     main_result,
+                                                     'main should fail')
 
 
 class PartForValidation(sut.AssertionPart[int, int]):

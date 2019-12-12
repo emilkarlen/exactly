@@ -2,6 +2,8 @@ from typing import Optional
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.test_case.validation import ddv_validators
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -81,12 +83,20 @@ class StringMatcherWithTransformationDdv(StringMatcherDdv):
                  ):
         self._transformer = transformer
         self._on_transformed = on_transformed
+        self._validator = ddv_validators.AndValidator([
+            transformer.validator(),
+            on_transformed.validator,
+        ])
 
     def structure(self) -> StructureRenderer:
         return StringMatcherOnTransformedFileToCheck.new_structure_tree(
             self._transformer.structure(),
             self._on_transformed.structure(),
         )
+
+    @property
+    def validator(self) -> DdvValidator:
+        return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> StringMatcher:
         return StringMatcherOnTransformedFileToCheck(self._transformer.value_of_any_dependency(tcds),

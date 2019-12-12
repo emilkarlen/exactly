@@ -16,12 +16,12 @@ from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to
     FilesMatcherSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndExpectSetup
-from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
+from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh, pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fm_args
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     pfh_expectation_type_config, pass_or_fail_from_bool
-from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import SdvValidatorThat
+from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import DdvValidatorThat
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import default_conf_rel_non_hds, conf_rel_sds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -102,20 +102,20 @@ class TestReferencedMatcherShouldBeValidated(tr.TestCaseBaseForParser):
                     symbol_usages=expected_symbol_usages,
                 ),
                 actual=
-                SdvValidatorThat(
+                DdvValidatorThat(
                     pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test(err_msg_from_validator)
                 )
                 ),
             NEA('post sds validation',
                 expected=
                 Expectation(
-                    validation_post_sds=asrt_svh.is_validation_error(
-                        asrt_text_doc.is_single_pre_formatted_text_that_equals(err_msg_from_validator)
+                    main_result=asrt_pfh.is_hard_error(
+                        asrt_text_doc.is_string_for_test_that_equals(err_msg_from_validator)
                     ),
                     symbol_usages=expected_symbol_usages,
                 ),
                 actual=
-                SdvValidatorThat(
+                DdvValidatorThat(
                     post_setup_return_value=asrt_text_doc.new_single_string_text_for_test(err_msg_from_validator)
                 )
                 ),

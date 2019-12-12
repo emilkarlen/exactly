@@ -1,7 +1,7 @@
 from exactly_lib.symbol import sdv_structure
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherConstructor, FilesMatcherDdv
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
@@ -19,8 +19,11 @@ def matches_files_matcher_sdv(references: ValueAssertion = asrt.is_empty_sequenc
                               ) -> ValueAssertion[LogicTypeSdv]:
     symbols = symbol_table.symbol_table_from_none_or_value(symbols)
 
-    def resolve_value(sdv: LogicTypeSdv):
+    def resolve_ddv(sdv: LogicTypeSdv):
         return sdv.resolve(symbols)
+
+    def get_validator(ddv: FilesMatcherDdv):
+        return ddv.validator
 
     def resolve_constructor(ddv: FilesMatcherDdv):
         return ddv.value_of_any_dependency(tcds)
@@ -47,10 +50,15 @@ def matches_files_matcher_sdv(references: ValueAssertion = asrt.is_empty_sequenc
                                matcher_assertion),
         ])
 
-    value_assertion = asrt.is_instance_with__many(
+    ddv_assertion = asrt.is_instance_with__many(
         FilesMatcherDdv,
         [
-            asrt.sub_component('resolve',
+            asrt.sub_component('validator',
+                               get_validator,
+                               asrt.is_instance(DdvValidator)
+                               ),
+
+            asrt.sub_component('resolve-constructor',
                                resolve_constructor,
                                constructor_assertion),
         ])
@@ -65,14 +73,9 @@ def matches_files_matcher_sdv(references: ValueAssertion = asrt.is_empty_sequenc
                                sdv_structure.get_references,
                                references),
 
-            asrt.sub_component('validator',
-                               lambda sdv: sdv.validator(),
-                               asrt.is_instance(SdvValidator)
-                               ),
-
             asrt.sub_component('resolved value',
-                               resolve_value,
-                               value_assertion
+                               resolve_ddv,
+                               ddv_assertion
                                ),
         ])
     )

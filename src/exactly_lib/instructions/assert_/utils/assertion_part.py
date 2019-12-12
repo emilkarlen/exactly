@@ -191,14 +191,20 @@ class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
                          ) -> svh.SuccessOrValidationErrorOrHardError:
         return self._validator.validate_pre_sds_if_applicable(environment.path_resolving_environment)
 
-    def validate_post_setup(self,
-                            environment: InstructionEnvironmentForPostSdsStep
-                            ) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validator.validate_post_sds_if_applicable(environment.path_resolving_environment)
-
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        post_sds_validation_result = self._assertion_part.validator.validate_post_sds_if_applicable(
+            environment.path_resolving_environment
+        )
+        if post_sds_validation_result is not None:
+            return pfh.new_pfh_hard_error(post_sds_validation_result)
+
+        return self._execute(environment, os_services)
+
+    def _execute(self,
+                 environment: InstructionEnvironmentForPostSdsStep,
+                 os_services: OsServices) -> pfh.PassOrFailOrHardError:
         argument_to_checker = self._get_argument_to_assertion_part(environment)
         result = self._assertion_part.check_and_return_pfh(environment,
                                                            os_services,

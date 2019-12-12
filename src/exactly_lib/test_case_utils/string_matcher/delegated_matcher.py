@@ -3,9 +3,7 @@ from typing import Optional, List
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -50,6 +48,10 @@ class StringMatcherDdvDelegatedToMatcher(StringMatcherDdv):
     def structure(self) -> StructureRenderer:
         return self._delegated.structure()
 
+    @property
+    def validator(self) -> DdvValidator:
+        return self._delegated.validator
+
     def value_of_any_dependency(self, tcds: Tcds) -> StringMatcher:
         return StringMatcherDelegatedToMatcher(self._delegated.value_of_any_dependency(tcds))
 
@@ -62,10 +64,6 @@ class StringMatcherSdvDelegatedToMatcher(StringMatcherSdv):
     @property
     def references(self) -> List[SymbolReference]:
         return list(self._delegated.references)
-
-    @property
-    def validator(self) -> SdvValidator:
-        return sdv_validation.SdvValidatorFromDdvValidator(self._value_validator)
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
         return StringMatcherDdvDelegatedToMatcher(self._delegated.resolve(symbols))

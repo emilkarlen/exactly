@@ -137,8 +137,7 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
                 assert_that_assertion_fails(assertion_to_check, actual_sdv)
 
 
-ARBITRARY_SDV = StringMatcherSdvConstantTestImpl(StringMatcherConstant(None),
-                                                 [])
+ARBITRARY_SDV = StringMatcherSdvConstantTestImpl(StringMatcherConstant(None))
 
 
 def arbitrary_sdv_with_references(references: Sequence[SymbolReference]) -> StringMatcherSdv:

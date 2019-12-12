@@ -3,11 +3,8 @@ from typing import Sequence, Callable
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironment
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import sdv_validation
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_utils.string_matcher import delegated_matcher
 from exactly_lib.test_case_utils.string_matcher import string_matchers
 from exactly_lib.type_system.logic import string_matcher_ddvs
@@ -77,12 +74,6 @@ class _StringMatcherSvdWithTransformation(StringMatcherSdv):
                  ):
         self._transformer = transformer
         self._original = original
-        self._validator = sdv_validation.AndSdvValidator([
-            sdv_validation.SdvValidatorFromDdvValidator(
-                lambda symbols: transformer.resolve(symbols).validator()
-            ),
-            original.validator,
-        ])
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
         return string_matchers.StringMatcherWithTransformationDdv(
@@ -94,10 +85,6 @@ class _StringMatcherSvdWithTransformation(StringMatcherSdv):
     def references(self) -> Sequence[SymbolReference]:
         return list(self._transformer.references) + list(self._original.references)
 
-    @property
-    def validator(self) -> SdvValidator:
-        return self._validator
-
     def __str__(self):
         return str(type(self))
 
@@ -105,22 +92,17 @@ class _StringMatcherSvdWithTransformation(StringMatcherSdv):
 class StringMatcherSdvFromParts2(StringMatcherSdv):
     def __init__(self,
                  references: Sequence[SymbolReference],
-                 validator: SdvValidator,
-                 get_matcher_value: Callable[[SymbolTable], StringMatcherDdv]):
-        self._get_matcher_value = get_matcher_value
-        self._validator = validator
+                 get_ddv: Callable[[SymbolTable], StringMatcherDdv],
+                 ):
+        self._get_ddv = get_ddv
         self._references = references
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
-        return self._get_matcher_value(symbols)
+        return self._get_ddv(symbols)
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
-
-    @property
-    def validator(self) -> SdvValidator:
-        return self._validator
 
     def __str__(self):
         return str(type(self))
@@ -138,15 +120,10 @@ class StringMatcherSdvReference(StringMatcherSdv):
         self._references = [SymbolReference(name_of_referenced_sdv,
                                             ValueTypeRestriction(ValueType.STRING_MATCHER))]
         self._expectation_type = expectation_type
-        self._validator = _ValidatorOfReferredSdv(name_of_referenced_sdv)
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
-
-    @property
-    def validator(self) -> SdvValidator:
-        return self._validator
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
         sdv = lookups.lookup_string_matcher(symbols,
@@ -166,9 +143,3 @@ class StringMatcherSdvReference(StringMatcherSdv):
 
     def __str__(self):
         return str(type(self)) + '\'' + str(self._name_of_referenced_sdv) + '\''
-
-
-class _ValidatorOfReferredSdv(sdv_validation.SdvValidatorOfReferredSdvBase):
-    def _referred_validator(self, environment: PathResolvingEnvironment) -> SdvValidator:
-        referred_matcher_sdv = lookups.lookup_string_matcher(environment.symbols, self.symbol_name)
-        return referred_matcher_sdv.validator

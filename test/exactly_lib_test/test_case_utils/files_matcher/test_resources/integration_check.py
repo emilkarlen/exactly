@@ -7,10 +7,12 @@ from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherDdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherDdv, \
+    FilesMatcherConstructor
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
@@ -72,6 +74,8 @@ class _Executor:
                                                           sdv.references,
                                                           'symbol-usages after parse')
 
+        ddv = sdv.resolve(self.arrangement.symbols)
+
         with tcds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 hds_contents=self.arrangement.hds_contents,
@@ -85,9 +89,7 @@ class _Executor:
             with preserved_cwd():
                 os.chdir(str(tcds.hds.case_dir))
 
-                environment = PathResolvingEnvironmentPreSds(tcds.hds,
-                                                             self.arrangement.symbols)
-                validate_result = self._execute_validate_pre_sds(environment, sdv)
+                validate_result = self._execute_validate_pre_sds(tcds.hds, ddv)
                 self.expectation.symbol_usages.apply_with_message(self.put,
                                                                   sdv.references,
                                                                   'symbol-usages after ' +
@@ -98,7 +100,7 @@ class _Executor:
             environment = PathResolvingEnvironmentPreOrPostSds(
                 tcds,
                 self.arrangement.symbols)
-            validate_result = self._execute_validate_post_setup(environment, sdv)
+            validate_result = self._execute_validate_post_setup(tcds, ddv)
             self.expectation.symbol_usages.apply_with_message(self.put,
                                                               sdv.references,
                                                               'symbol-usages after ' +
@@ -107,10 +109,9 @@ class _Executor:
                 return
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(tcds))
             write_act_result(tcds.sds, act_result)
-            dir_file_space, files_source = self._new_model(environment)
+            dir_file_space, files_source = self._new_model(tcds)
 
-            matcher_value = self._resolve(sdv, environment)
-            matcher = matcher_value.value_of_any_dependency(tcds).construct(dir_file_space)
+            matcher = self.get_primitive(ddv, tcds, dir_file_space)
 
             self._execute_main(files_source, matcher)
 
@@ -132,27 +133,31 @@ class _Executor:
         assert isinstance(sdv, FilesMatcherSdv)
         return sdv
 
-    def _resolve(self,
-                 sdv: FilesMatcherSdv,
-                 environment: PathResolvingEnvironmentPreOrPostSds) -> FilesMatcherDdv:
+    def get_primitive(self,
+                      ddv: FilesMatcherDdv,
+                      tcds: Tcds,
+                      file_space: TmpDirFileSpace) -> FilesMatcher:
 
-        matcher_ddv = sdv.resolve(environment.symbols)
-        assert isinstance(matcher_ddv, FilesMatcherDdv)
+        constructor = ddv.value_of_any_dependency(tcds)
+        assert isinstance(constructor, FilesMatcherConstructor)
 
-        return matcher_ddv
+        matcher = constructor.construct(file_space)
+        assert isinstance(matcher, FilesMatcher)
+
+        return matcher
 
     def _execute_validate_pre_sds(self,
-                                  environment: PathResolvingEnvironmentPreSds,
-                                  sdv: FilesMatcherSdv) -> Optional[TextRenderer]:
-        result = sdv.validator().validate_pre_sds_if_applicable(environment)
+                                  hds: HomeDirectoryStructure,
+                                  ddv: FilesMatcherDdv) -> Optional[TextRenderer]:
+        result = ddv.validator.validate_pre_sds_if_applicable(hds)
         self.expectation.validation_pre_sds.apply_with_message(self.put, result,
                                                                'result of validate/pre sds')
         return result
 
     def _execute_validate_post_setup(self,
-                                     environment: PathResolvingEnvironmentPostSds,
-                                     sdv: FilesMatcherSdv) -> Optional[TextRenderer]:
-        result = sdv.validator().validate_post_sds_if_applicable(environment)
+                                     tcds: Tcds,
+                                     ddv: FilesMatcherDdv) -> Optional[TextRenderer]:
+        result = ddv.validator.validate_post_sds_if_applicable(tcds)
         self.expectation.validation_post_sds.apply_with_message(self.put, result,
                                                                 'result of validate/post setup')
         return result
@@ -186,15 +191,16 @@ class _Executor:
         else:
             self.put.fail('Unexpected HARD_ERROR')
 
-    def _new_model(self, environment: PathResolvingEnvironmentPreOrPostSds
+    def _new_model(self,
+                   tcds: Tcds
                    ) -> Tuple[TmpDirFileSpace, FilesMatcherModel]:
-        tmp_file_space = TmpDirFileSpaceAsDirCreatedOnDemand(environment.sds.log_dir)
+        tmp_file_space = TmpDirFileSpaceAsDirCreatedOnDemand(tcds.sds.log_dir)
         return (
             tmp_file_space,
             FilesMatcherModelForDir(
                 tmp_file_space,
-                self.model.dir_path_sdv.resolve(environment.symbols)
-                    .value_of_any_dependency__d(environment.tcds),
+                self.model.dir_path_sdv.resolve(self.arrangement.symbols)
+                    .value_of_any_dependency__d(tcds),
                 self.model.files_selection,
             ),
         )

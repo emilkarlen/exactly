@@ -1,5 +1,7 @@
 from typing import Optional, Callable
 
+from exactly_lib.test_case.validation import ddv_validation
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -77,12 +79,18 @@ class StringMatcherConstantTestImpl(StringMatcher):
 class StringMatcherDdvFromPartsTestImpl(StringMatcherDdv):
     def __init__(self,
                  structure: StructureRenderer,
-                 matcher: Callable[[Tcds], StringMatcher]):
+                 matcher: Callable[[Tcds], StringMatcher],
+                 validator: DdvValidator = ddv_validation.constant_success_validator()):
         self._structure = structure
+        self._validator = validator
         self._matcher = matcher
 
     def structure(self) -> StructureRenderer:
         return self._structure
+
+    @property
+    def validator(self) -> DdvValidator:
+        return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> StringMatcher:
         return self._matcher(tcds)

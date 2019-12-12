@@ -1,16 +1,15 @@
 import difflib
 import filecmp
 import pathlib
-from typing import List, Optional, Iterable, Callable
+from typing import List, Optional, Iterable
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.string_or_path import StringOrPathSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator, SingleStepSdvValidator, \
-    ValidationStep, \
-    PreOrPostSdsValidatorPrimitive, FixedPreOrPostSdsValidator
+from exactly_lib.test_case.validation import ddv_validators
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
+from exactly_lib.test_case.validation.sdv_validation import PreOrPostSdsValidatorPrimitive
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
 from exactly_lib.test_case_utils.err_msg import diff_msg
@@ -60,26 +59,16 @@ def parse(expectation_type: ExpectationType,
 
 def value_sdv(expectation_type: ExpectationType,
               expected_contents: StringOrPathSdv) -> StringMatcherSdv:
-    validator = _validator_of_expected(expected_contents)
+    def get_ddv(symbols: SymbolTable) -> StringMatcherDdv:
+        expected_contents_ddv = expected_contents.resolve(symbols)
 
-    def get_matcher_value(symbols: SymbolTable) -> StringMatcherDdv:
-        def get_validator(tcds: Tcds) -> FixedPreOrPostSdsValidator:
-            return FixedPreOrPostSdsValidator(PathResolvingEnvironmentPreOrPostSds(tcds, symbols),
-                                              validator)
-
-        expected_contents_value = expected_contents.resolve(symbols)
         return EqualityStringMatcherDdv(
             expectation_type,
-            expected_contents_value,
-            get_validator,
+            expected_contents_ddv,
+            _validator_of_expected(expected_contents_ddv),
         )
 
-    return StringMatcherSdvFromParts2(
-        expected_contents.references,
-        SingleStepSdvValidator(ValidationStep.PRE_SDS,
-                               validator),
-        get_matcher_value,
-    )
+    return StringMatcherSdvFromParts2(expected_contents.references, get_ddv)
 
 
 class _ErrorMessageResolverConstructor:
@@ -103,12 +92,12 @@ class EqualityStringMatcherDdv(StringMatcherDdv):
     def __init__(self,
                  expectation_type: ExpectationType,
                  expected_contents: StringOrPathDdv,
-                 get_validator: Callable[[Tcds], PreOrPostSdsValidatorPrimitive],
+                 validator: DdvValidator,
                  ):
         super().__init__()
         self._expectation_type = expectation_type
         self._expected_contents = expected_contents
-        self._get_validator = get_validator
+        self._validator = validator
         self._renderer_of_expected_value = custom_details.StringOrPath(expected_contents)
         self._expected_detail_renderer = custom_details.expected(self._renderer_of_expected_value)
 
@@ -117,6 +106,10 @@ class EqualityStringMatcherDdv(StringMatcherDdv):
             self._expectation_type,
             custom_details.StringOrPathValue(self._expected_contents),
         )
+
+    @property
+    def validator(self) -> DdvValidator:
+        return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> StringMatcher:
         expected_contents = self._expected_contents.value_of_any_dependency(tcds)
@@ -128,7 +121,7 @@ class EqualityStringMatcherDdv(StringMatcherDdv):
                 parse_here_doc_or_path.ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
                                                              expected_contents)
             ),
-            self._get_validator(tcds),
+            ddv_validators.FixedPreOrPostSdsValidator(tcds, self._validator),
         )
 
 
@@ -285,7 +278,7 @@ class EqualityStringMatcher(StringMatcher):
         return self._new_tb().append_details(self._expected_detail_renderer)
 
 
-def _validator_of_expected(expected_contents: StringOrPathSdv) -> SdvValidator:
+def _validator_of_expected(expected_contents: StringOrPathDdv) -> DdvValidator:
     return expected_contents.validator__file_must_exist_as(FileType.REGULAR, True)
 
 

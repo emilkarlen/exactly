@@ -1,12 +1,14 @@
 from typing import Sequence
 
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext, \
-    StringMatcherSdvConstantTestImpl
+from exactly_lib.test_case_utils.matcher.impls import constant
+from exactly_lib.test_case_utils.matcher.impls import sdv_components
+from exactly_lib.test_case_utils.string_matcher import delegated_matcher
+from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.test_resources import validation
-from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import constant_validator
+from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import constant_ddv_validator
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, ValidationActual
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant
 
 
 class ValidationCase:
@@ -17,9 +19,14 @@ class ValidationCase:
         self._expectation = expectation
         self._symbol_context = StringMatcherSymbolContext(
             'string_matcher_symbol',
-            StringMatcherSdvConstantTestImpl(
-                StringMatcherConstant(None),
-                validator=constant_validator(actual)
+            delegated_matcher.StringMatcherSdvDelegatedToMatcher(
+                sdv_components.MatcherSdvFromConstantDdv(
+                    matchers.MatcherDdvOfConstantMatcherTestImpl(
+                        constant.MatcherWithConstantResult(True),
+                        validator=constant_ddv_validator(actual)
+
+                    )
+                ),
             )
         )
 

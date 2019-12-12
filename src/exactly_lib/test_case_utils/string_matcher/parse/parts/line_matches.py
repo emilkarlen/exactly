@@ -59,11 +59,7 @@ def matcher_for_any_line_matches(expectation_type: ExpectationType,
 
         return delegated_matcher.StringMatcherDdvDelegatedToMatcher(matcher)
 
-    return sdvs.StringMatcherSdvFromParts2(
-        line_matcher_sdv.references,
-        _validator_for_line_matcher(line_matcher_sdv),
-        get_matcher,
-    )
+    return sdvs.StringMatcherSdvFromParts2(line_matcher_sdv.references, get_matcher)
 
 
 def matcher_for_every_line_matches(expectation_type: ExpectationType,
@@ -78,11 +74,7 @@ def matcher_for_every_line_matches(expectation_type: ExpectationType,
 
         return delegated_matcher.StringMatcherDdvDelegatedToMatcher(matcher)
 
-    return sdvs.StringMatcherSdvFromParts2(
-        line_matcher_sdv.references,
-        _validator_for_line_matcher(line_matcher_sdv),
-        get_matcher,
-    )
+    return sdvs.StringMatcherSdvFromParts2(line_matcher_sdv.references, get_matcher)
 
 
 def _validator_for_line_matcher(line_matcher_sdv: LineMatcherSdv) -> ppv.SdvValidator:

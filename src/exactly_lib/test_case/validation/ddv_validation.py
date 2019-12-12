@@ -49,6 +49,10 @@ class ConstantDdvValidator(DdvValidator):
         self._pre_sds_result = pre_sds_result
         self._post_sds_result = post_sds_result
 
+    @staticmethod
+    def new_success() -> DdvValidator:
+        return ConstantDdvValidator(None, None)
+
     def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
         return self._pre_sds_result
 

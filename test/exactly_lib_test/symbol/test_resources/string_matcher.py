@@ -4,8 +4,8 @@ from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import sdv_validation
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
+from exactly_lib.test_case.validation import ddv_validation
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherDdv
@@ -29,7 +29,7 @@ class StringMatcherSdvConstantTestImpl(StringMatcherSdv):
     def __init__(self,
                  resolved_value: StringMatcher,
                  references: Sequence[SymbolReference] = (),
-                 validator: SdvValidator = sdv_validation.ConstantSuccessSdvValidator()):
+                 validator: DdvValidator = ddv_validation.ConstantDdvValidator()):
         self._resolved_value = resolved_value
         self._references = list(references)
         self._validator = validator
@@ -42,12 +42,9 @@ class StringMatcherSdvConstantTestImpl(StringMatcherSdv):
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    @property
-    def validator(self) -> SdvValidator:
-        return self._validator
-
     def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
-        return StringMatcherConstantDdv(self._resolved_value)
+        return StringMatcherConstantDdv(self._resolved_value,
+                                        self._validator)
 
 
 IS_STRING_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.STRING_MATCHER)
@@ -86,12 +83,13 @@ class StringMatcherSdvFromPartsTestImpl(StringMatcherSdv):
     def __init__(self,
                  structure: StructureRenderer,
                  references: Sequence[SymbolReference],
-                 validator: SdvValidator,
-                 matcher: Callable[[PathResolvingEnvironmentPreOrPostSds], StringMatcher]):
+                 matcher: Callable[[PathResolvingEnvironmentPreOrPostSds], StringMatcher],
+                 validator: DdvValidator = ddv_validation.constant_success_validator(),
+                 ):
         self._structure = structure
-        self._matcher = matcher
-        self._validator = validator
         self._references = references
+        self._validator = validator
+        self._matcher = matcher
 
     def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
         def get_matcher(tcds: Tcds) -> StringMatcher:
@@ -99,15 +97,12 @@ class StringMatcherSdvFromPartsTestImpl(StringMatcherSdv):
             return self._matcher(environment)
 
         return StringMatcherDdvFromPartsTestImpl(self._structure,
-                                                 get_matcher)
+                                                 get_matcher,
+                                                 self._validator)
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
-
-    @property
-    def validator(self) -> SdvValidator:
-        return self._validator
 
     def __str__(self):
         return str(type(self))
