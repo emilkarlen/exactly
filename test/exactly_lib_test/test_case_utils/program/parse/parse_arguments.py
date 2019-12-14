@@ -269,7 +269,7 @@ class TestSingleElement(unittest.TestCase):
                             NameAndValue('fail when file is missing',
                                          validation_check.assert_with_files(
                                              arrangement=
-                                             validation_check.DdvArrangement(
+                                             validation_check.Arrangement(
                                                  dir_contents=tcds_populators.empty()),
                                              expectation=
                                              validation_check.fails_on(rel_opt_conf.directory_structure_partition),
@@ -278,7 +278,7 @@ class TestSingleElement(unittest.TestCase):
                             NameAndValue('succeed when file exists',
                                          validation_check.assert_with_files(
                                              arrangement=
-                                             validation_check.DdvArrangement(
+                                             validation_check.Arrangement(
                                                  dir_contents=
                                                  rel_opt_conf.populator_for_relativity_option_root(
                                                      DirContents(

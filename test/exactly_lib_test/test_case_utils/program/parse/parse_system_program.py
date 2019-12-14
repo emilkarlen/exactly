@@ -270,7 +270,7 @@ class TestValidationAfterSuccessfulParse(unittest.TestCase):
 
                 source = remaining_source(arguments)
 
-                arrangement = validation_check.DdvArrangement(
+                arrangement = validation_check.Arrangement(
                     dir_contents=relativity_conf.populator_for_relativity_option_root(
                         DirContents(file_existence_case.files_for_name(referenced_file))
                     ))
@@ -280,7 +280,7 @@ class TestValidationAfterSuccessfulParse(unittest.TestCase):
                                   file_do_existence_case=file_existence_case.name):
                     program_sdv = sut.program_parser().parse(source)
                     program_ddv = program_sdv.resolve(empty_symbol_table())
-                    validation_check.check_ddv(
+                    validation_check.check(
                         self,
                         program_ddv.validator,
                         arrangement,
@@ -294,7 +294,7 @@ class TestValidationAfterSuccessfulParse(unittest.TestCase):
 
         source = remaining_source(arguments)
 
-        arrangement = validation_check.DdvArrangement(
+        arrangement = validation_check.Arrangement(
             dir_contents=tcds_populators.empty()
         )
 
@@ -307,7 +307,7 @@ class TestValidationAfterSuccessfulParse(unittest.TestCase):
 
         # ASSERT #
 
-        validation_check.check_ddv(
+        validation_check.check(
             self,
             program_ddv.validator,
             arrangement,
