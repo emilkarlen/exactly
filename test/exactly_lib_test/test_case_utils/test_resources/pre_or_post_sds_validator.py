@@ -46,6 +46,35 @@ def check(put: unittest.TestCase,
            environment)
 
 
+def check_ddv(put: unittest.TestCase,
+              validator: DdvValidator,
+              environment: Tcds,
+              expectation: Expectation):
+    def _check(f: Callable[[Tcds], Optional[TextRenderer]],
+               message: str,
+               expect_none: bool,
+               arg):
+        if expect_none:
+            put.assertIsNone(f(arg),
+                             message)
+        else:
+            put.assertIsNotNone(f(arg),
+                                message)
+
+    _check(lambda tcds: validator.validate_pre_sds_if_applicable(tcds.hds),
+           'Validation pre SDS',
+           expectation.passes_pre_sds,
+           environment)
+    _check(validator.validate_post_sds_if_applicable,
+           'Validation post SDS',
+           expectation.passes_post_sds,
+           environment)
+    _check(validator.validate_pre_or_post_sds,
+           'Validation pre or post SDS',
+           expectation.passes_pre_sds and expectation.passes_post_sds,
+           environment)
+
+
 class SdvValidatorThat(SdvValidator):
     def __init__(self,
                  pre_sds_action=do_nothing,
@@ -147,6 +176,29 @@ class PreOrPostSdsValidationAssertion(ValueAssertionBase[SdvValidator]):
                                                     message_builder.apply('pre sds validation'))
         if validation_result is None:
             validation_result = value.validate_post_sds_if_applicable(environment)
+            self.expectation.post_sds.apply_with_message(put,
+                                                         validation_result,
+                                                         message_builder.apply('post sds validation'))
+
+
+class PreOrPostSdsDdvValidationAssertion(ValueAssertionBase[DdvValidator]):
+    def __init__(self,
+                 tcds: Tcds,
+                 expectation: ValidationExpectation,
+                 ):
+        self.tcds = tcds
+        self.expectation = expectation
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: DdvValidator,
+               message_builder: MessageBuilder):
+        validation_result = value.validate_pre_sds_if_applicable(self.tcds.hds)
+        self.expectation.pre_sds.apply_with_message(put,
+                                                    validation_result,
+                                                    message_builder.apply('pre sds validation'))
+        if validation_result is None:
+            validation_result = value.validate_post_sds_if_applicable(self.tcds)
             self.expectation.post_sds.apply_with_message(put,
                                                          validation_result,
                                                          message_builder.apply('post sds validation'))

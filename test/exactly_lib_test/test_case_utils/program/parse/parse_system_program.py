@@ -15,7 +15,7 @@ from exactly_lib.test_case_utils.program.parse import parse_system_program as su
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
-from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
@@ -270,7 +270,7 @@ class TestValidationAfterSuccessfulParse(unittest.TestCase):
 
                 source = remaining_source(arguments)
 
-                arrangement = validation_check.Arrangement(
+                arrangement = validation_check.DdvArrangement(
                     dir_contents=relativity_conf.populator_for_relativity_option_root(
                         DirContents(file_existence_case.files_for_name(referenced_file))
                     ))
@@ -279,9 +279,10 @@ class TestValidationAfterSuccessfulParse(unittest.TestCase):
                 with self.subTest(relativity=relativity_conf.option_string,
                                   file_do_existence_case=file_existence_case.name):
                     program_sdv = sut.program_parser().parse(source)
-                    validation_check.check(
+                    program_ddv = program_sdv.resolve(empty_symbol_table())
+                    validation_check.check_ddv(
                         self,
-                        program_sdv.validator,
+                        program_ddv.validator,
                         arrangement,
                         expectation,
                     )
@@ -293,7 +294,7 @@ class TestValidationAfterSuccessfulParse(unittest.TestCase):
 
         source = remaining_source(arguments)
 
-        arrangement = validation_check.Arrangement(
+        arrangement = validation_check.DdvArrangement(
             dir_contents=tcds_populators.empty()
         )
 
@@ -302,12 +303,13 @@ class TestValidationAfterSuccessfulParse(unittest.TestCase):
         # ACT #
 
         program_sdv = sut.program_parser().parse(source)
+        program_ddv = program_sdv.resolve(empty_symbol_table())
 
         # ASSERT #
 
-        validation_check.check(
+        validation_check.check_ddv(
             self,
-            program_sdv.validator,
+            program_ddv.validator,
             arrangement,
             expectation,
         )

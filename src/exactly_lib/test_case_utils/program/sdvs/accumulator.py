@@ -1,24 +1,20 @@
-from typing import Sequence, List
+from typing import Sequence
 
-from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.logic.program import stdin_data_sdv
 from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
 from exactly_lib.symbol.logic.program.stdin_data_sdv import StdinDataSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.logic.string_transformers import StringTransformerSequenceSdv
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
-from exactly_lib.symbol.sdv_with_validation import ObjectWithSymbolReferencesAndValidation
+from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import sdv_validation
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator, \
-    SdvValidatorFromDdvValidator
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.type_system.logic.program.stdin_data import StdinDataDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class ProgramElementsSdvAccumulator(ObjectWithSymbolReferencesAndValidation):
+class ProgramElementsSdvAccumulator(ObjectWithTypedSymbolReferences):
     """
     Helper class for handling elements that can be accumulated by a ProgramSdv
     """
@@ -27,32 +23,25 @@ class ProgramElementsSdvAccumulator(ObjectWithSymbolReferencesAndValidation):
                  stdin: StdinDataSdv,
                  arguments: ArgumentsSdv,
                  transformations: Sequence[StringTransformerSdv],
-                 validators: Sequence[SdvValidator]):
+                 ):
         self.stdin = stdin
         self.arguments = arguments
         self.transformations = transformations
-        self.validators = list(validators) + self._validators_of_transformers(transformations)
 
     def new_accumulated(self,
                         additional_stdin: StdinDataSdv,
                         additional_arguments: ArgumentsSdv,
                         additional_transformations: Sequence[StringTransformerSdv],
-                        additional_validation: Sequence[SdvValidator],
                         ) -> 'ProgramElementsSdvAccumulator':
         """Creates a new accumulated instance."""
         return ProgramElementsSdvAccumulator(self.stdin.new_accumulated(additional_stdin),
                                              self.arguments.new_accumulated(additional_arguments),
-                                             tuple(self.transformations) + tuple(additional_transformations),
-                                             tuple(self.validators) + tuple(additional_validation))
+                                             tuple(self.transformations) + tuple(additional_transformations))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         objects_with_refs = [self.stdin, self.arguments] + list(self.transformations)
         return references_from_objects_with_symbol_references(objects_with_refs)
-
-    @property
-    def validator(self) -> SdvValidator:
-        return sdv_validation.all_of(self.validators)
 
     def resolve_stdin_data(self, symbols: SymbolTable) -> StdinDataDdv:
         return self.stdin.resolve_value(symbols)
@@ -60,39 +49,10 @@ class ProgramElementsSdvAccumulator(ObjectWithSymbolReferencesAndValidation):
     def resolve_transformations(self, symbols: SymbolTable) -> StringTransformerDdv:
         return StringTransformerSequenceSdv(self.transformations).resolve(symbols)
 
-    @staticmethod
-    def _validators_of_transformers(transformations: Sequence[StringTransformerSdv]
-                                    ) -> List[SdvValidator]:
-        return [
-            SdvValidatorFromDdvValidator(lambda symbols: transformation.resolve(symbols).validator())
-            for transformation in transformations
-        ]
-
 
 def empty() -> ProgramElementsSdvAccumulator:
-    return ProgramElementsSdvAccumulator(stdin_data_sdv.no_stdin(),
-                                         arguments_sdvs.empty(),
-                                         (),
-                                         ())
-
-
-def new_with_validators(validators: Sequence[SdvValidator]) -> ProgramElementsSdvAccumulator:
-    return ProgramElementsSdvAccumulator(stdin_data_sdv.no_stdin(),
-                                         arguments_sdvs.empty(),
-                                         (),
-                                         validators)
-
-
-def new_with_arguments_and_validators(arguments: ListSdv,
-                                      validators: Sequence[SdvValidator]) -> ProgramElementsSdvAccumulator:
-    return ProgramElementsSdvAccumulator(stdin_data_sdv.no_stdin(),
-                                         arguments_sdvs.new_without_validation(arguments),
-                                         (),
-                                         validators)
+    return ProgramElementsSdvAccumulator(stdin_data_sdv.no_stdin(), arguments_sdvs.empty(), ())
 
 
 def new_with_arguments(arguments: ArgumentsSdv) -> ProgramElementsSdvAccumulator:
-    return ProgramElementsSdvAccumulator(stdin_data_sdv.no_stdin(),
-                                         arguments,
-                                         (),
-                                         ())
+    return ProgramElementsSdvAccumulator(stdin_data_sdv.no_stdin(), arguments, ())

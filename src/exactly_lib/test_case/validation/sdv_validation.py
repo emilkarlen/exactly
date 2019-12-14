@@ -6,6 +6,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironment
 from exactly_lib.test_case.result import sh, svh
+from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.symbol_table import SymbolTable
@@ -228,8 +229,15 @@ class SdvValidatorOfReferredSdvBase(SdvValidator):
         raise NotImplementedError('abstract method')
 
 
+DdvValidatorResolver = Callable[[SymbolTable], DdvValidator]
+
+
+def validator_resolver_of_constant_success(symbols: SymbolTable) -> DdvValidator:
+    return ddv_validation.constant_success_validator()
+
+
 class SdvValidatorFromDdvValidator(SdvValidator):
-    def __init__(self, get_value_validator: Callable[[SymbolTable], DdvValidator]):
+    def __init__(self, get_value_validator: DdvValidatorResolver):
         self._get_value_validator = get_value_validator
         self._value_validator = None
         self._hds = None

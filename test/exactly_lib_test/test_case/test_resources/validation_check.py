@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.util.symbol_table import SymbolTable
@@ -8,7 +9,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.dir_populator impo
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationResultAssertion
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    tcds_with_act_as_curr_dir
+    tcds_with_act_as_curr_dir, tcds_with_act_as_curr_dir_2
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
@@ -19,6 +20,13 @@ class Arrangement:
                  symbols: SymbolTable = None):
         self.dir_contents = dir_contents
         self.symbols = symbols
+
+
+class DdvArrangement:
+    def __init__(self,
+                 dir_contents: TcdsPopulator = tcds_populators.empty,
+                 ):
+        self.dir_contents = dir_contents
 
 
 class Expectation:
@@ -51,8 +59,8 @@ def fails_post_sds() -> Expectation:
                        asrt_validation.is_arbitrary_validation_failure())
 
 
-def assert_with_files(arrangement: Arrangement,
-                      expectation: Expectation) -> ValueAssertion[SdvValidator]:
+def assert_with_files(arrangement: DdvArrangement,
+                      expectation: Expectation) -> ValueAssertion[DdvValidator]:
     return ValidatorAssertion(arrangement, expectation)
 
 
@@ -66,18 +74,18 @@ class ValidationCase:
         self.expectation = expectation
 
 
-class ValidatorAssertion(ValueAssertionBase[SdvValidator]):
+class ValidatorAssertion(ValueAssertionBase[DdvValidator]):
     def __init__(self,
-                 arrangement: Arrangement,
+                 arrangement: DdvArrangement,
                  expectation: Expectation):
         self.arrangement = arrangement
         self.expectation = expectation
 
     def _apply(self,
                put: unittest.TestCase,
-               value: SdvValidator,
+               value: DdvValidator,
                message_builder: asrt.MessageBuilder):
-        check(put, value, self.arrangement, self.expectation, message_builder)
+        check_ddv(put, value, self.arrangement, self.expectation, message_builder)
 
 
 def check(put: unittest.TestCase,
@@ -95,6 +103,25 @@ def check(put: unittest.TestCase,
         if actual_validation_result is not None:
             return
         actual_validation_result = actual.validate_post_sds_if_applicable(path_resolving_environment)
+        expectation.post_sds.apply(put,
+                                   actual_validation_result,
+                                   message_builder.for_sub_component('validation post sds'))
+
+
+def check_ddv(put: unittest.TestCase,
+              actual: DdvValidator,
+              arrangement: DdvArrangement,
+              expectation: Expectation,
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+    with tcds_with_act_as_curr_dir_2(
+            tcds_contents=arrangement.dir_contents) as tcds:
+        actual_validation_result = actual.validate_pre_sds_if_applicable(tcds.hds)
+        expectation.pre_sds.apply(put,
+                                  actual_validation_result,
+                                  message_builder.for_sub_component('validation pre sds'))
+        if actual_validation_result is not None:
+            return
+        actual_validation_result = actual.validate_post_sds_if_applicable(tcds)
         expectation.post_sds.apply(put,
                                    actual_validation_result,
                                    message_builder.for_sub_component('validation post sds'))

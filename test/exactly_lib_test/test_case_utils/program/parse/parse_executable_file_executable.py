@@ -14,6 +14,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse.parse_path import path_relativity_restriction
 from exactly_lib.test_case_utils.program import syntax_elements
@@ -359,7 +360,10 @@ class TestParseAbsolutePath(unittest.TestCase):
         expected_source_after_parse.apply_with_message(self, source, 'parse source')
 
         with tcds_with_act_as_curr_dir() as environment:
-            validator_util.check(self, exe_file.as_command.validator, environment, validator_expectation)
+            validator_util.check_ddv(self,
+                                     ddv_validators.all_of(exe_file.as_command.resolve(environment.symbols).validators),
+                                     environment.tcds,
+                                     validator_expectation)
 
 
 def _parse_and_check(put: unittest.TestCase,

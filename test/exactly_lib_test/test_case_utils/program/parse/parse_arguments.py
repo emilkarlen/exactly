@@ -8,18 +8,21 @@ from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.list_sdv import ElementSdv
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import sdv_validation
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
+from exactly_lib.test_case.validation import ddv_validators
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType
 from exactly_lib.test_case_utils.parse.parse_relativity import reference_restrictions_for_path_symbol
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_arguments as sut
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
+from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
+from exactly_lib_test.symbol.data.test_resources import string_sdvs as string_sdvs_tr
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
 from exactly_lib_test.test_case.test_resources import validation_check
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
 from exactly_lib_test.test_case_utils.parse import parse_list as test_of_list
@@ -44,10 +47,20 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+class Arrangement:
+    def __init__(self,
+                 symbols: SymbolTable,
+                 ):
+        self.symbols = symbols
+
+
+ARRANGEMENT__NEUTRAL = Arrangement(empty_symbol_table())
+
+
 class Expectation:
     def __init__(self,
                  elements: List[ElementSdv],
-                 validators: ValueAssertion[Sequence[SdvValidator]],
+                 validators: ValueAssertion[Sequence[DdvValidator]],
                  references: ValueAssertion[Sequence[SymbolReference]]):
         self.elements = elements
         self.validators = validators
@@ -58,9 +71,11 @@ class Case:
     def __init__(self,
                  name: str,
                  source: str,
+                 arrangement: Arrangement,
                  expectation: Expectation):
         self.name = name
         self.source = source
+        self.arrangement = arrangement
         self.expectation = expectation
 
 
@@ -106,6 +121,7 @@ class TestNoElements(unittest.TestCase):
         cases = [
             Case(ne.name,
                  ne.value,
+                 ARRANGEMENT__NEUTRAL,
                  Expectation(
                      elements=[],
                      validators=asrt.is_empty_sequence,
@@ -126,6 +142,7 @@ class TestSingleElement(unittest.TestCase):
         cases = [
             Case('plain string',
                  plain_string,
+                 ARRANGEMENT__NEUTRAL,
                  Expectation(
                      elements=[list_sdvs.str_element(plain_string)],
                      validators=asrt.is_empty_sequence,
@@ -133,6 +150,11 @@ class TestSingleElement(unittest.TestCase):
                  )),
             Case('symbol reference',
                  symbol_reference_syntax_for_name(symbol_name),
+                 Arrangement(
+                     symbol_table_from_name_and_sdvs([
+                         NameAndValue(symbol_name, string_sdvs_tr.arbitrary_sdv()),
+                     ])
+                 ),
                  Expectation(
                      elements=[list_sdvs.symbol_element(symbol_reference(symbol_name))],
                      validators=asrt.is_empty_sequence,
@@ -155,6 +177,7 @@ class TestSingleElement(unittest.TestCase):
                  ' '.join([
                      syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
                      str_with_space_and_invalid_token_syntax]),
+                 ARRANGEMENT__NEUTRAL,
                  Expectation(
                      elements=[list_sdvs.str_element(str_with_space_and_invalid_token_syntax)],
                      validators=asrt.is_empty_sequence,
@@ -164,6 +187,7 @@ class TestSingleElement(unittest.TestCase):
                  ' '.join([
                      syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
                      '   ' + str_with_space_and_invalid_token_syntax + '  \t ']),
+                 ARRANGEMENT__NEUTRAL,
                  Expectation(
                      elements=[list_sdvs.str_element(str_with_space_and_invalid_token_syntax)],
                      validators=asrt.is_empty_sequence,
@@ -175,6 +199,11 @@ class TestSingleElement(unittest.TestCase):
                      ''.join(['before',
                               symbol_reference_syntax_for_name(symbol_name),
                               'after'])]),
+                 Arrangement(
+                     symbol_table_from_name_and_sdvs([
+                         NameAndValue(symbol_name, string_sdvs_tr.arbitrary_sdv())
+                     ])
+                 ),
                  Expectation(
                      elements=[list_sdvs.string_element(string_sdvs.from_fragments([
                          string_sdvs.str_fragment('before'),
@@ -232,6 +261,7 @@ class TestSingleElement(unittest.TestCase):
                         rel_opt_conf.file_argument_with_option(
                             plain_file_name)]
                     ).as_str,
+                    Arrangement(rel_opt_conf.symbols.in_arrangement()),
                     Expectation(
                         elements=[case.expected_list_element],
                         references=asrt.matches_sequence(rel_opt_conf.symbols.usage_expectation_assertions()),
@@ -239,9 +269,8 @@ class TestSingleElement(unittest.TestCase):
                             NameAndValue('fail when file is missing',
                                          validation_check.assert_with_files(
                                              arrangement=
-                                             validation_check.Arrangement(
-                                                 dir_contents=tcds_populators.empty(),
-                                                 symbols=rel_opt_conf.symbols.in_arrangement()),
+                                             validation_check.DdvArrangement(
+                                                 dir_contents=tcds_populators.empty()),
                                              expectation=
                                              validation_check.fails_on(rel_opt_conf.directory_structure_partition),
 
@@ -249,13 +278,12 @@ class TestSingleElement(unittest.TestCase):
                             NameAndValue('succeed when file exists',
                                          validation_check.assert_with_files(
                                              arrangement=
-                                             validation_check.Arrangement(
+                                             validation_check.DdvArrangement(
                                                  dir_contents=
                                                  rel_opt_conf.populator_for_relativity_option_root(
                                                      DirContents(
                                                          [empty_file(plain_file_name)])
-                                                 ),
-                                                 symbols=rel_opt_conf.symbols.in_arrangement()),
+                                                 )),
                                              expectation=
                                              validation_check.is_success())
                                          ),
@@ -266,11 +294,11 @@ class TestSingleElement(unittest.TestCase):
                 _test_case(self, _case)
 
 
-def is_single_validator_with(expectations: Sequence[NameAndValue[ValueAssertion[SdvValidator]]]
-                             ) -> ValueAssertion[Sequence[SdvValidator]]:
+def is_single_validator_with(expectations: Sequence[NameAndValue[ValueAssertion[DdvValidator]]]
+                             ) -> ValueAssertion[Sequence[DdvValidator]]:
     return asrt.and_([
         asrt.len_equals(1),
-        asrt.on_transformed(sdv_validation.all_of,
+        asrt.on_transformed(ddv_validators.all_of,
                             asrt.all_named(expectations))
     ])
 
@@ -297,6 +325,7 @@ class TestMultipleElements(unittest.TestCase):
             Case('plain strings',
                  ab.sequence([plain_string1,
                               plain_string2]).as_str,
+                 ARRANGEMENT__NEUTRAL,
                  Expectation(
                      elements=[list_sdvs.str_element(plain_string1),
                                list_sdvs.str_element(plain_string2)],
@@ -309,6 +338,12 @@ class TestMultipleElements(unittest.TestCase):
                               syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
                               remaining_part_of_current_line_with_sym_ref,
                               ]).as_str,
+                 Arrangement(
+                     symbol_table_from_name_and_sdvs([
+                         NameAndValue(symbol_name_1, string_sdvs_tr.arbitrary_sdv()),
+                         NameAndValue(symbol_name_2, string_sdvs_tr.arbitrary_sdv()),
+                     ])
+                 ),
                  Expectation(
                      elements=[list_sdvs.symbol_element(symbol_reference(symbol_name_1)),
                                list_sdvs.str_element(plain_string1),
@@ -351,5 +386,7 @@ def _test_case(put: unittest.TestCase, case: Case):
         expectation.references.apply_with_message(put, actual.references,
                                                   'symbol references')
 
-        expectation.validators.apply_with_message(put, actual.validators,
+        actual_ddv = actual.resolve(case.arrangement.symbols)
+        expectation.validators.apply_with_message(put,
+                                                  actual_ddv.validators,
                                                   'validators')

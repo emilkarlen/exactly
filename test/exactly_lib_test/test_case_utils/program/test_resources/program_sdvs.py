@@ -11,6 +11,10 @@ from exactly_lib_test.test_case_utils.test_resources import command_sdvs as test
 
 
 def arbitrary_sdv() -> ProgramSdv:
+    return arbitrary_sdv__without_symbol_references()
+
+
+def arbitrary_sdv__without_symbol_references() -> ProgramSdv:
     return with_ref_to_program(
         string_sdvs.StringSdvTestImpl('the string'))
 

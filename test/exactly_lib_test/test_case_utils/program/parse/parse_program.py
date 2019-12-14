@@ -1,10 +1,6 @@
 import unittest
-from typing import Sequence
 
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator, ConstantSuccessSdvValidator
 from exactly_lib.test_case_utils.program.parse import parse_program as sut
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
@@ -107,7 +103,7 @@ class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestC
     def runTest(self):
         # ARRANGE #
         program_symbol = NameAndValue('A_PROGRAM',
-                                      _ProgramSdvWithoutImplementation())
+                                      program_sdvs.arbitrary_sdv__without_symbol_references())
 
         pgm_and_args_cases = [
             NameAndValue('shell command',
@@ -150,16 +146,6 @@ class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestC
 
 def parse_source_of(single_line: ArgumentElementRenderer) -> ParseSource:
     return ArgumentElements([single_line]).as_remaining_source
-
-
-class _ProgramSdvWithoutImplementation(ProgramSdv):
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return ()
-
-    @property
-    def validator(self) -> SdvValidator:
-        return ConstantSuccessSdvValidator()
 
 
 if __name__ == '__main__':

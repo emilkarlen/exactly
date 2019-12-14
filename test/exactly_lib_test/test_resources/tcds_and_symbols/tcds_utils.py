@@ -63,5 +63,24 @@ def tcds_with_act_as_curr_dir(
                 yield ret_val
 
 
+@contextmanager
+def tcds_with_act_as_curr_dir_2(
+        hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
+        sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
+        non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
+        tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty()) -> ContextManager[Tcds]:
+    prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
+    with home_directory_structure(prefix=prefix + '-home') as hds:
+        with sandbox_directory_structure(prefix=prefix + "-sds-") as sds:
+            tcds = Tcds(hds, sds)
+            with preserved_cwd():
+                os.chdir(str(sds.act_dir))
+                hds_contents.populate_hds(hds)
+                sds_contents.populate_sds(sds)
+                non_hds_contents.populate_non_hds(sds)
+                tcds_contents.populate_tcds(tcds)
+                yield tcds
+
+
 SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR = TcdsActionFromSdsAction(
     MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs())

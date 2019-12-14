@@ -1,30 +1,17 @@
 import unittest
 
 from exactly_lib.symbol import restriction as sut
-from exactly_lib.symbol.data import string_sdvs, path_sdvs
-from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
-from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
-from exactly_lib.test_case_utils.program.sdvs import accumulator
-from exactly_lib.test_case_utils.program.sdvs.command_program_sdv import ProgramSdvForCommand
-from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
-from exactly_lib.type_system.data.list_ddv import ListDdv
-from exactly_lib.type_system.logic.program.command import CommandDdv
-from exactly_lib.type_system.logic.program.commands import CommandDriverDdvForShell
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
-from exactly_lib_test.symbol.test_resources import line_matcher
-from exactly_lib_test.symbol.test_resources.command_sdvs import CommandDriverSdvForConstantTestImpl
+from exactly_lib_test.symbol.data.test_resources import list_sdvs as list_sdvs_tr, path_sdvs as path_sdvs_tr, \
+    string_sdvs as string_sdvs_tr
+from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, files_matcher, string_transformer, \
+    file_matcher
 from exactly_lib_test.symbol.test_resources.file_matcher import file_matcher_sdv_constant_test_impl
-from exactly_lib_test.symbol.test_resources.files_matcher import FilesMatcherSdvConstantTestImpl
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSdvConstantTestImpl
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.type_system.logic.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
-from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant
-from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer
 
 
 def suite() -> unittest.TestSuite:
@@ -80,45 +67,36 @@ class TestElementTypeRestriction(unittest.TestCase):
 
 
 class TestValueTypeRestriction(unittest.TestCase):
-    arbitrary_list_sdv = ListSdvTestImplForConstantListDdv(ListDdv([]))
+    arbitrary_list_sdv = list_sdvs_tr.arbitrary_sdv()
 
     value_type_2_sdv_of_type = {
 
         ValueType.STRING:
-            string_sdvs.str_constant('string value'),
+            string_sdvs_tr.arbitrary_sdv(),
 
         ValueType.LIST:
             arbitrary_list_sdv,
 
         ValueType.PATH:
-            path_sdvs.constant(paths.rel_sandbox(RelSdsOptionType.REL_ACT, paths.empty_path_part())),
+            path_sdvs_tr.arbitrary_sdv(),
 
         ValueType.LINE_MATCHER:
             line_matcher.arbitrary_sdv(),
 
         ValueType.FILE_MATCHER:
-            file_matcher_sdv_constant_test_impl(FileMatcherThatSelectsAllFilesTestImpl()),
+            file_matcher.arbitrary_sdv(),
 
         ValueType.FILES_MATCHER:
-            FilesMatcherSdvConstantTestImpl(),
+            files_matcher.arbitrary_sdv(),
 
         ValueType.STRING_MATCHER:
-            StringMatcherSdvConstantTestImpl(StringMatcherConstant(None)),
+            string_matcher.arbitrary_sdv(),
 
         ValueType.STRING_TRANSFORMER:
-            StringTransformerSdvConstantTestImpl(FakeStringTransformer(), []),
+            string_transformer.arbitrary_sdv(),
 
         ValueType.PROGRAM:
-            ProgramSdvForCommand(
-                CommandSdv(
-                    CommandDriverSdvForConstantTestImpl(
-                        CommandDdv(
-                            CommandDriverDdvForShell(string_ddv_of_single_string('the shell command line')),
-                            ListDdv.empty())),
-                    ArgumentsSdv(arbitrary_list_sdv),
-                ),
-                accumulator.empty()
-            ),
+            program_sdvs.arbitrary_sdv(),
     }
 
     def test_satisfied_restriction(self):

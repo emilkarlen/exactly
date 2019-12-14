@@ -35,7 +35,7 @@ from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    tcds_with_act_as_curr_dir
+    tcds_with_act_as_curr_dir_2
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -158,7 +158,7 @@ class TestValidation(unittest.TestCase):
         program_symbol_with_ref_to_non_exit_exe_file = NameAndValue(
             'PGM_WITH_REF_TO_EXE_FILE',
             program_sdvs.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_HDS_ACT,
-                                                                                 'non-existing-exe-file')))
+                                                                            'non-existing-exe-file')))
         )
 
         program_symbol_with_ref_to_non_exiting_file_as_argument = NameAndValue(
@@ -194,15 +194,15 @@ class TestValidation(unittest.TestCase):
             with self.subTest(case.name):
                 # ACT #
                 program_sdv = parser.parse(source)
+                validator = program_sdv.resolve(symbols).validator
                 # ASSERT #
                 self.assertIsInstance(program_sdv, ProgramSdv)
-                with tcds_with_act_as_curr_dir(hds_contents=case.home_contents,
-                                               symbols=symbols) as environment:
-                    validation_assertion = pre_or_post_sds_validator.PreOrPostSdsValidatorAssertion(
+                with tcds_with_act_as_curr_dir_2(hds_contents=case.home_contents) as tcds:
+                    validation_assertion = pre_or_post_sds_validator.PreOrPostSdsDdvValidationAssertion(
+                        tcds,
                         expected_validation,
-                        environment
                     )
-                    validation_assertion.apply_without_message(self, program_sdv.validator)
+                    validation_assertion.apply_without_message(self, validator)
 
     def test_failing_validation_post_sds(self):
         parser = sut.program_parser()
@@ -212,7 +212,7 @@ class TestValidation(unittest.TestCase):
         program_symbol_with_ref_to_non_exit_exe_file = NameAndValue(
             'PGM_WITH_REF_TO_EXE_FILE',
             program_sdvs.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_TMP,
-                                                                                 'non-existing-exe-file')))
+                                                                            'non-existing-exe-file')))
         )
 
         program_symbol_with_ref_to_non_exiting_file_as_argument = NameAndValue(
@@ -248,15 +248,15 @@ class TestValidation(unittest.TestCase):
             with self.subTest(case.name):
                 # ACT #
                 program_sdv = parser.parse(source)
+                validator = program_sdv.resolve(symbols).validator
                 # ASSERT #
                 self.assertIsInstance(program_sdv, ProgramSdv)
-                with tcds_with_act_as_curr_dir(sds_contents=case.sds_contents,
-                                               symbols=symbols) as environment:
-                    validation_assertion = pre_or_post_sds_validator.PreOrPostSdsValidatorAssertion(
+                with tcds_with_act_as_curr_dir_2(sds_contents=case.sds_contents) as tcds:
+                    validation_assertion = pre_or_post_sds_validator.PreOrPostSdsDdvValidationAssertion(
+                        tcds,
                         expected_validation,
-                        environment
                     )
-                    validation_assertion.apply_without_message(self, program_sdv.validator)
+                    validation_assertion.apply_without_message(self, validator)
 
 
 class TestExecution(unittest.TestCase):

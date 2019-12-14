@@ -4,17 +4,13 @@ from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.logic.program.command_sdv import CommandDriverSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
-from exactly_lib.test_case_utils.program.validators import ExistingExecutableFileValidator
 from exactly_lib.type_system.logic.program import commands
 from exactly_lib.type_system.logic.program.command import CommandDriverDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 
 class CommandDriverSdvForExecutableFile(CommandDriverSdv):
-    def __init__(self,
-                 executable_file: PathSdv):
-        super().__init__([ExistingExecutableFileValidator(executable_file)])
+    def __init__(self, executable_file: PathSdv):
         self._executable_file = executable_file
 
     @property
@@ -30,10 +26,7 @@ class CommandDriverSdvForExecutableFile(CommandDriverSdv):
 
 
 class CommandDriverSdvForSystemProgram(CommandDriverSdv):
-    def __init__(self,
-                 program: StringSdv,
-                 validators: Sequence[SdvValidator] = ()):
-        super().__init__(validators)
+    def __init__(self, program: StringSdv):
         self._program = program
 
     @property
@@ -49,10 +42,7 @@ class CommandDriverSdvForSystemProgram(CommandDriverSdv):
 
 
 class CommandDriverSdvForShell(CommandDriverSdv):
-    def __init__(self,
-                 command_line: StringSdv,
-                 validators: Sequence[SdvValidator] = ()):
-        super().__init__(validators)
+    def __init__(self, command_line: StringSdv):
         self._command_line = command_line
 
     @property

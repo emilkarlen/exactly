@@ -1,3 +1,4 @@
+from symtable import SymbolTable
 from typing import Sequence
 
 from exactly_lib.actors.common import relativity_configuration_of_action_to_check, SHELL_COMMAND_MARKER
@@ -19,6 +20,9 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     SymbolUser
 from exactly_lib.test_case.result import svh
+from exactly_lib.test_case.validation import ddv_validators
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
+from exactly_lib.test_case.validation.sdv_validation import SdvValidatorFromDdvValidator
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.parse_list import parse_list
 from exactly_lib.test_case_utils.parse.parse_path import parse_path_from_parse_source
@@ -47,7 +51,12 @@ class CommandConfiguration(SymbolUser):
         return self._command_sdv.references
 
     def validator(self) -> parts.Validator:
-        return PartsValidatorFromPreOrPostSdsValidator(self._command_sdv.validator)
+        def get_validator(symbols: SymbolTable) -> DdvValidator:
+            return ddv_validators.all_of(self._command_sdv.resolve(symbols).validators)
+
+        return PartsValidatorFromPreOrPostSdsValidator(
+            SdvValidatorFromDdvValidator(get_validator)
+        )
 
     def executor(self,
                  os_process_executor: AtcOsProcessExecutor,

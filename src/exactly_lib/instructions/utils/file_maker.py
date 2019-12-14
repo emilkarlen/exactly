@@ -104,7 +104,9 @@ class FileMakerForContentsFromProgram(FileMaker):
 
     @property
     def validator(self) -> SdvValidator:
-        return self._program.validator
+        return sdv_validation.SdvValidatorFromDdvValidator(
+            lambda symbols: self._program.resolve(symbols).validator
+        )
 
     @property
     def symbol_references(self) -> Sequence[SymbolReference]:

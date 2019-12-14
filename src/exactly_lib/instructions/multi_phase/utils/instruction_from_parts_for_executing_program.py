@@ -12,6 +12,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
     instruction_log_dir, InstructionSourceInfo
 from exactly_lib.test_case.result import pfh, sh
+from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.util.process_execution import sub_process_execution as spe
 from exactly_lib.util.process_execution.sub_process_execution import ResultAndStderr, failure_message_for_nonzero_status
@@ -30,7 +31,9 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
 
     @property
     def validator(self) -> SdvValidator:
-        return self._program.validator
+        return sdv_validation.SdvValidatorFromDdvValidator(
+            lambda symbols: self._program.resolve(symbols).validator
+        )
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,

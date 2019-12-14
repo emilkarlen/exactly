@@ -21,6 +21,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
+from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers
@@ -115,7 +116,9 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
 
     @property
     def validator(self) -> SdvValidator:
-        return self._program.validator
+        return sdv_validation.SdvValidatorFromDdvValidator(
+            lambda symbols: self._program.resolve(symbols).validator
+        )
 
     def construct(self,
                   source_info: InstructionSourceInfo,

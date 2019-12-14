@@ -83,9 +83,7 @@ class Configuration(ConfigurationBase):
 
 
 def suite_for(configuration: Configuration) -> unittest.TestSuite:
-    test_case_classes = [TestResultIsValidationErrorWhenPreSdsValidationFails,
-                         TestResultIsValidationErrorWhenPostSetupValidationFails,
-                         TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero,
+    test_case_classes = [TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero,
                          TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero,
                          TestInstructionIsErrorWhenProcessTimesOut,
                          TestEnvironmentVariablesArePassedToSubProcess,
@@ -103,43 +101,9 @@ class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
         self.conf = conf
 
 
-class TestResultIsValidationErrorWhenPreSdsValidationFails(TestCaseBase):
-    def runTest(self):
-        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            ConstantResultSdvValidator(
-                pre_sds=asrt_text_doc.new_single_string_text_for_test('validation error message')
-            )
-        )
-        self.conf.run_sub_process_test(
-            self,
-            source4(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
-            execution_setup_parser,
-            self.conf.arrangement(),
-            self.conf.expect_failing_validation_pre_sds(
-                asrt_text_doc.is_string_for_test_that_equals('validation error message')
-            )
-        )
-
-
-class TestResultIsValidationErrorWhenPostSetupValidationFails(TestCaseBase):
-    def runTest(self):
-        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            ConstantResultSdvValidator(
-                post_setup=asrt_text_doc.new_single_string_text_for_test('validation error message post setup')
-            )
-        )
-        self.conf.run_sub_process_test(
-            self,
-            source4(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
-            execution_setup_parser,
-            self.conf.arrangement(),
-            self.conf.expect_failing_validation_post_setup(asrt.Equals('validation error message post setup')))
-
-
 class TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero(TestCaseBase):
     def runTest(self):
-        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            sdv_validation.ConstantSuccessSdvValidator())
+        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine()
         self.conf.run_sub_process_test(
             self,
             source4(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
@@ -150,8 +114,7 @@ class TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero(TestCaseBase):
 
 class TestInstructionIsSuccessfulWhenExitStatusFromShellCommandIsZero(TestCaseBase):
     def runTest(self):
-        execution_setup_parser = _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
-            sdv_validation.ConstantSuccessSdvValidator())
+        execution_setup_parser = _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine()
         command_that_exits_with_code = shell_commands.command_that_exits_with_code(0)
         self.conf.run_sub_process_test(
             self,
@@ -165,8 +128,7 @@ class TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero(TestCaseBase):
     def runTest(self):
         script_that_exists_with_non_zero_status = 'import sys; sys.exit(1)'
 
-        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            sdv_validation.ConstantSuccessSdvValidator())
+        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine()
         self.conf.run_sub_process_test(
             self,
             source4(script_that_exists_with_non_zero_status),
@@ -182,8 +144,7 @@ class TestInstructionIsErrorWhenProcessTimesOut(TestCaseBase):
         program_source_as_single_line = script_that_sleeps.replace('\n', ';')
         source = source4(program_source_as_single_line)
 
-        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            sdv_validation.ConstantSuccessSdvValidator())
+        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine()
         self.conf.run_sub_process_test(
             self,
             source,
@@ -204,8 +165,7 @@ class TestEnvironmentVariablesArePassedToSubProcess(TestCaseBase):
         program_source_as_single_line = program.replace('\n', ';')
         source = source4(program_source_as_single_line)
 
-        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            sdv_validation.ConstantSuccessSdvValidator())
+        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine()
         instruction_name = 'name-of-the-instruction'
         source_info = InstructionSourceInfo(source.current_line_number,
                                             instruction_name)
@@ -228,8 +188,7 @@ class TestOutputIsStoredInFilesInInstructionLogDir(TestCaseBase):
         program = py.program_that_prints_and_exits_with_exit_code(sub_process_result)
         program_source_as_single_line = program.replace('\n', ';')
         source = source4(program_source_as_single_line)
-        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            sdv_validation.ConstantSuccessSdvValidator())
+        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine()
         instruction_name = 'name-of-the-instruction'
         source_info = InstructionSourceInfo(source.current_line_number,
                                             instruction_name)
@@ -251,8 +210,7 @@ class TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessag
                                               stderr='output on stderr')
         program = py.program_that_prints_and_exits_with_exit_code(sub_process_result)
         program_source_as_single_line = program.replace('\n', ';')
-        program_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-            sdv_validation.ConstantSuccessSdvValidator())
+        program_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine()
         source = source4(program_source_as_single_line)
         self.conf.run_sub_process_test(
             self,
@@ -286,28 +244,22 @@ class _InstructionLogDirContainsOutFiles(ValueAssertionBase[SandboxDirectoryStru
 
 
 class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(Parser[ProgramSdv]):
-    def __init__(self, validator: sdv_validation.SdvValidator):
-        super().__init__()
-        self.validator = validator
-
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramSdv:
         instruction_argument = parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         return ProgramSdvForCommand(
             test_command_sdvs.for_py_source_on_command_line(instruction_argument),
-            accumulator.new_with_validators([self.validator]))
+            accumulator.empty())
 
 
 class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(Parser[ProgramSdv]):
-    def __init__(self, validator: sdv_validation.SdvValidator):
+    def __init__(self):
         super().__init__()
-        self.validator = validator
 
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramSdv:
         instruction_argument = parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         argument_sdv = string_sdvs.str_constant(instruction_argument)
         return ProgramSdvForCommand(
-            command_sdvs.for_shell(argument_sdv,
-                                   validators=[self.validator]),
+            command_sdvs.for_shell(argument_sdv),
             accumulator.empty())
 
 

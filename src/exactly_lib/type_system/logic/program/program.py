@@ -1,3 +1,7 @@
+from typing import Sequence
+
+from exactly_lib.test_case.validation import ddv_validators
+from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.program.command import CommandDdv
@@ -34,6 +38,7 @@ class ProgramDdv(DirDependentValue[Program]):
         self._command = command
         self._stdin = stdin
         self._transformation = transformation
+        self._validators = (tuple(command.validators) + (transformation.validator(),))
 
     @property
     def command(self) -> CommandDdv:
@@ -46,6 +51,14 @@ class ProgramDdv(DirDependentValue[Program]):
     @property
     def transformation(self) -> StringTransformerDdv:
         return self._transformation
+
+    @property
+    def validators(self) -> Sequence[DdvValidator]:
+        return self._validators
+
+    @property
+    def validator(self) -> DdvValidator:
+        return ddv_validators.all_of(self._validators)
 
     def value_of_any_dependency(self, tcds: Tcds) -> Program:
         return Program(self.command.value_of_any_dependency(tcds),

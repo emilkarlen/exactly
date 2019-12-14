@@ -3,16 +3,16 @@ import unittest
 from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices, new_default
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.program.execution import store_result_in_instruction_tmp_dir as pgm_execution
 from exactly_lib.test_case_utils.program.parse import parse_program as sut
-from exactly_lib.type_system.logic.program.program import Program
+from exactly_lib.type_system.logic.program.program import Program, ProgramDdv
 from exactly_lib.util import file_utils
 from exactly_lib.util.process_execution import executable_factories
 from exactly_lib.util.process_execution.executable_factory import ExecutableFactory
@@ -177,54 +177,48 @@ class Executor:
               environment: PathResolvingEnvironmentPreOrPostSds,
               program_sdv: ProgramSdv):
 
-        result = self._execute_pre_validate(environment,
-                                            program_sdv)
-        self.expectation.symbol_references.apply_with_message(self.put,
-                                                              program_sdv.references,
-                                                              'symbol-usages after ' +
-                                                              phase_step.STEP__VALIDATE_PRE_SDS)
+        program_ddv = program_sdv.resolve(environment.symbols)
+
+        result = self._execute_pre_validate(environment.tcds.hds,
+                                            program_ddv)
         if result is not None:
             return
 
-        result = self._execute_post_sds_validate(environment, program_sdv)
+        result = self._execute_post_sds_validate(environment.tcds, program_ddv)
         if result is not None:
             return
-        self.expectation.symbol_references.apply_with_message(self.put,
-                                                              program_sdv.references,
-                                                              'symbol-usages after' +
-                                                              phase_step.STEP__VALIDATE_POST_SETUP)
 
-        self._execute_program(pgm_output_dir, environment, program_sdv)
+        self._execute_program(pgm_output_dir, environment.tcds, program_ddv)
 
     def _execute_pre_validate(self,
-                              environment: PathResolvingEnvironmentPreSds,
-                              program_sdv: ProgramSdv) -> Optional[TextRenderer]:
-        actual = program_sdv.validator.validate_pre_sds_if_applicable(environment)
+                              hds: HomeDirectoryStructure,
+                              program: ProgramDdv) -> Optional[TextRenderer]:
+        actual = program.validator.validate_pre_sds_if_applicable(hds)
         self.expectation.validation.pre_sds.apply_with_message(self.put, actual, 'validation-pre-sds')
         return actual
 
     def _execute_post_sds_validate(self,
-                                   environment: PathResolvingEnvironmentPostSds,
-                                   program_sdv: ProgramSdv) -> Optional[TextRenderer]:
-        actual = program_sdv.validator.validate_post_sds_if_applicable(environment)
+                                   tcds: Tcds,
+                                   program: ProgramDdv) -> Optional[TextRenderer]:
+        actual = program.validator.validate_post_sds_if_applicable(tcds)
         self.expectation.validation.post_sds.apply_with_message(self.put, actual, 'validation-post-sds')
         return actual
 
     def _execute_program(self,
                          pgm_output_dir: pathlib.Path,
-                         environment: PathResolvingEnvironmentPreOrPostSds,
-                         program_sdv: ProgramSdv):
-        result = self._execute(pgm_output_dir, environment, program_sdv)
+                         tcds: Tcds,
+                         program_sdv: ProgramDdv):
+        result = self._execute(pgm_output_dir, tcds, program_sdv)
 
         self.expectation.result.apply(self.put, result)
-        self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
-        self.expectation.main_side_effects_on_tcds.apply(self.put, environment.tcds)
+        self.expectation.main_side_effects_on_sds.apply(self.put, tcds.sds)
+        self.expectation.main_side_effects_on_tcds.apply(self.put, tcds)
 
     def _execute(self,
                  pgm_output_dir: pathlib.Path,
-                 environment: PathResolvingEnvironmentPreOrPostSds,
-                 program_sdv: ProgramSdv) -> ResultWithTransformationData:
-        program = program_sdv.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
+                 tcds: Tcds,
+                 program_sdv: ProgramDdv) -> ResultWithTransformationData:
+        program = program_sdv.value_of_any_dependency(tcds)
         assert isinstance(program, Program)
         execution_result = pgm_execution.make_transformed_file_from_output(pgm_output_dir,
                                                                            self.arrangement.process_execution_settings,

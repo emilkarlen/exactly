@@ -6,6 +6,7 @@ from typing import List
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_executable
@@ -117,7 +118,7 @@ def check_exe_file(put: unittest.TestCase,
         expected_symbol_references=equals_symbol_references(expectation.expected_symbol_references_of_file),
         symbol_table=expectation.symbol_for_value_checks)
     path_sdv_assertion.apply_with_message(put, actual.executable_file,
-                                               'path sdv')
+                                          'path sdv')
     path_symbols = equals_symbol_references(expectation.expected_symbol_references_of_file)
     path_symbols.apply_with_message(put, actual.executable_file.references,
                                     'path-sdv/references')
@@ -127,7 +128,7 @@ def check_exe_file(put: unittest.TestCase,
         symbols=expectation.symbol_for_value_checks,
     )
     arguments_sdv_assertion.apply_with_message(put, actual.arguments,
-                                                    'arguments')
+                                               'arguments')
     assertion_on_all_references = equals_symbol_references(expectation.expected_symbol_references_of_file +
                                                            expectation.expected_symbol_references_of_argument)
     assertion_on_all_references.apply_with_message(put, actual.as_command.references,
@@ -153,10 +154,12 @@ def check(put: unittest.TestCase,
             tcds_contents=arrangement.home_or_sds_populator) as environment:
         os.mkdir('act-cwd')
         os.chdir('act-cwd')
-        validator_util.check(put,
-                             actual_exe_file.as_command.validator,
-                             environment,
-                             expectation.validation_result)
+        validator_util.check_ddv(
+            put,
+            ddv_validators.all_of(actual_exe_file.as_command.resolve(environment.symbols).validators),
+            environment.tcds,
+            expectation.validation_result,
+        )
 
 
 class CheckBase(unittest.TestCase):
@@ -181,16 +184,20 @@ class CheckBase(unittest.TestCase):
 
     def _assert_passes_validation(self, actual: ExecutableFileWithArgsResolver,
                                   environment: PathResolvingEnvironmentPreOrPostSds):
-        validator_util.check(self, actual.as_command.validator, environment,
-                             validation.expect_passes_all_validations())
+        validator_util.check_ddv(self,
+                                 ddv_validators.all_of(actual.as_command.resolve(environment.symbols).validators),
+                                 environment.tcds,
+                                 validation.expect_passes_all_validations())
 
     def _assert_does_not_pass_validation(self, actual: ExecutableFileWithArgsResolver,
                                          environment: PathResolvingEnvironmentPreOrPostSds):
         passes_pre_sds = not self.configuration.exists_pre_sds
         passes_post_sds = not passes_pre_sds
-        validator_util.check(self, actual.as_command.validator, environment,
-                             validation.Expectation(passes_pre_sds=passes_pre_sds,
-                                                    passes_post_sds=passes_post_sds))
+        validator_util.check_ddv(self,
+                                 ddv_validators.all_of(actual.as_command.resolve(environment.symbols).validators),
+                                 environment.tcds,
+                                 validation.Expectation(passes_pre_sds=passes_pre_sds,
+                                                        passes_post_sds=passes_post_sds))
 
 
 class CheckExistingFile(CheckBase):
