@@ -2,23 +2,24 @@ from typing import Optional
 
 from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.definitions.primitives import file_or_dir_contents
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
+from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase
+from exactly_lib.test_case_utils.string_matcher.negation import StringMatcherNegation
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherDdv
+from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.type_system.logic.string_matcher import StringMatcher
 from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.logic_types import ExpectationType
 
 
-class EmptinessStringMatcher(StringMatcher):
+class EmptinessStringMatcher(StringMatcherImplBase):
     NAME = file_or_dir_contents.EMPTINESS_CHECK_ARGUMENT
 
     @staticmethod
@@ -45,6 +46,10 @@ class EmptinessStringMatcher(StringMatcher):
     @property
     def option_description(self) -> str:
         return diff_msg.negation_str(self._expectation_type) + 'empty'
+
+    @property
+    def negation(self) -> StringMatcher:
+        return StringMatcherNegation(self)
 
     def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
         first_line = self._first_line(model)
@@ -85,18 +90,6 @@ class EmptinessStringMatcher(StringMatcher):
             for line in lines:
                 return line
         return ''
-
-
-class EmptinessStringMatcherDdv(StringMatcherDdv):
-    def __init__(self, expectation_type: ExpectationType):
-        super().__init__()
-        self._expectation_type = expectation_type
-
-    def structure(self) -> StructureRenderer:
-        return EmptinessStringMatcher.new_structure_tree(self._expectation_type)
-
-    def value_of_any_dependency(self, tcds: Tcds) -> StringMatcher:
-        return EmptinessStringMatcher(self._expectation_type)
 
 
 class _ErrorMessageResolver(ErrorMessageResolver):

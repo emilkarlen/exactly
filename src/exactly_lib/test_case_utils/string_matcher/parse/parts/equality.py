@@ -19,14 +19,15 @@ from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
 from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.test_case_utils.string_matcher.sdvs import StringMatcherSdvFromParts2
+from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase
+from exactly_lib.test_case_utils.string_matcher.sdvs import string_matcher_sdv_from_parts_2
 from exactly_lib.type_system.data.string_or_path_ddvs import StringOrPath, StringOrPathDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.impls import combinator_matchers
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher, StringMatcherDdv
 from exactly_lib.util import file_utils
 from exactly_lib.util.description_tree import details, renderers
@@ -68,7 +69,7 @@ def value_sdv(expectation_type: ExpectationType,
             _validator_of_expected(expected_contents_ddv),
         )
 
-    return StringMatcherSdvFromParts2(expected_contents.references, get_ddv)
+    return string_matcher_sdv_from_parts_2(expected_contents.references, get_ddv)
 
 
 class _ErrorMessageResolverConstructor:
@@ -88,7 +89,7 @@ class _ErrorMessageResolverConstructor:
                                      actual_info)
 
 
-class EqualityStringMatcherDdv(StringMatcherDdv):
+class EqualityStringMatcherDdv(MatcherDdv[FileToCheck]):
     def __init__(self,
                  expectation_type: ExpectationType,
                  expected_contents: StringOrPathDdv,
@@ -125,7 +126,7 @@ class EqualityStringMatcherDdv(StringMatcherDdv):
         )
 
 
-class EqualityStringMatcher(StringMatcher):
+class EqualityStringMatcher(StringMatcherImplBase):
     NAME = matcher_options.EQUALS_ARGUMENT
 
     @staticmethod

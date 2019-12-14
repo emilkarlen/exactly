@@ -20,7 +20,7 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher, \
-    StringMatcherSdvConstantTestImpl
+    string_matcher_sdv_constant_test_impl
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
@@ -239,7 +239,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         return model_construction.ModelConstructor(model_builder, environment.sds).construct()
 
 
-ARBITRARY_SDV = StringMatcherSdvConstantTestImpl(StringMatcherConstant(None))
+ARBITRARY_SDV = string_matcher_sdv_constant_test_impl(StringMatcherConstant(None))
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

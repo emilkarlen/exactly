@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSdvConstantTestImpl, \
+from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
     is_reference_to_string_matcher
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
@@ -39,7 +39,7 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
 
 SYMBOL_FOR_EMPTINESS_MATCHER = NameAndValue(
     'SYMBOL_NAME',
-    StringMatcherSdvConstantTestImpl(EmptinessStringMatcher(ExpectationType.POSITIVE))
+    string_matcher_sdv_constant_test_impl(EmptinessStringMatcher(ExpectationType.POSITIVE))
 )
 
 

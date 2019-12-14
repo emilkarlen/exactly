@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_integer_matcher, \
     property_matcher_describers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterSdv
-from exactly_lib.test_case_utils.string_matcher import delegated_matcher, matcher_options
+from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.logic_types import ExpectationType
 
@@ -20,7 +20,7 @@ def parse(expectation_type: ExpectationType,
         expectation_type,
         parse_integer_matcher.validator_for_non_negative,
     )
-    return delegated_matcher.StringMatcherSdvDelegatedToMatcher(
+    return StringMatcherSdv(
         property_matcher.PropertyMatcherSdv(
             matcher,
             _operand_from_model_sdv(),

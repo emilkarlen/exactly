@@ -3,13 +3,14 @@ from typing import Iterable, Optional
 
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.string_matcher import matcher_options
+from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
+from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.description_tree import details
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSdvConstantTestImpl, \
+from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
     is_reference_to_string_matcher
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl, \
     is_reference_to_string_transformer
@@ -46,7 +47,7 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
         initial_model = model_construction.model_of(initial_model_contents)
 
         equals_expected_matcher = NameAndValue('EQUALS_EXPECTED',
-                                               StringMatcherSdvConstantTestImpl(
+                                               string_matcher_sdv_constant_test_impl(
                                                    EqualsMatcherTestImpl(model_after_2_transformations)
                                                ))
 
@@ -106,7 +107,7 @@ class PrependStringToLinesTransformer(StringTransformerTestImplBase):
         return self.string_to_prepend + to
 
 
-class EqualsMatcherTestImpl(StringMatcher):
+class EqualsMatcherTestImpl(StringMatcherImplBase):
     def __init__(self, expected: str):
         super().__init__()
         self.expected = expected

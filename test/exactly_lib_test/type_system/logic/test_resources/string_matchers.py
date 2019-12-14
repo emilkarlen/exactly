@@ -4,15 +4,16 @@ from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherDdv
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MODEL, MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.description_tree import tree
 from exactly_lib_test.test_case_utils.description_tree.test_resources import ConstantNodeRendererTestImpl
 
 
-class StringMatcherConstant(StringMatcher):
+class StringMatcherConstant(StringMatcherImplBase):
     """
     Matcher with constant result.
 
@@ -42,7 +43,7 @@ class StringMatcherConstant(StringMatcher):
         return self._new_tb().build_result(self._result is None)
 
 
-class StringMatcherConstantTestImpl(StringMatcher):
+class StringMatcherConstantTestImpl(StringMatcherImplBase):
     """Matcher with constant result."""
 
     def __init__(self,
@@ -76,10 +77,10 @@ class StringMatcherConstantTestImpl(StringMatcher):
         return self._new_tb().build_result(self._result)
 
 
-class StringMatcherDdvFromPartsTestImpl(StringMatcherDdv):
+class MatcherDdvFromPartsTestImpl(MatcherDdv[MODEL]):
     def __init__(self,
                  structure: StructureRenderer,
-                 matcher: Callable[[Tcds], StringMatcher],
+                 matcher: Callable[[Tcds], MatcherWTraceAndNegation[MODEL]],
                  validator: DdvValidator = ddv_validation.constant_success_validator()):
         self._structure = structure
         self._validator = validator
@@ -92,5 +93,5 @@ class StringMatcherDdvFromPartsTestImpl(StringMatcherDdv):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> StringMatcher:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return self._matcher(tcds)

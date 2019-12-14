@@ -1,17 +1,23 @@
 import unittest
 from typing import Sequence
 
+from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
-from exactly_lib.util.symbol_table import singleton_symbol_table_2
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
+from exactly_lib.type_system.value_type import LogicValueType, ValueType
+from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSdvConstantTestImpl
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import assertions as sut
+from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.test_case_utils.matcher.test_resources import assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant
 from exactly_lib_test.type_system.logic.test_resources.values import FileMatcherTestImpl
 
@@ -29,14 +35,14 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             symbol_utils.container(ARBITRARY_SDV),
+                             symbol_utils.container(ARBITRARY_STRING_MATCHER_SDV),
                          )),
 
         ]
-        sdv = ARBITRARY_SDV
+        sdv = ARBITRARY_STRING_MATCHER_SDV
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.matches_string_matcher_sdv(symbols=case.value)
+                assertion_to_check = _matches_string_matcher_sdv(symbols=case.value)
                 # ACT & ASSERT #
                 assertion_to_check.apply_without_message(self, sdv)
 
@@ -48,7 +54,7 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             symbol_utils.container(ARBITRARY_SDV),
+                             symbol_utils.container(ARBITRARY_STRING_MATCHER_SDV),
                          )),
 
         ]
@@ -56,7 +62,7 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
 
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.matches_string_matcher_sdv(symbols=case.value)
+                assertion_to_check = _matches_string_matcher_sdv(symbols=case.value)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check, sdv_of_actual)
 
@@ -68,16 +74,16 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             symbol_utils.container(ARBITRARY_SDV),
+                             symbol_utils.container(ARBITRARY_STRING_MATCHER_SDV),
                          )),
 
         ]
-        sdv_of_actual = StringMatcherSdvConstantTestImpl(StringMatcherConstant(None),
-                                                         validator=None)
+        sdv_of_actual = string_matcher_sdv_constant_test_impl(StringMatcherConstant(None),
+                                                              validator=None)
 
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.matches_string_matcher_sdv(symbols=case.value)
+                assertion_to_check = _matches_string_matcher_sdv(symbols=case.value)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check, sdv_of_actual)
 
@@ -89,16 +95,16 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             symbol_utils.container(ARBITRARY_SDV),
+                             symbol_utils.container(ARBITRARY_STRING_MATCHER_SDV),
                          )),
 
         ]
-        sdv_of_actual = ARBITRARY_SDV
+        sdv_of_actual = ARBITRARY_STRING_MATCHER_SDV
 
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.matches_string_matcher_sdv(primitive_value=asrt.fail('unconditionally'),
-                                                                    symbols=case.value)
+                assertion_to_check = _matches_string_matcher_sdv(primitive_value=asrt.fail('unconditionally'),
+                                                                 symbols=case.value)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check, sdv_of_actual)
 
@@ -108,7 +114,7 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
         actual_references = [actual_reference]
         actual_sdv = arbitrary_sdv_with_references(actual_references)
 
-        assertion_to_check = sut.matches_string_matcher_sdv(references=asrt.matches_sequence([
+        assertion_to_check = _matches_string_matcher_sdv(references=asrt.matches_sequence([
             asrt.is_(actual_reference)
         ]),
         )
@@ -132,17 +138,31 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
 
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.matches_string_matcher_sdv(references=case.value)
+                assertion_to_check = _matches_string_matcher_sdv(references=case.value)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check, actual_sdv)
 
 
-ARBITRARY_SDV = StringMatcherSdvConstantTestImpl(StringMatcherConstant(None))
+ARBITRARY_STRING_MATCHER_SDV = string_matcher_sdv_constant_test_impl(StringMatcherConstant(None))
+
+
+def _matches_string_matcher_sdv(primitive_value: ValueAssertion[MatcherWTraceAndNegation] = asrt.anything_goes(),
+                                references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+                                symbols: SymbolTable = None,
+                                tcds: Tcds = fake_tcds(),
+                                ) -> ValueAssertion[LogicTypeSdv]:
+    return sut.matches_matcher_sdv(StringMatcherSdv,
+                                   LogicValueType.STRING_MATCHER,
+                                   ValueType.STRING_MATCHER,
+                                   primitive_value,
+                                   references,
+                                   symbols,
+                                   tcds)
 
 
 def arbitrary_sdv_with_references(references: Sequence[SymbolReference]) -> StringMatcherSdv:
-    return StringMatcherSdvConstantTestImpl(StringMatcherConstant(None),
-                                            references)
+    return string_matcher_sdv_constant_test_impl(StringMatcherConstant(None),
+                                                 references)
 
 
 if __name__ == '__main__':

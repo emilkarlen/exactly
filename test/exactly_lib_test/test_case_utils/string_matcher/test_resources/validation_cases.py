@@ -1,8 +1,8 @@
 from typing import Sequence
 
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
-from exactly_lib.test_case_utils.string_matcher import delegated_matcher
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.test_resources import validation
@@ -19,7 +19,7 @@ class ValidationCase:
         self._expectation = expectation
         self._symbol_context = StringMatcherSymbolContext(
             'string_matcher_symbol',
-            delegated_matcher.StringMatcherSdvDelegatedToMatcher(
+            StringMatcherSdv(
                 sdv_components.MatcherSdvFromConstantDdv(
                     matchers.MatcherDdvOfConstantMatcherTestImpl(
                         constant.MatcherWithConstantResult(True),

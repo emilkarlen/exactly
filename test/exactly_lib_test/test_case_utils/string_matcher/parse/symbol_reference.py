@@ -7,7 +7,7 @@ from exactly_lib.test_case_utils.string_matcher.emptiness_matcher import Emptine
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSdvConstantTestImpl, \
+from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
     is_reference_to_string_matcher
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
@@ -38,7 +38,7 @@ def suite() -> unittest.TestSuite:
 
 SYMBOL_FOR_EMPTINESS_MATCHER = NameAndValue(
     'SYMBOL_NAME',
-    StringMatcherSdvConstantTestImpl(EmptinessStringMatcher(ExpectationType.POSITIVE))
+    string_matcher_sdv_constant_test_impl(EmptinessStringMatcher(ExpectationType.POSITIVE))
 )
 
 

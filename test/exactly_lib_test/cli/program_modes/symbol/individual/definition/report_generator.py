@@ -117,7 +117,7 @@ class TestReferences(unittest.TestCase):
 
         referencing_symbol = NameAndValue(
             'referencing_symbol',
-            string_matcher.StringMatcherSdvConstantTestImpl(
+            string_matcher.string_matcher_sdv_constant_test_impl(
                 string_matchers.StringMatcherConstant(None),
                 [SymbolReference(referenced_symbol.name,
                                  restriction.ValueTypeRestriction(ValueType.STRING))]),

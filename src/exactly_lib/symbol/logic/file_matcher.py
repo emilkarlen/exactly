@@ -9,8 +9,6 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 class FileMatcherSdv(MatcherTypeSdv[FileMatcherModel]):
-    """ Base class for SDVs of :class:`FileMatcher`. """
-
     def __init__(self, matcher: MatcherSdv[FileMatcherModel]):
         self._matcher = matcher
 

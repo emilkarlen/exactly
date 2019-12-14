@@ -5,16 +5,17 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, SequenceStringTransformer, \
     StringTransformerDdv
 from exactly_lib.util.description_tree import renderers, details
 
 
-class StringMatcherOnTransformedFileToCheck(StringMatcher):
+class StringMatcherOnTransformedFileToCheck(StringMatcherImplBase):
     """Applies a string transformer to the file to check."""
 
     NAME = ' '.join((instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION,
@@ -76,7 +77,7 @@ class StringMatcherOnTransformedFileToCheck(StringMatcher):
         )
 
 
-class StringMatcherWithTransformationDdv(StringMatcherDdv):
+class StringMatcherWithTransformationDdv(MatcherDdv[FileToCheck]):
     def __init__(self,
                  transformer: StringTransformerDdv,
                  on_transformed: StringMatcherDdv,

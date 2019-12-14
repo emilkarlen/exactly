@@ -1,19 +1,12 @@
 import pathlib
-from abc import ABC, abstractmethod
 from contextlib import contextmanager
-from typing import Optional, Iterable
+from typing import Iterable
 
-from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
-from exactly_lib.type_system.description import trace_renderers
-from exactly_lib.type_system.description.trace_building import TraceBuilder
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherDdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, \
+    MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
-from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist, TmpDirFileSpace
 
 
@@ -117,41 +110,6 @@ class FileToCheck:
                     dst_file.write(line)
 
 
-class StringMatcher(WithCachedTreeStructureDescriptionBase,
-                    MatcherWTrace[FileToCheck],
-                    ABC):
+StringMatcher = MatcherWTraceAndNegation[FileToCheck]
 
-    def _structure(self) -> StructureRenderer:
-        return renderers.header_only(self.name)
-
-    @abstractmethod
-    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        """
-        :raises HardErrorException: In case of HARD ERROR
-        :return: None iff match
-        """
-        pass
-
-    def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
-        mb_emr = self.matches_emr(model)
-
-        tb = self._new_tb()
-
-        if mb_emr is None:
-            return tb.build_result(True)
-        else:
-            tb.details.append(
-                trace_renderers.DetailsRendererOfErrorMessageResolver(mb_emr))
-            return tb.build_result(False)
-
-    def _new_tb(self) -> TraceBuilder:
-        return TraceBuilder(self.name)
-
-
-class StringMatcherDdv(MatcherDdv[FileToCheck], ABC):
-    def structure(self) -> StructureRenderer:
-        return renderers.header_only('string-matcher TODO')
-
-    @abstractmethod
-    def value_of_any_dependency(self, tcds: Tcds) -> StringMatcher:
-        pass
+StringMatcherDdv = MatcherDdv[FileToCheck]

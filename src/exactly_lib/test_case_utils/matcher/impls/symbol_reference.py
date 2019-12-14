@@ -16,6 +16,7 @@ class MatcherReferenceSdv(MatcherSdv[MODEL]):
     _TYPE_LOOKUP = {
         ValueType.LINE_MATCHER: lookups.lookup_line_matcher,
         ValueType.FILE_MATCHER: lookups.lookup_file_matcher,
+        ValueType.STRING_MATCHER: lookups.lookup_string_matcher,
     }
 
     def __init__(self,

@@ -10,8 +10,8 @@ from exactly_lib.test_case.validation import sdv_validation as ppv, ddv_validati
 from exactly_lib.test_case_utils.line_matcher.model_construction import model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
 from exactly_lib.test_case_utils.line_matcher.trace_rendering import LineMatcherLineRenderer
-from exactly_lib.test_case_utils.string_matcher import delegated_matcher, sdvs
 from exactly_lib.test_case_utils.string_matcher import matcher_options
+from exactly_lib.test_case_utils.string_matcher import sdvs
 from exactly_lib.type_system.logic.impls import quantifier_matchers, combinator_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherDdv
@@ -57,9 +57,9 @@ def matcher_for_any_line_matches(expectation_type: ExpectationType,
         if expectation_type is ExpectationType.NEGATIVE:
             matcher = combinator_matchers.NegationDdv(matcher)
 
-        return delegated_matcher.StringMatcherDdvDelegatedToMatcher(matcher)
+        return matcher
 
-    return sdvs.StringMatcherSdvFromParts2(line_matcher_sdv.references, get_matcher)
+    return sdvs.string_matcher_sdv_from_parts_2(line_matcher_sdv.references, get_matcher)
 
 
 def matcher_for_every_line_matches(expectation_type: ExpectationType,
@@ -72,9 +72,9 @@ def matcher_for_every_line_matches(expectation_type: ExpectationType,
         if expectation_type is ExpectationType.NEGATIVE:
             matcher = combinator_matchers.NegationDdv(matcher)
 
-        return delegated_matcher.StringMatcherDdvDelegatedToMatcher(matcher)
+        return matcher
 
-    return sdvs.StringMatcherSdvFromParts2(line_matcher_sdv.references, get_matcher)
+    return sdvs.string_matcher_sdv_from_parts_2(line_matcher_sdv.references, get_matcher)
 
 
 def _validator_for_line_matcher(line_matcher_sdv: LineMatcherSdv) -> ppv.SdvValidator:

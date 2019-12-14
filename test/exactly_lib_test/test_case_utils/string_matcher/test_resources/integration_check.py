@@ -10,7 +10,7 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherDdv, FileToCheck
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
@@ -81,7 +81,7 @@ class Executor:
 
         matcher_ddv = sdv.resolve(self.arrangement.symbols)
 
-        assert isinstance(matcher_ddv, StringMatcherDdv)
+        assert isinstance(matcher_ddv, MatcherDdv)
 
         with tcds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
@@ -148,7 +148,7 @@ class Executor:
                                                       'structure of DDV')
 
         matcher = matcher_ddv.value_of_any_dependency(tcds)
-        assert isinstance(matcher, StringMatcher)
+        assert isinstance(matcher, MatcherWTraceAndNegation)
 
         structure_tree_of_primitive = matcher.structure().render()
 

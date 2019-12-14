@@ -1,4 +1,4 @@
-from typing import Generic, Callable
+from typing import Generic
 
 from exactly_lib.symbol.logic.matcher import MODEL
 from exactly_lib.test_case.validation import ddv_validation
@@ -14,25 +14,6 @@ class MatcherDdvFromConstantPrimitive(Generic[MODEL], MatcherDdv[MODEL]):
                  validator: DdvValidator = ddv_validation.constant_success_validator(),
                  ):
         self._primitive_value = primitive_value
-        self._validator = validator
-
-    def structure(self) -> StructureRenderer:
-        return self._primitive_value.structure()
-
-    @property
-    def validator(self) -> DdvValidator:
-        return self._validator
-
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherDdv[MODEL]:
-        return self._primitive_value
-
-
-class MatcherDdvFromParts(Generic[MODEL], MatcherDdv[MODEL]):
-    def __init__(self,
-                 make_primitive: Callable[[Tcds], MatcherWTraceAndNegation[MODEL]],
-                 validator: DdvValidator = ddv_validation.constant_success_validator(),
-                 ):
-        self._make_primitive = make_primitive
         self._validator = validator
 
     def structure(self) -> StructureRenderer:

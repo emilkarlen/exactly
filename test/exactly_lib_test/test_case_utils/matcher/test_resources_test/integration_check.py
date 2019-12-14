@@ -107,7 +107,7 @@ class TestSymbolReferences(TestCaseBase):
                                                                                         symbol_value)
         expectation = asrt_sym.equals_symbol_table(expected_symbol_table)
 
-        sdv_that_checks_symbols = _MatcherSdvThatAssertsThatSymbolsAreAsExpected(self, expectation)
+        sdv_that_checks_symbols = MatcherSdvThatAssertsThatSymbolsAreAsExpected(self, expectation)
 
         self._check_line_matcher_type(
             utils.single_line_source(),
@@ -422,7 +422,7 @@ class _MatcherTypeSdvTestImpl(MatcherTypeSdv[int]):
         return self._matcher.resolve(symbols)
 
 
-class _MatcherSdvThatAssertsThatSymbolsAreAsExpected(MatcherSdv[int]):
+class MatcherSdvThatAssertsThatSymbolsAreAsExpected(MatcherSdv[int]):
     def __init__(self,
                  put: unittest.TestCase,
                  expectation: ValueAssertion[SymbolTable]):

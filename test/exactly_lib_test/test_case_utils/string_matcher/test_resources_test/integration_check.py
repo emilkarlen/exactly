@@ -2,7 +2,7 @@
 Test of test-infrastructure: instruction_check.
 """
 import unittest
-from typing import Sequence, Optional, List
+from typing import Sequence, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
@@ -13,24 +13,26 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherDdv, FileToCheck
-from exactly_lib.type_system.logic.string_matcher_ddvs import StringMatcherConstantDdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSdvConstantTestImpl, \
-    StringMatcherSdvFromPartsTestImpl
+from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
+    matcher_sdv_from_parts_test_impl
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
+from exactly_lib_test.test_case_utils.matcher.test_resources_test.integration_check import \
+    MatcherSdvThatAssertsThatSymbolsAreAsExpected
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check as sut
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder, empty_model
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.string_matchers import StringMatcherTestImplBase
@@ -140,7 +142,7 @@ class TestSymbolReferences(TestCaseBase):
                                                                                         symbol_value)
         expectation = asrt_sym.equals_symbol_table(expected_symbol_table)
 
-        sdv_that_checks_symbols = StringMatcherSdvThatAssertsThatSymbolsAreAsExpected(self, expectation)
+        sdv_that_checks_symbols = sdv_that_asserts_that_symbols_are_as_expected(self, expectation)
 
         self._check(
             ConstantParser(sdv_that_checks_symbols),
@@ -205,7 +207,7 @@ class TestMisc(TestCaseBase):
         cases = [
             NameAndValue(
                 'different header',
-                StringMatcherSdvFromPartsTestImpl(
+                matcher_sdv_from_parts_test_impl(
                     renderers.header_only('header of ddv'),
                     (),
                     lambda x: StringMatcherConstantTestImpl(True,
@@ -214,7 +216,7 @@ class TestMisc(TestCaseBase):
             ),
             NameAndValue(
                 'different number of children',
-                StringMatcherSdvFromPartsTestImpl(
+                matcher_sdv_from_parts_test_impl(
                     renderers.header_only(header),
                     (),
                     lambda x: StringMatcherConstantTestImpl(True,
@@ -307,7 +309,7 @@ def string_matcher_that_raises_test_error_if_cwd_is_is_not_test_root() -> String
         return StringMatcherThatRaisesTestErrorIfCwdIsIsNotTestRoot(environment.tcds,
                                                                     _ARBITRARY_STRUCTURE_RENDERER)
 
-    return StringMatcherSdvFromPartsTestImpl(
+    return matcher_sdv_from_parts_test_impl(
         _ARBITRARY_STRUCTURE_RENDERER,
         (),
         get_matcher,
@@ -322,14 +324,14 @@ def string_matcher_that_asserts_models_is_expected(put: unittest.TestCase,
         return StringMatcherThatAssertsModelsIsExpected(put, expected_model_string_contents,
                                                         _ARBITRARY_STRUCTURE_RENDERER)
 
-    return StringMatcherSdvFromPartsTestImpl(
+    return matcher_sdv_from_parts_test_impl(
         _ARBITRARY_STRUCTURE_RENDERER,
         (),
         get_matcher,
     )
 
 
-class _StringMatcherThatReportsHardError(StringMatcher):
+class _StringMatcherThatReportsHardError(StringMatcherImplBase):
     @property
     def name(self) -> str:
         return 'unconditional HARD ERROR'
@@ -349,27 +351,15 @@ def parser_for_constant(resolved_value: StringMatcher = StringMatcherConstant(No
                         references: Sequence[SymbolReference] = (),
                         ) -> Parser[StringMatcherSdv]:
     return ConstantParser(
-        StringMatcherSdvConstantTestImpl(
+        string_matcher_sdv_constant_test_impl(
             resolved_value=resolved_value,
             references=references,
         ))
 
 
-class StringMatcherSdvThatAssertsThatSymbolsAreAsExpected(StringMatcherSdv):
-    def __init__(self,
-                 put: unittest.TestCase,
-                 expectation: ValueAssertion[SymbolTable]):
-        self._put = put
-        self._expectation = expectation
-
-    @property
-    def references(self) -> List[SymbolReference]:
-        return []
-
-    def resolve(self, symbols: SymbolTable) -> StringMatcherDdv:
-        self._expectation.apply_with_message(self._put, symbols, 'symbols given to resolve')
-
-        return StringMatcherConstantDdv(StringMatcherConstant(None))
+def sdv_that_asserts_that_symbols_are_as_expected(put: unittest.TestCase,
+                                                  expectation: ValueAssertion[SymbolTable]) -> StringMatcherSdv:
+    return StringMatcherSdv(MatcherSdvThatAssertsThatSymbolsAreAsExpected(put, expectation))
 
 
 class ValidatorThatRaisesTestErrorIfCwdIsIsNotTestRootAtPostSdsSdvValidation(DdvValidator):
