@@ -20,7 +20,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import tcds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import tcds_with_act_as_curr_dir, TcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
@@ -34,12 +34,14 @@ class Arrangement:
                  non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  act_result: Optional[ActResultProducer] = None,
+                 post_population_action: TcdsAction = TcdsAction(),
                  ):
         self.symbols = symbol_table_from_none_or_value(symbols)
         self.hds_contents = hds_contents
         self.non_hds_contents = non_hds_contents
         self.tcds_contents = tcds_contents
         self.act_result = act_result
+        self.post_population_action = post_population_action
 
 
 class Expectation:
@@ -161,6 +163,7 @@ class _Checker(Generic[MODEL]):
                 non_hds_contents=self.arrangement.non_hds_contents,
                 tcds_contents=self.arrangement.tcds_contents,
                 symbols=self.arrangement.symbols) as path_resolving_environment:
+            self.arrangement.post_population_action.apply(path_resolving_environment)
             self.hds = path_resolving_environment.hds
 
             self._check_with_hds(matcher_ddv)
