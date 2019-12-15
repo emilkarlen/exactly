@@ -236,7 +236,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
 
     def _new_model(self, environment: InstructionEnvironmentForPostSdsStep) -> FileToCheck:
         model_builder = model_construction.model_of(self.actual_model_contents)
-        return model_construction.ModelConstructor(model_builder, environment.sds).construct()
+        return model_construction.ModelFromBuilder(model_builder, environment.sds).construct()
 
 
 ARBITRARY_SDV = string_matcher_sdv_constant_test_impl(StringMatcherConstant(None))

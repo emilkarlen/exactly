@@ -1,18 +1,18 @@
 import unittest
-from typing import Optional
 
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import SB
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
     TestCaseBase
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_arbitrary_matching_failure, \
-    is_matching_success, Expectation
+    is_matching_success
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -27,7 +27,7 @@ class Case:
                  name: str,
                  source: ParseSource,
                  source_assertion: ValueAssertion[ParseSource],
-                 main_result_assertion: ValueAssertion[Optional[ErrorMessageResolver]],
+                 main_result_assertion: ValueAssertion[MatchingResult],
                  ):
         self.name = name
         self.source = source
@@ -44,7 +44,7 @@ class TestLineBreaksWithEmptyActualFile(TestCaseBase):
         cases = [
             Case('CONTENTS-MATCHER on separate line',
                  source=
-                 self.configuration.source_for_lines(
+                 test_configuration.source_for_lines(
                      sb.format_lines(['',
                                       '{empty}'])),
                  source_assertion=
@@ -54,7 +54,7 @@ class TestLineBreaksWithEmptyActualFile(TestCaseBase):
                  ),
             Case('transformation and CONTENTS-MATCHER on separate line',
                  source=
-                 self.configuration.source_for_lines(
+                 test_configuration.source_for_lines(
                      sb.format_lines(['',
                                       '{constant_transformation_arguments}',
                                       '{empty}'])),
@@ -65,7 +65,7 @@ class TestLineBreaksWithEmptyActualFile(TestCaseBase):
                  ),
             Case('negation and CONTENTS-MATCHER on separate line',
                  source=
-                 self.configuration.source_for_lines(
+                 test_configuration.source_for_lines(
                      sb.format_lines(['',
                                       '{not}',
                                       '{empty}'])),
@@ -79,10 +79,10 @@ class TestLineBreaksWithEmptyActualFile(TestCaseBase):
             with self.subTest(case.name):
                 self._check(
                     case.source,
-                    model_construction.empty_model(),
-                    self.configuration.arrangement_for_contents(
-                        post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-                    Expectation(
+                    integration_check.empty_model(),
+                    integration_check.Arrangement(
+                        post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
+                    integration_check.Expectation(
                         main_result=case.main_result_assertion,
                         source=case.source_assertion
                     ),

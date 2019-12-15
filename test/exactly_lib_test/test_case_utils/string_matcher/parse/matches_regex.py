@@ -3,21 +3,22 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.string_matcher import matcher_options
+from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements, \
     here_document_as_elements
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration as tc
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration as tc, \
+    test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args, \
     FULL_MATCH_ARGUMENT
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES, TRANSFORMER_OPTION_ALTERNATIVES_ELEMENTS
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
-from exactly_lib_test.test_case_utils.test_resources.validation import is_arbitrary_validation_failure
+from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__w_any_msg
 
 
 def suite() -> unittest.TestSuite:
@@ -43,15 +44,15 @@ class StringTransformerShouldBeValidated(tc.TestWithNegationArgumentBase):
         for case in failing_validation_cases():
             with self.subTest(validation_case=case.name):
                 self._check(
-                    self.configuration.source_for(
+                    test_configuration.source_for(
                         args('{transformer_option} {maybe_not} {matches} .',
                              transformer_option=case.value.transformer_arguments_string,
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-                    model_construction.empty_model(),
-                    self.configuration.arrangement_for_contents(
+                    integration_check.empty_model(),
+                    integration_check.Arrangement(
                         symbols=case.value.symbol_context.symbol_table
                     ),
-                    expectation(
+                    integration_check.Expectation(
                         validation=case.value.expectation,
                         symbol_references=case.value.symbol_context.references_assertion
                     ),
@@ -65,26 +66,26 @@ class ValidationShouldFailPreWhenHardCodedRegexIsInvalid(tc.TestWithNegationArgu
                 with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option,
                                   maybe_full_match=maybe_full_match):
                     self._check_with_source_variants(
-                        self.configuration.arguments_for(
+                        test_configuration.arguments_for(
                             args('{maybe_with_transformer_option} {maybe_not} {matches} {maybe_full_match} **',
                                  maybe_with_transformer_option=maybe_with_transformer_option,
                                  maybe_full_match=maybe_full_match,
                                  maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-                        model_construction.empty_model(),
-                        self.configuration.arrangement_for_contents(),
-                        Expectation(
-                            validation_pre_sds=is_arbitrary_validation_failure())
+                        integration_check.empty_model(),
+                        integration_check.Arrangement(),
+                        integration_check.Expectation(
+                            validation=pre_sds_validation_fails__w_any_msg())
                     )
 
 
 class ParseShouldFailWhenRegexArgumentIsMissing(tc.TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        parser = self.configuration.new_parser()
+        parser = sut.string_matcher_parser()
         for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
             for maybe_full_match in FULL_MATCH_OPTION_ALTERNATIVES:
                 with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option,
                                   maybe_full_match=maybe_full_match):
-                    source = self.configuration.source_for(
+                    source = test_configuration.source_for(
                         args('{maybe_with_transformer_option} {maybe_not} {matches} {maybe_full_match}',
                              maybe_with_transformer_option=maybe_with_transformer_option,
                              maybe_full_match=maybe_full_match,
@@ -102,14 +103,14 @@ class FullMatchSingleLineWoNewline(tc.TestWithNegationArgumentBase):
                 with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option,
                                   maybe_full_match=maybe_full_match):
                     self._check_with_source_variants(
-                        self.configuration.arguments_for(
+                        test_configuration.arguments_for(
                             args('{maybe_with_transformer_option} {maybe_not} {matches} {maybe_full_match} 1.3',
                                  maybe_with_transformer_option=maybe_with_transformer_option,
                                  maybe_full_match=maybe_full_match,
                                  maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-                        model_construction.model_of(actual_contents),
-                        self.configuration.arrangement_for_contents(),
-                        Expectation(
+                        integration_check.model_of(actual_contents),
+                        integration_check.Arrangement(),
+                        integration_check.Expectation(
                             main_result=maybe_not.pass__if_positive__fail__if_negative
                         ),
                     )
@@ -121,13 +122,13 @@ class PartialMatchSingleLineWoNewline(tc.TestWithNegationArgumentBase):
         for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
             with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
                 self._check_with_source_variants(
-                    self.configuration.arguments_for(
+                    test_configuration.arguments_for(
                         args('{maybe_with_transformer_option} {maybe_not} {matches} 1.3',
                              maybe_with_transformer_option=maybe_with_transformer_option,
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-                    model_construction.model_of(actual_contents),
-                    self.configuration.arrangement_for_contents(),
-                    Expectation(
+                    integration_check.model_of(actual_contents),
+                    integration_check.Arrangement(),
+                    integration_check.Expectation(
                         main_result=maybe_not.pass__if_positive__fail__if_negative
                     ),
                 )
@@ -139,13 +140,13 @@ class FullMatchDoNotAcceptPartialMatchSingleLineWoNewline(tc.TestWithNegationArg
         for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
             with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
                 self._check_with_source_variants(
-                    self.configuration.arguments_for(
+                    test_configuration.arguments_for(
                         args('{maybe_with_transformer_option} {maybe_not} {matches} {full_match} 1.3',
                              maybe_with_transformer_option=maybe_with_transformer_option,
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-                    model_construction.model_of(actual_contents),
-                    self.configuration.arrangement_for_contents(),
-                    Expectation(
+                    integration_check.model_of(actual_contents),
+                    integration_check.Arrangement(),
+                    integration_check.Expectation(
                         main_result=maybe_not.fail__if_positive__pass_if_negative
                     ),
                 )
@@ -162,9 +163,9 @@ class FullMatchSingleLineWNewline(tc.TestWithNegationArgumentBase):
                                                      ).followed_by(here_document_as_elements(['1.3']))
                 self._check_with_source_variants(
                     argument_elements.as_arguments,
-                    model_construction.model_of(actual_contents),
-                    self.configuration.arrangement_for_contents(),
-                    Expectation(
+                    integration_check.model_of(actual_contents),
+                    integration_check.Arrangement(),
+                    integration_check.Expectation(
                         main_result=maybe_not.pass__if_positive__fail__if_negative
                     ),
                 )
@@ -186,9 +187,9 @@ class FullMatchTwoLinesWNewline(tc.TestWithNegationArgumentBase):
                                                                                                   '4.*6']))
                     self._check_with_source_variants(
                         argument_elements.as_arguments,
-                        model_construction.model_of(actual_contents),
-                        self.configuration.arrangement_for_contents(),
-                        Expectation(
+                        integration_check.model_of(actual_contents),
+                        integration_check.Arrangement(),
+                        integration_check.Expectation(
                             main_result=maybe_not.pass__if_positive__fail__if_negative
                         ),
                     )
@@ -219,9 +220,9 @@ class PartialMatchAcceptsExtraLinesBeforeOrAfterMatchingLines(tc.TestWithNegatio
                                                          ).followed_by(here_document_as_elements(regex_lines))
                     self._check_with_source_variants(
                         argument_elements.as_arguments,
-                        model_construction.model_of(actual_contents),
-                        self.configuration.arrangement_for_contents(),
-                        Expectation(
+                        integration_check.model_of(actual_contents),
+                        integration_check.Arrangement(),
+                        integration_check.Expectation(
                             main_result=maybe_not.pass__if_positive__fail__if_negative
                         ),
                     )
@@ -243,9 +244,9 @@ class FullMatchDoNotAcceptExtraLineAfterMatchingLines(tc.TestWithNegationArgumen
                                                      ).followed_by(here_document_as_elements(regex_lines))
                 self._check_with_source_variants(
                     argument_elements.as_arguments,
-                    model_construction.model_of(actual_contents),
-                    self.configuration.arrangement_for_contents(),
-                    Expectation(
+                    integration_check.model_of(actual_contents),
+                    integration_check.Arrangement(),
+                    integration_check.Expectation(
                         main_result=maybe_not.fail__if_positive__pass_if_negative
                     ),
                 )

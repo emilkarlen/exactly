@@ -1,17 +1,17 @@
 import unittest
+from typing import Sequence
 
-from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building, test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
-    TestConfigurationForMatcher
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, model_construction
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Arrangement, \
+    Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -80,31 +80,6 @@ def args_constructor_for(line_matcher: str,
 
 
 class TestCaseBase(unittest.TestCase):
-    def __init__(self):
-        super().__init__()
-        self.configuration = TestConfigurationForMatcher()
-
-    def shortDescription(self):
-        return str(type(self.configuration))
-
-    def _check(
-            self,
-            source: ParseSource,
-            model: model_construction.ModelBuilder,
-            arrangement: integration_check.ArrangementPostAct,
-            expectation: Expectation):
-        integration_check.check(
-            self,
-            self.configuration.new_parser(),
-            source,
-            model=
-            model,
-            arrangement=
-            arrangement,
-            expectation=
-            expectation
-        )
-
     def _check_variants_with_expectation_type(
             self,
             args_variant_constructor: InstructionArgumentsConstructorForExpTypeAndQuantifier,
@@ -112,7 +87,7 @@ class TestCaseBase(unittest.TestCase):
             quantifier: Quantifier,
             actual_file_contents: str,
             symbols: SymbolTable = None,
-            expected_symbol_usages: ValueAssertion = asrt.is_empty_sequence):
+            expected_symbol_usages: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence):
         for expectation_type in ExpectationType:
             etc = expectation_type_config__non_is_success(expectation_type)
             with self.subTest(expectation_type=expectation_type,
@@ -120,22 +95,21 @@ class TestCaseBase(unittest.TestCase):
 
                 args_variant = args_variant_constructor.construct(expectation_type,
                                                                   quantifier)
-                complete_instruction_arguments = self.configuration.arguments_for(args_variant)
+                complete_instruction_arguments = test_configuration.arguments_for(args_variant)
 
                 for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
                         self,
                         complete_instruction_arguments):
                     integration_check.check(
                         self,
-                        self.configuration.new_parser(),
                         source,
-                        model_construction.model_of(actual_file_contents),
-                        arrangement=
-                        self.configuration.arrangement_for_contents(
-                            post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
-                            symbols=symbols),
-                        expectation=
+                        integration_check.model_of(actual_file_contents),
+                        Arrangement(
+                            post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
+                            symbols=symbols,
+                        ),
                         Expectation(
                             main_result=etc.main_result(expected_result_of_positive_test),
-                            symbol_usages=expected_symbol_usages)
+                            symbol_references=expected_symbol_usages,
+                        ),
                     )

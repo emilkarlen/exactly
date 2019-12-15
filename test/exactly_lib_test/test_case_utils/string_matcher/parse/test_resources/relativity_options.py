@@ -35,7 +35,6 @@ class TestWithRelativityOptionAndNegationBase(TestCaseBase):
 
     def shortDescription(self):
         return (str(type(self)) + ' /\n' +
-                str(type(self.configuration)) + ' /\n' +
                 str(type(self.rel_opt)) + ' /\n' +
                 str(self.not_opt)
                 )

@@ -14,10 +14,9 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resour
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     TestCaseBase
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -124,11 +123,11 @@ class _StringTransformerShouldBeValidated(TestCaseBase):
                                 operand='0'
                             ).construct(expectation_type)
                         ),
-                        model_construction.empty_model(),
-                        self.configuration.arrangement_for_contents(
+                        integration_check.empty_model(),
+                        integration_check.Arrangement(
                             symbols=case.value.symbol_context.symbol_table
                         ),
-                        expectation(
+                        integration_check.Expectation(
                             validation=case.value.expectation,
                             symbol_references=case.value.symbol_context.references_assertion
                         ),

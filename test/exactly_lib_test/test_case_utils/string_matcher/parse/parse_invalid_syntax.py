@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib_test.section_document.element_parsers.test_resources.exception_assertions import \
     assert_is_single_instruction_invalid_argument_exception
@@ -31,10 +32,10 @@ class ParseShouldFailWhenActualIsFollowedByIllegalOptionOrString(test_configurat
             NameAndValue('illegal argument',
                          'this-is-an-illegal-argument'),
         ]
-        parser = self.configuration.new_parser()
+        parser = sut.string_matcher_parser()
         for case in cases:
             with self.subTest(case_name=case.name):
-                source = self.configuration.source_for(
+                source = test_configuration.source_for(
                     args('{illegal_argument} {maybe_not} {empty}',
                          illegal_argument=case.value,
                          maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
@@ -50,10 +51,10 @@ class ParseShouldFailWhenActualIsFollowedByIllegalOptionOrString(test_configurat
 
 class ParseShouldFailWhenCheckIsMissing(test_configuration.TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        parser = self.configuration.new_parser()
+        parser = sut.string_matcher_parser()
         for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
             with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
-                source = self.configuration.source_for(
+                source = test_configuration.source_for(
                     args('{maybe_with_transformer_option} {maybe_not}',
                          maybe_with_transformer_option=maybe_with_transformer_option,
                          maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
@@ -73,12 +74,12 @@ class ParseShouldFailWhenCheckIsIllegal(test_configuration.TestWithNegationArgum
             NameAndValue('illegal option',
                          'this-is-an-illegal-argument'),
         ]
-        parser = self.configuration.new_parser()
+        parser = sut.string_matcher_parser()
         for case in cases:
             for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
                 with self.subTest(illegal_check=case.name,
                                   maybe_with_transformer_option=maybe_with_transformer_option):
-                    source = self.configuration.source_for(
+                    source = test_configuration.source_for(
                         args('{maybe_with_transformer_option} {maybe_not} {illegal_check}',
                              maybe_with_transformer_option=maybe_with_transformer_option,
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative,

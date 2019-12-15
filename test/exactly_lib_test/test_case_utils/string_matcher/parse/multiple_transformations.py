@@ -11,15 +11,15 @@ from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.description_tree import details
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
-    is_reference_to_string_matcher
+    is_reference_to_string_matcher__ref
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl, \
-    is_reference_to_string_transformer
+    is_reference_to_string_transformer__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration as tc
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration as tc, \
+    test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as str_trans_syntax
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -44,7 +44,7 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
                                                  string_to_prepend,
                                                  initial_model_contents])
 
-        initial_model = model_construction.model_of(initial_model_contents)
+        initial_model = integration_check.model_of(initial_model_contents)
 
         equals_expected_matcher = NameAndValue('EQUALS_EXPECTED',
                                                string_matcher_sdv_constant_test_impl(
@@ -77,22 +77,22 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
             prepend_and_equals_expected_matcher,
         ])
         expected_symbol_references = asrt.matches_sequence([
-            is_reference_to_string_transformer(prepend_transformer_symbol.name),
-            is_reference_to_string_matcher(prepend_and_equals_expected_matcher.name),
+            is_reference_to_string_transformer__ref(prepend_transformer_symbol.name),
+            is_reference_to_string_matcher__ref(prepend_and_equals_expected_matcher.name),
         ])
 
         self._check_with_source_variants(
-            self.configuration.arguments_for(
+            test_configuration.arguments_for(
                 args('{prepend_trans_arg} {maybe_not} {prepend_and_equals_expected_matcher}',
                      prepend_trans_arg=prepend_trans_arg,
                      maybe_not=maybe_not.nothing__if_positive__not_option__if_negative,
                      prepend_and_equals_expected_matcher=prepend_and_equals_expected_matcher.name)),
             initial_model,
-            self.configuration.arrangement_for_contents(
+            integration_check.Arrangement(
                 symbols=symbols),
-            Expectation(
+            integration_check.Expectation(
                 main_result=maybe_not.pass__if_positive__fail__if_negative,
-                symbol_usages=expected_symbol_references),
+                symbol_references=expected_symbol_references),
         )
 
 

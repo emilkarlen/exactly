@@ -29,12 +29,12 @@ from exactly_lib_test.util.description_tree.test_resources import described_tree
 
 class Arrangement:
     def __init__(self,
-                 symbols: Optional[SymbolTable] = None,
+                 tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                  non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
-                 tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  act_result: Optional[ActResultProducer] = None,
                  post_population_action: TcdsAction = TcdsAction(),
+                 symbols: Optional[SymbolTable] = None,
                  ):
         self.symbols = symbol_table_from_none_or_value(symbols)
         self.hds_contents = hds_contents

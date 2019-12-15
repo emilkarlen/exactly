@@ -14,8 +14,8 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import contents_transformation
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import contents_transformation, \
+    test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
@@ -24,13 +24,12 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.relati
     TestWithRelativityOptionAndNegationBase
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
     TestWithNegationArgumentBase
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File
@@ -84,13 +83,13 @@ _TRANSFORMER_SYMBOL_NAME = 'the_transformer'
 class _ErrorWhenExpectedFileDoesNotExist(TestWithRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_with_source_variants(
-            self.configuration.arguments_for(
+            test_configuration.arguments_for(
                 args('{maybe_not} {equals} {file_option} {relativity_option} non-existing-file.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_argument)),
-            model_construction.empty_model(),
-            ArrangementPostAct(
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
+            integration_check.empty_model(),
+            integration_check.Arrangement(
+                post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             expectation_that_file_for_expected_contents_is_invalid(self.rel_opt),
@@ -100,15 +99,15 @@ class _ErrorWhenExpectedFileDoesNotExist(TestWithRelativityOptionAndNegationBase
 class _ErrorWhenExpectedFileIsADirectory(TestWithRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_with_source_variants(
-            self.configuration.arguments_for(
+            test_configuration.arguments_for(
                 args('{maybe_not} {equals} {file_option} {relativity_option} dir',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_argument)),
-            model_construction.empty_model(),
-            ArrangementPostAct(
+            integration_check.empty_model(),
+            integration_check.Arrangement(
                 tcds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('dir')])),
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
+                post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             expectation_that_file_for_expected_contents_is_invalid(self.rel_opt),
@@ -118,20 +117,20 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithRelativityOptionAndNegationBase
 class _ContentsDiffer(TestWithRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_with_source_variants(
-            self.configuration.arguments_for(
+            test_configuration.arguments_for(
                 args('{maybe_not} {equals} {file_option} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_argument)),
-            model_construction.model_of('actual'),
-            self.configuration.arrangement_for_expected(
+            integration_check.model_of('actual'),
+            integration_check.Arrangement(
                 self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
+                post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
-            Expectation(
+            integration_check.Expectation(
                 main_result=self.not_opt.fail__if_positive__pass_if_negative,
-                symbol_usages=self.rel_opt.symbols.usages_expectation(),
+                symbol_references=self.rel_opt.symbols.usages_expectation(),
             ),
         )
 
@@ -139,20 +138,20 @@ class _ContentsDiffer(TestWithRelativityOptionAndNegationBase):
 class _ContentsEquals(TestWithRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_with_source_variants(
-            self.configuration.arguments_for(
+            test_configuration.arguments_for(
                 args('{maybe_not} {equals} {file_option} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_argument)),
-            model_construction.model_of('expected'),
-            self.configuration.arrangement_for_expected(
+            integration_check.model_of('expected'),
+            integration_check.Arrangement(
                 self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
+                post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
-            Expectation(
+            integration_check.Expectation(
                 main_result=self.not_opt.pass__if_positive__fail__if_negative,
-                symbol_usages=self.rel_opt.symbols.usages_expectation(),
+                symbol_references=self.rel_opt.symbols.usages_expectation(),
             ),
         )
 
@@ -160,15 +159,15 @@ class _ContentsEquals(TestWithRelativityOptionAndNegationBase):
 class _ContentsEqualsAHereDocument(TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         self._check(
-            self.configuration.source_for(
+            test_configuration.source_for(
                 args('{maybe_not} {equals} <<EOF',
                      maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
                 ['expected content line',
                  'EOF']),
-            model_construction.model_of(lines_content(['expected content line'])),
-            self.configuration.arrangement_for_contents(
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(
+            integration_check.model_of(lines_content(['expected content line'])),
+            integration_check.Arrangement(
+                post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
+            integration_check.Expectation(
                 main_result=maybe_not.pass__if_positive__fail__if_negative,
                 source=asrt_source.is_at_end_of_line(3)
             ),
@@ -179,15 +178,15 @@ class _ContentsEqualsAString(TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         expected_contents = 'expected contents'
         self._check_with_source_variants(
-            self.configuration.arguments_for(
+            test_configuration.arguments_for(
                 args('{maybe_not} {equals} {expected_contents}',
                      expected_contents=surrounded_by_hard_quotes_str(expected_contents),
                      maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
             ),
-            model_construction.model_of(expected_contents),
-            self.configuration.arrangement_for_contents(
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(
+            integration_check.model_of(expected_contents),
+            integration_check.Arrangement(
+                post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
+            integration_check.Expectation(
                 main_result=maybe_not.pass__if_positive__fail__if_negative
             ),
         )
@@ -202,21 +201,21 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithNegationArgumentB
 
         symbol = NameAndValue('symbol_name', 'the symbol value')
         self._check(
-            self.configuration.source_for(
+            test_configuration.source_for(
                 args('{maybe_not} {equals} <<EOF',
                      maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
                 [expected_content(symbol_reference_syntax_for_name(symbol.name)),
                  'EOF',
                  'following line']),
-            model_construction.model_of(lines_content([expected_content(symbol.value)])),
-            self.configuration.arrangement_for_contents(
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
+            integration_check.model_of(lines_content([expected_content(symbol.value)])),
+            integration_check.Arrangement(
+                post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=SymbolTable({
                     symbol.name: data_symbol_utils.string_constant_container(symbol.value),
                 })),
-            Expectation(
+            integration_check.Expectation(
                 main_result=maybe_not.pass__if_positive__fail__if_negative,
-                symbol_usages=equals_symbol_references([
+                symbol_references=equals_symbol_references([
                     SymbolReference(symbol.name, is_any_data_type())
                 ]),
                 source=asrt_source.is_at_end_of_line(3)
@@ -227,16 +226,16 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithNegationArgumentB
 class _ContentsDoNotEqualAHereDocument(TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         self._check(
-            self.configuration.source_for(
+            test_configuration.source_for(
                 args('{maybe_not} {equals} <<EOF',
                      maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
                 ['expected content line',
                  'EOF',
                  'the following line']),
-            model_construction.model_of(lines_content(['actual contents that is not equal to expected contents'])),
-            self.configuration.arrangement_for_contents(
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(
+            integration_check.model_of(lines_content(['actual contents that is not equal to expected contents'])),
+            integration_check.Arrangement(
+                post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
+            integration_check.Expectation(
                 main_result=maybe_not.fail__if_positive__pass_if_negative,
                 source=asrt_source.is_at_end_of_line(3)
             ),
@@ -267,24 +266,24 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
             self.rel_opt.symbols.usage_expectation_assertions()
         )
         self._check_with_source_variants(
-            self.configuration.arguments_for(
+            test_configuration.arguments_for(
                 args(
                     '{transform_option} {transformer} {maybe_not} {equals} '
                     '{file_option} {relativity_option} expected.txt',
                     transformer=named_transformer.name,
                     maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                     relativity_option=self.rel_opt.option_argument)),
-            model_construction.model_of(contents_generator.original),
-            self.configuration.arrangement_for_contents(
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(DirContents([
+            integration_check.model_of(contents_generator.original),
+            integration_check.Arrangement(
+                tcds_contents=self.rel_opt.populator_for_relativity_option_root(DirContents([
                     File('expected.txt', contents_generator.transformed)
                 ])),
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
+                post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=symbols,
             ),
-            Expectation(
+            integration_check.Expectation(
                 main_result=self.not_opt.pass__if_positive__fail__if_negative,
-                symbol_usages=expected_symbol_usages,
+                symbol_references=expected_symbol_usages,
             ),
         )
 
@@ -295,17 +294,17 @@ class _StringTransformerShouldBeValidated(TestWithNegationArgumentBase):
             expected_contents = 'expected contents'
             with self.subTest(validation_case=case.name):
                 self._check(
-                    self.configuration.source_for(
+                    test_configuration.source_for(
                         args('{transformer_option} {maybe_not} {equals} {expected_contents}',
                              transformer_option=case.value.transformer_arguments_string,
                              expected_contents=surrounded_by_hard_quotes_str(expected_contents),
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
                     ),
-                    model_construction.model_of(expected_contents),
-                    self.configuration.arrangement_for_contents(
+                    integration_check.model_of(expected_contents),
+                    integration_check.Arrangement(
                         symbols=case.value.symbol_context.symbol_table
                     ),
-                    expectation(
+                    integration_check.Expectation(
                         validation=case.value.expectation,
                         symbol_references=case.value.symbol_context.references_assertion
                     ),

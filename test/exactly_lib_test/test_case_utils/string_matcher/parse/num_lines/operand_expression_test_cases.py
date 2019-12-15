@@ -7,7 +7,6 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_sdv import \
     is_reference_to_symbol_in_expression
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.validation_cases import \
@@ -16,8 +15,7 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resour
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     TestCaseBase
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import expectation
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -125,13 +123,13 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
                 self._check_single_expression_type(
                     args_variant_constructor,
                     ExpectationType.POSITIVE,
-                    model_construction.arbitrary_model(),
+                    integration_check.ARBITRARY_MODEL,
                     arrangement=
-                    ArrangementPostAct(
+                    integration_check.Arrangement(
                         symbols=case.symbol_table
                     ),
                     expectation=
-                    expectation(
+                    integration_check.Expectation(
                         symbol_references=case.symbol_references_expectation,
                         validation=case.expectation,
                     )

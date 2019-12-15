@@ -10,13 +10,12 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
+from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
-    TestConfigurationForMatcher
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, model_construction
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.model_construction import ModelBuilder
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Arrangement, \
+    Expectation, ModelConstructor
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -58,52 +57,41 @@ class InstructionArgumentsVariantConstructor:
 
 
 class TestCaseBase(unittest.TestCase):
-    _CONFIGURATION = TestConfigurationForMatcher()
-
-    @property
-    def configuration(self) -> TestConfigurationForMatcher:
-        return self._CONFIGURATION
-
-    def shortDescription(self):
-        return str(type(self.configuration))
-
     def _check(
             self,
             source: ParseSource,
-            model: ModelBuilder,
-            arrangement: integration_check.ArrangementPostAct,
+            model: ModelConstructor,
+            arrangement: Arrangement,
             expectation: Expectation):
 
         integration_check.check(
             self,
-            self.configuration.new_parser(),
             source,
             model,
-            arrangement=arrangement,
-            expectation=expectation,
+            arrangement,
+            expectation,
         )
 
     def _check_single_expression_type(
             self,
             args_variant_constructor: InstructionArgumentsVariantConstructor,
             expectation_type: ExpectationType,
-            model: ModelBuilder,
-            arrangement: integration_check.ArrangementPostAct,
+            model: ModelConstructor,
+            arrangement: Arrangement,
             expectation: Expectation):
 
         args_variant = args_variant_constructor.construct(expectation_type)
-        complete_instruction_arguments = self.configuration.arguments_for(args_variant)
+        complete_instruction_arguments = test_configuration.arguments_for(args_variant)
 
         for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
                 self,
                 complete_instruction_arguments):
             integration_check.check(
                 self,
-                self.configuration.new_parser(),
                 source,
                 model,
-                arrangement=arrangement,
-                expectation=expectation,
+                arrangement,
+                expectation,
             )
 
     def _check_variants_with_expectation_type(
@@ -118,22 +106,19 @@ class TestCaseBase(unittest.TestCase):
             with self.subTest(expectation_type=expectation_type):
 
                 args_variant = args_variant_constructor.construct(expectation_type)
-                complete_instruction_arguments = self.configuration.arguments_for(args_variant)
+                complete_instruction_arguments = test_configuration.arguments_for(args_variant)
 
                 for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
                         self,
                         complete_instruction_arguments):
                     integration_check.check(
                         self,
-                        self.configuration.new_parser(),
                         source,
-                        model_construction.model_of(actual_file_contents),
-                        arrangement=
-                        self.configuration.arrangement_for_contents(
-                            post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
+                        integration_check.model_of(actual_file_contents),
+                        Arrangement(
+                            post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                             symbols=symbols),
-                        expectation=
                         Expectation(
                             main_result=etc.main_result(expected_result_of_positive_test),
-                            symbol_usages=expected_symbol_usages)
+                            symbol_references=expected_symbol_usages)
                     )
