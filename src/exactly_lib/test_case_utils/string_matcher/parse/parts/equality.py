@@ -26,8 +26,8 @@ from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
-from exactly_lib.type_system.logic.impls import combinator_matchers
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv
+from exactly_lib.type_system.logic.impls import combinator_matchers, advs
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MatcherAdv, MODEL
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcher, StringMatcherDdv
 from exactly_lib.util import file_utils
 from exactly_lib.util.description_tree import details, renderers
@@ -123,6 +123,21 @@ class EqualityStringMatcherDdv(MatcherDdv[FileToCheck]):
                                                              expected_contents)
             ),
             ddv_validators.FixedPreOrPostSdsValidator(tcds, self._validator),
+        )
+
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        expected_contents = self._expected_contents.value_of_any_dependency(tcds)
+        return advs.ConstantAdv(
+            EqualityStringMatcher(
+                self._expectation_type,
+                expected_contents,
+                _ErrorMessageResolverConstructor(
+                    self._expectation_type,
+                    parse_here_doc_or_path.ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
+                                                                 expected_contents)
+                ),
+                ddv_validators.FixedPreOrPostSdsValidator(tcds, self._validator),
+            )
         )
 
 

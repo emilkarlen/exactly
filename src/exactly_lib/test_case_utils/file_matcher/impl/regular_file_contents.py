@@ -10,7 +10,8 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase
+from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase, \
+    FileMatcherAdvImplBase
 from exactly_lib.test_case_utils.file_system_element_matcher import ErrorMessageResolverForFailingFileProperties2
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -19,7 +20,8 @@ from exactly_lib.type_system.logic import string_matcher
 from exactly_lib.type_system.logic import string_transformer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
+    MatcherWTraceAndNegation, MODEL, MatcherAdv
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
@@ -98,6 +100,16 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
         )
 
 
+class _RegularFileMatchesStringMatcherAdv(FileMatcherAdvImplBase):
+    def __init__(self,
+                 contents_matcher: string_matcher.StringMatcherAdv,
+                 ):
+        self._contents_matcher = contents_matcher
+
+    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+        return RegularFileMatchesStringMatcher(self._contents_matcher.applier(environment))
+
+
 class RegularFileMatchesStringMatcherDdv(FileMatcherDdvImplBase):
     def __init__(self,
                  contents_matcher: string_matcher.StringMatcherDdv,
@@ -115,6 +127,9 @@ class RegularFileMatchesStringMatcherDdv(FileMatcherDdvImplBase):
 
     def value_of_any_dependency(self, tcds: Tcds) -> FileMatcher:
         return RegularFileMatchesStringMatcher(self._contents_matcher.value_of_any_dependency(tcds))
+
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return _RegularFileMatchesStringMatcherAdv(self._contents_matcher.adv_of_any_dependency(tcds))
 
 
 def regular_file_matches_string_matcher_sdv(contents_matcher: StringMatcherSdv) -> FileMatcherSdv:

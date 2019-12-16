@@ -13,7 +13,8 @@ from exactly_lib.test_case_utils.matcher.object import ObjectDdv, ObjectSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
-from exactly_lib.type_system.logic.matcher_base_class import Failure, MatcherDdv
+from exactly_lib.type_system.logic.impls import advs
+from exactly_lib.type_system.logic.matcher_base_class import Failure, MatcherDdv, MatcherAdv, MODEL
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.util import logic_types
 from exactly_lib.util.description_tree import details
@@ -229,6 +230,16 @@ class ComparisonMatcherDdv(Generic[T], MatcherDdv[T]):
             self._operator,
             self._rhs.value_of_any_dependency(tcds),
             self._model_renderer,
+        )
+
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return advs.ConstantAdv(
+            ComparisonMatcher(
+                self._expectation_type,
+                self._operator,
+                self._rhs.value_of_any_dependency(tcds),
+                self._model_renderer,
+            )
         )
 
 

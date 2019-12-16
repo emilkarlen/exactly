@@ -21,8 +21,9 @@ from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MODEL, \
-    MatchingResult, Failure
+    MatchingResult, Failure, MatcherAdv
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.symbol_table import SymbolTable
@@ -542,6 +543,10 @@ class _MatcherDdvThatIsAssertionOnTcds(MatcherDdv[int]):
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[int]:
         self._assertion.apply_with_message(self._put, tcds, 'assertion on tcds')
         return self.MATCHER
+
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        self._assertion.apply_with_message(self._put, tcds, 'assertion on tcds')
+        return advs.ConstantAdv(self.MATCHER)
 
 
 if __name__ == '__main__':

@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.description_tree.tree_structured import WithCac
 from exactly_lib.test_case_utils.string_matcher.negation import StringMatcherNegation
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherDdv, MatcherAdv
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
 
 
@@ -26,3 +26,11 @@ class StringMatcherImplBase(WithCachedNameAndTreeStructureDescriptionBase,
 
     def _new_tb(self) -> TraceBuilder:
         return TraceBuilder(self.name)
+
+
+class StringMatcherDdvImplBase(MatcherDdv[FileToCheck], ABC):
+    pass
+
+
+class StringMatcherAdvImplBase(MatcherAdv[FileToCheck], ABC):
+    pass

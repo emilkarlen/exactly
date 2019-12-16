@@ -50,7 +50,7 @@ def _parse_line_matches_tokens_and_line_matcher(token_parser: TokenParser) -> Li
 def matcher_for_any_line_matches(expectation_type: ExpectationType,
                                  line_matcher_sdv: LineMatcherSdv) -> StringMatcherSdv:
     def get_matcher(symbols: SymbolTable) -> StringMatcherDdv:
-        matcher = quantifier_matchers.ExistsDdv(
+        matcher = quantifier_matchers.exists_ddv(
             _element_setup(),
             line_matcher_sdv.resolve(symbols),
         )
@@ -65,7 +65,7 @@ def matcher_for_any_line_matches(expectation_type: ExpectationType,
 def matcher_for_every_line_matches(expectation_type: ExpectationType,
                                    line_matcher_sdv: LineMatcherSdv) -> StringMatcherSdv:
     def get_matcher(symbols: SymbolTable) -> StringMatcherDdv:
-        matcher = quantifier_matchers.ForAllDdv(
+        matcher = quantifier_matchers.for_all_ddv(
             _element_setup(),
             line_matcher_sdv.resolve(symbols),
         )

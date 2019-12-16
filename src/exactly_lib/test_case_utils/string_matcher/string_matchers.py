@@ -5,11 +5,13 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase
+from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase, StringMatcherDdvImplBase, \
+    StringMatcherAdvImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherDdv
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
+    MatcherWTraceAndNegation, MODEL, MatcherAdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherDdv, StringMatcherAdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, SequenceStringTransformer, \
     StringTransformerDdv
 from exactly_lib.util.description_tree import renderers, details
@@ -77,7 +79,21 @@ class StringMatcherOnTransformedFileToCheck(StringMatcherImplBase):
         )
 
 
-class StringMatcherWithTransformationDdv(MatcherDdv[FileToCheck]):
+class _StringMatcherWithTransformationAdv(StringMatcherAdvImplBase):
+    def __init__(self,
+                 transformer: StringTransformer,
+                 on_transformed: StringMatcherAdv,
+                 ):
+        self._transformer = transformer
+        self._on_transformed = on_transformed
+
+    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+        return StringMatcherOnTransformedFileToCheck(self._transformer,
+                                                     self._on_transformed.applier(environment),
+                                                     )
+
+
+class StringMatcherWithTransformationDdv(StringMatcherDdvImplBase):
     def __init__(self,
                  transformer: StringTransformerDdv,
                  on_transformed: StringMatcherDdv,
@@ -103,3 +119,9 @@ class StringMatcherWithTransformationDdv(MatcherDdv[FileToCheck]):
         return StringMatcherOnTransformedFileToCheck(self._transformer.value_of_any_dependency(tcds),
                                                      self._on_transformed.value_of_any_dependency(tcds),
                                                      )
+
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return _StringMatcherWithTransformationAdv(
+            self._transformer.value_of_any_dependency(tcds),
+            self._on_transformed.adv_of_any_dependency(tcds),
+        )

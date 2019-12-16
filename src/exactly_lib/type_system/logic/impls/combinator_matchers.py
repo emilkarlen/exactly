@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Generic, Sequence, Optional
+from typing import Generic, Sequence, Optional, Callable
 
 from exactly_lib.definitions import expression
 from exactly_lib.test_case.validation import ddv_validators
@@ -12,7 +12,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation, \
-    MatcherDdv, MODEL
+    MatcherDdv, MODEL, MatcherAdv, ApplicationEnvironment
 from exactly_lib.util.description_tree import renderers
 
 
@@ -78,6 +78,14 @@ class Negation(_CombinatorBase[MODEL]):
         return self._negated,
 
 
+class _NegationAdv(Generic[MODEL], MatcherAdv[MODEL]):
+    def __init__(self, operand: MatcherAdv[MODEL]):
+        self._operand = operand
+
+    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+        return Negation(self._operand.applier(environment))
+
+
 class NegationDdv(Generic[MODEL], MatcherDdv[MODEL]):
     def __init__(self, operand: MatcherDdv[MODEL]):
         self._operand = operand
@@ -91,6 +99,38 @@ class NegationDdv(Generic[MODEL], MatcherDdv[MODEL]):
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return Negation(self._operand.value_of_any_dependency(tcds))
+
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return _NegationAdv(self._operand.adv_of_any_dependency(tcds))
+
+
+class _SequenceOfOperandsAdv(Generic[MODEL], MatcherAdv[MODEL]):
+    def __init__(self,
+                 make_matcher: Callable[[Sequence[MatcherWTraceAndNegation[MODEL]]], MatcherWTraceAndNegation[MODEL]],
+                 operands: Sequence[MatcherAdv[MODEL]],
+                 ):
+        self._make_matcher = make_matcher
+        self._operands = operands
+
+    @staticmethod
+    def of(
+            make_matcher: Callable[[Sequence[MatcherWTraceAndNegation[MODEL]]], MatcherWTraceAndNegation[MODEL]],
+            operands: Sequence[MatcherDdv[MODEL]],
+            tcds: Tcds,
+    ) -> MatcherAdv[MODEL]:
+        return _SequenceOfOperandsAdv(
+            make_matcher,
+            [
+                operand.adv_of_any_dependency(tcds)
+                for operand in operands
+            ]
+        )
+
+    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+        return self._make_matcher([
+            operand.applier(environment)
+            for operand in self._operands
+        ])
 
 
 class Conjunction(_CombinatorBase[MODEL]):
@@ -170,6 +210,11 @@ class ConjunctionDdv(Generic[MODEL], MatcherDdv[MODEL]):
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return Conjunction([operand.value_of_any_dependency(tcds) for operand in self._operands])
 
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return _SequenceOfOperandsAdv.of(Conjunction,
+                                         self._operands,
+                                         tcds)
+
 
 class Disjunction(_CombinatorBase[MODEL]):
     NAME = expression.OR_OPERATOR_NAME
@@ -247,3 +292,8 @@ class DisjunctionDdv(Generic[MODEL], MatcherDdv[MODEL]):
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return Disjunction([operand.value_of_any_dependency(tcds) for operand in self._operands])
+
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return _SequenceOfOperandsAdv.of(Disjunction,
+                                         self._operands,
+                                         tcds)

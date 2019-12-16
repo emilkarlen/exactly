@@ -12,7 +12,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, Failure, MatcherDdv, \
-    TraceRenderer, MatcherWTraceAndNegation
+    TraceRenderer, MatcherWTraceAndNegation, MatcherAdv, ApplicationEnvironment
 from exactly_lib.util.symbol_table import SymbolTable
 
 PROP_TYPE = TypeVar('PROP_TYPE')
@@ -82,6 +82,24 @@ class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTraceAndNegation[MODEL]
         )
 
 
+class _PropertyMatcherAdv(Generic[MODEL, PROP_TYPE], MatcherAdv[MODEL]):
+    def __init__(self,
+                 matcher: MatcherAdv[PROP_TYPE],
+                 property_getter: PropertyGetter[MODEL, PROP_TYPE],
+                 describer: PropertyMatcherDescriber,
+                 ):
+        self._matcher = matcher
+        self._property_getter = property_getter
+        self._describer = describer
+
+    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+        return PropertyMatcher(
+            self._matcher.applier(environment),
+            self._property_getter,
+            self._describer,
+        )
+
+
 class PropertyMatcherDdv(Generic[MODEL, PROP_TYPE], MatcherDdv[MODEL]):
     def __init__(self,
                  matcher: MatcherDdv[PROP_TYPE],
@@ -106,6 +124,13 @@ class PropertyMatcherDdv(Generic[MODEL, PROP_TYPE], MatcherDdv[MODEL]):
     def value_of_any_dependency(self, tcds: Tcds) -> PropertyMatcher[MODEL, PROP_TYPE]:
         return PropertyMatcher(
             self._matcher.value_of_any_dependency(tcds),
+            self._property_getter.value_of_any_dependency(tcds),
+            self._describer,
+        )
+
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return _PropertyMatcherAdv(
+            self._matcher.adv_of_any_dependency(tcds),
             self._property_getter.value_of_any_dependency(tcds),
             self._describer,
         )

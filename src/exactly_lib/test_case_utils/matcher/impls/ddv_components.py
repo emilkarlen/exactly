@@ -5,7 +5,8 @@ from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.impls import advs
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MatcherAdv
 
 
 class MatcherDdvFromConstantPrimitive(Generic[MODEL], MatcherDdv[MODEL]):
@@ -25,3 +26,6 @@ class MatcherDdvFromConstantPrimitive(Generic[MODEL], MatcherDdv[MODEL]):
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherDdv[MODEL]:
         return self._primitive_value
+
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return advs.ConstantAdv(self._primitive_value)

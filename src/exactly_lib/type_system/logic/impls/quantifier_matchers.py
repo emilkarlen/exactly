@@ -11,7 +11,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation, \
-    MatcherDdv
+    MatcherDdv, MatcherAdv, ApplicationEnvironment
 from exactly_lib.util import strings
 from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -103,7 +103,6 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
         with self._element_setup.elements_getter(model) as elements:
             return self._matches(
                 TraceBuilder(self.name),
-                self._element_setup.renderer,
                 self._predicate,
                 elements,
             )
@@ -136,7 +135,6 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
     @abstractmethod
     def _matches(self,
                  tb: TraceBuilder,
-                 renderer: Callable[[ELEMENT], DetailsRenderer],
                  predicate: MatcherWTrace[ELEMENT],
                  elements: Iterator[ELEMENT]) -> MatchingResult:
         pass
@@ -168,7 +166,6 @@ class Exists(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
 
     def _matches(self,
                  tb: TraceBuilder,
-                 renderer: Callable[[ELEMENT], DetailsRenderer],
                  predicate: MatcherWTrace[ELEMENT],
                  elements: Iterator[ELEMENT]) -> MatchingResult:
         num_elements = 0
@@ -181,16 +178,37 @@ class Exists(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
         return self._no_match(tb, num_elements)
 
 
-class ExistsDdv(Generic[MODEL, ELEMENT], MatcherDdv[MODEL]):
+class _QuantifierAdv(Generic[MODEL, ELEMENT], MatcherAdv[MODEL]):
     def __init__(self,
                  element_setup: ElementSetup,
-                 predicate: MatcherDdv[ELEMENT],
+                 predicate: MatcherAdv[ELEMENT],
+                 make_matcher: Callable[[ElementSetup, MatcherWTrace[MODEL]], MatcherWTraceAndNegation[MODEL]],
                  ):
         self._element_setup = element_setup
         self._predicate = predicate
+        self._make_matcher = make_matcher
+
+    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+        return self._make_matcher(
+            self._element_setup,
+            self._predicate.applier(environment),
+        )
+
+
+class _QuantifierDdv(Generic[MODEL, ELEMENT], MatcherDdv[MODEL]):
+    def __init__(self,
+                 quantifier: Quantifier,
+                 element_setup: ElementSetup,
+                 predicate: MatcherDdv[ELEMENT],
+                 make_matcher: Callable[[ElementSetup, MatcherWTrace[MODEL]], MatcherWTraceAndNegation[MODEL]],
+                 ):
+        self._quantifier = quantifier
+        self._element_setup = element_setup
+        self._predicate = predicate
+        self._make_matcher = make_matcher
 
     def structure(self) -> StructureRenderer:
-        return _QuantifierBase.new_structure_tree(Quantifier.EXISTS,
+        return _QuantifierBase.new_structure_tree(self._quantifier,
                                                   self._element_setup,
                                                   self._predicate)
 
@@ -199,10 +217,27 @@ class ExistsDdv(Generic[MODEL, ELEMENT], MatcherDdv[MODEL]):
         return self._predicate.validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
-        return Exists(
+        return self._make_matcher(
             self._element_setup,
             self._predicate.value_of_any_dependency(tcds)
         )
+
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return _QuantifierAdv(
+            self._element_setup,
+            self._predicate.adv_of_any_dependency(tcds),
+            self._make_matcher,
+        )
+
+
+def exists_ddv(element_setup: ElementSetup,
+               predicate: MatcherDdv[ELEMENT]) -> MatcherDdv[MODEL]:
+    return _QuantifierDdv(
+        Quantifier.EXISTS,
+        element_setup,
+        predicate,
+        Exists,
+    )
 
 
 class ForAll(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
@@ -231,7 +266,6 @@ class ForAll(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
 
     def _matches(self,
                  tb: TraceBuilder,
-                 renderer: Callable[[ELEMENT], DetailsRenderer],
                  predicate: MatcherWTrace[ELEMENT],
                  elements: Iterator[ELEMENT]) -> MatchingResult:
         num_elements = 0
@@ -244,25 +278,11 @@ class ForAll(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
         return self._all_match(tb, num_elements)
 
 
-class ForAllDdv(Generic[MODEL, ELEMENT], MatcherDdv[MODEL]):
-    def __init__(self,
-                 element_setup: ElementSetup,
-                 predicate: MatcherDdv[ELEMENT],
-                 ):
-        self._element_setup = element_setup
-        self._predicate = predicate
-
-    def structure(self) -> StructureRenderer:
-        return _QuantifierBase.new_structure_tree(Quantifier.ALL,
-                                                  self._element_setup,
-                                                  self._predicate)
-
-    @property
-    def validator(self) -> DdvValidator:
-        return self._predicate.validator
-
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
-        return ForAll(
-            self._element_setup,
-            self._predicate.value_of_any_dependency(tcds)
-        )
+def for_all_ddv(element_setup: ElementSetup,
+                predicate: MatcherDdv[ELEMENT]) -> MatcherDdv[MODEL]:
+    return _QuantifierDdv(
+        Quantifier.ALL,
+        element_setup,
+        predicate,
+        ForAll,
+    )

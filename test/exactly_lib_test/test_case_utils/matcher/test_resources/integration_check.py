@@ -8,8 +8,9 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MatcherWTraceAndNegation, \
-    MatcherWTrace
+    MatcherWTrace, MatcherAdv, ApplicationEnvironment
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
+from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.test_resources.arrangements import ActResultProducer, ActEnvironment
@@ -232,13 +233,19 @@ class _Checker(Generic[MODEL]):
         return matcher_ddv
 
     def _resolve_primitive_value(self, matcher_ddv: MatcherDdv[MODEL]) -> MatcherWTrace[MODEL]:
-        ret_val = matcher_ddv.value_of_any_dependency(self.tcds)
+        adv = matcher_ddv.adv_of_any_dependency(self.tcds)
+
+        asrt.is_instance(MatcherAdv).apply_with_message(self.put,
+                                                        adv,
+                                                        'adv')
+        application_environment = ApplicationEnvironment(
+            TmpDirFileSpaceAsDirCreatedOnDemand(self.tcds.sds.internal_tmp_dir / 'application-tmp-dir')
+        )
+        ret_val = adv.applier(application_environment)
 
         asrt.is_instance(MatcherWTrace).apply_with_message(self.put,
                                                            ret_val,
                                                            'primitive value')
-
-        assert isinstance(ret_val, MatcherWTrace)
 
         return ret_val
 

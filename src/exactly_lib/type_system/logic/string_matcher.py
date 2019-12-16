@@ -5,7 +5,7 @@ from typing import Iterable
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, \
-    MatcherWTraceAndNegation
+    MatcherWTraceAndNegation, MatcherAdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist, TmpDirFileSpace
 
@@ -113,3 +113,5 @@ class FileToCheck:
 StringMatcher = MatcherWTraceAndNegation[FileToCheck]
 
 StringMatcherDdv = MatcherDdv[FileToCheck]
+
+StringMatcherAdv = MatcherAdv[FileToCheck]

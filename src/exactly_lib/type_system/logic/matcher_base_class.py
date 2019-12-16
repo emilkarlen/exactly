@@ -9,6 +9,7 @@ from exactly_lib.type_system.description.tree_structured import WithNameAndTreeS
     WithTreeStructureDescription
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.util.description_tree.renderer import NodeRenderer
+from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.with_option_description import WithOptionDescription
 
@@ -83,6 +84,25 @@ class MatcherWTraceAndNegation(Generic[MODEL], MatcherWTrace[MODEL], ABC):
         raise NotImplementedError('deprecated')
 
 
+class ApplicationEnvironment:
+    def __init__(self,
+                 tmp_files_space: TmpDirFileSpace,
+                 ):
+        self._tmp_files_space = tmp_files_space
+
+    @property
+    def tmp_files_space(self) -> TmpDirFileSpace:
+        return self._tmp_files_space
+
+
+class MatcherAdv(Generic[MODEL], ABC):
+    """Application Environment Dependent Matcher"""
+
+    @abstractmethod
+    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+        pass
+
+
 class MatcherDdv(Generic[MODEL],
                  DirDependentValue[MatcherWTraceAndNegation[MODEL]],
                  WithTreeStructureDescription,
@@ -90,6 +110,10 @@ class MatcherDdv(Generic[MODEL],
     @abstractmethod
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         pass
+
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        """Method that will replace value_of_any_dependency"""
+        raise NotImplementedError('todo')
 
     @property
     def validator(self) -> DdvValidator:

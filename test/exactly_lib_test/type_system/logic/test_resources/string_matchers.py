@@ -1,4 +1,4 @@
-from typing import Optional, Callable
+from typing import Optional, Callable, Generic
 
 from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
@@ -7,7 +7,9 @@ from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MODEL, MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.impls import advs
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MODEL, \
+    MatcherWTraceAndNegation, MatcherAdv
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.description_tree import tree
 from exactly_lib_test.test_case_utils.description_tree.test_resources import ConstantNodeRendererTestImpl
@@ -77,7 +79,7 @@ class StringMatcherConstantTestImpl(StringMatcherImplBase):
         return self._new_tb().build_result(self._result)
 
 
-class MatcherDdvFromPartsTestImpl(MatcherDdv[MODEL]):
+class MatcherDdvFromPartsTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     def __init__(self,
                  structure: StructureRenderer,
                  matcher: Callable[[Tcds], MatcherWTraceAndNegation[MODEL]],
@@ -95,3 +97,8 @@ class MatcherDdvFromPartsTestImpl(MatcherDdv[MODEL]):
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return self._matcher(tcds)
+
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return advs.ConstantAdv(
+            self._matcher(tcds)
+        )

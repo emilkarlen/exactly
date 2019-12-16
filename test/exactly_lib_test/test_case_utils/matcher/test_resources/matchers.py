@@ -11,7 +11,8 @@ from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConsta
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.impls import advs
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MatcherAdv
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, \
     Failure
 from exactly_lib.util.description_tree import renderers, tree
@@ -63,6 +64,9 @@ class MatcherDdvOfConstantMatcherTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return self._primitive_value
 
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return advs.ConstantAdv(self._primitive_value)
+
 
 class MatcherSdvOfConstantDdvTestImpl(Generic[MODEL], MatcherSdv[MODEL]):
     def __init__(self,
@@ -102,6 +106,11 @@ class MatcherDdvFromPartsTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         return self._make_primitive(tcds)
+
+    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return advs.ConstantAdv(
+            self._make_primitive(tcds)
+        )
 
 
 class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
