@@ -1,15 +1,14 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Optional
+from typing import Generic, Optional, TypeVar
 
 from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription, \
-    WithTreeStructureDescription
+from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment, ApplicationEnvironmentDependentValue, \
+    LogicTypeDdv
 from exactly_lib.util.description_tree.renderer import NodeRenderer
-from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.with_option_description import WithOptionDescription
 
@@ -84,18 +83,9 @@ class MatcherWTraceAndNegation(Generic[MODEL], MatcherWTrace[MODEL], ABC):
         raise NotImplementedError('deprecated')
 
 
-class ApplicationEnvironment:
-    def __init__(self,
-                 tmp_files_space: TmpDirFileSpace,
-                 ):
-        self._tmp_files_space = tmp_files_space
-
-    @property
-    def tmp_files_space(self) -> TmpDirFileSpace:
-        return self._tmp_files_space
-
-
-class MatcherAdv(Generic[MODEL], ABC):
+class MatcherAdv(Generic[MODEL],
+                 ApplicationEnvironmentDependentValue[MatcherWTraceAndNegation[MODEL]],
+                 ABC):
     """Application Environment Dependent Matcher"""
 
     @abstractmethod
@@ -104,16 +94,16 @@ class MatcherAdv(Generic[MODEL], ABC):
 
 
 class MatcherDdv(Generic[MODEL],
-                 DirDependentValue[MatcherWTraceAndNegation[MODEL]],
-                 WithTreeStructureDescription,
+                 LogicTypeDdv[MatcherWTraceAndNegation[MODEL]],
                  ABC):
     @abstractmethod
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
         pass
 
+    @abstractmethod
     def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         """Method that will replace value_of_any_dependency"""
-        raise NotImplementedError('todo')
+        pass
 
     @property
     def validator(self) -> DdvValidator:
