@@ -1,4 +1,4 @@
-from typing import Sequence, Callable, TypeVar, Generic
+from typing import Sequence, TypeVar, Generic
 
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
@@ -6,10 +6,12 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case.result import svh
+from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherSdv
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.matcher_base_class import Failure
+from exactly_lib.util.render import combinators as rend_comb
+from exactly_lib.util.render.renderer import Renderer
+from exactly_lib.util.simple_textstruct.structure import MajorBlock
 
 T = TypeVar('T')
 
@@ -19,10 +21,10 @@ class Instruction(Generic[T], AssertPhaseInstruction):
 
     def __init__(self,
                  matcher: PropertyMatcherSdv[None, T],
-                 err_msg_constructor: Callable[[Failure[T]], ErrorMessageResolver],
+                 err_msg_header_renderer: Renderer[MajorBlock],
                  ):
         self._matcher = matcher
-        self._err_msg_constructor = err_msg_constructor
+        self._err_msg_header_renderer = err_msg_header_renderer
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self._matcher.references
@@ -51,10 +53,12 @@ class Instruction(Generic[T], AssertPhaseInstruction):
 
     def _execute(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pfh.PassOrFailOrHardError:
         matcher = self._matcher.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
-        failure = matcher.matches_w_failure(None)
-        return (
-            pfh.new_pfh_fail(self._err_msg_constructor(failure).resolve__tr())
-            if failure
-            else
-            pfh.new_pfh_pass()
-        )
+        result = matcher.matches_w_trace(None)
+        if result.value:
+            return pfh.new_pfh_pass()
+        else:
+            err_msg = rend_comb.SequenceR([
+                self._err_msg_header_renderer,
+                bool_trace_rendering.BoolTraceRenderer(result.trace),
+            ])
+            return pfh.new_pfh_fail(err_msg)

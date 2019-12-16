@@ -10,7 +10,6 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.instructions.assert_.utils import instruction_of_matcher
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
@@ -20,15 +19,12 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAss
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import negation_of_predicate, pfh_exception
-from exactly_lib.test_case_utils.err_msg.property_description import \
-    property_descriptor_with_just_a_constant_name
-from exactly_lib.test_case_utils.matcher.impls import err_msg, property_matcher_describers
+from exactly_lib.test_case_utils.err_msg2.header_rendering import unexpected_attribute__major_block
 from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_integer_matcher
+from exactly_lib.test_case_utils.matcher.impls import property_matcher_describers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterDdv, PropertyGetter
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherSdv
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.matcher_base_class import Failure
 from exactly_lib.util import strings
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -91,20 +87,13 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         property_matcher = PropertyMatcherSdv(
             matcher,
             property_getters.PropertyGetterSdvConstant(_ExitCodeGetterDdv()),
-            property_matcher_describers.NamedWithMatcherAsChild(instruction_names.EXIT_CODE_INSTRUCTION_NAME)
+            property_matcher_describers.IdenticalToMatcher()
         )
         parser.report_superfluous_arguments_if_not_at_eol()
         return instruction_of_matcher.Instruction(
             property_matcher,
-            _mk_error_message,
+            unexpected_attribute__major_block(misc_texts.EXIT_CODE.singular),
         )
-
-
-def _mk_error_message(failure: Failure[int]) -> ErrorMessageResolver:
-    return err_msg.ErrorMessageResolverForFailure(
-        property_descriptor_with_just_a_constant_name(_PROPERTY_NAME),
-        failure,
-    )
 
 
 class _ExitCodeGetter(PropertyGetter[None, int]):
