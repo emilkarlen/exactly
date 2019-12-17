@@ -18,7 +18,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic import string_matcher
 from exactly_lib.type_system.logic import string_transformer
-from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher, FileMatcherModel
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
     MatcherWTraceAndNegation, MODEL, MatcherAdv
@@ -125,11 +125,8 @@ class RegularFileMatchesStringMatcherDdv(FileMatcherDdvImplBase):
     def validator(self) -> DdvValidator:
         return self._contents_matcher.validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> FileMatcher:
-        return RegularFileMatchesStringMatcher(self._contents_matcher.value_of_any_dependency(tcds))
-
-    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
-        return _RegularFileMatchesStringMatcherAdv(self._contents_matcher.adv_of_any_dependency(tcds))
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return _RegularFileMatchesStringMatcherAdv(self._contents_matcher.value_of_any_dependency(tcds))
 
 
 def regular_file_matches_string_matcher_sdv(contents_matcher: StringMatcherSdv) -> FileMatcherSdv:

@@ -133,14 +133,7 @@ class MatchesRegexDdv(MatcherDdv[str]):
     def validator(self) -> DdvValidator:
         return self._regex.validator()
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
-        return MatchesRegex(
-            self._expectation_type,
-            self._is_full_match,
-            self._regex.value_of_any_dependency(tcds),
-        )
-
-    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         return advs.ConstantAdv(
             MatchesRegex(
                 self._expectation_type,

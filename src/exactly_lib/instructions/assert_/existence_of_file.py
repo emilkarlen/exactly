@@ -11,6 +11,7 @@ from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
+from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
     InstructionParserWithoutSourceFileLocationInfo
@@ -302,13 +303,13 @@ class _Assertion:
     def _matches_file_matcher_for_expectation_type(self) -> MatchingResult:
         sdv = self._file_matcher_for_expectation_type()
 
-        fm = sdv.resolve(self.environment.symbols).value_of_any_dependency(self.environment.tcds)
+        helper = resolving_helper_for_instruction_env(self.environment)
 
         model = file_matcher_models.FileMatcherModelForPrimitivePath(
-            self.environment.phase_logging.space_for_instruction(),
+            helper.file_space,
             self.described_path)
 
-        return fm.matches_w_trace(model)
+        return helper.apply(sdv, model)
 
     def _file_matcher_for_expectation_type(self) -> FileMatcherSdv:
         return (self.file_matcher

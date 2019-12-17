@@ -24,6 +24,7 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatch
 from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel, FilesMatcher, \
     FilesMatcherConstructor, FilesMatcherDdv
 from exactly_lib.type_system.logic.impls import quantifier_matchers
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
@@ -130,13 +131,13 @@ class _QuantifiedMatcherDdv(FilesMatcherDdv):
         return self._element_matcher.validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
-        matcher_on_file = self._element_matcher.value_of_any_dependency(tcds)
+        matcher_on_file_adv = self._element_matcher.value_of_any_dependency(tcds)
 
         def mk_matcher(tmp_files_space: TmpDirFileSpace) -> FilesMatcher:
             return _QuantifiedMatcher(
                 ExpectationType.POSITIVE,
                 self._quantifier,
-                matcher_on_file,
+                matcher_on_file_adv.applier(ApplicationEnvironment(tmp_files_space)),
                 tmp_files_space,
             )
 

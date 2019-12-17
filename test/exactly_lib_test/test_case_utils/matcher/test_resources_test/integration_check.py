@@ -540,11 +540,7 @@ class _MatcherDdvThatIsAssertionOnTcds(MatcherDdv[int]):
     def structure(self) -> StructureRenderer:
         return self.MATCHER.structure()
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[int]:
-        self._assertion.apply_with_message(self._put, tcds, 'assertion on tcds')
-        return self.MATCHER
-
-    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         self._assertion.apply_with_message(self._put, tcds, 'assertion on tcds')
         return advs.ConstantAdv(self.MATCHER)
 

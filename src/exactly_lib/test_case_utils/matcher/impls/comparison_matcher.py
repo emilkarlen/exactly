@@ -224,15 +224,7 @@ class ComparisonMatcherDdv(Generic[T], MatcherDdv[T]):
     def validator(self) -> DdvValidator:
         return self._rhs.validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[T]:
-        return ComparisonMatcher(
-            self._expectation_type,
-            self._operator,
-            self._rhs.value_of_any_dependency(tcds),
-            self._model_renderer,
-        )
-
-    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         return advs.ConstantAdv(
             ComparisonMatcher(
                 self._expectation_type,

@@ -14,7 +14,7 @@ from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher, FileMatcherModel
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherAdv, MODEL
 from exactly_lib.util import strings
@@ -53,10 +53,7 @@ class _Ddv(FileMatcherDdvImplBase):
             details.String(strings.Repr(string_rendering.AsToStringObject(self._glob_pattern.describer())))
         )
 
-    def value_of_any_dependency(self, tcds: Tcds) -> FileMatcher:
-        return FileMatcherNameGlobPattern(self._glob_pattern.value_of_any_dependency(tcds))
-
-    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         return advs.ConstantAdv(FileMatcherNameGlobPattern(self._glob_pattern.value_of_any_dependency(tcds)))
 
 

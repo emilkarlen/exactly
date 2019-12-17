@@ -233,7 +233,7 @@ class _Checker(Generic[MODEL]):
         return matcher_ddv
 
     def _resolve_primitive_value(self, matcher_ddv: MatcherDdv[MODEL]) -> MatcherWTrace[MODEL]:
-        adv = matcher_ddv.adv_of_any_dependency(self.tcds)
+        adv = matcher_ddv.value_of_any_dependency(self.tcds)
 
         asrt.is_instance(MatcherAdv).apply_with_message(self.put,
                                                         adv,

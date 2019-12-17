@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
 from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
@@ -20,13 +20,13 @@ def suite() -> unittest.TestSuite:
 
 
 class Configuration(matcher_parse_check.Configuration[FileMatcherModel]):
-    def parse(self, parser: TokenParser) -> SymbolDependentValue:
+    def parse(self, parser: TokenParser) -> FileMatcherSdv:
         return sut.parse_sdv(parser)
 
     def is_reference_to(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_file_matcher_reference_to(symbol_name)
 
-    def sdv_of_constant_matcher(self, matcher: FileMatcher) -> SymbolDependentValue:
+    def sdv_of_constant_matcher(self, matcher: FileMatcher) -> FileMatcherSdv:
         return file_matcher_constant_sdv(matcher)
 
     def arbitrary_model_that_should_not_be_touched(self) -> FileMatcherModel:

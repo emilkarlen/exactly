@@ -35,19 +35,3 @@ def matches_file_matcher_ddv__deep(
             ),
         ]
     )
-
-
-def matches_file_matcher_ddv(
-        validator: ValueAssertion[DdvValidator] = asrt.anything_goes(),
-) -> ValueAssertion[FileMatcherDdv]:
-    def get_validator(value: FileMatcherDdv):
-        return value.validator
-
-    return asrt.is_instance_with(
-        MatcherDdv,
-        asrt.sub_component(
-            'validator',
-            get_validator,
-            asrt.is_instance_with(DdvValidator,
-                                  validator)
-        ))

@@ -3,6 +3,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.string_transformer.impl import select
 from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer
+from exactly_lib.type_system.logic.tmp_app_env import application_environment__transitional
 
 
 class SelectStringTransformerDdv(StringTransformerDdv):
@@ -19,4 +20,4 @@ class SelectStringTransformerDdv(StringTransformerDdv):
 
     def value_of_any_dependency(self, tcds: Tcds) -> StringTransformer:
         return select.SelectStringTransformer(
-            self._line_matcher.value_of_any_dependency(tcds))
+            self._line_matcher.value_of_any_dependency(tcds).applier(application_environment__transitional()))

@@ -34,5 +34,5 @@ class LogicTypeDdv(Generic[VALUE_TYPE],
                    WithTreeStructureDescription,
                    ABC):
     @abstractmethod
-    def adv_of_any_dependency(self, tcds: Tcds) -> ApplicationEnvironmentDependentValue[VALUE_TYPE]:
+    def value_of_any_dependency(self, tcds: Tcds) -> ApplicationEnvironmentDependentValue[VALUE_TYPE]:
         pass

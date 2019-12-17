@@ -121,16 +121,9 @@ class PropertyMatcherDdv(Generic[MODEL, PROP_TYPE], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> PropertyMatcher[MODEL, PROP_TYPE]:
-        return PropertyMatcher(
-            self._matcher.value_of_any_dependency(tcds),
-            self._property_getter.value_of_any_dependency(tcds),
-            self._describer,
-        )
-
-    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         return _PropertyMatcherAdv(
-            self._matcher.adv_of_any_dependency(tcds),
+            self._matcher.value_of_any_dependency(tcds),
             self._property_getter.value_of_any_dependency(tcds),
             self._describer,
         )

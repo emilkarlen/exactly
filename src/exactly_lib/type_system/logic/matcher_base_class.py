@@ -97,12 +97,7 @@ class MatcherDdv(Generic[MODEL],
                  LogicTypeDdv[MatcherWTraceAndNegation[MODEL]],
                  ABC):
     @abstractmethod
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
-        pass
-
-    @abstractmethod
-    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
-        """Method that will replace value_of_any_dependency"""
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         pass
 
     @property

@@ -18,6 +18,7 @@ from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable, singl
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.symbol.logic.test_resources.resolving_helper import resolving_helper
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -234,7 +235,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                         mb_validation_failure = validator.validate_post_sds_if_applicable(tcds)
                         self.assertIsNone(mb_validation_failure, 'post sds validation')
 
-                        actual = actual_sdv.resolve(case.symbols).value_of_any_dependency(tcds)
+                        actual = resolving_helper(case.symbols).resolve__generic(actual_sdv)
 
                     case.source_assertion.apply_with_message(self, case.source, 'source')
                     case.result.assertion(expectation_type).apply_with_message(self, actual, 'parsed value')

@@ -2,6 +2,7 @@ from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart, \
     FileToCheck
+from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
@@ -28,8 +29,7 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
                os_services: OsServices,
                custom_environment,
                file_to_check: FileToCheck):
-        matcher = self._string_matcher.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
-        matching_result = matcher.matches_w_trace(file_to_check)
+        matching_result = resolving_helper_for_instruction_env(environment).apply(self._string_matcher, file_to_check)
         if not matching_result.value:
             raise pfh_exception.PfhFailException(
                 rend_comb.SingletonSequenceR(

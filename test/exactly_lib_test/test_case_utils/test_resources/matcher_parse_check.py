@@ -5,6 +5,7 @@ from exactly_lib.definitions import expression
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
@@ -12,6 +13,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.test_case_file_structure.test_resources.application_environment import application_environment
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.expression.test_resources import \
     NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME
@@ -24,16 +26,16 @@ MODEL = TypeVar('MODEL')
 
 
 class Configuration(Generic[MODEL]):
-    def parse(self, parser: TokenParser) -> SymbolDependentValue:
+    def parse(self, parser: TokenParser) -> MatcherTypeSdv[MODEL]:
         raise NotImplementedError('abstract method')
 
     def is_reference_to(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         raise NotImplementedError('abstract method')
 
-    def sdv_of_constant_matcher(self, matcher: MatcherWTrace[MODEL]) -> SymbolDependentValue:
+    def sdv_of_constant_matcher(self, matcher: MatcherWTrace[MODEL]) -> MatcherTypeSdv[MODEL]:
         raise NotImplementedError('abstract method')
 
-    def sdv_of_constant_result_matcher(self, result: bool) -> SymbolDependentValue:
+    def sdv_of_constant_result_matcher(self, result: bool) -> MatcherTypeSdv[MODEL]:
         return self.sdv_of_constant_matcher(self.constant_matcher(result))
 
     def container_with_sdv_of_constant_matcher(self, matcher: MatcherWTrace[MODEL]) -> SymbolContainer:
@@ -69,6 +71,7 @@ class Expectation:
 
 class TestParseStandardExpressionsBase(unittest.TestCase):
     TCDS = fake_tcds()
+    APPLICATION_ENVIRONMENT = application_environment()
 
     @property
     def conf(self) -> Configuration:
@@ -120,7 +123,8 @@ class TestParseStandardExpressionsBase(unittest.TestCase):
                     ]
                 )
                 ddv = actual_sdv.resolve(symbols)
-                matcher = ddv.value_of_any_dependency(self.TCDS)
+                adv = ddv.value_of_any_dependency(self.TCDS)
+                matcher = adv.applier(self.APPLICATION_ENVIRONMENT)
                 self.assertIsInstance(matcher, MatcherWTrace,
                                       'primitive value should be instance of ' + str(type(MatcherWTrace)))
                 assert isinstance(matcher, MatcherWTrace)

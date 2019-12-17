@@ -16,6 +16,7 @@ from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolve
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherConstructor, \
     FilesMatcherDdv
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.file_utils import TmpDirFileSpace
@@ -96,12 +97,12 @@ class _SubSetSelectorMatcherDdv(FilesMatcherDdv):
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
-        selector = self._selector.value_of_any_dependency(tcds)
+        selector_adv = self._selector.value_of_any_dependency(tcds)
         matcher_on_selection = self._matcher_on_selection.value_of_any_dependency(tcds)
 
         def mk_matcher(tmp_files_space: TmpDirFileSpace) -> FilesMatcher:
             return _SubSetSelectorMatcher(
-                selector,
+                selector_adv.applier(ApplicationEnvironment(tmp_files_space)),
                 matcher_on_selection.construct(tmp_files_space),
             )
 

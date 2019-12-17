@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
+from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -73,13 +74,12 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
                 .value_of_any_dependency__d(environment.tcds)
         )
 
+        helper = resolving_helper_for_instruction_env(environment)
         model = FilesMatcherModelForDir(
-            environment.phase_logging.space_for_instruction(),
+            helper.file_space,
             path_to_check,
         )
-        value = self._files_matcher.resolve(environment.symbols)
-        primitive = value.value_of_any_dependency(environment.tcds)
-        matcher = primitive.construct(environment.phase_logging.space_for_instruction())
+        matcher = helper.resolve_files_matcher(self._files_matcher)
         try:
             result = matcher.matches_w_trace(model)
             if not result.value:

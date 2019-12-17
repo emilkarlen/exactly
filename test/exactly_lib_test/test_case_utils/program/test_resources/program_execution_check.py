@@ -217,8 +217,8 @@ class Executor:
     def _execute(self,
                  pgm_output_dir: pathlib.Path,
                  tcds: Tcds,
-                 program_sdv: ProgramDdv) -> ResultWithTransformationData:
-        program = program_sdv.value_of_any_dependency(tcds)
+                 program_ddv: ProgramDdv) -> ResultWithTransformationData:
+        program = program_ddv.value_of_any_dependency(tcds)
         assert isinstance(program, Program)
         execution_result = pgm_execution.make_transformed_file_from_output(pgm_output_dir,
                                                                            self.arrangement.process_execution_settings,

@@ -115,13 +115,8 @@ class StringMatcherWithTransformationDdv(StringMatcherDdvImplBase):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> StringMatcher:
-        return StringMatcherOnTransformedFileToCheck(self._transformer.value_of_any_dependency(tcds),
-                                                     self._on_transformed.value_of_any_dependency(tcds),
-                                                     )
-
-    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         return _StringMatcherWithTransformationAdv(
             self._transformer.value_of_any_dependency(tcds),
-            self._on_transformed.adv_of_any_dependency(tcds),
+            self._on_transformed.value_of_any_dependency(tcds),
         )

@@ -1,6 +1,7 @@
 import unittest
 from typing import Sequence, Callable, TypeVar
 
+import exactly_lib_test.symbol.test_resources.sdv_structure_assertions
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer
@@ -57,16 +58,18 @@ class TestIsResolverOfDataType(unittest.TestCase):
 class TestIsResolverOfLogicType(unittest.TestCase):
     def test_succeed(self):
         # ARRANGE #
-        assertion = sut.is_sdv_of_logic_type(LogicValueType.PROGRAM,
-                                             ValueType.PROGRAM)
+        assertion = exactly_lib_test.symbol.test_resources.sdv_structure_assertions.is_sdv_of_logic_type(
+            LogicValueType.PROGRAM,
+            ValueType.PROGRAM)
         matching_sdv = _ProgramResolverTestImpl()
         # ACT & ASSERT #
         assertion.apply_without_message(self, matching_sdv)
 
     def test_fail(self):
         # ARRANGE #
-        assertion = sut.is_sdv_of_logic_type(LogicValueType.PROGRAM,
-                                             ValueType.PROGRAM)
+        assertion = exactly_lib_test.symbol.test_resources.sdv_structure_assertions.is_sdv_of_logic_type(
+            LogicValueType.PROGRAM,
+            ValueType.PROGRAM)
         cases = [
             NameAndValue('unexpected logic type',
                          _StringTransformerSdvTestImpl(),
@@ -85,10 +88,11 @@ class TestMatchesResolver(unittest.TestCase):
     def test_fail_due_to_unexpected_sdv_type(self):
         # ARRANGE #
         string_sdv = _StringSdvTestImpl()
-        assertion = sut.matches_sdv(sut.is_sdv_of_logic_type(LogicValueType.PROGRAM,
-                                                                       ValueType.PROGRAM),
-                                         asrt.anything_goes(),
-                                         asrt.anything_goes())
+        assertion = sut.matches_sdv(
+            exactly_lib_test.symbol.test_resources.sdv_structure_assertions.is_sdv_of_logic_type(LogicValueType.PROGRAM,
+                                                                                                 ValueType.PROGRAM),
+            asrt.anything_goes(),
+            asrt.anything_goes())
         # ACT & ASSERT #
         test_of_test_resources_util.assert_that_assertion_fails(assertion, string_sdv)
 

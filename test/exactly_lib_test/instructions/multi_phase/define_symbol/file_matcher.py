@@ -8,22 +8,18 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher, file_matcher_models
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.util import file_utils
-from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.logic.test_resources.resolving_helper import resolving_helper__fake
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, sdv_assertions
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import ddv_assertions as asrt_file_matcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import file_matcher_arguments
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.sdv_assertions import \
-    resolved_ddv_matches_file_matcher
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.data.test_resources import described_path
@@ -55,11 +51,7 @@ class TestSuccessfulScenarios(TestCaseBase):
         glob_pattern_arguments = file_matcher_arguments(name_pattern=name_pattern)
         expected_glob_pattern_matcher_sdv = parse_file_matcher.parser().parse(remaining_source(glob_pattern_arguments))
 
-        expected_glob_pattern_matcher = (
-            expected_glob_pattern_matcher_sdv
-                .resolve(empty_symbol_table())
-                .value_of_any_dependency(fake_tcds())
-        )
+        expected_glob_pattern_matcher = resolving_helper__fake().resolve(expected_glob_pattern_matcher_sdv)
 
         cases = [
             NIE('empty RHS SHOULD give selection of all files',
@@ -99,10 +91,9 @@ class TestSuccessfulScenarios(TestCaseBase):
                 )
 
                 expected_container = matches_container(
-                    resolved_ddv_matches_file_matcher(
-                        asrt_file_matcher.matches_file_matcher_ddv__deep(
-                            case.expected_value
-                        )
+                    sdv_assertions.matches_sdv_of_file_matcher(
+                        references=asrt.is_empty_sequence,
+                        primitive_value=case.expected_value
                     )
                 )
 

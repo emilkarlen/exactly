@@ -97,11 +97,8 @@ class NegationDdv(Generic[MODEL], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._operand.validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
-        return Negation(self._operand.value_of_any_dependency(tcds))
-
-    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
-        return _NegationAdv(self._operand.adv_of_any_dependency(tcds))
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return _NegationAdv(self._operand.value_of_any_dependency(tcds))
 
 
 class _SequenceOfOperandsAdv(Generic[MODEL], MatcherAdv[MODEL]):
@@ -121,7 +118,7 @@ class _SequenceOfOperandsAdv(Generic[MODEL], MatcherAdv[MODEL]):
         return _SequenceOfOperandsAdv(
             make_matcher,
             [
-                operand.adv_of_any_dependency(tcds)
+                operand.value_of_any_dependency(tcds)
                 for operand in operands
             ]
         )
@@ -207,10 +204,7 @@ class ConjunctionDdv(Generic[MODEL], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
-        return Conjunction([operand.value_of_any_dependency(tcds) for operand in self._operands])
-
-    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         return _SequenceOfOperandsAdv.of(Conjunction,
                                          self._operands,
                                          tcds)
@@ -290,10 +284,7 @@ class DisjunctionDdv(Generic[MODEL], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
-        return Disjunction([operand.value_of_any_dependency(tcds) for operand in self._operands])
-
-    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         return _SequenceOfOperandsAdv.of(Disjunction,
                                          self._operands,
                                          tcds)

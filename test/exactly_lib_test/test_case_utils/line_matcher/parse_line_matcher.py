@@ -15,7 +15,7 @@ from exactly_lib.test_case_utils.line_matcher.impl import line_number
 from exactly_lib.test_case_utils.line_matcher.line_matchers import line_matcher_constant
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
-from exactly_lib.type_system.logic.matcher_base_class import Matcher, MatcherWTrace, MODEL, MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MODEL, MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
@@ -24,7 +24,6 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
 from exactly_lib_test.symbol.test_resources import sdv_assertions
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
-from exactly_lib_test.test_case_utils.line_matcher.test_resources.ddv_assertions import ddv_matches_line_matcher
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.int_expr_matcher import \
     ComparisonMatcherForEquivalenceChecks
@@ -44,13 +43,13 @@ def suite() -> unittest.TestSuite:
 
 
 class Configuration(matcher_parse_check.Configuration[LineMatcherLine]):
-    def parse(self, parser: TokenParser) -> SymbolDependentValue:
+    def parse(self, parser: TokenParser) -> LineMatcherSdv:
         return sut.parse_line_matcher_from_token_parser(parser)
 
     def is_reference_to(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_line_matcher_reference_to(symbol_name)
 
-    def sdv_of_constant_matcher(self, matcher: LineMatcher) -> SymbolDependentValue:
+    def sdv_of_constant_matcher(self, matcher: LineMatcher) -> LineMatcherSdv:
         return LineMatcherSdv(
             matchers.sdv_from_primitive_value(matcher)
         )
@@ -182,7 +181,7 @@ class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase)
         )
 
 
-def resolved_value_is_line_number_matcher(equivalent: Matcher[LineMatcherLine],
+def resolved_value_is_line_number_matcher(equivalent: MatcherWTrace[LineMatcherLine],
                                           model_infos: List[ModelInfo],
                                           references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence
                                           ) -> ValueAssertion[SymbolDependentValue]:
@@ -190,7 +189,7 @@ def resolved_value_is_line_number_matcher(equivalent: Matcher[LineMatcherLine],
                                         model_infos)
     return sdv_assertions.matches_sdv_of_line_matcher(
         references,
-        ddv_matches_line_matcher(expected_matcher)
+        primitive_value=expected_matcher
     )
 
 

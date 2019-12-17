@@ -2,6 +2,7 @@ from typing import Sequence, Optional
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol.data import string_sdv
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
@@ -82,11 +83,8 @@ class FileMakerForContentsFromProgram(FileMaker):
              dst_path: DescribedPathPrimitive,
              ) -> Optional[TextRenderer]:
         executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
-        path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
 
-        program = self._program \
-            .resolve(path_resolving_env.symbols) \
-            .value_of_any_dependency(path_resolving_env.tcds)
+        program = resolving_helper_for_instruction_env(environment).resolve_program(self._program)
 
         executable = os_services.executable_factory__detect_ex().make(program.command)
         storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
@@ -124,8 +122,8 @@ class FileMakerForContentsFromExistingFile(FileMaker):
 
         self._src_file_validator = path_check.PathCheckValidator(
             path_check.PathCheck(src_path,
-                                    file_properties.must_exist_as(file_properties.FileType.REGULAR,
-                                                                      follow_symlinks=True)))
+                                 file_properties.must_exist_as(file_properties.FileType.REGULAR,
+                                                               follow_symlinks=True)))
 
         self._validator = sdv_validation.AndSdvValidator([
             sdv_validation.SingleStepSdvValidator(ValidationStep.PRE_SDS,
@@ -153,9 +151,7 @@ class FileMakerForContentsFromExistingFile(FileMaker):
         if src_validation_res:
             return src_validation_res
 
-        transformer = self._transformer \
-            .resolve(path_resolving_env.symbols) \
-            .value_of_any_dependency(path_resolving_env.tcds)
+        transformer = resolving_helper_for_instruction_env(environment).resolve_string_transformer(self._transformer)
         src_path = self._src_path.resolve_value_of_any_dependency(path_resolving_env)
 
         return create_file_from_transformation_of_existing_file__dp(src_path,

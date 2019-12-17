@@ -12,17 +12,15 @@ from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.symbol.logic.test_resources.resolving_helper import resolving_helper
+from exactly_lib_test.symbol.test_resources import sdv_assertions
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
-from exactly_lib_test.test_case_utils.line_matcher.test_resources import ddv_assertions as asrt_line_matcher
-from exactly_lib_test.test_case_utils.line_matcher.test_resources.sdv_assertions import \
-    resolved_ddv_matches_line_matcher
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources import matcher_assertions as asrt_matcher
@@ -71,11 +69,10 @@ class TestSuccessfulScenarios(TestCaseBase):
         ]
 
         expected_container = matches_container(
-            resolved_ddv_matches_line_matcher(
-                asrt_line_matcher.ddv_matches_line_matcher(
-                    asrt_matcher.is_equivalent_to(expected_equivalent,
-                                                  models_for_equivalence_check)
-                )
+            sdv_assertions.matches_sdv_of_line_matcher(
+                references=asrt.is_empty_sequence,
+                primitive_value=asrt_matcher.is_equivalent_to(expected_equivalent,
+                                                              models_for_equivalence_check)
             )
         )
 
@@ -130,18 +127,16 @@ class TestSuccessfulScenarios(TestCaseBase):
 
         expected_matcher_sdv = parse_line_matcher.parser().parse(remaining_source(matcher_argument))
 
-        expected_matcher = expected_matcher_sdv.resolve(symbol_table).value_of_any_dependency(fake_tcds())
+        expected_matcher = resolving_helper(symbol_table).resolve(expected_matcher_sdv)
 
         expected_container = matches_container(
             assertion_on_sdv=
-            resolved_ddv_matches_line_matcher(
-                asrt_line_matcher.ddv_matches_line_matcher(
-                    asrt_matcher.is_equivalent_to(expected_matcher,
-                                                  models_for_equivalence_check)
-                ),
+            sdv_assertions.matches_sdv_of_line_matcher(
                 references=asrt.matches_sequence([
                     is_line_matcher_reference_to(symbol.name),
                 ]),
+                primitive_value=asrt_matcher.is_equivalent_to(expected_matcher,
+                                                              models_for_equivalence_check),
                 symbols=symbol_table,
             )
         )

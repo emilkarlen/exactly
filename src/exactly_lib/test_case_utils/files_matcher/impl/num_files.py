@@ -7,7 +7,6 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.files_matcher import config
-from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
 from exactly_lib.test_case_utils.matcher.impls import property_matcher_describers
 from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
@@ -15,8 +14,10 @@ from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcher
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherConstructor, \
     FilesMatcherDdv
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, MatcherDdv
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, MatcherDdv, MatcherAdv
 from exactly_lib.util import logic_types
+from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -82,11 +83,17 @@ class _NumFilesMatcherDdv(FilesMatcherDdv):
         return self._matcher.validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
-        return files_matchers.ConstantConstructor(
-            _FilesMatcher(
-                ExpectationType.POSITIVE,
-                self._matcher.value_of_any_dependency(tcds),
-            ),
+        return _NumFilesMatcherAdv(self._matcher.value_of_any_dependency(tcds))
+
+
+class _NumFilesMatcherAdv(FilesMatcherConstructor):
+    def __init__(self, matcher: MatcherAdv[int]):
+        self._matcher = matcher
+
+    def construct(self, tmp_files_space: TmpDirFileSpace) -> FilesMatcher:
+        return _FilesMatcher(
+            ExpectationType.POSITIVE,
+            self._matcher.applier(ApplicationEnvironment(tmp_files_space)),
         )
 
 

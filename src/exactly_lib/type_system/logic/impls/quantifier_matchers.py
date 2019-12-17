@@ -216,16 +216,10 @@ class _QuantifierDdv(Generic[MODEL, ELEMENT], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._predicate.validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherWTraceAndNegation[MODEL]:
-        return self._make_matcher(
-            self._element_setup,
-            self._predicate.value_of_any_dependency(tcds)
-        )
-
-    def adv_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         return _QuantifierAdv(
             self._element_setup,
-            self._predicate.adv_of_any_dependency(tcds),
+            self._predicate.value_of_any_dependency(tcds),
             self._make_matcher,
         )
 

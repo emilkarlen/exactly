@@ -12,6 +12,7 @@ from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor, \
     ActualFilePropertyDescriptorConstructorForComparisonFile, ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
+from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
@@ -124,7 +125,7 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
                   source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices) -> ComparisonActualFile:
-        program = self._program.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
+        program = resolving_helper_for_instruction_env(environment).resolve_program(self._program)
         result = make_transformed_file_from_output_in_instruction_tmp_dir(environment,
                                                                           os_services.executable_factory__detect_ex(),
                                                                           source_info,

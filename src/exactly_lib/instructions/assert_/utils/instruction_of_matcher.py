@@ -1,5 +1,7 @@
 from typing import Sequence, TypeVar, Generic
 
+from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -7,7 +9,6 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
-from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherSdv
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer
@@ -20,7 +21,7 @@ class Instruction(Generic[T], AssertPhaseInstruction):
     """Makes an instruction of a :class:`Matcher`"""
 
     def __init__(self,
-                 matcher: PropertyMatcherSdv[None, T],
+                 matcher: MatcherSdv[None],
                  err_msg_header_renderer: Renderer[MajorBlock],
                  ):
         self._matcher = matcher
@@ -52,8 +53,7 @@ class Instruction(Generic[T], AssertPhaseInstruction):
             raise HardErrorException(err_msg)
 
     def _execute(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pfh.PassOrFailOrHardError:
-        matcher = self._matcher.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
-        result = matcher.matches_w_trace(None)
+        result = resolving_helper_for_instruction_env(environment).apply__generic(self._matcher, None)
         if result.value:
             return pfh.new_pfh_pass()
         else:

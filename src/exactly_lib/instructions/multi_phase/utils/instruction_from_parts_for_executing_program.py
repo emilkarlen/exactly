@@ -4,6 +4,7 @@ from exactly_lib.instructions.multi_phase.utils import instruction_embryo
 from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import MainStepResultTranslator, \
     PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
+from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
@@ -39,11 +40,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
              os_services: OsServices) -> ResultAndStderr:
-        path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
-        command = self._program \
-            .resolve(path_resolving_env.symbols) \
-            .command \
-            .value_of_any_dependency(path_resolving_env.tcds)
+        command = resolving_helper_for_instruction_env(environment).resolve_program_command(self._program)
         executable = os_services.executable_factory__detect_ex().make(command)
         executor = spe.ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         storage_dir = instruction_log_dir(logging_paths, self.source_info)

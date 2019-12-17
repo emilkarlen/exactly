@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase import define_symbol as sut
+from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol import lookups
@@ -232,7 +233,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
 
     def _get_matcher(self, environment: InstructionEnvironmentForPostSdsStep) -> StringMatcher:
         matcher_sdv = lookups.lookup_string_matcher(environment.symbols, self.matcher_symbol_name)
-        return matcher_sdv.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
+        return resolving_helper_for_instruction_env(environment).resolve(matcher_sdv)
 
     def _new_model(self, environment: InstructionEnvironmentForPostSdsStep) -> FileToCheck:
         model_builder = model_construction.model_of(self.actual_model_contents)
