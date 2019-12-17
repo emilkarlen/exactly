@@ -14,7 +14,7 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherDdvImplBase
+from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherDdvImplBase, FilesMatcherImplBase
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherAdv
@@ -297,12 +297,13 @@ def _files_matcher_that_asserts_models_is_expected(put: unittest.TestCase,
     )
 
 
-class _FilesMatcherThatAssertsModelsIsExpected(FilesMatcher):
+class _FilesMatcherThatAssertsModelsIsExpected(FilesMatcherImplBase):
     def __init__(self,
                  put: unittest.TestCase,
                  relativity: RelativityOptionConfigurationForRelSds,
                  tcds: Tcds,
                  ):
+        super().__init__()
         self.put = put
         self.relativity = relativity
         self._tcds = tcds
@@ -366,8 +367,7 @@ class _FilesMatcherDdvThatAssertsModelsIsExpected(FilesMatcherDdvImplBase):
         )
 
 
-class _FilesMatcherThatReportsHardError(FilesMatcher):
-
+class _FilesMatcherThatReportsHardError(FilesMatcherImplBase):
     @property
     def name(self) -> str:
         return str(type(self))

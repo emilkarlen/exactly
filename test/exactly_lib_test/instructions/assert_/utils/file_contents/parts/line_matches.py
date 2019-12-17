@@ -14,7 +14,7 @@ from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches 
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
-from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.utils.file_contents.contents_checkers import \
     FilePropertyDescriptorConstructorTestImpl
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
@@ -176,9 +176,9 @@ class TestAnyLineMatches(TestCaseBase):
 
 def assertion_part_for_every_line_matches(expectation_type: ExpectationType,
                                           line_matcher_sdv: LineMatcherSdv) -> FileContentsAssertionPart:
-    return StringMatcherAssertionPart(sut.matcher_for_every_line_matches(expectation_type, line_matcher_sdv))
+    return StringMatcherAssertionPart(sut.sdv(expectation_type, Quantifier.ALL, line_matcher_sdv))
 
 
 def assertion_part_for_any_line_matches(expectation_type: ExpectationType,
                                         line_matcher_sdv: LineMatcherSdv) -> FileContentsAssertionPart:
-    return StringMatcherAssertionPart(sut.matcher_for_any_line_matches(expectation_type, line_matcher_sdv))
+    return StringMatcherAssertionPart(sut.sdv(expectation_type, Quantifier.EXISTS, line_matcher_sdv))

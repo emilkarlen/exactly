@@ -6,7 +6,9 @@ from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_ge
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
+from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.logic_types import ExpectationType
 
 
@@ -30,5 +32,8 @@ def _sdv(regex: RegexSdv) -> LineMatcherSdv:
 
 
 class _PropertyGetter(PropertyGetter[LineMatcherLine, str]):
+    def structure(self) -> StructureRenderer:
+        return renderers.header_only('contents')
+
     def get_from(self, model: LineMatcherLine) -> str:
         return model[1]

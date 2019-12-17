@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+case_file=files-matcher.case
+type_name='files-matcher'
+
+here=$(dirname "$0")
+xly="python3 ${here}/../../src/default-main-program-runner.py"
+
+function list_defined_names() {
+  ${xly} symbol ${case_file} | grep ${type_name} | cut -d ' ' -f 3
+}
+
+all_defined_names=$(list_defined_names)
+
+for name in $all_defined_names; do
+  echo '========================================'
+  $xly symbol ${case_file} ${name}
+done

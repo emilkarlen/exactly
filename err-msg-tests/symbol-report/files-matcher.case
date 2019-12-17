@@ -1,0 +1,14 @@
+[setup]
+
+def files-matcher NUM_FILES = num-files == 1
+
+def files-matcher NEGATION = ! NUM_FILES
+
+def files-matcher EMPTY = empty
+
+def files-matcher FOR_ALL = every file : type dir
+
+def files-matcher EXISTS = any file : contents empty
+
+def files-matcher SELECTION   = -selection type file
+                                empty

@@ -19,13 +19,17 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAss
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import negation_of_predicate, pfh_exception
+from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg2.header_rendering import unexpected_attribute__major_block
 from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_integer_matcher
 from exactly_lib.test_case_utils.matcher.impls import property_matcher_describers
-from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterDdv, PropertyGetter
+from exactly_lib.test_case_utils.matcher.impls.property_getters import PropertyGetterAdvConstant
+from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterDdv, PropertyGetter, PropertyGetterAdv
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherSdv
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util import strings
+from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
@@ -96,9 +100,13 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         )
 
 
-class _ExitCodeGetter(PropertyGetter[None, int]):
+class _ExitCodeGetter(PropertyGetter[None, int], WithCachedTreeStructureDescriptionBase):
     def __init__(self, sds: SandboxDirectoryStructure):
+        super().__init__()
         self._sds = sds
+
+    def _structure(self) -> StructureRenderer:
+        return _PROPERTY_GETTER_STRUCTURE
 
     def get_from(self, model: None) -> int:
         sds = self._sds
@@ -145,8 +153,11 @@ class _ExitCodeGetter(PropertyGetter[None, int]):
 
 
 class _ExitCodeGetterDdv(PropertyGetterDdv[None, int]):
-    def value_of_any_dependency(self, tcds: Tcds) -> PropertyGetter[None, int]:
-        return _ExitCodeGetter(tcds.sds)
+    def structure(self) -> StructureRenderer:
+        return _PROPERTY_GETTER_STRUCTURE
+
+    def value_of_any_dependency(self, tcds: Tcds) -> PropertyGetterAdv[None, int]:
+        return PropertyGetterAdvConstant(_ExitCodeGetter(tcds.sds))
 
 
 def _must_be_within_byte_range(actual: int) -> Optional[TextRenderer]:
@@ -155,6 +166,8 @@ def _must_be_within_byte_range(actual: int) -> Optional[TextRenderer]:
                                                str(actual))
     return None
 
+
+_PROPERTY_GETTER_STRUCTURE = renderers.header_only(_PROPERTY_NAME)
 
 _MAIN_DESCRIPTION = """\
 {PASS} if, and only if, the {EXIT_CODE} satisfies {INTEGER_COMPARISON}.

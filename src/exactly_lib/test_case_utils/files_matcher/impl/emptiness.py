@@ -2,55 +2,53 @@ from typing import Sequence, List, Optional, Iterator
 
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.symbol.logic.matcher import MatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.description_tree import custom_details
+from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.file_or_dir_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.test_case_utils.files_matcher import config
-from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherDdvImplBase
+from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherImplBase
+from exactly_lib.test_case_utils.matcher.impls import sdv_components
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel, FilesMatcher, \
-    FilesMatcherDdv, FilesMatcherAdv
-from exactly_lib.type_system.logic.impls import advs
+from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel, FilesMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util import logic_types, strings
-from exactly_lib.util.description_tree import details
+from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib.util.symbol_table import SymbolTable
 
 
 def emptiness_matcher() -> FilesMatcherSdv:
-    return FilesMatcherSdv(_EmptinessMatcherSdv())
+    return FilesMatcherSdv(
+        sdv_components.matcher_sdv_from_constant_primitive(_EmptinessMatcher(ExpectationType.POSITIVE))
+    )
 
 
-class _EmptinessMatcherSdv(MatcherSdv[FilesMatcherModel]):
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return ()
+class _EmptinessMatcher(FilesMatcherImplBase):
+    NAME = file_or_dir_contents.EMPTINESS_CHECK_ARGUMENT
 
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
-        return _EmptinessMatcherDdv()
-
-
-class _EmptinessMatcherDdv(FilesMatcherDdvImplBase):
-    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherAdv:
-        return advs.ConstantMatcherAdv(
-            _EmptinessMatcher(ExpectationType.POSITIVE)
+    @staticmethod
+    def new_structure_tree(expectation_type: ExpectationType) -> StructureRenderer:
+        positive = renderers.header_only(_EmptinessMatcher.NAME)
+        return (
+            positive
+            if expectation_type is ExpectationType.POSITIVE
+            else
+            custom_renderers.negation(positive)
         )
 
-
-class _EmptinessMatcher(FilesMatcher):
     def __init__(self, expectation_type: ExpectationType):
+        super().__init__()
         self._expectation_type = expectation_type
 
     @property
     def name(self) -> str:
         return file_or_dir_contents.EMPTINESS_CHECK_ARGUMENT
+
+    def _structure(self) -> StructureRenderer:
+        return self.new_structure_tree(self._expectation_type)
 
     @property
     def negation(self) -> FilesMatcher:

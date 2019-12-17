@@ -15,6 +15,7 @@ from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.expression import grammar
@@ -26,7 +27,7 @@ from exactly_lib.test_case_utils.file_matcher.impl import name_regex, name_glob_
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -63,6 +64,11 @@ def parser() -> parser_classes.Parser[FileMatcherSdv]:
 class _Parser(parser_classes.Parser[FileMatcherSdv]):
     def parse_from_token_parser(self, parser: TokenParser) -> FileMatcherSdv:
         return parse_sdv(parser)
+
+
+class ParserOfPlainMatcherOnArbitraryLine(parser_classes.Parser[MatcherSdv[FileMatcherModel]]):
+    def parse_from_token_parser(self, token_parser: TokenParser) -> MatcherSdv[FileMatcherModel]:
+        return parse_sdv(token_parser, must_be_on_current_line=False).matcher
 
 
 _PARSER = _Parser()

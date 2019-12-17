@@ -2,9 +2,9 @@ import pathlib
 import unittest
 from typing import List
 
+from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcher
-from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as models
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers

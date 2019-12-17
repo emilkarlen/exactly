@@ -7,7 +7,7 @@ from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherDdvImplBase
+from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherDdvImplBase, FilesMatcherImplBase
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherDdv, \
     FilesMatcherAdv
@@ -25,9 +25,9 @@ def arbitrary_sdv() -> FilesMatcherSdv:
     return files_matcher_sdv_constant_test_impl(True)
 
 
-class FilesMatcherTestImpl(FilesMatcher):
-    def __init__(self,
-                 result: bool = True):
+class FilesMatcherTestImpl(FilesMatcherImplBase):
+    def __init__(self, result: bool = True):
+        super().__init__()
         self._result = result
 
     @property

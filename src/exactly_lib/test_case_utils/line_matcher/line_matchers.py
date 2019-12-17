@@ -1,7 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.impls import combinator_matchers
+from exactly_lib.test_case_utils.matcher.impls import constant, combinator_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 
 

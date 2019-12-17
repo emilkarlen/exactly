@@ -5,13 +5,13 @@ from typing import Iterator, Optional
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.files_matcher import ErrorMessageInfo, FileModel, FilesMatcherModel
-from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.util.file_utils import TmpDirFileSpace
 
 

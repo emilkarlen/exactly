@@ -7,11 +7,12 @@ from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
 from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs, sdv_components, constant
 from exactly_lib.test_case_utils.matcher.impls.symbol_reference import MatcherReferenceSdv
-from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER
+from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER, LineMatcherLine
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -39,6 +40,11 @@ class _Parser(Parser[LineMatcherSdv]):
 
 
 _PARSER = _Parser()
+
+
+class ParserOfPlainMatcherOnArbitraryLine(Parser[MatcherSdv[LineMatcherLine]]):
+    def parse_from_token_parser(self, token_parser: TokenParser) -> MatcherSdv[LineMatcherLine]:
+        return parse_line_matcher_from_token_parser(token_parser, must_be_on_current_line=False).matcher
 
 
 def parse_line_matcher_from_token_parser(parser: TokenParser,

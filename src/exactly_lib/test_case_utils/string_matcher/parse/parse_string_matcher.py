@@ -11,7 +11,7 @@ from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher import sdvs
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
-from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.logic_types import ExpectationType, Quantifier
 
 COMPARISON_OPERATOR = 'COMPARISON OPERATOR'
 _FORMAT_MAP = {
@@ -79,11 +79,11 @@ class _StringMatcherParser:
 
     def _parse_any_line_matches_checker(self, token_parser: TokenParser) -> StringMatcherSdv:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches
-        return line_matches.parse_any_line_matches_matcher(self.expectation_type, token_parser)
+        return line_matches.parse(Quantifier.EXISTS, self.expectation_type, token_parser)
 
     def _parse_every_line_matches_checker(self, token_parser: TokenParser) -> StringMatcherSdv:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches
-        return line_matches.parse_every_line_matches_matcher(self.expectation_type, token_parser)
+        return line_matches.parse(Quantifier.ALL, self.expectation_type, token_parser)
 
     def _symbol_reference(self, parsed_symbol_name: str, token_parser: TokenParser) -> StringMatcherSdv:
         if symbol_syntax.is_symbol_name(parsed_symbol_name):

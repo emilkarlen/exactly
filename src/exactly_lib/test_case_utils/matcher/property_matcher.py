@@ -6,11 +6,11 @@ from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
+from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterDdv, \
-    PropertyGetterSdv
+    PropertyGetterSdv, PropertyGetterAdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, Failure, MatcherDdv, \
     TraceRenderer, MatcherWTraceAndNegation, MatcherAdv, ApplicationEnvironment
 from exactly_lib.util.symbol_table import SymbolTable
@@ -19,10 +19,16 @@ PROP_TYPE = TypeVar('PROP_TYPE')
 
 
 class PropertyMatcherDescriber:
-    def trace(self, matcher_result: MatchingResult) -> TraceRenderer:
+    def trace(self,
+              matcher_result: MatchingResult,
+              property_getter: StructureRenderer,
+              ) -> TraceRenderer:
         pass
 
-    def structure(self, matcher: StructureRenderer) -> StructureRenderer:
+    def structure(self,
+                  matcher: StructureRenderer,
+                  property_getter: StructureRenderer,
+                  ) -> StructureRenderer:
         pass
 
 
@@ -37,7 +43,8 @@ class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTraceAndNegation[MODEL]
         self._matcher = matcher
         self._property_getter = property_getter
         self._describer = describer
-        self._structure = self._describer.structure(self._matcher.structure())
+        self._structure = self._describer.structure(matcher.structure(),
+                                                    property_getter.structure())
 
     @property
     def name(self) -> str:
@@ -78,14 +85,15 @@ class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTraceAndNegation[MODEL]
         matcher_result = self._matcher.matches_w_trace(self._property_getter.get_from(model))
         return MatchingResult(
             matcher_result.value,
-            self._describer.trace(matcher_result)
+            self._describer.trace(matcher_result,
+                                  self._property_getter.structure())
         )
 
 
 class _PropertyMatcherAdv(Generic[MODEL, PROP_TYPE], MatcherAdv[MODEL]):
     def __init__(self,
                  matcher: MatcherAdv[PROP_TYPE],
-                 property_getter: PropertyGetter[MODEL, PROP_TYPE],
+                 property_getter: PropertyGetterAdv[MODEL, PROP_TYPE],
                  describer: PropertyMatcherDescriber,
                  ):
         self._matcher = matcher
@@ -95,7 +103,7 @@ class _PropertyMatcherAdv(Generic[MODEL, PROP_TYPE], MatcherAdv[MODEL]):
     def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
         return PropertyMatcher(
             self._matcher.applier(environment),
-            self._property_getter,
+            self._property_getter.applier(environment),
             self._describer,
         )
 
@@ -115,7 +123,8 @@ class PropertyMatcherDdv(Generic[MODEL, PROP_TYPE], MatcherDdv[MODEL]):
         ])
 
     def structure(self) -> StructureRenderer:
-        return self._describer.structure(self._matcher.structure())
+        return self._describer.structure(self._matcher.structure(),
+                                         self._property_getter.structure())
 
     @property
     def validator(self) -> DdvValidator:

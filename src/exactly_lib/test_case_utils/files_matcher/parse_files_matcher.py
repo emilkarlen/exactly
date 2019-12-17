@@ -7,13 +7,12 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, sub_set_selection, \
     negation
 from exactly_lib.test_case_utils.files_matcher.impl import symbol_reference
-from exactly_lib.test_case_utils.matcher.impls import parse_integer_matcher
+from exactly_lib.test_case_utils.matcher.impls import parse_quantified_matcher
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 
 
@@ -64,13 +63,7 @@ class _SimpleMatcherParser:
         return emptiness.emptiness_matcher()
 
     def parse_num_files_check(self, parser: TokenParser) -> FilesMatcherSdv:
-        matcher = parse_integer_matcher.parse(
-            parser,
-            ExpectationType.POSITIVE,
-            parse_integer_matcher.validator_for_non_negative,
-        )
-
-        return num_files.sdv(matcher)
+        return num_files.parse(ExpectationType.POSITIVE, parser)
 
     def parse_file_quantified_assertion__all(self, parser: TokenParser) -> FilesMatcherSdv:
         return self._file_quantified_assertion(Quantifier.ALL, parser)
@@ -90,23 +83,13 @@ class _SimpleMatcherParser:
     def _file_quantified_assertion(self,
                                    quantifier: Quantifier,
                                    parser: TokenParser) -> FilesMatcherSdv:
-        parser.consume_mandatory_constant_unquoted_string(
-            files_matcher_primitives.QUANTIFICATION_OVER_FILE_ARGUMENT,
-            must_be_on_current_line=True)
-        parser.consume_mandatory_constant_unquoted_string(
-            instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
-            must_be_on_current_line=True)
-        matcher_on_file = parse_file_matcher.parse_sdv(parser,
-                                                       must_be_on_current_line=False)
-
-        return self._file_quantified_assertion_part(quantifier,
-                                                    matcher_on_file)
-
-    def _file_quantified_assertion_part(self,
-                                        quantifier: Quantifier,
-                                        matcher_on_file: FileMatcherSdv,
-                                        ) -> FilesMatcherSdv:
-        return quant_over_files.quantified_matcher(quantifier, matcher_on_file)
+        matcher = parse_quantified_matcher.parse_after_quantifier_token(
+            quantifier,
+            parse_file_matcher.ParserOfPlainMatcherOnArbitraryLine(),
+            quant_over_files.ELEMENT_SETUP,
+            parser,
+        )
+        return FilesMatcherSdv(matcher)
 
 
 _SIMPLE_MATCHER_PARSER = _SimpleMatcherParser()

@@ -1,131 +1,94 @@
-from typing import Sequence, Optional
+from typing import Sequence
 
-import exactly_lib.type_system.logic.impls.advs
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherSdvImplBase
-from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherDdvImplBase
+from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.test_case_utils.matcher import property_matcher
+from exactly_lib.test_case_utils.matcher.impls import property_matcher_describers
+from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterSdv, PropertyGetterDdv, MODEL, T, \
+    PropertyGetterAdv, PropertyGetter
+from exactly_lib.type_system.description.structure_building import StructureBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherDdv, \
-    FilesMatcherAdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher, FileMatcherAdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.cli_syntax import option_syntax
+from exactly_lib.util.description_tree import details
 from exactly_lib.util.symbol_table import SymbolTable
 
 
 def sub_set_selection_matcher(selector: FileMatcherSdv,
                               matcher_on_selection: FilesMatcherSdv) -> FilesMatcherSdv:
-    return FilesMatcherSdv(_SubSetSelectorMatcherSdv(selector,
-                                                     matcher_on_selection))
+    return FilesMatcherSdv(
+        property_matcher.PropertyMatcherSdv(
+            matcher_on_selection.matcher,
+            _SubsetGetterSdv(selector),
+            property_matcher_describers.GetterWithMatcherAsChild(),
+        ),
+    )
 
 
-class _SubSetSelectorMatcher(WithCachedNameAndTreeStructureDescriptionBase, FilesMatcher):
+class _SubsetGetter(PropertyGetter[FilesMatcherModel, FilesMatcherModel],
+                    WithCachedTreeStructureDescriptionBase):
     NAME = ' '.join([
         option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name),
         syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
     ])
 
-    def __init__(self,
-                 selector: FileMatcher,
-                 matcher_on_selection: FilesMatcher):
-        WithCachedNameAndTreeStructureDescriptionBase.__init__(self)
-        self._selector = selector
-        self._matcher_on_selection = matcher_on_selection
-
-    @property
-    def name(self) -> str:
-        return self.NAME
-
-    @property
-    def negation(self) -> FilesMatcher:
-        return _SubSetSelectorMatcher(
-            self._selector,
-            self._matcher_on_selection.negation,
-        )
-
-    def matches_emr(self,
-                    files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        return self._matcher_on_selection.matches_emr(
-            files_source.sub_set(self._selector),
-        )
-
-    def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
-        result = self._matcher_on_selection.matches_w_trace(
-            model.sub_set(self._selector),
-        )
-
+    @staticmethod
+    def new_structure_renderer(predicate: StructureRenderer) -> StructureRenderer:
         return (
-            self._new_tb()
-                .append_details(self._details_renderer_of(self._selector))
-                .append_child(result.trace)
-                .build_result(result.value)
+            StructureBuilder(_SubsetGetter.NAME)
+                .append_details(details.Tree(predicate))
+                .as_render()
         )
+
+    def __init__(self, predicate: FileMatcher):
+        super().__init__()
+        self._predicate = predicate
 
     def _structure(self) -> StructureRenderer:
-        return (
-            self._new_structure_builder()
-                .append_details(self._details_renderer_of(self._selector))
-                .append_child(self._node_renderer_of(self._matcher_on_selection))
-                .build()
-        )
+        return self.new_structure_renderer(self._predicate.structure())
+
+    def get_from(self, model: FilesMatcherModel) -> FilesMatcherModel:
+        return model.sub_set(self._predicate)
 
 
-class _SubSetSelectorMatcherDdv(FilesMatcherDdvImplBase):
-    def __init__(self,
-                 selector: FileMatcherDdv,
-                 matcher_on_selection: FilesMatcherDdv,
-                 ):
-        self._selector = selector
-        self._matcher_on_selection = matcher_on_selection
-        self._validator = ddv_validators.AndValidator([
-            selector.validator,
-            matcher_on_selection.validator,
-        ])
+class _SubsetGetterAdv(PropertyGetterAdv[FilesMatcherModel, FilesMatcherModel]):
+    def __init__(self, predicate: FileMatcherAdv):
+        self._predicate = predicate
+
+    def applier(self, environment: ApplicationEnvironment) -> PropertyGetter[FilesMatcherModel, FilesMatcherModel]:
+        return _SubsetGetter(self._predicate.applier(environment))
+
+
+class _SubsetGetterDdv(PropertyGetterDdv[FilesMatcherModel, FilesMatcherModel]):
+    def __init__(self, predicate: FileMatcherDdv):
+        self._predicate = predicate
+
+    def structure(self) -> StructureRenderer:
+        return _SubsetGetter.new_structure_renderer(self._predicate.structure())
 
     @property
     def validator(self) -> DdvValidator:
-        return self._validator
+        return self._predicate.validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherAdv:
-        selector_adv = self._selector.value_of_any_dependency(tcds)
-        matcher_on_selection = self._matcher_on_selection.value_of_any_dependency(tcds)
-
-        def mk_matcher(environment: ApplicationEnvironment) -> FilesMatcher:
-            return _SubSetSelectorMatcher(
-                selector_adv.applier(environment),
-                matcher_on_selection.applier(environment),
-            )
-
-        return exactly_lib.type_system.logic.impls.advs.MatcherAdvFromFunction(mk_matcher)
+    def value_of_any_dependency(self, tcds: Tcds) -> PropertyGetterAdv[MODEL, T]:
+        return _SubsetGetterAdv(self._predicate.value_of_any_dependency(tcds))
 
 
-class _SubSetSelectorMatcherSdv(FileMatcherSdvImplBase):
-    def __init__(self,
-                 selector: FileMatcherSdv,
-                 matcher_on_selection: FilesMatcherSdv):
-        self._selector = selector
-        self._matcher_on_selection = matcher_on_selection
-        self._references = references_from_objects_with_symbol_references([
-            selector, matcher_on_selection
-        ])
+class _SubsetGetterSdv(PropertyGetterSdv[FilesMatcherModel, FilesMatcherModel]):
+    def __init__(self, predicate: FileMatcherSdv):
+        self._predicate = predicate
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self._references
+        return self._predicate.references
 
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
-        return _SubSetSelectorMatcherDdv(
-            self._selector.resolve(symbols),
-            self._matcher_on_selection.resolve(symbols)
-        )
+    def resolve(self, symbols: SymbolTable) -> PropertyGetterDdv[FilesMatcherModel, FilesMatcherModel]:
+        return _SubsetGetterDdv(self._predicate.resolve(symbols))

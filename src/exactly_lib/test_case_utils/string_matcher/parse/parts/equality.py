@@ -17,6 +17,7 @@ from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver, ExpectedValueResolver
 from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase
@@ -26,7 +27,7 @@ from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
-from exactly_lib.type_system.logic.impls import combinator_matchers, advs
+from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MatcherAdv, MODEL
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherDdv
 from exactly_lib.util import file_utils

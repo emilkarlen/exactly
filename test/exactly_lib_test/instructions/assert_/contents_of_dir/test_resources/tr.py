@@ -202,8 +202,8 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
         # ASSERT #
 
         expected_references = asrt.matches_sequence(
-            [is_file_matcher_reference_to(name_of_file_matcher)] +
-            list(self.assertion_variant.expected_references)
+            list(self.assertion_variant.expected_references) +
+            [is_file_matcher_reference_to(name_of_file_matcher)]
         )
         expected_references.apply_without_message(self, actual)
 

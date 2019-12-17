@@ -1,117 +1,40 @@
-from typing import Sequence, Optional
-
-from exactly_lib.definitions.primitives import files_matcher
+from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.primitives import files_matcher as files_matcher_primitives
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.symbol.logic.matcher import MatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherSdvImplBase
-from exactly_lib.test_case_utils.files_matcher import config
-from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherAdvImplBase, FilesMatcherDdvImplBase
-from exactly_lib.test_case_utils.matcher.impls import property_matcher_describers
-from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
+from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.test_case_utils.matcher import property_matcher
+from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_integer_matcher, \
+    property_matcher_describers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
-from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcher
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherDdv, \
-    FilesMatcherAdv
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, MatcherDdv, MatcherAdv
-from exactly_lib.util import logic_types
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
+from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib.util.symbol_table import SymbolTable
+
+_NAME = ' '.join((files_matcher_primitives.NUM_FILES_CHECK_ARGUMENT,
+                  syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name))
 
 
-def sdv(matcher: MatcherSdv[int]) -> FilesMatcherSdv:
-    return FilesMatcherSdv(_NumFilesMatcherSdv(matcher))
-
-
-class _FilesMatcher(FilesMatcher):
-    def __init__(self,
-                 expectation_type: ExpectationType,
-                 matcher: MatcherWTrace[int]):
-        self._expectation_type = expectation_type
-        self._matcher = matcher
-
-    @property
-    def name(self) -> str:
-        return files_matcher.NUM_FILES_CHECK_ARGUMENT
-
-    @property
-    def negation(self) -> FilesMatcher:
-        return _FilesMatcher(
-            logic_types.negation(self._expectation_type),
-            self._matcher,
-        )
-
-    def matches_emr(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        property_matcher = self._property_matcher()
-
-        failure = property_matcher.matches_w_failure(files_source)
-
-        return (
-            ErrorMessageResolverForFailure(
-                files_source.error_message_info.property_descriptor(config.NUM_FILES_PROPERTY_NAME),
-                failure,
-            )
-            if failure
-            else
-            None
-        )
-
-    def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
-        return self._property_matcher().matches_w_trace(model)
-
-    def _property_matcher(self, ) -> PropertyMatcher[FilesMatcherModel, int]:
-        matcher = self._matcher
-        if self._expectation_type is ExpectationType.NEGATIVE:
-            matcher = matcher.negation
-
-        return PropertyMatcher(
+def parse(expectation_type: ExpectationType,
+          token_parser: TokenParser) -> FilesMatcherSdv:
+    matcher = parse_integer_matcher.parse(
+        token_parser,
+        expectation_type,
+        parse_integer_matcher.validator_for_non_negative,
+    )
+    return FilesMatcherSdv(
+        property_matcher.PropertyMatcherSdv(
             matcher,
-            _PropertyGetter(),
-            property_matcher_describers.NamedWithMatcherAsChild(files_matcher.NUM_FILES_CHECK_ARGUMENT),
-        )
+            property_getters.sdv_of_constant_primitive(_PropertyGetter()),
+            property_matcher_describers.GetterWithMatcherAsChild()
+        ),
+    )
 
 
-class _NumFilesMatcherDdv(FilesMatcherDdvImplBase):
-    def __init__(self, matcher: MatcherDdv[int]):
-        self._matcher = matcher
+class _PropertyGetter(PropertyGetter[FilesMatcherModel, int], WithCachedTreeStructureDescriptionBase):
+    def _structure(self) -> StructureRenderer:
+        return renderers.header_only(_NAME)
 
-    @property
-    def validator(self) -> DdvValidator:
-        return self._matcher.validator
-
-    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherAdv:
-        return _NumFilesMatcherAdv(self._matcher.value_of_any_dependency(tcds))
-
-
-class _NumFilesMatcherAdv(FilesMatcherAdvImplBase):
-    def __init__(self, matcher: MatcherAdv[int]):
-        self._matcher = matcher
-
-    def applier(self, environment: ApplicationEnvironment) -> FilesMatcher:
-        return _FilesMatcher(
-            ExpectationType.POSITIVE,
-            self._matcher.applier(environment),
-        )
-
-
-class _NumFilesMatcherSdv(FileMatcherSdvImplBase):
-    def __init__(self, matcher: MatcherSdv[int]):
-        self._matcher = matcher
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._matcher.references
-
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
-        return _NumFilesMatcherDdv(
-            self._matcher.resolve(symbols),
-        )
-
-
-class _PropertyGetter(PropertyGetter[FilesMatcherModel, int]):
     def get_from(self, model: FilesMatcherModel) -> int:
         return len(list(model.files()))

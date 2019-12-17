@@ -265,8 +265,6 @@ _RESOLVERS_OF_TYPES_WITHOUT_RENDERING_OF_RESOLVED_VALUE = [
     program_sdvs.arbitrary_sdv(),
 
     string_transformer.arbitrary_sdv(),
-
-    files_matcher.arbitrary_sdv(),
 ]
 
 _RESOLVERS_OF_TYPES_WITH_RENDERING_OF_RESOLVED_VALUE = [
@@ -277,4 +275,5 @@ _RESOLVERS_OF_TYPES_WITH_RENDERING_OF_RESOLVED_VALUE = [
     line_matcher.arbitrary_sdv(),
     string_matcher.arbitrary_sdv(),
     file_matcher.arbitrary_sdv(),
+    files_matcher.arbitrary_sdv(),
 ]

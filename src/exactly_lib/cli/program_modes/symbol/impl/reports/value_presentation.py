@@ -31,7 +31,6 @@ from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.description_tree import simple_textstruct_rendering as rendering
 from exactly_lib.util.description_tree.tree import Node
-from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.name import NumberOfItemsString
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
@@ -99,10 +98,7 @@ class _LogicTypeBlockConstructor(LogicTypeSdvPseudoVisitor[Optional[ResolvedValu
         return self._of_tree_structured(value.resolve(self.symbols))
 
     def visit_files_matcher(self, value: FilesMatcherSdv) -> Optional[ResolvedValuePresentationBlock]:
-        return None  # FIXME Restore when DDV can report structure
-        matcher_constructor = value.resolve(self.symbols).value_of_any_dependency(self.tcds)
-        matcher = matcher_constructor.applier(ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed()))
-        return self._of_tree_structured(matcher)
+        return self._of_tree_structured(value.resolve(self.symbols))
 
     def visit_line_matcher(self, value: LineMatcherSdv) -> Optional[ResolvedValuePresentationBlock]:
         return self._of_tree_structured(value.resolve(self.symbols))

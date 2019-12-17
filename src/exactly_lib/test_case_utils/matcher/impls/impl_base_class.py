@@ -2,10 +2,10 @@ from abc import ABC
 from typing import Optional, Generic
 
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
+from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.description import trace_renderers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation, MODEL
 
 
