@@ -18,10 +18,10 @@ from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources impo
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_rsrcs import matcher_helpers
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, sdv_assertions
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.files_matcher import FilesMatcherSdvConstantTestImpl, \
-    is_reference_to_files_matcher
+from exactly_lib_test.symbol.test_resources.files_matcher import files_matcher_sdv_constant_test_impl, \
+    is_reference_to_files_matcher__ref
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -29,7 +29,6 @@ from exactly_lib_test.test_case_utils.condition.integer.test_resources import ar
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax as fm_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as arg_syntax
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fsm_args
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.assertions import matches_files_matcher_sdv
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_confs, matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success
@@ -65,7 +64,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # EXPECTATION #
 
         expected_container = matches_container(
-            matches_files_matcher_sdv()
+            sdv_assertions.matches_sdv_of_files_matcher()
         )
 
         expectation = Expectation(
@@ -107,9 +106,9 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # EXPECTATION #
 
         expected_container = matches_container(
-            matches_files_matcher_sdv(
+            sdv_assertions.matches_sdv_of_files_matcher(
                 references=asrt.matches_sequence([
-                    is_reference_to_files_matcher(referenced_symbol.name)
+                    is_reference_to_files_matcher__ref(referenced_symbol.name)
                 ]),
                 symbols=symbols)
         )
@@ -135,7 +134,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         defined_name = 'defined_name'
 
         expected_container = matches_container(
-            matches_files_matcher_sdv()
+            sdv_assertions.matches_sdv_of_files_matcher()
         )
 
         not_num_files_beginning_with_a_eq_1_arg = self._not_num_files_beginning_with_a_eq_1_arg()
@@ -274,8 +273,8 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         populator.populate_tcds(environment.tcds)
 
 
-ARBITRARY_SDV = FilesMatcherSdvConstantTestImpl(True,
-                                                references=[])
+ARBITRARY_SDV = files_matcher_sdv_constant_test_impl(True,
+                                                     references=[])
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

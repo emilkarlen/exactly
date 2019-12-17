@@ -68,7 +68,7 @@ class LogicTypeResolvingHelper:
         return (
             sdv.resolve(self.symbols)
                 .value_of_any_dependency(self.tcds)
-                .construct(self.file_space)
+                .applier(self.application_environment)
         )
 
     def apply(self, sdv: MatcherTypeSdv[MODEL], model: MODEL) -> MatchingResult:

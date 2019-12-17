@@ -2,17 +2,12 @@ import pathlib
 from abc import ABC, abstractmethod
 from typing import Iterator, Optional
 
-from exactly_lib.test_case.validation import ddv_validation
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
-from exactly_lib.util.file_utils import TmpDirFileSpace
+from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherWTraceAndNegation, MatcherDdv
 
 
 class ErrorMessageInfo(ABC):
@@ -51,7 +46,7 @@ class FilesMatcherModel(ABC):
         pass
 
 
-class FilesMatcher(MatcherWTrace[FilesMatcherModel], ABC):
+class FilesMatcher(MatcherWTraceAndNegation[FilesMatcherModel], ABC):
     @property
     def option_description(self) -> str:
         return 'todo'
@@ -73,17 +68,6 @@ class FilesMatcher(MatcherWTrace[FilesMatcherModel], ABC):
         return TraceBuilder(self.name)
 
 
-class FilesMatcherConstructor(ABC):
-    @abstractmethod
-    def construct(self, tmp_files_space: TmpDirFileSpace) -> FilesMatcher:
-        pass
+FilesMatcherAdv = MatcherAdv[FilesMatcherModel]
 
-
-class FilesMatcherDdv(DirDependentValue[FilesMatcherConstructor], ABC):
-    @property
-    def validator(self) -> DdvValidator:
-        return ddv_validation.constant_success_validator()
-
-    @abstractmethod
-    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
-        pass
+FilesMatcherDdv = MatcherDdv[FilesMatcherModel]

@@ -1,12 +1,14 @@
 import contextlib
 from typing import Sequence, Optional, Iterator
 
+import exactly_lib.type_system.logic.impls.advs
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import files_matcher as files_matcher_primitives
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -16,13 +18,13 @@ from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForFileWithDescriptor
-from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
+from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherDdvImplBase
 from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, FileMatcher
 from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel, FilesMatcher, \
-    FilesMatcherConstructor, FilesMatcherDdv
+    FilesMatcherDdv, FilesMatcherAdv
 from exactly_lib.type_system.logic.impls import quantifier_matchers
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
@@ -43,8 +45,8 @@ _SATISFIES = 'matches'
 
 def quantified_matcher(quantifier: Quantifier,
                        matcher_on_file: FileMatcherSdv) -> FilesMatcherSdv:
-    return _QuantifiedMatcherSdv(quantifier,
-                                 matcher_on_file)
+    return FilesMatcherSdv(_QuantifiedMatcherSdv(quantifier,
+                                                 matcher_on_file))
 
 
 class _QuantifiedMatcher(FilesMatcher):
@@ -118,7 +120,7 @@ class _QuantifiedMatcher(FilesMatcher):
         )
 
 
-class _QuantifiedMatcherDdv(FilesMatcherDdv):
+class _QuantifiedMatcherDdv(FilesMatcherDdvImplBase):
     def __init__(self,
                  quantifier: Quantifier,
                  element_matcher: FileMatcherDdv,
@@ -130,21 +132,21 @@ class _QuantifiedMatcherDdv(FilesMatcherDdv):
     def validator(self) -> DdvValidator:
         return self._element_matcher.validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
+    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherAdv:
         matcher_on_file_adv = self._element_matcher.value_of_any_dependency(tcds)
 
-        def mk_matcher(tmp_files_space: TmpDirFileSpace) -> FilesMatcher:
+        def mk_matcher(environment: ApplicationEnvironment) -> FilesMatcher:
             return _QuantifiedMatcher(
                 ExpectationType.POSITIVE,
                 self._quantifier,
-                matcher_on_file_adv.applier(ApplicationEnvironment(tmp_files_space)),
-                tmp_files_space,
+                matcher_on_file_adv.applier(environment),
+                environment.tmp_files_space,
             )
 
-        return files_matchers.ConstructorFromFunction(mk_matcher)
+        return exactly_lib.type_system.logic.impls.advs.MatcherAdvFromFunction(mk_matcher)
 
 
-class _QuantifiedMatcherSdv(FilesMatcherSdv):
+class _QuantifiedMatcherSdv(MatcherSdv[FilesMatcherModel]):
     def __init__(self,
                  quantifier: Quantifier,
                  element_matcher: FileMatcherSdv):

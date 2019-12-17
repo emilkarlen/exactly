@@ -7,21 +7,22 @@ from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
-from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
+from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherDdvImplBase
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherConstructor, \
-    FilesMatcherDdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherDdv, \
+    FilesMatcherAdv
+from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def arbitrary_sdv() -> FilesMatcherSdv:
-    return FilesMatcherSdvConstantTestImpl(True)
+    return files_matcher_sdv_constant_test_impl(True)
 
 
 class FilesMatcherTestImpl(FilesMatcher):
@@ -50,9 +51,9 @@ class FilesMatcherTestImpl(FilesMatcher):
         )
 
 
-class FilesMatcherDdvConstantTestImpl(FilesMatcherDdv):
+class FilesMatcherDdvConstantTestImpl(FilesMatcherDdvImplBase):
     def __init__(self,
-                 constant: FilesMatcherConstructor,
+                 constant: FilesMatcherAdv,
                  validator: DdvValidator = ddv_validation.constant_success_validator(),
                  ):
         self._constant = constant
@@ -62,64 +63,36 @@ class FilesMatcherDdvConstantTestImpl(FilesMatcherDdv):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
+    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherAdv:
         return self._constant
 
 
 def constant_ddv(matcher: FilesMatcher) -> FilesMatcherDdv:
     return FilesMatcherDdvConstantTestImpl(
-        files_matchers.ConstantConstructor(
-            matcher
-        )
+        advs.ConstantMatcherAdv(matcher)
     )
 
 
 def value_with_result(result: bool,
                       validator: DdvValidator = ddv_validation.constant_success_validator()) -> FilesMatcherDdv:
     return FilesMatcherDdvConstantTestImpl(
-        files_matchers.ConstantConstructor(
-            FilesMatcherTestImpl(result)
-        ),
+        advs.ConstantMatcherAdv(FilesMatcherTestImpl(result)),
         validator,
     )
 
 
-class FilesMatcherSdvConstantTestImpl(FilesMatcherSdv):
-    def __init__(self,
-                 resolved_value: bool = True,
-                 references: Sequence[SymbolReference] = (),
-                 validator: DdvValidator = ddv_validation.constant_success_validator()):
-        self._resolved_value = resolved_value
-        self._references = list(references)
-        self._validator = validator
-
-    @property
-    def resolved_value(self) -> bool:
-        return self._resolved_value
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._references
-
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
-        return value_with_result(self._resolved_value,
-                                 self._validator)
+def files_matcher_sdv_constant_test_impl(resolved_value: bool = True,
+                                         references: Sequence[SymbolReference] = (),
+                                         validator: DdvValidator = ddv_validation.constant_success_validator()) -> FilesMatcherSdv:
+    return FilesMatcherSdv(matchers.sdv_from_bool(resolved_value,
+                                                  references,
+                                                  validator))
 
 
-class FilesMatcherSdvConstantDdvTestImpl(FilesMatcherSdv):
-    def __init__(self,
-                 resolved_value: FilesMatcherDdv,
-                 references: Sequence[SymbolReference] = (),
-                 ):
-        self._resolved_value = resolved_value
-        self._references = list(references)
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._references
-
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
-        return self._resolved_value
+def files_matcher_sdv_constant_ddv_test_impl(resolved_value: FilesMatcherDdv,
+                                             references: Sequence[SymbolReference] = ()) -> FilesMatcherSdv:
+    return FilesMatcherSdv(matchers.MatcherSdvOfConstantDdvTestImpl(resolved_value,
+                                                                    references))
 
 
 IS_FILES_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILES_MATCHER)

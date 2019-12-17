@@ -1,5 +1,6 @@
 from typing import Sequence, Optional
 
+import exactly_lib.type_system.logic.impls.advs
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
@@ -10,23 +11,23 @@ from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.files_matcher.impl import files_matchers
+from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherSdvImplBase
+from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherDdvImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherConstructor, \
-    FilesMatcherDdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherDdv, \
+    FilesMatcherAdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.cli_syntax import option_syntax
-from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
 
 
 def sub_set_selection_matcher(selector: FileMatcherSdv,
                               matcher_on_selection: FilesMatcherSdv) -> FilesMatcherSdv:
-    return _SubSetSelectorMatcherSdv(selector,
-                                     matcher_on_selection)
+    return FilesMatcherSdv(_SubSetSelectorMatcherSdv(selector,
+                                                     matcher_on_selection))
 
 
 class _SubSetSelectorMatcher(WithCachedNameAndTreeStructureDescriptionBase, FilesMatcher):
@@ -80,7 +81,7 @@ class _SubSetSelectorMatcher(WithCachedNameAndTreeStructureDescriptionBase, File
         )
 
 
-class _SubSetSelectorMatcherDdv(FilesMatcherDdv):
+class _SubSetSelectorMatcherDdv(FilesMatcherDdvImplBase):
     def __init__(self,
                  selector: FileMatcherDdv,
                  matcher_on_selection: FilesMatcherDdv,
@@ -96,20 +97,20 @@ class _SubSetSelectorMatcherDdv(FilesMatcherDdv):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
+    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherAdv:
         selector_adv = self._selector.value_of_any_dependency(tcds)
         matcher_on_selection = self._matcher_on_selection.value_of_any_dependency(tcds)
 
-        def mk_matcher(tmp_files_space: TmpDirFileSpace) -> FilesMatcher:
+        def mk_matcher(environment: ApplicationEnvironment) -> FilesMatcher:
             return _SubSetSelectorMatcher(
-                selector_adv.applier(ApplicationEnvironment(tmp_files_space)),
-                matcher_on_selection.construct(tmp_files_space),
+                selector_adv.applier(environment),
+                matcher_on_selection.applier(environment),
             )
 
-        return files_matchers.ConstructorFromFunction(mk_matcher)
+        return exactly_lib.type_system.logic.impls.advs.MatcherAdvFromFunction(mk_matcher)
 
 
-class _SubSetSelectorMatcherSdv(FilesMatcherSdv):
+class _SubSetSelectorMatcherSdv(FileMatcherSdvImplBase):
     def __init__(self,
                  selector: FileMatcherSdv,
                  matcher_on_selection: FilesMatcherSdv):

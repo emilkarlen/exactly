@@ -7,6 +7,7 @@ from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
@@ -17,6 +18,7 @@ from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.files_matcher import FilesMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
@@ -131,6 +133,24 @@ def matches_sdv_of_file_matcher(references: ValueAssertion[Sequence[SymbolRefere
         FileMatcherSdv,
         LogicValueType.FILE_MATCHER,
         ValueType.FILE_MATCHER,
+        primitive_value,
+        references,
+        symbol_table_from_none_or_value(symbols),
+        tcds,
+        tmp_file_space,
+    )
+
+
+def matches_sdv_of_files_matcher(references: ValueAssertion[Sequence[SymbolReference]] = asrt.anything_goes(),
+                                 primitive_value: ValueAssertion[FilesMatcher] = asrt.anything_goes(),
+                                 symbols: SymbolTable = None,
+                                 tcds: Tcds = fake_tcds(),
+                                 tmp_file_space: TmpDirFileSpace = TmpDirFileSpaceThatMustNoBeUsed(),
+                                 ) -> ValueAssertion[rs.SymbolDependentValue]:
+    return matches_matcher_sdv(
+        FilesMatcherSdv,
+        LogicValueType.FILES_MATCHER,
+        ValueType.FILES_MATCHER,
         primitive_value,
         references,
         symbol_table_from_none_or_value(symbols),

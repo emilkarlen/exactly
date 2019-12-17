@@ -114,7 +114,7 @@ class EqualityStringMatcherDdv(MatcherDdv[FileToCheck]):
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         expected_contents = self._expected_contents.value_of_any_dependency(tcds)
-        return advs.ConstantAdv(
+        return advs.ConstantMatcherAdv(
             EqualityStringMatcher(
                 self._expectation_type,
                 expected_contents,

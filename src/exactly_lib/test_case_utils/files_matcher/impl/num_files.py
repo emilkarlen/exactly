@@ -6,24 +6,25 @@ from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherSdvImplBase
 from exactly_lib.test_case_utils.files_matcher import config
+from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherAdvImplBase, FilesMatcherDdvImplBase
 from exactly_lib.test_case_utils.matcher.impls import property_matcher_describers
 from exactly_lib.test_case_utils.matcher.impls.err_msg import ErrorMessageResolverForFailure
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcher
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherConstructor, \
-    FilesMatcherDdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherDdv, \
+    FilesMatcherAdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, MatcherDdv, MatcherAdv
 from exactly_lib.util import logic_types
-from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
 def sdv(matcher: MatcherSdv[int]) -> FilesMatcherSdv:
-    return _NumFilesMatcherSdv(matcher)
+    return FilesMatcherSdv(_NumFilesMatcherSdv(matcher))
 
 
 class _FilesMatcher(FilesMatcher):
@@ -74,7 +75,7 @@ class _FilesMatcher(FilesMatcher):
         )
 
 
-class _NumFilesMatcherDdv(FilesMatcherDdv):
+class _NumFilesMatcherDdv(FilesMatcherDdvImplBase):
     def __init__(self, matcher: MatcherDdv[int]):
         self._matcher = matcher
 
@@ -82,22 +83,22 @@ class _NumFilesMatcherDdv(FilesMatcherDdv):
     def validator(self) -> DdvValidator:
         return self._matcher.validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherConstructor:
+    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherAdv:
         return _NumFilesMatcherAdv(self._matcher.value_of_any_dependency(tcds))
 
 
-class _NumFilesMatcherAdv(FilesMatcherConstructor):
+class _NumFilesMatcherAdv(FilesMatcherAdvImplBase):
     def __init__(self, matcher: MatcherAdv[int]):
         self._matcher = matcher
 
-    def construct(self, tmp_files_space: TmpDirFileSpace) -> FilesMatcher:
+    def applier(self, environment: ApplicationEnvironment) -> FilesMatcher:
         return _FilesMatcher(
             ExpectationType.POSITIVE,
-            self._matcher.applier(ApplicationEnvironment(tmp_files_space)),
+            self._matcher.applier(environment),
         )
 
 
-class _NumFilesMatcherSdv(FilesMatcherSdv):
+class _NumFilesMatcherSdv(FileMatcherSdvImplBase):
     def __init__(self, matcher: MatcherSdv[int]):
         self._matcher = matcher
 

@@ -25,4 +25,4 @@ class MatcherDdvFromConstantPrimitive(Generic[MODEL], MatcherDdv[MODEL]):
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
-        return advs.ConstantAdv(self._primitive_value)
+        return advs.ConstantMatcherAdv(self._primitive_value)

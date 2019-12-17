@@ -3,7 +3,7 @@ from typing import Sequence
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref, \
-    FilesMatcherSdvConstantTestImpl
+    files_matcher_sdv_constant_test_impl
 from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_value_validator
 from exactly_lib_test.test_case_utils.test_resources import validation
@@ -37,7 +37,7 @@ class ValidationCase:
         self._expectation = expectation
         self._symbol_context = FilesMatcherSymbolContext(
             symbol_name,
-            FilesMatcherSdvConstantTestImpl(
+            files_matcher_sdv_constant_test_impl(
                 True,
                 validator=pre_or_post_sds_value_validator.constant_validator(actual),
             ),

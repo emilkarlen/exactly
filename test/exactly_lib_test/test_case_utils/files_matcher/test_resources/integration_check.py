@@ -11,10 +11,10 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherDdv, \
-    FilesMatcherConstructor
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherDdv
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherAdv, MatcherWTraceAndNegation
 from exactly_lib.util.file_utils import preserved_cwd, TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
@@ -139,10 +139,10 @@ class _Executor:
                       file_space: TmpDirFileSpace) -> FilesMatcher:
 
         constructor = ddv.value_of_any_dependency(tcds)
-        assert isinstance(constructor, FilesMatcherConstructor)
+        assert isinstance(constructor, MatcherAdv)
 
-        matcher = constructor.construct(file_space)
-        assert isinstance(matcher, FilesMatcher)
+        matcher = constructor.applier(ApplicationEnvironment(file_space))
+        assert isinstance(matcher, MatcherWTraceAndNegation)
 
         return matcher
 

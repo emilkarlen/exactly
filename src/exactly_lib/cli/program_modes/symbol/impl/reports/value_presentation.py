@@ -101,7 +101,7 @@ class _LogicTypeBlockConstructor(LogicTypeSdvPseudoVisitor[Optional[ResolvedValu
     def visit_files_matcher(self, value: FilesMatcherSdv) -> Optional[ResolvedValuePresentationBlock]:
         return None  # FIXME Restore when DDV can report structure
         matcher_constructor = value.resolve(self.symbols).value_of_any_dependency(self.tcds)
-        matcher = matcher_constructor.construct(TmpDirFileSpaceThatMustNoBeUsed())
+        matcher = matcher_constructor.applier(ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed()))
         return self._of_tree_structured(matcher)
 
     def visit_line_matcher(self, value: LineMatcherSdv) -> Optional[ResolvedValuePresentationBlock]:

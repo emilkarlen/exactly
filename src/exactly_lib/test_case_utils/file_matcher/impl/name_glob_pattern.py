@@ -54,7 +54,7 @@ class _Ddv(FileMatcherDdvImplBase):
         )
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
-        return advs.ConstantAdv(FileMatcherNameGlobPattern(self._glob_pattern.value_of_any_dependency(tcds)))
+        return advs.ConstantMatcherAdv(FileMatcherNameGlobPattern(self._glob_pattern.value_of_any_dependency(tcds)))
 
 
 class FileMatcherNameGlobPattern(FileMatcherImplBase):

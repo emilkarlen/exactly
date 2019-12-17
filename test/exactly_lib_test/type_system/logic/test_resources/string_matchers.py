@@ -96,6 +96,6 @@ class MatcherDdvFromPartsTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
-        return advs.ConstantAdv(
+        return advs.ConstantMatcherAdv(
             self._matcher(tcds)
         )

@@ -37,6 +37,18 @@ def sdv_from_primitive_value(
     )
 
 
+def sdv_from_bool(
+        unconditional_result: bool = True,
+        references: Sequence[SymbolReference] = (),
+        validator: DdvValidator = ddv_validation.constant_success_validator(),
+) -> MatcherSdv[MODEL]:
+    return MatcherSdvOfConstantDdvTestImpl(
+        MatcherDdvOfConstantMatcherTestImpl(MatcherWithConstantResult(unconditional_result),
+                                            validator),
+        references,
+    )
+
+
 def sdv_of_unconditionally_matching_matcher() -> MatcherSdv[MODEL]:
     return MatcherSdvOfConstantDdvTestImpl(ddv_of_unconditionally_matching_matcher())
 
@@ -63,7 +75,7 @@ class MatcherDdvOfConstantMatcherTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
-        return advs.ConstantAdv(self._primitive_value)
+        return advs.ConstantMatcherAdv(self._primitive_value)
 
 
 class MatcherSdvOfConstantDdvTestImpl(Generic[MODEL], MatcherSdv[MODEL]):
@@ -108,7 +120,7 @@ class MatcherDdvFromPartsTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
         return self._validator
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
-        return advs.ConstantAdv(
+        return advs.ConstantMatcherAdv(
             self._make_primitive(tcds)
         )
 

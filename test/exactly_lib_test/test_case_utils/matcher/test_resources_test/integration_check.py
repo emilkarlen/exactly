@@ -3,7 +3,7 @@ Test of test-infrastructure: instruction_check.
 """
 import pathlib
 import unittest
-from typing import List, Sequence, Optional
+from typing import List, Sequence, Optional, Generic
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
@@ -423,7 +423,7 @@ class _MatcherTypeSdvTestImpl(MatcherTypeSdv[int]):
         return self._matcher.resolve(symbols)
 
 
-class MatcherSdvThatAssertsThatSymbolsAreAsExpected(MatcherSdv[int]):
+class MatcherSdvThatAssertsThatSymbolsAreAsExpected(Generic[MODEL], MatcherSdv[MODEL]):
     def __init__(self,
                  put: unittest.TestCase,
                  expectation: ValueAssertion[SymbolTable]):
@@ -542,7 +542,7 @@ class _MatcherDdvThatIsAssertionOnTcds(MatcherDdv[int]):
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         self._assertion.apply_with_message(self._put, tcds, 'assertion on tcds')
-        return advs.ConstantAdv(self.MATCHER)
+        return advs.ConstantMatcherAdv(self.MATCHER)
 
 
 if __name__ == '__main__':
