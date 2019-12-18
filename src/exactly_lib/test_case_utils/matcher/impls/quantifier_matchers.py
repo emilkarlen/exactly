@@ -6,6 +6,7 @@ from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
@@ -182,16 +183,16 @@ class Exists(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
                                  )
 
     def _no_match(self, tb: TraceBuilder, tot_num_elements: int) -> MatchingResult:
+        actual = details.String(
+            strings.FormatPositional('No matching {} ({} tested)', self._conf.setup.rendering.type_name,
+                                     tot_num_elements, )
+        )
+        expected = details.Tree(self._conf.predicate.structure())
         return (
-            tb.append_details(
-                details.String(
-                    strings.FormatPositional(
-                        'No matching {} ({} tested)',
-                        self._conf.setup.rendering.type_name,
-                        tot_num_elements,
-                    )
-                )
-            ).build_result(False)
+            tb
+                .append_details(custom_details.expected(expected))
+                .append_details(custom_details.actual(actual))
+                .build_result(False)
         )
 
     def _matches(self,
@@ -216,16 +217,17 @@ class ForAll(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
                                  )
 
     def _all_match(self, tb: TraceBuilder, tot_num_elements: int) -> MatchingResult:
+        actual = details.String(
+            strings.FormatPositional('Every {} matches ({} tested)', self._conf.setup.rendering.type_name,
+                                     tot_num_elements,
+                                     )
+        )
+        expected = details.Tree(self._conf.predicate.structure())
         return (
-            tb.append_details(
-                details.String(
-                    strings.FormatPositional(
-                        'Every {} matches ({} tested)',
-                        self._conf.setup.rendering.type_name,
-                        tot_num_elements,
-                    )
-                )
-            ).build_result(True)
+            tb
+                .append_details(custom_details.expected(expected))
+                .append_details(custom_details.actual(actual))
+                .build_result(True)
         )
 
     def _matches(self,
