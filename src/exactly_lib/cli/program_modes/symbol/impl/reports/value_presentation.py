@@ -112,7 +112,6 @@ class _LogicTypeBlockConstructor(LogicTypeSdvPseudoVisitor[Optional[ResolvedValu
 
     def visit_program(self, value: ProgramSdv) -> Optional[ResolvedValuePresentationBlock]:
         return None  # FIXME Restore when DDV can report structure
-        program = value.resolve(self.symbols).value_of_any_dependency(self.tcds)
         return _BlockForCustomRenderer(_ProgramRenderer(program))
 
     @staticmethod

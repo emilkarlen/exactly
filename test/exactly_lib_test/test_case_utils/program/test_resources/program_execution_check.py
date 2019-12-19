@@ -12,8 +12,10 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.program.execution import store_result_in_instruction_tmp_dir as pgm_execution
 from exactly_lib.test_case_utils.program.parse import parse_program as sut
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.program.program import Program, ProgramDdv
 from exactly_lib.util import file_utils
+from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib.util.process_execution import executable_factories
 from exactly_lib.util.process_execution.executable_factory import ExecutableFactory
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
@@ -218,7 +220,11 @@ class Executor:
                  pgm_output_dir: pathlib.Path,
                  tcds: Tcds,
                  program_ddv: ProgramDdv) -> ResultWithTransformationData:
-        program = program_ddv.value_of_any_dependency(tcds)
+        program_adv = program_ddv.value_of_any_dependency(tcds)
+        application_environment = ApplicationEnvironment(
+            TmpDirFileSpaceAsDirCreatedOnDemand(tcds.sds.internal_tmp_dir / 'tmp-file-space')
+        )
+        program = program_adv.applier(application_environment)
         assert isinstance(program, Program)
         execution_result = pgm_execution.make_transformed_file_from_output(pgm_output_dir,
                                                                            self.arrangement.process_execution_settings,

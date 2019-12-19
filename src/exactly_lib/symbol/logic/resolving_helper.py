@@ -56,7 +56,7 @@ class LogicTypeResolvingHelper:
         )
 
     def resolve_program(self, sdv: ProgramSdv) -> Program:
-        return sdv.resolve(self.symbols).value_of_any_dependency(self.tcds)
+        return sdv.resolve(self.symbols).value_of_any_dependency(self.tcds).applier(self.application_environment)
 
     def resolve_string_transformer(self, sdv: StringTransformerSdv) -> StringTransformer:
         return sdv.resolve(self.symbols).value_of_any_dependency(self.tcds)

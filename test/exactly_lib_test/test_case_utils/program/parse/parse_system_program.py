@@ -13,7 +13,9 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_system_program as sut
 from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.logic.program.program import Program
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
+from exactly_lib.type_system.logic.program.program import Program, ProgramAdv
+from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -193,10 +195,19 @@ def check_parsing_of_program(put: unittest.TestCase,
                 transformer=asrt_line_transformer.is_identity_transformer()
             )
 
+        def expected_program_adv(tcds: Tcds) -> ValueAssertion[ProgramAdv]:
+            def get_program(adv: ProgramAdv) -> Program:
+                return adv.applier(ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed()))
+
+            return asrt.is_instance_with(ProgramAdv,
+                                         asrt.sub_component('program',
+                                                            get_program,
+                                                            expected_program(tcds)))
+
         expectation = asrt_sdv.matches_sdv_of_program(
             references=expected_references_assertion,
             resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_value(
-                resolved_value=expected_program,
+                resolved_value=expected_program_adv,
             ),
             symbols=symbols
         )

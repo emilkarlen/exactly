@@ -14,7 +14,9 @@ from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.test_case_utils.program.parse import parse_with_reference_to_program as sut
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.paths import simple_of_rel_option
-from exactly_lib.type_system.logic.program.program import Program
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
+from exactly_lib.type_system.logic.program.program import Program, ProgramAdv
+from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
@@ -314,7 +316,7 @@ class ResolvingCase:
     def __init__(self,
                  name: str,
                  actual_sdv: ProgramSdv,
-                 expected: ValueAssertion[DirDependentValue[Program]]):
+                 expected: ValueAssertion[DirDependentValue[ProgramAdv]]):
         self.name = name
         self.actual_sdv = actual_sdv
         self.expected = expected
@@ -328,7 +330,7 @@ class TestResolving(unittest.TestCase):
         def case(relativity: RelOptionType) -> ResolvingCase:
             exe_path = paths.of_rel_option(relativity, paths.constant_path_part(file_name))
 
-            def assertion(tcds: Tcds) -> ValueAssertion[Program]:
+            def program_assertion(tcds: Tcds) -> ValueAssertion[Program]:
                 return asrt_pgm_val.matches_program(
                     command=asrt_command.equals_executable_file_command(
                         executable_file=exe_path.value_of_any_dependency(tcds),
@@ -338,12 +340,21 @@ class TestResolving(unittest.TestCase):
                     transformer=asrt_line_transformer.is_identity_transformer()
                 )
 
+            def program_adv_assertion(tcds: Tcds) -> ValueAssertion[ProgramAdv]:
+                def get_program(adv: ProgramAdv) -> Program:
+                    return adv.applier(ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed()))
+
+                return asrt.is_instance_with(ProgramAdv,
+                                             asrt.sub_component('program',
+                                                                get_program,
+                                                                program_assertion(tcds)))
+
             return ResolvingCase('relativity=' + str(relativity),
                                  actual_sdv=program_sdvs.with_ref_to_exe_file(
                                      path_sdvs.constant(exe_path),
                                      arguments_sdvs.new_without_validation(
                                          list_sdvs.from_str_constants(expected_arguments))),
-                                 expected=asrt_dir_dep_val.matches_dir_dependent_value(assertion))
+                                 expected=asrt_dir_dep_val.matches_dir_dependent_value(program_adv_assertion))
 
         return [case(RelOptionType.REL_HDS_ACT),
                 case(RelOptionType.REL_TMP)]
@@ -353,7 +364,7 @@ class TestResolving(unittest.TestCase):
                                  ) -> Sequence[ResolvingCase]:
         the_executable_program = 'the executable program'
 
-        def assertion(tcds: Tcds) -> ValueAssertion[Program]:
+        def program_assertion(tcds: Tcds) -> ValueAssertion[Program]:
             return asrt_pgm_val.matches_program(
                 command=asrt_command.equals_system_program_command(
                     program=the_executable_program,
@@ -363,10 +374,23 @@ class TestResolving(unittest.TestCase):
                 transformer=asrt_line_transformer.is_identity_transformer()
             )
 
-        case = ResolvingCase('', actual_sdv=program_sdvs.with_ref_to_program(
-            string_sdvs.str_constant(the_executable_program),
-            arguments_sdvs.new_without_validation(list_sdvs.from_str_constants(expected_arguments))),
-                             expected=asrt_dir_dep_val.matches_dir_dependent_value(assertion))
+        def program_adv_assertion(tcds: Tcds) -> ValueAssertion[ProgramAdv]:
+            def get_program(adv: ProgramAdv) -> Program:
+                return adv.applier(ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed()))
+
+            return asrt.is_instance_with(ProgramAdv,
+                                         asrt.sub_component('program',
+                                                            get_program,
+                                                            program_assertion(tcds)))
+
+        case = ResolvingCase(
+            '',
+            actual_sdv=program_sdvs.with_ref_to_program(
+                string_sdvs.str_constant(the_executable_program),
+                arguments_sdvs.new_without_validation(
+                    list_sdvs.from_str_constants(expected_arguments))),
+            expected=asrt_dir_dep_val.matches_dir_dependent_value(program_adv_assertion)
+        )
         return [case]
 
     def test(self):
