@@ -42,7 +42,6 @@ class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, File
               ) -> FileToCheck:
         return FileToCheck(file_to_transform.path,
                            file_to_transform.checked_file_describer,
-                           environment.phase_logging.space_for_instruction(),
                            IdentityStringTransformer(),
                            DestinationFilePathGetter())
 

@@ -52,7 +52,6 @@ class ModelFromBuilder:
         return FileToCheck(
             original_file_path,
             _FilePropertyDescriptorConstructorForTestImpl('file-with-original-contents'),
-            tmp_dir_file_space,
             IdentityStringTransformer(),
             DestinationFilePathGetter(),
         )

@@ -94,7 +94,6 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
         return string_matcher.FileToCheck(
             model.path,
             model.file_descriptor,
-            model.tmp_file_space,
             string_transformer.IdentityStringTransformer(),
             string_matcher.DestinationFilePathGetter(),
         )

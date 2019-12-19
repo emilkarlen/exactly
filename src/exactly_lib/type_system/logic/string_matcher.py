@@ -39,12 +39,10 @@ class FileToCheck:
     def __init__(self,
                  original_file_path: DescribedPathPrimitive,
                  checked_file_describer: FilePropertyDescriptorConstructor,
-                 tmp_file_space: TmpDirFileSpace,
                  string_transformer: StringTransformer,
                  tmp_file_for_transformed_getter: DestinationFilePathGetter):
         self._original_file_path = original_file_path
         self._checked_file_describer = checked_file_describer
-        self._tmp_file_space = tmp_file_space
         self._transformed_file_path = None
         self._string_transformer = string_transformer
         self._tmp_file_for_transformed_getter = tmp_file_for_transformed_getter
@@ -52,17 +50,12 @@ class FileToCheck:
     def with_transformation(self, string_transformer: StringTransformer) -> 'FileToCheck':
         return FileToCheck(self._original_file_path,
                            self._checked_file_describer,
-                           self._tmp_file_space,
                            string_transformer,
                            self._tmp_file_for_transformed_getter)
 
     @property
     def string_transformer(self) -> StringTransformer:
         return self._string_transformer
-
-    @property
-    def tmp_file_space(self) -> TmpDirFileSpace:
-        return self._tmp_file_space
 
     @property
     def describer(self) -> FilePropertyDescriptorConstructor:
@@ -72,7 +65,7 @@ class FileToCheck:
     def original_file_path(self) -> DescribedPathPrimitive:
         return self._original_file_path
 
-    def transformed_file_path(self) -> pathlib.Path:
+    def transformed_file_path(self, tmp_file_space: TmpDirFileSpace) -> pathlib.Path:
         """
         Gives a path to a file with contents that has been transformed using the transformer.
         """
@@ -81,7 +74,7 @@ class FileToCheck:
         if self._string_transformer.is_identity_transformer:
             self._transformed_file_path = self._original_file_path.primitive
             return self._transformed_file_path
-        self._transformed_file_path = self._tmp_file_for_transformed_getter.get(self._tmp_file_space,
+        self._transformed_file_path = self._tmp_file_for_transformed_getter.get(tmp_file_space,
                                                                                 self._original_file_path.primitive)
         ensure_parent_directory_does_exist(self._transformed_file_path)
         self._write_transformed_contents()

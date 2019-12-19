@@ -47,7 +47,6 @@ class _ModelsFactory:
     def file_to_check(self, file_element: FileModel) -> FileToCheck:
         return FileToCheck(file_element.path,
                            _FilePropertyDescriptorConstructorForFileInDir(file_element),
-                           self._tmp_file_space,
                            self._id_trans,
                            self._destination_file_path_getter)
 
