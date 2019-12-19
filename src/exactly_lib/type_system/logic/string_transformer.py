@@ -8,6 +8,7 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependen
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription, \
     WithTreeStructureDescription, StructureRenderer
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.functional import compose_first_and_second
 
@@ -33,7 +34,10 @@ class StringTransformer(WithNameAndTreeStructureDescription, ABC):
         return type(self).__name__
 
 
-class StringTransformerDdv(DirDependentValue[StringTransformer],
+StringTransformerAdv = ApplicationEnvironmentDependentValue[StringTransformer]
+
+
+class StringTransformerDdv(DirDependentValue[ApplicationEnvironmentDependentValue[StringTransformer]],
                            WithTreeStructureDescription,
                            ABC):
 
@@ -44,7 +48,7 @@ class StringTransformerDdv(DirDependentValue[StringTransformer],
         return constant_success_validator()
 
     @abstractmethod
-    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformer:
+    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformerAdv:
         pass
 
 

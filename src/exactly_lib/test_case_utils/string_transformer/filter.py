@@ -1,9 +1,18 @@
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.string_transformer.impl import select
-from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv
-from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer
-from exactly_lib.type_system.logic.tmp_app_env import application_environment__transitional
+from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherAdv
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
+from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer, \
+    StringTransformerAdv
+
+
+class SelectStringTransformerAdv(ApplicationEnvironmentDependentValue[StringTransformer]):
+    def __init__(self, line_matcher: LineMatcherAdv):
+        self._line_matcher = line_matcher
+
+    def applier(self, environment: ApplicationEnvironment) -> StringTransformer:
+        return select.SelectStringTransformer(self._line_matcher.applier(environment))
 
 
 class SelectStringTransformerDdv(StringTransformerDdv):
@@ -18,6 +27,5 @@ class SelectStringTransformerDdv(StringTransformerDdv):
     def validator(self) -> DdvValidator:
         return self._line_matcher.validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformer:
-        return select.SelectStringTransformer(
-            self._line_matcher.value_of_any_dependency(tcds).applier(application_environment__transitional()))
+    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformerAdv:
+        return SelectStringTransformerAdv(self._line_matcher.value_of_any_dependency(tcds))

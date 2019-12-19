@@ -7,8 +7,10 @@ from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment, ApplicationEnvironmentDependentValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
     StringTransformerModel
+from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
@@ -149,7 +151,13 @@ class _Checker:
         return transformer_ddv
 
     def _resolve_primitive_value(self, transformer_ddv: StringTransformerDdv) -> StringTransformer:
-        ret_val = transformer_ddv.value_of_any_dependency(self.tcds)
+        adv = transformer_ddv.value_of_any_dependency(self.tcds)
+        self.put.assertIsInstance(adv, ApplicationEnvironmentDependentValue)
+
+        ae = ApplicationEnvironment(
+            TmpDirFileSpaceAsDirCreatedOnDemand(self.tcds.sds.internal_tmp_dir / 'tmp-file-space')
+        )
+        ret_val = adv.applier(ae)
 
         asrt.is_instance(StringTransformer).apply_with_message(self.put,
                                                                ret_val,

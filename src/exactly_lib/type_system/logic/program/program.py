@@ -7,7 +7,8 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
 from exactly_lib.type_system.logic.program.command import CommandDdv
 from exactly_lib.type_system.logic.program.stdin_data import StdinDataDdv, StdinData
-from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv
+from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
+    StringTransformerAdv
 from exactly_lib.util.process_execution.command import Command
 
 
@@ -35,7 +36,7 @@ class ProgramAdv(ApplicationEnvironmentDependentValue[Program]):
     def __init__(self,
                  command: Command,
                  stdin: StdinData,
-                 transformation: StringTransformer):
+                 transformation: StringTransformerAdv):
         self._command = command
         self._stdin = stdin
         self._transformation = transformation
@@ -43,7 +44,7 @@ class ProgramAdv(ApplicationEnvironmentDependentValue[Program]):
     def applier(self, environment: ApplicationEnvironment) -> Program:
         return Program(self._command,
                        self._stdin,
-                       self._transformation,
+                       self._transformation.applier(environment),
                        )
 
 

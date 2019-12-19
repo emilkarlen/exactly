@@ -5,8 +5,9 @@ from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
-    StringTransformerModel
+    StringTransformerModel, StringTransformerAdv
 from exactly_lib.type_system.logic.string_transformer_ddvs import StringTransformerConstantDdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -69,8 +70,8 @@ class StringTransformerDdvTestImpl(StringTransformerDdv):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformer:
-        return self._primitive_value
+    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformerAdv:
+        return advs.ConstantAdv(self._primitive_value)
 
 
 class StringTransformerSdvConstantTestImpl(StringTransformerSdv):

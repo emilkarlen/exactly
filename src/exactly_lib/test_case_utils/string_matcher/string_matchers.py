@@ -13,7 +13,7 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, App
     MatcherWTraceAndNegation, MODEL, MatcherAdv
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherDdv, StringMatcherAdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, SequenceStringTransformer, \
-    StringTransformerDdv
+    StringTransformerDdv, StringTransformerAdv
 from exactly_lib.util.description_tree import renderers, details
 
 
@@ -81,14 +81,14 @@ class StringMatcherOnTransformedFileToCheck(StringMatcherImplBase):
 
 class _StringMatcherWithTransformationAdv(StringMatcherAdvImplBase):
     def __init__(self,
-                 transformer: StringTransformer,
+                 transformer: StringTransformerAdv,
                  on_transformed: StringMatcherAdv,
                  ):
         self._transformer = transformer
         self._on_transformed = on_transformed
 
     def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
-        return StringMatcherOnTransformedFileToCheck(self._transformer,
+        return StringMatcherOnTransformedFileToCheck(self._transformer.applier(environment),
                                                      self._on_transformed.applier(environment),
                                                      )
 

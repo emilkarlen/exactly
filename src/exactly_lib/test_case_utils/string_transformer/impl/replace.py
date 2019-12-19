@@ -14,7 +14,9 @@ from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.type_system.data.string_ddv import StringDdv
-from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
+from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel, \
+    StringTransformerAdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.symbol_table import SymbolTable
@@ -59,6 +61,18 @@ class _Sdv(StringTransformerSdv):
         return self._references
 
 
+class _Adv(ApplicationEnvironmentDependentValue[StringTransformer]):
+    def __init__(self,
+                 regex: Pattern,
+                 replacement: str):
+        self._regex = regex
+        self._replacement = replacement
+
+    def applier(self, environment: ApplicationEnvironment) -> StringTransformer:
+        return ReplaceStringTransformer(self._regex,
+                                        self._replacement)
+
+
 class _Ddv(StringTransformerDdv):
     def __init__(self,
                  regex: RegexDdv,
@@ -69,9 +83,9 @@ class _Ddv(StringTransformerDdv):
     def validator(self) -> DdvValidator:
         return self._regex.validator()
 
-    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformer:
-        return ReplaceStringTransformer(self._regex.value_of_any_dependency(tcds),
-                                        self._replacement.value_of_any_dependency(tcds))
+    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformerAdv:
+        return _Adv(self._regex.value_of_any_dependency(tcds),
+                    self._replacement.value_of_any_dependency(tcds))
 
 
 class ReplaceStringTransformer(StringTransformer):

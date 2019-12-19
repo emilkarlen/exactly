@@ -16,10 +16,10 @@ def resolved_value_matches_string_transformer(
         references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
         symbols: symbol_table.SymbolTable = None
 ) -> ValueAssertion[LogicTypeSdv]:
-    return sdv_assertions.matches_sdv_of_logic_type2(StringTransformerSdv,
-                                                     LogicValueType.STRING_TRANSFORMER,
-                                                     ValueType.STRING_TRANSFORMER,
-                                                     asrt.is_instance_with(StringTransformer,
-                                                                                value),
-                                                     references,
-                                                     symbols)
+    return sdv_assertions.matches_sdv_of_logic_type__w_adv(StringTransformerSdv,
+                                                           LogicValueType.STRING_TRANSFORMER,
+                                                           ValueType.STRING_TRANSFORMER,
+                                                           asrt.is_instance_with(StringTransformer,
+                                                                                 value),
+                                                           references,
+                                                           symbols)
