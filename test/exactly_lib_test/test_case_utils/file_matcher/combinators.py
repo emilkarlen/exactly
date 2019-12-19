@@ -21,7 +21,7 @@ def suite() -> unittest.TestSuite:
 
 class FileMatcherConfiguration(matcher_combinators_check.MatcherConfiguration):
     def irrelevant_model(self) -> FileMatcherModel:
-        return models.with_dir_space_that_must_not_be_used(pathlib.Path('irrelevant path'))
+        return models.new_model(pathlib.Path('irrelevant path'))
 
     def matcher_with_constant_result(self,
                                      name: str,

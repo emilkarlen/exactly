@@ -305,9 +305,7 @@ class _Assertion:
 
         helper = resolving_helper_for_instruction_env(self.environment)
 
-        model = file_matcher_models.FileMatcherModelForPrimitivePath(
-            helper.file_space,
-            self.described_path)
+        model = file_matcher_models.FileMatcherModelForPrimitivePath(self.described_path)
 
         return helper.apply(sdv, model)
 

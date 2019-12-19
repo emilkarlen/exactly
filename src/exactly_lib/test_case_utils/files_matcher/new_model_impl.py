@@ -72,7 +72,6 @@ class FilesMatcherModelForDir(FilesMatcherModel):
             return map(mk_model, os.listdir(str(self._dir_path.primitive)))
         else:
             file_names = file_matchers.matching_files_in_dir(self._files_selection,
-                                                             self._tmp_file_space,
                                                              self._dir_path)
             return map(mk_model, file_names)
 

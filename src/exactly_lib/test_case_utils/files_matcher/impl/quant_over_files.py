@@ -17,7 +17,6 @@ from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmen
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
-from exactly_lib.util.file_utils import TmpDirFileSpace
 
 
 class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConstructor):
@@ -39,9 +38,8 @@ def _element_detail_renderer(element: FileMatcherModel) -> DetailsRenderer:
 
 
 class _ModelsFactory:
-    def __init__(self, tmp_files_space: TmpDirFileSpace):
+    def __init__(self):
         self._id_trans = IdentityStringTransformer()
-        self._tmp_file_space = tmp_files_space
         self._destination_file_path_getter = DestinationFilePathGetter()
 
     def file_to_check(self, file_element: FileModel) -> FileToCheck:
@@ -51,8 +49,7 @@ class _ModelsFactory:
                            self._destination_file_path_getter)
 
     def file_matcher_model(self, file_element: FileModel) -> FileMatcherModel:
-        return FileMatcherModelForFileWithDescriptor(self._tmp_file_space,
-                                                     file_element.path,
+        return FileMatcherModelForFileWithDescriptor(file_element.path,
                                                      _FilePropertyDescriptorConstructorForFileInDir(file_element))
 
 
@@ -61,7 +58,7 @@ def _file_elements_from_model(tcds: Tcds,
                               environment: ApplicationEnvironment,
                               model: FilesMatcherModel
                               ) -> Iterator[FileMatcherModel]:
-    model_factory = _ModelsFactory(environment.tmp_files_space)
+    model_factory = _ModelsFactory()
     yield (
         model_factory.file_matcher_model(file_element)
         for file_element in model.files()

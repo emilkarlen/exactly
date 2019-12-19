@@ -3,15 +3,9 @@ from abc import ABC, abstractmethod
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherDdv, MatcherAdv
-from exactly_lib.util.file_utils import TmpDirFileSpace
 
 
 class FileMatcherModel(ABC):
-    @property
-    @abstractmethod
-    def tmp_file_space(self) -> TmpDirFileSpace:
-        pass
-
     @property
     @abstractmethod
     def path(self) -> DescribedPathPrimitive:

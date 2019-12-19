@@ -30,7 +30,6 @@ class TestMatchingFilesInDir(unittest.TestCase):
         with single_dir_setup(dir_contents) as setup:
             # ACT #
             actual_matching_file_base_names_iter = sut.matching_files_in_dir(matcher,
-                                                                             setup.tmp_file_space,
                                                                              setup.action_dir_path)
             # ASSERT #
             actual_matching_file_base_names = set(actual_matching_file_base_names_iter)

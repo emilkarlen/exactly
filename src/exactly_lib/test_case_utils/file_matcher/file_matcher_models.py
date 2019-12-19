@@ -7,19 +7,11 @@ from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.err_msg import prop_descr
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
-from exactly_lib.util.file_utils import TmpDirFileSpace
 
 
 class _FileMatcherModelImplBase(FileMatcherModel, ABC):
-    def __init__(self,
-                 tmp_file_space: TmpDirFileSpace,
-                 path: DescribedPathPrimitive):
-        self._tmp_file_space = tmp_file_space
+    def __init__(self, path: DescribedPathPrimitive):
         self._path = path
-
-    @property
-    def tmp_file_space(self) -> TmpDirFileSpace:
-        return self._tmp_file_space
 
     @property
     def path(self) -> DescribedPathPrimitive:
@@ -28,10 +20,8 @@ class _FileMatcherModelImplBase(FileMatcherModel, ABC):
 
 
 class FileMatcherModelForPrimitivePath(_FileMatcherModelImplBase):
-    def __init__(self,
-                 tmp_file_space: TmpDirFileSpace,
-                 path: DescribedPathPrimitive):
-        super().__init__(tmp_file_space, path)
+    def __init__(self, path: DescribedPathPrimitive):
+        super().__init__(path)
 
     @property
     def file_descriptor(self) -> prop_descr.FilePropertyDescriptorConstructor:
@@ -40,10 +30,10 @@ class FileMatcherModelForPrimitivePath(_FileMatcherModelImplBase):
 
 class FileMatcherModelForFileWithDescriptor(_FileMatcherModelImplBase):
     def __init__(self,
-                 tmp_file_space: TmpDirFileSpace,
                  path: DescribedPathPrimitive,
-                 file_descriptor: prop_descr.FilePropertyDescriptorConstructor):
-        super().__init__(tmp_file_space, path)
+                 file_descriptor: prop_descr.FilePropertyDescriptorConstructor,
+                 ):
+        super().__init__(path)
         self._file_descriptor = file_descriptor
 
     @property

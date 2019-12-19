@@ -7,7 +7,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher, file_matcher_models
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.util import file_utils
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
@@ -67,12 +66,10 @@ class TestSuccessfulScenarios(TestCaseBase):
                     [
                         asrt_matcher.ModelInfo(
                             file_matcher_models.FileMatcherModelForPrimitivePath(
-                                file_utils.TmpDirFileSpaceThatMustNoBeUsed(),
                                 described_path.new_primitive(pathlib.Path(name_pattern)),
                             )),
                         asrt_matcher.ModelInfo(
                             file_matcher_models.FileMatcherModelForPrimitivePath(
-                                file_utils.TmpDirFileSpaceThatMustNoBeUsed(),
                                 described_path.new_primitive(pathlib.Path(non_matching_name)),
                             )),
                     ]
