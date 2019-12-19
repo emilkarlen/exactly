@@ -12,7 +12,6 @@ from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitiv
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.files_matcher import ErrorMessageInfo, FileModel, FilesMatcherModel
-from exactly_lib.util.file_utils import TmpDirFileSpace
 
 
 class FileModelForDir(FileModel):
@@ -33,11 +32,9 @@ class FileModelForDir(FileModel):
 
 class FilesMatcherModelForDir(FilesMatcherModel):
     def __init__(self,
-                 tmp_file_space: TmpDirFileSpace,
                  dir_path: DescribedPathPrimitive,
                  files_selection: Optional[FileMatcher] = None,
                  ):
-        self._tmp_file_space = tmp_file_space
         self._dir_path = dir_path
         self._files_selection = files_selection
 
@@ -48,8 +45,7 @@ class FilesMatcherModelForDir(FilesMatcherModel):
                                                                    selector])
                              )
 
-        return FilesMatcherModelForDir(self._tmp_file_space,
-                                       self._dir_path,
+        return FilesMatcherModelForDir(self._dir_path,
                                        new_file_selector,
                                        )
 

@@ -75,10 +75,7 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
         )
 
         helper = resolving_helper_for_instruction_env(environment)
-        model = FilesMatcherModelForDir(
-            helper.file_space,
-            path_to_check,
-        )
+        model = FilesMatcherModelForDir(path_to_check)
         matcher = helper.resolve_files_matcher(self._files_matcher)
         try:
             result = matcher.matches_w_trace(model)

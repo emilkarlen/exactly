@@ -261,7 +261,6 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         self._populate_root_dir(rel_opt_conf, environment)
 
         return FilesMatcherModelForDir(
-            environment.phase_logging.space_for_instruction(),
             rel_opt_conf.path_sdv_for_root_dir().resolve(environment.symbols)
                 .value_of_any_dependency__d(environment.tcds),
         )

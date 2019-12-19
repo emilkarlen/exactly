@@ -198,7 +198,6 @@ class _Executor:
         return (
             tmp_file_space,
             FilesMatcherModelForDir(
-                tmp_file_space,
                 self.model.dir_path_sdv.resolve(self.arrangement.symbols)
                     .value_of_any_dependency__d(tcds),
                 self.model.files_selection,
