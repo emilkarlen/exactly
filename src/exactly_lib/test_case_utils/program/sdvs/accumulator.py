@@ -4,11 +4,11 @@ from exactly_lib.symbol.logic.program import stdin_data_sdv
 from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
 from exactly_lib.symbol.logic.program.stdin_data_sdv import StdinDataSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.symbol.logic.string_transformers import StringTransformerSequenceSdv
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
+from exactly_lib.test_case_utils.string_transformer.impl.sequence import StringTransformerSequenceSdv
 from exactly_lib.type_system.logic.program.stdin_data import StdinDataDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.util.symbol_table import SymbolTable

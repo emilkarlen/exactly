@@ -6,19 +6,15 @@ from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic import string_transformers
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
+from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer import sdvs
-from exactly_lib.test_case_utils.string_transformer.impl import select, replace
-from exactly_lib.test_case_utils.string_transformer.impl.replace import REPLACE_REPLACEMENT_ARGUMENT
-from exactly_lib.test_case_utils.string_transformer.names import REPLACE_TRANSFORMER_NAME, SELECT_TRANSFORMER_NAME, \
-    SEQUENCE_OPERATOR_NAME
-from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
+from exactly_lib.test_case_utils.string_transformer.impl import filter, replace, sequence, identity
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-IDENTITY_TRANSFORMER_SDV = sdvs.StringTransformerSdvConstant(IdentityStringTransformer())
+IDENTITY_TRANSFORMER_SDV = sdvs.StringTransformerSdvConstant(identity.IdentityStringTransformer())
 
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
@@ -74,7 +70,7 @@ def parse_string_transformer_from_token_parser(parser: TokenParser) -> StringTra
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_REG_EX_': REPLACE_REGEX_ARGUMENT.name,
-    '_STRING_': REPLACE_REPLACEMENT_ARGUMENT.name,
+    '_STRING_': replace.REPLACE_REPLACEMENT_ARGUMENT.name,
     '_TRANSFORMER_': types.STRING_TRANSFORMER_TYPE_INFO.name.singular,
     '_LINE_MATCHER_': types.LINE_MATCHER_TYPE_INFO.name.singular,
     '_TRANSFORMERS_': types.STRING_TRANSFORMER_TYPE_INFO.name.plural,
@@ -115,7 +111,7 @@ _REPLACE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
         a.Single(a.Multiplicity.MANDATORY,
                  REPLACE_REGEX_ARGUMENT),
         a.Single(a.Multiplicity.MANDATORY,
-                 REPLACE_REPLACEMENT_ARGUMENT),
+                 replace.REPLACE_REPLACEMENT_ARGUMENT),
     ],
     description_rest=_TEXT_PARSER.fnap(_REPLACE_TRANSFORMER_SED_DESCRIPTION),
     see_also_targets=[syntax_elements.REGEX_SYNTAX_ELEMENT.cross_reference_target],
@@ -149,16 +145,16 @@ GRAMMAR = grammar.Grammar(
     _CONCEPT,
     mk_reference=_mk_reference,
     simple_expressions={
-        REPLACE_TRANSFORMER_NAME:
+        names.REPLACE_TRANSFORMER_NAME:
             grammar.SimpleExpression(replace.parse_replace,
                                      _REPLACE_SYNTAX_DESCRIPTION),
-        SELECT_TRANSFORMER_NAME:
-            grammar.SimpleExpression(select.parse_select,
+        names.SELECT_TRANSFORMER_NAME:
+            grammar.SimpleExpression(filter.parse_filter,
                                      _SELECT_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
-        SEQUENCE_OPERATOR_NAME: grammar.ComplexExpression(
-            string_transformers.StringTransformerSequenceSdv,
+        names.SEQUENCE_OPERATOR_NAME: grammar.ComplexExpression(
+            sequence.StringTransformerSequenceSdv,
             _SEQUENCE_SYNTAX_DESCRIPTION,
         ),
     },

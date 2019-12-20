@@ -1,8 +1,8 @@
 import unittest
 
+from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_system.logic.program.stdin_data import StdinData
-from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util.process_execution.commands import system_program_command
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails

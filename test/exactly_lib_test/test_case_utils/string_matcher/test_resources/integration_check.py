@@ -5,11 +5,11 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
+from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
-from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
 from exactly_lib_test.test_case_utils.matcher.test_resources import integration_check

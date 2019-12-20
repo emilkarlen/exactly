@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from exactly_lib.type_system.logic.string_transformer import CustomStringTransformer
+from exactly_lib.test_case_utils.string_transformer.impl.custom import CustomStringTransformer
 
 
 class CustomStringTransformerTestImpl(CustomStringTransformer):

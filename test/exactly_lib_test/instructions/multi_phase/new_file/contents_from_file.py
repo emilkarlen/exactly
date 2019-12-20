@@ -9,8 +9,8 @@ from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType
+from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources import utils as new_file_utils
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.arguments_building import \

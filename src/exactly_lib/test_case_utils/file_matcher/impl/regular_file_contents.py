@@ -14,10 +14,10 @@ from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcher
     FileMatcherAdvImplBase
 from exactly_lib.test_case_utils.file_system_element_matcher import ErrorMessageResolverForFailingFileProperties2
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
+from exactly_lib.test_case_utils.string_transformer.impl import identity
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic import string_matcher
-from exactly_lib.type_system.logic import string_transformer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
@@ -94,7 +94,7 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
         return string_matcher.FileToCheck(
             model.path,
             model.file_descriptor,
-            string_transformer.IdentityStringTransformer(),
+            identity.IdentityStringTransformer(),
             string_matcher.DestinationFilePathGetter(),
         )
 

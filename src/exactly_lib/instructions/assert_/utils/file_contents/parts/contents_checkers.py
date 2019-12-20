@@ -10,8 +10,8 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.file_system_element_matcher import \
     FileSystemElementPropertiesMatcher
+from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
-from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 
 
 class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor, ComparisonActualFile]):

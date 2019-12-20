@@ -47,8 +47,8 @@ from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.test_case_utils.string_transformer import sdvs as line_transformer_sdvs, \
     parse_string_transformer
+from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
-from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.line_source import LineSequence

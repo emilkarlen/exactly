@@ -11,9 +11,9 @@ from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches as sut
+from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
-from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.utils.file_contents.contents_checkers import \
     FilePropertyDescriptorConstructorTestImpl

@@ -8,8 +8,9 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.formatting import program_name
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.string_transformer.impl.custom import CustomStringTransformer
 from exactly_lib.type_system.logic import string_transformer_ddvs
-from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, CustomStringTransformer
+from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser

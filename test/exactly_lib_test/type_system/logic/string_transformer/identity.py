@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_system.logic import string_transformer as sut
+from exactly_lib.test_case_utils.string_transformer.impl import identity as sut
 
 
 def suite() -> unittest.TestSuite:

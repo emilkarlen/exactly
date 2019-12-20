@@ -1,6 +1,5 @@
-import functools
 from abc import ABC, abstractmethod
-from typing import Iterable, Sequence
+from typing import Iterable
 
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
     constant_success_validator
@@ -10,7 +9,6 @@ from exactly_lib.type_system.description.tree_structured import WithNameAndTreeS
     WithTreeStructureDescription, StructureRenderer
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.util.description_tree import renderers
-from exactly_lib.util.functional import compose_first_and_second
 
 StringTransformerModel = Iterable[str]
 
@@ -50,65 +48,3 @@ class StringTransformerDdv(DirDependentValue[ApplicationEnvironmentDependentValu
     @abstractmethod
     def value_of_any_dependency(self, tcds: Tcds) -> StringTransformerAdv:
         pass
-
-
-class IdentityStringTransformer(StringTransformer):
-    @property
-    def name(self) -> str:
-        return 'identity'
-
-    @property
-    def is_identity_transformer(self) -> bool:
-        return True
-
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        return lines
-
-
-class SequenceStringTransformer(StringTransformer):
-    def __init__(self, transformers: Sequence[StringTransformer]):
-        self._transformers = tuple(transformers)
-
-    @property
-    def name(self) -> str:
-        return 'sequence'
-
-    @property
-    def is_identity_transformer(self) -> bool:
-        return all([t.is_identity_transformer for t in self._transformers])
-
-    @property
-    def transformers(self) -> Sequence[StringTransformer]:
-        return self._transformers
-
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        if not self._transformers:
-            return lines
-        else:
-            return self._sequenced_transformers()(lines)
-
-    def _sequenced_transformers(self):
-        lines_to_lines_transformers = [t.transform
-                                       for t in self._transformers]
-
-        return functools.reduce(compose_first_and_second, lines_to_lines_transformers)
-
-    def __str__(self):
-        return '{}[{}]'.format(type(self).__name__,
-                               ','.join(map(str, self._transformers)))
-
-
-class CustomStringTransformer(StringTransformer, ABC):
-    """
-    Base class for built in custom transformers.
-    """
-
-    def __init__(self, name: str):
-        self._name = name
-
-    @property
-    def name(self) -> str:
-        return self._name
-
-    def __str__(self):
-        return str(type(self))

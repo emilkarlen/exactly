@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
-from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib_test.instructions.assert_.utils.file_contents.contents_checkers import \
     FilePropertyDescriptorConstructorTestImpl
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \

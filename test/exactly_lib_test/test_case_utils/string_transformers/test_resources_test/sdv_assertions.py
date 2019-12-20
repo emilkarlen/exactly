@@ -1,8 +1,9 @@
 import unittest
 
 from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
+from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
+from exactly_lib.test_case_utils.string_transformer.impl.sequence import SequenceStringTransformer
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
-from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer, SequenceStringTransformer
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils

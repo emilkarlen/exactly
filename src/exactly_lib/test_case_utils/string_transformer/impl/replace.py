@@ -69,8 +69,8 @@ class _Adv(ApplicationEnvironmentDependentValue[StringTransformer]):
         self._replacement = replacement
 
     def applier(self, environment: ApplicationEnvironment) -> StringTransformer:
-        return ReplaceStringTransformer(self._regex,
-                                        self._replacement)
+        return _ReplaceStringTransformer(self._regex,
+                                         self._replacement)
 
 
 class _Ddv(StringTransformerDdv):
@@ -88,7 +88,7 @@ class _Ddv(StringTransformerDdv):
                     self._replacement.value_of_any_dependency(tcds))
 
 
-class ReplaceStringTransformer(StringTransformer):
+class _ReplaceStringTransformer(StringTransformer):
     def __init__(self,
                  compiled_regular_expression: Pattern[str],
                  replacement: str):
