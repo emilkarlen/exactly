@@ -7,20 +7,39 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.test_case_utils.string_transformer import names
+from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel, \
     StringTransformerAdv, StringTransformerDdv
+from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.functional import compose_first_and_second
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class SequenceStringTransformer(StringTransformer):
+class SequenceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformer):
+    NAME = names.SEQUENCE_OPERATOR_NAME
+
     def __init__(self, transformers: Sequence[StringTransformer]):
+        super().__init__()
         self._transformers = tuple(transformers)
+
+    @staticmethod
+    def new_structure_tree(operands: Sequence[WithTreeStructureDescription]) -> StructureRenderer:
+        return renderers.NodeRendererFromParts(
+            SequenceStringTransformer.NAME,
+            None,
+            (),
+            [operand.structure() for operand in operands],
+        )
 
     @property
     def name(self) -> str:
-        return 'sequence'
+        return self.NAME
+
+    def _structure(self) -> StructureRenderer:
+        return self.new_structure_tree(self._transformers)
 
     @property
     def is_identity_transformer(self) -> bool:
@@ -65,6 +84,9 @@ class _StringTransformerSequenceDdv(StringTransformerDdv):
             transformer.validator()
             for transformer in transformers
         ])
+
+    def structure(self) -> StructureRenderer:
+        return SequenceStringTransformer.new_structure_tree(self._transformers)
 
     def validator(self) -> DdvValidator:
         return self._validator

@@ -1,18 +1,22 @@
 from typing import Sequence
 
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.line_matcher.model_construction import original_and_model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.string_transformer import names
+from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherAdv, LineMatcherDdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer, \
     StringTransformerModel, StringTransformerAdv
+from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -42,6 +46,9 @@ class _SelectStringTransformerDdv(StringTransformerDdv):
     def __init__(self, line_matcher: LineMatcherDdv):
         self._line_matcher = line_matcher
 
+    def structure(self) -> StructureRenderer:
+        return _SelectStringTransformer.new_structure_tree(self._line_matcher)
+
     def validator(self) -> DdvValidator:
         return self._line_matcher.validator
 
@@ -57,18 +64,32 @@ class _SelectStringTransformerAdv(ApplicationEnvironmentDependentValue[StringTra
         return _SelectStringTransformer(self._line_matcher.applier(environment))
 
 
-class _SelectStringTransformer(StringTransformer):
+class _SelectStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformer):
     """
     Keeps lines matched by a given :class:`LineMatcher`,
     and discards lines not matched.
     """
+    NAME = names.SELECT_TRANSFORMER_NAME + ' ' + syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.singular_name
 
     def __init__(self, line_matcher: LineMatcher):
+        super().__init__()
         self._line_matcher = line_matcher
+
+    @staticmethod
+    def new_structure_tree(line_matcher: WithTreeStructureDescription) -> StructureRenderer:
+        return renderers.NodeRendererFromParts(
+            _SelectStringTransformer.NAME,
+            None,
+            (),
+            (line_matcher.structure(),),
+        )
 
     @property
     def name(self) -> str:
         return names.SELECT_TRANSFORMER_NAME
+
+    def _structure(self) -> StructureRenderer:
+        return self.new_structure_tree(self._line_matcher)
 
     @property
     def line_matcher(self) -> LineMatcher:
