@@ -237,3 +237,18 @@ class WithTreeStructure(DetailsRenderer):
 
     def render(self) -> Sequence[Detail]:
         return [tree.TreeDetail(self._tree_structured.structure().render())]
+
+
+class ExpectedAndActual(DetailsRenderer):
+    def __init__(self,
+                 expected: DetailsRenderer,
+                 actual: DetailsRenderer,
+                 ):
+        self._expected = expected
+        self._actual = actual
+
+    def render(self) -> Sequence[Detail]:
+        ret_val = expected(self._expected).render()
+        ret_val += actual(self._actual).render()
+
+        return ret_val

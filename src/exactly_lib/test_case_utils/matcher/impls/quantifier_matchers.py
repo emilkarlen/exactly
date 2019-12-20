@@ -143,10 +143,10 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
             )
 
     def _matching_element_header(self) -> ToStringObject:
-        return strings.Concatenate(('Matching ', self._conf.setup.rendering.type_name))
+        return strings.FormatPositional('At least 1 {} matches', self._conf.setup.rendering.type_name)
 
     def _non_matching_element_header(self) -> ToStringObject:
-        return strings.Concatenate(('Non-matching ', self._conf.setup.rendering.type_name))
+        return strings.FormatPositional('At least 1 {} does not match', self._conf.setup.rendering.type_name)
 
     def _report_final_element(self,
                               tb: TraceBuilder,
@@ -158,10 +158,13 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
             else
             self._non_matching_element_header()
         )
-        tb.append_details(details.HeaderAndValue(
-            header,
-            self._conf.setup.rendering.renderer(element),
-        ))
+        actual = custom_details.actual(
+            details.HeaderAndValue(
+                header,
+                self._conf.setup.rendering.renderer(element),
+            )
+        )
+        tb.append_details(actual)
 
         tb.append_child(result.trace)
 
@@ -174,6 +177,12 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
                  elements: Iterator[ELEMENT]) -> MatchingResult:
         pass
 
+    def _explanation_when_no_element_matcher_trace(self, explanation: ToStringObject) -> DetailsRenderer:
+        return custom_details.ExpectedAndActual(
+            details.Tree(self._conf.predicate.structure()),
+            details.String(explanation),
+        )
+
 
 class Exists(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
     def __init__(self, conf: _ApplicationConf[MODEL, ELEMENT]):
@@ -183,15 +192,13 @@ class Exists(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
                                  )
 
     def _no_match(self, tb: TraceBuilder, tot_num_elements: int) -> MatchingResult:
-        actual = details.String(
-            strings.FormatPositional('No matching {} ({} tested)', self._conf.setup.rendering.type_name,
-                                     tot_num_elements, )
+        explanation = strings.FormatPositional(
+            'No {} matches ({} tested)', self._conf.setup.rendering.type_name,
+            tot_num_elements,
         )
-        expected = details.Tree(self._conf.predicate.structure())
         return (
             tb
-                .append_details(custom_details.expected(expected))
-                .append_details(custom_details.actual(actual))
+                .append_details(self._explanation_when_no_element_matcher_trace(explanation))
                 .build_result(False)
         )
 
