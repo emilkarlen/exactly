@@ -6,7 +6,7 @@ from exactly_lib.default.default_main_program_setup import default_main_program,
 
 SRC_DIR = '/Users/emil/vcs/exactly/0/err_msg_tests/symbols/validation/illegal-type/'
 
-TEST_CASE_FILE = '/Users/emil/vcs/exactly/0/err-msg-tests/symbol-report/line-matcher.case'
+TEST_CASE_FILE = '/Users/emil/vcs/exactly/0/err-msg-tests/types/string-matcher/line-matches/every--negative.case'
 CWD = str(pathlib.Path(TEST_CASE_FILE).parent)
 
 # TEST_CASE_FILE = SRC_DIR + 'instruction-error-in-stand-alone-case.case'
@@ -17,15 +17,19 @@ SUITE_FILE = SRC_DIR + 'instruction-error-of-case-instruction-in-suite.suite'
 
 EMPTY_CASE = SRC_DIR + 'empty.case'
 
-ARGS = ['symbol',
-        TEST_CASE_FILE,
-        'REGEX',
-        ]
+ARGS__SYMBOL = ['symbol',
+                TEST_CASE_FILE,
+                'REGEX',
+                ]
 
-_ARGS = [
+ARGS__ACT = [
     '--act',
     '/Users/emil/vcs/exactly/0/err-msg-tests/symbols/validation/ref-to-undef-symbol.case',
-        ]
+]
+
+ARGS_EXECUTE = [TEST_CASE_FILE]
+
+ARGS = ARGS_EXECUTE
 
 
 class TC(unittest.TestCase):

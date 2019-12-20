@@ -8,6 +8,7 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
+from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexDdv, RegexSdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
@@ -23,7 +24,9 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class MatchesRegex(MatcherWTraceAndNegation[str]):
+class MatchesRegex(WithCachedTreeStructureDescriptionBase,
+                   MatcherWTraceAndNegation[str]
+                   ):
     NAME = ' '.join((
         str_matcher.MATCH_REGEX_OR_GLOB_PATTERN_CHECK_ARGUMENT,
         syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
