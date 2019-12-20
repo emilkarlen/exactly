@@ -9,15 +9,13 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.condition.integer.test_resources import arguments_building as int_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args2, validation_cases
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax as fm_args
-from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args, \
+    integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fsm_args, model
-from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_confs, matcher_assertions
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success
 from exactly_lib_test.test_resources.files.file_structure import Dir, empty_file, DirContents
@@ -81,13 +79,12 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
             with self.subTest(case.name):
                 integration_check.check(
                     self,
-                    sut.files_matcher_parser(),
                     selection_is_empty_source,
                     model.arbitrary_model(),
-                    ArrangementPostAct(
+                    integration_check.Arrangement(
                         symbols=symbol_context.symbol_table,
                     ),
-                    expectation(
+                    integration_check.Expectation(
                         validation=case.value.expectation,
                         symbol_references=symbol_context.references_assertion,
                     ),
@@ -157,17 +154,16 @@ class TestSequenceOfSelectionsAreCombinedWithAnd(unittest.TestCase):
 
         integration_check.check(
             self,
-            parser,
             remaining_source(files_matcher_source__begins_with_a__symbol),
             model.model_with_source_path_as_sub_dir_of_rel_root(checked_dir.name)(rel_opt_conf),
-            ArrangementPostAct(
-                sds_contents=rel_opt_conf.populator_for_relativity_option_root__sds(
+            integration_check.Arrangement(
+                non_hds_contents=rel_opt_conf.populator_for_relativity_option_root__sds(
                     DirContents([checked_dir])
                 ),
                 symbols=symbols,
             ),
-            Expectation(
-                symbol_usages=asrt.matches_sequence([
+            integration_check.Expectation(
+                symbol_references=asrt.matches_sequence([
                     is_reference_to_files_matcher__ref(symbol_name)
                 ]),
                 main_result=matcher_assertions.is_matching_success(),

@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
-from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.test_case_utils.files_matcher.impl.emptiness import emptiness_matcher
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -10,14 +9,11 @@ from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to
     files_matcher_sdv_constant_test_impl, is_reference_to_files_matcher__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndExpectSetup
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fm_args, model, \
-    validation_cases
-from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
+    validation_cases, integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import tr
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArgumentsSetup
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success, pass_or_fail_from_bool
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_sds
@@ -78,13 +74,12 @@ class TestReferencedMatcherShouldBeValidated(tr.TestCaseBaseForParser):
                 instruction_source = remaining_source(arguments)
                 integration_check.check(
                     self,
-                    sut.files_matcher_parser(),
                     instruction_source,
                     model.arbitrary_model(),
-                    ArrangementPostAct(
+                    integration_check.Arrangement(
                         symbols=symbol_context.symbol_table
                     ),
-                    expectation(
+                    integration_check.Expectation(
                         validation=case.value.expectation,
                         symbol_references=symbol_context.references_assertion,
                     ),
@@ -120,13 +115,13 @@ class TestResultShouldBeEqualToResultOfReferencedMatcher(tr.TestCaseBaseForParse
                 arguments = arguments_constructor.apply(etc)
                 instruction_source = remaining_source(arguments)
 
-                arrangement = ArrangementPostAct(
-                    sds_contents=sds_populator,
+                arrangement = integration_check.Arrangement(
+                    non_hds_contents=sds_populator,
                     symbols=symbols,
                 )
-                expectation = Expectation(
+                expectation = integration_check.Expectation(
                     main_result=etc.main_result(pass_or_fail_from_bool(result_of_referenced_matcher)),
-                    symbol_usages=expected_symbol_usages,
+                    symbol_references=expected_symbol_usages,
                 )
 
                 with self.subTest(result_of_referenced_matcher=result_of_referenced_matcher,
@@ -134,7 +129,6 @@ class TestResultShouldBeEqualToResultOfReferencedMatcher(tr.TestCaseBaseForParse
                     # ACT & ASSERT #
                     integration_check.check(
                         self,
-                        sut.files_matcher_parser(),
                         instruction_source,
                         model.arbitrary_model(),
                         arrangement,

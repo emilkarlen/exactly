@@ -4,8 +4,8 @@ from typing import Optional, Sequence, TypeVar, Generic, Callable
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
+from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MatcherWTraceAndNegation, \
     MatcherWTrace, MatcherAdv, ApplicationEnvironment
@@ -34,6 +34,7 @@ class Arrangement:
                  hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                  non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
                  act_result: Optional[ActResultProducer] = None,
+                 pre_population_action: TcdsAction = TcdsAction(),
                  post_population_action: TcdsAction = TcdsAction(),
                  symbols: Optional[SymbolTable] = None,
                  ):
@@ -42,6 +43,7 @@ class Arrangement:
         self.non_hds_contents = non_hds_contents
         self.tcds_contents = tcds_contents
         self.act_result = act_result
+        self.pre_population_action = pre_population_action
         self.post_population_action = post_population_action
 
 
@@ -75,8 +77,8 @@ def main_result_is_failure() -> ValueAssertion[MatchingResult]:
 MODEL = TypeVar('MODEL')
 
 
-def constant_model(model: MODEL) -> Callable[[Tcds], MODEL]:
-    def ret_val(tcds: Tcds) -> MODEL:
+def constant_model(model: MODEL) -> Callable[[FullResolvingEnvironment], MODEL]:
+    def ret_val(environment: FullResolvingEnvironment) -> MODEL:
         return model
 
     return ret_val
@@ -84,7 +86,7 @@ def constant_model(model: MODEL) -> Callable[[Tcds], MODEL]:
 
 def check(put: unittest.TestCase,
           source: ParseSource,
-          model_constructor: Callable[[Tcds], MODEL],
+          model_constructor: Callable[[FullResolvingEnvironment], MODEL],
           parser: Parser[MatcherTypeSdv[MODEL]],
           arrangement: Arrangement,
           expected_logic_value_type: LogicValueType,
@@ -98,7 +100,7 @@ def check(put: unittest.TestCase,
 
 def check_with_source_variants(put: unittest.TestCase,
                                arguments: Arguments,
-                               model_constructor: Callable[[Tcds], MODEL],
+                               model_constructor: Callable[[FullResolvingEnvironment], MODEL],
                                parser: Parser[MatcherTypeSdv[MODEL]],
                                arrangement: Arrangement,
                                expected_logic_value_type: LogicValueType,
@@ -120,7 +122,7 @@ class _Checker(Generic[MODEL]):
     def __init__(self,
                  put: unittest.TestCase,
                  source: ParseSource,
-                 model_constructor: Callable[[Tcds], MODEL],
+                 model_constructor: Callable[[FullResolvingEnvironment], MODEL],
                  parser: Parser[MatcherTypeSdv[MODEL]],
                  arrangement: Arrangement,
                  expected_logic_value_type: LogicValueType,
@@ -159,7 +161,7 @@ class _Checker(Generic[MODEL]):
                                                       'sanity of structure of ddv')
 
         with tcds_with_act_as_curr_dir(
-                # pre_contents_population_action=self.arrangement.pre_contents_population_action,
+                pre_contents_population_action=self.arrangement.pre_population_action,
                 hds_contents=self.arrangement.hds_contents,
                 non_hds_contents=self.arrangement.non_hds_contents,
                 tcds_contents=self.arrangement.tcds_contents,
@@ -186,7 +188,15 @@ class _Checker(Generic[MODEL]):
     def _check_with_sds(self, ddv: MatcherDdv[MODEL]):
         self._check_validation_post_sds(ddv)
 
-        matcher = self._resolve_primitive_value(ddv)
+        full_resolving_env = FullResolvingEnvironment(
+            self.arrangement.symbols,
+            self.tcds,
+            ApplicationEnvironment(
+                TmpDirFileSpaceAsDirCreatedOnDemand(self.tcds.sds.internal_tmp_dir / 'application-tmp-dir')
+            ),
+        )
+
+        matcher = self._resolve_primitive_value(ddv, full_resolving_env.application_environment)
         structure_tree_of_primitive = matcher.structure().render()
 
         asrt_d_tree.matches_node().apply_with_message(self.put,
@@ -200,7 +210,7 @@ class _Checker(Generic[MODEL]):
             structure_tree_of_primitive,
             'structure of primitive should be same as that of ddv')
 
-        self._check_application(matcher)
+        self._check_application(matcher, full_resolving_env)
 
     def _parse(self) -> MatcherTypeSdv[MODEL]:
         sdv = self.parser.parse(self.source)
@@ -232,15 +242,14 @@ class _Checker(Generic[MODEL]):
 
         return matcher_ddv
 
-    def _resolve_primitive_value(self, matcher_ddv: MatcherDdv[MODEL]) -> MatcherWTrace[MODEL]:
+    def _resolve_primitive_value(self,
+                                 matcher_ddv: MatcherDdv[MODEL],
+                                 application_environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
         adv = matcher_ddv.value_of_any_dependency(self.tcds)
 
         asrt.is_instance(MatcherAdv).apply_with_message(self.put,
                                                         adv,
                                                         'adv')
-        application_environment = ApplicationEnvironment(
-            TmpDirFileSpaceAsDirCreatedOnDemand(self.tcds.sds.internal_tmp_dir / 'application-tmp-dir')
-        )
         ret_val = adv.applier(application_environment)
 
         asrt.is_instance(MatcherWTrace).apply_with_message(self.put,
@@ -271,9 +280,11 @@ class _Checker(Generic[MODEL]):
         if result is not None:
             raise _CheckIsDoneException()
 
-    def _check_application(self, matcher: MatcherWTraceAndNegation[MODEL]):
+    def _check_application(self,
+                           matcher: MatcherWTraceAndNegation[MODEL],
+                           resolving_env: FullResolvingEnvironment):
         try:
-            model = self.model_constructor(self.tcds)
+            model = self.model_constructor(resolving_env)
             main_result__trace = matcher.matches_w_trace(model)
 
             self._check_application_result(main_result__trace)

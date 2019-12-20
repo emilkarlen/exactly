@@ -2,7 +2,7 @@ import unittest
 from typing import Callable
 
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
@@ -17,7 +17,7 @@ from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check i
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.type_system.data.test_resources import described_path
 
-ModelConstructor = Callable[[Tcds], FileToCheck]
+ModelConstructor = Callable[[FullResolvingEnvironment], FileToCheck]
 
 
 def empty_model() -> ModelConstructor:
@@ -34,8 +34,8 @@ class _ModelConstructorHelper:
                  ):
         self.contents = contents
 
-    def construct(self, tcds: Tcds) -> FileToCheck:
-        tmp_dir_file_space = TmpDirFileSpaceAsDirCreatedOnDemand(tcds.sds.internal_tmp_dir)
+    def construct(self, environment: FullResolvingEnvironment) -> FileToCheck:
+        tmp_dir_file_space = TmpDirFileSpaceAsDirCreatedOnDemand(environment.tcds.sds.internal_tmp_dir)
         original_file_path = self._create_original_file(tmp_dir_file_space)
 
         return FileToCheck(

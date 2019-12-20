@@ -10,7 +10,6 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import model
@@ -18,7 +17,6 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -49,11 +47,10 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
 
     def _check(self,
                source: ParseSource,
-               arrangement: ArrangementPostAct,
-               expectation: Expectation
+               arrangement: integration_check.Arrangement,
+               expectation: integration_check.Expectation,
                ):
         integration_check.check(self,
-                                self._conf().parser,
                                 source,
                                 model.arbitrary_model(),
                                 arrangement,
@@ -69,10 +66,10 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                         Arguments(instr_arg)):
                     self._check(
                         source,
-                        ArrangementPostAct(),
-                        Expectation(
-                            validation_pre_sds=asrt_validation.is_arbitrary_validation_failure(),
-                            symbol_usages=asrt.is_empty_sequence,
+                        integration_check.Arrangement(),
+                        integration_check.Expectation(
+                            validation=asrt_validation.pre_sds_validation_fails__w_any_msg(),
+                            symbol_references=asrt.is_empty_sequence,
                         ),
                     )
 
@@ -89,10 +86,10 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                         Arguments(instr_arg)):
                     self._check(
                         source,
-                        ArrangementPostAct(),
-                        Expectation(
-                            validation_pre_sds=asrt_validation.is_arbitrary_validation_failure(),
-                            symbol_usages=asrt.is_empty_sequence,
+                        integration_check.Arrangement(),
+                        integration_check.Expectation(
+                            validation=asrt_validation.pre_sds_validation_fails__w_any_msg(),
+                            symbol_references=asrt.is_empty_sequence,
                         ),
                     )
 
@@ -117,16 +114,16 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                             Arguments(arguments)):
                         self._check(
                             source,
-                            ArrangementPostAct(
+                            integration_check.Arrangement(
                                 symbols=SymbolTable({
                                     symbol.name: data_symbol_utils.string_constant_container(
                                         invalid_symbol_value
                                     )
                                 })
                             ),
-                            Expectation(
-                                validation_pre_sds=asrt_validation.is_arbitrary_validation_failure(),
-                                symbol_usages=equals_symbol_references([
+                            integration_check.Expectation(
+                                validation=asrt_validation.pre_sds_validation_fails__w_any_msg(),
+                                symbol_references=equals_symbol_references([
                                     SymbolReference(symbol.name,
                                                     string_made_up_by_just_strings())
                                 ]),

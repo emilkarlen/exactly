@@ -9,13 +9,12 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndExpectSetup
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     FilesMatcherArgumentsConstructor
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_check import Expectation
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import Model, ModelConstructorFromRelOptConf
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import ModelConstructorFromRelOptConf, \
+    ModelConstructor
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
@@ -58,7 +57,7 @@ class MatcherChecker:
     def _check_(
             self,
             instruction_source: ParseSource,
-            model: Model,
+            model: ModelConstructor,
             etc: ExpectationTypeConfigForNoneIsSuccess,
             main_result_for_positive_expectation: PassOrFail,
             root_dir_of_dir_contents: RelativityOptionConfiguration,
@@ -71,20 +70,19 @@ class MatcherChecker:
                               arguments=instruction_source.source_string):
             integration_check.check(
                 self.put,
-                self.parser,
                 instruction_source,
                 model,
-                ArrangementPostAct(
-                    pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
+                integration_check.Arrangement(
+                    pre_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
                     tcds_contents=root_dir_of_dir_contents.populator_for_relativity_option_root(
                         contents_of_relativity_option_root
                     ),
                     symbols=_symbol_table_of(root_dir_of_dir_contents.symbols,
                                              following_symbols_setup),
                 ),
-                Expectation(
+                integration_check.Expectation(
                     main_result=etc.main_result(main_result_for_positive_expectation),
-                    symbol_usages=following_symbols_setup.expected_references_assertion,
+                    symbol_references=following_symbols_setup.expected_references_assertion,
                 ))
 
     def check_parsing_with_different_source_variants(

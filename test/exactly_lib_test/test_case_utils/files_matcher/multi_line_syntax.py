@@ -2,14 +2,11 @@ import unittest
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.primitives.files_matcher import EMPTINESS_CHECK_ARGUMENT
-from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source_lines
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import selection_arguments
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import arbitrary_model
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_matching_success, \
@@ -32,11 +29,10 @@ class TestParseValidMultiLineSyntax(unittest.TestCase):
         with self.subTest(case.name):
             integration_check.check(
                 self,
-                sut.files_matcher_parser(),
                 case.source,
                 arbitrary_model(),
-                ArrangementPostAct(),
-                Expectation(
+                integration_check.Arrangement(),
+                integration_check.Expectation(
                     main_result=result_of_main,
                     source=case.source_assertion,
                 ))

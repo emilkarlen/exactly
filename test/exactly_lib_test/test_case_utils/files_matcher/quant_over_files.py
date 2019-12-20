@@ -18,11 +18,11 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, validation_cases
-from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
-from exactly_lib_test.test_case_utils.files_matcher.test_resources import expression, integration_check
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args, \
+    integration_check
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import expression
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import model
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import tr
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
@@ -39,7 +39,6 @@ from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.conten
     ToUppercaseStringTransformer
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions as asrt_matcher
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import Expectation, expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File, Dir, empty_dir, sym_link
@@ -99,15 +98,14 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
                                   validation_case=case.name):
                     integration_check.check(
                         self,
-                        sut.files_matcher_parser(),
                         source=remaining_source(str(arguments)),
-                        model=arbitrary_model(),
+                        model_constructor=arbitrary_model(),
                         arrangement=
-                        ArrangementPostAct(
+                        integration_check.Arrangement(
                             symbols=symbol_context.symbol_table
                         ),
                         expectation=
-                        expectation(
+                        integration_check.Expectation(
                             validation=case.value.expectation,
                             symbol_references=symbol_context.references_assertion,
                         ),
@@ -183,8 +181,6 @@ class TestHardErrorWhenContentsOfAFileThatIsNotARegularFileIsTested(unittest.Tes
     ]
 
     def test_hard_error_when_there_is_a_single_file_that_is_not_a_regular_file(self):
-        parser = sut.files_matcher_parser()
-
         name_of_checked_dir = 'checked-dir'
         relativity_root_conf = rel_opt_conf.default_conf_rel_any(RelOptionType.REL_CWD)
         the_model = model.model_with_source_path_as_sub_dir_of_rel_root(self.name_of_checked_dir)(relativity_root_conf)
@@ -211,11 +207,10 @@ class TestHardErrorWhenContentsOfAFileThatIsNotARegularFileIsTested(unittest.Tes
                                 non_regular_file=non_regular_file.name):
                             integration_check.check(
                                 self,
-                                parser,
                                 remaining_source(arguments),
                                 the_model,
                                 arrangement=
-                                ArrangementPostAct(
+                                integration_check.Arrangement(
                                     tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                                         DirContents([
                                             Dir(name_of_checked_dir, [
@@ -225,7 +220,7 @@ class TestHardErrorWhenContentsOfAFileThatIsNotARegularFileIsTested(unittest.Tes
                                     )
                                 ),
                                 expectation=
-                                Expectation(
+                                integration_check.Expectation(
                                     is_hard_error=asrt_matcher.is_hard_error()
                                 )
                             )
@@ -411,7 +406,6 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
 
     def test__all__SHOULD_consider_only_files_matched_by_the_file_matcher(self):
         # ARRANGE #
-        parser = sut.files_matcher_parser()
         name_of_checked_dir = 'name-of-checked-dir'
 
         name_starts_with_selected = NameAndValue(
@@ -457,11 +451,10 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                         arguments=arguments):
                     integration_check.check(
                         self,
-                        parser,
                         remaining_source(arguments),
                         model.model_with_source_path_as_sub_dir_of_rel_root(name_of_checked_dir)(relativity_root_conf),
                         arrangement=
-                        ArrangementPostAct(
+                        integration_check.Arrangement(
                             tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                                 DirContents([
                                     files_in_checked_dir,
@@ -470,15 +463,14 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                             symbols=symbol_table_with_file_matcher
                         ),
                         expectation=
-                        Expectation(
+                        integration_check.Expectation(
                             main_result=etc.pass__if_positive__fail__if_negative,
-                            symbol_usages=expected_symbol_references
+                            symbol_references=expected_symbol_references,
                         )
                     )
 
     def test__exists__SHOULD_consider_only_files_matched_by_the_file_matcher(self):
         # ARRANGE #
-        parser = sut.files_matcher_parser()
         name_of_checked_dir = 'name-of-checked-dir'
 
         name_starts_with_selected = NameAndValue(
@@ -524,11 +516,10 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                         arguments=arguments):
                     integration_check.check(
                         self,
-                        parser,
                         remaining_source(arguments),
                         model.model_with_source_path_as_sub_dir_of_rel_root(name_of_checked_dir)(relativity_root_conf),
                         arrangement=
-                        ArrangementPostAct(
+                        integration_check.Arrangement(
                             tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                                 DirContents([
                                     files_in_checked_dir,
@@ -537,9 +528,9 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                             symbols=symbol_table_with_file_matcher
                         ),
                         expectation=
-                        Expectation(
+                        integration_check.Expectation(
                             main_result=etc.fail__if_positive__pass_if_negative,
-                            symbol_usages=expected_symbol_references
+                            symbol_references=expected_symbol_references
                         )
                     )
 
@@ -588,11 +579,10 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
         # ACT & ASSERT #
         integration_check.check(
             self,
-            sut.files_matcher_parser(),
             remaining_source(arguments),
             model.model_with_rel_root_as_source_path(relativity_root_conf),
             arrangement=
-            ArrangementPostAct(
+            integration_check.Arrangement(
                 tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                     DirContents([
                         File('1.txt', original_file_contents),
@@ -602,9 +592,9 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
                 symbols=symbol_table_with_lines_transformer
             ),
             expectation=
-            Expectation(
+            integration_check.Expectation(
                 main_result=etc.pass__if_positive__fail__if_negative,
-                symbol_usages=expected_symbol_references
+                symbol_references=expected_symbol_references
             )
         )
 
