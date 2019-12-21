@@ -1,0 +1,11 @@
+[setup]
+
+def program SHELL  = $ echo A B c > /dev/null
+def program SYSTEM = % ls "A B" c
+def program PYTHON = -python python-source-file.py "a b" c
+
+def program TRANSFORMED = @ SYSTEM
+                          -transformed-by select line-num > 1
+
+def program ACCUMULATED = @ TRANSFORMED "X Y" z
+                          -transformed-by select line-num > 2

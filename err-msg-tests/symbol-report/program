@@ -2,6 +2,6 @@
 
 here=$(dirname "$0")
 
-type='line-matcher'
+type='program'
 
 ${here}/print-symbols-of-type ${type} "${here}/${type}.case"
