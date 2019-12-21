@@ -2,10 +2,26 @@
 
 def program SHELL  = $ echo A B c > /dev/null
 def program SYSTEM = % ls "A B" c
-def program PYTHON = -python python-source-file.py "a b" c
+def program SYSTEM__WO_ARGUMENTS = % ls
+def program PYTHON = -python -existing-file -rel-home print-args.py "a b" c
 
 def program TRANSFORMED = @ SYSTEM
                           -transformed-by select line-num > 1
 
 def program ACCUMULATED = @ TRANSFORMED "X Y" z
                           -transformed-by select line-num > 2
+
+def program ACCUMULATED_SHELL = @ SHELL "X Y" z
+                                -transformed-by select line-num > 2
+
+file py-output.txt = -stdout-from @ PYTHON
+
+[assert]
+
+stdout -from
+       @ PYTHON "one more arg"
+       equals <<-
+a b
+c
+one more arg
+-

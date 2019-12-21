@@ -35,10 +35,12 @@ class ProgramSdvForCommand(ProgramSdv):
 
     def resolve(self, symbols: SymbolTable) -> ProgramDdv:
         acc = self._accumulated_elements
+        has_transformations = len(acc.transformations) > 0
         accumulated_command = self._command.new_with_additional_arguments(acc.arguments)
         return ProgramDdv(accumulated_command.resolve(symbols),
                           acc.resolve_stdin_data(symbols),
-                          acc.resolve_transformations(symbols))
+                          acc.resolve_transformations(symbols),
+                          has_transformations)
 
 
 def plain(command: CommandSdv) -> ProgramSdvForCommand:

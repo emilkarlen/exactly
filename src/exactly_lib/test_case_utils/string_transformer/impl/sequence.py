@@ -9,10 +9,12 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.string_transformer import names
+from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel, \
     StringTransformerAdv, StringTransformerDdv
+from exactly_lib.type_system.logic.string_transformer_ddvs import StringTransformerConstantDdv
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.functional import compose_first_and_second
 from exactly_lib.util.symbol_table import SymbolTable
@@ -104,10 +106,16 @@ class StringTransformerSequenceSdv(StringTransformerSdv):
         self._references = references_from_objects_with_symbol_references(transformers)
 
     def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
-        return _StringTransformerSequenceDdv([
-            transformer.resolve(symbols)
-            for transformer in self.transformers
-        ])
+        num_transformers = len(self.transformers)
+        if num_transformers == 0:
+            return StringTransformerConstantDdv(IdentityStringTransformer())
+        elif num_transformers == 1:
+            return self.transformers[0].resolve(symbols)
+        else:
+            return _StringTransformerSequenceDdv([
+                transformer.resolve(symbols)
+                for transformer in self.transformers
+            ])
 
     @property
     def references(self) -> Sequence[SymbolReference]:

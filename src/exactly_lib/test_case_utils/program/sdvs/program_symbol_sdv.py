@@ -44,15 +44,8 @@ class ProgramSdvForSymbolReference(ProgramSdv):
         program_of_symbol = lookups.lookup_program(symbols, self._symbol_name)
         acc = self._accumulated_elements
         accumulated_program = program_of_symbol.new_accumulated(acc.stdin, acc.arguments, acc.transformations)
-        assert isinstance(accumulated_program, ProgramSdv)  # Type info for IDE
 
-        program_ddv = accumulated_program.resolve(symbols)
-
-        assert isinstance(program_ddv, ProgramDdv)  # Type info for IDE
-
-        return ProgramDdv(program_ddv.command,
-                          program_ddv.stdin,
-                          program_ddv.transformation)
+        return accumulated_program.resolve(symbols)
 
 
 def plain(symbol_name: str,

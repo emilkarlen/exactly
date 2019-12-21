@@ -1,14 +1,21 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Sequence
 
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.type_system.data.list_ddv import ListDdv
+from exactly_lib.type_system.description.structure_building import StructureBuilder
 from exactly_lib.type_system.logic.program.argument import ArgumentsDdv
 from exactly_lib.util.process_execution.command import Command, CommandDriver
 
 
 class CommandDriverDdv(DirDependentValue[CommandDriver], ABC):
+
+    @abstractmethod
+    def structure_for(self, arguments: ListDdv) -> StructureBuilder:
+        """:returns A new object on each invokation."""
+        pass
 
     @property
     def validators(self) -> Sequence[DdvValidator]:
@@ -27,6 +34,10 @@ class CommandDdv(DirDependentValue[Command]):
                 +
                 tuple(arguments.validators)
         )
+
+    def structure(self) -> StructureBuilder:
+        """:returns A new object on each invokation."""
+        return self._command_driver.structure_for(self._arguments.arguments_list)
 
     @property
     def validators(self) -> Sequence[DdvValidator]:

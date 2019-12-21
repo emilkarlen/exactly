@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 from typing import Optional
 
@@ -6,7 +5,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -25,13 +24,13 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWi
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
     tcds_populators, sds_populator
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
-from exactly_lib_test.test_resources.files import tmp_dir
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction, tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion, \
     ValueAssertionBase
+from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
 
 
 class ResultWithTransformationData:
@@ -171,15 +170,24 @@ class Executor:
                 symbols=self.arrangement.symbols) as path_resolving_environment:
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
 
-            with tmp_dir.tmp_dir() as pgm_output_dir:
-                self.check(pgm_output_dir, path_resolving_environment, program_sdv)
+            application_environment = ApplicationEnvironment(
+                TmpDirFileSpaceAsDirCreatedOnDemand(
+                    path_resolving_environment.tcds.sds.internal_tmp_dir / 'tmp-file-space')
+            )
+            resolving_environment = FullResolvingEnvironment(self.arrangement.symbols,
+                                                             path_resolving_environment.tcds,
+                                                             application_environment)
+            self.check(resolving_environment, program_sdv)
 
     def check(self,
-              pgm_output_dir: pathlib.Path,
-              environment: PathResolvingEnvironmentPreOrPostSds,
+              environment: FullResolvingEnvironment,
               program_sdv: ProgramSdv):
 
         program_ddv = program_sdv.resolve(environment.symbols)
+        is_valid_node_renderer = asrt_trace_rendering.matches_node_renderer()
+        structure_renderer = program_ddv.structure()
+        is_valid_node_renderer.apply_with_message(self.put, structure_renderer,
+                                                  'structure of ddv')
 
         result = self._execute_pre_validate(environment.tcds.hds,
                                             program_ddv)
@@ -190,7 +198,7 @@ class Executor:
         if result is not None:
             return
 
-        self._execute_program(pgm_output_dir, environment.tcds, program_ddv)
+        self._execute_program(environment, program_ddv)
 
     def _execute_pre_validate(self,
                               hds: HomeDirectoryStructure,
@@ -207,24 +215,18 @@ class Executor:
         return actual
 
     def _execute_program(self,
-                         pgm_output_dir: pathlib.Path,
-                         tcds: Tcds,
+                         environment: FullResolvingEnvironment,
                          program_sdv: ProgramDdv):
-        result = self._execute(pgm_output_dir, tcds, program_sdv)
+        result = self._execute(environment, program_sdv)
 
         self.expectation.result.apply(self.put, result)
-        self.expectation.main_side_effects_on_sds.apply(self.put, tcds.sds)
-        self.expectation.main_side_effects_on_tcds.apply(self.put, tcds)
+        self.expectation.main_side_effects_on_sds.apply(self.put, environment.tcds.sds)
+        self.expectation.main_side_effects_on_tcds.apply(self.put, environment.tcds)
 
-    def _execute(self,
-                 pgm_output_dir: pathlib.Path,
-                 tcds: Tcds,
-                 program_ddv: ProgramDdv) -> ResultWithTransformationData:
-        program_adv = program_ddv.value_of_any_dependency(tcds)
-        application_environment = ApplicationEnvironment(
-            TmpDirFileSpaceAsDirCreatedOnDemand(tcds.sds.internal_tmp_dir / 'tmp-file-space')
-        )
-        program = program_adv.applier(application_environment)
+    def _execute(self, environment: FullResolvingEnvironment, program_ddv: ProgramDdv) -> ResultWithTransformationData:
+        program_adv = program_ddv.value_of_any_dependency(environment.tcds)
+        program = program_adv.applier(environment.application_environment)
+        pgm_output_dir = environment.application_environment.tmp_files_space.new_path_as_existing_dir()
         assert isinstance(program, Program)
         execution_result = pgm_execution.make_transformed_file_from_output(pgm_output_dir,
                                                                            self.arrangement.process_execution_settings,
