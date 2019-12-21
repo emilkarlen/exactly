@@ -4,11 +4,13 @@ from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription, StructureRenderer
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
 from exactly_lib.type_system.logic.program.command import CommandDdv
 from exactly_lib.type_system.logic.program.stdin_data import StdinDataDdv, StdinData
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
     StringTransformerAdv
+from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.process_execution.command import Command
 
 
@@ -48,7 +50,8 @@ class ProgramAdv(ApplicationEnvironmentDependentValue[Program]):
                        )
 
 
-class ProgramDdv(DirDependentValue[ApplicationEnvironmentDependentValue[Program]]):
+class ProgramDdv(DirDependentValue[ApplicationEnvironmentDependentValue[Program]],
+                 WithTreeStructureDescription):
     def __init__(self,
                  command: CommandDdv,
                  stdin: StdinDataDdv,
@@ -69,6 +72,9 @@ class ProgramDdv(DirDependentValue[ApplicationEnvironmentDependentValue[Program]
     @property
     def transformation(self) -> StringTransformerDdv:
         return self._transformation
+
+    def structure(self) -> StructureRenderer:
+        return renderers.header_only('program')
 
     @property
     def validators(self) -> Sequence[DdvValidator]:
