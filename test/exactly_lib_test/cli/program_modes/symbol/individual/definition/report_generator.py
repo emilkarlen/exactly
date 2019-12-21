@@ -262,7 +262,6 @@ _SOURCE_INFO_WITH_SOURCE = symbol_info.SourceInfo.of_lines(
 _ARBITRARY_STRING_SDV = string_sdvs.arbitrary_sdv()
 
 _RESOLVERS_OF_TYPES_WITHOUT_RENDERING_OF_RESOLVED_VALUE = [
-    program_sdvs.arbitrary_sdv(),
 ]
 
 _RESOLVERS_OF_TYPES_WITH_RENDERING_OF_RESOLVED_VALUE = [
@@ -276,4 +275,5 @@ _RESOLVERS_OF_TYPES_WITH_RENDERING_OF_RESOLVED_VALUE = [
     files_matcher.arbitrary_sdv(),
 
     string_transformer.arbitrary_sdv(),
+    program_sdvs.arbitrary_sdv(),
 ]

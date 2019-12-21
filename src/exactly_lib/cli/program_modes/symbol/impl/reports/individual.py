@@ -164,18 +164,14 @@ class _DefinitionReport(_SuccessfulReportBase):
 
     def blocks(self) -> Sequence[ReportBlock]:
         definition = self.definition
-        ret_val = [
+        return [
             DefinitionShortInfoBlock(definition),
             DefinitionSourceBlock(definition.phase,
                                   definition.definition.symbol_container.source_location),
+            self._get_resolved_value_presentation(),
         ]
-        mb_resolved_value_pre_block = self._get_resolved_value_presentation()
-        if mb_resolved_value_pre_block:
-            ret_val.append(mb_resolved_value_pre_block)
 
-        return ret_val
-
-    def _get_resolved_value_presentation(self) -> Optional[value_presentation.ResolvedValuePresentationBlock]:
+    def _get_resolved_value_presentation(self) -> value_presentation.ResolvedValuePresentationBlock:
         sdv = self.definition.definition.symbol_container.sdv
         definitions = [
             definition_info.definition

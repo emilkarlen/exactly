@@ -1,9 +1,8 @@
-import pathlib
 from abc import ABC
-from typing import Sequence, Optional
+from typing import Sequence
 
 from exactly_lib.cli.program_modes.symbol.impl.report import ReportBlock
-from exactly_lib.definitions import path, type_system
+from exactly_lib.definitions import type_system
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
@@ -20,12 +19,7 @@ from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.logic.visitor import LogicTypeSdvPseudoVisitor
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
@@ -51,67 +45,55 @@ class PresentationBlockConstructor:
             for definition in all_definitions
         })
 
-    def block_for(self, sdv: SymbolDependentValue) -> Optional[ResolvedValuePresentationBlock]:
+    def block_for(self, sdv: SymbolDependentValue) -> ResolvedValuePresentationBlock:
         if isinstance(sdv, LogicTypeSdv):
-            tcds = Tcds(
-                HomeDirectoryStructure(
-                    pathlib.Path(symbol_reference_syntax_for_name(path.EXACTLY_DIR__REL_HDS_CASE)),
-                    pathlib.Path(symbol_reference_syntax_for_name(path.EXACTLY_DIR__REL_HDS_CASE)),
-                ),
-                SandboxDirectoryStructure(path_description.EXACTLY_SANDBOX_ROOT_DIR_NAME)
-            )
-            constructor = _LogicTypeBlockConstructor(self._symbol_table, tcds)
+            constructor = _LogicTypeBlockConstructor(self._symbol_table)
             return constructor.visit(sdv)
         elif isinstance(sdv, DataTypeSdv):
             constructor = _DataTypeBlockConstructor(self._symbol_table)
             return constructor.visit(sdv)
         else:
-            raise TypeError('Unknown sdv type: ' + str(sdv))
+            raise TypeError('Unknown {} type: {}'.format(str(SymbolDependentValue), str(sdv)))
 
 
-class _DataTypeBlockConstructor(DataTypeSdvPseudoVisitor[Optional[ResolvedValuePresentationBlock]]):
+class _DataTypeBlockConstructor(DataTypeSdvPseudoVisitor[ResolvedValuePresentationBlock]):
     def __init__(self,
                  symbols: SymbolTable,
                  ):
         self.symbols = symbols
 
-    def visit_string(self, value: StringSdv) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_string(self, value: StringSdv) -> ResolvedValuePresentationBlock:
         return _BlockForCustomRenderer(_StringRenderer(value.resolve(self.symbols).describer()))
 
-    def visit_path(self, value: PathSdv) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_path(self, value: PathSdv) -> ResolvedValuePresentationBlock:
         describer = value.resolve(self.symbols).describer()
         return _of_single_line_object(line_objects.StringLineObject(describer.value.render()))
 
-    def visit_list(self, value: ListSdv) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_list(self, value: ListSdv) -> ResolvedValuePresentationBlock:
         return _BlockForCustomRenderer(_ListRenderer(value.resolve(self.symbols).describer()))
 
 
-class _LogicTypeBlockConstructor(LogicTypeSdvPseudoVisitor[Optional[ResolvedValuePresentationBlock]]):
-    def __init__(self,
-                 symbols: SymbolTable,
-                 tcds: Tcds,
-                 ):
+class _LogicTypeBlockConstructor(LogicTypeSdvPseudoVisitor[ResolvedValuePresentationBlock]):
+    def __init__(self, symbols: SymbolTable):
         self.symbols = symbols
-        self.tcds = tcds
 
-    def visit_file_matcher(self, value: FileMatcherSdv) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_file_matcher(self, value: FileMatcherSdv) -> ResolvedValuePresentationBlock:
         return self._of_tree_structured(value.resolve(self.symbols))
 
-    def visit_files_matcher(self, value: FilesMatcherSdv) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_files_matcher(self, value: FilesMatcherSdv) -> ResolvedValuePresentationBlock:
         return self._of_tree_structured(value.resolve(self.symbols))
 
-    def visit_line_matcher(self, value: LineMatcherSdv) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_line_matcher(self, value: LineMatcherSdv) -> ResolvedValuePresentationBlock:
         return self._of_tree_structured(value.resolve(self.symbols))
 
-    def visit_string_matcher(self, value: StringMatcherSdv) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_string_matcher(self, value: StringMatcherSdv) -> ResolvedValuePresentationBlock:
         return self._of_tree_structured(value.resolve(self.symbols))
 
-    def visit_string_transformer(self, value: StringTransformerSdv) -> Optional[ResolvedValuePresentationBlock]:
+    def visit_string_transformer(self, value: StringTransformerSdv) -> ResolvedValuePresentationBlock:
         return self._of_tree_structured(value.resolve(self.symbols))
 
-    def visit_program(self, value: ProgramSdv) -> Optional[ResolvedValuePresentationBlock]:
-        return None  # FIXME Restore when DDV can report structure
-        return _BlockForCustomRenderer(_ProgramRenderer(program))
+    def visit_program(self, value: ProgramSdv) -> ResolvedValuePresentationBlock:
+        return self._of_tree_structured(value.resolve(self.symbols))
 
     @staticmethod
     def _of_tree_structured(x: WithTreeStructureDescription) -> ResolvedValuePresentationBlock:
