@@ -15,7 +15,7 @@ from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.impl.path import described_w_handler
 from exactly_lib.type_system.data.impl.path import value_str_renderers, primitive_str_renderers, \
     describer_from_str as _from_str
-from exactly_lib.type_system.data.impl.path.described_w_handler import PathDescriberHandlerForValue, \
+from exactly_lib.type_system.data.impl.path.described_w_handler import PathDescriberHandlerForDdv, \
     PathDescriberHandlerForPrimitive
 from exactly_lib.type_system.data.path_ddv import PathDdv, DescribedPathPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForDdv, PathDescriberForPrimitive
@@ -58,7 +58,7 @@ class PathManipulationFunctionalityForFixedDdv(PathDescriberForDdv, ABC):
         return _ParentPathDdv(self._ddv)
 
 
-class PathDescriberHandlerForValueWithValue(PathDescriberHandlerForValue):
+class PathDescriberHandlerForDdvWithDdv(PathDescriberHandlerForDdv):
     def __init__(self, path_ddv: PathDdv):
         self._path_ddv = path_ddv
         self._relativity_type = path_ddv.relativity().relativity_type
@@ -273,8 +273,8 @@ class _ParentPathDdv(PathDdv):
             self._describer_handler().value_of_any_dependency(primitive, tcds),
         )
 
-    def _describer_handler(self) -> PathDescriberHandlerForValue:
-        return PathDescriberHandlerForValueWithValue(self)
+    def _describer_handler(self) -> PathDescriberHandlerForDdv:
+        return PathDescriberHandlerForDdvWithDdv(self)
 
     def _get_ddv(self) -> PathDdv:
         if self._value is None:

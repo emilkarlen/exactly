@@ -26,7 +26,7 @@ class PathDescriberHandlerForPrimitive(ABC):
         pass
 
 
-class PathDescriberHandlerForValue(ABC):
+class PathDescriberHandlerForDdv(ABC):
     @property
     @abstractmethod
     def describer(self) -> PathDescriberForDdv:

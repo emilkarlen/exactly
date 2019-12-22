@@ -10,7 +10,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.impl.path import described_w_handler
 from exactly_lib.type_system.data.impl.path import describer_handlers
-from exactly_lib.type_system.data.impl.path.described_w_handler import PathDescriberHandlerForValue
+from exactly_lib.type_system.data.impl.path.described_w_handler import PathDescriberHandlerForDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv, DescribedPathPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForDdv
 from exactly_lib.type_system.data.path_part import PathPartDdv
@@ -48,8 +48,8 @@ class PathDdvWithDescriptionBase(PathDdv, ABC):
             self._describer_handler().value_of_any_dependency(primitive, tcds),
         )
 
-    def _describer_handler(self) -> PathDescriberHandlerForValue:
-        return describer_handlers.PathDescriberHandlerForValueWithValue(self)
+    def _describer_handler(self) -> PathDescriberHandlerForDdv:
+        return describer_handlers.PathDescriberHandlerForDdvWithDdv(self)
 
 
 class PathDdvWithPathSuffixBase(PathDdvWithDescriptionBase, ABC):
