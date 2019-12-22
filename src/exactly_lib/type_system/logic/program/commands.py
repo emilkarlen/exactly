@@ -46,7 +46,7 @@ class CommandDriverDdvForExecutableFile(CommandDriverDdv):
         return self._validators
 
     def value_of_any_dependency(self, tcds: Tcds) -> CommandDriver:
-        return commands.CommandDriverForExecutableFile(self._exe_file.value_of_any_dependency(tcds))
+        return commands.CommandDriverForExecutableFile(self._exe_file.value_of_any_dependency__d(tcds))
 
 
 class CommandDriverDdvForSystemProgram(CommandDriverDdv):

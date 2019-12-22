@@ -1,4 +1,3 @@
-import pathlib
 import shlex
 from typing import List
 
@@ -185,8 +184,8 @@ def _parse_interpreter_command(arg: str) -> Command:
     command_and_arguments = shlex_split(arg)
     if not command_and_arguments:
         raise SingleInstructionInvalidArgumentException('Missing interpreter')
-    return commands.executable_file_command(pathlib.Path(command_and_arguments[0]),
-                                            command_and_arguments[1:])
+    return commands.system_program_command(command_and_arguments[0],
+                                           command_and_arguments[1:])
 
 
 def shlex_split(s: str) -> list:

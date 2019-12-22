@@ -4,6 +4,7 @@ from typing import List
 
 from exactly_lib.type_system.logic.program.process_execution import commands as sut
 from exactly_lib.type_system.logic.program.process_execution.command import CommandDriver
+from exactly_lib_test.type_system.data.test_resources.described_path import new_primitive
 
 
 def suite() -> unittest.TestSuite:
@@ -31,7 +32,7 @@ class TestCommandDriverVisitor(unittest.TestCase):
         # ARRANGE #
         visitor = _CommandDriverVisitorTestThatRegistersClassOfVisitedObjects('return value')
         # ACT #
-        ret_val = visitor.visit(sut.CommandDriverForExecutableFile(pathlib.Path.cwd()))
+        ret_val = visitor.visit(sut.CommandDriverForExecutableFile(new_primitive(pathlib.Path.cwd())))
         # ASSERT #
         self.assertEqual('return value', ret_val,
                          'Visitor is expected to return value from visit-method')

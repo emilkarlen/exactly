@@ -2,6 +2,7 @@ import pathlib
 import sys
 from typing import List
 
+from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.logic.program.process_execution.command import Command, CommandDriver
 from exactly_lib.type_system.logic.program.process_execution.commands import CommandDriverForShell, \
     CommandDriverForSystemProgram, \
@@ -9,6 +10,7 @@ from exactly_lib.type_system.logic.program.process_execution.commands import Com
 from exactly_lib_test.test_resources.programs import python_program_execution
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.data.test_resources.described_path import new_primitive
 
 
 def equals_executable_file_command_driver(expected: CommandDriverForExecutableFile
@@ -71,7 +73,7 @@ def matches_command(driver: ValueAssertion[CommandDriver],
         ])
 
 
-def equals_executable_file_command(executable_file: pathlib.Path,
+def equals_executable_file_command(executable_file: DescribedPathPrimitive,
                                    arguments: List[str]) -> ValueAssertion[Command]:
     return matches_command(equals_executable_file_command_driver(CommandDriverForExecutableFile(executable_file)),
                            arguments)
@@ -91,7 +93,7 @@ def equals_shell_command(command_line: str,
 
 def equals_execute_py_source_command(source: str) -> ValueAssertion[Command]:
     return equals_executable_file_command(
-        pathlib.Path(sys.executable),
+        new_primitive(pathlib.Path(sys.executable)),
         [python_program_execution.PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE, source]
     )
 

@@ -8,6 +8,7 @@ from exactly_lib.type_system.logic.program.process_execution.commands import Com
 from exactly_lib_test.test_case.test_resources import command_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
+from exactly_lib_test.type_system.data.test_resources.described_path import new_primitive
 
 
 def suite() -> unittest.TestSuite:
@@ -28,9 +29,9 @@ class TestExecutableFileDriver(unittest.TestCase):
         cases = [
             NEA('without arguments',
                 expected=
-                CommandDriverForExecutableFile(path),
+                CommandDriverForExecutableFile(new_primitive(path)),
                 actual=
-                CommandDriverForExecutableFile(path),
+                CommandDriverForExecutableFile(new_primitive(path)),
                 ),
         ]
         for case in cases:
@@ -43,13 +44,13 @@ class TestExecutableFileDriver(unittest.TestCase):
         cases = [
             NEA('unexpected path',
                 expected=
-                CommandDriverForExecutableFile(path),
+                CommandDriverForExecutableFile(new_primitive(path)),
                 actual=
-                CommandDriverForExecutableFile(path / 'unexpected'),
+                CommandDriverForExecutableFile(new_primitive(path / 'unexpected')),
                 ),
             NEA('unexpected command type',
                 expected=
-                CommandDriverForExecutableFile(path),
+                CommandDriverForExecutableFile(new_primitive(path)),
                 actual=
                 CommandDriverForSystemProgram(path.name),
                 ),
@@ -87,7 +88,7 @@ class TestSystemProgramDriver(unittest.TestCase):
                 expected=
                 CommandDriverForSystemProgram('expected'),
                 actual=
-                CommandDriverForExecutableFile(pathlib.Path('expected')),
+                CommandDriverForExecutableFile(new_primitive(pathlib.Path('expected'))),
                 ),
         ]
         for case in cases:
@@ -189,9 +190,11 @@ class TestExecutableFile(unittest.TestCase):
         cases = [
             NEA('',
                 expected=
-                sut.equals_executable_file_command(pathlib.Path('expected'), ['arg']),
+                sut.equals_executable_file_command(new_primitive(pathlib.Path('expected')),
+                                                   ['arg']),
                 actual=
-                Command(CommandDriverForExecutableFile(pathlib.Path('expected')), ['arg']),
+                Command(CommandDriverForExecutableFile(new_primitive(pathlib.Path('expected'))),
+                        ['arg']),
                 ),
         ]
         for case in cases:
@@ -202,13 +205,14 @@ class TestExecutableFile(unittest.TestCase):
         cases = [
             NEA('unexpected file',
                 expected=
-                sut.equals_executable_file_command(pathlib.Path('expected'), []),
+                sut.equals_executable_file_command(new_primitive(pathlib.Path('expected')),
+                                                   []),
                 actual=
-                Command(CommandDriverForExecutableFile(pathlib.Path('unExpected')), []),
+                Command(CommandDriverForExecutableFile(new_primitive(pathlib.Path('unExpected'))), []),
                 ),
             NEA('unexpected driver type',
                 expected=
-                sut.equals_executable_file_command(pathlib.Path('expected'), []),
+                sut.equals_executable_file_command(new_primitive(pathlib.Path('expected')), []),
                 actual=
                 Command(CommandDriverForSystemProgram('expected'), []),
                 ),
@@ -244,7 +248,7 @@ class TestSystemProgram(unittest.TestCase):
                 expected=
                 sut.equals_system_program_command('expected', []),
                 actual=
-                Command(CommandDriverForExecutableFile(pathlib.Path('expected')), []),
+                Command(CommandDriverForExecutableFile(new_primitive(pathlib.Path('expected'))), []),
                 ),
         ]
         for case in cases:

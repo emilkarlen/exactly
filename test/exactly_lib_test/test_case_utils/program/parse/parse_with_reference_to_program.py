@@ -333,7 +333,7 @@ class TestResolving(unittest.TestCase):
             def program_assertion(tcds: Tcds) -> ValueAssertion[Program]:
                 return asrt_pgm_val.matches_program(
                     command=asrt_command.equals_executable_file_command(
-                        executable_file=exe_path.value_of_any_dependency(tcds),
+                        executable_file=exe_path.value_of_any_dependency__d(tcds),
                         arguments=expected_arguments
                     ),
                     stdin=asrt_pgm_val.no_stdin(),

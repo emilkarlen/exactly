@@ -2,6 +2,7 @@ import pathlib
 from abc import ABC
 from typing import List, Generic, TypeVar
 
+from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.logic.program.process_execution.command import Command, ProgramAndArguments, CommandDriver
 
 
@@ -56,7 +57,7 @@ class CommandDriverForSystemProgram(CommandDriverWithArgumentList):
 
 
 class CommandDriverForExecutableFile(CommandDriverWithArgumentList):
-    def __init__(self, executable_file: pathlib.Path):
+    def __init__(self, executable_file: DescribedPathPrimitive):
         self._executable_file = executable_file
 
     @property
@@ -64,14 +65,14 @@ class CommandDriverForExecutableFile(CommandDriverWithArgumentList):
         return False
 
     def arg_list_or_str_for(self, arguments: List[str]):
-        return [str(self._executable_file)] + arguments
+        return [str(self._executable_file.primitive)] + arguments
 
     @property
     def executable_file(self) -> pathlib.Path:
-        return self._executable_file
+        return self._executable_file.primitive
 
     def as_program_and_args(self, arguments: List[str]) -> ProgramAndArguments:
-        return ProgramAndArguments(str(self._executable_file), arguments)
+        return ProgramAndArguments(str(self._executable_file.primitive), arguments)
 
     def __str__(self) -> str:
         return '{}({})'.format(type(self),
@@ -84,7 +85,7 @@ def system_program_command(program: str,
                    [] if arguments is None else arguments)
 
 
-def executable_file_command(program_file: pathlib.Path,
+def executable_file_command(program_file: DescribedPathPrimitive,
                             arguments: List[str] = None) -> Command:
     return Command(CommandDriverForExecutableFile(program_file),
                    [] if arguments is None else arguments)

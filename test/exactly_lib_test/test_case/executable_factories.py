@@ -7,6 +7,7 @@ from exactly_lib.type_system.logic.program.process_execution.commands import Com
     CommandDriverForSystemProgram, \
     CommandDriverForExecutableFile
 from exactly_lib_test.test_resources.test_utils import NIE
+from exactly_lib_test.type_system.data.test_resources.described_path import new_primitive
 
 
 def suite() -> unittest.TestSuite:
@@ -86,7 +87,7 @@ class TestExecutableFactoryForPosix(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(case.name):
-                command = Command(CommandDriverForExecutableFile(the_file),
+                command = Command(CommandDriverForExecutableFile(new_primitive(the_file)),
                                   case.input_value)
                 # ACT #
                 actual = self.factory.make(command)
@@ -168,7 +169,7 @@ class TestExecutableFactoryForWindows(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(case.name):
-                command = Command(CommandDriverForExecutableFile(the_file),
+                command = Command(CommandDriverForExecutableFile(new_primitive(the_file)),
                                   case.input_value)
                 # ACT #
                 actual = self.factory.make(command)

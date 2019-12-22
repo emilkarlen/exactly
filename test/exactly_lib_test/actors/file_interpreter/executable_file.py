@@ -8,6 +8,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
+from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.program.process_execution.commands import executable_file_command
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
@@ -35,7 +36,10 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 
-COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = executable_file_command(pathlib.Path(sys.executable), [])
+COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = executable_file_command(
+    paths.absolute_file_name(sys.executable).value_when_no_dir_dependencies__d(),
+    []
+)
 
 
 class TheConfiguration(TheConfigurationBase):
