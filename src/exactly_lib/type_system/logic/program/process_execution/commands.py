@@ -79,11 +79,6 @@ def system_program_command(program: str,
                    [] if arguments is None else arguments)
 
 
-def executable_program_command2(program_and_args: ProgramAndArguments) -> Command:
-    return Command(CommandDriverForSystemProgram(program_and_args.program),
-                   program_and_args.arguments)
-
-
 def executable_file_command(program_file: pathlib.Path,
                             arguments: List[str] = None) -> Command:
     return Command(CommandDriverForExecutableFile(program_file),

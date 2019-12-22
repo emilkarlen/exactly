@@ -27,7 +27,7 @@ def for_system_program(program: StringSdv,
                       arguments)
 
 
-def from_program_and_arguments(pgm_and_args: ProgramAndArguments) -> CommandSdv:
+def for_system_program__from_pgm_and_args(pgm_and_args: ProgramAndArguments) -> CommandSdv:
     program = string_sdvs.str_constant(pgm_and_args.program)
     arguments = list_sdvs.from_str_constants(pgm_and_args.arguments)
     additional_arguments = arguments_sdvs.new_without_validation(arguments)

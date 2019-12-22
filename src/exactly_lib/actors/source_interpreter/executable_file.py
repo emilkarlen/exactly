@@ -46,4 +46,4 @@ class ExecutorForSourceInterpreterSetup(pa.ExecutorBase):
     def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandSdv:
         script_file_path = self._source_file_path(script_output_dir_path)
         pgm_and_args = self.script_language_setup.command_and_args_for_executing_script_file(str(script_file_path))
-        return command_sdvs.from_program_and_arguments(pgm_and_args)
+        return command_sdvs.for_system_program__from_pgm_and_args(pgm_and_args)

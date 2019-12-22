@@ -21,10 +21,17 @@ class _CommandTranslator(commands.CommandDriverVisitor):
         return shell_cmd.Parser(driver.shell_command_line_with_args(self.arguments))
 
     def visit_executable_file(self, driver: commands.CommandDriverForExecutableFile) -> Actor:
-        return executable_file.Parser(SourceInterpreterSetup(StandardSourceFileManager(
-            'src',
-            str(driver.executable_file),
-            self.arguments)))
+        return executable_file.Parser(SourceInterpreterSetup(
+            self._source_file_manager(str(driver.executable_file)))
+        )
 
     def visit_system_program(self, driver: commands.CommandDriverForSystemProgram) -> Actor:
-        raise ValueError('Unsupported source interpreter: System Program Command')
+        return executable_file.Parser(SourceInterpreterSetup(
+            self._source_file_manager(driver.program))
+        )
+
+    def _source_file_manager(self, interpreter: str) -> StandardSourceFileManager:
+        return StandardSourceFileManager(
+            'src',
+            interpreter,
+            self.arguments)
