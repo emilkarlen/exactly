@@ -1,5 +1,6 @@
 import pathlib
-from typing import List
+from abc import ABC
+from typing import List, Generic, TypeVar
 
 from exactly_lib.type_system.logic.program.process_execution.command import Command, ProgramAndArguments, CommandDriver
 
@@ -27,7 +28,11 @@ class CommandDriverForShell(CommandDriver):
                                self._command_line)
 
 
-class CommandDriverForSystemProgram(CommandDriver):
+class CommandDriverWithArgumentList(CommandDriver, ABC):
+    pass
+
+
+class CommandDriverForSystemProgram(CommandDriverWithArgumentList):
     def __init__(self, program: str):
         self._program = program
 
@@ -50,7 +55,7 @@ class CommandDriverForSystemProgram(CommandDriver):
                                self._program)
 
 
-class CommandDriverForExecutableFile(CommandDriver):
+class CommandDriverForExecutableFile(CommandDriverWithArgumentList):
     def __init__(self, executable_file: pathlib.Path):
         self._executable_file = executable_file
 
@@ -104,7 +109,7 @@ class CommandDriverVisitor:
             return self.visit_system_program(value)
         if isinstance(value, CommandDriverForShell):
             return self.visit_shell(value)
-        raise TypeError('Unknown {}: {}'.format(Command, str(value)))
+        raise TypeError('Unknown {}: {}'.format(CommandDriver, str(value)))
 
     def visit_shell(self, command: CommandDriverForShell):
         raise NotImplementedError()
@@ -113,4 +118,25 @@ class CommandDriverVisitor:
         raise NotImplementedError()
 
     def visit_system_program(self, command: CommandDriverForSystemProgram):
+        raise NotImplementedError()
+
+
+T = TypeVar('T')
+
+
+class CommandDriverArgumentTypePseudoVisitor(Generic[T], ABC):
+    def visit(self, driver: CommandDriver) -> T:
+        """
+        :return: Return value from _visit... method
+        """
+        if isinstance(driver, CommandDriverWithArgumentList):
+            return self.visit_with_argument_list(driver)
+        if isinstance(driver, CommandDriverForShell):
+            return self.visit_shell(driver)
+        raise TypeError('Unknown {}: {}'.format(CommandDriver, str(driver)))
+
+    def visit_shell(self, driver: CommandDriverForShell) -> T:
+        raise NotImplementedError()
+
+    def visit_with_argument_list(self, driver: CommandDriverWithArgumentList) -> T:
         raise NotImplementedError()

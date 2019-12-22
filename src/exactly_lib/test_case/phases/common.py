@@ -2,6 +2,7 @@ import pathlib
 from typing import Sequence, Dict
 
 from exactly_lib.section_document.model import Instruction
+from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolUsage
@@ -166,6 +167,12 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
     @property
     def path_resolving_environment(self) -> PathResolvingEnvironmentPostSds:
         return PathResolvingEnvironmentPostSds(self.__sds, self.symbols)
+
+    @property
+    def full_resolving_environment(self) -> FullResolvingEnvironment:
+        return FullResolvingEnvironment(self.symbols,
+                                        self.tcds,
+                                        self.application_environment)
 
     @property
     def path_resolving_environment_pre_or_post_sds(self) -> PathResolvingEnvironmentPreOrPostSds:

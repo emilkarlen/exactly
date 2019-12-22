@@ -92,6 +92,14 @@ def new_svh_hard_error(failure_message: TextRenderer) -> SuccessOrValidationErro
                                                )
 
 
+def new_maybe_svh_hard_error(failure_message: Optional[TextRenderer]) -> SuccessOrValidationErrorOrHardError:
+    if failure_message is None:
+        return new_svh_success()
+    return SuccessOrValidationErrorOrHardError(True,
+                                               failure_message,
+                                               )
+
+
 def new_svh_hard_error__str(failure_message: str) -> SuccessOrValidationErrorOrHardError:
     if failure_message is None:
         raise ValueError('A HARD ERROR must have a failure message (that is not None)')

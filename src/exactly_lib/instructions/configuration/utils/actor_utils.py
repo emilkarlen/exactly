@@ -2,8 +2,7 @@ import pathlib
 import shlex
 from typing import List
 
-from exactly_lib.actors import command_line
-from exactly_lib.actors import file_interpreter
+from exactly_lib.actors import command_line, file_interpreter
 from exactly_lib.actors import source_interpreter as source_interpreter
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
