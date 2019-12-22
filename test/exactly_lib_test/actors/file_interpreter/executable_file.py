@@ -35,12 +35,12 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 
-COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = executable_file_command(sys.executable, [])
+COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = executable_file_command(pathlib.Path(sys.executable), [])
 
 
 class TheConfiguration(TheConfigurationBase):
     def __init__(self):
-        super().__init__(sut.parser(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE))
+        super().__init__(sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE))
 
 
 def suite() -> unittest.TestSuite:
@@ -177,7 +177,7 @@ class TestSymbolUsages(unittest.TestCase):
             )
         )
         act_phase_execution.check_execution(self,
-                                            sut.parser(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE),
+                                            sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE),
                                             [instr([command_line])],
                                             arrangement,
                                             expectation)

@@ -41,21 +41,17 @@ RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.FIL
 
 
 def actor(interpreter: Command) -> Actor:
-    return parser(interpreter)
-
-
-def parser(interpreter: Command) -> parts.ActorFromParts:
     return _CommandTranslator(interpreter.arguments).visit(interpreter.driver)
 
 
-class ParserForInterpreterThatIsAnExecutableFile(parts.ActorFromParts):
+class ActorForInterpreterThatIsAnExecutableFile(parts.ActorFromParts):
     def __init__(self, pgm_and_args: ProgramAndArguments):
         super().__init__(_Parser(is_shell=False),
                          _Validator,
                          functools.partial(_ProgramExecutor, pgm_and_args))
 
 
-class ParserForInterpreterThatIsAShellCommand(parts.ActorFromParts):
+class ActorForInterpreterThatIsAShellCommand(parts.ActorFromParts):
     def __init__(self, shell_command_line: str):
         super().__init__(_Parser(is_shell=True),
                          _Validator,
@@ -167,9 +163,10 @@ class _ProgramExecutor(SubProcessExecutor):
             self.source.arguments,
         ])
 
-        return command_sdvs \
-            .from_program_and_arguments(self.interpreter) \
-            .new_with_additional_argument_list(arguments)
+        return (command_sdvs
+                .from_program_and_arguments(self.interpreter)
+                .new_with_additional_argument_list(arguments)
+                )
 
 
 class _ShellSubProcessExecutor(SubProcessExecutor):
@@ -202,10 +199,10 @@ class _CommandTranslator(commands.CommandDriverVisitor):
         self.arguments = arguments
 
     def visit_shell(self, driver: commands.CommandDriverForShell) -> parts.ActorFromParts:
-        return ParserForInterpreterThatIsAShellCommand(driver.shell_command_line_with_args(self.arguments))
+        return ActorForInterpreterThatIsAShellCommand(driver.shell_command_line_with_args(self.arguments))
 
     def visit_executable_file(self, driver: commands.CommandDriverForExecutableFile) -> parts.ActorFromParts:
-        return ParserForInterpreterThatIsAnExecutableFile(driver.as_program_and_args(self.arguments))
+        return ActorForInterpreterThatIsAnExecutableFile(driver.as_program_and_args(self.arguments))
 
     def visit_system_program(self, driver: commands.CommandDriverForSystemProgram) -> parts.ActorFromParts:
         raise ValueError('Unsupported interpreter: System Program Command')

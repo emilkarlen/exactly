@@ -12,10 +12,10 @@ ACT_PHASE_SOURCE_FILE_BASE_NAME = 'act-phase.src'
 
 
 def actor_for_interpreter_command(interpreter_shell_command: str) -> Actor:
-    return Parser(interpreter_shell_command)
+    return Actor(interpreter_shell_command)
 
 
-class Parser(parts.ActorFromParts):
+class Actor(parts.ActorFromParts):
     def __init__(self, interpreter_shell_command: str):
         super().__init__(pa.Parser(),
                          parts.UnconditionallySuccessfulValidator,

@@ -21,7 +21,7 @@ COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = shell_command(abs_path_to_interpreter_qu
 
 class TheConfiguration(TheConfigurationBase):
     def __init__(self):
-        super().__init__(sut.parser(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE))
+        super().__init__(sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE))
 
 
 def suite_for(configuration: TheConfiguration) -> unittest.TestSuite:

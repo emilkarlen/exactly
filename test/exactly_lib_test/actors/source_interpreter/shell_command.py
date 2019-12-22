@@ -16,7 +16,7 @@ from exactly_lib_test.util.test_resources import py_program
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         suite_for_execution(TheConfiguration()),
-        common_tests.suite_for(sut.Parser(shlex.quote(sys.executable)),
+        common_tests.suite_for(sut.Actor(shlex.quote(sys.executable)),
                                is_shell=True)
     ])
 
