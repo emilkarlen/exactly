@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib_test.util.process_execution import sub_process_execution
+from exactly_lib_test.type_system.logic.program import commands
 
 
 def suite() -> unittest.TestSuite:
-    return sub_process_execution.suite()
+    return commands.suite()
 
 
 if __name__ == '__main__':

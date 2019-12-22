@@ -5,15 +5,14 @@ import subprocess
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions.entity import concepts
-from exactly_lib.test_case import exception_detection
+from exactly_lib.test_case import exception_detection, executable_factories
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
+from exactly_lib.test_case.executable_factory import ExecutableFactory
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
 from exactly_lib.test_case.result.failure_details import FailureDetails
+from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util import strings
-from exactly_lib.util.process_execution import executable_factories
-from exactly_lib.util.process_execution.command import Command
-from exactly_lib.util.process_execution.executable_factory import ExecutableFactory
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.std import StdFiles
 

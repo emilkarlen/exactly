@@ -1,4 +1,4 @@
-from exactly_lib.util.process_execution.command import ProgramAndArguments
+from exactly_lib.type_system.logic.program.process_execution.command import ProgramAndArguments
 
 
 class SourceFileManager:

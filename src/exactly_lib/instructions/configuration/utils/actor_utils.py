@@ -21,11 +21,11 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case_utils.parse.shell_syntax import SHELL_KEYWORD
+from exactly_lib.type_system.logic.program.process_execution.command import Command
+from exactly_lib.type_system.logic.program.process_execution.commands import executable_file_command, shell_command
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from exactly_lib.util.process_execution.command import Command
-from exactly_lib.util.process_execution.commands import executable_file_command, shell_command
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 COMMAND_LINE_ACTOR_OPTION_NAME = a.OptionName(long_name='command')

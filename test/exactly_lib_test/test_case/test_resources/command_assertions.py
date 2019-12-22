@@ -2,8 +2,9 @@ import pathlib
 import sys
 from typing import List
 
-from exactly_lib.util.process_execution.command import Command, CommandDriver
-from exactly_lib.util.process_execution.commands import CommandDriverForShell, CommandDriverForSystemProgram, \
+from exactly_lib.type_system.logic.program.process_execution.command import Command, CommandDriver
+from exactly_lib.type_system.logic.program.process_execution.commands import CommandDriverForShell, \
+    CommandDriverForSystemProgram, \
     CommandDriverForExecutableFile
 from exactly_lib_test.test_resources.programs import python_program_execution
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

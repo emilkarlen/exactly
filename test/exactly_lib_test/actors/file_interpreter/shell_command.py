@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.actors import file_interpreter as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
-from exactly_lib.util.process_execution.commands import shell_command
+from exactly_lib.type_system.logic.program.process_execution.commands import shell_command
 from exactly_lib_test.actors.file_interpreter import common_tests
 from exactly_lib_test.actors.file_interpreter.configuration import TheConfigurationBase
 from exactly_lib_test.actors.test_resources import act_phase_execution

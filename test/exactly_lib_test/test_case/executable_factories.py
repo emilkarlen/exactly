@@ -1,9 +1,10 @@
 import pathlib
 import unittest
 
-from exactly_lib.util.process_execution import executable_factories as sut
-from exactly_lib.util.process_execution.command import Command
-from exactly_lib.util.process_execution.commands import CommandDriverForShell, CommandDriverForSystemProgram, \
+from exactly_lib.test_case import executable_factories as sut
+from exactly_lib.type_system.logic.program.process_execution.command import Command
+from exactly_lib.type_system.logic.program.process_execution.commands import CommandDriverForShell, \
+    CommandDriverForSystemProgram, \
     CommandDriverForExecutableFile
 from exactly_lib_test.test_resources.test_utils import NIE
 

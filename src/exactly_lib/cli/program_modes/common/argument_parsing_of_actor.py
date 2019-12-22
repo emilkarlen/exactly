@@ -4,7 +4,7 @@ from typing import List
 
 from exactly_lib.actors import source_interpreter
 from exactly_lib.test_case.actor import Actor
-from exactly_lib.util.process_execution.commands import executable_file_command
+from exactly_lib.type_system.logic.program.process_execution.commands import executable_file_command
 
 
 def resolve_actor_from_argparse_argument(default_actor: Actor,

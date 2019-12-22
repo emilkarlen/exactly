@@ -6,6 +6,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
+from exactly_lib.test_case import executable_factories
+from exactly_lib.test_case.executable_factory import ExecutableFactory
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -15,8 +17,6 @@ from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmen
 from exactly_lib.type_system.logic.program.program import Program, ProgramDdv
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand
-from exactly_lib.util.process_execution import executable_factories
-from exactly_lib.util.process_execution.executable_factory import ExecutableFactory
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable

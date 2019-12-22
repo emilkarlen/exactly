@@ -8,7 +8,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.utils import DirDepValueResolver
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.type_system.logic.program.command import CommandDdv, CommandDriverDdv
-from exactly_lib.util.process_execution.command import Command
+from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.symbol_table import SymbolTable
 
 

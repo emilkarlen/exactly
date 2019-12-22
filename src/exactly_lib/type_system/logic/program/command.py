@@ -7,7 +7,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.description.structure_building import StructureBuilder
 from exactly_lib.type_system.logic.program.argument import ArgumentsDdv
-from exactly_lib.util.process_execution.command import Command, CommandDriver
+from exactly_lib.type_system.logic.program.process_execution.command import Command, CommandDriver
 
 
 class CommandDriverDdv(DirDependentValue[CommandDriver], ABC):

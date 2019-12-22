@@ -1,12 +1,13 @@
 import pathlib
 import unittest
 
-from exactly_lib.util.process_execution.command import Command
-from exactly_lib.util.process_execution.commands import CommandDriverForSystemProgram, CommandDriverForExecutableFile, \
+from exactly_lib.type_system.logic.program.process_execution.command import Command
+from exactly_lib.type_system.logic.program.process_execution.commands import CommandDriverForSystemProgram, \
+    CommandDriverForExecutableFile, \
     CommandDriverForShell
+from exactly_lib_test.test_case.test_resources import command_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
-from exactly_lib_test.util.test_resources import command_assertions as sut
 
 
 def suite() -> unittest.TestSuite:

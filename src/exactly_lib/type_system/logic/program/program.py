@@ -15,7 +15,7 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformer, 
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
-from exactly_lib.util.process_execution.command import Command
+from exactly_lib.type_system.logic.program.process_execution.command import Command
 
 
 class Program(tuple):

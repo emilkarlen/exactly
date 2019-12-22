@@ -3,6 +3,7 @@ OS independent representation of something that is executable in process.
 
 Supports the different variants of executable things used by Exactly.
 """
+from abc import ABC, abstractmethod
 from typing import List
 
 
@@ -14,23 +15,25 @@ class ProgramAndArguments:
         self.arguments = arguments
 
 
-class CommandDriver:
+class CommandDriver(ABC):
     # Some func is needed here because Command has not been completely
     # refactored - it still has some functionality that should probably
     # be removed.
+    @abstractmethod
     def arg_list_or_str_for(self, arguments: List[str]):
         """
         :rtype: str or List[str]
         """
-        raise NotImplementedError('abstract method')
+        pass
 
     @property
+    @abstractmethod
     def is_shell(self) -> bool:
         """
         Tells whether args should be executed as a shell command.
         """
         # Maybe remove (low priority for the moment)
-        raise NotImplementedError('abstract method')
+        pass
 
 
 class Command:

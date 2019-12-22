@@ -34,8 +34,8 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.parse import parse_string, parse_path, parse_list
 from exactly_lib.test_case_utils.path_check import PathCheckValidator, PathCheck
 from exactly_lib.test_case_utils.program.command import command_sdvs
-from exactly_lib.util.process_execution import commands
-from exactly_lib.util.process_execution.command import Command, ProgramAndArguments
+from exactly_lib.type_system.logic.program.process_execution import commands
+from exactly_lib.type_system.logic.program.process_execution.command import Command, ProgramAndArguments
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.FILE)
 

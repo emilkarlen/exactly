@@ -9,10 +9,10 @@ from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.structure_building import StructureBuilder
 from exactly_lib.type_system.logic.program.command import CommandDriverDdv
+from exactly_lib.type_system.logic.program.process_execution import commands
+from exactly_lib.type_system.logic.program.process_execution.command import CommandDriver
 from exactly_lib.util.description_tree import tree, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer, NodeRenderer
-from exactly_lib.util.process_execution import commands
-from exactly_lib.util.process_execution.command import CommandDriver
 from exactly_lib.util.render import strings
 
 

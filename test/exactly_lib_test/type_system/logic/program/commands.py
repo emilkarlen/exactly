@@ -2,8 +2,8 @@ import pathlib
 import unittest
 from typing import List
 
-from exactly_lib.util.process_execution import commands as sut
-from exactly_lib.util.process_execution.command import CommandDriver
+from exactly_lib.type_system.logic.program.process_execution import commands as sut
+from exactly_lib.type_system.logic.program.process_execution.command import CommandDriver
 
 
 def suite() -> unittest.TestSuite:

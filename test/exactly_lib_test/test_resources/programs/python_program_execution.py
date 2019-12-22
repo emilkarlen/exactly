@@ -4,7 +4,7 @@ import sys
 import unittest
 from typing import List, Sequence
 
-from exactly_lib.util.process_execution.command import ProgramAndArguments
+from exactly_lib.type_system.logic.program.process_execution.command import ProgramAndArguments
 from exactly_lib.util.process_execution.execution_elements import Executable
 from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.files.executable_files import make_executable_by_os
