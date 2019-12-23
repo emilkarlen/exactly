@@ -71,7 +71,7 @@ class FileMatcherType(MatcherImplBase[FileMatcherModel]):
         tb = (
             self.__tb_with_expected()
                 .append_details(details.HeaderAndValue(types.PATH_TYPE_INFO.singular_name.capitalize(),
-                                                       custom_details.PathValueDetailsRenderer(path.describer)))
+                                                       custom_details.PathDdvDetailsRenderer(path.describer)))
                 .append_details(details.HeaderAndValue('Error',
                                                        details.String(ex)))
 

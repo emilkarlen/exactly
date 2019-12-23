@@ -34,7 +34,7 @@ class _FilePropertyDescriptorConstructorForFileInDir(FilePropertyDescriptorConst
 
 
 def _element_detail_renderer(element: FileMatcherModel) -> DetailsRenderer:
-    return custom_details.PathValueDetailsRenderer(element.path.describer)
+    return custom_details.PathDdvDetailsRenderer(element.path.describer)
 
 
 class _ModelsFactory:

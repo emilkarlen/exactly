@@ -114,7 +114,7 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         tb = self.__tb_with_expected().append_details(
             custom_details.actual(
-                custom_details.PathValueAndPrimitiveDetailsRenderer(model.path.describer)
+                custom_details.PathDdvAndPrimitiveIfRelHomeAsIndentedDetailsRenderer(model.path.describer)
             )
         )
         return tb.build_result(model.path.primitive.match(self._glob_pattern))

@@ -4,6 +4,7 @@ from typing import Sequence, Iterable, Pattern, Match
 from exactly_lib.common.report_rendering import print
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
 from exactly_lib.type_system.data import string_or_path_ddvs
@@ -48,7 +49,7 @@ def match(matching_object: DetailsRenderer) -> DetailsRenderer:
     return HeaderAndValue(_MATCH, matching_object)
 
 
-class PathValueDetailsRenderer(DetailsRenderer):
+class PathDdvDetailsRenderer(DetailsRenderer):
     def __init__(self, path: PathDescriberForDdv):
         self._path = path
 
@@ -58,7 +59,7 @@ class PathValueDetailsRenderer(DetailsRenderer):
         ]
 
 
-class PathValueAndPrimitiveDetailsRenderer(DetailsRenderer):
+class PathDdvAndPrimitiveDetailsRenderer(DetailsRenderer):
     def __init__(self, path: PathDescriberForPrimitive):
         self._path = path
 
@@ -67,6 +68,18 @@ class PathValueAndPrimitiveDetailsRenderer(DetailsRenderer):
             tree.StringDetail(self._path.value.render()),
             tree.StringDetail(self._path.primitive.render()),
         ]
+
+
+class PathDdvAndPrimitiveIfRelHomeAsIndentedDetailsRenderer(DetailsRenderer):
+    def __init__(self, path: PathDescriberForPrimitive):
+        self._path = path
+
+    def render(self) -> Sequence[Detail]:
+        ret_val = [tree.StringDetail(self._path.value.render())]
+        if self._path.resolving_dependency is DirectoryStructurePartition.HDS:
+            ret_val.append(tree.IndentedDetail((tree.StringDetail(self._path.primitive.render()),)))
+
+        return ret_val
 
 
 class PathPrimitiveDetailsRenderer(DetailsRenderer):
@@ -131,7 +144,7 @@ class StringOrPathValue(DetailsRenderer):
         if x.is_path:
             return HeaderAndValue(
                 syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
-                PathValueDetailsRenderer(x.path.describer())
+                PathDdvDetailsRenderer(x.path.describer())
             )
         else:
             return HeaderAndValue(

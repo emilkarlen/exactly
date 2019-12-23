@@ -3,12 +3,12 @@ from abc import ABC
 from typing import List, Generic, TypeVar
 
 from exactly_lib.definitions.primitives import program
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
 from exactly_lib.type_system.description.structure_building import StructureBuilder
 from exactly_lib.type_system.logic.program.process_execution.command import Command, ProgramAndArguments, CommandDriver
 from exactly_lib.util.description_tree import details, tree
 from exactly_lib.util.description_tree.renderer import DetailsRenderer, NodeRenderer
-from exactly_lib.util.render import strings
 from exactly_lib.util.strings import ToStringObject
 
 
@@ -95,17 +95,17 @@ class CommandDriverForExecutableFile(CommandDriverWithArgumentList):
         self._executable_file = executable_file
 
     @staticmethod
-    def new_structure_builder_for(program: DetailsRenderer,
+    def new_structure_builder_for(executable_file: DetailsRenderer,
                                   arguments: List[ToStringObject]) -> StructureBuilder:
         return _structure_builder_w_argument_list(
             CommandDriverForExecutableFile._NAME,
-            program,
+            executable_file,
             arguments,
         )
 
     def structure_for(self, arguments: List[str]) -> StructureBuilder:
         return self.new_structure_builder_for(
-            details.String(strings.AsToStringObject(self._executable_file.describer.value)),
+            custom_details.PathDdvAndPrimitiveIfRelHomeAsIndentedDetailsRenderer(self._executable_file.describer),
             arguments,
         )
 
