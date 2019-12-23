@@ -4,7 +4,7 @@ OS independent representation of something that is executable in process.
 Supports the different variants of executable things used by Exactly.
 """
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Union
 
 from exactly_lib.type_system.description.structure_building import StructureBuilder
 
@@ -28,10 +28,7 @@ class CommandDriver(ABC):
         pass
 
     @abstractmethod
-    def arg_list_or_str_for(self, arguments: List[str]):
-        """
-        :rtype: str or List[str]
-        """
+    def arg_list_or_str_for(self, arguments: List[str]) -> Union[str, List[str]]:
         pass
 
     @property
@@ -71,10 +68,7 @@ class Command:
         return self._arguments
 
     @property
-    def args(self):
-        """
-        :return: Either a string or an iterable of strings
-        """
+    def args(self) -> Union[str, List[str]]:
         # Maybe remove (low priority for the moment)
         return self.driver.arg_list_or_str_for(self.arguments)
 

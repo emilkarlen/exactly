@@ -21,9 +21,11 @@ class CommandDriverForShell(CommandDriver):
     @staticmethod
     def new_structure_builder_for(command_line: ToStringObject,
                                   arguments: List[ToStringObject]) -> StructureBuilder:
-        return StructureBuilder(
-            CommandDriverForShell.NAME,
-        ).append_details(details.String(command_line))
+        ret_val = StructureBuilder(CommandDriverForShell.NAME).append_details(details.String(command_line))
+        if arguments:
+            ret_val.append_child(_ArgumentListRenderer(arguments))
+
+        return ret_val
 
     def structure_for(self, arguments: List[str]) -> StructureBuilder:
         return self.new_structure_builder_for(self._command_line, arguments)
@@ -32,7 +34,7 @@ class CommandDriverForShell(CommandDriver):
     def is_shell(self) -> bool:
         return True
 
-    def arg_list_or_str_for(self, arguments: List[str]):
+    def arg_list_or_str_for(self, arguments: List[str]) -> str:
         return self.shell_command_line_with_args(arguments)
 
     @property
@@ -48,7 +50,8 @@ class CommandDriverForShell(CommandDriver):
 
 
 class CommandDriverWithArgumentList(CommandDriver, ABC):
-    pass
+    def arg_list_or_str_for(self, arguments: List[str]) -> List[str]:
+        pass
 
 
 class CommandDriverForSystemProgram(CommandDriverWithArgumentList):
@@ -73,7 +76,7 @@ class CommandDriverForSystemProgram(CommandDriverWithArgumentList):
     def is_shell(self) -> bool:
         return False
 
-    def arg_list_or_str_for(self, arguments: List[str]):
+    def arg_list_or_str_for(self, arguments: List[str]) -> List[str]:
         return [self._program] + arguments
 
     @property
@@ -113,7 +116,7 @@ class CommandDriverForExecutableFile(CommandDriverWithArgumentList):
     def is_shell(self) -> bool:
         return False
 
-    def arg_list_or_str_for(self, arguments: List[str]):
+    def arg_list_or_str_for(self, arguments: List[str]) -> List[str]:
         return [str(self._executable_file.primitive)] + arguments
 
     @property
@@ -198,12 +201,12 @@ def _structure_builder_w_argument_list(name: str,
     ret_val = StructureBuilder(name)
     ret_val.append_details(program)
     if len(arguments) != 0:
-        ret_val.append_child(ArgumentListRenderer(arguments))
+        ret_val.append_child(_ArgumentListRenderer(arguments))
 
     return ret_val
 
 
-class ArgumentListRenderer(NodeRenderer[None]):
+class _ArgumentListRenderer(NodeRenderer[None]):
     NAME = 'arguments'
 
     def __init__(self, arguments: List[ToStringObject]):
