@@ -131,7 +131,7 @@ class EqualityStringMatcherDdv(MatcherDdv[FileToCheck]):
     def structure(self) -> StructureRenderer:
         return EqualityStringMatcher.new_structure_tree(
             self._expectation_type,
-            custom_details.StringOrPathValue(self._expected_contents),
+            custom_details.StringOrPathDdv(self._expected_contents),
         )
 
     @property

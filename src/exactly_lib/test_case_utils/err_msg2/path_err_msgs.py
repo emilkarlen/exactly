@@ -13,7 +13,7 @@ def line_header__value(header: Any,
                        ) -> TextRenderer:
     return path_rendering.HeaderAndPathMajorBlocks(
         header_rendering.SimpleHeaderMinorBlockRenderer(header),
-        path_rendering.PathRepresentationsRenderersForValue(path),
+        path_rendering.PathRepresentationsRenderersForDdv(path),
         explanation,
     )
 
@@ -24,7 +24,7 @@ def line_header_block__value(header: Any,
                              ) -> Renderer[MajorBlock]:
     return path_rendering.HeaderAndPathMajorBlock(
         header_rendering.SimpleHeaderMinorBlockRenderer(header),
-        path_rendering.PathRepresentationsRenderersForValue(path),
+        path_rendering.PathRepresentationsRenderersForDdv(path),
         explanation,
     )
 

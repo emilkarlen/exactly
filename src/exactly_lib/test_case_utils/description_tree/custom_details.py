@@ -119,9 +119,7 @@ class StringOrPath(DetailsRenderer):
         if x.is_path:
             return HeaderAndValue(
                 syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
-                PathPrimitiveDetailsRenderer(
-                    x.path_value.describer
-                )
+                PathPrimitiveDetailsRenderer(x.path_value.describer)
             )
         else:
             return HeaderAndValue(
@@ -130,7 +128,7 @@ class StringOrPath(DetailsRenderer):
             )
 
 
-class StringOrPathValue(DetailsRenderer):
+class StringOrPathDdv(DetailsRenderer):
     def __init__(self,
                  string_or_path: string_or_path_ddvs.StringOrPathDdv,
                  ):

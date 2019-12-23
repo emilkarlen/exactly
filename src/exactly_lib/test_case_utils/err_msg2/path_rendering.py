@@ -16,7 +16,7 @@ class PathRepresentationsRenderers(ABC):
         pass
 
 
-class PathRepresentationsRenderersForValue(PathRepresentationsRenderers):
+class PathRepresentationsRenderersForDdv(PathRepresentationsRenderers):
     def __init__(self, path: PathDescriberForDdv):
         self._path = path
 
@@ -25,6 +25,8 @@ class PathRepresentationsRenderersForValue(PathRepresentationsRenderers):
 
 
 class PathRepresentationsRenderersForPrimitive(PathRepresentationsRenderers):
+    """Renders DDV, and optional primitive if is rel HDS"""
+
     def __init__(self, path: PathDescriberForPrimitive):
         self._path = path
 
@@ -38,7 +40,7 @@ class PathRepresentationsRenderersForPrimitive(PathRepresentationsRenderers):
         )
 
 
-class PathValueLines(SequenceRenderer[LineElement]):
+class PathDdvLines(SequenceRenderer[LineElement]):
     def __init__(self,
                  path: PathDescriberForPrimitive,
                  header_line: Optional[Any] = None
@@ -55,7 +57,7 @@ class PathValueLines(SequenceRenderer[LineElement]):
         return ret_val
 
 
-class PathValueMinorBlock(Renderer[MinorBlock]):
+class PathDdvMinorBlock(Renderer[MinorBlock]):
     def __init__(self,
                  path: PathDescriberForPrimitive,
                  header_line: Optional[Any] = None
@@ -65,8 +67,8 @@ class PathValueMinorBlock(Renderer[MinorBlock]):
 
     def render(self) -> MinorBlock:
         return MinorBlock(
-            PathValueLines(self._path,
-                           self._header_line).render_sequence()
+            PathDdvLines(self._path,
+                         self._header_line).render_sequence()
         )
 
 
