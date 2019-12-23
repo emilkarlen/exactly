@@ -6,6 +6,8 @@ Supports the different variants of executable things used by Exactly.
 from abc import ABC, abstractmethod
 from typing import List
 
+from exactly_lib.type_system.description.structure_building import StructureBuilder
+
 
 class ProgramAndArguments:
     def __init__(self,
@@ -19,6 +21,12 @@ class CommandDriver(ABC):
     # Some func is needed here because Command has not been completely
     # refactored - it still has some functionality that should probably
     # be removed.
+
+    @abstractmethod
+    def structure_for(self, arguments: List[str]) -> StructureBuilder:
+        """:returns A new object on each invokation."""
+        pass
+
     @abstractmethod
     def arg_list_or_str_for(self, arguments: List[str]):
         """
@@ -46,8 +54,13 @@ class Command:
     def __init__(self,
                  driver: CommandDriver,
                  arguments: List[str]):
+        super().__init__()
         self._driver = driver
         self._arguments = arguments
+
+    def structure(self) -> StructureBuilder:
+        """:returns A new object on each invokation."""
+        return self._driver.structure_for(self._arguments)
 
     @property
     def driver(self) -> CommandDriver:

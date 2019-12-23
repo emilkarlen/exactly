@@ -2,13 +2,31 @@ import pathlib
 from abc import ABC
 from typing import List, Generic, TypeVar
 
+from exactly_lib.definitions.primitives import program
 from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.description.structure_building import StructureBuilder
 from exactly_lib.type_system.logic.program.process_execution.command import Command, ProgramAndArguments, CommandDriver
+from exactly_lib.util.description_tree import details, tree
+from exactly_lib.util.description_tree.renderer import DetailsRenderer, NodeRenderer
+from exactly_lib.util.render import strings
+from exactly_lib.util.strings import ToStringObject
 
 
 class CommandDriverForShell(CommandDriver):
+    NAME = program.SHELL_COMMAND_TOKEN
+
     def __init__(self, command_line: str):
         self._command_line = command_line
+
+    @staticmethod
+    def new_structure_builder_for(command_line: ToStringObject,
+                                  arguments: List[ToStringObject]) -> StructureBuilder:
+        return StructureBuilder(
+            CommandDriverForShell.NAME,
+        ).append_details(details.String(command_line))
+
+    def structure_for(self, arguments: List[str]) -> StructureBuilder:
+        return self.new_structure_builder_for(self._command_line, arguments)
 
     @property
     def is_shell(self) -> bool:
@@ -34,8 +52,22 @@ class CommandDriverWithArgumentList(CommandDriver, ABC):
 
 
 class CommandDriverForSystemProgram(CommandDriverWithArgumentList):
+    _NAME = program.SYSTEM_PROGRAM_TOKEN
+
     def __init__(self, program: str):
         self._program = program
+
+    @staticmethod
+    def new_structure_builder_for(program: ToStringObject,
+                                  arguments: List[ToStringObject]) -> StructureBuilder:
+        return _structure_builder_w_argument_list(
+            CommandDriverForSystemProgram._NAME,
+            details.String(program),
+            arguments,
+        )
+
+    def structure_for(self, arguments: List[str]) -> StructureBuilder:
+        return self.new_structure_builder_for(self._program, arguments)
 
     @property
     def is_shell(self) -> bool:
@@ -57,8 +89,25 @@ class CommandDriverForSystemProgram(CommandDriverWithArgumentList):
 
 
 class CommandDriverForExecutableFile(CommandDriverWithArgumentList):
+    _NAME = 'executable file'
+
     def __init__(self, executable_file: DescribedPathPrimitive):
         self._executable_file = executable_file
+
+    @staticmethod
+    def new_structure_builder_for(program: DetailsRenderer,
+                                  arguments: List[ToStringObject]) -> StructureBuilder:
+        return _structure_builder_w_argument_list(
+            CommandDriverForExecutableFile._NAME,
+            program,
+            arguments,
+        )
+
+    def structure_for(self, arguments: List[str]) -> StructureBuilder:
+        return self.new_structure_builder_for(
+            details.String(strings.AsToStringObject(self._executable_file.describer.value)),
+            arguments,
+        )
 
     @property
     def is_shell(self) -> bool:
@@ -141,3 +190,30 @@ class CommandDriverArgumentTypePseudoVisitor(Generic[T], ABC):
 
     def visit_with_argument_list(self, driver: CommandDriverWithArgumentList) -> T:
         raise NotImplementedError()
+
+
+def _structure_builder_w_argument_list(name: str,
+                                       program: DetailsRenderer,
+                                       arguments: List[ToStringObject]) -> StructureBuilder:
+    ret_val = StructureBuilder(name)
+    ret_val.append_details(program)
+    if len(arguments) != 0:
+        ret_val.append_child(ArgumentListRenderer(arguments))
+
+    return ret_val
+
+
+class ArgumentListRenderer(NodeRenderer[None]):
+    NAME = 'arguments'
+
+    def __init__(self, arguments: List[ToStringObject]):
+        self._arguments = arguments
+
+    def render(self) -> tree.Node[None]:
+        return tree.Node(
+            self.NAME,
+            None,
+            [tree.StringDetail(argument)
+             for argument in self._arguments],
+            (),
+        )

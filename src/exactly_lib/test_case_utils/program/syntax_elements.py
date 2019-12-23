@@ -1,11 +1,12 @@
+from exactly_lib.definitions.primitives import program
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
-SHELL_COMMAND_TOKEN = instruction_names.SHELL_INSTRUCTION_NAME
-SYSTEM_PROGRAM_TOKEN = '%'
+SHELL_COMMAND_TOKEN = program.SHELL_COMMAND_TOKEN
+SYSTEM_PROGRAM_TOKEN = program.SYSTEM_PROGRAM_TOKEN
 
 SYMBOL_REF_PROGRAM_TOKEN = instruction_names.SYMBOL_REF_PROGRAM_INSTRUCTION_NAME
 

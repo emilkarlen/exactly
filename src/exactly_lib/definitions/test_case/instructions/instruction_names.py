@@ -1,4 +1,5 @@
 from exactly_lib.definitions import conf_params
+from exactly_lib.definitions.primitives import program
 from exactly_lib.definitions.test_case import file_check_properties
 
 RUN_INSTRUCTION_NAME = 'run'
@@ -11,7 +12,7 @@ ENV_VAR_INSTRUCTION_NAME = 'env'
 
 CHANGE_DIR_INSTRUCTION_NAME = 'cd'
 
-SHELL_INSTRUCTION_NAME = '$'
+SHELL_INSTRUCTION_NAME = program.SHELL_COMMAND_TOKEN
 
 SYMBOL_REF_PROGRAM_INSTRUCTION_NAME = '@'
 

@@ -31,6 +31,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion, \
     ValueAssertionBase
 from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 
 class ResultWithTransformationData:
@@ -224,8 +225,15 @@ class Executor:
         self.expectation.main_side_effects_on_tcds.apply(self.put, environment.tcds)
 
     def _execute(self, environment: FullResolvingEnvironment, program_ddv: ProgramDdv) -> ResultWithTransformationData:
+        structure_tree_of_ddv = program_ddv.structure().render()
         program_adv = program_ddv.value_of_any_dependency(environment.tcds)
+
         program = program_adv.applier(environment.application_environment)
+        structure_tree_of_primitive = program.structure().render()
+        structure_equals_ddv = asrt_d_tree.header_data_and_children_equal_as(structure_tree_of_ddv)
+
+        structure_equals_ddv.apply_with_message(self.put, structure_tree_of_primitive,
+                                                'structure of ddv and primitive should be equal')
         pgm_output_dir = environment.application_environment.tmp_files_space.new_path_as_existing_dir()
         assert isinstance(program, Program)
         execution_result = pgm_execution.make_transformed_file_from_output(pgm_output_dir,
