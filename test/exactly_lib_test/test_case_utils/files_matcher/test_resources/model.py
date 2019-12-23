@@ -4,10 +4,10 @@ from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
+from exactly_lib.symbol.logic.resolving_helper import resolving_helper__of_full_env
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
-from exactly_lib_test.symbol.logic.test_resources.resolving_helper import resolving_helper__of_full_env
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 
 

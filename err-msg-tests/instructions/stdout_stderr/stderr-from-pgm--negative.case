@@ -1,4 +1,4 @@
 [assert]
 
-stdout -from $ echo "the actual line"
+stderr -from $ echo "the actual line" >&2
              ! any line : matches 'actual'

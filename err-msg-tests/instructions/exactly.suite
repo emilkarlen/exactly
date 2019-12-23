@@ -6,5 +6,6 @@ create-file
 create-dir
 dir-contents
 file-contents
+stdout_stderr
 file-existence
 run

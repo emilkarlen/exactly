@@ -1,0 +1,6 @@
+[assert]
+
+def program PROGRAM = $ echo "the actual line"
+
+stdout -from @ PROGRAM additional-arg-1 additional-arg-2
+       ! any line : matches 'actual.*1'

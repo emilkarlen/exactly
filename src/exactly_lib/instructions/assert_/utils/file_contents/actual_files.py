@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence
 
 from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.sdv_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
@@ -54,7 +54,7 @@ class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndValidation, A
         pass
 
     @abstractmethod
-    def failure_message_header(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Renderer[MajorBlock]:
+    def failure_message_header(self, environment: FullResolvingEnvironment) -> Renderer[MajorBlock]:
         pass
 
 
@@ -102,7 +102,7 @@ class ConstructorForPath(ComparisonActualFileConstructor):
             self._file_access_needs_to_be_verified,
         )
 
-    def failure_message_header(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Renderer[MajorBlock]:
+    def failure_message_header(self, environment: FullResolvingEnvironment) -> Renderer[MajorBlock]:
         described_path = (
             self._path.resolve(environment.symbols)
                 .value_of_any_dependency__d(environment.tcds)

@@ -16,7 +16,8 @@ from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
+from exactly_lib.symbol.logic.resolving_helper import resolving_helper__of_full_env
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -25,6 +26,7 @@ from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.description_tree import structure_rendering
 from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
@@ -35,9 +37,11 @@ from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution import process_output_files
+from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
-from exactly_lib.util.simple_textstruct.structure import MajorBlock
+from exactly_lib.util.simple_textstruct.rendering import component_renderers as comp_rend
+from exactly_lib.util.simple_textstruct.structure import MajorBlock, Indentation
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 _SINGLE_LINE_DESCRIPTION = 'Tests the contents of {checked_file} from the {action_to_check}, or from a {program_type}'
@@ -148,11 +152,19 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
             False
         )
 
-    def failure_message_header(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Renderer[MajorBlock]:
+    def failure_message_header(self, environment: FullResolvingEnvironment) -> Renderer[MajorBlock]:
         header = file_or_dir_contents_headers.unexpected(
             file_or_dir_contents_headers.target_name_of_proc_output_file_from_program(self._checked_output)
         )
+        header_block = blocks.MinorBlockOfSingleLineObject(line_objects.StringLineObject(header))
 
-        return blocks.MajorBlockOfSingleLineObject(
-            line_objects.StringLineObject(header)
+        resolver = resolving_helper__of_full_env(environment)
+        program = resolver.resolve_program(self._program)
+        program_structure_blocks = rend_comb.Indented(
+            structure_rendering.as_minor_blocks(program.structure().render()),
+            Indentation(level=1),
         )
+
+        minor_blocks = rend_comb.PrependR(header_block,
+                                          program_structure_blocks)
+        return comp_rend.MajorBlockR(minor_blocks)

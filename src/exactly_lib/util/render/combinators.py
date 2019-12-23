@@ -1,6 +1,7 @@
 from typing import Sequence, Generic, TypeVar
 
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
+from exactly_lib.util.simple_textstruct.structure import Element, Indentation
 
 T = TypeVar('T')
 
@@ -93,3 +94,25 @@ class SingletonSequenceR(Generic[T], SequenceRenderer[T]):
         return [
             self._element.render()
         ]
+
+
+ELEMENT = TypeVar('ELEMENT', bound=Element)
+
+
+class Indented(Generic[ELEMENT], SequenceRenderer[ELEMENT]):
+    def __init__(self,
+                 original: SequenceRenderer[ELEMENT],
+                 indent: Indentation):
+        self._original = original
+        self._indent = indent
+
+    def render_sequence(self) -> Sequence[ELEMENT]:
+        original_elements = self._original.render_sequence()
+        return [
+            self._indented(element)
+            for element in original_elements
+        ]
+
+    def _indented(self, element: ELEMENT) -> ELEMENT:
+        element.set_properties(element.properties.with_increased_indentation(self._indent))
+        return element

@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Sequence, Any, Callable, TypeVar, Generic, List, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.sdv_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
@@ -171,7 +171,7 @@ class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
                  custom_environment,
                  get_argument_to_part: Callable[[InstructionEnvironmentForPostSdsStep], A],
                  failure_message_header:
-                 Optional[Callable[[PathResolvingEnvironmentPreOrPostSds], Renderer[MajorBlock]]] = None,
+                 Optional[Callable[[FullResolvingEnvironment], Renderer[MajorBlock]]] = None,
                  ):
         """
         :param get_argument_to_part: Returns the argument to give to
@@ -223,7 +223,7 @@ class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
         err_msg = err_msg_from_part
         if self._failure_message_header:
             err_msg = rend_comb.PrependR(
-                self._failure_message_header(environment.path_resolving_environment_pre_or_post_sds),
+                self._failure_message_header(environment.full_resolving_environment),
                 err_msg_from_part,
             )
 

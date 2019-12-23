@@ -20,10 +20,9 @@ from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.logic.visitor import LogicTypeSdvPseudoVisitor
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
+from exactly_lib.test_case_utils.description_tree import structure_rendering
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.program.program import Program
-from exactly_lib.util.ansi_terminal_color import ForegroundColor
-from exactly_lib.util.description_tree import simple_textstruct_rendering as rendering
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.name import NumberOfItemsString
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
@@ -101,22 +100,11 @@ class _LogicTypeBlockConstructor(LogicTypeSdvPseudoVisitor[ResolvedValuePresenta
 
 
 class _BlockForTree(ResolvedValuePresentationBlock):
-    HEADER_PROPERTIES = rendering.ElementProperties(
-        text_style=text_struct.TextStyle(color=ForegroundColor.CYAN)
-    )
-
-    TREE_LAYOUT = rendering.RenderingConfiguration(
-        Node.header.fget,
-        lambda node_data: _BlockForTree.HEADER_PROPERTIES,
-        '',
-    )
-
     def __init__(self, tree: Node[None]):
         self._tree = tree
 
     def render(self) -> text_struct.MajorBlock:
-        renderer = rendering.TreeRenderer(self.TREE_LAYOUT, self._tree)
-        return renderer.render()
+        return structure_rendering.as_major_block(self._tree).render()
 
 
 class _BlockForCustomRenderer(ResolvedValuePresentationBlock):

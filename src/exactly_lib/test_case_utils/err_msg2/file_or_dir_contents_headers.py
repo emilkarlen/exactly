@@ -36,6 +36,7 @@ def target_name_of_proc_output_file_from_program(file: ProcOutputFile) -> ToStri
 def unexpected(target: ToStringObject) -> ToStringObject:
     return strings.Concatenate([
         header_rendering.UNEXPECTED,
+        ' ',
         file_check_properties.CONTENTS,
         ' of ',
         target,

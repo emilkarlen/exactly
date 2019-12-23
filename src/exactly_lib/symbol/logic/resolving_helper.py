@@ -2,6 +2,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
 from exactly_lib.symbol.logic.matcher import MODEL, MatcherSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
+from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherModel
@@ -79,3 +80,11 @@ class LogicTypeResolvingHelper:
 
     def apply__files_matcher(self, sdv: FilesMatcherSdv, model: FilesMatcherModel) -> MatchingResult:
         return self.resolve_files_matcher(sdv).matches_w_trace(model)
+
+
+def resolving_helper__of_full_env(environment: FullResolvingEnvironment) -> LogicTypeResolvingHelper:
+    return LogicTypeResolvingHelper(
+        environment.symbols,
+        environment.tcds,
+        environment.application_environment.tmp_files_space,
+    )

@@ -73,6 +73,14 @@ class ElementProperties(tuple):
             self[1],
         )
 
+    def with_increased_indentation(self, increment: Indentation) -> 'ElementProperties':
+        i = self[0]
+        return ElementProperties(
+            Indentation(i.level + increment.level,
+                        i.suffix + increment.suffix),
+            self[1],
+        )
+
     @property
     def color(self) -> Optional[ForegroundColor]:
         return self[1].color
