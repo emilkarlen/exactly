@@ -16,8 +16,6 @@ from exactly_lib.util.parse.token import Token
 
 T = TypeVar('T')
 
-TokenParserType = TypeVar('TokenParserType')  # Substitute for TokenParser, since cannot be used inside class
-
 
 class TokenParser:
     """
@@ -289,7 +287,7 @@ class TokenParser:
 
     def consume_and_handle_optional_option(self,
                                            return_value_if_no_match: T,
-                                           argument_parser: Callable[[TokenParserType], T],
+                                           argument_parser: Callable[['TokenParser'], T],
                                            option_name: OptionName,
                                            ) -> T:
         """
@@ -314,7 +312,7 @@ class TokenParser:
             return return_value_if_no_match
 
     def consume_and_handle_optional_option2(self,
-                                            argument_parser: Callable[[TokenParserType], T],
+                                            argument_parser: Callable[['TokenParser'], T],
                                             return_value_if_no_match: T,
                                             option_name: OptionName,
                                             ) -> T:
@@ -323,7 +321,7 @@ class TokenParser:
                                                        option_name)
 
     def consume_and_handle_optional_option3(self,
-                                            argument_parser: Callable[[TokenParserType], T],
+                                            argument_parser: Callable[['TokenParser'], T],
                                             option_name: OptionName,
                                             ) -> Optional[T]:
         return self.consume_and_handle_optional_option(None,
@@ -331,8 +329,8 @@ class TokenParser:
                                                        option_name)
 
     def parse_choice_of_optional_option(self,
-                                        continuation_if_present: Callable[[TokenParserType], T],
-                                        continuation_if_not_present: Callable[[TokenParserType], T],
+                                        continuation_if_present: Callable[['TokenParser'], T],
+                                        continuation_if_not_present: Callable[['TokenParser'], T],
                                         option_name: OptionName,
                                         ) -> T:
         """
@@ -364,7 +362,7 @@ class TokenParser:
             return False
         return matches(option_name, self.token_stream.head.source_string)
 
-    def parse_optional_command(self, command_name_2_parser: Dict[str, Callable[[TokenParserType], T]]) -> T:
+    def parse_optional_command(self, command_name_2_parser: Dict[str, Callable[['TokenParser'], T]]) -> T:
         """
         Checks if the first token is one of a given set of commands.  If the token
         matches a command, then invokes the parser that belongs to the command.
@@ -386,8 +384,8 @@ class TokenParser:
         return command_name_2_parser[command](self)
 
     def parse_default_or_optional_command(self,
-                                          parser_of_default: Callable[[TokenParserType], T],
-                                          command_name_2_parser: Dict[str, Callable[[TokenParserType], T]],
+                                          parser_of_default: Callable[['TokenParser'], T],
+                                          command_name_2_parser: Dict[str, Callable[['TokenParser'], T]],
                                           must_be_on_current_line: bool = True
                                           ) -> T:
         """
@@ -416,7 +414,7 @@ class TokenParser:
         return parser_to_use(self)
 
     def parse_mandatory_command(self,
-                                command_name_2_parser: Dict[str, Callable[[TokenParserType], T]],
+                                command_name_2_parser: Dict[str, Callable[['TokenParser'], T]],
                                 syntax_element_name: str) -> T:
         """
         A variant of parse_optional_command ,where the command is mandatory.
