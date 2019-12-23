@@ -108,7 +108,7 @@ class CommandDriverForExecutableFile(CommandDriverWithArgumentList):
 
     def structure_for(self, arguments: List[str]) -> StructureBuilder:
         return self.new_structure_builder_for(
-            custom_details.PathDdvAndPrimitiveIfRelHomeAsIndentedDetailsRenderer(self._executable_file.describer),
+            custom_details.path_primitive_details_renderer(self._executable_file.describer),
             arguments,
         )
 

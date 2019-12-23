@@ -82,15 +82,19 @@ class PathDdvAndPrimitiveIfRelHomeAsIndentedDetailsRenderer(DetailsRenderer):
         return ret_val
 
 
-class PathPrimitiveDetailsRenderer(DetailsRenderer):
-    def __init__(self, path: PathDescriberForPrimitive):
-        self._path = path
+def path_primitive_details_renderer(path: PathDescriberForPrimitive) -> DetailsRenderer:
+    """Renders DDV, and optional primitive if is rel HDS"""
+    return PathDetailsRenderer(path_rendering.PathRepresentationsRenderersForPrimitive(path))
+
+
+class PathDetailsRenderer(DetailsRenderer):
+    def __init__(self, renderer: path_rendering.PathRepresentationsRenderers):
+        self._renderer = renderer
 
     def render(self) -> Sequence[Detail]:
-        renderer = path_rendering.PathRepresentationsRenderersForPrimitive(self._path)
         return [
             tree.StringDetail(renderer.render())
-            for renderer in renderer.renders()
+            for renderer in self._renderer.renders()
         ]
 
 
@@ -119,7 +123,7 @@ class StringOrPath(DetailsRenderer):
         if x.is_path:
             return HeaderAndValue(
                 syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
-                PathPrimitiveDetailsRenderer(x.path_value.describer)
+                path_primitive_details_renderer(x.path_value.describer)
             )
         else:
             return HeaderAndValue(
