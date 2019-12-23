@@ -6,7 +6,7 @@ from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
 from exactly_lib.util.description_tree import simple_textstruct_rendering as sut
 from exactly_lib.util.description_tree.simple_textstruct_rendering import RenderingConfiguration
 from exactly_lib.util.description_tree.tree import Node, StringDetail, PreFormattedStringDetail, HeaderAndValueDetail, \
-    TreeDetail
+    TreeDetail, IndentedDetail
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib.util.simple_textstruct.structure import ElementProperties, TEXT_STYLE__NEUTRAL, Indentation, \
     INDENTATION__NEUTRAL, TextStyle
@@ -220,6 +220,27 @@ class TestRenderingOfDetail(unittest.TestCase):
             [
                 matches_detail_line_element(header_and_value_detail.header, depth=0),
                 matches_string_detail_line_element(value_detail, depth=1),
+            ],
+        )
+
+        # ACT & ASSERT #
+
+        _check(self, root, expectation)
+
+    def test_indented_detail(self):
+        # ARRANGE #
+        details_1 = StringDetail('indented detail 1')
+        details_2 = StringDetail('indented detail 2')
+        indented_detail = IndentedDetail([details_1, details_2])
+        root = Node('the root', False, [indented_detail], ())
+
+        # EXPECTATION #
+
+        expectation = matches_trace_with_details(
+            root,
+            [
+                matches_string_detail_line_element(details_1, depth=1),
+                matches_string_detail_line_element(details_2, depth=1),
             ],
         )
 

@@ -2,7 +2,7 @@ import unittest
 from typing import Sequence, Any
 
 from exactly_lib.util.description_tree.tree import Detail, Node, PreFormattedStringDetail, StringDetail, DetailVisitor, \
-    HeaderAndValueDetail, TreeDetail, NODE_DATA
+    HeaderAndValueDetail, TreeDetail, NODE_DATA, IndentedDetail
 from exactly_lib.util.strings import ToStringObject
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
@@ -80,6 +80,19 @@ def is_header_and_value_detail(header: ValueAssertion[ToStringObject] = asrt.any
     )
 
 
+def is_indented_detail(details: ValueAssertion[Sequence[Detail]] = asrt.is_sequence_of(asrt.is_instance(Detail)),
+                       ) -> ValueAssertion[Detail]:
+    return asrt.is_instance_with__many(
+        IndentedDetail,
+        [
+            asrt.sub_component('values',
+                               IndentedDetail.details.fget,
+                               asrt.is_not_none_and(details),
+                               ),
+        ],
+    )
+
+
 def is_tree_detail(tree: ValueAssertion[Node[Any]] = asrt.anything_goes(),
                    ) -> ValueAssertion[Detail]:
     return asrt.is_instance_with__many(
@@ -142,6 +155,9 @@ class _DetailChecker(DetailVisitor[None]):
 
     def visit_header_and_value(self, x: HeaderAndValueDetail) -> None:
         is_header_and_value_detail().apply(self._put, x, self._message_builder)
+
+    def visit_indented(self, x: IndentedDetail) -> None:
+        is_indented_detail().apply(self._put, x, self._message_builder)
 
     def visit_tree(self, x: TreeDetail) -> None:
         is_tree_detail().apply(self._put, x, self._message_builder)

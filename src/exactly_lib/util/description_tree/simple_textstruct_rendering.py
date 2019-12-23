@@ -1,7 +1,7 @@
 from typing import Sequence, Generic, Callable
 
 from exactly_lib.util.description_tree.tree import Node, Detail, DetailVisitor, StringDetail, PreFormattedStringDetail, \
-    NODE_DATA, HeaderAndValueDetail, TreeDetail
+    NODE_DATA, HeaderAndValueDetail, TreeDetail, IndentedDetail
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import SequenceRenderer, Renderer
 from exactly_lib.util.simple_textstruct import structure
@@ -123,6 +123,14 @@ class _LineElementRendererForDetail(SequenceRenderer[LineElement],
         ret_val += value_elements_renderer.render_sequence()
 
         return ret_val
+
+    def visit_indented(self, x: IndentedDetail) -> Sequence[LineElement]:
+        details_renderer = rend_comb.ConcatenationR([
+            self._renderer_for_next_depth(value)
+            for value in x.details
+        ])
+
+        return details_renderer.render_sequence()
 
     def visit_tree(self, x: TreeDetail) -> Sequence[LineElement]:
         tree = x.tree

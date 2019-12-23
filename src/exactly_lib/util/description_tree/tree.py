@@ -97,6 +97,18 @@ class HeaderAndValueDetail(Detail):
         return self._values
 
 
+class IndentedDetail(Detail):
+    def __init__(self, details: Sequence[Detail]):
+        self._details = details
+
+    def accept(self, visitor: 'DetailVisitor[RET]') -> RET:
+        return visitor.visit_indented(self)
+
+    @property
+    def details(self) -> Sequence[Detail]:
+        return self._details
+
+
 class TreeDetail(Detail):
     """Makes a Detail of a Node."""
 
@@ -124,6 +136,10 @@ class DetailVisitor(Generic[RET], ABC):
 
     @abstractmethod
     def visit_header_and_value(self, x: HeaderAndValueDetail) -> RET:
+        pass
+
+    @abstractmethod
+    def visit_indented(self, x: IndentedDetail) -> RET:
         pass
 
     @abstractmethod

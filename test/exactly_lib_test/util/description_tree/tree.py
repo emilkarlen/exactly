@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.util import strings
 from exactly_lib.util.description_tree import tree as sut
 from exactly_lib.util.description_tree.tree import PreFormattedStringDetail, HeaderAndValueDetail, StringDetail, \
-    TreeDetail
+    TreeDetail, IndentedDetail
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -14,6 +14,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestStringDetail),
         unittest.makeSuite(TestPreFormattedStringDetail),
         unittest.makeSuite(TestHeaderAndValueDetail),
+        unittest.makeSuite(TestIndented),
         unittest.makeSuite(TestTreeDetail),
     ])
 
@@ -176,6 +177,43 @@ class TestHeaderAndValueDetail(unittest.TestCase):
                          'visited classes')
 
 
+class TestIndented(unittest.TestCase):
+    def test_attributes(self):
+        # ARRANGE #
+        a_detail = sut.StringDetail('the string')
+        indented = [a_detail]
+        detail = sut.IndentedDetail(indented)
+
+        # ACT & ASSERT #
+
+        self.assertIs(indented,
+                      detail.details,
+                      'details')
+
+        expected_values = asrt.matches_singleton_sequence(asrt.is_(a_detail))
+
+        expected_values.apply_with_message(self,
+                                           detail.details,
+                                           'details')
+
+    def test_accept_visitor(self):
+        # ARRANGE #
+
+        visitor = _VisitorThatRegistersVisitedClassesAndReturnsConstant()
+
+        detail = sut.IndentedDetail([sut.StringDetail('the string')])
+
+        # ACT #
+
+        detail.accept(visitor)
+
+        # ASSERT #
+
+        self.assertEqual(visitor.visited_classes,
+                         [sut.IndentedDetail],
+                         'visited classes')
+
+
 class TestTreeDetail(unittest.TestCase):
     def test_attributes(self):
         # ARRANGE #
@@ -218,6 +256,9 @@ class _VisitorThatRegistersVisitedClassesAndReturnsConstant(sut.DetailVisitor[No
 
     def visit_header_and_value(self, x: HeaderAndValueDetail) -> None:
         self.visited_classes.append(HeaderAndValueDetail)
+
+    def visit_indented(self, x: IndentedDetail) -> None:
+        self.visited_classes.append(IndentedDetail)
 
     def visit_tree(self, x: TreeDetail) -> None:
         self.visited_classes.append(TreeDetail)

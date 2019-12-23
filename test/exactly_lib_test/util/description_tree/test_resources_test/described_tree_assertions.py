@@ -19,6 +19,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestIsStringDetail),
         unittest.makeSuite(TestIsPreFormattedStringDetail),
         unittest.makeSuite(TestIsHeaderAndValueDetail),
+        unittest.makeSuite(TestIsIndentedDetail),
         unittest.makeSuite(TestIsTreeDetail),
         unittest.makeSuite(TestIsAnyDetail),
         unittest.makeSuite(TestHeaderDataAndChildrenEquals),
@@ -330,6 +331,38 @@ class TestIsHeaderAndValueDetail(unittest.TestCase):
                 sut.is_header_and_value_detail(values=asrt.is_empty_sequence),
                 actual=
                 sut.HeaderAndValueDetail('header', (StringDetail('a value'),)),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assert_that_assertion_fails(case.expected, case.actual)
+
+
+class TestIsIndentedDetail(unittest.TestCase):
+    def test_matches(self):
+        # ARRANGE #
+        expected_detail = StringDetail('the string detail')
+        actual = sut.IndentedDetail([expected_detail])
+        # EXPECTATION #
+        assertion = sut.is_indented_detail(
+            details=asrt.matches_singleton_sequence(asrt.is_(expected_detail))
+        )
+        # ACT & ASSERT #
+        assertion.apply_without_message(self, actual)
+
+    def test_not_matches(self):
+        cases = [
+            NEA('unexpected object type',
+                expected=
+                sut.is_indented_detail(),
+                actual=
+                sut.PreFormattedStringDetail('s'),
+                ),
+            NEA('details',
+                expected=
+                sut.is_indented_detail(details=asrt.is_empty_sequence),
+                actual=
+                sut.IndentedDetail((StringDetail('a value'),)),
                 ),
         ]
         for case in cases:
