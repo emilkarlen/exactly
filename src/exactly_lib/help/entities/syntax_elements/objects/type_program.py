@@ -285,6 +285,7 @@ _TEXT_PARSER = TextParser({
     'SHELL_COMMAND_LINE': formatting.syntax_element_(syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT),
     'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
     'FAIL': exit_values.EXECUTION__FAIL.exit_identifier,
+    'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
 
 })
 
@@ -299,7 +300,7 @@ A program with a list of arguments.
 """
 
 _SHELL_COMMAND_INVOKATION_VARIANT_DESCRIPTION = """\
-A shell command.
+{shell_command:a/u}.
 
 
 {SHELL_COMMAND_LINE} is the remaining part of the current line.

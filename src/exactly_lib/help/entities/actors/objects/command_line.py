@@ -70,6 +70,8 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
             'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
+            'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
+            'shell_command_line': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND_LINE),
         }
         super().__init__(TextParser(fm))
 
@@ -121,11 +123,11 @@ Executes {executable_file:a}.
 """
 
 _SHELL_COMMAND_INVOKATION_VARIANT = """\
-Executes a shell command using the operating system's shell.
+Executes {shell_command:a} using the operating system's shell.
 """
 
 _COMMAND_SYNTAX_ELEMENT = """\
-A shell command line.
+{shell_command_line:a/u}.
 
 
 Uses the syntax of the current operating system's shell.

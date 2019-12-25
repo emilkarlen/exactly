@@ -2,7 +2,7 @@ from typing import List
 
 from exactly_lib import program_info
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_string
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.formatting import InstructionName
@@ -27,6 +27,7 @@ class _InstructionConcept(ConceptDocumentation):
             'atc': concepts.ACTION_TO_CHECK_CONCEPT_INFO.name,
             'assert': phase_infos.ASSERT.name,
             'cleanup': phase_infos.CLEANUP.name,
+            'shell_command_line': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND_LINE),
         })
 
     def purpose(self) -> DescriptionWithSubSections:
@@ -144,7 +145,7 @@ followed by arguments.
 Each {instruction} has it's own syntax for arguments.
 
 Most common syntax is that of options and arguments resembling the
-Unix shell command line interface.
+Unix {shell_command_line} interface.
 
 One difference though, is that the order of options is usually significant.
 

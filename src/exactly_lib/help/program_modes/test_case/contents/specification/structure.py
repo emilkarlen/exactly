@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib.actors.common import SHELL_COMMAND_MARKER
-from exactly_lib.definitions import misc_texts
+from exactly_lib.definitions import misc_texts, formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
 from exactly_lib.definitions.entity import concepts, actors
@@ -29,6 +29,8 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
         'os_process': misc_texts.OS_PROCESS_NAME,
         'null_actor': actors.NULL_ACTOR.singular_name,
         'shell_command_marker': SHELL_COMMAND_MARKER,
+        'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
+        'shell_command_line': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND_LINE),
     })
 
     def const_paragraphs(header_: StrOrStringText,
@@ -162,7 +164,7 @@ and executing the {act} phase means executing this as {os_process:a}.
 
 The {actor:/q} concept makes it possible
 to have different kind of {ATC}s.
-E.g. executable program files, source code files and shell commands.
+E.g. executable program files, source code files and {shell_command:s}.
 
 
 The {actor}
@@ -193,13 +195,13 @@ my-python-program.py argument1 "second argument"
 ```
 
 
-An {ATC} that is a shell command line:
+An {ATC} that is {shell_command_line:a}:
 
 
 ```
 [act]
 
-$ echo 'This is a' shell command line > &2
+$ echo 'This is a' {shell_command_line} > &2
 ```
 """
 

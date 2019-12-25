@@ -1,4 +1,4 @@
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.entity import directives, concepts
 from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary
@@ -71,6 +71,7 @@ def _text_parser(setup: Setup) -> TextParser:
         'line_comment_char': LINE_COMMENT_MARKER,
         'file_inclusion_directive_in_text': formatting.keyword(directives.INCLUDING_DIRECTIVE_INFO.singular_name),
         'file_inclusion_directive': directives.INCLUDING_DIRECTIVE_INFO.singular_name,
+        'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
     })
 
 
@@ -173,7 +174,7 @@ text that is easier to understand than the source line.
 A description is a quoted string using shell syntax.
 
 
-For example, a free text may be easier to understand than a shell command:
+For example, a free text may be easier to understand than {shell_command:a}:
 
 
 ```

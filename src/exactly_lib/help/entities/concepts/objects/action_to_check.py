@@ -28,6 +28,7 @@ class _ActionToCheckConcept(ConceptDocumentation):
             'act': phase_infos.ACT.name,
             'phase': PHASE_NAME_DICTIONARY,
             'os_process': misc_texts.OS_PROCESS_NAME,
+            'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
         })
         return DescriptionWithSubSections(concepts.ACTION_TO_CHECK_CONCEPT_INFO.single_line_description,
                                           docs.section_contents(parser.fnap(_DESCRIPTION)))
@@ -60,5 +61,5 @@ the {ATC} may be, for example:
  * executable program (with arguments)
  * source code file
  * source code
- * shell command
+ * {shell_command}
 """

@@ -16,10 +16,12 @@ EXIT_IDENTIFIER = misc_name_with_formatting(
 EXIT_CODE = name.an_name(name.name_with_plural_s('exit code'))
 
 EXECUTABLE_FILE = name.an_name(name.name_with_plural_s('executable file'))
+SHELL_COMMAND = name.a_name(name.name_with_plural_s('shell command'))
+SHELL_COMMAND_LINE = name.a_name(name.name_with_plural_s('shell command line'))
+IS_A_SHELL_CMD = ''.join(('is a ', SHELL_COMMAND.singular,
+                          ' (with optional arguments), using Unix shell syntax.'))
 
 EXIT_IDENTIFIER_TITLE = EXIT_IDENTIFIER.singular.capitalize()
-
-IS_A_SHELL_CMD = """is a shell command (with optional arguments), using Unix shell syntax."""
 
 RELATIVITY = misc_name_with_formatting(
     name.a_name(name.Name('relativity', 'relativities')))

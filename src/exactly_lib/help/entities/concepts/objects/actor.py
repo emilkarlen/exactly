@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib.cli.definitions import common_cli_options
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
@@ -29,6 +29,7 @@ class _ActorConcept(ConceptDocumentation):
             'default_actor': actors.DEFAULT_ACTOR_SINGLE_LINE_VALUE,
             'actor_conf_param': formatting.conf_param_(conf_params.ACTOR_CONF_PARAM_INFO),
             'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
+            'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
         })
         contents = parse.fnap(_AFTER_SINGLE_LINE_DESCRIPTION)
         return DescriptionWithSubSections(self.single_line_description(),
@@ -60,7 +61,7 @@ For example:
  * executable program file
  * source code file
  * source code
- * shell command
+ * {shell_command}
 
 
 {actor:a/u} determines the syntax and semantics of the {act} phase contents.
