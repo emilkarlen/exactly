@@ -6,9 +6,8 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription, \
-    WithTreeStructureDescription, StructureRenderer
+    WithTreeStructureDescription
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
-from exactly_lib.util.description_tree import renderers
 
 StringTransformerModel = Iterable[str]
 
@@ -38,10 +37,6 @@ StringTransformerAdv = ApplicationEnvironmentDependentValue[StringTransformer]
 class StringTransformerDdv(DirDependentValue[ApplicationEnvironmentDependentValue[StringTransformer]],
                            WithTreeStructureDescription,
                            ABC):
-
-    def structure(self) -> StructureRenderer:
-        return renderers.header_only('string transformer TODO')
-
     def validator(self) -> DdvValidator:
         return constant_success_validator()
 
