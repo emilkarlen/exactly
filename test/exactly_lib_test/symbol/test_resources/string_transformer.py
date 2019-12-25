@@ -11,7 +11,6 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformer, 
     StringTransformerModel, StringTransformerAdv
 from exactly_lib.type_system.logic.string_transformer_ddvs import StringTransformerConstantDdv
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
@@ -70,7 +69,7 @@ class StringTransformerDdvTestImpl(StringTransformerDdv):
         self._validator = validator
 
     def structure(self) -> StructureRenderer:
-        return renderers.header_only(str(type(self)))
+        return self._primitive_value.structure()
 
     def validator(self) -> DdvValidator:
         return self._validator

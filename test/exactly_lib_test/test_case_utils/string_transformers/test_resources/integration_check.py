@@ -20,6 +20,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 
 class Arrangement:
@@ -117,12 +118,13 @@ class _Checker:
                                                               transformer_sdv.references,
                                                               'reference')
 
-        transformer_value = self._resolve_ddv(transformer_sdv)
+        transformer_ddv = self._resolve_ddv(transformer_sdv)
 
-        self._check_validation_pre_sds(transformer_value)
-        self._check_validation_post_sds(transformer_value)
+        self._check_validation_pre_sds(transformer_ddv)
+        self._check_validation_post_sds(transformer_ddv)
 
-        transformer = self._resolve_primitive_value(transformer_value)
+        transformer = self._resolve_primitive_value(transformer_ddv)
+        self._check_equivalent_structures(transformer_ddv, transformer)
 
         self._check_application(transformer)
 
@@ -213,3 +215,14 @@ class _Checker:
             assertion_on_text_renderer.apply_with_message(self.put, result.error,
                                                           'error message for hard error')
             raise _CheckIsDoneException()
+
+    def _check_equivalent_structures(self,
+                                     ddv: StringTransformerDdv,
+                                     primitive: StringTransformer):
+        structure_tree_of_ddv = ddv.structure().render()
+        structure_tree_of_primitive = primitive.structure().render()
+        structure_equals_ddv = asrt_d_tree.header_data_and_children_equal_as(structure_tree_of_ddv)
+        structure_equals_ddv.apply_with_message(
+            self.put,
+            structure_tree_of_primitive,
+            'structure of primitive should be same as that of ddv')
