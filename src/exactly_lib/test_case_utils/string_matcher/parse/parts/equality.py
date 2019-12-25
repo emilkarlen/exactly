@@ -1,9 +1,8 @@
 import difflib
 import filecmp
 import pathlib
-from typing import List, Optional, Iterable
+from typing import Iterable
 
-from exactly_lib.definitions.actual_file_attributes import CONTENTS_ATTRIBUTE
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.string_or_path import StringOrPathSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
@@ -13,9 +12,6 @@ from exactly_lib.test_case.validation.sdv_validation import PreOrPostSdsValidato
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
-from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver, ExpectedValueResolver
-from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
@@ -25,8 +21,6 @@ from exactly_lib.test_case_utils.string_matcher.sdvs import string_matcher_sdv_f
 from exactly_lib.type_system.data.string_or_path_ddvs import StringOrPath, StringOrPathDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MatcherAdv, MODEL
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherDdv, StringMatcher
@@ -73,23 +67,6 @@ def value_sdv(expectation_type: ExpectationType,
     return string_matcher_sdv_from_parts_2(expected_contents.references, get_ddv)
 
 
-class _ErrorMessageResolverConstructor:
-    def __init__(self,
-                 expectation_type: ExpectationType,
-                 expected_value: ExpectedValueResolver,
-                 ):
-        self._expectation_type = expectation_type
-        self._expected_value = expected_value
-
-    def construct(self,
-                  checked_file: FilePropertyDescriptorConstructor,
-                  actual_info: ActualInfo) -> ErrorMessageResolver:
-        return _ErrorMessageResolver(self._expectation_type,
-                                     self._expected_value,
-                                     checked_file,
-                                     actual_info)
-
-
 class EqualityStringMatcherAdv(MatcherAdv[FileToCheck]):
     def __init__(self,
                  expectation_type: ExpectationType,
@@ -105,11 +82,6 @@ class EqualityStringMatcherAdv(MatcherAdv[FileToCheck]):
         return EqualityStringMatcher(
             self._expectation_type,
             self._expected_contents,
-            _ErrorMessageResolverConstructor(
-                self._expectation_type,
-                parse_here_doc_or_path.ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE,
-                                                             self._expected_contents)
-            ),
             self._validator,
             environment.tmp_files_space,
         )
@@ -162,7 +134,6 @@ class EqualityStringMatcher(StringMatcherImplBase):
     def __init__(self,
                  expectation_type: ExpectationType,
                  expected_contents: StringOrPath,
-                 error_message_constructor: _ErrorMessageResolverConstructor,
                  validator: PreOrPostSdsValidatorPrimitive,
                  tmp_file_space: TmpDirFileSpace,
                  ):
@@ -170,7 +141,6 @@ class EqualityStringMatcher(StringMatcherImplBase):
         self._expectation_type = expectation_type
         self._expected_contents = expected_contents
         self._validator = validator
-        self._err_msg_constructor = error_message_constructor
         self._renderer_of_expected_value = custom_details.StringOrPath(expected_contents)
         self._expected_detail_renderer = custom_details.expected(self._renderer_of_expected_value)
         self._tmp_file_space = tmp_file_space
@@ -185,25 +155,10 @@ class EqualityStringMatcher(StringMatcherImplBase):
             custom_details.StringOrPath(self._expected_contents),
         )
 
-    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        error_from_validation = self._do_post_setup_validation__old()
-        if error_from_validation is not None:
-            return error_from_validation
-
-        expected_file_path = self._file_path_for_file_with_expected_contents(self._tmp_file_space)
-        actual_file_path = model.transformed_file_path(self._tmp_file_space)
-
-        files_are_equal = self._do_compare(expected_file_path, actual_file_path)
-        return self._evaluate_comparison_result(files_are_equal,
-                                                expected_file_path,
-                                                actual_file_path,
-                                                model.describer)
-
     def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
         if self._expectation_type is ExpectationType.NEGATIVE:
             positive_matcher = EqualityStringMatcher(ExpectationType.POSITIVE,
                                                      self._expected_contents,
-                                                     self._err_msg_constructor,
                                                      self._validator,
                                                      self._tmp_file_space)
             return combinator_matchers.Negation(positive_matcher).matches_w_trace(model)
@@ -263,40 +218,9 @@ class EqualityStringMatcher(StringMatcherImplBase):
         expected_file_name = str(expected_file_path)
         return filecmp.cmp(actual_file_name, expected_file_name, shallow=False)
 
-    def _evaluate_comparison_result(self,
-                                    files_are_equal: bool,
-                                    expected_file_path: pathlib.Path,
-                                    actual_file_path: pathlib.Path,
-                                    checked_file_describer: FilePropertyDescriptorConstructor,
-                                    ) -> Optional[ErrorMessageResolver]:
-        if self._expectation_type is ExpectationType.POSITIVE:
-            if not files_are_equal:
-                diff_description = _file_diff_description__old(actual_file_path,
-                                                               expected_file_path)
-                return self._err_msg_constructor.construct(
-                    checked_file_describer,
-                    diff_msg.actual_with_just_description_lines(diff_description)
-                )
-        else:
-            if files_are_equal:
-                return self._err_msg_constructor.construct(
-                    checked_file_describer,
-                    diff_msg.actual_with_single_line_value(_EQUALITY_CHECK_EXPECTED_VALUE)
-                )
-
-        return None
-
     @property
     def option_description(self) -> str:
         return diff_msg.negation_str(self._expectation_type) + _EQUALITY_CHECK_EXPECTED_VALUE
-
-    def _do_post_setup_validation__old(self) -> Optional[ErrorMessageResolver]:
-        error_message = self._validator.validate_post_sds_if_applicable()
-        return (
-            None
-            if error_message is None
-            else env_dep_texts.as_old(env_dep_texts.constant_renderer(error_message))
-        )
 
     def _new_tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(self._expected_detail_renderer)
@@ -304,17 +228,6 @@ class EqualityStringMatcher(StringMatcherImplBase):
 
 def _validator_of_expected(expected_contents: StringOrPathDdv) -> DdvValidator:
     return expected_contents.validator__file_must_exist_as(FileType.REGULAR, True)
-
-
-def _file_diff_description__old(actual_file_path: pathlib.Path,
-                                expected_file_path: pathlib.Path) -> List[str]:
-    expected_lines = file_utils.lines_of(expected_file_path)
-    actual_lines = file_utils.lines_of(actual_file_path)
-    diff = difflib.unified_diff(expected_lines,
-                                actual_lines,
-                                fromfile='Expected',
-                                tofile='Actual')
-    return list(diff)
 
 
 def _file_diff_description(actual_file_path: pathlib.Path,
@@ -334,26 +247,3 @@ class _DiffString(StringConstructor):
 
     def __str__(self) -> str:
         return '\n'.join(self._lines)
-
-
-class _ErrorMessageResolver(ErrorMessageResolver):
-    def __init__(self,
-                 expectation_type: ExpectationType,
-                 expected_value: ExpectedValueResolver,
-                 checked_file_describer: FilePropertyDescriptorConstructor,
-                 actual_info: ActualInfo
-                 ):
-        self._expected_value = expected_value
-        self._expectation_type = expectation_type
-        self._checked_file_describer = checked_file_describer
-        self._actual_info = actual_info
-
-    def resolve(self) -> str:
-        description_of_actual_file = self._checked_file_describer.construct_for_contents_attribute(CONTENTS_ATTRIBUTE)
-        failure_info_resolver = DiffFailureInfoResolver(
-            description_of_actual_file,
-            self._expectation_type,
-            self._expected_value,
-        )
-        failure_info = failure_info_resolver.resolve(self._actual_info)
-        return failure_info.error_message()

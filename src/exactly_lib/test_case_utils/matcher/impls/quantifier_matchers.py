@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Callable, Iterator, Optional, ContextManager, Sequence
+from typing import TypeVar, Generic, Callable, Iterator, ContextManager, Sequence
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.symbol.logic.matcher import MatcherSdv
@@ -8,11 +8,9 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation, \
     MatcherDdv, MatcherAdv, ApplicationEnvironment
 from exactly_lib.util import strings
@@ -122,15 +120,6 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
 
     def matches(self, model: MODEL) -> bool:
         return self.matches_w_trace(model).value
-
-    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
-        result = self.matches_w_trace(model)
-        return (
-            None
-            if result.value
-            else
-            err_msg_resolvers.constant(' '.join([self.name, str(result.value)]))
-        )
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         conf = self._conf

@@ -1,5 +1,3 @@
-from typing import Optional
-
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case.validation import ddv_validators
@@ -9,7 +7,6 @@ from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherI
     StringMatcherAdvImplBase
 from exactly_lib.test_case_utils.string_transformer.impl.sequence import SequenceStringTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
     MatcherWTraceAndNegation, MODEL, MatcherAdv
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherDdv, StringMatcherAdv
@@ -53,11 +50,6 @@ class StringMatcherOnTransformedFileToCheck(StringMatcherImplBase):
     @property
     def option_description(self) -> str:
         return 'transformed: ' + self._on_transformed.option_description
-
-    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        complete_transformer = self._complete_transformer(model)
-        transformed_model = model.with_transformation(complete_transformer)
-        return self._on_transformed.matches_emr(transformed_model)
 
     def _complete_transformer(self, model: FileToCheck) -> StringTransformer:
         if model.string_transformer.is_identity_transformer:

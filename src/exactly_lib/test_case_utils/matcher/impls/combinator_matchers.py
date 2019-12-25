@@ -1,16 +1,14 @@
 from abc import ABC
-from typing import Generic, Sequence, Optional, Callable
+from typing import Generic, Sequence, Callable
 
 from exactly_lib.definitions import expression
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation, \
     MatcherDdv, MODEL, MatcherAdv, ApplicationEnvironment
 from exactly_lib.util.description_tree import renderers
@@ -56,15 +54,6 @@ class Negation(_CombinatorBase[MODEL]):
 
     def matches(self, model: MODEL) -> bool:
         return not self._negated.matches(model)
-
-    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
-        mb_failure = self._negated.matches_emr(model)
-        return (
-            None
-            if mb_failure
-            else
-            err_msg_resolvers.constant(' '.join([self.name, self._negated.name]))
-        )
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         result_to_negate = self._negated.matches_w_trace(model)
@@ -167,14 +156,6 @@ class Conjunction(_CombinatorBase[MODEL]):
 
         return True
 
-    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
-        for part in self._parts:
-            result = part.matches_emr(model)
-            if result is not None:
-                return result
-
-        return None
-
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         tb = TraceBuilder(self.name)
         for part in self._parts:
@@ -246,14 +227,6 @@ class Disjunction(_CombinatorBase[MODEL]):
                 return True
 
         return False
-
-    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
-        for part in self._parts:
-            result = part.matches_emr(model)
-            if result is None:
-                return None
-
-        return err_msg_resolvers.constant(self.name + ' F')
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         tb = TraceBuilder(self.name)

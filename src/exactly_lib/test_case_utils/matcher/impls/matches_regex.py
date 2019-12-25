@@ -13,11 +13,9 @@ from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexDdv, RegexSdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherDdv, MODEL, MatcherAdv
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.logic_types import ExpectationType
@@ -76,9 +74,6 @@ class MatchesRegex(WithCachedTreeStructureDescriptionBase,
     @property
     def negation(self) -> MatcherWTraceAndNegation[str]:
         return combinator_matchers.Negation(self)
-
-    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        raise NotImplementedError('unsupported')
 
     def matches_w_trace(self, model: str) -> MatchingResult:
         if self._expectation_type is ExpectationType.NEGATIVE:

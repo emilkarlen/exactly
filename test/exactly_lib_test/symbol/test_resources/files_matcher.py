@@ -1,4 +1,4 @@
-from typing import Sequence, Optional
+from typing import Sequence
 
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
@@ -6,9 +6,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherDdvImplBase, FilesMatcherImplBase
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherDdv, \
     FilesMatcherAdv
 from exactly_lib.type_system.logic.impls import advs
@@ -37,12 +35,6 @@ class FilesMatcherTestImpl(FilesMatcherImplBase):
     @property
     def negation(self) -> FilesMatcher:
         return FilesMatcherTestImpl(not self._result)
-
-    def matches_emr(self, files_source: FilesMatcherModel) -> Optional[ErrorMessageResolver]:
-        if self._result:
-            return None
-        else:
-            return err_msg_resolvers.constant('test impl with constant ' + str(self._result))
 
     def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
         return (

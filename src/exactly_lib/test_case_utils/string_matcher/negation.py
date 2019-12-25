@@ -1,12 +1,10 @@
-from typing import Sequence, Optional
+from typing import Sequence
 
 from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MODEL, \
     MatcherWTraceAndNegation
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
@@ -47,15 +45,6 @@ class StringMatcherNegation(MatcherWTraceAndNegation[FileToCheck],
 
     def matches(self, model: MODEL) -> bool:
         return not self._operand.matches(model)
-
-    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
-        mb_failure = self._operand.matches_emr(model)
-        return (
-            None
-            if mb_failure
-            else
-            err_msg_resolvers.constant(' '.join([self.name, self._operand.name]))
-        )
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         result_to_negate = self._operand.matches_w_trace(model)

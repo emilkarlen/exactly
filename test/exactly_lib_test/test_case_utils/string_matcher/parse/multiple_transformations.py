@@ -1,11 +1,9 @@
 import unittest
-from typing import Iterable, Optional
+from typing import Iterable
 
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.description_tree import details
@@ -119,14 +117,6 @@ class EqualsMatcherTestImpl(StringMatcherImplBase):
     @property
     def option_description(self) -> str:
         return 'equals ' + self.expected
-
-    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        actual = self._as_single_string(model)
-        if self.expected == actual:
-            return None
-        else:
-            err_msg = 'not eq to "{}": "{}"'.format(self.expected, actual)
-            return err_msg_resolvers.constant(err_msg)
 
     def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
         actual = self._as_single_string(model)

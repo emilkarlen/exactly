@@ -9,7 +9,6 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MatcherAdv
@@ -157,9 +156,6 @@ class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MOD
         return self._matching_result
 
     def matches_w_failure(self, model: MODEL) -> Optional[Failure[MODEL]]:
-        raise NotImplementedError('deprecated')
-
-    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
         raise NotImplementedError('deprecated')
 
 

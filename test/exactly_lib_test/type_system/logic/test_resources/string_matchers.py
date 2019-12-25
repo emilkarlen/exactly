@@ -3,7 +3,6 @@ from typing import Optional, Callable, Generic
 from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -34,13 +33,6 @@ class StringMatcherConstant(StringMatcherImplBase):
     def option_description(self) -> str:
         return 'any string' if self._result else 'no string'
 
-    @property
-    def result_constant(self) -> Optional[ErrorMessageResolver]:
-        return self._result
-
-    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        return self._result
-
     def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
         return self._new_tb().build_result(self._result is None)
 
@@ -66,14 +58,6 @@ class StringMatcherConstantTestImpl(StringMatcherImplBase):
     @property
     def option_description(self) -> str:
         return self.__structure.header
-
-    def matches_emr(self, model: FileToCheck) -> Optional[ErrorMessageResolver]:
-        return (
-            None
-            if self._result
-            else
-            err_msg_resolvers.constant('Unconditional False')
-        )
 
     def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
         return self._new_tb().build_result(self._result)

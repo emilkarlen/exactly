@@ -1,5 +1,3 @@
-from typing import Optional
-
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import file_matcher, str_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -13,7 +11,6 @@ from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherAdv, MODEL
@@ -104,9 +101,6 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
 
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree(details.String(strings.Repr(self._glob_pattern)))
-
-    def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
-        raise NotImplementedError('deprecated')
 
     def matches(self, model: FileMatcherModel) -> bool:
         return model.path.primitive.match(self._glob_pattern)

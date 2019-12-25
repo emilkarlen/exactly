@@ -5,12 +5,10 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.err_msg import err_msg_resolvers
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterDdv, \
     PropertyGetterSdv, PropertyGetterAdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, Failure, MatcherDdv, \
     TraceRenderer, MatcherWTraceAndNegation, MatcherAdv, ApplicationEnvironment
 from exactly_lib.util.symbol_table import SymbolTable
@@ -61,14 +59,6 @@ class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTraceAndNegation[MODEL]
     @property
     def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return combinator_matchers.Negation(self)
-
-    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
-        return (
-            None
-            if self.matches_w_trace(model).value
-            else
-            err_msg_resolvers.constant('False')
-        )
 
     def matches_w_failure(self, model: MODEL) -> Optional[Failure[MODEL]]:
         """

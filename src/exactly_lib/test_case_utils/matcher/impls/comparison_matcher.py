@@ -8,11 +8,8 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.matcher.object import ObjectDdv, ObjectSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import Failure, MatcherDdv, MatcherAdv, MODEL
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
@@ -257,30 +254,4 @@ class ComparisonMatcherSdv(Generic[T], MatcherSdv[T]):
             self._operator,
             self._rhs.resolve(symbols),
             self._model_renderer,
-        )
-
-
-class _ErrorMessageResolver(Generic[T], ErrorMessageResolver):
-    def __init__(self,
-                 property_descriptor: PropertyDescriptor,
-                 expectation_type: ExpectationType,
-                 lhs: T,
-                 rhs: T,
-                 operator: comparators.ComparisonOperator):
-        self.property_descriptor = property_descriptor
-        self.expectation_type = expectation_type
-        self.lhs = lhs
-        self.rhs = rhs
-        self.operator = operator
-
-    def resolve(self) -> str:
-        return self.failure_info().error_message()
-
-    def failure_info(self) -> diff_msg.DiffErrorInfo:
-        expected_str = self.operator.name + ' ' + str(self.rhs)
-        return diff_msg.DiffErrorInfo(
-            self.property_descriptor.description(),
-            self.expectation_type,
-            expected_str,
-            diff_msg.actual_with_single_line_value(str(self.lhs))
         )

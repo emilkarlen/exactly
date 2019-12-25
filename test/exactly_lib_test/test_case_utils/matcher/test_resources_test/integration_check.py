@@ -20,7 +20,6 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MODEL, \
     MatchingResult, Failure, MatcherAdv
@@ -518,9 +517,6 @@ class MatcherThatAssertsThatCwdIsIsActDir(MatcherWTraceAndNegation[int]):
     @property
     def name(self) -> str:
         return str(type(self))
-
-    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
-        raise NotImplementedError('unsupported')
 
     @property
     def option_description(self) -> str:

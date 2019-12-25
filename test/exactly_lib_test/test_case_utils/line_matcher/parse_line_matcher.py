@@ -1,5 +1,5 @@
 import unittest
-from typing import List, Sequence, Optional
+from typing import List, Sequence
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
@@ -13,7 +13,6 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
 from exactly_lib.test_case_utils.line_matcher.line_matchers import line_matcher_constant
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MODEL, MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
@@ -208,9 +207,6 @@ class _ExpectedEquivalentLineNumMatcher(MatcherWTrace[LineMatcherLine]):
 
     def matches(self, model: LineMatcherLine) -> bool:
         return self._matcher.matches(model[0])
-
-    def matches_emr(self, model: LineMatcherLine) -> Optional[ErrorMessageResolver]:
-        return self._matcher.matches_emr(model[0])
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         value = self.matches(model)

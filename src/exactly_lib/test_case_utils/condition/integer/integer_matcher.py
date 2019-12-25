@@ -1,11 +1,10 @@
-from typing import Optional
+from abc import ABC
 
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
-from exactly_lib.type_system.logic.matcher_base_class import Matcher, MODEL
+from exactly_lib.type_system.logic.matcher_base_class import Matcher
 
 
-class IntegerMatcher(Matcher[int]):
+class IntegerMatcher(Matcher[int], ABC):
     def matches(self, model: int) -> bool:
         raise NotImplementedError('abstract method')
 
@@ -25,9 +24,6 @@ class IntegerMatcherFromComparisonOperator(IntegerMatcher):
 
     def matches(self, model: int) -> bool:
         return self._operator.operator_fun(model, self._constant_rhs)
-
-    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
-        raise NotImplementedError('deprecated')
 
     @property
     def option_description(self) -> str:

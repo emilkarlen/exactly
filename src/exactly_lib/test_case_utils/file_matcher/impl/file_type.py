@@ -49,9 +49,6 @@ class FileMatcherType(MatcherImplBase[FileMatcherModel]):
                 .as_render()
         )
 
-    def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
-        raise NotImplementedError('deprecated')
-
     def matches(self, model: FileMatcherModel) -> bool:
         return self._path_predicate(model.path.primitive)
 

@@ -1,5 +1,3 @@
-from typing import Optional
-
 from exactly_lib.common.report_rendering import text_docs__old
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions.entity import syntax_elements
@@ -16,7 +14,6 @@ from exactly_lib.test_case_utils.file_system_element_matcher import ErrorMessage
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_transformer.impl import identity
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic import string_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
@@ -61,9 +58,6 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
 
     def matches(self, model: FileMatcherModel) -> bool:
         return self.matches_w_trace(model).value
-
-    def matches_emr(self, model: FileMatcherModel) -> Optional[ErrorMessageResolver]:
-        raise NotImplementedError('deprecated')
 
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         self._hard_error_if_not_regular_file(model)
