@@ -80,7 +80,6 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
     def _string_matcher_model(model: FileMatcherModel) -> string_matcher.FileToCheck:
         return string_matcher.FileToCheck(
             model.path,
-            model.file_descriptor,
             identity.IdentityStringTransformer(),
             string_matcher.DestinationFilePathGetter(),
         )

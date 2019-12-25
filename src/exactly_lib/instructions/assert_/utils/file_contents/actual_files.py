@@ -10,13 +10,9 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator
-from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers
 from exactly_lib.test_case_utils.err_msg2 import path_rendering, header_rendering
-from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
-from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
 from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.strings import ToStringObject
@@ -25,24 +21,18 @@ from exactly_lib.util.strings import ToStringObject
 class ComparisonActualFile(tuple):
     def __new__(cls,
                 actual_path: DescribedPath,
-                checked_file_describer: FilePropertyDescriptorConstructor,
                 file_access_needs_to_be_verified: bool
                 ):
-        return tuple.__new__(cls, (checked_file_describer,
-                                   actual_path,
+        return tuple.__new__(cls, (actual_path,
                                    file_access_needs_to_be_verified))
 
     @property
-    def checked_file_describer(self) -> FilePropertyDescriptorConstructor:
+    def path(self) -> DescribedPath:
         return self[0]
 
     @property
-    def path(self) -> DescribedPath:
-        return self[1]
-
-    @property
     def file_access_needs_to_be_verified(self) -> bool:
-        return self[2]
+        return self[1]
 
 
 class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndValidation, ABC):
@@ -96,9 +86,6 @@ class ConstructorForPath(ComparisonActualFileConstructor):
         )
         return ComparisonActualFile(
             described_path,
-            ActualFilePropertyDescriptorConstructorForComparisonFile(
-                described_path.describer,
-                str(self._object_name)),
             self._file_access_needs_to_be_verified,
         )
 
@@ -113,19 +100,4 @@ class ConstructorForPath(ComparisonActualFileConstructor):
                 file_or_dir_contents_headers.unexpected(self._object_name)
             ),
             path_rendering.PathRepresentationsRenderersForPrimitive(described_path.describer),
-        )
-
-
-class ActualFilePropertyDescriptorConstructorForComparisonFile(FilePropertyDescriptorConstructor):
-    def __init__(self,
-                 path: PathDescriberForPrimitive,
-                 object_name: str):
-        self._path = path
-        self._object_name = object_name
-
-    def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
-        return path_description.path_value_description(
-            property_description.file_property_name(contents_attribute, self._object_name),
-            self._path,
-            True,
         )

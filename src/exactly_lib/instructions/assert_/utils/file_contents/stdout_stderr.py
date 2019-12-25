@@ -4,13 +4,12 @@ from exactly_lib.common.help import syntax_contents_structure
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
-from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts, syntax_elements, types
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor, \
-    ActualFilePropertyDescriptorConstructorForComparisonFile, ComparisonActualFile
+    ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -146,9 +145,6 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
 
         return ComparisonActualFile(
             path_with_transformed_contents,
-            ActualFilePropertyDescriptorConstructorForComparisonFile(
-                path_with_transformed_contents.describer,
-                actual_file_attributes.OUTPUT_FROM_PROGRAM_OBJECT_NAME),
             False
         )
 
