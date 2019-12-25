@@ -6,10 +6,8 @@ from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYP
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.string import lines_content
 
-_NO_REFS_INFO = '(unused)'
 
-
-class SymbolReport:
+class SymbolSummary:
     def __init__(self,
                  name: str,
                  value_type: ValueType,
@@ -46,18 +44,18 @@ def def_of_string(symbol_name: str) -> str:
     return types.STRING_TYPE_INFO.identifier + ' ' + symbol_name
 
 
-def list_of(symbols: List[SymbolReport]) -> str:
+def list_of(symbols: List[SymbolSummary]) -> str:
     max_type_ident_len = functools.reduce(int_max,
-                                          map(SymbolReport.type_identifier_length,
+                                          map(SymbolSummary.type_identifier_length,
                                               symbols),
                                           0)
     max_num_refs_len = functools.reduce(int_max,
-                                        map(SymbolReport.num_refs_string_length,
+                                        map(SymbolSummary.num_refs_string_length,
                                             symbols),
                                         0)
     formatting_str = '{type: <{type_width}} {num_refs_info: <{num_refs_width}} {name}'
 
-    def format_symbol(symbol: SymbolReport) -> str:
+    def format_symbol(symbol: SymbolSummary) -> str:
         s = formatting_str.format(type=symbol.type_identifier(),
                                   type_width=max_type_ident_len,
                                   name=symbol.name(),
@@ -68,6 +66,14 @@ def list_of(symbols: List[SymbolReport]) -> str:
     return lines_content([
         format_symbol(symbol)
         for symbol in symbols
+    ])
+
+
+def summary_of_single(symbol: SymbolSummary) -> str:
+    return ' '.join([
+        symbol.type_identifier(),
+        symbol.num_refs_string(),
+        symbol.name(),
     ])
 
 

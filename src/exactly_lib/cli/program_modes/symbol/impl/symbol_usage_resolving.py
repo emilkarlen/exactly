@@ -9,18 +9,30 @@ from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases import setup, before_assert, assert_, cleanup
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.test_case_doc import TestCaseOfInstructions, ElementWithSourceLocation
+from exactly_lib.util import symbol_table
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 class DefinitionsInfoResolverFromTestCase(DefinitionsResolver):
     def __init__(self,
                  test_case: TestCaseOfInstructions,
-                 action_to_check: Sequence[SymbolUsage]):
-        self.test_case = test_case
-        self.action_to_check = action_to_check
+                 action_to_check: Sequence[SymbolUsage],
+                 builtin_symbols: Optional[SymbolTable]):
+        self._test_case = test_case
+        self._action_to_check = action_to_check
+        self._builtin_symbols = symbol_table.symbol_table_from_none_or_value(builtin_symbols)
 
     def definitions(self) -> Iterator[SymbolDefinitionInfo]:
         usages = list(self.symbol_usages())
         references = self.references(usages)
+        user_defined = self._definitions_of_user_defined(usages, references)
+        builtin = self._definitions_of_builtins(references)
+        return itertools.chain.from_iterable([user_defined, builtin])
+
+    @staticmethod
+    def _definitions_of_user_defined(usages: List[ContextAnd[SymbolUsage]],
+                                     references: Dict[str, List[ContextAnd[SymbolReference]]],
+                                     ) -> Iterator[SymbolDefinitionInfo]:
 
         def mk_definition(definition: ContextAnd[SymbolDefinition]) -> SymbolDefinitionInfo:
             name = definition.value().name
@@ -36,18 +48,33 @@ class DefinitionsInfoResolverFromTestCase(DefinitionsResolver):
                           map(_extract_symbol_definition, usages))
                    )
 
+    def _definitions_of_builtins(self, references: Dict[str, List[ContextAnd[SymbolReference]]]
+                                 ) -> Iterator[SymbolDefinitionInfo]:
+        builtins = self._builtin_symbols
+
+        def mk_definition(name: str) -> SymbolDefinitionInfo:
+            return SymbolDefinitionInfo.new_builtin(
+                SymbolDefinition(name, builtins.lookup(name)),
+                references.get(name, []))
+
+        return iter([
+            mk_definition(sym_name)
+            for sym_name in builtins.names_set
+        ]
+        )
+
     def symbol_usages(self) -> Iterator[ContextAnd[SymbolUsage]]:
         return itertools.chain.from_iterable([
             _symbol_usages_from(phase_identifier.SETUP,
-                                self.test_case.setup_phase, setup.get_symbol_usages),
+                                self._test_case.setup_phase, setup.get_symbol_usages),
             self._act_phase_symbol_usages(),
             _symbol_usages_from(phase_identifier.BEFORE_ASSERT,
-                                self.test_case.before_assert_phase,
+                                self._test_case.before_assert_phase,
                                 before_assert.get_symbol_usages),
             _symbol_usages_from(phase_identifier.ASSERT,
-                                self.test_case.assert_phase, assert_.get_symbol_usages),
+                                self._test_case.assert_phase, assert_.get_symbol_usages),
             _symbol_usages_from(phase_identifier.CLEANUP,
-                                self.test_case.cleanup_phase, cleanup.get_symbol_usages),
+                                self._test_case.cleanup_phase, cleanup.get_symbol_usages),
         ])
 
     def _act_phase_symbol_usages(self) -> Iterator[ContextAnd[SymbolUsage]]:
@@ -63,7 +90,7 @@ class DefinitionsInfoResolverFromTestCase(DefinitionsResolver):
             mk_atc_sym_usage,
             itertools.chain.from_iterable([
                 usages_extractor.visit(symbol_usage)
-                for symbol_usage in self.action_to_check
+                for symbol_usage in self._action_to_check
             ])
         )
 
@@ -73,7 +100,7 @@ class DefinitionsInfoResolverFromTestCase(DefinitionsResolver):
 
         source_lines = list(
             itertools.chain.from_iterable(
-                map(instruction_source_lines, self.test_case.act_phase)
+                map(instruction_source_lines, self._test_case.act_phase)
             )
         )
 

@@ -43,7 +43,11 @@ class _ListReport(Report):
 
     def blocks(self) -> Sequence[ReportBlock]:
         return [
-            SymbolListBlock(self.definitions)
+            SymbolListBlock([
+                definition
+                for definition in self.definitions
+                if definition.is_user_defined()
+            ])
         ]
 
 

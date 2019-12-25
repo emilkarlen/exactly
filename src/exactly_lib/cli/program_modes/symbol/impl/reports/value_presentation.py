@@ -31,11 +31,14 @@ class ResolvedValuePresentationBlock(ReportBlock, ABC):
 
 
 class PresentationBlockConstructor:
-    def __init__(self, all_definitions: Sequence[SymbolDefinition]):
+    def __init__(self,
+                 all_definitions: Sequence[SymbolDefinition],
+                 builtin_symbols: SymbolTable):
         self._symbol_table = SymbolTable({
             definition.name: definition.symbol_container
             for definition in all_definitions
         })
+        self._symbol_table.add_table(builtin_symbols)
 
     def block_for(self, sdv: SymbolDependentValue) -> ResolvedValuePresentationBlock:
         if isinstance(sdv, LogicTypeSdv):

@@ -88,7 +88,7 @@ class TestStandaloneCase(unittest.TestCase):
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
                 stdout=asrt.equals(output.list_of([
-                    output.SymbolReport(symbol_name__after_preproc, ValueType.STRING, num_refs=0),
+                    output.SymbolSummary(symbol_name__after_preproc, ValueType.STRING, num_refs=0),
                 ])),
             )
         )
@@ -142,8 +142,8 @@ class TestPreprocessorSpecifiedInSuite(unittest.TestCase):
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
                 stdout=asrt.equals(output.list_of([
-                    output.SymbolReport(symbol_in_suite, ValueType.STRING, num_refs=0),
-                    output.SymbolReport(symbol_in_case__after_preproc, ValueType.STRING, num_refs=0),
+                    output.SymbolSummary(symbol_in_suite, ValueType.STRING, num_refs=0),
+                    output.SymbolSummary(symbol_in_case__after_preproc, ValueType.STRING, num_refs=0),
                 ])),
             )
         )

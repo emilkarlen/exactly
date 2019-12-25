@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Optional
 
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.cli.program_modes.symbol.impl import symbol_usage_resolving
@@ -24,11 +24,13 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import ActionToCheck
 from exactly_lib.test_case.test_case_status import TestCaseStatus
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError
+from exactly_lib.util import symbol_table
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.std import StdOutputFiles
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 class Executor:
@@ -51,8 +53,9 @@ class Executor:
         except PhaseStepFailureException as ex:
             return _PhaseStepErrorReporter(ex.failure)
 
+        report_generator = self._report_generator(request)
         return _ReporterOfRequestReport(
-            self._generate_report(test_case, action_to_check, request)
+            self._generate_report(test_case, action_to_check, report_generator)
         )
 
     def _resolve(self, request: SymbolInspectionRequest) -> Tuple[test_case_doc.TestCaseOfInstructions, ActionToCheck]:
@@ -68,21 +71,27 @@ class Executor:
                                         self._test_case_definition,
                                         self._suite_configuration_section_parser)
 
-    @staticmethod
-    def _generate_report(test_case: test_case_doc.TestCaseOfInstructions,
+    def _report_generator(self, request: SymbolInspectionRequest) -> ReportGenerator:
+        request_handler = _RequestHandler(self._test_case_definition.predefined_properties.predefined_symbols)
+        return request_handler.visit(request.variant)
+
+    def _generate_report(self, test_case: test_case_doc.TestCaseOfInstructions,
                          action_to_check: ActionToCheck,
-                         request: SymbolInspectionRequest,
+                         report_generator: ReportGenerator,
                          ) -> Report:
         definitions_resolver = symbol_usage_resolving.DefinitionsInfoResolverFromTestCase(
             test_case,
-            action_to_check.symbol_usages()
+            action_to_check.symbol_usages(),
+            self._test_case_definition.predefined_properties.predefined_symbols,
         )
-        report_generator = _RequestHandler().visit(request.variant)
 
         return report_generator.generate(definitions_resolver)
 
 
 class _RequestHandler(RequestVariantVisitor[ReportGenerator]):
+    def __init__(self, builtin_symbols: Optional[SymbolTable]):
+        self._builtin_symbols = symbol_table.symbol_table_from_none_or_value(builtin_symbols)
+
     def visit_list(self, list_variant: RequestVariantList) -> ReportGenerator:
         from exactly_lib.cli.program_modes.symbol.impl.reports.list_all import ListReportGenerator
 
@@ -92,7 +101,8 @@ class _RequestHandler(RequestVariantVisitor[ReportGenerator]):
         from exactly_lib.cli.program_modes.symbol.impl.reports.individual import IndividualReportGenerator
 
         return IndividualReportGenerator(individual_variant.name,
-                                         individual_variant.list_references)
+                                         individual_variant.list_references,
+                                         self._builtin_symbols)
 
 
 class _SuiteErrorReporter(ProcessResultReporter):

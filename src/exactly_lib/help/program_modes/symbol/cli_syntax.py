@@ -174,7 +174,7 @@ together with its type and the number of references to it.
 """
 
 _DESCRIPTION_PARAGRAPHS_INDIVIDUAL = """\
-Reports information about a {symbol} that has been defined in the case/suite.
+Reports information about a {symbol}.
 
 
 If only {SYMBOL_NAME} is given, the definition of the {symbol} is reported.
@@ -189,7 +189,6 @@ The report is printed on stdout.
 
 Errors are reported with {exit_code:s} and {exit_identifier:s}
 corresponding to the outcome of running the corresponding test case or test suite.
-
 But the case/suite is not executed,
 so no execution errors occur.
 """

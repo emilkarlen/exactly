@@ -1,0 +1,5 @@
+[setup]
+
+def path REL_HDS = -rel-home file-rel-hds
+
+def path WITH_REF_TO_BUILTIN = @[EXACTLY_ACT]@

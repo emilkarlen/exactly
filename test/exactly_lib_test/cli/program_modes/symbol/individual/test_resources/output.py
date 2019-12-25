@@ -1,7 +1,12 @@
 from typing import List, Optional
 
+from exactly_lib.cli.program_modes.symbol.impl.reports import individual
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.test_case.phase_identifier import Phase
+from exactly_lib.type_system.value_type import ValueType
+from exactly_lib_test.cli.program_modes.symbol.test_resources import output
+from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class LineInFilePosition:
@@ -41,4 +46,17 @@ class Reference:
         return phase_header_lines + position_lines + [''] + source_lines
 
 
+def definition_of_builtin_symbol(name: str,
+                                 value_type: ValueType,
+                                 num_refs: int) -> ValueAssertion[str]:
+    summary_line = output.summary_of_single(output.SymbolSummary(name,
+                                                                 value_type,
+                                                                 num_refs))
+    return asrt_str.begins_with(''.join([summary_line,
+                                         '\n',
+                                         MAJOR_BLOCKS_SEPARATOR,
+                                         individual.BUILTIN_SYMBOL_DEFINITION_SOURCE_LINE]))
+
+
 INDENT = '  '
+MAJOR_BLOCKS_SEPARATOR = '\n\n'

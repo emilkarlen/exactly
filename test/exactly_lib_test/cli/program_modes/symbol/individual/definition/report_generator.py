@@ -14,6 +14,7 @@ from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.section_document.test_resources import source_location_assertions as asrt_source_loc
 from exactly_lib_test.symbol.data.test_resources import string_sdvs, list_sdvs, path_sdvs
 from exactly_lib_test.symbol.test_resources import symbol_utils, line_matcher, string_matcher, file_matcher, \
@@ -35,20 +36,17 @@ def suite() -> unittest.TestSuite:
 
 
 class TestDefinition(unittest.TestCase):
-    def _check(self,
-               cases: Sequence[SymbolDependentValue],
-               non_standard_blocks: Sequence[ValueAssertion[ReportBlock]],
-               ):
+    def test(self):
         # ARRANGE #
 
         symbol_name = 'the_symbol_name'
 
-        for sdv in cases:
+        for sdv in _RESOLVERS_OF_EVERY_TYPE:
             with self.subTest(str(sdv.value_type)):
                 symbol_definition = _symbol_definition(symbol_name, sdv)
                 definitions_resolver = _ConstantDefinitionsResolver([symbol_definition])
 
-                report_generator = sut.IndividualReportGenerator(symbol_name, False)
+                report_generator = sut.IndividualReportGenerator(symbol_name, False, empty_symbol_table())
 
                 # ACT #
 
@@ -62,19 +60,14 @@ class TestDefinition(unittest.TestCase):
                 expected_blocks = [
                     _matches_definition_short_info_block(symbol_definition),
                     _matches_definition_source_block(symbol_definition),
+                    _is_resolved_value_presentation_block(),
                 ]
-                if non_standard_blocks:
-                    expected_blocks += non_standard_blocks
 
                 expected_blocks_assertion = asrt.matches_sequence(expected_blocks)
 
                 expected_blocks_assertion.apply_with_message(self, blocks, 'blocks')
 
                 _rendered_blocks_are_major_blocks(self, blocks)
-
-    def test(self):
-        self._check(_RESOLVERS_OF_EVERY_TYPE,
-                    non_standard_blocks=[_is_resolved_value_presentation_block()])
 
 
 class TestReferences(unittest.TestCase):
@@ -86,7 +79,7 @@ class TestReferences(unittest.TestCase):
         symbol_definition = _symbol_definition(symbol_name, _ARBITRARY_STRING_SDV)
         definitions_resolver = _ConstantDefinitionsResolver([symbol_definition])
 
-        report_generator = sut.IndividualReportGenerator(symbol_name, True)
+        report_generator = sut.IndividualReportGenerator(symbol_name, True, empty_symbol_table())
 
         # ACT #
 
@@ -127,7 +120,7 @@ class TestReferences(unittest.TestCase):
 
         definitions_resolver = _ConstantDefinitionsResolver(symbol_definitions)
 
-        report_generator = sut.IndividualReportGenerator(referenced_symbol.name, True)
+        report_generator = sut.IndividualReportGenerator(referenced_symbol.name, True, empty_symbol_table())
 
         # ACT #
 
@@ -242,7 +235,7 @@ def _get_source_block_source_location_info(block: sut.DefinitionSourceBlock) -> 
 
 
 def _get_source_block_phase_enum(block: sut.DefinitionSourceBlock) -> PhaseEnum:
-    return block.phase.the_enum
+    return block.phase_if_user_defined_symbol.the_enum
 
 
 def _get_reference_block_symbol_name(block: sut.ReferenceSourceLocationBlock) -> str:

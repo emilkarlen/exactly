@@ -4,6 +4,7 @@ from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.processing import exit_values
+from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.string import lines_content
@@ -195,7 +196,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
                 stdout=asrt.equals(output.list_of([
-                    output.SymbolReport(symbol_name, ValueType.STRING, num_refs=0),
+                    output.SymbolSummary(symbol_name, ValueType.STRING, num_refs=0),
                 ])),
             )
         )
@@ -224,7 +225,73 @@ class TestSuccessfulScenarios(unittest.TestCase):
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
                 stdout=asrt.equals(output.list_of([
-                    output.SymbolReport(symbol_name, ValueType.STRING, num_refs=1),
+                    output.SymbolSummary(symbol_name, ValueType.STRING, num_refs=1),
+                ])),
+            )
+        )
+
+    def test_single_reference_to_builtin_symbol(self):
+        builtin_symbol_name = 'BUILTIN_STRING_SYMBOL'
+        case_with_single_def = File('test.xly',
+                                    lines_content([
+                                        phase_names.SETUP.syntax,
+                                        sym_def.reference_to(builtin_symbol_name, ValueType.STRING),
+                                    ]))
+
+        check_case_and_suite(
+            self,
+            symbol_command_arguments=
+            [case_with_single_def.name],
+            arrangement=
+            Arrangement(
+                cwd_contents=DirContents([
+                    case_with_single_def,
+                ]),
+                main_program_config=sym_def.main_program_config(
+                    builtin_symbols=[
+                        sym_def.builtin_symbol(builtin_symbol_name,
+                                               string_sdvs.str_constant('builtin string symbol value')),
+                    ]
+                ),
+            ),
+            expectation=
+            asrt_proc_result.sub_process_result(
+                exitcode=asrt.equals(exit_codes.EXIT_OK),
+                stdout=asrt.equals(output.list_of([])),
+            )
+        )
+
+    def test_single_definition_with_reference_to_builtin_symbol(self):
+        builtin_symbol_name = 'BUILTIN_STRING_SYMBOL'
+        user_defined_symbol_name = 'STRING_SYMBOL'
+        case_with_single_def = File('test.xly',
+                                    lines_content([
+                                        phase_names.SETUP.syntax,
+                                        sym_def.define_string(user_defined_symbol_name,
+                                                              symbol_reference_syntax_for_name(builtin_symbol_name)),
+                                    ]))
+
+        check_case_and_suite(
+            self,
+            symbol_command_arguments=
+            [case_with_single_def.name],
+            arrangement=
+            Arrangement(
+                cwd_contents=DirContents([
+                    case_with_single_def,
+                ]),
+                main_program_config=sym_def.main_program_config(
+                    builtin_symbols=[
+                        sym_def.builtin_symbol(builtin_symbol_name,
+                                               string_sdvs.str_constant('builtin string symbol value')),
+                    ]
+                ),
+            ),
+            expectation=
+            asrt_proc_result.sub_process_result(
+                exitcode=asrt.equals(exit_codes.EXIT_OK),
+                stdout=asrt.equals(output.list_of([
+                    output.SymbolSummary(user_defined_symbol_name, ValueType.STRING, num_refs=0),
                 ])),
             )
         )
@@ -255,7 +322,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
                 stdout=asrt.equals(output.list_of([
-                    output.SymbolReport(symbol_name, ValueType.STRING, num_refs=1),
+                    output.SymbolSummary(symbol_name, ValueType.STRING, num_refs=1),
                 ])),
             )
         )
@@ -295,7 +362,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
                 stdout=asrt.equals(output.list_of([
-                    output.SymbolReport(symbol_name, ValueType.STRING, num_refs=1),
+                    output.SymbolSummary(symbol_name, ValueType.STRING, num_refs=1),
                 ])),
             )
         )
@@ -327,8 +394,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
                 stdout=asrt.equals(output.list_of([
-                    output.SymbolReport(leaf_name, ValueType.STRING, num_refs=1),
-                    output.SymbolReport(referrer_name, ValueType.STRING, num_refs=0),
+                    output.SymbolSummary(leaf_name, ValueType.STRING, num_refs=1),
+                    output.SymbolSummary(referrer_name, ValueType.STRING, num_refs=0),
                 ])),
             )
         )
@@ -371,10 +438,10 @@ class TestSuccessfulScenarios(unittest.TestCase):
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
                 stdout=asrt.equals(output.list_of([
-                    output.SymbolReport(setup_symbol_name, ValueType.STRING, num_refs=0),
-                    output.SymbolReport(before_assert_symbol_name, ValueType.STRING, num_refs=0),
-                    output.SymbolReport(assert_symbol_name, ValueType.STRING, num_refs=0),
-                    output.SymbolReport(cleanup_symbol_name, ValueType.STRING, num_refs=0),
+                    output.SymbolSummary(setup_symbol_name, ValueType.STRING, num_refs=0),
+                    output.SymbolSummary(before_assert_symbol_name, ValueType.STRING, num_refs=0),
+                    output.SymbolSummary(assert_symbol_name, ValueType.STRING, num_refs=0),
+                    output.SymbolSummary(cleanup_symbol_name, ValueType.STRING, num_refs=0),
                 ])),
             )
         )

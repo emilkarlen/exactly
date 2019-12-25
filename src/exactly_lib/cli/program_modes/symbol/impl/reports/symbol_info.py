@@ -65,12 +65,20 @@ class SymUsageInPhase(Generic[SYMBOL_INFO]):
 
 class SymbolDefinitionInfo:
     def __init__(self,
-                 phase: Phase,
+                 phase: Optional[Phase],
                  definition: SymbolDefinition,
                  references: List[ContextAnd[SymbolReference]]):
         self.phase = phase
         self.definition = definition
         self.references = references
+
+    @staticmethod
+    def new_builtin(definition: SymbolDefinition,
+                    references: List[ContextAnd[SymbolReference]]) -> 'SymbolDefinitionInfo':
+        return SymbolDefinitionInfo(None, definition, references)
+
+    def is_user_defined(self) -> bool:
+        return self.phase is not None
 
     def name(self) -> str:
         return self.definition.name

@@ -1,6 +1,7 @@
 import itertools
 from typing import Callable, List, Sequence, Optional
 
+from exactly_lib.cli.main_program import BuiltinSymbol
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import types
@@ -16,6 +17,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.instruction_parsers import InstructionParserThatConsumesCurrentLine
 from exactly_lib.symbol.restriction import ValueTypeRestriction
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case.actor import Actor, ActionToCheck, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -23,6 +25,7 @@ from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruc
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util import strings
+from exactly_lib.util.textformat.structure import document
 from exactly_lib_test.cli.program_modes.test_resources import main_program_execution
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import MainProgramConfig
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
@@ -165,11 +168,13 @@ INSTRUCTION_SETUP = InstructionsSetup(
 )
 
 
-def main_program_config(actor: Optional[Actor] = None) -> MainProgramConfig:
+def main_program_config(actor: Optional[Actor] = None,
+                        builtin_symbols: Sequence[BuiltinSymbol] = (),
+                        ) -> MainProgramConfig:
     if actor is None:
         actor = _ActorThatParsesReferences(REF_INSTRUCTION_NAME)
     return main_program_execution.main_program_config(
-        test_case_definition_for(INSTRUCTION_SETUP),
+        test_case_definition_for(INSTRUCTION_SETUP, builtin_symbols),
         act_phase_setup=ActPhaseSetup(
             actor
         )
@@ -219,3 +224,13 @@ class _ActorThatParsesReferences(Actor):
     @staticmethod
     def _get_source_code_lines(instruction: ActPhaseInstruction) -> Sequence[str]:
         return instruction.source_code().lines
+
+
+def builtin_symbol(name: str,
+                   sdv: SymbolDependentValue) -> BuiltinSymbol:
+    return BuiltinSymbol(
+        name,
+        sdv,
+        'the single line description',
+        document.empty_section_contents(),
+    )

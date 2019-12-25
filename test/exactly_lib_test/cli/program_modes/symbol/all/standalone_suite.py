@@ -67,7 +67,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
                 stdout=asrt.equals(output.list_of([
-                    output.SymbolReport(symbol_name, ValueType.STRING, num_refs=0),
+                    output.SymbolSummary(symbol_name, ValueType.STRING, num_refs=0),
                 ])),
             )
         )

@@ -4,6 +4,8 @@ import unittest
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.processing import exit_values
+from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
@@ -187,6 +189,51 @@ class TestSuccessfulScenarios(unittest.TestCase):
                     case_with_single_def,
                 ]),
                 main_program_config=sym_def.main_program_config(),
+            ),
+            expectation=
+            asrt_proc_result.sub_process_result(
+                exitcode=asrt.equals(exit_codes.EXIT_OK),
+                stdout=asrt.equals(lines_content(expected_reference_output.output_lines())))
+        )
+
+    def test_single_reference_to_builtin_symbol(self):
+        name_of_user_defined_symbol = 'USER_DEFINED_SYMBOL'
+        name_of_builtin_symbol = 'BUILTIN_SYMBOL'
+
+        definition_source = sym_def.define_string(name_of_user_defined_symbol,
+                                                  symbol_reference_syntax_for_name(name_of_builtin_symbol))
+        case_with_single_def = File('test.xly',
+                                    lines_content([
+                                        phase_names.SETUP.syntax,
+                                        definition_source,
+                                    ]))
+
+        expected_reference_output = output.Reference(
+            phase_identifier.SETUP,
+            output.LineInFilePosition(case_with_single_def.name, 2),
+            [
+                definition_source,
+            ]
+        )
+
+        check_case_and_suite(
+            self,
+            symbol_command_arguments=
+            symbol_args.individual__references(
+                case_with_single_def.name,
+                name_of_builtin_symbol,
+            ),
+            arrangement=
+            Arrangement(
+                cwd_contents=DirContents([
+                    case_with_single_def,
+                ]),
+                main_program_config=sym_def.main_program_config(
+                    builtin_symbols=[
+                        sym_def.builtin_symbol(name_of_builtin_symbol,
+                                               string_sdvs.str_constant('builtin string symbol value')),
+                    ]
+                ),
             ),
             expectation=
             asrt_proc_result.sub_process_result(

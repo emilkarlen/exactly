@@ -6,23 +6,29 @@ from exactly_lib.cli.program_modes.symbol.impl.reports import value_presentation
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo, ContextAnd, \
     DefinitionsResolver
 from exactly_lib.common.report_rendering.parts import source_location
-from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.entity import concepts, all_entity_types
 from exactly_lib.section_document.source_location import SourceLocationInfo, SourceLocationPath
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phase_identifier import Phase
+from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct import structure as struct
 from exactly_lib.util.simple_textstruct.rendering import component_renderers as rend, blocks, line_objects
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock
 from exactly_lib.util.string import inside_parens
+from exactly_lib.util.symbol_table import SymbolTable
+
+BUILTIN_SYMBOL_DEFINITION_SOURCE_LINE = all_entity_types.BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.name.singular
 
 
 class IndividualReportGenerator(ReportGenerator):
     def __init__(self,
                  symbol_name: str,
-                 list_references: bool
+                 list_references: bool,
+                 builtin_symbols: SymbolTable,
                  ):
         self._symbol_name = symbol_name
         self._list_references = list_references
+        self._builtin_symbols = builtin_symbols
 
     def generate(self, definitions_resolver: DefinitionsResolver) -> Report:
         definitions = list(definitions_resolver.definitions())
@@ -35,7 +41,7 @@ class IndividualReportGenerator(ReportGenerator):
             if self._list_references:
                 return _ReferencesReport(mb_definition)
             else:
-                return _DefinitionReport(mb_definition, definitions)
+                return _DefinitionReport(mb_definition, definitions, self._builtin_symbols)
 
     def _lookup(self, definitions: List[SymbolDefinitionInfo]) -> Optional[SymbolDefinitionInfo]:
         name = self._symbol_name
@@ -83,20 +89,32 @@ class DefinitionShortInfoBlock(ReportBlock):
 
 
 class DefinitionSourceBlock(ReportBlock):
+    _RENDERER_OF_BUILTIN = blocks.MajorBlockOfSingleLineObject(
+        line_objects.StringLineObject(BUILTIN_SYMBOL_DEFINITION_SOURCE_LINE)
+    )
+
     def __init__(self,
-                 phase: Phase,
+                 phase_if_user_defined_symbol: Optional[Phase],
                  source_location: Optional[SourceLocationInfo],
                  ):
-        self.phase = phase
+        self.phase_if_user_defined_symbol = phase_if_user_defined_symbol
         self.source_location = source_location
 
     def render(self) -> MajorBlock:
-        renderer = source_location.location_block_renderer(
-            self._get_source_location_path(self.source_location),
-            self.phase.section_name,
-            None,
+        renderer = (
+            self._RENDERER_OF_BUILTIN
+            if self.phase_if_user_defined_symbol is None
+            else
+            self._renderer_of_user_defined()
         )
         return renderer.render()
+
+    def _renderer_of_user_defined(self) -> Renderer[MajorBlock]:
+        return source_location.location_block_renderer(
+            self._get_source_location_path(self.source_location),
+            self.phase_if_user_defined_symbol.section_name,
+            None,
+        )
 
     @staticmethod
     def _get_source_location_path(sli: Optional[SourceLocationInfo]) -> Optional[SourceLocationPath]:
@@ -158,9 +176,11 @@ class _DefinitionReport(_SuccessfulReportBase):
     def __init__(self,
                  definition: SymbolDefinitionInfo,
                  all_definitions: List[SymbolDefinitionInfo],
+                 builtin_symbols: SymbolTable,
                  ):
         super().__init__(definition)
-        self.all_definitions = all_definitions
+        self._all_definitions = all_definitions
+        self._builtin_symbols = builtin_symbols
 
     def blocks(self) -> Sequence[ReportBlock]:
         definition = self.definition
@@ -175,9 +195,10 @@ class _DefinitionReport(_SuccessfulReportBase):
         sdv = self.definition.definition.symbol_container.sdv
         definitions = [
             definition_info.definition
-            for definition_info in self.all_definitions
+            for definition_info in self._all_definitions
         ]
-        return value_presentation.PresentationBlockConstructor(definitions).block_for(sdv)
+        constructor = value_presentation.PresentationBlockConstructor(definitions, self._builtin_symbols)
+        return constructor.block_for(sdv)
 
 
 class _ReferencesReport(_SuccessfulReportBase):
