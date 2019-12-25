@@ -3,7 +3,6 @@ from contextlib import contextmanager
 from typing import Iterable
 
 from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, \
     MatcherWTraceAndNegation, MatcherAdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
@@ -38,28 +37,21 @@ class FileToCheck:
 
     def __init__(self,
                  original_file_path: DescribedPath,
-                 checked_file_describer: FilePropertyDescriptorConstructor,
                  string_transformer: StringTransformer,
                  tmp_file_for_transformed_getter: DestinationFilePathGetter):
         self._original_file_path = original_file_path
-        self._checked_file_describer = checked_file_describer
         self._transformed_file_path = None
         self._string_transformer = string_transformer
         self._tmp_file_for_transformed_getter = tmp_file_for_transformed_getter
 
     def with_transformation(self, string_transformer: StringTransformer) -> 'FileToCheck':
         return FileToCheck(self._original_file_path,
-                           self._checked_file_describer,
                            string_transformer,
                            self._tmp_file_for_transformed_getter)
 
     @property
     def string_transformer(self) -> StringTransformer:
         return self._string_transformer
-
-    @property
-    def describer(self) -> FilePropertyDescriptorConstructor:
-        return self._checked_file_describer
 
     @property
     def original_file_path(self) -> DescribedPath:
