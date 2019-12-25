@@ -6,7 +6,7 @@ from exactly_lib.definitions import expression, instruction_arguments
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
-from exactly_lib.definitions.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
+from exactly_lib.definitions.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION
 from exactly_lib.definitions.primitives.file_matcher import NAME_MATCHER_NAME, TYPE_MATCHER_NAME
 from exactly_lib.definitions.test_case.file_check_properties import REGULAR_FILE_CONTENTS
 from exactly_lib.processing import exit_values
@@ -17,7 +17,6 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import file_matchers
@@ -27,7 +26,7 @@ from exactly_lib.test_case_utils.file_matcher.impl import name_regex, name_glob_
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -42,15 +41,6 @@ REG_EX_OPTION = a.OptionName(long_name='regex')
 
 REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
                            syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name)
-
-
-class FileSelectionDescriptor(ErrorMessagePartConstructor):
-    def __init__(self, matcher: FileMatcher):
-        self.matcher = matcher
-
-    def lines(self) -> List[str]:
-        line = SELECTION.name.capitalize() + ' : ' + self.matcher.option_description
-        return [line]
 
 
 def parse_sdv_from_parse_source(source: ParseSource) -> FileMatcherSdv:

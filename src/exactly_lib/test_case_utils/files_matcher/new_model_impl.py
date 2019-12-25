@@ -2,16 +2,11 @@ import os
 import pathlib
 from typing import Iterator, Optional
 
-from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.file_matcher import file_matchers
-from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
-from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
-from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.type_system.logic.files_matcher import ErrorMessageInfo, FileModel, FilesMatcherModel
+from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel
 
 
 class FileModelForDir(FileModel):
@@ -49,17 +44,6 @@ class FilesMatcherModelForDir(FilesMatcherModel):
                                        new_file_selector,
                                        )
 
-    @property
-    def error_message_info(self) -> ErrorMessageInfo:
-        file_selector = (self._files_selection
-                         if self._files_selection is not None
-                         else
-                         file_matchers.MATCH_EVERY_FILE
-                         )
-
-        return ErrorMessageInfoForDir(self._dir_path.describer,
-                                      file_selector)
-
     def files(self) -> Iterator[FileModel]:
         def mk_model(file_name: str) -> FileModel:
             return FileModelForDir(file_name, self._dir_path)
@@ -70,20 +54,3 @@ class FilesMatcherModelForDir(FilesMatcherModel):
             file_names = file_matchers.matching_files_in_dir(self._files_selection,
                                                              self._dir_path)
             return map(mk_model, file_names)
-
-
-class ErrorMessageInfoForDir(ErrorMessageInfo):
-    def __init__(self,
-                 dir_path: PathDescriberForPrimitive,
-                 files_selection: FileMatcher):
-        self._dir_path = dir_path
-        self._files_selection = files_selection
-
-    def property_descriptor(self, property_name: str) -> PropertyDescriptor:
-        return property_description.PropertyDescriptorWithConstantPropertyName(
-            property_name,
-            property_description.multiple_object_descriptors([
-                path_description.PathValuePartConstructorOfPathDescriber(self._dir_path),
-                parse_file_matcher.FileSelectionDescriptor(self._files_selection),
-            ])
-        )
