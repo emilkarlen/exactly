@@ -3,7 +3,7 @@ from abc import ABC
 from typing import List, Tuple
 
 from exactly_lib.definitions import expression
-from exactly_lib.type_system.logic.matcher_base_class import Matcher, MatcherWTrace
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -15,7 +15,7 @@ from exactly_lib_test.util.description_tree.test_resources import described_tree
 class MatcherConfiguration:
     def matcher_with_constant_result(self,
                                      name: str,
-                                     result: bool) -> Matcher:
+                                     result: bool) -> MatcherWTrace:
         """
         :param name: The name of the matcher in the trace
         :param result: Constant result
@@ -27,7 +27,7 @@ class MatcherConfiguration:
 
     def matcher_that_registers_model_argument_and_returns_constant(self,
                                                                    registry: List,
-                                                                   result: bool) -> Matcher:
+                                                                   result: bool) -> MatcherWTrace:
         raise NotImplementedError('abstract method')
 
 

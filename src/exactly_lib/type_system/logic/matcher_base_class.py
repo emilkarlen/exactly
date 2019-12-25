@@ -24,18 +24,6 @@ class Failure(Generic[MODEL]):
         self.actual = actual
 
 
-class Matcher(Generic[MODEL], WithOptionDescription, ABC):
-    """Matches a model."""
-
-    @property
-    @abstractmethod
-    def name(self) -> str:
-        pass
-
-    def matches(self, model: MODEL) -> bool:
-        raise NotImplementedError('deprecated')
-
-
 TraceRenderer = NodeRenderer[bool]
 
 
@@ -57,7 +45,12 @@ class MatchingResult:
         return self._trace
 
 
-class MatcherWTrace(Generic[MODEL], Matcher[MODEL], WithNameAndTreeStructureDescription, ABC):
+class MatcherWTrace(Generic[MODEL], WithOptionDescription, WithNameAndTreeStructureDescription, ABC):
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        pass
+
     @abstractmethod
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         pass

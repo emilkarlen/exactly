@@ -1,7 +1,7 @@
 import unittest
 from typing import List, Generic, TypeVar, Callable
 
-from exactly_lib.type_system.logic.matcher_base_class import Matcher, MatcherWTrace
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
@@ -36,8 +36,8 @@ class MatcherEquivalenceAssertion(Generic[MODEL], ValueAssertionBase[MatcherWTra
                put: unittest.TestCase,
                value: MatcherWTrace[MODEL],
                message_builder: asrt.MessageBuilder):
-        put.assertIsInstance(value, Matcher)
-        assert isinstance(value, Matcher)  # Type info for IDE
+        put.assertIsInstance(value, MatcherWTrace)
+        assert isinstance(value, MatcherWTrace)  # Type info for IDE
 
         # Check description
 
