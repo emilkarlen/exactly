@@ -22,11 +22,6 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
-class PathElementDoc:
-    def __init__(self, sed: SyntaxElementDescription):
-        self.sed = sed
-
-
 def path_element(path_arg_name: str,
                  rel_options_conf: RelOptionsConfiguration,
                  custom_paragraphs_before: Sequence[ParagraphItem] = (),
@@ -36,6 +31,17 @@ def path_element(path_arg_name: str,
                                      RelOptionRenderer().sparse_list_for(rel_options_conf.accepted_relativity_variants),
                                      custom_paragraphs_before,
                                      custom_paragraphs_after)
+
+
+def path_element_relativity_paragraphs(rel_options_conf: RelOptionsConfiguration,
+                                       custom_paragraphs_before: Sequence[ParagraphItem] = (),
+                                       custom_paragraphs_after: Sequence[ParagraphItem] = (),
+                                       ) -> Sequence[ParagraphItem]:
+    return _path_element_relativity_paragraphs(rel_options_conf.default_option,
+                                               RelOptionRenderer().sparse_list_for(
+                                                   rel_options_conf.accepted_relativity_variants),
+                                               custom_paragraphs_before,
+                                               custom_paragraphs_after)
 
 
 def path_element_with_all_relativities(path_arg_name: str,
@@ -53,17 +59,28 @@ def _path_element_description(path_arg_name: str,
                               options_list: lists.HeaderContentList,
                               custom_paragraphs_before: Sequence[ParagraphItem],
                               custom_paragraphs_after: Sequence[ParagraphItem]) -> SyntaxElementDescription:
-    description_rest = []
-    description_rest += custom_paragraphs_before
-    description_rest += [
+    return SyntaxElementDescription(path_arg_name,
+                                    _path_element_relativity_paragraphs(default_relativity,
+                                                                        options_list,
+                                                                        custom_paragraphs_before,
+                                                                        custom_paragraphs_after))
+
+
+def _path_element_relativity_paragraphs(default_relativity: RelOptionType,
+                                        options_list: lists.HeaderContentList,
+                                        custom_paragraphs_before: Sequence[ParagraphItem],
+                                        custom_paragraphs_after: Sequence[ParagraphItem]) -> Sequence[ParagraphItem]:
+    ret_val = []
+    ret_val += custom_paragraphs_before
+    ret_val += [
         docs.para('Accepted relativities (default is "{}"):'.format(
             REL_OPTIONS_MAP[default_relativity].informative_name
         )),
         transform_list_to_table(options_list),
     ]
-    description_rest += custom_paragraphs_after
-    return SyntaxElementDescription(path_arg_name,
-                                    description_rest)
+    ret_val += custom_paragraphs_after
+
+    return ret_val
 
 
 def path_element_2(rel_options_conf: RelOptionArgumentConfiguration,

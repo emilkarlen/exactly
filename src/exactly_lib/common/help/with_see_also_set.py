@@ -46,10 +46,7 @@ class SyntaxElementDescriptionTree(SyntaxDescriptionHelperBase):
                                         self.invokation_variants)
 
     @property
-    def sub_syntax_element_definition_trees(self) -> List:
-        """
-        :rtype: SyntaxElementDescriptionTree
-        """
+    def sub_syntax_element_definition_trees(self) -> List['SyntaxElementDescriptionTree']:
         return []
 
     @property

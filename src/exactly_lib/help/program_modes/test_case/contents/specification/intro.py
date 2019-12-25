@@ -1,4 +1,4 @@
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
@@ -30,6 +30,7 @@ class Documentation(SectionContentsConstructor):
             'FAIL': exit_values.EXECUTION__FAIL.exit_identifier,
             'stdout_instruction': instruction_names.CONTENTS_OF_STDOUT_INSTRUCTION_NAME,
             'exit_code_instruction': instruction_names.EXIT_CODE_INSTRUCTION_NAME,
+            'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
         })
 
     def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
@@ -84,7 +85,7 @@ The {act} phase contains the {ATC} - the thing that is tested by the test case.
 
 
 It must consist of a single command line,
-starting with the name of an executable file
+starting with the name of {executable_file:a}
 (by default).
 
 The file must be located in the same directory as the test case file (by default).

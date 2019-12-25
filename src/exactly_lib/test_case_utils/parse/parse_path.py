@@ -45,6 +45,10 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}
 
+REL_OPTIONS_CONFIGURATION = RelOptionsConfiguration(PathRelativityVariants(ALL_REL_OPTIONS,
+                                                                           True),
+                                                    RelOptionType.REL_HDS_CASE)
+
 ALL_REL_OPTION_VARIANTS = PathRelativityVariants(ALL_REL_OPTIONS, True)
 
 ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {RelOptionType.REL_HDS_CASE}
@@ -60,8 +64,7 @@ ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE = PathRelativity
 
 def all_rel_options_config(argument_syntax_name: str,
                            path_suffix_is_required: bool = True) -> RelOptionArgumentConfiguration:
-    return RelOptionArgumentConfiguration(RelOptionsConfiguration(PathRelativityVariants(ALL_REL_OPTIONS, True),
-                                                                  RelOptionType.REL_HDS_CASE),
+    return RelOptionArgumentConfiguration(REL_OPTIONS_CONFIGURATION,
                                           argument_syntax_name,
                                           path_suffix_is_required)
 

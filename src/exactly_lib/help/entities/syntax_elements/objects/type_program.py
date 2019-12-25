@@ -4,7 +4,7 @@ from exactly_lib import program_info
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
     invokation_variant_from_args, cli_argument_syntax_element_description
 from exactly_lib.common.help.with_see_also_set import SyntaxElementDescriptionTree, InvokationVariantHelper
-from exactly_lib.definitions import instruction_arguments, formatting
+from exactly_lib.definitions import instruction_arguments, formatting, misc_texts
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, syntax_elements
@@ -13,6 +13,8 @@ from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
+from exactly_lib.processing import exit_values
+from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import arg_config_with_name
 from exactly_lib.test_case_utils.program import syntax_elements as pgm_syntax_elements
 from exactly_lib.type_system.value_type import TypeCategory
@@ -147,7 +149,10 @@ class _ProgramWithArgumentList(SyntaxElementDescriptionTree):
                 a.Single(a.Multiplicity.MANDATORY,
                          instruction_arguments.PATH_ARGUMENT)
             ],
-            _TEXT_PARSER.fnap(_EXE_FILE_DESCRIPTION)
+            rel_path_doc.path_element_relativity_paragraphs(
+                parse_path.REL_OPTIONS_CONFIGURATION,
+                _TEXT_PARSER.paras(the_path_of('{executable_file:a}.')),
+            )
         )
 
     @staticmethod
@@ -278,6 +283,8 @@ _TEXT_PARSER = TextParser({
     'PATH_OF_EXISTING_FILE': PATH_OF_EXISTING_FILE_OPT_CONFIG.argument_syntax_name,
     'ARGUMENT': formatting.syntax_element(pgm_syntax_elements.ARGUMENT_SYNTAX_ELEMENT_NAME.name),
     'SHELL_COMMAND_LINE': formatting.syntax_element_(syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT),
+    'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
+    'FAIL': exit_values.EXECUTION__FAIL.exit_identifier,
 
 })
 
@@ -302,10 +309,6 @@ It is passed as a single string to the operating system's shell.
 
 PGM_WITH_ARG_LIST_DESCRIPTION = """\
 An executable program.
-"""
-
-_EXE_FILE_DESCRIPTION = """\
-The path of an executable file.
 """
 
 _SYSTEM_PROGRAM_DESCRIPTION = """\
@@ -363,8 +366,7 @@ _ARGUMENT__EXISTING_FILE_DESCRIPTION = """\
 A {path_se}, with additional check for existence.
 
 
-The check for existence is done as soon as possible - during validation
-if {PATH_OF_EXISTING_FILE} is absolute or resides inside the {hds:/q}.
+It is an error - not {FAIL} - if the file does not exist.
 
 
 Values are rendered as absolute paths.

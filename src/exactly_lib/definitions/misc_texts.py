@@ -15,6 +15,8 @@ EXIT_IDENTIFIER = misc_name_with_formatting(
 
 EXIT_CODE = name.an_name(name.name_with_plural_s('exit code'))
 
+EXECUTABLE_FILE = name.an_name(name.name_with_plural_s('executable file'))
+
 EXIT_IDENTIFIER_TITLE = EXIT_IDENTIFIER.singular.capitalize()
 
 IS_A_SHELL_CMD = """is a shell command (with optional arguments), using Unix shell syntax."""

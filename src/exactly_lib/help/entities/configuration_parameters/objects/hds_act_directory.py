@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import conf_params
 from exactly_lib.definitions.path import REL_HDS_ACT_OPTION
@@ -21,7 +21,8 @@ class _HdsActDirectoryConfigurationParameter(ConfigurationParameterDocumentation
             'phase': phase_names.PHASE_NAME_DICTIONARY,
             'the_concept': formatting.conf_param_(conf_params.HDS_ACT_DIRECTORY_CONF_PARAM_INFO),
             'home_dir_env_var': ENV_VAR_HDS_ACT,
-            'rel_option': formatting.cli_option(REL_HDS_ACT_OPTION)
+            'rel_option': formatting.cli_option(REL_HDS_ACT_OPTION),
+            'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
         })
         return from_simple_description(
             Description(self.single_line_description(),
@@ -41,7 +42,7 @@ that are supposed to exist before the test case is executed.
 
 
 E.g., the {phase[act]} phase (by default) references an program that is expected
-to be an executable file.
+to be {executable_file:a}.
 
 If the path to this file is relative, then it is relative the {the_concept}.
 

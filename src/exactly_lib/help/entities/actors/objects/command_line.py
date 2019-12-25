@@ -3,7 +3,8 @@ from typing import List
 from exactly_lib import program_info
 from exactly_lib.actors import command_line as actor
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
+from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, conf_params
@@ -67,6 +68,7 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
             'act_phase': phase_names.ACT.emphasis,
             'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
+            'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
         }
         super().__init__(TextParser(fm))
 
@@ -88,7 +90,7 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
     def syntax_element_descriptions(self) -> list:
         return [
             path_element_2(actor.RELATIVITY_CONFIGURATION,
-                           self._parser.fnap(_EXECUTABLE_SYNTAX_ELEMENT)),
+                           self._parser.paragraph_items(the_path_of('{executable_file:a}.'))),
             SyntaxElementDescription(self.argument.name,
                                      self._parser.fnap(ARGUMENT_SYNTAX_ELEMENT)),
             SyntaxElementDescription(self.command.name,
@@ -104,16 +106,11 @@ Any number of empty lines and comment lines are allowed.
 """
 
 _PROGRAM_WITH_ARGUMENTS_INVOKATION_VARIANT = """\
-Executes an executable file.
+Executes {executable_file:a}.
 """
 
 _SHELL_COMMAND_INVOKATION_VARIANT = """\
 Executes a shell command using the operating system's shell.
-"""
-
-_EXECUTABLE_SYNTAX_ELEMENT = """\
-The path of an existing executable file.
-
 """
 
 _COMMAND_SYNTAX_ELEMENT = """\
