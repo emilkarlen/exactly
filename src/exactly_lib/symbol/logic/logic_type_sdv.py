@@ -4,6 +4,7 @@ from typing import Sequence, Generic
 from exactly_lib.symbol.logic.matcher import MODEL
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv
 from exactly_lib.type_system.value_type import TypeCategory, LogicValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -22,6 +23,9 @@ class LogicTypeSdv(SymbolDependentValue, ABC):
 
     @property
     def references(self) -> Sequence[SymbolReference]:
+        raise NotImplementedError('abstract method')
+
+    def resolve(self, symbols: SymbolTable) -> WithTreeStructureDescription:
         raise NotImplementedError('abstract method')
 
 

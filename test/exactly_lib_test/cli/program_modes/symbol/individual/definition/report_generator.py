@@ -72,12 +72,8 @@ class TestDefinition(unittest.TestCase):
 
                 _rendered_blocks_are_major_blocks(self, blocks)
 
-    def test_type_without_rendering_of_resolved_value(self):
-        self._check(_RESOLVERS_OF_TYPES_WITHOUT_RENDERING_OF_RESOLVED_VALUE,
-                    non_standard_blocks=[])
-
-    def test_type_with_rendering_of_resolved_value(self):
-        self._check(_RESOLVERS_OF_TYPES_WITH_RENDERING_OF_RESOLVED_VALUE,
+    def test(self):
+        self._check(_RESOLVERS_OF_EVERY_TYPE,
                     non_standard_blocks=[_is_resolved_value_presentation_block()])
 
 
@@ -261,10 +257,7 @@ _SOURCE_INFO_WITH_SOURCE = symbol_info.SourceInfo.of_lines(
 
 _ARBITRARY_STRING_SDV = string_sdvs.arbitrary_sdv()
 
-_RESOLVERS_OF_TYPES_WITHOUT_RENDERING_OF_RESOLVED_VALUE = [
-]
-
-_RESOLVERS_OF_TYPES_WITH_RENDERING_OF_RESOLVED_VALUE = [
+_RESOLVERS_OF_EVERY_TYPE = [
     _ARBITRARY_STRING_SDV,
     list_sdvs.arbitrary_sdv(),
     path_sdvs.arbitrary_sdv(),
