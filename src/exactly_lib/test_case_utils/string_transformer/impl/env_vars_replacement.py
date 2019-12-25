@@ -9,8 +9,10 @@ from exactly_lib.definitions.formatting import program_name
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.string_transformer.impl.custom import CustomStringTransformer
-from exactly_lib.type_system.logic import string_transformer_ddvs
-from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_system.logic.impls import advs
+from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformerAdv
+from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -31,8 +33,18 @@ class EnvVarReplacementStringTransformer(CustomStringTransformer):
 
 
 def ddv(name: str) -> StringTransformerDdv:
-    return string_transformer_ddvs.DirDependentStringTransformerDdv(
-        lambda tcds: EnvVarReplacementStringTransformer(name, tcds))
+    return _Ddv(name)
+
+
+class _Ddv(StringTransformerDdv):
+    def __init__(self, name: str):
+        self._name = name
+
+    def structure(self) -> StructureRenderer:
+        return renderers.header_only(self._name)
+
+    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformerAdv:
+        return advs.ConstantAdv(EnvVarReplacementStringTransformer(self._name, tcds))
 
 
 def replace(tcds: Tcds,

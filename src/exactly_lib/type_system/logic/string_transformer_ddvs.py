@@ -1,5 +1,3 @@
-from typing import Callable
-
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
@@ -20,11 +18,3 @@ class StringTransformerConstantDdv(StringTransformerDdv):
 
     def value_of_any_dependency(self, tcds: Tcds) -> StringTransformerAdv:
         return advs.ConstantAdv(self._value)
-
-
-class DirDependentStringTransformerDdv(StringTransformerDdv):
-    def __init__(self, constructor: Callable[[Tcds], StringTransformer]):
-        self._constructor = constructor
-
-    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformerAdv:
-        return advs.ConstantAdv(self._constructor(tcds))
