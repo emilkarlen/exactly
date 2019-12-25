@@ -2,7 +2,7 @@ import pathlib
 import sys
 from typing import List
 
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.program.process_execution.command import Command, CommandDriver
 from exactly_lib.type_system.logic.program.process_execution.commands import CommandDriverForShell, \
     CommandDriverForSystemProgram, \
@@ -73,7 +73,7 @@ def matches_command(driver: ValueAssertion[CommandDriver],
         ])
 
 
-def equals_executable_file_command(executable_file: DescribedPathPrimitive,
+def equals_executable_file_command(executable_file: DescribedPath,
                                    arguments: List[str]) -> ValueAssertion[Command]:
     return matches_command(equals_executable_file_command_driver(CommandDriverForExecutableFile(executable_file)),
                            arguments)

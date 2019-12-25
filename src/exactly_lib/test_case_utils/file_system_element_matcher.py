@@ -4,7 +4,7 @@ from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.type_system.data import path_description
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
@@ -14,7 +14,7 @@ class FileSystemElementPropertiesMatcher:
     def __init__(self, properties_check: file_properties.ActualFilePropertiesResolver):
         self._properties_check = properties_check
 
-    def matches(self, element: DescribedPathPrimitive) -> Optional[ErrorMessageResolver]:
+    def matches(self, element: DescribedPath) -> Optional[ErrorMessageResolver]:
         failure_info_properties = self._properties_check.resolve_failure_info(element.primitive)
 
         if failure_info_properties:

@@ -4,7 +4,7 @@ from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
@@ -37,7 +37,7 @@ class DataTypeResolvingHelper:
     def file_space(self) -> TmpDirFileSpace:
         return self.application_environment.tmp_files_space
 
-    def path(self, sdv: PathSdv) -> DescribedPathPrimitive:
+    def path(self, sdv: PathSdv) -> DescribedPath:
         return sdv.resolve(self._symbols).value_of_any_dependency__d(self._tcds)
 
     def list(self, sdv: ListSdv) -> List[str]:

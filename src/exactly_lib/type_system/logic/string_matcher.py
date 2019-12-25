@@ -2,7 +2,7 @@ import pathlib
 from contextlib import contextmanager
 from typing import Iterable
 
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.err_msg.prop_descr import FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, \
     MatcherWTraceAndNegation, MatcherAdv
@@ -37,7 +37,7 @@ class FileToCheck:
     """
 
     def __init__(self,
-                 original_file_path: DescribedPathPrimitive,
+                 original_file_path: DescribedPath,
                  checked_file_describer: FilePropertyDescriptorConstructor,
                  string_transformer: StringTransformer,
                  tmp_file_for_transformed_getter: DestinationFilePathGetter):
@@ -62,7 +62,7 @@ class FileToCheck:
         return self._checked_file_describer
 
     @property
-    def original_file_path(self) -> DescribedPathPrimitive:
+    def original_file_path(self) -> DescribedPath:
         return self._original_file_path
 
     def transformed_file_path(self, tmp_file_space: TmpDirFileSpace) -> pathlib.Path:

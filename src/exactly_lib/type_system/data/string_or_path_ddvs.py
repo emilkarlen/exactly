@@ -7,7 +7,7 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDepend
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive, PathDdv
+from exactly_lib.type_system.data.path_ddv import DescribedPath, PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.value_type import DataValueType
 
@@ -26,7 +26,7 @@ class StringOrPath(tuple):
     def __new__(cls,
                 source_type: SourceType,
                 string_value: Optional[str],
-                file_value: Optional[DescribedPathPrimitive]):
+                file_value: Optional[DescribedPath]):
         return tuple.__new__(cls, (DataValueType.STRING if string_value is not None else DataValueType.PATH,
                                    string_value,
                                    file_value,
@@ -55,7 +55,7 @@ class StringOrPath(tuple):
         return self[1]
 
     @property
-    def path_value(self) -> DescribedPathPrimitive:
+    def path_value(self) -> DescribedPath:
         """
         :return: Not None iff :class:`DataValueType` is `DataValueType.PATH`
         """

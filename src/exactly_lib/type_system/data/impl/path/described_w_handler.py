@@ -4,7 +4,7 @@ from pathlib import Path
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.data.path_describer import PathDescriberForDdv, \
     PathDescriberForPrimitive
 
@@ -54,7 +54,7 @@ class PathDescriberHandlerForDdv(ABC):
         pass
 
 
-class DescribedPathPrimitiveWHandler(DescribedPathPrimitive):
+class DescribedPathWHandler(DescribedPath):
     def __init__(self,
                  path: Path,
                  describer_handler: PathDescriberHandlerForPrimitive,
@@ -70,16 +70,16 @@ class DescribedPathPrimitiveWHandler(DescribedPathPrimitive):
     def describer(self) -> PathDescriberForPrimitive:
         return self._describer_handler.describer
 
-    def child(self, child_path_component: str) -> DescribedPathPrimitive:
+    def child(self, child_path_component: str) -> DescribedPath:
         child_path = self._path / child_path_component
-        return DescribedPathPrimitiveWHandler(
+        return DescribedPathWHandler(
             child_path,
             self._describer_handler.child(child_path, child_path_component)
         )
 
-    def parent(self) -> DescribedPathPrimitive:
+    def parent(self) -> DescribedPath:
         parent_path = self._path.parent
-        return DescribedPathPrimitiveWHandler(
+        return DescribedPathWHandler(
             parent_path,
             self._describer_handler.parent(parent_path)
         )

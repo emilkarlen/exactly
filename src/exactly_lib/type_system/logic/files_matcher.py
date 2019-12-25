@@ -2,7 +2,7 @@ import pathlib
 from abc import ABC, abstractmethod
 from typing import Iterator
 
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherWTraceAndNegation, MatcherDdv
@@ -17,7 +17,7 @@ class ErrorMessageInfo(ABC):
 class FileModel(ABC):
     @property
     @abstractmethod
-    def path(self) -> DescribedPathPrimitive:
+    def path(self) -> DescribedPath:
         pass
 
     @property

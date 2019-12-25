@@ -14,7 +14,7 @@ from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers
 from exactly_lib.test_case_utils.err_msg2 import path_rendering, header_rendering
 from exactly_lib.type_system.data import path_description
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
 from exactly_lib.util.render.renderer import Renderer
@@ -24,7 +24,7 @@ from exactly_lib.util.strings import ToStringObject
 
 class ComparisonActualFile(tuple):
     def __new__(cls,
-                actual_path: DescribedPathPrimitive,
+                actual_path: DescribedPath,
                 checked_file_describer: FilePropertyDescriptorConstructor,
                 file_access_needs_to_be_verified: bool
                 ):
@@ -37,7 +37,7 @@ class ComparisonActualFile(tuple):
         return self[0]
 
     @property
-    def path(self) -> DescribedPathPrimitive:
+    def path(self) -> DescribedPath:
         return self[1]
 
     @property

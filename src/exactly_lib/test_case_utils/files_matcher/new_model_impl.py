@@ -7,7 +7,7 @@ from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.data import path_description
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
@@ -17,12 +17,12 @@ from exactly_lib.type_system.logic.files_matcher import ErrorMessageInfo, FileMo
 class FileModelForDir(FileModel):
     def __init__(self,
                  file_name: str,
-                 root_dir: DescribedPathPrimitive):
+                 root_dir: DescribedPath):
         self._relative_to_root_dir = pathlib.Path(file_name)
         self._path = root_dir.child(file_name)
 
     @property
-    def path(self) -> DescribedPathPrimitive:
+    def path(self) -> DescribedPath:
         return self._path
 
     @property
@@ -32,7 +32,7 @@ class FileModelForDir(FileModel):
 
 class FilesMatcherModelForDir(FilesMatcherModel):
     def __init__(self,
-                 dir_path: DescribedPathPrimitive,
+                 dir_path: DescribedPath,
                  files_selection: Optional[FileMatcher] = None,
                  ):
         self._dir_path = dir_path

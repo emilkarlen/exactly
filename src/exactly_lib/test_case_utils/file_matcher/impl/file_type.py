@@ -6,7 +6,7 @@ from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
@@ -67,7 +67,7 @@ class FileMatcherType(MatcherImplBase[FileMatcherModel]):
         else:
             return self._result_for_unexpected(actual_file_type)
 
-    def _result_for_exception(self, path: DescribedPathPrimitive, ex: Exception) -> MatchingResult:
+    def _result_for_exception(self, path: DescribedPath, ex: Exception) -> MatchingResult:
         tb = (
             self.__tb_with_expected()
                 .append_details(details.HeaderAndValue(types.PATH_TYPE_INFO.singular_name.capitalize(),

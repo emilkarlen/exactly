@@ -16,7 +16,7 @@ from exactly_lib.test_case.validation.sdv_validation import SdvValidator, Consta
     ValidationStep
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file__dp
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.process_execution.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
     execute_and_read_stderr_if_non_zero_exitcode, result_for_non_success_or_non_zero_exit_code
@@ -40,7 +40,7 @@ class FileMaker:
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
-             dst_file: DescribedPathPrimitive,
+             dst_file: DescribedPath,
              ) -> Optional[TextRenderer]:
         """
         :param dst_file: The path to create - fails if already exists etc
@@ -56,7 +56,7 @@ class FileMakerForConstantContents(FileMaker):
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
-             dst_path: DescribedPathPrimitive,
+             dst_path: DescribedPath,
              ) -> Optional[TextRenderer]:
         contents_str = self._contents.resolve_value_of_any_dependency(
             environment.path_resolving_environment_pre_or_post_sds)
@@ -80,7 +80,7 @@ class FileMakerForContentsFromProgram(FileMaker):
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
-             dst_path: DescribedPathPrimitive,
+             dst_path: DescribedPath,
              ) -> Optional[TextRenderer]:
         executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
 
@@ -144,7 +144,7 @@ class FileMakerForContentsFromExistingFile(FileMaker):
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
-             dst_path: DescribedPathPrimitive,
+             dst_path: DescribedPath,
              ) -> Optional[TextRenderer]:
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         src_validation_res = self._src_file_validator.validate_post_sds_if_applicable(path_resolving_env)
@@ -159,7 +159,7 @@ class FileMakerForContentsFromExistingFile(FileMaker):
                                                                     transformer)
 
 
-def _create_file(path_to_create: DescribedPathPrimitive,
+def _create_file(path_to_create: DescribedPath,
                  contents_str: str) -> Optional[TextRenderer]:
     """
     :return: None iff success. Otherwise an error message.

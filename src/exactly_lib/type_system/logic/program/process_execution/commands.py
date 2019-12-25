@@ -4,7 +4,7 @@ from typing import List, Generic, TypeVar
 
 from exactly_lib.definitions.primitives import program
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.description.structure_building import StructureBuilder
 from exactly_lib.type_system.logic.program.process_execution.command import Command, ProgramAndArguments, CommandDriver
 from exactly_lib.util.description_tree import details, tree
@@ -94,7 +94,7 @@ class CommandDriverForSystemProgram(CommandDriverWithArgumentList):
 class CommandDriverForExecutableFile(CommandDriverWithArgumentList):
     _NAME = 'executable file'
 
-    def __init__(self, executable_file: DescribedPathPrimitive):
+    def __init__(self, executable_file: DescribedPath):
         self._executable_file = executable_file
 
     @staticmethod
@@ -137,7 +137,7 @@ def system_program_command(program: str,
                    [] if arguments is None else arguments)
 
 
-def executable_file_command(program_file: DescribedPathPrimitive,
+def executable_file_command(program_file: DescribedPath,
                             arguments: List[str] = None) -> Command:
     return Command(CommandDriverForExecutableFile(program_file),
                    [] if arguments is None else arguments)

@@ -8,7 +8,7 @@ from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FilePropertiesCheck
 from exactly_lib.test_case_utils.path_validator import PathSdvValidatorBase, PathDdvValidatorBase
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive, PathDdv
+from exactly_lib.type_system.data.path_ddv import DescribedPath, PathDdv
 
 
 class PathCheck:
@@ -32,7 +32,7 @@ class PathCheckValidator(PathSdvValidatorBase):
         super().__init__(path_check.path_sdv)
         self.path_check = path_check
 
-    def _validate_path(self, path: DescribedPathPrimitive) -> Optional[TextRenderer]:
+    def _validate_path(self, path: DescribedPath) -> Optional[TextRenderer]:
         result = self.path_check.file_properties.apply(path.primitive)
         if not result.is_success:
             return file_properties.FailureRenderer(result.cause,
@@ -45,7 +45,7 @@ class PathCheckDdvValidator(PathDdvValidatorBase):
         super().__init__(path_check.path_ddv)
         self.path_check = path_check
 
-    def _validate_path(self, path: DescribedPathPrimitive) -> Optional[TextRenderer]:
+    def _validate_path(self, path: DescribedPath) -> Optional[TextRenderer]:
         result = self.path_check.file_properties.apply(path.primitive)
         if not result.is_success:
             return file_properties.FailureRenderer(result.cause,
@@ -104,7 +104,7 @@ def pre_or_post_sds_validate(path_check: PathCheck,
 
 
 def failure_message_or_none(check: FilePropertiesCheck,
-                            path: DescribedPathPrimitive) -> Optional[TextRenderer]:
+                            path: DescribedPath) -> Optional[TextRenderer]:
     result = check.apply(path.primitive)
 
     return (

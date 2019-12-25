@@ -9,7 +9,7 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive, PathDdv
+from exactly_lib.type_system.data.path_ddv import DescribedPath, PathDdv
 
 
 class PathSdvValidatorBase(SdvValidator):
@@ -20,7 +20,7 @@ class PathSdvValidatorBase(SdvValidator):
     def __init__(self, path_sdv: PathSdv):
         self._path_sdv = path_sdv
 
-    def _validate_path(self, path: DescribedPathPrimitive) -> Optional[TextRenderer]:
+    def _validate_path(self, path: DescribedPath) -> Optional[TextRenderer]:
         """
         :return: Error message iff validation was applicable and validation failed.
         """
@@ -48,7 +48,7 @@ class PathDdvValidatorBase(DdvValidator, ABC):
         self._path_ddv = path_ddv
 
     @abstractmethod
-    def _validate_path(self, path: DescribedPathPrimitive) -> Optional[TextRenderer]:
+    def _validate_path(self, path: DescribedPath) -> Optional[TextRenderer]:
         """
         :return: Error message iff validation was applicable and validation failed.
         """

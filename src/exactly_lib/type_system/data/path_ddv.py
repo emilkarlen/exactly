@@ -13,7 +13,7 @@ from exactly_lib.type_system.data.path_describer import PathDescriberForDdv, Pat
 from exactly_lib.type_system.data.path_part import PathPartDdv
 
 
-class DescribedPathPrimitive(ABC):
+class DescribedPath(ABC):
     @property
     @abstractmethod
     def primitive(self) -> Path:
@@ -25,11 +25,11 @@ class DescribedPathPrimitive(ABC):
         pass
 
     @abstractmethod
-    def child(self, child_path_component: str) -> 'DescribedPathPrimitive':
+    def child(self, child_path_component: str) -> 'DescribedPath':
         pass
 
     @abstractmethod
-    def parent(self) -> 'DescribedPathPrimitive':
+    def parent(self) -> 'DescribedPath':
         """Gives a path with the last component removed"""
         pass
 
@@ -83,17 +83,17 @@ class PathDdv(Max1DependencyDdv[pathlib.Path], ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def value_when_no_dir_dependencies__d(self) -> DescribedPathPrimitive:
+    def value_when_no_dir_dependencies__d(self) -> DescribedPath:
         pass
 
     @abstractmethod
-    def value_pre_sds__d(self, hds: HomeDirectoryStructure) -> DescribedPathPrimitive:
+    def value_pre_sds__d(self, hds: HomeDirectoryStructure) -> DescribedPath:
         pass
 
     @abstractmethod
-    def value_post_sds__d(self, sds: SandboxDirectoryStructure) -> DescribedPathPrimitive:
+    def value_post_sds__d(self, sds: SandboxDirectoryStructure) -> DescribedPath:
         pass
 
     @abstractmethod
-    def value_of_any_dependency__d(self, tcds: Tcds) -> DescribedPathPrimitive:
+    def value_of_any_dependency__d(self, tcds: Tcds) -> DescribedPath:
         pass

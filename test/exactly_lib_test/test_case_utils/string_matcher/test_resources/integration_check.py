@@ -6,7 +6,7 @@ from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironm
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
@@ -45,7 +45,7 @@ class _ModelConstructorHelper:
             DestinationFilePathGetter(),
         )
 
-    def _create_original_file(self, file_space: TmpDirFileSpace) -> DescribedPathPrimitive:
+    def _create_original_file(self, file_space: TmpDirFileSpace) -> DescribedPath:
         original_file_path = file_space.new_path()
 
         with original_file_path.open(mode='w') as f:

@@ -3,24 +3,24 @@ from typing import List
 
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.err_msg2 import path_rendering
-from exactly_lib.type_system.data.path_ddv import DescribedPathPrimitive
+from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_system.err_msg import prop_descr
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 
 
 class _FileMatcherModelImplBase(FileMatcherModel, ABC):
-    def __init__(self, path: DescribedPathPrimitive):
+    def __init__(self, path: DescribedPath):
         self._path = path
 
     @property
-    def path(self) -> DescribedPathPrimitive:
+    def path(self) -> DescribedPath:
         """Path of the file to match. May or may not exist."""
         return self._path
 
 
 class FileMatcherModelForPrimitivePath(_FileMatcherModelImplBase):
-    def __init__(self, path: DescribedPathPrimitive):
+    def __init__(self, path: DescribedPath):
         super().__init__(path)
 
     @property
@@ -30,7 +30,7 @@ class FileMatcherModelForPrimitivePath(_FileMatcherModelImplBase):
 
 class FileMatcherModelForFileWithDescriptor(_FileMatcherModelImplBase):
     def __init__(self,
-                 path: DescribedPathPrimitive,
+                 path: DescribedPath,
                  file_descriptor: prop_descr.FilePropertyDescriptorConstructor,
                  ):
         super().__init__(path)
