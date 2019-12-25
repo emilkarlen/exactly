@@ -25,9 +25,6 @@ class FileMatcherTestImpl(MatcherImplBase[FileMatcherModel]):
     def option_description(self) -> str:
         return str(type(self))
 
-    def matches(self, model: FileMatcherModel) -> bool:
-        raise NotImplementedError('should never be used')
-
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         raise NotImplementedError('should never be used')
 
@@ -67,7 +64,7 @@ class LineMatcherFromPredicates(MatcherWTraceAndNegation[LineMatcherLine]):
         return str(type(self))
 
     def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
-        result = self.matches(line)
+        result = self._matches(line)
         return MatchingResult(
             result,
             Constant(tree.Node(self.name,
@@ -76,7 +73,7 @@ class LineMatcherFromPredicates(MatcherWTraceAndNegation[LineMatcherLine]):
                                ()))
         )
 
-    def matches(self, line: LineMatcherLine) -> bool:
+    def _matches(self, line: LineMatcherLine) -> bool:
         positive_result = self.line_num(line[0]) and self.line_contents(line[1])
         return (
             not positive_result

@@ -102,9 +102,6 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree(details.String(strings.Repr(self._glob_pattern)))
 
-    def matches(self, model: FileMatcherModel) -> bool:
-        return model.path.primitive.match(self._glob_pattern)
-
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         tb = self.__tb_with_expected().append_details(
             custom_details.actual(

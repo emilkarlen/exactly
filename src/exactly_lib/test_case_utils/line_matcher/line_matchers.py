@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.test_case_utils.matcher.impls import constant, combinator_matchers
+from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 
 
@@ -14,7 +14,3 @@ def conjunction(matchers: Sequence[LineMatcher]) -> LineMatcher:
 
 def disjunction(matchers: Sequence[LineMatcher]) -> LineMatcher:
     return combinator_matchers.Disjunction(matchers)
-
-
-def line_matcher_constant(result: bool) -> LineMatcher:
-    return constant.MatcherWithConstantResult(result)

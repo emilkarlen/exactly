@@ -14,9 +14,6 @@ class MatcherImplBase(Generic[MODEL],
     def __init__(self):
         WithCachedNameAndTreeStructureDescriptionBase.__init__(self)
 
-    def matches(self, model: MODEL) -> bool:
-        raise NotImplementedError('abstract method')
-
     def _new_tb(self) -> TraceBuilder:
         return TraceBuilder(self.name)
 

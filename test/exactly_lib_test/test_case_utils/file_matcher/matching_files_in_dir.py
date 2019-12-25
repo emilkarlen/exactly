@@ -60,9 +60,6 @@ class BaseNameMatcher(MatcherImplBase[FileMatcherModel]):
     def name(self) -> str:
         return str(type(self))
 
-    def matches(self, model: FileMatcherModel) -> bool:
-        return model.path.primitive.name == self.base_name_that_matches
-
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         return self._new_tb().build_result(model.path.primitive.name == self.base_name_that_matches)
 

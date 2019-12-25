@@ -118,9 +118,6 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
     def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return combinator_matchers.Negation(self)
 
-    def matches(self, model: MODEL) -> bool:
-        return self.matches_w_trace(model).value
-
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         conf = self._conf
         predicate = conf.predicate

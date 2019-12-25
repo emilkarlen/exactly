@@ -21,7 +21,6 @@ class FileMatcherType(MatcherImplBase[FileMatcherModel]):
     def __init__(self, file_type: file_properties.FileType):
         super().__init__()
         self._file_type = file_type
-        self._path_predicate = file_properties.TYPE_INFO[self._file_type].pathlib_path_predicate
         self._stat_method = (pathlib.Path.lstat
                              if file_type is file_properties.FileType.SYMLINK
                              else pathlib.Path.stat)
@@ -48,9 +47,6 @@ class FileMatcherType(MatcherImplBase[FileMatcherModel]):
                 .append_details(self._renderer_of_expected_value)
                 .as_render()
         )
-
-    def matches(self, model: FileMatcherModel) -> bool:
-        return self._path_predicate(model.path.primitive)
 
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         path = model.path.primitive

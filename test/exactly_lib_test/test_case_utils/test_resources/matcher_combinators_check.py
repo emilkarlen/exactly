@@ -56,7 +56,7 @@ class TestCaseBase(unittest.TestCase):
     def trace_operator_name(self) -> str:
         raise NotImplementedError('abstract method')
 
-    def new_combinator_to_check(self, constructor_argument) -> Matcher:
+    def new_combinator_to_check(self, constructor_argument) -> MatcherWTrace:
         """
         Constructs the matcher that is tested ("and", "or", or "not").
         :param constructor_argument: Either a list of matchers (if "and", or "or" is tested),
@@ -74,32 +74,18 @@ class TestCaseBase(unittest.TestCase):
         conf = self.configuration
         matcher_to_check = self.new_combinator_to_check(constructor_argument)
         model = conf.irrelevant_model()
-        with self.subTest(case_name=case_name,
-                          type='old style matcher'):
-            # ACT #
-            actual_result = matcher_to_check.matches(model)
-            # ASSERT #
-            self.assertEqual(expected_result,
-                             actual_result,
-                             'result')
-            self.assertIsInstance(matcher_to_check.option_description,
-                                  str,
-                                  'option_description')
 
-        if isinstance(matcher_to_check, MatcherWTrace):
-            with self.subTest(case_name=case_name,
-                              type='matcher w trace'):
-                expectation = asrt_matching_result.matches(
-                    asrt.equals(expected_result),
-                    trace=asrt_trace_rendering.matches_node_renderer(
-                        expected_trace
-                    )
-                )
-                # ACT #
-                actual_result = matcher_to_check.matches_w_trace(model)
-                # ASSERT #
-                expectation.apply_without_message(self,
-                                                  actual_result)
+        expectation = asrt_matching_result.matches(
+            asrt.equals(expected_result),
+            trace=asrt_trace_rendering.matches_node_renderer(
+                expected_trace
+            )
+        )
+        # ACT #
+        actual_result = matcher_to_check.matches_w_trace(model)
+        # ASSERT #
+        expectation.apply_without_message(self,
+                                          actual_result)
 
     def _check_model_argument_SHOULD_be_given_as_argument_to_both_matcher(self,
                                                                           result_of_1st: bool,
@@ -116,7 +102,7 @@ class TestCaseBase(unittest.TestCase):
 
         # ACT #
 
-        matcher_to_check.matches(model_that_should_be_registered)
+        matcher_to_check.matches_w_trace(model_that_should_be_registered)
 
         # ASSERT #
 
@@ -143,7 +129,7 @@ class TestCaseBase(unittest.TestCase):
 
         # ACT #
 
-        matcher_to_check.matches(model_that_should_be_registered)
+        matcher_to_check.matches_w_trace(model_that_should_be_registered)
 
         # ASSERT #
 
@@ -390,7 +376,7 @@ class TestNotBase(TestCaseBase):
 
         # ACT #
 
-        matcher_to_check.matches(model_that_should_be_registered)
+        matcher_to_check.matches_w_trace(model_that_should_be_registered)
 
         # ASSERT #
         expected_registered_models = asrt.matches_sequence([asrt.is_(model_that_should_be_registered)])

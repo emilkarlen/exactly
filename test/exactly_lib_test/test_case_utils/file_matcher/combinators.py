@@ -83,10 +83,6 @@ class FileMatcherThatRegistersModelArgument(MatcherImplBase[FileMatcherModel]):
     def option_description(self) -> str:
         raise NotImplementedError('this method should not be used')
 
-    def matches(self, model: FileMatcherModel) -> bool:
-        self._registry.append(model)
-        return self._constant_result
-
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         self._registry.append(model)
         return self._new_tb().build_result(self._constant_result)

@@ -43,9 +43,6 @@ class StringMatcherNegation(MatcherWTraceAndNegation[FileToCheck],
     def negation(self) -> StringMatcher:
         return self._operand
 
-    def matches(self, model: MODEL) -> bool:
-        return not self._operand.matches(model)
-
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         result_to_negate = self._operand.matches_w_trace(model)
         return (

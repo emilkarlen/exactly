@@ -12,7 +12,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
-from exactly_lib.test_case_utils.line_matcher.line_matchers import line_matcher_constant
+from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MODEL, MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
@@ -24,8 +24,6 @@ from exactly_lib_test.symbol.test_resources import sdv_assertions
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
-from exactly_lib_test.test_case_utils.matcher.test_resources.int_expr_matcher import \
-    ComparisonMatcherForEquivalenceChecks
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.test_resources import matcher_parse_check
 from exactly_lib_test.test_case_utils.test_resources.matcher_parse_check import Expectation
@@ -54,7 +52,7 @@ class Configuration(matcher_parse_check.Configuration[LineMatcherLine]):
         )
 
     def constant_matcher(self, result: bool) -> LineMatcher:
-        return line_matcher_constant(result)
+        return MatcherWithConstantResult(result)
 
     def arbitrary_model_that_should_not_be_touched(self) -> LineMatcherLine:
         return 1, 'arbitrary line'
@@ -199,22 +197,34 @@ class _ExpectedEquivalentLineNumMatcher(MatcherWTrace[LineMatcherLine]):
     def __init__(self,
                  operator: comparators.ComparisonOperator,
                  rhs: int):
-        self._matcher = ComparisonMatcherForEquivalenceChecks(self.NAME, operator, rhs)
+        self._matcher = _ComparisonMatcherForEquivalenceChecks(operator, rhs)
 
     @property
     def name(self) -> str:
         return self.NAME
 
-    def matches(self, model: LineMatcherLine) -> bool:
-        return self._matcher.matches(model[0])
+    @property
+    def option_description(self) -> str:
+        raise NotImplementedError('unsupported')
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
-        value = self.matches(model)
+        value = self._matches(model)
         return MatchingResult(
             value,
             renderers.Constant(tree.Node(self.NAME, value, (), ())),
         )
 
-    @property
-    def option_description(self) -> str:
-        raise NotImplementedError('unsupported')
+    def _matches(self, model: LineMatcherLine) -> bool:
+        return self._matcher.matches(model[0])
+
+
+class _ComparisonMatcherForEquivalenceChecks:
+    def __init__(self,
+                 operator: comparators.ComparisonOperator,
+                 constant_rhs: int,
+                 ):
+        self._constant_rhs = constant_rhs
+        self._operator = operator
+
+    def matches(self, model: int) -> bool:
+        return self._operator.operator_fun(model, self._constant_rhs)

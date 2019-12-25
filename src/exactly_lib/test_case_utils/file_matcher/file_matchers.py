@@ -14,5 +14,5 @@ def matching_files_in_dir(matcher: FileMatcher,
     return (
         file_name
         for file_name in os.listdir(str(dir_path.primitive))
-        if matcher.matches(FileMatcherModelForPrimitivePath(dir_path.child(file_name)))
+        if matcher.matches_w_trace(FileMatcherModelForPrimitivePath(dir_path.child(file_name))).value
     )

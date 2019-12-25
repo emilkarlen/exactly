@@ -52,9 +52,6 @@ class Negation(_CombinatorBase[MODEL]):
     def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return self._negated
 
-    def matches(self, model: MODEL) -> bool:
-        return not self._negated.matches(model)
-
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         result_to_negate = self._negated.matches_w_trace(model)
         return (
@@ -149,13 +146,6 @@ class Conjunction(_CombinatorBase[MODEL]):
     def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return Negation(self)
 
-    def matches(self, model: MODEL) -> bool:
-        for part in self._parts:
-            if not part.matches(model):
-                return False
-
-        return True
-
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         tb = TraceBuilder(self.name)
         for part in self._parts:
@@ -220,13 +210,6 @@ class Disjunction(_CombinatorBase[MODEL]):
 
     def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return Negation(self)
-
-    def matches(self, model: MODEL) -> bool:
-        for part in self._parts:
-            if part.matches(model):
-                return True
-
-        return False
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         tb = TraceBuilder(self.name)

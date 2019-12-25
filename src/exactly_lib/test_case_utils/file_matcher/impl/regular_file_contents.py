@@ -56,9 +56,6 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree(custom_details.WithTreeStructure(self._contents_matcher))
 
-    def matches(self, model: FileMatcherModel) -> bool:
-        return self.matches_w_trace(model).value
-
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         self._hard_error_if_not_regular_file(model)
 

@@ -178,10 +178,6 @@ class MatcherThatRegistersModelArgument(Generic[MODEL], MatcherWTraceAndNegation
     def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return MatcherThatRegistersModelArgument(self._registry, not self._constant_result)
 
-    def matches(self, model: MODEL) -> bool:
-        self._registry.append(model)
-        return self._constant_result
-
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         self._registry.append(model)
         return MatchingResult(self._constant_result,
@@ -212,7 +208,4 @@ class MatcherThatReportsHardError(Generic[MODEL], MatcherWTraceAndNegation[MODEL
         return self
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
-        raise HardErrorException(new_single_string_text_for_test(self.error_message))
-
-    def matches(self, model: MODEL) -> bool:
         raise HardErrorException(new_single_string_text_for_test(self.error_message))

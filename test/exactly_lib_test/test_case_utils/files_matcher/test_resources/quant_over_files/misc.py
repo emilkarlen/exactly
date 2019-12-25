@@ -16,9 +16,6 @@ class FileMatcherThatMatchesAnyFileWhosNameStartsWith(MatcherImplBase[FileMatche
     def option_description(self) -> str:
         return 'Matches files beginning with ' + self._prefix_of_name_for_match
 
-    def matches(self, model: FileMatcherModel) -> bool:
-        return model.path.primitive.name.startswith(self._prefix_of_name_for_match)
-
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         return self._new_tb().build_result(
             model.path.primitive.name.startswith(self._prefix_of_name_for_match)

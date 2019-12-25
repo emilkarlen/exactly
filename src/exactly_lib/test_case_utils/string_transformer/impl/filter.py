@@ -99,7 +99,7 @@ class _SelectStringTransformer(WithCachedTreeStructureDescriptionBase, StringTra
         return (
             line
             for line, line_matcher_model in original_and_model_iter_from_file_line_iter(lines)
-            if self._line_matcher.matches(line_matcher_model)
+            if self._line_matcher.matches_w_trace(line_matcher_model).value
         )
 
     def __str__(self):

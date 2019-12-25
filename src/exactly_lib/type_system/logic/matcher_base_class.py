@@ -5,7 +5,6 @@ from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment, ApplicationEnvironmentDependentValue, \
     LogicTypeDdv
 from exactly_lib.util.description_tree.renderer import NodeRenderer
@@ -34,10 +33,7 @@ class Matcher(Generic[MODEL], WithOptionDescription, ABC):
         pass
 
     def matches(self, model: MODEL) -> bool:
-        return self.matches_emr(model) is None
-
-    def matches_emr(self, model: MODEL) -> Optional[ErrorMessageResolver]:
-        raise NotImplementedError('abstract method')
+        raise NotImplementedError('deprecated')
 
 
 TraceRenderer = NodeRenderer[bool]
@@ -65,9 +61,6 @@ class MatcherWTrace(Generic[MODEL], Matcher[MODEL], WithNameAndTreeStructureDesc
     @abstractmethod
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         pass
-
-    def matches(self, model: MODEL) -> bool:
-        return self.matches_w_trace(model).value
 
 
 class MatcherWTraceAndNegation(Generic[MODEL], MatcherWTrace[MODEL], ABC):
