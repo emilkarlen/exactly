@@ -1,4 +1,5 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.util import symbol_table as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -106,6 +107,62 @@ class TestUpdate(unittest.TestCase):
         self.assertEqual(2,
                          len(table.names_set))
 
+    def test_add_table__empty_intersection(self):
+        # ARRANGE #
+        symbol_1 = NameAndValue('the symbol 1 name',
+                                ASymbolTableValue('the symbol 1 value'))
+        symbol_2 = NameAndValue('the symbol 2 name',
+                                ASymbolTableValue('the symbol 2 value'))
+        table1 = sut.SymbolTable({symbol_1.name: symbol_1.value})
+        table2 = sut.SymbolTable({symbol_2.name: symbol_2.value})
+        # ACT #
+        table1.add_table(table2)
+        # ASSERT #
+        _assert_table_contains(self, table1, symbol_1)
+        _assert_table_contains(self, table1, symbol_2)
+        self.assertEqual(2,
+                         len(table1.names_set))
+
+    def test_add_table_SHOULD_replace_values_for_common_elements(self):
+        # ARRANGE #
+        name_of_common_symbol = 'the symbol 1 name'
+
+        value1 = ASymbolTableValue('the symbol 1 value')
+        value2 = ASymbolTableValue('the symbol 2 value')
+        table1 = sut.SymbolTable({name_of_common_symbol: value1})
+        table2 = sut.SymbolTable({name_of_common_symbol: value2})
+        # ACT #
+        table1.add_table(table2)
+        # ASSERT #
+        _assert_table_contains(self, table1, NameAndValue(name_of_common_symbol, value2))
+        self.assertEqual(1,
+                         len(table1.names_set))
+
+    def test_add_table__intersecting_and_non_intersecting_elements(self):
+        # ARRANGE #
+        name_of_intersecting_symbol = 'the intersecting symbol name'
+
+        symbol_1_ni = NameAndValue('symbol only in table 1 name',
+                                   ASymbolTableValue('symbol only in table 1 value'))
+        symbol_1_i = NameAndValue(name_of_intersecting_symbol,
+                                  ASymbolTableValue(name_of_intersecting_symbol + ' value in table 1'))
+
+        symbol_2_ni = NameAndValue('symbol only in table 2 name',
+                                   ASymbolTableValue('symbol only in table 2 value'))
+        symbol_2_i = NameAndValue(name_of_intersecting_symbol,
+                                  ASymbolTableValue(name_of_intersecting_symbol + ' value in table 2'))
+
+        table1 = _table_from_nav([symbol_1_i, symbol_1_ni])
+        table2 = _table_from_nav([symbol_2_i, symbol_2_ni])
+        # ACT #
+        table1.add_table(table2)
+        # ASSERT #
+        _assert_table_contains(self, table1, symbol_1_ni)
+        _assert_table_contains(self, table1, symbol_2_ni)
+        _assert_table_contains(self, table1, symbol_2_i)
+        self.assertEqual(3,
+                         len(table1.names_set))
+
 
 class TestLookup(unittest.TestCase):
     def test_lookup_SHOULD_give_the_corresponding_value_WHEN_the_table_contains_the_given_key(self):
@@ -164,9 +221,18 @@ class TestCopy(unittest.TestCase):
                                             symbol_in_original)
 
 
+class ASymbolTableValue(sut.SymbolTableValue):
+    def __init__(self, value):
+        self._value = value
+
+    @property
+    def value(self):
+        return self._value
+
+
 def _assert_table_contains_single_value(put: unittest.TestCase,
                                         table: sut.SymbolTable,
-                                        expected_symbol: NameAndValue):
+                                        expected_symbol: NameAndValue[ASymbolTableValue]):
     _assert_table_contains(put, table, expected_symbol)
     put.assertEqual({expected_symbol.name},
                     table.names_set,
@@ -175,7 +241,7 @@ def _assert_table_contains_single_value(put: unittest.TestCase,
 
 def _assert_table_contains(put: unittest.TestCase,
                            table: sut.SymbolTable,
-                           expected_symbol: NameAndValue):
+                           expected_symbol: NameAndValue[ASymbolTableValue]):
     put.assertTrue(table.contains(expected_symbol.name),
                    'table SHOULD contain the value')
     put.assertIn(expected_symbol.name,
@@ -193,13 +259,11 @@ def _assert_table_is_empty(put: unittest.TestCase,
                     'table SHOULD not contain any values')
 
 
-class ASymbolTableValue(sut.SymbolTableValue):
-    def __init__(self, value):
-        self._value = value
-
-    @property
-    def value(self) -> sut.SymbolTableValue:
-        return self._value
+def _table_from_nav(elements: Sequence[NameAndValue[ASymbolTableValue]]) -> sut.SymbolTable:
+    return sut.SymbolTable({
+        e.name: e.value
+        for e in elements
+    })
 
 
 if __name__ == '__main__':

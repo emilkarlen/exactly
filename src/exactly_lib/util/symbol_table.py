@@ -43,6 +43,9 @@ class SymbolTable:
         for entry in entries:
             self.add(entry)
 
+    def add_table(self, symbol_table: 'SymbolTable'):
+        self._key_2_value.update(symbol_table._key_2_value)
+
     def put(self, key: str, x: SymbolTableValue):
         self._key_2_value[key] = x
 
