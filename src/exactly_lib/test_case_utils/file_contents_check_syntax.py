@@ -101,6 +101,9 @@ _MAIN_INVOKATION__STDOUT_ERR_PROGRAM__SYNTAX_DESCRIPTION = """\
 Asserts that {checked_file} from {program_type:a/q} satisfies {contents_matcher}.
 
 
+{contents_matcher} must appear on a separate line.
+
+
 The {program_type} must terminate.
 """
 
