@@ -47,10 +47,6 @@ class StringMatcherOnTransformedFileToCheck(StringMatcherImplBase):
         return self.new_structure_tree(self._transformer.structure(),
                                        self._on_transformed.structure())
 
-    @property
-    def option_description(self) -> str:
-        return 'transformed: ' + self._on_transformed.option_description
-
     def _complete_transformer(self, model: FileToCheck) -> StringTransformer:
         if model.string_transformer.is_identity_transformer:
             return self._transformer

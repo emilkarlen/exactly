@@ -11,7 +11,6 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case.validation.sdv_validation import PreOrPostSdsValidatorPrimitive
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
-from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
@@ -217,10 +216,6 @@ class EqualityStringMatcher(StringMatcherImplBase):
         actual_file_name = str(processed_actual_file_path)
         expected_file_name = str(expected_file_path)
         return filecmp.cmp(actual_file_name, expected_file_name, shallow=False)
-
-    @property
-    def option_description(self) -> str:
-        return diff_msg.negation_str(self._expectation_type) + _EQUALITY_CHECK_EXPECTED_VALUE
 
     def _new_tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(self._expected_detail_renderer)

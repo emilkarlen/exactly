@@ -36,10 +36,6 @@ class StringMatcherNegation(MatcherWTraceAndNegation[FileToCheck],
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree(self._operand)
 
-    @property
-    def option_description(self) -> str:
-        return expression.NOT_OPERATOR_NAME + ' ' + self._operand.option_description
-
     def negation(self) -> StringMatcher:
         return self._operand
 

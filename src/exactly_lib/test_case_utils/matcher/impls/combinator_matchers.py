@@ -45,10 +45,6 @@ class Negation(_CombinatorBase[MODEL]):
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree(self._negated)
 
-    @property
-    def option_description(self) -> str:
-        return expression.NOT_OPERATOR_NAME + ' ' + self._negated.option_description
-
     def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return self._negated
 
@@ -139,10 +135,6 @@ class Conjunction(_CombinatorBase[MODEL]):
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree(self._parts)
 
-    @property
-    def option_description(self) -> str:
-        return expression.AND_OPERATOR_NAME
-
     def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return Negation(self)
 
@@ -203,10 +195,6 @@ class Disjunction(_CombinatorBase[MODEL]):
 
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree(self._parts)
-
-    @property
-    def option_description(self) -> str:
-        return expression.OR_OPERATOR_NAME
 
     def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return Negation(self)

@@ -21,10 +21,6 @@ class FileMatcherTestImpl(MatcherImplBase[FileMatcherModel]):
     def name(self) -> str:
         return str(type(self))
 
-    @property
-    def option_description(self) -> str:
-        return str(type(self))
-
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         raise NotImplementedError('should never be used')
 
@@ -58,10 +54,6 @@ class LineMatcherFromPredicates(MatcherWTraceAndNegation[LineMatcherLine]):
             self.line_contents,
             not self._is_negated,
         )
-
-    @property
-    def option_description(self) -> str:
-        return str(type(self))
 
     def matches_w_trace(self, line: LineMatcherLine) -> MatchingResult:
         result = self._matches(line)

@@ -40,10 +40,6 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
     def name(self) -> str:
         return self.NAME
 
-    @property
-    def option_description(self) -> str:
-        return 'contents matches STRING-MATCHER'
-
     @staticmethod
     def new_structure_tree(contents_matcher: DetailsRenderer) -> StructureRenderer:
         return renderers.NodeRendererFromParts(

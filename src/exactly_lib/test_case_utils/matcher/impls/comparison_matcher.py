@@ -60,10 +60,6 @@ class ComparisonMatcher(Generic[T], MatcherWTraceAndNegation[T]):
         )
 
     @property
-    def option_description(self) -> str:
-        return self._operator.name
-
-    @property
     def negation(self) -> MatcherWTraceAndNegation[T]:
         return ComparisonMatcher(
             logic_types.negation(self._expectation_type),

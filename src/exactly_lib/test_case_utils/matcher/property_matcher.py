@@ -49,10 +49,6 @@ class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTraceAndNegation[MODEL]
         """TODO Temp helper that should be removed after usages removed"""
         return 'PropertyMatcher deprecated'
 
-    @property
-    def option_description(self) -> str:
-        return 'PropertyMatcher deprecated'
-
     def structure(self) -> StructureRenderer:
         return self._structure
 

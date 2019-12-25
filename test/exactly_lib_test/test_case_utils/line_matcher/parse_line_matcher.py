@@ -203,10 +203,6 @@ class _ExpectedEquivalentLineNumMatcher(MatcherWTrace[LineMatcherLine]):
     def name(self) -> str:
         return self.NAME
 
-    @property
-    def option_description(self) -> str:
-        raise NotImplementedError('unsupported')
-
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         value = self._matches(model)
         return MatchingResult(

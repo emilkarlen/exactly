@@ -24,10 +24,6 @@ class MatcherWithConstantResult(Generic[MODEL], MatcherWTraceAndNegation[MODEL])
         return self.NAME
 
     @property
-    def option_description(self) -> str:
-        return self.name
-
-    @property
     def negation(self) -> 'MatcherWithConstantResult[MODEL]':
         return MatcherWithConstantResult(not self._result)
 

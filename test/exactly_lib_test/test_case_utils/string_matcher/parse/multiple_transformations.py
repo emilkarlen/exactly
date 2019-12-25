@@ -114,10 +114,6 @@ class EqualsMatcherTestImpl(StringMatcherImplBase):
     def name(self) -> str:
         return matcher_options.EQUALS_ARGUMENT
 
-    @property
-    def option_description(self) -> str:
-        return 'equals ' + self.expected
-
     def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
         actual = self._as_single_string(model)
         if self.expected == actual:

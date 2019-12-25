@@ -518,10 +518,6 @@ class MatcherThatAssertsThatCwdIsIsActDir(MatcherWTraceAndNegation[int]):
     def name(self) -> str:
         return str(type(self))
 
-    @property
-    def option_description(self) -> str:
-        return self.name
-
 
 class _MatcherDdvThatIsAssertionOnTcds(MatcherDdv[int]):
     MATCHER = constant.MatcherWithConstantResult(True)

@@ -1,6 +1,5 @@
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
-from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase
 from exactly_lib.test_case_utils.string_matcher.negation import StringMatcherNegation
@@ -35,10 +34,6 @@ class EmptinessStringMatcher(StringMatcherImplBase):
 
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree(self._expectation_type)
-
-    @property
-    def option_description(self) -> str:
-        return diff_msg.negation_str(self._expectation_type) + 'empty'
 
     @property
     def negation(self) -> StringMatcher:

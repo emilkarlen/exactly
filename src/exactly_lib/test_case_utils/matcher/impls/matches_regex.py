@@ -68,10 +68,6 @@ class MatchesRegex(WithCachedTreeStructureDescriptionBase,
         )
 
     @property
-    def option_description(self) -> str:
-        return self._name
-
-    @property
     def negation(self) -> MatcherWTraceAndNegation[str]:
         return combinator_matchers.Negation(self)
 

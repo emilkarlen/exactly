@@ -79,10 +79,6 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
     def name(self) -> str:
         return file_matcher.NAME_MATCHER_NAME
 
-    @property
-    def option_description(self) -> str:
-        return ' '.join([self.name, self._glob_pattern])
-
     @staticmethod
     def _sub_matcher_renderer(glob_pattern: DetailsRenderer) -> DetailsRenderer:
         return details.HeaderAndValue(

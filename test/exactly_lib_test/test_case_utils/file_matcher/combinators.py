@@ -79,10 +79,6 @@ class FileMatcherThatRegistersModelArgument(MatcherImplBase[FileMatcherModel]):
     def name(self) -> str:
         return str(type(self))
 
-    @property
-    def option_description(self) -> str:
-        raise NotImplementedError('this method should not be used')
-
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         self._registry.append(model)
         return self._new_tb().build_result(self._constant_result)

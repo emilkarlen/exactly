@@ -21,9 +21,5 @@ class FileMatcherThatSelectsAllFilesTestImpl(MatcherImplBase[FileMatcherModel]):
     def name(self) -> str:
         return str(type(self))
 
-    @property
-    def option_description(self) -> str:
-        return str(type(self))
-
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         return self._new_tb().build_result(True)

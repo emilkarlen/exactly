@@ -111,10 +111,6 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
                                        self._conf.setup.rendering,
                                        self._conf.predicate)
 
-    @property
-    def option_description(self) -> str:
-        return self.name
-
     def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return combinator_matchers.Negation(self)
 

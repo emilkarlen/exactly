@@ -37,10 +37,6 @@ class FileMatcherType(MatcherImplBase[FileMatcherModel]):
     def name(self) -> str:
         return file_matcher.TYPE_MATCHER_NAME
 
-    @property
-    def option_description(self) -> str:
-        return 'type is ' + file_properties.TYPE_INFO[self._file_type].description
-
     def _structure(self) -> StructureRenderer:
         return (
             self._new_structure_builder()

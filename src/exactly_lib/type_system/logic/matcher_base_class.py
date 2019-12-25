@@ -9,7 +9,6 @@ from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmen
     LogicTypeDdv
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib.util.with_option_description import WithOptionDescription
 
 MODEL = TypeVar('MODEL')
 
@@ -45,7 +44,7 @@ class MatchingResult:
         return self._trace
 
 
-class MatcherWTrace(Generic[MODEL], WithOptionDescription, WithNameAndTreeStructureDescription, ABC):
+class MatcherWTrace(Generic[MODEL], WithNameAndTreeStructureDescription, ABC):
     @property
     @abstractmethod
     def name(self) -> str:

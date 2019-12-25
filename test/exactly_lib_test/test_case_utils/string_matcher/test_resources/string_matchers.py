@@ -10,7 +10,3 @@ class StringMatcherTestImplBase(StringMatcherImplBase):
 
     def _matches_side_effects(self, model: FileToCheck):
         pass
-
-    @property
-    def option_description(self) -> str:
-        return str(self)

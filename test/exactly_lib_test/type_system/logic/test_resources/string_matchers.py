@@ -29,10 +29,6 @@ class StringMatcherConstant(StringMatcherImplBase):
     def name(self) -> str:
         return 'any string' if self._result else 'no string'
 
-    @property
-    def option_description(self) -> str:
-        return 'any string' if self._result else 'no string'
-
     def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
         return self._new_tb().build_result(self._result is None)
 
@@ -54,10 +50,6 @@ class StringMatcherConstantTestImpl(StringMatcherImplBase):
 
     def _structure(self) -> StructureRenderer:
         return ConstantNodeRendererTestImpl(self.__structure)
-
-    @property
-    def option_description(self) -> str:
-        return self.__structure.header
 
     def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
         return self._new_tb().build_result(self._result)

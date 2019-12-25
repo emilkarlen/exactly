@@ -145,10 +145,6 @@ class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MOD
         return self._name
 
     @property
-    def option_description(self) -> str:
-        return self.name
-
-    @property
     def negation(self) -> 'MatcherWithConstantResult[MODEL]':
         return MatcherWithConstantResult(not self._matching_result.value)
 
@@ -171,10 +167,6 @@ class MatcherThatRegistersModelArgument(Generic[MODEL], MatcherWTraceAndNegation
         return str(type(self))
 
     @property
-    def option_description(self) -> str:
-        raise NotImplementedError('this method should not be used')
-
-    @property
     def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return MatcherThatRegistersModelArgument(self._registry, not self._constant_result)
 
@@ -195,10 +187,6 @@ class MatcherThatReportsHardError(Generic[MODEL], MatcherWTraceAndNegation[MODEL
     @property
     def name(self) -> str:
         return str(type(self))
-
-    @property
-    def option_description(self) -> str:
-        return 'unconditional HARD ERROR'
 
     def _structure(self) -> StructureRenderer:
         return renderers_tr.structure_renderer_for_arbitrary_object(self)
