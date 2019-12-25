@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generic, Optional, TypeVar
+from typing import Generic, TypeVar
 
 from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
@@ -8,20 +8,8 @@ from exactly_lib.type_system.description.tree_structured import WithNameAndTreeS
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment, ApplicationEnvironmentDependentValue, \
     LogicTypeDdv
 from exactly_lib.util.description_tree.renderer import NodeRenderer
-from exactly_lib.util.logic_types import ExpectationType
 
 MODEL = TypeVar('MODEL')
-
-
-class Failure(Generic[MODEL]):
-    def __init__(self,
-                 expectation_type: ExpectationType,
-                 expected: str,
-                 actual: MODEL):
-        self.expectation_type = expectation_type
-        self.expected = expected
-        self.actual = actual
-
 
 TraceRenderer = NodeRenderer[bool]
 
@@ -60,12 +48,6 @@ class MatcherWTraceAndNegation(Generic[MODEL], MatcherWTrace[MODEL], ABC):
     @abstractmethod
     def negation(self) -> 'MatcherWTraceAndNegation[MODEL]':
         pass
-
-    def matches_w_failure(self, model: MODEL) -> Optional[Failure[MODEL]]:
-        """
-        :raises HardErrorException
-        """
-        raise NotImplementedError('deprecated')
 
 
 class MatcherAdv(Generic[MODEL],

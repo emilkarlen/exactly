@@ -1,5 +1,5 @@
 from typing import Generic, Callable
-from typing import TypeVar, Sequence, Optional, List
+from typing import TypeVar, Sequence, List
 
 from exactly_lib.definitions.primitives import boolean
 from exactly_lib.symbol.logic.matcher import MatcherSdv
@@ -12,8 +12,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MatcherAdv
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, \
-    Failure
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
@@ -150,9 +149,6 @@ class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MOD
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         return self._matching_result
-
-    def matches_w_failure(self, model: MODEL) -> Optional[Failure[MODEL]]:
-        raise NotImplementedError('deprecated')
 
 
 class MatcherThatRegistersModelArgument(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):

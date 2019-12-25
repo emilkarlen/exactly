@@ -22,7 +22,7 @@ from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MODEL, \
-    MatchingResult, Failure, MatcherAdv
+    MatchingResult, MatcherAdv
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.symbol_table import SymbolTable
@@ -504,9 +504,6 @@ class MatcherThatAssertsThatCwdIsIsActDir(MatcherWTraceAndNegation[int]):
 
     @property
     def negation(self) -> MatcherWTraceAndNegation[int]:
-        raise NotImplementedError('unsupported')
-
-    def matches_w_failure(self, model: MODEL) -> Optional[Failure[MODEL]]:
         raise NotImplementedError('unsupported')
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:

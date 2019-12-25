@@ -11,7 +11,7 @@ from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.matcher.object import ObjectDdv, ObjectSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
-from exactly_lib.type_system.logic.matcher_base_class import Failure, MatcherDdv, MatcherAdv, MODEL
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherAdv, MODEL
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.util import logic_types
 from exactly_lib.util.description_tree import details
@@ -68,20 +68,6 @@ class ComparisonMatcher(Generic[T], MatcherWTraceAndNegation[T]):
             self._model_renderer,
         )
 
-    def matches_w_failure(self, model: T) -> Optional[Failure[T]]:
-        lhs = model
-        comparison_fun = self._operator.operator_fun
-        condition_is_satisfied = bool(comparison_fun(lhs,
-                                                     self._rhs))
-        if condition_is_satisfied:
-            if self._expectation_type is ExpectationType.NEGATIVE:
-                return self._failure(lhs)
-        else:
-            if self._expectation_type is ExpectationType.POSITIVE:
-                return self._failure(lhs)
-
-        return None
-
     def matches_w_trace(self, model: T) -> MatchingResult:
         lhs = model
         comparison_fun = self._operator.operator_fun
@@ -104,13 +90,6 @@ class ComparisonMatcher(Generic[T], MatcherWTraceAndNegation[T]):
                 operator.not_,
                 self._model_renderer(lhs),
             ),
-        )
-
-    def _failure(self, lhs: T) -> Failure[T]:
-        return Failure(
-            self._expectation_type,
-            self._operator.name + ' ' + str(self._rhs),
-            lhs,
         )
 
 

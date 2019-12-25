@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, Optional, Sequence
+from typing import Generic, TypeVar, Sequence
 
 from exactly_lib.symbol.logic.matcher import MODEL, MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -9,7 +9,7 @@ from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterDdv, \
     PropertyGetterSdv, PropertyGetterAdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, Failure, MatcherDdv, \
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, MatcherDdv, \
     TraceRenderer, MatcherWTraceAndNegation, MatcherAdv, ApplicationEnvironment
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -55,14 +55,6 @@ class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTraceAndNegation[MODEL]
     @property
     def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return combinator_matchers.Negation(self)
-
-    def matches_w_failure(self, model: MODEL) -> Optional[Failure[MODEL]]:
-        """
-        :raises HardErrorException
-        """
-        return self._matcher.matches_w_failure(
-            self._property_getter.get_from(model),
-        )
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         """
