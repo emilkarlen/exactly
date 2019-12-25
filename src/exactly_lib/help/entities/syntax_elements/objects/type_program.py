@@ -166,7 +166,7 @@ class _ProgramWithArgumentList(SyntaxElementDescriptionTree):
                          syntax_elements.STRING_SYNTAX_ELEMENT.argument
                          ),
             ],
-            _TEXT_PARSER.fnap(_SYSTEM_PROGRAM_DESCRIPTION)
+            _TEXT_PARSER.paras(misc_texts.SYSTEM_PROGRAM_DESCRIPTION)
         )
 
     @staticmethod
@@ -309,10 +309,6 @@ It is passed as a single string to the operating system's shell.
 
 PGM_WITH_ARG_LIST_DESCRIPTION = """\
 An executable program.
-"""
-
-_SYSTEM_PROGRAM_DESCRIPTION = """\
-A program installed on the current system - a program in the OS PATH.
 """
 
 _SYM_REF_PROGRAM_DESCRIPTION = """\

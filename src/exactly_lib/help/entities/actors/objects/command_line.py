@@ -7,7 +7,7 @@ from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.definitions.entity import concepts, conf_params
+from exactly_lib.definitions.entity import concepts, conf_params, types
 from exactly_lib.definitions.entity.actors import COMMAND_LINE_ACTOR
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.actors import command_line as command_line_actor
@@ -50,6 +50,7 @@ class CommandLineActorDocumentation(ActorDocumentation):
         return cross_reference_id_list([
             conf_params.HDS_ACT_DIRECTORY_CONF_PARAM_INFO,
             concepts.SHELL_SYNTAX_CONCEPT_INFO,
+            types.PATH_TYPE_INFO,
         ])
 
 
@@ -87,10 +88,20 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
                               self._parser.fnap(_SHELL_COMMAND_INVOKATION_VARIANT)),
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return [
             path_element_2(actor.RELATIVITY_CONFIGURATION,
                            self._parser.paragraph_items(the_path_of('{executable_file:a}.'))),
+            SyntaxElementDescription(self.argument.name,
+                                     self._parser.fnap(ARGUMENT_SYNTAX_ELEMENT)),
+            SyntaxElementDescription(self.command.name,
+                                     self._parser.fnap(_COMMAND_SYNTAX_ELEMENT))
+        ]
+
+    def syntax_element_descriptions_for_executable_as_system_command(self) -> List[SyntaxElementDescription]:
+        return [
+            SyntaxElementDescription(self.executable.name,
+                                     self._parser.paras(misc_texts.SYSTEM_PROGRAM_DESCRIPTION)),
             SyntaxElementDescription(self.argument.name,
                                      self._parser.fnap(ARGUMENT_SYNTAX_ELEMENT)),
             SyntaxElementDescription(self.command.name,

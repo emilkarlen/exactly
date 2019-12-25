@@ -67,7 +67,7 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
                                                             source_interpreter_arg))
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
-        return self.command_line_syntax.syntax_element_descriptions()
+        return self.command_line_syntax.syntax_element_descriptions_for_executable_as_system_command()
 
     def main_description_rest(self) -> List[ParagraphItem]:
         if self.main_description_rest_un_formatted:
