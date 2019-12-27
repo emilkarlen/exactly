@@ -40,7 +40,6 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
             path_ddv = paths.absolute_path(path_of_existing_regular_file)
             path = path_ddv.value_of_any_dependency__d(fake_tcds())
             model = sut.ComparisonActualFile(path,
-                                             FilePropertyDescriptorConstructorTestImpl(),
                                              True)
             # ACT #
 
@@ -61,7 +60,6 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
                                  'custom environment',
                                  sut.ComparisonActualFile(
                                      described_path.new_primitive(path),
-                                     FilePropertyDescriptorConstructorTestImpl(),
                                      True,
                                  ))
 
@@ -75,7 +73,6 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
                                      'custom environment',
                                      sut.ComparisonActualFile(
                                          described_path.new_primitive(path_of_existing_directory),
-                                         FilePropertyDescriptorConstructorTestImpl(),
                                          True,
                                      )
                                      )
@@ -89,7 +86,6 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
                              'custom environment',
                              sut.ComparisonActualFile(
                                  described_path.new_primitive(path),
-                                 FilePropertyDescriptorConstructorTestImpl(),
                                  False,
                              ))
 
