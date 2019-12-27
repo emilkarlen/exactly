@@ -1,7 +1,7 @@
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.test_case import file_check_properties, phase_names
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.err_msg2 import header_rendering
+from exactly_lib.test_case_utils.err_msg import header_rendering
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util import strings
 from exactly_lib.util.process_execution import process_output_files

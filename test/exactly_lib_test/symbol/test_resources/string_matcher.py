@@ -8,6 +8,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherDdv
 from exactly_lib.type_system.logic.string_matcher import StringMatcher
@@ -19,12 +20,11 @@ from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContex
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources import string_matchers
 from exactly_lib_test.type_system.logic.test_resources.string_matchers import MatcherDdvFromPartsTestImpl
 
 
 def arbitrary_sdv() -> StringMatcherSdv:
-    return string_matcher_sdv_constant_test_impl(string_matchers.StringMatcherConstant(None))
+    return string_matcher_sdv_constant_test_impl(constant.MatcherWithConstantResult(True))
 
 
 def string_matcher_sdv_constant_test_impl(resolved_value: StringMatcher,

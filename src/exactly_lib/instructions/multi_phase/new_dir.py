@@ -21,7 +21,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
-from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
+from exactly_lib.test_case_utils.err_msg import path_err_msgs
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
 from exactly_lib.util.textformat.structure import structures as docs

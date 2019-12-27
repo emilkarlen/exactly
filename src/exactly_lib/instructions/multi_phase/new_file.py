@@ -35,7 +35,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionSourceInfo
 from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator
-from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
+from exactly_lib.test_case_utils.err_msg import path_err_msgs
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -163,14 +163,14 @@ class _DstFileNameSdvValidator(SdvValidator):
 
         suffix_value = suffix.value()
         if suffix_value == '' or suffix_path.name == '':
-            return path_err_msgs.line_header__value(
+            return path_err_msgs.line_header__ddv(
                 _PATH_IS_DIR,
                 path_ddv.describer()
             )
 
         (head, tail) = os.path.split(suffix_value)
         if tail in _RELATIVE_DIR_NAMES:
-            return path_err_msgs.line_header__value(
+            return path_err_msgs.line_header__ddv(
                 _PATH_IS_RELATIVE_DIR,
                 path_ddv.describer(),
             )

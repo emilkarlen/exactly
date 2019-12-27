@@ -7,6 +7,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.symbol import lookups
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition import comparators
+from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
 from exactly_lib.util.logic_types import ExpectationType
@@ -35,7 +36,6 @@ from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
@@ -240,7 +240,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         return model_construction.ModelFromBuilder(model_builder, environment.sds).construct()
 
 
-ARBITRARY_SDV = string_matcher_sdv_constant_test_impl(StringMatcherConstant(None))
+ARBITRARY_SDV = string_matcher_sdv_constant_test_impl(MatcherWithConstantResult(True))
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

@@ -8,7 +8,7 @@ from typing import Callable, Optional, Sequence
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import actual_file_attributes
-from exactly_lib.test_case_utils.err_msg2 import path_rendering
+from exactly_lib.test_case_utils.err_msg import path_rendering
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.util import strings
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer

@@ -6,6 +6,7 @@ from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
+from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
@@ -18,7 +19,6 @@ from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.string_matchers import StringMatcherConstant
 from exactly_lib_test.type_system.logic.test_resources.values import FileMatcherTestImpl
 
 
@@ -78,7 +78,7 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
                          )),
 
         ]
-        sdv_of_actual = string_matcher_sdv_constant_test_impl(StringMatcherConstant(None),
+        sdv_of_actual = string_matcher_sdv_constant_test_impl(constant.MatcherWithConstantResult(True),
                                                               validator=None)
 
         for case in cases:
@@ -143,7 +143,7 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
                 assert_that_assertion_fails(assertion_to_check, actual_sdv)
 
 
-ARBITRARY_STRING_MATCHER_SDV = string_matcher_sdv_constant_test_impl(StringMatcherConstant(None))
+ARBITRARY_STRING_MATCHER_SDV = string_matcher_sdv_constant_test_impl(constant.MatcherWithConstantResult(True))
 
 
 def _matches_string_matcher_sdv(primitive_value: ValueAssertion[MatcherWTraceAndNegation] = asrt.anything_goes(),
@@ -161,7 +161,7 @@ def _matches_string_matcher_sdv(primitive_value: ValueAssertion[MatcherWTraceAnd
 
 
 def arbitrary_sdv_with_references(references: Sequence[SymbolReference]) -> StringMatcherSdv:
-    return string_matcher_sdv_constant_test_impl(StringMatcherConstant(None),
+    return string_matcher_sdv_constant_test_impl(constant.MatcherWithConstantResult(True),
                                                  references)
 
 

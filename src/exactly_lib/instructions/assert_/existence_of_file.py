@@ -28,9 +28,9 @@ from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate, path_check
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
-from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
-from exactly_lib.test_case_utils.err_msg2.header_rendering import SimpleHeaderMinorBlockRenderer
-from exactly_lib.test_case_utils.err_msg2.path_rendering import HeaderAndPathMajorBlock, \
+from exactly_lib.test_case_utils.err_msg import path_err_msgs
+from exactly_lib.test_case_utils.err_msg.header_rendering import SimpleHeaderMinorBlockRenderer
+from exactly_lib.test_case_utils.err_msg.path_rendering import HeaderAndPathMajorBlock, \
     PathRepresentationsRenderersForPrimitive
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher

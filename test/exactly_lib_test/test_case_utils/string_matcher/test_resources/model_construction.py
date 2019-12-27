@@ -2,10 +2,8 @@ from typing import Callable
 
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, DestinationFilePathGetter
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
 from exactly_lib_test.type_system.data.test_resources import described_path
@@ -62,12 +60,3 @@ class ModelFromBuilder:
             f.write(self.model_builder.original_file_contents)
 
         return described_path.new_primitive(original_file_path)
-
-
-class _FilePropertyDescriptorConstructorForTestImpl(FilePropertyDescriptorConstructor):
-    def __init__(self, name: str):
-        self.name = name
-
-    def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
-        full_name = self.name + '/' + contents_attribute
-        return property_description.property_descriptor_with_just_a_constant_name(full_name)

@@ -3,11 +3,9 @@ from typing import Callable
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FilePropertyDescriptorConstructor
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
@@ -88,12 +86,3 @@ def check_with_source_variants(put: unittest.TestCase,
                                                  LogicValueType.STRING_MATCHER,
                                                  ValueType.STRING_MATCHER,
                                                  expectation)
-
-
-class _FilePropertyDescriptorConstructorForTestImpl(FilePropertyDescriptorConstructor):
-    def __init__(self, name: str):
-        self.name = name
-
-    def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
-        full_name = self.name + '/' + contents_attribute
-        return property_description.property_descriptor_with_just_a_constant_name(full_name)

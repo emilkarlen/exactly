@@ -12,6 +12,7 @@ from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import PhaseEnum
+from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
@@ -23,7 +24,6 @@ from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources import string_matchers
 from exactly_lib_test.type_system.logic.test_resources.string_transformers import MyToUppercaseTransformer
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_text_struct
 
@@ -107,7 +107,7 @@ class TestReferences(unittest.TestCase):
         referencing_symbol = NameAndValue(
             'referencing_symbol',
             string_matcher.string_matcher_sdv_constant_test_impl(
-                string_matchers.StringMatcherConstant(None),
+                MatcherWithConstantResult(True),
                 [SymbolReference(referenced_symbol.name,
                                  restriction.ValueTypeRestriction(ValueType.STRING))]),
         )

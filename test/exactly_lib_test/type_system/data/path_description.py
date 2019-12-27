@@ -31,9 +31,9 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                                   path_suffix=path_suffix.value()):
                     path_ddv = paths.rel_hds(rel_hds_option, path_suffix)
                     # ACT #
-                    actual = sut.path_value_with_relativity_name_prefix(path_ddv,
-                                                                        tcds,
-                                                                        None)
+                    actual = sut.path_ddv_with_relativity_name_prefix(path_ddv,
+                                                                      tcds,
+                                                                      None)
                     # ASSERT #
                     expected = _expected_str(rpo.REL_HDS_OPTIONS_MAP[rel_hds_option].directory_variable_sym_ref,
                                              path_suffix)
@@ -48,9 +48,9 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                                   path_suffix=path_suffix.value()):
                     path_ddv = paths.rel_sandbox(rel_sds_option, path_suffix)
                     # ACT #
-                    actual = sut.path_value_with_relativity_name_prefix(path_ddv,
-                                                                        tcds,
-                                                                        None)
+                    actual = sut.path_ddv_with_relativity_name_prefix(path_ddv,
+                                                                      tcds,
+                                                                      None)
                     # ASSERT #
                     expected = _expected_str(rpo.REL_SDS_OPTIONS_MAP[rel_sds_option].directory_variable_sym_ref,
                                              path_suffix)
@@ -61,9 +61,9 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
         absolute_path = str(pathlib.Path.cwd().resolve())
         path_ddv = paths.absolute_file_name(absolute_path)
         # ACT #
-        actual = sut.path_value_with_relativity_name_prefix(path_ddv,
-                                                            tcds,
-                                                            None)
+        actual = sut.path_ddv_with_relativity_name_prefix(path_ddv,
+                                                          tcds,
+                                                          None)
         # ASSERT #
         self.assertEqual(absolute_path, actual)
 
@@ -102,9 +102,9 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                     the_cwd = tcds.sds.root_dir
 
                     # ACT #
-                    actual = sut.path_value_with_relativity_name_prefix(path_ddv,
-                                                                        tcds,
-                                                                        the_cwd)
+                    actual = sut.path_ddv_with_relativity_name_prefix(path_ddv,
+                                                                      tcds,
+                                                                      the_cwd)
 
                     # ASSERT #
 
@@ -125,9 +125,9 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                           expected_relativity_dir_name=str(expected_relativity_dir_name)):
             cwd = expected_rel_option_info.root_resolver.from_tcds(tcds).resolve()
             # ACT #
-            actual = sut.path_value_with_relativity_name_prefix(path_ddv_to_check,
-                                                                tcds,
-                                                                cwd)
+            actual = sut.path_ddv_with_relativity_name_prefix(path_ddv_to_check,
+                                                              tcds,
+                                                              cwd)
             # ASSERT #
             expected = _expected_str(expected_relativity_dir_name, expected_path_suffix)
             self.assertEqual(expected,

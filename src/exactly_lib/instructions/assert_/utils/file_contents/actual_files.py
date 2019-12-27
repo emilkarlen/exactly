@@ -10,8 +10,7 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator
-from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers
-from exactly_lib.test_case_utils.err_msg2 import path_rendering, header_rendering
+from exactly_lib.test_case_utils.err_msg import file_or_dir_contents_headers, path_rendering, header_rendering
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock

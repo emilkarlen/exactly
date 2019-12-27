@@ -9,7 +9,6 @@ from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImp
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.description_tree import details
@@ -83,16 +82,3 @@ class FileMatcherType(MatcherImplBase[FileMatcherModel]):
 
     def __tb_with_expected(self) -> TraceBuilder:
         return self._new_tb().append_details(self._renderer_of_expected)
-
-
-class _FileTypeErrorMessageResolver(ErrorMessageResolver):
-    def __init__(self, actual_file_type: Optional[file_properties.FileType]):
-        self._actual_file_type = actual_file_type
-
-    def resolve(self) -> str:
-        actual_type_description = (
-            'unknown'
-            if self._actual_file_type is None
-            else self._actual_file_type.name
-        )
-        return 'Actual file type is ' + actual_type_description

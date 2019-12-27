@@ -6,7 +6,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.err_msg2 import path_rendering
+from exactly_lib.test_case_utils.err_msg import path_rendering
 from exactly_lib.type_system.data import string_or_path_ddvs
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForDdv
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription

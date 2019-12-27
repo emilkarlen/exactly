@@ -27,7 +27,7 @@ from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.description_tree import structure_rendering
-from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers, header_rendering
+from exactly_lib.test_case_utils.err_msg import file_or_dir_contents_headers, header_rendering
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path

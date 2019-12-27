@@ -6,11 +6,8 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts import contents_
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
-from exactly_lib.test_case_utils.err_msg.property_description import property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.pfh_exception import PfhHardErrorException
 from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.err_msg import prop_descr
-from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
@@ -100,11 +97,3 @@ class StringTransformerSdvWithReferences(StringTransformerSdv):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
-
-
-class FilePropertyDescriptorConstructorTestImpl(prop_descr.FilePropertyDescriptorConstructor):
-    def __init__(self):
-        pass
-
-    def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
-        return property_descriptor_with_just_a_constant_name('constant property name')

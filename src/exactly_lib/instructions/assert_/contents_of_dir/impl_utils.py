@@ -11,7 +11,7 @@ from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case_utils import file_properties, pfh_exception as pfh_ex_method
 from exactly_lib.test_case_utils import path_check
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
-from exactly_lib.test_case_utils.err_msg2 import path_err_msgs, file_or_dir_contents_headers
+from exactly_lib.test_case_utils.err_msg import path_err_msgs, file_or_dir_contents_headers
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.type_system.logic.hard_error import HardErrorException

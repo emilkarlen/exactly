@@ -25,7 +25,7 @@ class PathValueRelCwd(Renderer[str]):
         self._tcds = tcds
 
     def render(self) -> str:
-        return path_description.path_value_with_relativity_name_prefix(
+        return path_description.path_ddv_with_relativity_name_prefix(
             self._path_ddv,
             self._tcds,
             self._cwd,
@@ -51,7 +51,7 @@ class PathValueAbsolute(Renderer[str]):
         self._tcds = tcds
 
     def render(self) -> str:
-        return path_description.path_value_with_relativity_name_prefix(
+        return path_description.path_ddv_with_relativity_name_prefix(
             self._path_ddv,
             self._tcds,
             None,
@@ -66,11 +66,6 @@ class PathValuePlainAbsolute(Renderer[str]):
 
     def render(self) -> str:
         return str(self._path_ddv.value_when_no_dir_dependencies())
-
-
-class _PathStrRendererForNotImplemented(Renderer[str]):
-    def render(self) -> str:
-        raise NotImplementedError('must not be used')
 
 
 _CURRENT_DIRECTORY = pathlib.Path('<CURRENT-DIRECTORY>')
