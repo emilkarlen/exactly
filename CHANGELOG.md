@@ -10,10 +10,18 @@ with exception of a "0." prefix until version 1 is released.
 ### Added
 
  - Command `symbol` - ability to display information from suite
+ - Command `symbol` - ability to display structure of symbols
+ - Command `symbol` - ability to handle builtin symbols
 
 ### Changed
 
  - Python compatibility: Increased to Python v 3.5.4
+ - Matching on file contents: HARD_ERROR instead of FAIL when file is not an existing regular file
+ - Improved error messages
+
+### Fixed
+
+ - Help text of instruction `[conf]`/actor
  
 ## [0.11.0.1] - 2019-05-02
 
