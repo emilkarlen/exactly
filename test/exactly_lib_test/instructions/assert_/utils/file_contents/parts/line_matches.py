@@ -15,8 +15,6 @@ from exactly_lib.test_case_utils.string_transformer.impl.identity import Identit
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
-from exactly_lib_test.instructions.assert_.utils.file_contents.contents_checkers import \
-    FilePropertyDescriptorConstructorTestImpl
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
     destination_file_path_getter_that_gives_seq_of_unique_paths
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
@@ -52,7 +50,6 @@ class TestCaseBase(unittest.TestCase):
             matcher_cases: Sequence[Case]):
 
         environment = fake_post_sds_environment()
-        checked_file_describer = FilePropertyDescriptorConstructorTestImpl()
         os_services = new_default()
 
         with destination_file_path_getter_that_gives_seq_of_unique_paths() as dst_file_path_getter:
@@ -64,7 +61,6 @@ class TestCaseBase(unittest.TestCase):
                         with self.subTest(case=case.name,
                                           expectation_type=expectation_type):
                             ftc = FileToCheck(described_path.new_primitive(actual_file_path),
-                                              checked_file_describer,
                                               IdentityStringTransformer(),
                                               dst_file_path_getter)
                             matcher_sdv = LineMatcherSdv(
@@ -86,7 +82,6 @@ class TestCaseBase(unittest.TestCase):
             expected_result_when_positive_expectation: PassOrFail):
         empty_file_contents = ''
         environment = fake_post_sds_environment()
-        checked_file_describer = FilePropertyDescriptorConstructorTestImpl()
         os_services = new_default()
 
         matchers = [
@@ -102,7 +97,6 @@ class TestCaseBase(unittest.TestCase):
                         with self.subTest(expectation_type=expectation_type,
                                           matcher_name=matcher_name):
                             ftc = FileToCheck(described_path.new_primitive(actual_file_path),
-                                              checked_file_describer,
                                               IdentityStringTransformer(),
                                               dst_file_path_getter)
                             matcher_sdv = LineMatcherSdv(

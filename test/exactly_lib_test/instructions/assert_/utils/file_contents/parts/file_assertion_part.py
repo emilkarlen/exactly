@@ -2,11 +2,8 @@ import unittest
 
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
-from exactly_lib_test.instructions.assert_.utils.file_contents.contents_checkers import \
-    FilePropertyDescriptorConstructorTestImpl
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
     destination_file_path_getter_that_gives_seq_of_unique_paths
-from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.contents_transformation import \
     ToUppercaseStringTransformer
 from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing
@@ -59,8 +56,6 @@ class Test(unittest.TestCase):
             ('to-upper', ToUppercaseStringTransformer(), str.upper),
         ]
 
-        environment = fake_post_sds_environment()
-        checked_file_describer = FilePropertyDescriptorConstructorTestImpl()
         with destination_file_path_getter_that_gives_seq_of_unique_paths() as dst_file_path_getter:
             # This test is expected to not create files using the above object,
             # but to be sure, one is used that creates and destroys temporary files.
@@ -70,7 +65,6 @@ class Test(unittest.TestCase):
                         with self.subTest(case=case.name,
                                           trans=trans_name):
                             ftc = FileToCheck(described_path.new_primitive(actual_file_path),
-                                              checked_file_describer,
                                               lines_trans,
                                               dst_file_path_getter)
                             # ACT #
