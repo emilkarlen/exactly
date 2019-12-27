@@ -65,11 +65,11 @@ class TestSuccessfulScenarios(TestCaseBase):
                     expected_glob_pattern_matcher,
                     [
                         asrt_matcher.ModelInfo(
-                            file_matcher_models.FileMatcherModelForPrimitivePath(
+                            file_matcher_models.FileMatcherModelForDescribedPath(
                                 described_path.new_primitive(pathlib.Path(name_pattern)),
                             )),
                         asrt_matcher.ModelInfo(
-                            file_matcher_models.FileMatcherModelForPrimitivePath(
+                            file_matcher_models.FileMatcherModelForDescribedPath(
                                 described_path.new_primitive(pathlib.Path(non_matching_name)),
                             )),
                     ]

@@ -7,7 +7,7 @@ from exactly_lib.definitions.primitives import files_matcher as files_matcher_pr
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForFileWithDescriptor
+from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForDescribedPath
 from exactly_lib.test_case_utils.matcher.impls import quantifier_matchers
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.data import path_description
@@ -15,7 +15,7 @@ from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor, FileP
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
-from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
+from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 
 
@@ -42,15 +42,8 @@ class _ModelsFactory:
         self._id_trans = IdentityStringTransformer()
         self._destination_file_path_getter = DestinationFilePathGetter()
 
-    def file_to_check(self, file_element: FileModel) -> FileToCheck:
-        return FileToCheck(file_element.path,
-                           _FilePropertyDescriptorConstructorForFileInDir(file_element),
-                           self._id_trans,
-                           self._destination_file_path_getter)
-
     def file_matcher_model(self, file_element: FileModel) -> FileMatcherModel:
-        return FileMatcherModelForFileWithDescriptor(file_element.path,
-                                                     _FilePropertyDescriptorConstructorForFileInDir(file_element))
+        return FileMatcherModelForDescribedPath(file_element.path)
 
 
 @contextlib.contextmanager
