@@ -37,7 +37,6 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_fi
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building2 as sm_arg
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.contents_transformation import \
     ToUppercaseStringTransformer
-from exactly_lib_test.test_case_utils.test_resources import matcher_assertions as asrt_matcher
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
@@ -221,7 +220,7 @@ class TestHardErrorWhenContentsOfAFileThatIsNotARegularFileIsTested(unittest.Tes
                                 ),
                                 expectation=
                                 integration_check.Expectation(
-                                    is_hard_error=asrt_matcher.is_hard_error()
+                                    is_hard_error=asrt.anything_goes()
                                 )
                             )
 

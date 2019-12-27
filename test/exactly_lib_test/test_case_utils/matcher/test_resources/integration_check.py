@@ -1,6 +1,7 @@
 import unittest
 from typing import Optional, Sequence, TypeVar, Generic, Callable
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
@@ -12,7 +13,6 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, Mat
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case.test_resources.arrangements import ActResultProducer, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
     tcds_populators
@@ -54,7 +54,7 @@ class Expectation:
             symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
             validation: ValidationExpectation = all_validations_passes(),
             main_result: ValueAssertion[MatchingResult] = asrt_matching_result.matches_value(True),
-            is_hard_error: Optional[ValueAssertion[str]] = None,
+            is_hard_error: Optional[ValueAssertion[TextRenderer]] = None,
     ):
         self.source = source
         self.symbol_references = symbol_references
@@ -305,7 +305,6 @@ class _Checker(Generic[MODEL]):
         if self.expectation.is_hard_error is None:
             self.put.fail('Unexpected HARD_ERROR')
         else:
-            assertion_on_text_renderer = asrt_text_doc.is_string_for_test(self.expectation.is_hard_error)
-            assertion_on_text_renderer.apply_with_message(self.put, result.error,
-                                                          'error message for hard error')
+            self.expectation.is_hard_error.apply_with_message(self.put, result.error,
+                                                              'error message for hard error')
             raise _CheckIsDoneException()

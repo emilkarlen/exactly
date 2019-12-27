@@ -102,7 +102,7 @@ class TestHardErrorWhenActualFileDoesNotExist(tc.TestWithNegationArgumentBase):
             Arrangement(),
             expectation=
             Expectation(
-                is_hard_error=matcher_assertions.is_hard_error()
+                is_hard_error=asrt.anything_goes()
             ),
         )
 
@@ -124,7 +124,7 @@ class TestHardErrorWhenActualFileIsADirectory(tc.TestWithNegationArgumentBase):
             ),
             expectation=
             Expectation(
-                is_hard_error=matcher_assertions.is_hard_error()
+                is_hard_error=asrt.anything_goes()
             ),
         )
 

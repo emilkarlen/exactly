@@ -1,6 +1,7 @@
 import unittest
 from typing import Optional, Sequence, Callable
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
@@ -12,7 +13,6 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformer, 
     StringTransformerModel
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -35,7 +35,7 @@ class Expectation:
             symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
             validation: ValidationExpectation = all_validations_passes(),
             main_result: ValueAssertion[StringTransformerModel] = asrt.anything_goes(),
-            is_hard_error: Optional[ValueAssertion[str]] = None,
+            is_hard_error: Optional[ValueAssertion[TextRenderer]] = None,
             is_identity_transformer: ValueAssertion[bool] = asrt.equals(False)
     ):
         self.source = source
@@ -211,9 +211,8 @@ class _Checker:
         if self.expectation.is_hard_error is None:
             self.put.fail('Unexpected HARD_ERROR')
         else:
-            assertion_on_text_renderer = asrt_text_doc.is_string_for_test(self.expectation.is_hard_error)
-            assertion_on_text_renderer.apply_with_message(self.put, result.error,
-                                                          'error message for hard error')
+            self.expectation.is_hard_error.apply_with_message(self.put, result.error,
+                                                              'error message for hard error')
             raise _CheckIsDoneException()
 
     def _check_equivalent_structures(self,
