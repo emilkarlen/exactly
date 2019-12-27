@@ -33,11 +33,6 @@ class MatchingResult:
 
 
 class MatcherWTrace(Generic[MODEL], WithNameAndTreeStructureDescription, ABC):
-    @property
-    @abstractmethod
-    def name(self) -> str:
-        pass
-
     @abstractmethod
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         pass
