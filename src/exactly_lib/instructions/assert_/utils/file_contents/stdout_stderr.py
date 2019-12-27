@@ -7,6 +7,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts, syntax_elements, types
+from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor, \
     ComparisonActualFile
@@ -26,7 +27,7 @@ from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.description_tree import structure_rendering
-from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers
+from exactly_lib.test_case_utils.err_msg2 import file_or_dir_contents_headers, header_rendering
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
@@ -36,11 +37,8 @@ from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution import process_output_files
-from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer
-from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
-from exactly_lib.util.simple_textstruct.rendering import component_renderers as comp_rend
-from exactly_lib.util.simple_textstruct.structure import MajorBlock, Indentation
+from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 _SINGLE_LINE_DESCRIPTION = 'Tests the contents of {checked_file} from the {action_to_check}, or from a {program_type}'
@@ -149,18 +147,11 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
         )
 
     def failure_message_header(self, environment: FullResolvingEnvironment) -> Renderer[MajorBlock]:
-        header = file_or_dir_contents_headers.unexpected(
-            file_or_dir_contents_headers.target_name_of_proc_output_file_from_program(self._checked_output)
-        )
-        header_block = blocks.MinorBlockOfSingleLineObject(line_objects.StringLineObject(header))
-
         resolver = resolving_helper__of_full_env(environment)
         program = resolver.resolve_program(self._program)
-        program_structure_blocks = rend_comb.Indented(
-            structure_rendering.as_minor_blocks(program.structure().render()),
-            Indentation(level=1),
-        )
 
-        minor_blocks = rend_comb.PrependR(header_block,
-                                          program_structure_blocks)
-        return comp_rend.MajorBlockR(minor_blocks)
+        return header_rendering.UnexpectedAttrOfObjMajorBlockRenderer(
+            file_check_properties.CONTENTS,
+            file_or_dir_contents_headers.target_name_of_proc_output_file_from_program(self._checked_output),
+            structure_rendering.as_minor_blocks(program.structure().render()),
+        )

@@ -24,6 +24,7 @@ class Indentation(tuple):
 
 
 INDENTATION__NEUTRAL = Indentation(0, '')
+INDENTATION__1 = Indentation(1, '')
 
 
 class TextStyle(tuple):

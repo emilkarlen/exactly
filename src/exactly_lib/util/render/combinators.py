@@ -1,6 +1,7 @@
 from typing import Sequence, Generic, TypeVar
 
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
+from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.structure import Element, Indentation
 
 T = TypeVar('T')
@@ -102,7 +103,8 @@ ELEMENT = TypeVar('ELEMENT', bound=Element)
 class Indented(Generic[ELEMENT], SequenceRenderer[ELEMENT]):
     def __init__(self,
                  original: SequenceRenderer[ELEMENT],
-                 indent: Indentation):
+                 indent: Indentation = structure.INDENTATION__1,
+                 ):
         self._original = original
         self._indent = indent
 
