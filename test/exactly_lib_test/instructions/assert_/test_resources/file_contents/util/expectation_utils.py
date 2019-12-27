@@ -12,7 +12,7 @@ def expectation_that_file_for_actual_contents_is_invalid(conf: RelativityOptionC
         )
     else:
         return Expectation(
-            main_result=pfh_assertions.is_fail__with_arbitrary_message(),
+            main_result=pfh_assertions.is_hard_error__with_arbitrary_message(),
             symbol_usages=conf.symbols.usages_expectation(),
         )
 

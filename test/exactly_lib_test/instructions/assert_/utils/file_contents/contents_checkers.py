@@ -7,7 +7,7 @@ from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.err_msg.property_description import property_descriptor_with_just_a_constant_name
-from exactly_lib.test_case_utils.pfh_exception import PfhFailException
+from exactly_lib.test_case_utils.pfh_exception import PfhHardErrorException
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.err_msg import prop_descr
 from exactly_lib.type_system.err_msg.prop_descr import PropertyDescriptor
@@ -50,11 +50,11 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
 
             self.assertIs(model, actual)
 
-    def test_PfhFail_SHOULD_be_raised_WHEN_file_does_not_exist(self):
+    def test_PfhHardError_SHOULD_be_raised_WHEN_file_does_not_exist(self):
         # ARRANGE #
         assertion_part = sut.IsExistingRegularFileAssertionPart()
         # ACT & ASSERT #
-        with self.assertRaises(PfhFailException):
+        with self.assertRaises(PfhHardErrorException):
             path = pathlib.Path('a file that does not exist')
             assertion_part.check(self.environment, self.the_os_services,
                                  'custom environment',
@@ -63,12 +63,12 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
                                      True,
                                  ))
 
-    def test_PfhFail_SHOULD_be_raised_WHEN_file_does_exist_but_is_not_a_regular_file(self):
+    def test_PfhHardError_SHOULD_be_raised_WHEN_file_does_exist_but_is_not_a_regular_file(self):
         # ARRANGE #
         assertion_part = sut.IsExistingRegularFileAssertionPart()
         # ACT & ASSERT #
         with tmp_dir() as path_of_existing_directory:
-            with self.assertRaises(PfhFailException):
+            with self.assertRaises(PfhHardErrorException):
                 assertion_part.check(self.environment, self.the_os_services,
                                      'custom environment',
                                      sut.ComparisonActualFile(

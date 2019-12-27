@@ -14,6 +14,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
 from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
 from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
 from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element
+from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -37,6 +38,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         self.actual_file_arg = ACTUAL_PATH_ARGUMENT
         super().__init__(name, {
             'checked_file': self.actual_file_arg.name,
+            'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
         })
         self.actual_file = a.Single(a.Multiplicity.MANDATORY,
                                     self.actual_file_arg)
@@ -89,5 +91,5 @@ ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfig
     True)
 
 _MAIN_DESCRIPTION_REST = """\
-FAILs if {checked_file} is not an existing regular file.
+The result is {HARD_ERROR} if {checked_file} is not an existing regular file.
 """

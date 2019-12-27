@@ -6,10 +6,8 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
-from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils import file_properties, path_check
 from exactly_lib.test_case_utils import pfh_exception
-from exactly_lib.test_case_utils.file_system_element_matcher import \
-    FileSystemElementPropertiesMatcher
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
 
@@ -52,9 +50,8 @@ class IsExistingRegularFileAssertionPart(IdentityAssertionPart[ComparisonActualF
 
     def __init__(self):
         super().__init__()
-        self._file_prop_check = FileSystemElementPropertiesMatcher(
-            file_properties.ActualFilePropertiesResolver(file_properties.FileType.REGULAR,
-                                                         follow_symlinks=True))
+        self._is_regular_file_check = file_properties.must_exist_as(file_properties.FileType.REGULAR,
+                                                                    follow_symlinks=True)
 
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
@@ -68,7 +65,7 @@ class IsExistingRegularFileAssertionPart(IdentityAssertionPart[ComparisonActualF
     def __check(self, actual_file: ComparisonActualFile,
                 ):
         if actual_file.file_access_needs_to_be_verified:
-            err_msg_resolver = self._file_prop_check.matches(actual_file.path)
+            mb_failure = path_check.failure_message_or_none(self._is_regular_file_check, actual_file.path)
 
-            if err_msg_resolver:
-                raise pfh_exception.PfhFailException(err_msg_resolver.resolve__tr())
+            if mb_failure:
+                raise pfh_exception.PfhHardErrorException(mb_failure)

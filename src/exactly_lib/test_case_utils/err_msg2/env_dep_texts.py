@@ -1,19 +1,9 @@
 from typing import Any
 
-from exactly_lib.common.report_rendering import print
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case_utils.err_msg2.env_dep_text import TextResolver, SequenceRendererResolver
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
-
-
-def of_old(resolver: ErrorMessageResolver) -> TextResolver:
-    return _ResolverFromOldResolver(resolver)
-
-
-def as_old(resolver: TextResolver) -> ErrorMessageResolver:
-    return _ResolverAsOldResolver(resolver)
 
 
 def constant_renderer(renderer: TextRenderer) -> TextResolver:
@@ -31,22 +21,6 @@ class _OfConstantRenderer(SequenceRendererResolver[MajorBlock]):
 
     def resolve_sequence(self) -> TextRenderer:
         return self._renderer
-
-
-class _ResolverAsOldResolver(ErrorMessageResolver):
-    def __init__(self, resolver: TextResolver):
-        self._resolver = resolver
-
-    def resolve(self) -> str:
-        return print.print_to_str(self._resolver.resolve_sequence().render_sequence())
-
-
-class _ResolverFromOldResolver(SequenceRendererResolver[MajorBlock]):
-    def __init__(self, old: ErrorMessageResolver):
-        self._old = old
-
-    def resolve_sequence(self) -> TextRenderer:
-        return self._old.resolve__tr()
 
 
 class _ConstantPreFormatted(SequenceRendererResolver[MajorBlock]):

@@ -5,7 +5,6 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
     invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -29,9 +28,7 @@ from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate, path_check
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
-from exactly_lib.test_case_utils.err_msg2 import env_dep_texts
 from exactly_lib.test_case_utils.err_msg2 import path_err_msgs
-from exactly_lib.test_case_utils.err_msg2.env_dep_text import TextResolver
 from exactly_lib.test_case_utils.err_msg2.header_rendering import SimpleHeaderMinorBlockRenderer
 from exactly_lib.test_case_utils.err_msg2.path_rendering import HeaderAndPathMajorBlock, \
     PathRepresentationsRenderersForPrimitive
@@ -41,7 +38,6 @@ from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.type_system.err_msg.err_msg_resolver import ErrorMessageResolver
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util import strings
@@ -317,12 +313,6 @@ class _Assertion:
 
     def _is_positive_check(self) -> bool:
         return self.expectation_type is ExpectationType.POSITIVE
-
-    def _err_msg_for(self, msg_resolver: ErrorMessageResolver) -> TextRenderer:
-        return self._err_msg_for__td(env_dep_texts.of_old(msg_resolver))
-
-    def _err_msg_for__td(self, msg_resolver: TextResolver) -> TextRenderer:
-        return msg_resolver.resolve_sequence()
 
 
 _ERROR_MESSAGE_HEADER = 'Failure for path:'
