@@ -1,16 +1,13 @@
-from exactly_lib.common.report_rendering import text_docs__old
-from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils import file_properties, path_check
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase, \
     FileMatcherAdvImplBase
-from exactly_lib.test_case_utils.file_system_element_matcher import ErrorMessageResolverForFailingFileProperties2
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_transformer.impl import identity
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -32,9 +29,8 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
     def __init__(self, contents_matcher: string_matcher.StringMatcher):
         super().__init__()
         self._contents_matcher = contents_matcher
-        self._expected_file_type = file_properties.FileType.REGULAR
-        self._is_regular_file_check = file_properties.ActualFilePropertiesResolver(self._expected_file_type,
-                                                                                   follow_symlinks=True)
+        self._is_regular_file_check = file_properties.must_exist_as(file_properties.FileType.REGULAR,
+                                                                    follow_symlinks=True)
 
     @property
     def name(self) -> str:
@@ -64,17 +60,9 @@ class RegularFileMatchesStringMatcher(FileMatcherImplBase):
         )
 
     def _hard_error_if_not_regular_file(self, model: FileMatcherModel):
-        failure_info_properties = self._is_regular_file_check.resolve_failure_info(model.path.primitive)
-        if failure_info_properties:
-            property_descriptor = model.file_descriptor.construct_for_contents_attribute(
-                actual_file_attributes.TYPE_ATTRIBUTE
-            )
-            raise HardErrorException(
-                text_docs__old.of_err_msg_resolver(
-                    ErrorMessageResolverForFailingFileProperties2(property_descriptor,
-                                                                  failure_info_properties,
-                                                                  self._expected_file_type)
-                ))
+        mb_failure = path_check.failure_message_or_none(self._is_regular_file_check, model.path)
+        if mb_failure:
+            raise HardErrorException(mb_failure)
 
     @staticmethod
     def _string_matcher_model(model: FileMatcherModel) -> string_matcher.FileToCheck:
