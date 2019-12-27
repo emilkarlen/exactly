@@ -285,9 +285,9 @@ class _Checker(Generic[MODEL]):
                            resolving_env: FullResolvingEnvironment):
         try:
             model = self.model_constructor(resolving_env)
-            main_result__trace = matcher.matches_w_trace(model)
+            main_result = matcher.matches_w_trace(model)
 
-            self._check_application_result(main_result__trace)
+            self._check_application_result(main_result)
         except HardErrorException as ex:
             self._check_hard_error(ex)
 

@@ -79,7 +79,7 @@ class TestValidationErrorDueToReferenceToUndefinedSymbol(TestCaseBase):
                     ExecutionFailureStatus.VALIDATION_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
-                    ExpectedFailureForInstructionFailure.new_with_message_assertion__td(
+                    ExpectedFailureForInstructionFailure.new_with_message_assertion(
                         conf.step,
                         test_case.the_extra(conf.phase)[0].source,
                         asrt_text_doc.is_any_text()),
@@ -113,7 +113,7 @@ class TestValidationErrorDueToFailedReferenceRestrictions(TestCaseBase):
                     ExecutionFailureStatus.VALIDATION_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
-                    ExpectedFailureForInstructionFailure.new_with_phase_and_message_assertion__td(
+                    ExpectedFailureForInstructionFailure.new_with_phase_and_message_assertion(
                         conf.step,
                         asrt_text_doc.is_single_pre_formatted_text_that_equals(error_message_for_failed_restriction)),
                 ),

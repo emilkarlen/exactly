@@ -87,9 +87,9 @@ def _of_indirect(failing_symbol: str,
     major_blocks_sequence.append(error.message)
 
     major_blocks_sequence.append(
-        _path_to_failing_symbol__tr(failing_symbol,
-                                    failure.path_to_failing_symbol,
-                                    symbols)
+        _path_to_failing_symbol(failing_symbol,
+                                failure.path_to_failing_symbol,
+                                symbols)
     )
 
     if error.how_to_fix is not None:
@@ -98,9 +98,9 @@ def _of_indirect(failing_symbol: str,
     return combinators.ConcatenationR(major_blocks_sequence)
 
 
-def _path_to_failing_symbol(failing_symbol: str,
-                            path_to_failing_symbol: List[str],
-                            symbols: SymbolTable) -> Blocks:
+def _path_to_failing_symbol__old(failing_symbol: str,
+                                 path_to_failing_symbol: List[str],
+                                 symbols: SymbolTable) -> Blocks:
     def line_ref_of_symbol(symbol_name: str) -> Blocks:
         container = symbols.lookup(symbol_name)
         assert isinstance(container, SymbolContainer), 'Only known type of SymbolTableValue'
@@ -117,13 +117,13 @@ def _path_to_failing_symbol(failing_symbol: str,
     return ret_val
 
 
-def _path_to_failing_symbol__tr(failing_symbol: str,
-                                path_to_failing_symbol: List[str],
-                                symbols: SymbolTable) -> TextRenderer:
+def _path_to_failing_symbol(failing_symbol: str,
+                            path_to_failing_symbol: List[str],
+                            symbols: SymbolTable) -> TextRenderer:
     return text_docs.major_blocks_of_string_blocks(
-        _path_to_failing_symbol(failing_symbol,
-                                path_to_failing_symbol,
-                                symbols))
+        _path_to_failing_symbol__old(failing_symbol,
+                                     path_to_failing_symbol,
+                                     symbols))
 
 
 def _render_vrf(vrf: ErrorMessageWithFixTip) -> Sequence[MajorBlock]:
