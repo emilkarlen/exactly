@@ -1,6 +1,5 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case import file_check_properties
-from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -12,7 +11,7 @@ from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_transformer.impl import identity
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic import string_matcher
-from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, FileMatcherSdvType
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
     MatcherWTraceAndNegation, MODEL, MatcherAdv
@@ -102,14 +101,12 @@ class RegularFileMatchesStringMatcherDdv(FileMatcherDdvImplBase):
         return _RegularFileMatchesStringMatcherAdv(self._contents_matcher.value_of_any_dependency(tcds))
 
 
-def regular_file_matches_string_matcher_sdv(contents_matcher: StringMatcherSdv) -> FileMatcherSdv:
+def regular_file_matches_string_matcher_sdv__generic(contents_matcher: StringMatcherSdv) -> FileMatcherSdvType:
     def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
         contents_matcher_ddv = contents_matcher.resolve(symbols)
         return RegularFileMatchesStringMatcherDdv(contents_matcher_ddv)
 
-    return FileMatcherSdv(
-        sdv_components.MatcherSdvFromParts(
-            contents_matcher.references,
-            make_ddv,
-        )
+    return sdv_components.MatcherSdvFromParts(
+        contents_matcher.references,
+        make_ddv,
     )

@@ -6,12 +6,12 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase
-from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_sdv_from_ddv_parts
+from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, FileMatcherSdvType
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherAdv, MODEL
 from exactly_lib.util import strings
@@ -22,20 +22,24 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def parse(token_parser: TokenParser) -> FileMatcherSdv:
+    return FileMatcherSdv(parse__generic(token_parser))
+
+
+def parse__generic(token_parser: TokenParser) -> FileMatcherSdvType:
     glob_pattern = parse_string.parse_string_from_token_parser(token_parser, _PARSE_STRING_CONFIGURATION)
 
-    return sdv(glob_pattern)
+    return _sdv(glob_pattern)
 
 
 _PARSE_STRING_CONFIGURATION = parse_string.Configuration(syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.singular_name,
                                                          reference_restrictions=None)
 
 
-def sdv(glob_pattern: StringSdv) -> FileMatcherSdv:
+def _sdv(glob_pattern: StringSdv) -> FileMatcherSdvType:
     def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
         return _Ddv(glob_pattern.resolve(symbols))
 
-    return file_matcher_sdv_from_ddv_parts(
+    return sdv_components.MatcherSdvFromParts(
         glob_pattern.references,
         make_ddv,
     )
@@ -46,15 +50,15 @@ class _Ddv(FileMatcherDdvImplBase):
         self._glob_pattern = glob_pattern
 
     def structure(self) -> StructureRenderer:
-        return FileMatcherNameGlobPattern.new_structure_tree(
+        return _FileMatcherNameGlobPattern.new_structure_tree(
             details.String(strings.Repr(string_rendering.AsToStringObject(self._glob_pattern.describer())))
         )
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
-        return advs.ConstantMatcherAdv(FileMatcherNameGlobPattern(self._glob_pattern.value_of_any_dependency(tcds)))
+        return advs.ConstantMatcherAdv(_FileMatcherNameGlobPattern(self._glob_pattern.value_of_any_dependency(tcds)))
 
 
-class FileMatcherNameGlobPattern(FileMatcherImplBase):
+class _FileMatcherNameGlobPattern(FileMatcherImplBase):
     """Matches the name (whole path, not just base name) of a path on a shell glob pattern."""
 
     NAME = file_matcher.NAME_MATCHER_NAME
@@ -82,16 +86,16 @@ class FileMatcherNameGlobPattern(FileMatcherImplBase):
     @staticmethod
     def _sub_matcher_renderer(glob_pattern: DetailsRenderer) -> DetailsRenderer:
         return details.HeaderAndValue(
-            FileMatcherNameGlobPattern._SUB_MATCHER_NAME,
+            _FileMatcherNameGlobPattern._SUB_MATCHER_NAME,
             glob_pattern,
         )
 
     @staticmethod
     def new_structure_tree(glob_pattern: DetailsRenderer) -> StructureRenderer:
         return renderers.NodeRendererFromParts(
-            FileMatcherNameGlobPattern.NAME,
+            _FileMatcherNameGlobPattern.NAME,
             None,
-            (FileMatcherNameGlobPattern._sub_matcher_renderer(glob_pattern),),
+            (_FileMatcherNameGlobPattern._sub_matcher_renderer(glob_pattern),),
             (),
         )
 

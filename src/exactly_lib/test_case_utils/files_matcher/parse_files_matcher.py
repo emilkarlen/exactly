@@ -85,7 +85,7 @@ class _SimpleMatcherParser:
                                    parser: TokenParser) -> FilesMatcherSdv:
         matcher = parse_quantified_matcher.parse_after_quantifier_token(
             quantifier,
-            parse_file_matcher.ParserOfPlainMatcherOnArbitraryLine(),
+            parse_file_matcher.ParserOfGenericMatcherOnArbitraryLine(),
             quant_over_files.ELEMENT_SETUP,
             parser,
         )

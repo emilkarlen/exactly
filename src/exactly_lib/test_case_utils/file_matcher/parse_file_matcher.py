@@ -25,8 +25,9 @@ from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_F
 from exactly_lib.test_case_utils.file_matcher.impl import name_regex, name_glob_pattern, regular_file_contents
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdvType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -56,9 +57,9 @@ class _Parser(parser_classes.Parser[FileMatcherSdv]):
         return parse_sdv(parser)
 
 
-class ParserOfPlainMatcherOnArbitraryLine(parser_classes.Parser[MatcherSdv[FileMatcherModel]]):
-    def parse_from_token_parser(self, token_parser: TokenParser) -> MatcherSdv[FileMatcherModel]:
-        return parse_sdv(token_parser, must_be_on_current_line=False).matcher
+class ParserOfGenericMatcherOnArbitraryLine(parser_classes.Parser[MatcherSdv[FileMatcherModel]]):
+    def parse_from_token_parser(self, token_parser: TokenParser) -> FileMatcherSdvType:
+        return _parse__generic(token_parser, must_be_on_current_line=False)
 
 
 _PARSER = _Parser()
@@ -86,38 +87,39 @@ def parse_optional_selection_sdv2(parser: TokenParser) -> Optional[FileMatcherSd
 
 def parse_sdv(parser: TokenParser,
               must_be_on_current_line: bool = True) -> FileMatcherSdv:
+    generic_matcher = _parse__generic(parser, must_be_on_current_line)
+    return FileMatcherSdv(generic_matcher)
+
+
+def _parse__generic(parser: TokenParser,
+                    must_be_on_current_line: bool) -> FileMatcherSdvType:
     parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
-    return _parse(parser, must_be_on_current_line)
-
-
-def _parse(parser: TokenParser,
-           must_be_on_current_line: bool) -> FileMatcherSdv:
     return ep.parse(GRAMMAR, parser, must_be_on_current_line)
 
 
-def _parse_name_matcher(parser: TokenParser) -> FileMatcherSdv:
-    return parser.parse_choice_of_optional_option(name_regex.parse,
-                                                  name_glob_pattern.parse,
+def _parse_name_matcher(parser: TokenParser) -> FileMatcherSdvType:
+    return parser.parse_choice_of_optional_option(name_regex.parse__generic,
+                                                  name_glob_pattern.parse__generic,
                                                   REG_EX_OPTION)
 
 
-def _parse_type_matcher(parser: TokenParser) -> FileMatcherSdv:
+def _parse_type_matcher(parser: TokenParser) -> FileMatcherSdvType:
     file_type = parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE,
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE.get,
         '{_TYPE_}')
-    return _constant(FileMatcherType(file_type))
+    return sdv_components.matcher_sdv_from_constant_primitive(FileMatcherType(file_type))
 
 
-def _parse_regular_file_contents(parser: TokenParser) -> FileMatcherSdv:
+def _parse_regular_file_contents(parser: TokenParser) -> FileMatcherSdvType:
     string_matcher = parse_string_matcher.parse_string_matcher(parser)
-    return regular_file_contents.regular_file_matches_string_matcher_sdv(string_matcher)
+    return regular_file_contents.regular_file_matches_string_matcher_sdv__generic(string_matcher)
 
 
-def _constant(matcher: file_matchers.FileMatcher) -> FileMatcherSdv:
-    return sdvs.file_matcher_constant_sdv(matcher)
+def _constant(matcher: file_matchers.FileMatcher) -> FileMatcherSdvType:
+    return sdv_components.matcher_sdv_from_constant_primitive(matcher)
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
