@@ -9,10 +9,10 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
-from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, sub_set_selection, \
-    negation
+from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, sub_set_selection
 from exactly_lib.test_case_utils.files_matcher.impl import symbol_reference
-from exactly_lib.test_case_utils.matcher.impls import parse_quantified_matcher
+from exactly_lib.test_case_utils.matcher.impls import parse_quantified_matcher, combinator_sdvs
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdvType
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 
 
@@ -32,13 +32,13 @@ def parse_files_matcher(parser: TokenParser,
     ret_val = _SIMPLE_MATCHER_PARSER.parse(parser)
 
     if expectation_type is ExpectationType.NEGATIVE:
-        ret_val = negation.negation_matcher(ret_val)
+        ret_val = combinator_sdvs.Negation(ret_val)
 
     if mb_file_selector is not None:
         ret_val = sub_set_selection.sub_set_selection_matcher(mb_file_selector,
                                                               ret_val)
 
-    return ret_val
+    return FilesMatcherSdv(ret_val)
 
 
 class _SimpleMatcherParser:
@@ -50,7 +50,7 @@ class _SimpleMatcherParser:
             instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT: self.parse_file_quantified_assertion__exists,
         }
 
-    def parse(self, parser: TokenParser) -> FilesMatcherSdv:
+    def parse(self, parser: TokenParser) -> FilesMatcherSdvType:
         matcher_name = parser.consume_mandatory_unquoted_string(
             syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.singular_name,
             False)
@@ -59,19 +59,19 @@ class _SimpleMatcherParser:
         else:
             return self.parse_symbol_reference(matcher_name, parser)
 
-    def parse_empty_check(self, parser: TokenParser) -> FilesMatcherSdv:
-        return emptiness.emptiness_matcher()
+    def parse_empty_check(self, parser: TokenParser) -> FilesMatcherSdvType:
+        return emptiness.emptiness_matcher__generic()
 
-    def parse_num_files_check(self, parser: TokenParser) -> FilesMatcherSdv:
-        return num_files.parse(ExpectationType.POSITIVE, parser)
+    def parse_num_files_check(self, parser: TokenParser) -> FilesMatcherSdvType:
+        return num_files.parse__generic(ExpectationType.POSITIVE, parser)
 
-    def parse_file_quantified_assertion__all(self, parser: TokenParser) -> FilesMatcherSdv:
+    def parse_file_quantified_assertion__all(self, parser: TokenParser) -> FilesMatcherSdvType:
         return self._file_quantified_assertion(Quantifier.ALL, parser)
 
-    def parse_file_quantified_assertion__exists(self, parser: TokenParser) -> FilesMatcherSdv:
+    def parse_file_quantified_assertion__exists(self, parser: TokenParser) -> FilesMatcherSdvType:
         return self._file_quantified_assertion(Quantifier.EXISTS, parser)
 
-    def parse_symbol_reference(self, parsed_symbol_name: str, parser: TokenParser) -> FilesMatcherSdv:
+    def parse_symbol_reference(self, parsed_symbol_name: str, parser: TokenParser) -> FilesMatcherSdvType:
         if symbol_syntax.is_symbol_name(parsed_symbol_name):
             return symbol_reference.symbol_reference_matcher(parsed_symbol_name)
         else:
@@ -82,14 +82,13 @@ class _SimpleMatcherParser:
 
     def _file_quantified_assertion(self,
                                    quantifier: Quantifier,
-                                   parser: TokenParser) -> FilesMatcherSdv:
-        matcher = parse_quantified_matcher.parse_after_quantifier_token(
+                                   parser: TokenParser) -> FilesMatcherSdvType:
+        return parse_quantified_matcher.parse_after_quantifier_token(
             quantifier,
             parse_file_matcher.ParserOfGenericMatcherOnArbitraryLine(),
             quant_over_files.ELEMENT_SETUP,
             parser,
         )
-        return FilesMatcherSdv(matcher)
 
 
 _SIMPLE_MATCHER_PARSER = _SimpleMatcherParser()

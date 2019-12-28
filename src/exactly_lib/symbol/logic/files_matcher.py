@@ -21,10 +21,6 @@ class FilesMatcherSdv(MatcherTypeSdv[FilesMatcherModel]):
         return ValueType.FILES_MATCHER
 
     @property
-    def matcher(self) -> MatcherSdv[FilesMatcherModel]:
-        return self._matcher
-
-    @property
     def references(self) -> List[SymbolReference]:
         return list(self._matcher.references)
 
