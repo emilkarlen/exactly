@@ -23,7 +23,7 @@ def parse__generic(quantifier: Quantifier,
                    token_parser: TokenParser) -> MatcherSdv[FileToCheck]:
     return parse_quantified_matcher.parse_after_quantifier_token(
         quantifier,
-        parse_line_matcher.ParserOfPlainMatcherOnArbitraryLine(),
+        parse_line_matcher.ParserOfGenericMatcherOnArbitraryLine(),
         line_matches.ELEMENT_SETUP,
         token_parser
     )

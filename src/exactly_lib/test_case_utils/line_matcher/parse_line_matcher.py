@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.expression import grammar, parser as parse_expr
 from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
 from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs, sdv_components, constant
 from exactly_lib.test_case_utils.matcher.impls.symbol_reference import MatcherReferenceSdv
-from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER, LineMatcherLine
+from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER, LineMatcherLine, LineMatcherSdvType
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -42,19 +42,22 @@ class _Parser(Parser[LineMatcherSdv]):
 _PARSER = _Parser()
 
 
-class ParserOfPlainMatcherOnArbitraryLine(Parser[MatcherSdv[LineMatcherLine]]):
+class ParserOfGenericMatcherOnArbitraryLine(Parser[MatcherSdv[LineMatcherLine]]):
     def parse_from_token_parser(self, token_parser: TokenParser) -> MatcherSdv[LineMatcherLine]:
-        return parse_line_matcher_from_token_parser(token_parser, must_be_on_current_line=False).matcher
+        return parse_line_matcher_from_token_parser__generic(token_parser, must_be_on_current_line=False)
 
 
 def parse_line_matcher_from_token_parser(parser: TokenParser,
                                          must_be_on_current_line: bool = True) -> LineMatcherSdv:
+    return LineMatcherSdv(
+        parse_line_matcher_from_token_parser__generic(parser, must_be_on_current_line)
+    )
+
+
+def parse_line_matcher_from_token_parser__generic(parser: TokenParser,
+                                                  must_be_on_current_line: bool = True) -> LineMatcherSdvType:
     return parse_expression.parse(GRAMMAR, parser,
                                   must_be_on_current_line=must_be_on_current_line)
-
-
-def parse_regex(parser: TokenParser) -> LineMatcherSdv:
-    return matches_regex.parse(parser)
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
@@ -116,20 +119,20 @@ _CONCEPT = grammar.Concept(
 )
 
 
-def _mk_reference(name: str) -> LineMatcherSdv:
-    return LineMatcherSdv(MatcherReferenceSdv(name, ValueType.LINE_MATCHER))
+def _mk_reference(name: str) -> LineMatcherSdvType:
+    return MatcherReferenceSdv(name, ValueType.LINE_MATCHER)
 
 
-def _mk_negation(operand: LineMatcherSdv) -> LineMatcherSdv:
-    return LineMatcherSdv(combinator_sdvs.Negation(operand.matcher))
+def _mk_negation(operand: LineMatcherSdvType) -> LineMatcherSdvType:
+    return combinator_sdvs.Negation(operand)
 
 
-def _mk_conjunction(operands: Sequence[LineMatcherSdv]) -> LineMatcherSdv:
-    return LineMatcherSdv(combinator_sdvs.Conjunction([operand.matcher for operand in operands]))
+def _mk_conjunction(operands: Sequence[LineMatcherSdvType]) -> LineMatcherSdvType:
+    return combinator_sdvs.Conjunction(operands)
 
 
-def _mk_disjunction(operands: Sequence[LineMatcherSdv]) -> LineMatcherSdv:
-    return LineMatcherSdv(combinator_sdvs.Disjunction([operand.matcher for operand in operands]))
+def _mk_disjunction(operands: Sequence[LineMatcherSdvType]) -> LineMatcherSdvType:
+    return combinator_sdvs.Disjunction(operands)
 
 
 GRAMMAR = grammar.Grammar(
@@ -137,10 +140,10 @@ GRAMMAR = grammar.Grammar(
     mk_reference=_mk_reference,
     simple_expressions={
         line_matcher.REGEX_MATCHER_NAME:
-            grammar.SimpleExpression(parse_regex,
+            grammar.SimpleExpression(matches_regex.parse__generic,
                                      _REGEX_SYNTAX_DESCRIPTION),
         line_matcher.LINE_NUMBER_MATCHER_NAME:
-            grammar.SimpleExpression(line_number.parse_line_number,
+            grammar.SimpleExpression(line_number.parse_line_number__generic,
                                      _LINE_NUMBER_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
