@@ -6,7 +6,6 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as sut
 from exactly_lib.test_case_utils.string_matcher.impl.emptiness import EmptinessStringMatcher
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
-from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
     is_reference_to_string_matcher__ref
@@ -39,7 +38,7 @@ def suite() -> unittest.TestSuite:
 
 SYMBOL_FOR_EMPTINESS_MATCHER = NameAndValue(
     'SYMBOL_NAME',
-    string_matcher_sdv_constant_test_impl(EmptinessStringMatcher(ExpectationType.POSITIVE))
+    string_matcher_sdv_constant_test_impl(EmptinessStringMatcher())
 )
 
 

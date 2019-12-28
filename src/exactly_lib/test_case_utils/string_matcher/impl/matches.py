@@ -1,7 +1,9 @@
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.matcher import property_matcher
-from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_getters, property_matcher_describers
+from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_getters, property_matcher_describers, \
+    sdv_components
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
 from exactly_lib.test_case_utils.string_matcher.impl import sdvs
@@ -15,9 +17,17 @@ from exactly_lib.util.symbol_table import SymbolTable
 def sdv(expectation_type: ExpectationType,
         is_full_match: bool,
         contents_matcher: RegexSdv) -> StringMatcherSdv:
+    return sdvs.new_maybe_negated(
+        sdv__generic(is_full_match, contents_matcher),
+        expectation_type,
+    )
+
+
+def sdv__generic(is_full_match: bool,
+                 contents_matcher: RegexSdv) -> MatcherSdv[FileToCheck]:
     def get_ddv(symbols: SymbolTable) -> StringMatcherDdv:
         regex_ddv = contents_matcher.resolve(symbols)
-        regex_matcher = matches_regex.MatchesRegexDdv(expectation_type, regex_ddv, is_full_match)
+        regex_matcher = matches_regex.MatchesRegexDdv(ExpectationType.POSITIVE, regex_ddv, is_full_match)
         return property_matcher.PropertyMatcherDdv(
             regex_matcher,
             property_getters.PropertyGetterDdvConstant(
@@ -26,7 +36,7 @@ def sdv(expectation_type: ExpectationType,
             property_matcher_describers.IdenticalToMatcher(),
         )
 
-    return sdvs.string_matcher_sdv_from_parts_2(contents_matcher.references, get_ddv)
+    return sdv_components.MatcherSdvFromParts(contents_matcher.references, get_ddv)
 
 
 class _PropertyGetter(PropertyGetter[FileToCheck, str], WithCachedTreeStructureDescriptionBase):

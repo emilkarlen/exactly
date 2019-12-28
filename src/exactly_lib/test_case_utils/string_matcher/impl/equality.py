@@ -4,17 +4,18 @@ import pathlib
 from typing import Iterable
 
 from exactly_lib.symbol.data.string_or_path import StringOrPathSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case.validation.sdv_validation import PreOrPostSdsValidatorPrimitive
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
+from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_matcher import matcher_options
+from exactly_lib.test_case_utils.string_matcher.impl import sdvs
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase
-from exactly_lib.test_case_utils.string_matcher.impl.sdvs import string_matcher_sdv_from_parts_2
 from exactly_lib.type_system.data.string_or_path_ddvs import StringOrPathDdv, StringOrPath
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -30,11 +31,25 @@ from exactly_lib.util.strings import StringConstructor
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def ddv(expectation_type: ExpectationType,
-        expected_contents: StringOrPathDdv,
-        ) -> StringMatcherDdv:
-    return EqualityStringMatcherDdv(
+def sdv(expectation_type: ExpectationType,
+        expected_contents: StringOrPathSdv) -> StringMatcherSdv:
+    return sdvs.new_maybe_negated(
+        sdv__generic(expected_contents),
         expectation_type,
+    )
+
+
+def sdv__generic(expected_contents: StringOrPathSdv) -> MatcherSdv[FileToCheck]:
+    def get_ddv(symbols: SymbolTable) -> MatcherDdv[FileToCheck]:
+        expected_contents_ddv = expected_contents.resolve(symbols)
+
+        return ddv(expected_contents_ddv)
+
+    return sdv_components.MatcherSdvFromParts(expected_contents.references, get_ddv)
+
+
+def ddv(expected_contents: StringOrPathDdv) -> StringMatcherDdv:
+    return EqualityStringMatcherDdv(
         expected_contents,
         _validator_of_expected(expected_contents),
     )
@@ -42,18 +57,15 @@ def ddv(expectation_type: ExpectationType,
 
 class EqualityStringMatcherAdv(MatcherAdv[FileToCheck]):
     def __init__(self,
-                 expectation_type: ExpectationType,
                  expected_contents: StringOrPath,
                  validator: PreOrPostSdsValidatorPrimitive,
                  ):
         super().__init__()
-        self._expectation_type = expectation_type
         self._expected_contents = expected_contents
         self._validator = validator
 
     def applier(self, environment: ApplicationEnvironment) -> StringMatcher:
         return EqualityStringMatcher(
-            self._expectation_type,
             self._expected_contents,
             self._validator,
             environment.tmp_files_space,
@@ -62,12 +74,10 @@ class EqualityStringMatcherAdv(MatcherAdv[FileToCheck]):
 
 class EqualityStringMatcherDdv(MatcherDdv[FileToCheck]):
     def __init__(self,
-                 expectation_type: ExpectationType,
                  expected_contents: StringOrPathDdv,
                  validator: DdvValidator,
                  ):
         super().__init__()
-        self._expectation_type = expectation_type
         self._expected_contents = expected_contents
         self._validator = validator
         self._renderer_of_expected_value = custom_details.StringOrPath(expected_contents)
@@ -75,7 +85,6 @@ class EqualityStringMatcherDdv(MatcherDdv[FileToCheck]):
 
     def structure(self) -> StructureRenderer:
         return EqualityStringMatcher.new_structure_tree(
-            self._expectation_type,
             custom_details.StringOrPathDdv(self._expected_contents),
         )
 
@@ -85,7 +94,6 @@ class EqualityStringMatcherDdv(MatcherDdv[FileToCheck]):
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         return EqualityStringMatcherAdv(
-            self._expectation_type,
             self._expected_contents.value_of_any_dependency(tcds),
             ddv_validators.FixedPreOrPostSdsValidator(tcds, self._validator),
         )
@@ -95,23 +103,18 @@ class EqualityStringMatcher(StringMatcherImplBase):
     NAME = matcher_options.EQUALS_ARGUMENT
 
     @staticmethod
-    def new_structure_tree(expectation_type: ExpectationType,
-                           expected_contents: DetailsRenderer) -> StructureRenderer:
-        equality_node = renderers.header_and_detail(
+    def new_structure_tree(expected_contents: DetailsRenderer) -> StructureRenderer:
+        return renderers.header_and_detail(
             EqualityStringMatcher.NAME,
             expected_contents,
         )
 
-        return custom_renderers.positive_or_negative(expectation_type, equality_node)
-
     def __init__(self,
-                 expectation_type: ExpectationType,
                  expected_contents: StringOrPath,
                  validator: PreOrPostSdsValidatorPrimitive,
                  tmp_file_space: TmpDirFileSpace,
                  ):
         super().__init__()
-        self._expectation_type = expectation_type
         self._expected_contents = expected_contents
         self._validator = validator
         self._renderer_of_expected_value = custom_details.StringOrPath(expected_contents)
@@ -124,21 +127,10 @@ class EqualityStringMatcher(StringMatcherImplBase):
 
     def _structure(self) -> StructureRenderer:
         return EqualityStringMatcher.new_structure_tree(
-            self._expectation_type,
             custom_details.StringOrPath(self._expected_contents),
         )
 
     def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
-        if self._expectation_type is ExpectationType.NEGATIVE:
-            positive_matcher = EqualityStringMatcher(ExpectationType.POSITIVE,
-                                                     self._expected_contents,
-                                                     self._validator,
-                                                     self._tmp_file_space)
-            return combinator_matchers.Negation(positive_matcher).matches_w_trace(model)
-        else:
-            return self._matches_positive(model)
-
-    def _matches_positive(self, model: FileToCheck) -> MatchingResult:
         error_message = self._validator.validate_post_sds_if_applicable()
         if error_message:
             return (
@@ -216,14 +208,3 @@ class _DiffString(StringConstructor):
 
     def __str__(self) -> str:
         return '\n'.join(self._lines)
-
-
-def sdv(expectation_type: ExpectationType,
-        expected_contents: StringOrPathSdv) -> StringMatcherSdv:
-    def get_ddv(symbols: SymbolTable) -> StringMatcherDdv:
-        expected_contents_ddv = expected_contents.resolve(symbols)
-
-        return ddv(expectation_type,
-                   expected_contents_ddv)
-
-    return string_matcher_sdv_from_parts_2(expected_contents.references, get_ddv)

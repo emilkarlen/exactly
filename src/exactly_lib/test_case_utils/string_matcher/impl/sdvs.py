@@ -13,9 +13,22 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
+def new_maybe_negated(matcher: MatcherSdv[FileToCheck],
+                      expectation_type: ExpectationType) -> StringMatcherSdv:
+    if expectation_type is ExpectationType.NEGATIVE:
+        matcher = combinator_sdvs.Negation(matcher)
+
+    return StringMatcherSdv(matcher)
+
+
 def new_with_transformation(transformer: StringTransformerSdv,
                             original: MatcherSdv[FileToCheck]) -> StringMatcherSdv:
     return StringMatcherSdv(on_transformed.StringMatcherWithTransformationSdv(transformer, original))
+
+
+def new_with_transformation__generic(transformer: StringTransformerSdv,
+                                     original: MatcherSdv[FileToCheck]) -> MatcherSdv[FileToCheck]:
+    return on_transformed.StringMatcherWithTransformationSdv(transformer, original)
 
 
 def new_reference(name_of_referenced_sdv: str,
@@ -25,6 +38,15 @@ def new_reference(name_of_referenced_sdv: str,
         matcher = combinator_sdvs.Negation(matcher)
 
     return StringMatcherSdv(matcher)
+
+
+def new_reference__generic(name_of_referenced_sdv: str,
+                           expectation_type: ExpectationType) -> MatcherSdv[FileToCheck]:
+    matcher = MatcherReferenceSdv(name_of_referenced_sdv, ValueType.STRING_MATCHER)
+    if expectation_type is ExpectationType.NEGATIVE:
+        matcher = combinator_sdvs.Negation(matcher)
+
+    return matcher
 
 
 def string_matcher_sdv_from_parts_2(references: Sequence[SymbolReference],

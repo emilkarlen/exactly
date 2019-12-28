@@ -7,10 +7,13 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
     token_parser_with_additional_error_message_format_map
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol import symbol_syntax
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
+from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.impl import sdvs
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
+from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 
 COMPARISON_OPERATOR = 'COMPARISON OPERATOR'
@@ -25,14 +28,20 @@ def string_matcher_parser() -> Parser[StringMatcherSdv]:
 
 
 def parse_string_matcher(parser: TokenParser) -> StringMatcherSdv:
+    return StringMatcherSdv(parse_string_matcher__generic(parser))
+
+
+def parse_string_matcher__generic(parser: TokenParser) -> MatcherSdv[FileToCheck]:
     mb_model_transformer = parse_string_transformer.parse_optional_transformer_sdv_preceding_mandatory_element(
         parser,
         COMPARISON_OPERATOR,
     )
     expectation_type = parser.consume_optional_negation_operator()
-    matcher_except_transformation = _StringMatcherParser(expectation_type).parse(parser)
+    matcher_except_transformation = _StringMatcherParser().parse(parser)
+    if expectation_type is ExpectationType.NEGATIVE:
+        matcher_except_transformation = combinator_sdvs.Negation(matcher_except_transformation)
     return (
-        sdvs.new_with_transformation(mb_model_transformer, matcher_except_transformation.matcher)
+        sdvs.new_with_transformation__generic(mb_model_transformer, matcher_except_transformation)
         if mb_model_transformer
         else
         matcher_except_transformation
@@ -40,8 +49,7 @@ def parse_string_matcher(parser: TokenParser) -> StringMatcherSdv:
 
 
 class _StringMatcherParser:
-    def __init__(self, expectation_type: ExpectationType):
-        self.expectation_type = expectation_type
+    def __init__(self):
         self.parsers = {
             matcher_options.EMPTY_ARGUMENT: self._parse_emptiness_checker,
             matcher_options.EQUALS_ARGUMENT: self._parse_equals_checker,
@@ -51,7 +59,7 @@ class _StringMatcherParser:
             matcher_options.NUM_LINES_ARGUMENT: self._parse_num_lines_checker,
         }
 
-    def parse(self, token_parser: TokenParser) -> StringMatcherSdv:
+    def parse(self, token_parser: TokenParser) -> MatcherSdv[FileToCheck]:
         token_parser = token_parser_with_additional_error_message_format_map(token_parser, _FORMAT_MAP)
         matcher_name = token_parser.consume_mandatory_unquoted_string(
             instruction_arguments.STRING_MATCHER_PRIMITIVE_SYNTAX_ELEMENT,
@@ -61,33 +69,33 @@ class _StringMatcherParser:
         else:
             return self._symbol_reference(matcher_name, token_parser)
 
-    def _parse_emptiness_checker(self, token_parser: TokenParser) -> StringMatcherSdv:
+    def _parse_emptiness_checker(self, token_parser: TokenParser) -> MatcherSdv[FileToCheck]:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import emptieness
-        return emptieness.parse(self.expectation_type, token_parser)
+        return emptieness.parse__generic(token_parser)
 
-    def _parse_equals_checker(self, token_parser: TokenParser) -> StringMatcherSdv:
+    def _parse_equals_checker(self, token_parser: TokenParser) -> MatcherSdv[FileToCheck]:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import equality
-        return equality.parse(self.expectation_type, token_parser)
+        return equality.parse__generic(token_parser)
 
-    def _parse_matches_checker(self, token_parser: TokenParser) -> StringMatcherSdv:
+    def _parse_matches_checker(self, token_parser: TokenParser) -> MatcherSdv[FileToCheck]:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import matches
-        return matches.parse(self.expectation_type, token_parser)
+        return matches.parse__generic(token_parser)
 
-    def _parse_num_lines_checker(self, token_parser: TokenParser) -> StringMatcherSdv:
+    def _parse_num_lines_checker(self, token_parser: TokenParser) -> MatcherSdv[FileToCheck]:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import num_lines
-        return num_lines.parse(self.expectation_type, token_parser)
+        return num_lines.parse__generic(token_parser)
 
-    def _parse_any_line_matches_checker(self, token_parser: TokenParser) -> StringMatcherSdv:
+    def _parse_any_line_matches_checker(self, token_parser: TokenParser) -> MatcherSdv[FileToCheck]:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches
-        return line_matches.parse(Quantifier.EXISTS, self.expectation_type, token_parser)
+        return line_matches.parse__generic(Quantifier.EXISTS, token_parser)
 
-    def _parse_every_line_matches_checker(self, token_parser: TokenParser) -> StringMatcherSdv:
+    def _parse_every_line_matches_checker(self, token_parser: TokenParser) -> MatcherSdv[FileToCheck]:
         from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches
-        return line_matches.parse(Quantifier.ALL, self.expectation_type, token_parser)
+        return line_matches.parse__generic(Quantifier.ALL, token_parser)
 
-    def _symbol_reference(self, parsed_symbol_name: str, token_parser: TokenParser) -> StringMatcherSdv:
+    def _symbol_reference(self, parsed_symbol_name: str, token_parser: TokenParser) -> MatcherSdv[FileToCheck]:
         if symbol_syntax.is_symbol_name(parsed_symbol_name):
-            return sdvs.new_reference(parsed_symbol_name, self.expectation_type)
+            return sdvs.new_reference__generic(parsed_symbol_name, ExpectationType.POSITIVE)
         else:
             err_msg_header = 'Neither a {matcher} nor the plain name of a {symbol}: '.format(
                 matcher=instruction_arguments.STRING_MATCHER_PRIMITIVE_SYNTAX_ELEMENT,

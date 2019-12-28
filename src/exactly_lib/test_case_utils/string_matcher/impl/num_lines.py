@@ -15,12 +15,14 @@ _NAME = ' '.join((matcher_options.NUM_LINES_ARGUMENT,
 
 
 def sdv(matcher: MatcherSdv[int]) -> StringMatcherSdv:
-    return StringMatcherSdv(
-        property_matcher.PropertyMatcherSdv(
-            matcher,
-            _operand_from_model_sdv(),
-            property_matcher_describers.GetterWithMatcherAsChild()
-        ),
+    return StringMatcherSdv(sdv__generic(matcher))
+
+
+def sdv__generic(matcher: MatcherSdv[int]) -> MatcherSdv[FileToCheck]:
+    return property_matcher.PropertyMatcherSdv(
+        matcher,
+        _operand_from_model_sdv(),
+        property_matcher_describers.GetterWithMatcherAsChild()
     )
 
 

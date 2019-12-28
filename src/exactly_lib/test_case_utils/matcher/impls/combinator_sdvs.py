@@ -6,6 +6,7 @@ from exactly_lib.symbol.object_with_symbol_references import references_from_obj
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv
+from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
 MODEL = TypeVar('MODEL')
@@ -19,6 +20,15 @@ class _ImplBase(Generic[MODEL], MatcherSdv[MODEL], ABC):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
+
+
+def of_expectation_type(matcher: MatcherSdv[MODEL], expectation_type: ExpectationType) -> MatcherSdv[MODEL]:
+    return (
+        matcher
+        if expectation_type is ExpectationType.POSITIVE
+        else
+        Negation(matcher)
+    )
 
 
 class Negation(_ImplBase[MODEL]):
