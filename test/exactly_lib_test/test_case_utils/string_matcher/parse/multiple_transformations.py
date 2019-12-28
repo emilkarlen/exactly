@@ -1,9 +1,8 @@
 import unittest
 from typing import Iterable
 
-from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase
-from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut
+from exactly_lib.test_case_utils.string_matcher import matcher_options, parse_string_matcher as sut
+from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.description_tree import details

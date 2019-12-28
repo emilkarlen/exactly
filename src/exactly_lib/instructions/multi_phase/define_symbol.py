@@ -44,7 +44,7 @@ from exactly_lib.test_case_utils.parse.parse_here_doc_or_path import parse_strin
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.program.parse import parse_program
-from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
+from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.test_case_utils.string_transformer import sdvs as line_transformer_sdvs, \
     parse_string_transformer
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer

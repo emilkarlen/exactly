@@ -6,7 +6,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checker
 from exactly_lib.instructions.assert_.utils.file_contents.parts.string_matcher_assertion_part import \
     StringMatcherAssertionPart
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher
+from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 
 

@@ -1,8 +1,8 @@
 from exactly_lib.definitions.primitives import file_or_dir_contents
+from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
-from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
-from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase
-from exactly_lib.test_case_utils.string_matcher.negation import StringMatcherNegation
+from exactly_lib.test_case_utils.matcher.impls import combinator_matchers, sdv_components
+from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
@@ -37,7 +37,7 @@ class EmptinessStringMatcher(StringMatcherImplBase):
 
     @property
     def negation(self) -> StringMatcher:
-        return StringMatcherNegation(self)
+        return combinator_matchers.Negation(self)
 
     def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
         if self._expectation_type is ExpectationType.NEGATIVE:
@@ -64,3 +64,9 @@ class EmptinessStringMatcher(StringMatcherImplBase):
             for line in lines:
                 return line
         return ''
+
+
+def sdv(expectation_type: ExpectationType) -> StringMatcherSdv:
+    return StringMatcherSdv(
+        sdv_components.matcher_sdv_from_constant_primitive(EmptinessStringMatcher(expectation_type))
+    )

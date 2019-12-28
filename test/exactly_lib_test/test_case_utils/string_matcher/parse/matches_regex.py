@@ -2,8 +2,7 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut
+from exactly_lib.test_case_utils.string_matcher import matcher_options, parse_string_matcher as sut
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements, \
     here_document_as_elements

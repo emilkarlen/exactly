@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.string_matcher import sdvs as sut
+from exactly_lib.test_case_utils.string_matcher.impl import sdvs as sut
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvReference
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.logic_types import ExpectationType

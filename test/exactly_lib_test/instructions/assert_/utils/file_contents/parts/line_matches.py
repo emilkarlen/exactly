@@ -10,7 +10,7 @@ from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
-from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches as sut
+from exactly_lib.test_case_utils.string_matcher.impl import line_matches
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
@@ -168,9 +168,13 @@ class TestAnyLineMatches(TestCaseBase):
 
 def assertion_part_for_every_line_matches(expectation_type: ExpectationType,
                                           line_matcher_sdv: LineMatcherSdv) -> FileContentsAssertionPart:
-    return StringMatcherAssertionPart(sut.sdv(expectation_type, Quantifier.ALL, line_matcher_sdv))
+    return StringMatcherAssertionPart(
+        line_matches.sdv(expectation_type, Quantifier.ALL, line_matcher_sdv)
+    )
 
 
 def assertion_part_for_any_line_matches(expectation_type: ExpectationType,
                                         line_matcher_sdv: LineMatcherSdv) -> FileContentsAssertionPart:
-    return StringMatcherAssertionPart(sut.sdv(expectation_type, Quantifier.EXISTS, line_matcher_sdv))
+    return StringMatcherAssertionPart(
+        line_matches.sdv(expectation_type, Quantifier.EXISTS, line_matcher_sdv)
+    )

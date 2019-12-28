@@ -1,21 +1,27 @@
+from typing import Sequence
+
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.string_matcher.base_class import StringMatcherImplBase, StringMatcherDdvImplBase, \
+from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase, StringMatcherDdvImplBase, \
     StringMatcherAdvImplBase
 from exactly_lib.test_case_utils.string_transformer.impl.sequence import SequenceStringTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
-    MatcherWTraceAndNegation, MODEL, MatcherAdv
+    MatcherWTraceAndNegation, MODEL, MatcherAdv, MatcherDdv
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherDdv, StringMatcherAdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
     StringTransformerAdv
 from exactly_lib.util.description_tree import renderers, details
+from exactly_lib.util.symbol_table import SymbolTable
 
 
-class StringMatcherOnTransformedFileToCheck(StringMatcherImplBase):
+class StringMatcherWithTransformation(StringMatcherImplBase):
     """Applies a string transformer to the file to check."""
 
     NAME = ' '.join((instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION,
@@ -37,7 +43,7 @@ class StringMatcherOnTransformedFileToCheck(StringMatcherImplBase):
     def new_structure_tree(transformer: StructureRenderer,
                            on_transformed: StructureRenderer) -> StructureRenderer:
         return renderers.NodeRendererFromParts(
-            StringMatcherOnTransformedFileToCheck.NAME,
+            StringMatcherWithTransformation.NAME,
             None,
             (details.Tree(transformer),),
             (on_transformed,),
@@ -77,9 +83,9 @@ class _StringMatcherWithTransformationAdv(StringMatcherAdvImplBase):
         self._on_transformed = on_transformed
 
     def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
-        return StringMatcherOnTransformedFileToCheck(self._transformer.applier(environment),
-                                                     self._on_transformed.applier(environment),
-                                                     )
+        return StringMatcherWithTransformation(self._transformer.applier(environment),
+                                               self._on_transformed.applier(environment),
+                                               )
 
 
 class StringMatcherWithTransformationDdv(StringMatcherDdvImplBase):
@@ -95,7 +101,7 @@ class StringMatcherWithTransformationDdv(StringMatcherDdvImplBase):
         ])
 
     def structure(self) -> StructureRenderer:
-        return StringMatcherOnTransformedFileToCheck.new_structure_tree(
+        return StringMatcherWithTransformation.new_structure_tree(
             self._transformer.structure(),
             self._on_transformed.structure(),
         )
@@ -109,3 +115,29 @@ class StringMatcherWithTransformationDdv(StringMatcherDdvImplBase):
             self._transformer.value_of_any_dependency(tcds),
             self._on_transformed.value_of_any_dependency(tcds),
         )
+
+
+class StringMatcherWithTransformationSdv(MatcherSdv[FileToCheck]):
+    """
+    A :class:`StringMatcherResolver` that transforms the model with a :class:`StringTransformerResolver`
+    """
+
+    def __init__(self,
+                 transformer: StringTransformerSdv,
+                 original: MatcherSdv[FileToCheck],
+                 ):
+        self._transformer = transformer
+        self._original = original
+
+    def resolve(self, symbols: SymbolTable) -> MatcherDdv[FileToCheck]:
+        return StringMatcherWithTransformationDdv(
+            self._transformer.resolve(symbols),
+            self._original.resolve(symbols),
+        )
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return list(self._transformer.references) + list(self._original.references)
+
+    def __str__(self):
+        return str(type(self))

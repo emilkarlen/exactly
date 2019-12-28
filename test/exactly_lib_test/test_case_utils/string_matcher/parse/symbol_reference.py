@@ -3,8 +3,8 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_utils.string_matcher.emptiness_matcher import EmptinessStringMatcher
-from exactly_lib.test_case_utils.string_matcher.parse import parse_string_matcher as sut
+from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as sut
+from exactly_lib.test_case_utils.string_matcher.impl.emptiness import EmptinessStringMatcher
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable

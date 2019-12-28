@@ -9,7 +9,7 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.test_case_utils.string_matcher import sdvs
+from exactly_lib.test_case_utils.string_matcher.impl import sdvs
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 
@@ -32,7 +32,7 @@ def parse_string_matcher(parser: TokenParser) -> StringMatcherSdv:
     expectation_type = parser.consume_optional_negation_operator()
     matcher_except_transformation = _StringMatcherParser(expectation_type).parse(parser)
     return (
-        sdvs.new_with_transformation(mb_model_transformer, matcher_except_transformation)
+        sdvs.new_with_transformation(mb_model_transformer, matcher_except_transformation.matcher)
         if mb_model_transformer
         else
         matcher_except_transformation
