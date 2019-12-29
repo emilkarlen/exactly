@@ -596,7 +596,6 @@ Including (but not limited to):
 * Macros and functions
 * Ability to embed Python code in test cases
 * Python library for running cases and suites from within Python as a DSEL
-* Improve error messages
 
 
 AUTHOR
