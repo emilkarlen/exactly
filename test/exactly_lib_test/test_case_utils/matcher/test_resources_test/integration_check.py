@@ -38,7 +38,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
     tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers, integration_check as sut
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation
-from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import MatcherThatReportsHardError
+from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import MatcherThatReportsHardError, \
+    MatcherTestImplBase
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_hard_error
@@ -494,7 +495,7 @@ class ValidatorThatAssertsThatCwdIsIsActDirAtPostSdsValidation(DdvValidator):
         return None
 
 
-class MatcherThatAssertsThatCwdIsIsActDir(MatcherWTraceAndNegation[int]):
+class MatcherThatAssertsThatCwdIsIsActDir(MatcherTestImplBase[int]):
     def __init__(self,
                  put: unittest.TestCase,
                  tcds: Tcds,

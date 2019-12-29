@@ -7,11 +7,16 @@ from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherL
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTraceAndNegation
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderers import Constant
+from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import MatcherTestImplBase
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
 from exactly_lib_test.util.render.test_resources import renderers
+from exactly_lib_test.util.render.test_resources import renderers as renderers_tr
 
 
 class FakeStringTransformer(StringTransformerTestImplBase):
+    def structure(self) -> StructureRenderer:
+        return renderers_tr.structure_renderer_for_arbitrary_object(self)
+
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         raise NotImplementedError('should never be used')
 
@@ -30,7 +35,7 @@ def is_identical_to(line_num: int, line_contents: str) -> LineMatcher:
                                         lambda x: x == line_contents)
 
 
-class LineMatcherFromPredicates(MatcherWTraceAndNegation[LineMatcherLine]):
+class LineMatcherFromPredicates(MatcherTestImplBase[LineMatcherLine]):
     def __init__(self,
                  line_num_predicate: Callable[[int], bool] = lambda x: True,
                  line_contents_predicate: Callable[[str], bool] = lambda x: True,

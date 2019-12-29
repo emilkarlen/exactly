@@ -4,6 +4,7 @@ import unittest
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.test_case_utils.string_transformer.impl.sequence import SequenceStringTransformer
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.string_transformer import StringTransformerModel
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref

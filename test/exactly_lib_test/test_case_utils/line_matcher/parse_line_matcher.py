@@ -13,6 +13,7 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MODEL, MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
@@ -202,6 +203,14 @@ class _ExpectedEquivalentLineNumMatcher(MatcherWTrace[LineMatcherLine]):
     @property
     def name(self) -> str:
         return self.NAME
+
+    def structure(self) -> StructureRenderer:
+        return renderers.Constant(
+            tree.Node(self.NAME,
+                      None,
+                      (),
+                      ())
+        )
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         value = self._matches(model)

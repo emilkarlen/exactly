@@ -1,3 +1,4 @@
+from abc import ABC
 from typing import Generic, Callable
 from typing import TypeVar, Sequence, List
 
@@ -21,6 +22,13 @@ from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_
 from exactly_lib_test.util.render.test_resources import renderers as renderers_tr
 
 MODEL = TypeVar('MODEL')
+
+
+class MatcherTestImplBase(Generic[MODEL],
+                          MatcherWTraceAndNegation[MODEL],
+                          ABC):
+    def structure(self) -> StructureRenderer:
+        return renderers_tr.structure_renderer_for_arbitrary_object(self)
 
 
 def sdv_from_primitive_value(
@@ -143,6 +151,9 @@ class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MOD
     def name(self) -> str:
         return self._name
 
+    def structure(self) -> StructureRenderer:
+        return renderers.header_only(self._name)
+
     @property
     def negation(self) -> 'MatcherWithConstantResult[MODEL]':
         return MatcherWithConstantResult(not self._matching_result.value)
@@ -151,7 +162,7 @@ class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MOD
         return self._matching_result
 
 
-class MatcherThatRegistersModelArgument(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
+class MatcherThatRegistersModelArgument(Generic[MODEL], MatcherTestImplBase[MODEL]):
     def __init__(self,
                  registry: List[MODEL],
                  constant_result: bool):
@@ -175,7 +186,7 @@ class MatcherThatRegistersModelArgument(Generic[MODEL], MatcherWTraceAndNegation
                                                            ())))
 
 
-class MatcherThatReportsHardError(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
+class MatcherThatReportsHardError(Generic[MODEL], MatcherTestImplBase[MODEL]):
     def __init__(self, error_message: str = 'unconditional hard error'):
         super().__init__()
         self.error_message = error_message
@@ -183,9 +194,6 @@ class MatcherThatReportsHardError(Generic[MODEL], MatcherWTraceAndNegation[MODEL
     @property
     def name(self) -> str:
         return str(type(self))
-
-    def _structure(self) -> StructureRenderer:
-        return renderers_tr.structure_renderer_for_arbitrary_object(self)
 
     @property
     def negation(self) -> MatcherWTraceAndNegation[MODEL]:

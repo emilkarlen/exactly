@@ -23,15 +23,11 @@ class WithNameAndTreeStructureDescription(WithTreeStructureDescription, ABC):
     def name(self) -> str:
         pass
 
+    @abstractmethod
     def structure(self) -> StructureRenderer:
         """
         The structure of the object, that can be used in traced.
 
         The returned tree is constant.
         """
-        return renderers.NodeRendererFromParts(
-            self.name,
-            None,
-            (),
-            (),
-        )
+        pass
