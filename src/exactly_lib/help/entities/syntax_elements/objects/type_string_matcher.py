@@ -47,7 +47,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
             'LINE_MATCHER': instruction_arguments.LINE_MATCHER.name,
             'HERE_DOCUMENT': formatting.syntax_element_(syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT),
-            'INTEGER_COMPARISON': syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name,
+            'INTEGER_MATCHER': syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name,
             'REGEX': syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
             'full_regex_match': option_syntax.option_syntax(matcher_options.FULL_MATCH_ARGUMENT_OPTION),
             'this_type': types.STRING_MATCHER_TYPE_INFO.name,
@@ -125,7 +125,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
                 self._matches_regex_invokation_variant(),
 
                 invokation_variant_from_args([num_lines_arg,
-                                              syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory,
+                                              syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.single_mandatory,
                                               ],
                                              self._parser.fnap(_DESCRIPTION_OF_NUM_LINES)),
 
@@ -144,7 +144,7 @@ class _StringMatcherDocumentation(SyntaxElementDocumentation):
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         name_and_cross_ref_elements = [
             syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
-            syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT,
+            syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT,
             syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
             syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
             syntax_elements.REGEX_SYNTAX_ELEMENT,
@@ -217,7 +217,7 @@ Matches if {any}/{every} line of the string matches {LINE_MATCHER}.
 """
 
 _DESCRIPTION_OF_NUM_LINES = """\
-Matches if the number of lines of the string matches {INTEGER_COMPARISON}.
+Matches if the number of lines of the string matches {INTEGER_MATCHER}.
 """
 
 _SYMBOL_REF_DESCRIPTION = """\

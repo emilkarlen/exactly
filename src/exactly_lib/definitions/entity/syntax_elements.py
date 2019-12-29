@@ -102,9 +102,9 @@ INTEGER_SYNTAX_ELEMENT = name_and_ref_target(
     'An integer expression'
 )
 
-INTEGER_COMPARISON_SYNTAX_ELEMENT = name_and_ref_target(
-    'INTEGER-COMPARISON',
-    'Matches an integer value using comparison with a given ' + INTEGER_SYNTAX_ELEMENT.argument.name
+INTEGER_MATCHER_SYNTAX_ELEMENT = name_and_ref_target(
+    'INTEGER-MATCHER',
+    'Matches an integer'
 )
 
 ALL_SYNTAX_ELEMENTS = (
@@ -118,7 +118,7 @@ ALL_SYNTAX_ELEMENTS = (
     GLOB_PATTERN_SYNTAX_ELEMENT,
 
     INTEGER_SYNTAX_ELEMENT,
-    INTEGER_COMPARISON_SYNTAX_ELEMENT,
+    INTEGER_MATCHER_SYNTAX_ELEMENT,
 
     STRING_SYNTAX_ELEMENT,
     LIST_SYNTAX_ELEMENT,

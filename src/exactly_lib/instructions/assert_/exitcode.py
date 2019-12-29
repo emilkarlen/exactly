@@ -49,7 +49,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                   WithAssertPhasePurpose):
     def __init__(self, name: str):
         super().__init__(name, {
-            'INTEGER_COMPARISON': syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.argument.name,
+            'INTEGER_MATCHER': syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.argument.name,
             'EXIT_CODE': _PROPERTY_NAME,
             'PASS': exit_values.EXECUTION__PASS.exit_identifier,
         })
@@ -64,7 +64,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         return [
             invokation_variant_from_args([
                 negation_of_predicate.optional_negation_argument_usage(),
-                syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory,
+                syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.single_mandatory,
             ]),
         ]
 
@@ -75,7 +75,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
-            syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.cross_reference_target
+            syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.cross_reference_target
         ]
 
 
@@ -170,7 +170,7 @@ def _must_be_within_byte_range(actual: int) -> Optional[TextRenderer]:
 _PROPERTY_GETTER_STRUCTURE = renderers.header_only(_PROPERTY_NAME)
 
 _MAIN_DESCRIPTION = """\
-{PASS} if, and only if, the {EXIT_CODE} satisfies {INTEGER_COMPARISON}.
+{PASS} if, and only if, the {EXIT_CODE} satisfies {INTEGER_MATCHER}.
 """
 
 _FAILED_TO_READ_CONTENTS_FROM = 'Failed to read contents from '

@@ -13,7 +13,7 @@ from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.logic_types import ExpectationType
 
 _NAME = ' '.join((line_matcher.LINE_NUMBER_MATCHER_NAME,
-                  syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name))
+                  syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name))
 
 
 def parse_line_number(parser: TokenParser) -> LineMatcherSdv:

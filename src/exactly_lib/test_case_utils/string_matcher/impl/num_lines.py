@@ -11,7 +11,7 @@ from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.description_tree import renderers
 
 _NAME = ' '.join((matcher_options.NUM_LINES_ARGUMENT,
-                  syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name))
+                  syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name))
 
 
 def sdv(matcher: MatcherSdv[int]) -> StringMatcherSdv:

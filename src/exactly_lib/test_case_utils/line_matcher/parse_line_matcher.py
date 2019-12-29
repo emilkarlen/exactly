@@ -69,7 +69,6 @@ _HELP_TEXT_TEMPLATE_FORMATS = ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS.copy()
 
 _HELP_TEXT_TEMPLATE_FORMATS.update({
     'FIRST_LINE_NUMBER': FIRST_LINE_NUMBER,
-    'INTEGER_COMPARISON': syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.argument.name,
 })
 
 _TP = TextParser(_HELP_TEXT_TEMPLATE_FORMATS)
@@ -106,10 +105,10 @@ _REGEX_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
 
 _LINE_NUMBER_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     argument_usage_list=[
-        syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory,
+        syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.single_mandatory,
     ],
     description_rest=_TP.fnap(_LINE_NUMBER_MATCHER_SED_DESCRIPTION),
-    see_also_targets=[syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.cross_reference_target],
+    see_also_targets=[syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.cross_reference_target],
 )
 
 _CONCEPT = grammar.Concept(

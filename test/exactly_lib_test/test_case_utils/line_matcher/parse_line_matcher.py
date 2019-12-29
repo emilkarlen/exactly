@@ -193,7 +193,7 @@ def resolved_value_is_line_number_matcher(equivalent: MatcherWTrace[LineMatcherL
 
 class _ExpectedEquivalentLineNumMatcher(MatcherWTrace[LineMatcherLine]):
     NAME = ' '.join((line_matcher.LINE_NUMBER_MATCHER_NAME,
-                     syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name))
+                     syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name))
 
     def __init__(self,
                  operator: comparators.ComparisonOperator,

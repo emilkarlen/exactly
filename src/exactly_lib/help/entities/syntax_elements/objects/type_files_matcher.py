@@ -77,7 +77,7 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
         arguments_for_empty_check = [mandatory_empty_arg]
 
         arguments_for_num_files_check = [mandatory_num_files_arg,
-                                         syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory]
+                                         syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.single_mandatory]
 
         quantifier_arg = a.Choice(a.Multiplicity.MANDATORY,
                                   [
@@ -124,7 +124,7 @@ class _FilesMatcherDocumentation(SyntaxElementDocumentation):
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         name_and_cross_refs = [
-            syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT,
+            syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT,
             syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
             syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
         ]
