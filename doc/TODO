@@ -303,113 +303,15 @@ Make sure that Excatly does not crach.
 * TODO [#C] DestinationPathFromRelRootResolver: Should be Path or PurePath?
 Returns type is invalid, but works: combining Path and PurePath in apparently
 incorrect way.
-* TODO Handling of relative paths
-Many paths to resources and sut:s are needed by a test.
-Currently (2017-02-26) there is no good way to handle these within Exactly
-itself.
-Currently this is fixed by a combination of preprocessing and pre-run setup:
- - m4 for preprocessing (for specifying paths in one, and only one, place)
- - autotools for pre-run setup (sets absolute paths to resources)
-The current solution
- - requires a lot of knowledge (autotools, m4)
- - fragile and difficult to maintain and debug
- - requires external tools (autotools, m4)
-
-Probably more than one new functionality is needed to handle the problem in an
-efficient manner.
-** Possibility to have separate "home" for act phase and other phases
-The act phase usually need to locate an executable that is references from
-many test cases and also test suites located in different directories.
-This is different from resources used by other phases - since the other phases
-often refers resources that are specific for the test case or the test suite -
-and thus can be relative the location of the test case/suite.
-** Built in preprocessor
-But every preprocessor will have the weakness of handling paths that needs
-quoting (even a built in one).  If you only do text search+replace then spaces
-,e.g., in paths will cause problems, and will thus require complicated quoting
-logic to work.  That kind of logic will make tests much more complicated.
-
-But what a built in preprocessor could help with is the functionallity to
-support knowledge of current-source file, so that references can be relative
-an included source file, e.g.
-
-For example:
---------------------
-[setup]
-
-env set --registered-path GLOB_R_DIR_VAR = GLOBAL_RESOURCE_DIR
-env set --registered-path --shell-quoted GLOB_R_DIR_VAR = GLOBAL_RESOURCE_DIR
-
-[act]
-
-my-sut --icons @[GLOBAL_ICONS_DIR]@
-/
-my-sut --icons @[GLOBAL_ICONS_DIR]@/the-icon.gif
-
-[assert]
-
-contents --rel GLOBAL_RESOURCE_DIR equals icon/x actal/x
-
-run my-assertion-prog @[GLOBAL_RESOURCE_DIR]@
-run my-assertion-prog @[GLOBAL_ICONS_DIR]@/the-icon.gif
---------------------
-
-Some kind of syntax for giving registered paths as arguments to programs is
-probably needed.  Above @<GLOBAL_RESOURCE_DIR>@ is special syntax for that.
-
-If Exactly had a preprocessor with file inclusion, then paths could be
-relative the location of the file the instruction appears in.
-(that would need new instruction-information to be available during
-instruction execution: the path of the file that contains the instruction.)
-
-*** Validation of references to registered paths
-It would be very nice if the validation step could check references to
-registered paths.
-If every instruction could tell which references it uses and which paths it
-sets, then it's possible to do validation-time checking of references.
-
-** env should be able to assign paths using --rel SYMBOL-DEF
-
-env path MY_DIR_VAR = --rel-act act/sub/dir
-env path MY_DIR_VAR = --rel DIR_VAL sub/dir
-env path MY_DIR_VAR = @{DIR_VAL}@
-
 * TODO Preprocessor process should maybe have timeout
 <2016-11-27 sön>
 * TODO Act phase
 ** TODO Name of act-phase actor for error messages
 Since the actor (of the act phase) is configurable, it would be informative to the user
 to see which actor reports errors.
-** TODO single_command_setup : validation_pre_eds should check existence of command
-... relative home_dir
-
-Currently, it is reported as an hard error in execute.
 * TODO Suite
-** TODO Set test case config that serves as default for each test case
-Possibility to use all instructions in [conf] for test cases
-All instructions in [conf] for test cases should be possible to use
-in [conf] for test suites.
-The config set by these instructions should serve as the default conf
-for each test case (directly) in the test suite.
-** TODO Set setup/cleanup to use for each test case
-All instructions in [setup]/ [cleanup] of test cases should be possible to use
-in a new section [case-setup]/ [case-cleanup]
-This setup should be prepended to the setup/cleanup of test cases in the suite
 ** TODO Set setup and cleanup to execute once before/after the test cases
 in the suite are executed.
-* TODO Fel (sh, svh, ...) ska representera fel i form av FailureDetails
-Har gjort FailureDetails till util-klass.
-Den ger möjl till utförligare felinformation än dagens sh, svh
-som enbart innehåller en sträng.
-
-I många fall vore det bra att ha både text och Exception.
-Ett ex är ActSourceExecutor#prepare() - vid IO-fel vill användaren
-veta både Exceptionet och sammanhanget det inträffade i.
-(Ev borde ramverket propagera själva steget ut till användaren,
-så att den infon inte behöver finnas i form av explicit felmeddelande.)
-
-Har infört FailureDetails i ExitCodeOrHardError.
-Se den.
 * TODO Finns inget PhaseStep för ActSourceExecutor#prepare
 och alltså kollas inte om den körs eller ej.
 
@@ -472,8 +374,6 @@ som skapar/rensar exekverbara, kör svit.
 Vet inte vilka licensfiler som behövs, var de ska ligga, vad de ska innehålla,
 vad README ska innehålla.
 * TODO TypeError ist för ValueError för visitorer appl på felaktigt objekt
-* TODO Ändra --rel-cwd -> --rel-cd
-<2016-04-03 sön>
 * TODO Dokumentation
 ** TODO Hjälptext för "home directory" "TODO (improve description!)"
 ** TODO Hjälptext för "cd" "TODO"
@@ -655,10 +555,6 @@ senare framtid, även i testsviter).
 Ev två olika setup: en som resolvar relativa sökvagar, o en som inte gör det.
 * TODO Exekvering av fall: Rapportera mha "Rapportör" (pss som svit)
 * TODO Kring instruktioner
-** TODO PassOrFailOrHardError: FAIL ska kunna ta olika varianter av felmeddelande
-- sträng
-- förväntat värde, verkligt värde, namn på egenskap
-Inför subklass för varje variant.
 ** TODO assert-instr: Infrastruktur för att hämta vanliga värden
 T ex returkod, utdata på stdout/err.
 Funk kan antingen
@@ -684,11 +580,6 @@ Skulle t ex kunna finnas i InstructionWithStdValidation:
 En fördel är att det gör det möjligt att "typ-säkert" återanvända
 steg-exkeverare (de som partial_execution använder för att köra steg).
 
-* TODO <2016-01-06 ons> execute: La till --rel-act: Ta bort?
-Finns en anledning till att jag inte laggt dit den från början?
-T ex att det inte ska gå att lägga program i act som ska köras?
-Å andra sidan, varför omöjliggöra det istället för att låta det vara upp
-till användaren att bestämma var filerna ska ligga?
 * TODO cleanup
 ** TODO Infra-strukt för instr-test: Möjl att ange act-result
 <2016-01-07 tor>
@@ -800,9 +691,6 @@ Dvs separera
 Typ: Om fler än en tesfalls-fil anges så körs de som en test-svit.
 
 En temporär testsvit skapas bakom kulisserna.
-* TODO Python-saker
-** TODO Är klasser py3? Ska det vara MyClass(object)?
-Ev ska varje klass explicit ärva object för att vara en py-3-klass.
 * TODO tmp-filer för instruktioner
 Bör införa hjälpfunktion för att skapa tmp-filer för instruktioner.
 Nu: contents/stdout/stderr: Ser själva till att lägga tmp-fil i
@@ -810,16 +698,6 @@ tmp/internal.
 Vill ha funktion, typ: tmp_file_for_instruction(prefix,suffix,contents)
 -> pathlib.Path
 som automatiskt lägger den i tmp/internal.
-* TODO Syntax för instruktioner: vänta till EXPECTED ACTUAL??
-Bör se på om det är möjligt.
-T ex
-5 exitcode
-empty stdout
-empty file.txt
-contents --rel-home expected stderr
-type directory my-file
-
-Känns faktiskt aningen konstigt.  Spec exitcode. O även empty.
 * TODO Alias för instruktioner
 Kan behövas för att attrahera utvecklare med olika bakgrund.
 Speciellt
@@ -1181,8 +1059,6 @@ Var ska de ligga!!!???
 De har det gemensamt att de tillhör test-case och att de är "utvidningsbar"
 funktionallitet.  Vill inte ha dem på högsta nivå.
 *** TODO document -> section_document
-** TODO Refakt: full/partiell exekvering i separata paket
-<2016-04-02 lör>
 ** TODO Bör ersättas med funktionerna i python_program_execution?
 Tror det är precis det här de funktionerna används till.
 ----------
@@ -1225,24 +1101,11 @@ Två argument:
 ** TODO Använda nya TestCaseSetup i äldre tester
 Som du finns flera instruktions-klasser som enbart returnerar ett visst värde
 eller kastar undantag.  Alla de fallen kan hanteras av nya TestCaseSetup.
-* TODO Finputs
-** TODO Tidtagning för testfall i svit
-Liknande den för hela sviten.
-** TODO <2015-05-18 mån> Ev skapa EDS senare
-Enl diagram ska den skapas precis efter setup/validate.
-Idag skapas den precis innan setup/validate.
-Ingen stor grej, men kan ev ändras.
-Alternativ ändrar man spec till att göra som idag.
-* TODO Ny funktionallitet
-* TODO Förbättrin av instr
-** TODO dir: möjl att ange path rel annat än pwd (mha --rel...)
-** TODO install: möjl att ange path rel annat än pwd (mha --rel...)
-** TODO Ny växel "--rel-res" för reffa filer i sandbox/result
-<2016-05-01 sön>
-** TODO Integration m perls TAP (Test Anything Protocol)
+* TODO Integration m perls TAP (Test Anything Protocol)
 <2016-05-01 sön>
 Om möjligt att anvnda programmet fr TAP skulle det troligtvis bli mer
 användbart.
+* TODO Förbättrin av instr
 ** TODO Testa ange preprocessor för TF via kommandoraden
 ** TODO Inbyggd preprocessor
 Vore bäst om programmet innehöll en egen preprocessor.
@@ -1260,12 +1123,3 @@ file:///usr/share/doc/python3.4/html/library/string.html#string-formatting
 Kanske är denna tillräckligt kraftfull för att fungera som preprocessor.
 Dock förutom filinkludering, förutsätter jag.
 ** TODO Köra flera tester på CL som "anonym" svit
-** TODO Färgläggning av exit-identifierare
-OK grön, FAIL röd ...
-VALIDATE ... orange
-** TODO <2015-05-22 fre> Konfbar gemensam miljö för alla instruktioner
-Införa argument som ges till alla metoder i alla instruktioner.
-Skulle erbjuda mölighet att skräddarsy den information som instruktionerna har
-tillgång till.
-
-
