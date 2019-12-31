@@ -22,5 +22,5 @@ uninstall-venv:
 	-test -f venv/bin/exactly && rm -f venv/bin/exactly
 
 upload:
-	twine upload dist/*
+	python3 -m twine upload dist/*
 
