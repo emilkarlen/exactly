@@ -34,22 +34,22 @@ src/exactly_lib/program_info.py
 Make sure release year is included in COPYRIGHT
 * Make release artifacts
 ** Remove existing distributables
-> rm -rf dist
-> rm -rf build
+> make clean
 ** Make distributables
 Distribute source and wheel
 
-> python3 setup.py sdist
-> python3 setup.py bdist_wheel
-
+> make build
 * Upload
-> twine upload dist/*
+> make upload
 * wiki
 ** Update examples
 Run tests in examples/wiki,
 and if changes are needed to make these work,
 make the same changes to wiki.
 * Tag repo with version
+Tag repo after upload to PyPi,
+so that the release on PyPi is verified.
+
 > git tag vVERSION
 > git push --tags
 * github pages
