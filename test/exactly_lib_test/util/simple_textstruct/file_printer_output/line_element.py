@@ -6,7 +6,7 @@ from exactly_lib.util.simple_textstruct.structure import Indentation, TextStyle,
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.util.simple_textstruct.file_printer_output.test_resources import LINE_ELEMENT_INDENT, \
-    check_line_element, indentation_cases
+    check_line_element, indentation_cases, FilePrinterWithTextPropertiesForTest
 
 
 def suite() -> unittest.TestSuite:
@@ -14,6 +14,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestLineElementOfPreFormattedString),
         unittest.makeSuite(TestLineElementOfStringLine),
         unittest.makeSuite(TestLineElementOfStringLines),
+        unittest.makeSuite(TestElementProperties),
     ])
 
 
@@ -134,6 +135,69 @@ class TestLineElementOfStringLine(unittest.TestCase):
                                                         TEXT_STYLE__NEUTRAL)),
                         indentation_case.expected + case.expected,
                     )
+
+
+class TestElementProperties(unittest.TestCase):
+    def test_color_SHOULD_cause_text_to_be_surrounded_by_color_codes(self):
+        # ARRANGE #
+        text_color = ForegroundColor.BLUE
+        line_object = s.StringLineObject('line object text',
+                                         string_is_line_ended=False)
+        # ACT & ASSERT #
+        check_line_element(
+            self,
+            s.LineElement(line_object,
+                          ElementProperties(s.INDENTATION__NEUTRAL,
+                                            TextStyle(text_color))),
+            ''.join([
+                FilePrinterWithTextPropertiesForTest.color_string_for(text_color),
+                line_object.string,
+                '\n',
+                FilePrinterWithTextPropertiesForTest.UNSET_COLOR,
+            ]),
+        )
+
+    def test_font_style_SHOULD_cause_text_to_be_surrounded_by_style_codes(self):
+        # ARRANGE #
+        font_style = FontStyle.BOLD
+        line_object = s.StringLineObject('line object text',
+                                         string_is_line_ended=False)
+        # ACT & ASSERT #
+        check_line_element(
+            self,
+            s.LineElement(line_object,
+                          ElementProperties(s.INDENTATION__NEUTRAL,
+                                            TextStyle(font_style=font_style))),
+            ''.join([
+                FilePrinterWithTextPropertiesForTest.font_style_string_for(font_style),
+                line_object.string,
+                '\n',
+                FilePrinterWithTextPropertiesForTest.UNSET_FONT_STYLE,
+            ]),
+        )
+
+    def test_color_and_font_style_SHOULD_cause_text_to_be_surrounded_by_color_and_style_codes(self):
+        # ARRANGE #
+        text_color = ForegroundColor.BLUE
+        font_style = FontStyle.BOLD
+        line_object = s.StringLineObject('line object text',
+                                         string_is_line_ended=False)
+        # ACT & ASSERT #
+        check_line_element(
+            self,
+            s.LineElement(line_object,
+                          ElementProperties(s.INDENTATION__NEUTRAL,
+                                            TextStyle(color=text_color,
+                                                      font_style=font_style))),
+            ''.join([
+                FilePrinterWithTextPropertiesForTest.font_style_string_for(font_style),
+                FilePrinterWithTextPropertiesForTest.color_string_for(text_color),
+                line_object.string,
+                '\n',
+                FilePrinterWithTextPropertiesForTest.UNSET_COLOR,
+                FilePrinterWithTextPropertiesForTest.UNSET_FONT_STYLE,
+            ]),
+        )
 
 
 class TestLineElementOfStringLines(unittest.TestCase):

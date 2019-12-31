@@ -2,6 +2,7 @@ import io
 import unittest
 from typing import TypeVar, Callable, Sequence, List
 
+from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
 from exactly_lib.util.file_printer import FilePrinter
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib.util.simple_textstruct.file_printer_output.print_on_file_printer import LayoutSettings, BlockSettings, \
@@ -175,7 +176,7 @@ OBJECT_RENDERER = ObjectRenderer()
 
 def _print_to_str(printable: Printable) -> str:
     output_file = io.StringIO()
-    printer = Printer.new(FilePrinter(output_file))
+    printer = Printer.new(FilePrinterWithTextPropertiesForTest(output_file))
 
     printable.print_on(printer)
 
@@ -187,3 +188,28 @@ def single_line_element_w_plain_properties(line_contents):
         s.StringLineObject(line_contents),
         s.ELEMENT_PROPERTIES__NEUTRAL,
     )
+
+
+class FilePrinterWithTextPropertiesForTest(FilePrinter):
+    UNSET_COLOR = 'unset-color'
+    UNSET_FONT_STYLE = 'unset-font-style'
+
+    @staticmethod
+    def color_string_for(color: ForegroundColor) -> str:
+        return str(color)
+
+    @staticmethod
+    def font_style_string_for(style: FontStyle) -> str:
+        return str(style)
+
+    def set_color(self, color: ForegroundColor):
+        self.file.write(self.color_string_for(color))
+
+    def unset_color(self):
+        self.file.write(self.UNSET_COLOR)
+
+    def set_font_style(self, style: FontStyle):
+        self.file.write(self.font_style_string_for(style))
+
+    def unset_font_style(self):
+        self.file.write(self.UNSET_FONT_STYLE)

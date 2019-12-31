@@ -4,7 +4,7 @@ from exactly_lib.util.simple_textstruct.file_printer_output import printables as
 from exactly_lib.util.simple_textstruct.file_printer_output.printer import Printable, Printer
 from exactly_lib.util.simple_textstruct.structure import ElementProperties, MajorBlock, MinorBlock, \
     LineObjectVisitor, PreFormattedStringLineObject, Document, LineObject, LineElement, StringLineObject, \
-    StringLinesObject, Indentation, TextStyle
+    StringLinesObject, Indentation, TextStyle, ELEMENT_PROPERTIES__NEUTRAL
 
 
 class BlockSettings:
@@ -31,6 +31,7 @@ class PrintablesFactory:
     def __init__(self, settings: LayoutSettings):
         self.settings = settings
         self.line_object_handler = _LineObjectHandler(self)
+        self._line_object_properties_getter = _LineObjectPropertiesGetter()
 
     def document(self, document: Document) -> Printable:
         return self.major_blocks(document.blocks)
@@ -71,7 +72,7 @@ class PrintablesFactory:
 
     def line_element(self, line_element: LineElement) -> Printable:
         return self._element(
-            line_element.properties,
+            line_element.line_object.accept(self._line_object_properties_getter, line_element.properties),
             self.settings.line_element_indent,
             _LineObjectPrintable(self.line_object_handler, line_element.line_object),
         )
@@ -141,6 +142,17 @@ class _LineObjectHandler(LineObjectVisitor[Printer, None]):
         for s in x.strings:
             env.write_indented(s)
             env.new_line()
+
+
+class _LineObjectPropertiesGetter(LineObjectVisitor[ElementProperties, ElementProperties]):
+    def visit_pre_formatted(self, env: ElementProperties, x: PreFormattedStringLineObject) -> ElementProperties:
+        return ELEMENT_PROPERTIES__NEUTRAL
+
+    def visit_string(self, env: ElementProperties, x: StringLineObject) -> ElementProperties:
+        return env
+
+    def visit_string_lines(self, env: ElementProperties, x: StringLinesObject) -> ElementProperties:
+        return env
 
 
 class _LineObjectPrintable(Printable):
