@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Callable
 
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
@@ -36,6 +36,14 @@ class TextParser:
         3. parse result
         """
         return normalize_and_parse(self.format(s, extra))
+
+    def fnap__fun(self, s: str, extra: dict = None) -> Callable[[], List[ParagraphItem]]:
+        """A variant of fnap."""
+
+        def ret_val() -> List[ParagraphItem]:
+            return normalize_and_parse(self.format(s, extra))
+
+        return ret_val
 
     def paragraph_items(self, s: str, extra: dict = None) -> List[ParagraphItem]:
         return self.fnap(self.format(s, extra))

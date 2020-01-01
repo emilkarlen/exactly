@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import Mapping, Optional, Sequence, TypeVar, Generic, Callable
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -7,14 +8,20 @@ from exactly_lib.util.name import NameWithGenderWithFormatting
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
-class SimpleExpressionDescription:
-    def __init__(self,
-                 argument_usage_list: Sequence[a.ArgumentUsage],
-                 description_rest: Sequence[ParagraphItem],
-                 see_also_targets: Sequence[SeeAlsoTarget] = ()):
-        self.argument_usage_list = argument_usage_list
-        self.description_rest = description_rest
-        self.see_also_targets = list(see_also_targets)
+class SimpleExpressionDescription(ABC):
+    @property
+    @abstractmethod
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        pass
+
+    @property
+    @abstractmethod
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        pass
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return ()
 
 
 EXPR = TypeVar('EXPR')
@@ -28,12 +35,15 @@ class SimpleExpression(Generic[EXPR]):
         self.syntax = syntax
 
 
-class OperatorExpressionDescription:
-    def __init__(self,
-                 description_rest: Sequence[ParagraphItem],
-                 see_also_targets: Sequence[SeeAlsoTarget] = ()):
-        self.description_rest = description_rest
-        self.see_also_targets = list(see_also_targets)
+class OperatorExpressionDescription(ABC):
+    @property
+    @abstractmethod
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        pass
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return ()
 
 
 class ComplexExpression(Generic[EXPR]):

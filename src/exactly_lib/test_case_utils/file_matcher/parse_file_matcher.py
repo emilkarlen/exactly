@@ -1,8 +1,9 @@
 """Functionality for accessing a subset of the files in a directory."""
-from typing import List, Optional
+from typing import List, Optional, Sequence
 
 from exactly_lib.definitions import doc_format
 from exactly_lib.definitions import expression, instruction_arguments
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
@@ -19,6 +20,7 @@ from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
+from exactly_lib.test_case_utils.expression.grammar_elements import OperatorExpressionDescriptionFromFunctions
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import sdvs
 from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_FILE
@@ -30,6 +32,7 @@ from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdvType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 CONSTANT_TRUE_MATCHER_SDV = sdvs.file_matcher_constant_sdv(MATCH_EVERY_FILE)
@@ -194,37 +197,60 @@ def _file_types_table() -> docs.ParagraphItem:
     ])
 
 
-NAME_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
-    argument_usage_list=[
-        a.Choice(a.Multiplicity.MANDATORY,
-                 [
-                     instruction_arguments.GLOB_PATTERN,
-                     REG_EX_ARGUMENT,
-                 ])
-    ],
-    description_rest=_TP.fnap(_NAME_MATCHER_SED_DESCRIPTION),
-    see_also_targets=cross_reference_id_list([
-        syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT,
-        syntax_elements.REGEX_SYNTAX_ELEMENT,
-    ]),
-)
+class _NameSyntaxDescription(grammar.SimpleExpressionDescription):
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return [
+            a.Choice(a.Multiplicity.MANDATORY,
+                     [
+                         instruction_arguments.GLOB_PATTERN,
+                         REG_EX_ARGUMENT,
+                     ])
+        ]
 
-TYPE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
-    argument_usage_list=[
-        a.Single(a.Multiplicity.MANDATORY,
-                 TYPE_MATCHER_ARGUMENT)],
-    description_rest=_type_matcher_sed_description()
-)
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return _TP.fnap(_NAME_MATCHER_SED_DESCRIPTION)
 
-REGULAR_FILE_CONTENTS_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
-    argument_usage_list=[
-        a.Single(a.Multiplicity.MANDATORY,
-                 syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.argument)],
-    description_rest=_TP.fnap(_REGULAR_FILE_CONTENTS_MATCHER_SED_DESCRIPTION),
-    see_also_targets=cross_reference_id_list([
-        syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
-    ])
-)
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return cross_reference_id_list([
+            syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT,
+            syntax_elements.REGEX_SYNTAX_ELEMENT,
+        ])
+
+
+class _TypeSyntaxDescription(grammar.SimpleExpressionDescription):
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return [
+            a.Single(a.Multiplicity.MANDATORY,
+                     TYPE_MATCHER_ARGUMENT)
+        ]
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return _type_matcher_sed_description()
+
+
+class _RegularFileContentsSyntaxDescription(grammar.SimpleExpressionDescription):
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return [
+            a.Single(a.Multiplicity.MANDATORY,
+                     syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.argument)
+        ]
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return _TP.fnap(_REGULAR_FILE_CONTENTS_MATCHER_SED_DESCRIPTION)
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return cross_reference_id_list([
+            syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
+        ])
+
 
 GRAMMAR = grammar.Grammar(
     concept=grammar.Concept(
@@ -235,29 +261,29 @@ GRAMMAR = grammar.Grammar(
     mk_reference=sdvs.new_reference,
     simple_expressions={
         NAME_MATCHER_NAME: grammar.SimpleExpression(_parse_name_matcher,
-                                                    NAME_SYNTAX_DESCRIPTION),
+                                                    _NameSyntaxDescription()),
         TYPE_MATCHER_NAME: grammar.SimpleExpression(_parse_type_matcher,
-                                                    TYPE_SYNTAX_DESCRIPTION),
+                                                    _TypeSyntaxDescription()),
         REGULAR_FILE_CONTENTS: grammar.SimpleExpression(_parse_regular_file_contents,
-                                                        REGULAR_FILE_CONTENTS_SYNTAX_DESCRIPTION)
+                                                        _RegularFileContentsSyntaxDescription())
     },
     complex_expressions={
         expression.AND_OPERATOR_NAME:
             grammar.ComplexExpression(sdvs.new_conjunction,
-                                      grammar.OperatorExpressionDescription(
-                                          _TP.fnap(_AND_SED_DESCRIPTION)
+                                      OperatorExpressionDescriptionFromFunctions(
+                                          _TP.fnap__fun(_AND_SED_DESCRIPTION)
                                       )),
         expression.OR_OPERATOR_NAME:
             grammar.ComplexExpression(sdvs.new_disjunction,
-                                      grammar.OperatorExpressionDescription(
-                                          _TP.fnap(_OR_SED_DESCRIPTION)
+                                      OperatorExpressionDescriptionFromFunctions(
+                                          _TP.fnap__fun(_OR_SED_DESCRIPTION)
                                       )),
     },
     prefix_expressions={
         expression.NOT_OPERATOR_NAME:
             grammar.PrefixExpression(sdvs.new_negation,
-                                     grammar.OperatorExpressionDescription(
-                                         _TP.fnap(_NOT_SED_DESCRIPTION)
+                                     OperatorExpressionDescriptionFromFunctions(
+                                         _TP.fnap__fun(_NOT_SED_DESCRIPTION)
                                      ))
     },
 )

@@ -1,10 +1,13 @@
 from typing import Sequence
 
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.expression import grammar
+from exactly_lib.test_case_utils.expression.grammar import OperatorExpressionDescription
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name import NameWithGenderWithFormatting, NameWithGender
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 class Expr:
@@ -113,19 +116,58 @@ CONCEPT = grammar.Concept(
     'type-system-name',
     a.Named('SYNTAX-ELEMENT-NAME'))
 
+
+class ConstantSimpleExprDescription(grammar.SimpleExpressionDescription):
+    def __init__(self,
+                 argument_usage_list: Sequence[a.ArgumentUsage],
+                 description_rest: Sequence[ParagraphItem],
+                 see_also_targets: Sequence[SeeAlsoTarget] = ()):
+        self._argument_usage_list = argument_usage_list
+        self._description_rest = description_rest
+        self._see_also_targets = list(see_also_targets)
+
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return self._argument_usage_list
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return self._description_rest
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return self._see_also_targets
+
+
+class ConstantOperatorExpressionDescription(OperatorExpressionDescription):
+    def __init__(self,
+                 description_rest: Sequence[ParagraphItem],
+                 see_also_targets: Sequence[SeeAlsoTarget] = ()):
+        self._description_rest = description_rest
+        self._see_also_targets = list(see_also_targets)
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return self._description_rest
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return self._see_also_targets
+
+
 SIMPLE_EXPRESSIONS = {
     SIMPLE_WITH_ARG: grammar.SimpleExpression(parse_simple_with_arg,
-                                              grammar.SimpleExpressionDescription([], [],
-                                                                                  [CROSS_REF_ID])),
+                                              ConstantSimpleExprDescription([], [],
+                                                                            [CROSS_REF_ID])),
     SIMPLE_SANS_ARG: grammar.SimpleExpression(parse_simple_sans_arg,
-                                              grammar.SimpleExpressionDescription([], [])),
+                                              ConstantSimpleExprDescription([], [])),
 }
 
 PREFIX_EXPRESSIONS = {
     PREFIX_P: grammar.PrefixExpression(PrefixExprP,
-                                       grammar.OperatorExpressionDescription([])),
+                                       ConstantOperatorExpressionDescription([])),
     PREFIX_Q: grammar.PrefixExpression(PrefixExprQ,
-                                       grammar.OperatorExpressionDescription([])),
+                                       ConstantOperatorExpressionDescription([])),
 }
 
 
@@ -140,11 +182,11 @@ GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
     complex_expressions={
         COMPLEX_A:
             grammar.ComplexExpression(ComplexA,
-                                      grammar.OperatorExpressionDescription([],
+                                      ConstantOperatorExpressionDescription([],
                                                                             [CROSS_REF_ID])),
         COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME:
             grammar.ComplexExpression(ComplexB,
-                                      grammar.OperatorExpressionDescription([],
+                                      ConstantOperatorExpressionDescription([],
                                                                             [CROSS_REF_ID])),
     },
     prefix_expressions=PREFIX_EXPRESSIONS,

@@ -1,6 +1,7 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -8,10 +9,12 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
+from exactly_lib.test_case_utils.expression.grammar_elements import OperatorExpressionDescriptionFromFunctions
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer import sdvs
 from exactly_lib.test_case_utils.string_transformer.impl import filter, replace, sequence, identity
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 IDENTITY_TRANSFORMER_SDV = sdvs.StringTransformerSdvConstant(identity.IdentityStringTransformer())
@@ -106,28 +109,45 @@ The result of the {_TRANSFORMER_} to the left is feed to the
 {_TRANSFORMER_} to the right.
 """
 
-_REPLACE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
-    argument_usage_list=[
-        a.Single(a.Multiplicity.MANDATORY,
-                 REPLACE_REGEX_ARGUMENT),
-        a.Single(a.Multiplicity.MANDATORY,
-                 replace.REPLACE_REPLACEMENT_ARGUMENT),
-    ],
-    description_rest=_TEXT_PARSER.fnap(_REPLACE_TRANSFORMER_SED_DESCRIPTION),
-    see_also_targets=[syntax_elements.REGEX_SYNTAX_ELEMENT.cross_reference_target],
-)
 
-_SELECT_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
-    argument_usage_list=[
-        a.Single(a.Multiplicity.MANDATORY,
-                 instruction_arguments.LINE_MATCHER),
-    ],
-    description_rest=_TEXT_PARSER.fnap(_SELECT_TRANSFORMER_SED_DESCRIPTION),
-    see_also_targets=[types.LINE_MATCHER_TYPE_INFO.cross_reference_target],
-)
+class _ReplaceSyntaxDescription(grammar.SimpleExpressionDescription):
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return [
+            a.Single(a.Multiplicity.MANDATORY,
+                     REPLACE_REGEX_ARGUMENT),
+            a.Single(a.Multiplicity.MANDATORY,
+                     replace.REPLACE_REPLACEMENT_ARGUMENT),
+        ]
 
-_SEQUENCE_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
-    _TEXT_PARSER.fnap(_SEQUENCE_TRANSFORMER_SED_DESCRIPTION)
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return _TEXT_PARSER.fnap(_REPLACE_TRANSFORMER_SED_DESCRIPTION)
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return [syntax_elements.REGEX_SYNTAX_ELEMENT.cross_reference_target]
+
+
+class _SelectSyntaxDescription(grammar.SimpleExpressionDescription):
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return [
+            a.Single(a.Multiplicity.MANDATORY,
+                     instruction_arguments.LINE_MATCHER),
+        ]
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return _TEXT_PARSER.fnap(_SELECT_TRANSFORMER_SED_DESCRIPTION)
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return [types.LINE_MATCHER_TYPE_INFO.cross_reference_target]
+
+
+_SEQUENCE_SYNTAX_DESCRIPTION = OperatorExpressionDescriptionFromFunctions(
+    _TEXT_PARSER.fnap__fun(_SEQUENCE_TRANSFORMER_SED_DESCRIPTION)
 )
 
 _CONCEPT = grammar.Concept(
@@ -147,10 +167,10 @@ GRAMMAR = grammar.Grammar(
     simple_expressions={
         names.REPLACE_TRANSFORMER_NAME:
             grammar.SimpleExpression(replace.parse_replace,
-                                     _REPLACE_SYNTAX_DESCRIPTION),
+                                     _ReplaceSyntaxDescription()),
         names.SELECT_TRANSFORMER_NAME:
             grammar.SimpleExpression(filter.parse_filter,
-                                     _SELECT_SYNTAX_DESCRIPTION),
+                                     _SelectSyntaxDescription()),
     },
     complex_expressions={
         names.SEQUENCE_OPERATOR_NAME: grammar.ComplexExpression(
