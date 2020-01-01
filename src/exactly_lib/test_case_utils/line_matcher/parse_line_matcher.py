@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.definitions import expression, instruction_arguments
+from exactly_lib.definitions import instruction_arguments, matcher_model
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
@@ -10,10 +10,9 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
-from exactly_lib.test_case_utils.expression.grammar_elements import OperatorExpressionDescriptionFromFunctions
 from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
-from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs, sdv_components, constant
-from exactly_lib.test_case_utils.matcher.impls.symbol_reference import MatcherReferenceSdv
+from exactly_lib.test_case_utils.matcher import standard_expression_grammar
+from exactly_lib.test_case_utils.matcher.impls import sdv_components, constant
 from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER, LineMatcherLine, LineMatcherSdvType
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -72,29 +71,18 @@ _HELP_TEXT_TEMPLATE_FORMATS = ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS.copy()
 
 _HELP_TEXT_TEMPLATE_FORMATS.update({
     'FIRST_LINE_NUMBER': FIRST_LINE_NUMBER,
+    'MODEL': matcher_model.LINE_MATCHER_MODEL,
 })
 
 _TP = TextParser(_HELP_TEXT_TEMPLATE_FORMATS)
 
-_REGEX_MATCHER_SED_DESCRIPTION = """Matches lines that contains a given {_REG_EX_}."""
+_REGEX_MATCHER_SED_DESCRIPTION = """Matches {MODEL:s} that contains a given {_REG_EX_}."""
 
 _LINE_NUMBER_MATCHER_SED_DESCRIPTION = """\
-Matches lines with a given line number.
+Matches {MODEL:s} with a given line number.
 
 
 Line numbers start at {FIRST_LINE_NUMBER}.
-"""
-
-_NOT_SED_DESCRIPTION = """\
-Matches lines not matched by the given matcher.
-"""
-
-_AND_SED_DESCRIPTION = """\
-Matches lines matched by all matchers.
-"""
-
-_OR_SED_DESCRIPTION = """\
-Matches lines matched by any matcher.
 """
 
 
@@ -137,26 +125,10 @@ _CONCEPT = grammar.Concept(
     LINE_MATCHER_ARGUMENT,
 )
 
-
-def _mk_reference(name: str) -> LineMatcherSdvType:
-    return MatcherReferenceSdv(name, ValueType.LINE_MATCHER)
-
-
-def _mk_negation(operand: LineMatcherSdvType) -> LineMatcherSdvType:
-    return combinator_sdvs.Negation(operand)
-
-
-def _mk_conjunction(operands: Sequence[LineMatcherSdvType]) -> LineMatcherSdvType:
-    return combinator_sdvs.Conjunction(operands)
-
-
-def _mk_disjunction(operands: Sequence[LineMatcherSdvType]) -> LineMatcherSdvType:
-    return combinator_sdvs.Disjunction(operands)
-
-
-GRAMMAR = grammar.Grammar(
+GRAMMAR = standard_expression_grammar.new_grammar(
     _CONCEPT,
-    mk_reference=_mk_reference,
+    model=matcher_model.LINE_MATCHER_MODEL,
+    value_type=ValueType.LINE_MATCHER,
     simple_expressions={
         line_matcher.REGEX_MATCHER_NAME:
             grammar.SimpleExpression(matches_regex.parse__generic,
@@ -164,24 +136,5 @@ GRAMMAR = grammar.Grammar(
         line_matcher.LINE_NUMBER_MATCHER_NAME:
             grammar.SimpleExpression(line_number.parse_line_number__generic,
                                      _LineNumberSyntaxDescription()),
-    },
-    complex_expressions={
-        expression.AND_OPERATOR_NAME:
-            grammar.ComplexExpression(_mk_conjunction,
-                                      OperatorExpressionDescriptionFromFunctions(
-                                          _TP.fnap__fun(_AND_SED_DESCRIPTION)
-                                      )),
-        expression.OR_OPERATOR_NAME:
-            grammar.ComplexExpression(_mk_disjunction,
-                                      OperatorExpressionDescriptionFromFunctions(
-                                          _TP.fnap__fun(_OR_SED_DESCRIPTION)
-                                      )),
-    },
-    prefix_expressions={
-        expression.NOT_OPERATOR_NAME:
-            grammar.PrefixExpression(_mk_negation,
-                                     OperatorExpressionDescriptionFromFunctions(
-                                         _TP.fnap__fun(_NOT_SED_DESCRIPTION)
-                                     ))
     },
 )
