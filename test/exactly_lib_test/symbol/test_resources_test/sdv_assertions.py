@@ -1,7 +1,6 @@
 import unittest
 from typing import Sequence, Callable, TypeVar
 
-import exactly_lib_test.symbol.test_resources.sdv_structure_assertions
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer
@@ -15,6 +14,7 @@ from exactly_lib.type_system.value_type import ValueType, DataValueType, TypeCat
 from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import sdv_assertions as sut
+from exactly_lib_test.symbol.test_resources import sdv_structure_assertions as asrt_sdv_struct
 from exactly_lib_test.test_resources import test_of_test_resources_util
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -58,18 +58,14 @@ class TestIsResolverOfDataType(unittest.TestCase):
 class TestIsResolverOfLogicType(unittest.TestCase):
     def test_succeed(self):
         # ARRANGE #
-        assertion = exactly_lib_test.symbol.test_resources.sdv_structure_assertions.is_sdv_of_logic_type(
-            LogicValueType.PROGRAM,
-            ValueType.PROGRAM)
+        assertion = asrt_sdv_struct.is_sdv_of_logic_type(LogicValueType.PROGRAM)
         matching_sdv = _ProgramResolverTestImpl()
         # ACT & ASSERT #
         assertion.apply_without_message(self, matching_sdv)
 
     def test_fail(self):
         # ARRANGE #
-        assertion = exactly_lib_test.symbol.test_resources.sdv_structure_assertions.is_sdv_of_logic_type(
-            LogicValueType.PROGRAM,
-            ValueType.PROGRAM)
+        assertion = asrt_sdv_struct.is_sdv_of_logic_type(LogicValueType.PROGRAM)
         cases = [
             NameAndValue('unexpected logic type',
                          _StringTransformerSdvTestImpl(),
@@ -89,8 +85,7 @@ class TestMatchesResolver(unittest.TestCase):
         # ARRANGE #
         string_sdv = _StringSdvTestImpl()
         assertion = sut.matches_sdv(
-            exactly_lib_test.symbol.test_resources.sdv_structure_assertions.is_sdv_of_logic_type(LogicValueType.PROGRAM,
-                                                                                                 ValueType.PROGRAM),
+            asrt_sdv_struct.is_sdv_of_logic_type(LogicValueType.PROGRAM),
             asrt.anything_goes(),
             asrt.anything_goes())
         # ACT & ASSERT #
@@ -102,8 +97,8 @@ class TestMatchesResolver(unittest.TestCase):
         string_sdv_with_single_reference = _StringSdvTestImpl(explicit_references=[reference])
 
         assertion = sut.matches_sdv(asrt.anything_goes(),
-                                         asrt.is_empty_sequence,
-                                         asrt.anything_goes())
+                                    asrt.is_empty_sequence,
+                                    asrt.anything_goes())
         # ACT & ASSERT #
         test_of_test_resources_util.assert_that_assertion_fails(
             assertion,
@@ -113,8 +108,8 @@ class TestMatchesResolver(unittest.TestCase):
         # ARRANGE #
         string_sdv = _StringSdvTestImpl(resolve_constant(STRING_DDV))
         assertion = sut.matches_sdv(asrt.anything_goes(),
-                                         asrt.anything_goes(),
-                                         asrt.not_(asrt.is_(STRING_DDV)))
+                                    asrt.anything_goes(),
+                                    asrt.not_(asrt.is_(STRING_DDV)))
         # ACT & ASSERT #
         test_of_test_resources_util.assert_that_assertion_fails(assertion, string_sdv)
 

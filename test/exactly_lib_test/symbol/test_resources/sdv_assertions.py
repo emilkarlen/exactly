@@ -75,19 +75,19 @@ def is_sdv_of_list_type() -> ValueAssertion[rs.SymbolDependentValue]:
 
 
 def is_sdv_of_file_matcher_type() -> ValueAssertion[rs.SymbolDependentValue]:
-    return is_sdv_of_logic_type(LogicValueType.FILE_MATCHER, ValueType.FILE_MATCHER)
+    return is_sdv_of_logic_type(LogicValueType.FILE_MATCHER)
 
 
 def is_sdv_of_line_matcher_type() -> ValueAssertion[rs.SymbolDependentValue]:
-    return is_sdv_of_logic_type(LogicValueType.LINE_MATCHER, ValueType.LINE_MATCHER)
+    return is_sdv_of_logic_type(LogicValueType.LINE_MATCHER)
 
 
 def is_sdv_of_string_transformer_type() -> ValueAssertion[rs.SymbolDependentValue]:
-    return is_sdv_of_logic_type(LogicValueType.STRING_TRANSFORMER, ValueType.STRING_TRANSFORMER)
+    return is_sdv_of_logic_type(LogicValueType.STRING_TRANSFORMER)
 
 
 def is_sdv_of_program_type() -> ValueAssertion[rs.SymbolDependentValue]:
-    return is_sdv_of_logic_type(LogicValueType.PROGRAM, ValueType.PROGRAM)
+    return is_sdv_of_logic_type(LogicValueType.PROGRAM)
 
 
 def matches_sdv_of_string(references: ValueAssertion[Sequence[SymbolReference]],
@@ -132,7 +132,6 @@ def matches_sdv_of_file_matcher(references: ValueAssertion[Sequence[SymbolRefere
     return matches_matcher_sdv(
         FileMatcherSdv,
         LogicValueType.FILE_MATCHER,
-        ValueType.FILE_MATCHER,
         primitive_value,
         references,
         symbol_table_from_none_or_value(symbols),
@@ -150,7 +149,6 @@ def matches_sdv_of_files_matcher(references: ValueAssertion[Sequence[SymbolRefer
     return matches_matcher_sdv(
         FilesMatcherSdv,
         LogicValueType.FILES_MATCHER,
-        ValueType.FILES_MATCHER,
         primitive_value,
         references,
         symbol_table_from_none_or_value(symbols),
@@ -168,7 +166,6 @@ def matches_sdv_of_line_matcher(references: ValueAssertion[Sequence[SymbolRefere
     return matches_matcher_sdv(
         LineMatcherSdv,
         LogicValueType.LINE_MATCHER,
-        ValueType.LINE_MATCHER,
         primitive_value,
         references,
         symbol_table_from_none_or_value(symbols),

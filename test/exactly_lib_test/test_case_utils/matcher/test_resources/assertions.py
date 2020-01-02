@@ -7,7 +7,7 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherDdv, MatcherAdv
-from exactly_lib.type_system.value_type import ValueType, LogicValueType
+from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util import symbol_table
 from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed, TmpDirFileSpace
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import is_sdv_of_logic_type
@@ -18,7 +18,6 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 def matches_matcher_sdv(type_: Type[LogicTypeSdv],
                         logic_value_type: LogicValueType,
-                        value_type: ValueType,
                         primitive_value: ValueAssertion[MatcherWTraceAndNegation] = asrt.anything_goes(),
                         references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                         symbols: symbol_table.SymbolTable = None,
@@ -64,8 +63,7 @@ def matches_matcher_sdv(type_: Type[LogicTypeSdv],
     return asrt.is_instance_with(
         type_,
         asrt.and_([
-            is_sdv_of_logic_type(logic_value_type,
-                                 value_type),
+            is_sdv_of_logic_type(logic_value_type),
 
             asrt.sub_component('references',
                                sdv_structure.get_references,
@@ -81,14 +79,12 @@ def matches_matcher_sdv(type_: Type[LogicTypeSdv],
 
 def matches_matcher_attributes(type_: Type[LogicTypeSdv],
                                logic_value_type: LogicValueType,
-                               value_type: ValueType,
                                references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                                ) -> ValueAssertion[LogicTypeSdv]:
     return asrt.is_instance_with(
         type_,
         asrt.and_([
-            is_sdv_of_logic_type(logic_value_type,
-                                 value_type),
+            is_sdv_of_logic_type(logic_value_type),
 
             asrt.sub_component('references',
                                sdv_structure.get_references,

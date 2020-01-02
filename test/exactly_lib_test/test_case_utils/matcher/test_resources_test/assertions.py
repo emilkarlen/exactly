@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
-from exactly_lib.type_system.value_type import LogicValueType, ValueType
+from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
@@ -151,13 +151,8 @@ def _matches_string_matcher_sdv(primitive_value: ValueAssertion[MatcherWTraceAnd
                                 symbols: SymbolTable = None,
                                 tcds: Tcds = fake_tcds(),
                                 ) -> ValueAssertion[LogicTypeSdv]:
-    return sut.matches_matcher_sdv(StringMatcherSdv,
-                                   LogicValueType.STRING_MATCHER,
-                                   ValueType.STRING_MATCHER,
-                                   primitive_value,
-                                   references,
-                                   symbols,
-                                   tcds)
+    return sut.matches_matcher_sdv(StringMatcherSdv, LogicValueType.STRING_MATCHER, primitive_value, references,
+                                   symbols, tcds)
 
 
 def arbitrary_sdv_with_references(references: Sequence[SymbolReference]) -> StringMatcherSdv:

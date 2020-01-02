@@ -1,34 +1,53 @@
 import unittest
-from abc import ABC
-from typing import List, Tuple
+from abc import ABC, abstractmethod
+from typing import List, Tuple, TypeVar, Generic
 
 from exactly_lib.definitions import expression
+from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
+from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.description_tree.tree import Node
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
+MODEL = TypeVar('MODEL')
 
-class MatcherConfiguration:
+
+class MatcherConfiguration(Generic[MODEL], ABC):
+    @abstractmethod
+    def mk_logic_type(self, generic: MatcherSdv[MODEL]) -> MatcherTypeSdv[MODEL]:
+        pass
+
+    @abstractmethod
+    def logic_type(self) -> LogicValueType:
+        pass
+
+    @abstractmethod
+    def parser(self) -> Parser[MatcherTypeSdv[MODEL]]:
+        pass
+
+    def irrelevant_model(self) -> MODEL:
+        raise NotImplementedError('abstract method')
+
     def matcher_with_constant_result(self,
                                      name: str,
-                                     result: bool) -> MatcherWTrace:
+                                     result: bool) -> MatcherWTrace[MODEL]:
         """
         :param name: The name of the matcher in the trace
         :param result: Constant result
         """
-        raise NotImplementedError('abstract method')
-
-    def irrelevant_model(self):
-        raise NotImplementedError('abstract method')
+        return matchers.ConstantMatcherWithCustomName(name, result)
 
     def matcher_that_registers_model_argument_and_returns_constant(self,
                                                                    registry: List,
-                                                                   result: bool) -> MatcherWTrace:
-        raise NotImplementedError('abstract method')
+                                                                   result: bool) -> MatcherWTrace[MODEL]:
+        return matchers.MatcherThatRegistersModelArgument(registry, result)
 
 
 MatcherNameAndResult = Tuple[str, bool]
@@ -47,16 +66,16 @@ class Case:
         self.expected_trace = expected_trace
 
 
-class TestCaseBase(unittest.TestCase):
+class TestCaseBase(Generic[MODEL], unittest.TestCase):
     @property
-    def configuration(self) -> MatcherConfiguration:
+    def configuration(self) -> MatcherConfiguration[MODEL]:
         raise NotImplementedError('abstract method')
 
     @property
     def trace_operator_name(self) -> str:
         raise NotImplementedError('abstract method')
 
-    def new_combinator_to_check(self, constructor_argument) -> MatcherWTrace:
+    def new_combinator_to_check(self, constructor_argument) -> MatcherWTrace[MODEL]:
         """
         Constructs the matcher that is tested ("and", "or", or "not").
         :param constructor_argument: Either a list of matchers (if "and", or "or" is tested),
@@ -203,7 +222,7 @@ class TestCaseBase(unittest.TestCase):
         )
 
 
-class TestAndBase(TestCaseBase, ABC):
+class TestAndBase(Generic[MODEL], TestCaseBase[MODEL], ABC):
     @property
     def trace_operator_name(self) -> str:
         return expression.AND_OPERATOR_NAME
@@ -275,7 +294,7 @@ class TestAndBase(TestCaseBase, ABC):
         self._check_evaluation_SHOULD_be_lazy_so_that_only_first_operand_is_applied(False, True)
 
 
-class TestOrBase(TestCaseBase, ABC):
+class TestOrBase(Generic[MODEL], TestCaseBase[MODEL], ABC):
     @property
     def trace_operator_name(self) -> str:
         return expression.OR_OPERATOR_NAME
@@ -344,7 +363,7 @@ class TestOrBase(TestCaseBase, ABC):
         self._check_evaluation_SHOULD_be_lazy_so_that_only_first_operand_is_applied(True, False)
 
 
-class TestNotBase(TestCaseBase):
+class TestNotBase(Generic[MODEL], TestCaseBase[MODEL], ABC):
     @property
     def trace_operator_name(self) -> str:
         return expression.NOT_OPERATOR_NAME

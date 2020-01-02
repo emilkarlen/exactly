@@ -28,8 +28,7 @@ def matches_sdv_of_logic_type(sdv_type: Type,
 
     return asrt.is_instance_with(sdv_type,
                                  asrt.and_([
-                                     is_sdv_of_logic_type(logic_value_type,
-                                                          value_type),
+                                     is_sdv_of_logic_type(logic_value_type),
 
                                      asrt.on_transformed(resolve_value,
                                                          resolved_value),
@@ -55,8 +54,7 @@ def matches_sdv_of_logic_type2(sdv_type: Type,
 
     return asrt.is_instance_with(sdv_type,
                                  asrt.and_([
-                                     is_sdv_of_logic_type(logic_value_type,
-                                                          value_type),
+                                     is_sdv_of_logic_type(logic_value_type),
 
                                      asrt.sub_component('primitive value',
                                                         resolve_value,
@@ -85,8 +83,7 @@ def matches_sdv_of_logic_type__w_adv(sdv_type: Type,
 
     return asrt.is_instance_with(sdv_type,
                                  asrt.and_([
-                                     is_sdv_of_logic_type(logic_value_type,
-                                                          value_type),
+                                     is_sdv_of_logic_type(logic_value_type),
 
                                      asrt.sub_component('primitive value',
                                                         resolve_value,

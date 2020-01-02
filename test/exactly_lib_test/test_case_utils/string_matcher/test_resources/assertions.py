@@ -5,7 +5,7 @@ from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.string_matcher import StringMatcher
-from exactly_lib.type_system.value_type import ValueType, LogicValueType
+from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util import symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.matcher.test_resources import assertions as asrt_matcher
@@ -21,7 +21,6 @@ def matches_string_matcher_sdv(primitive_value: ValueAssertion[StringMatcher] = 
     return asrt_matcher.matches_matcher_sdv(
         StringMatcherSdv,
         LogicValueType.STRING_MATCHER,
-        ValueType.STRING_MATCHER,
         primitive_value,
         references,
         symbols,
@@ -34,6 +33,5 @@ def matches_string_matcher_attributes(references: ValueAssertion[Sequence[Symbol
     return asrt_matcher.matches_matcher_attributes(
         StringMatcherSdv,
         LogicValueType.STRING_MATCHER,
-        ValueType.STRING_MATCHER,
         references,
     )
