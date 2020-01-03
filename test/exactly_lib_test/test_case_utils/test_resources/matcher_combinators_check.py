@@ -3,20 +3,32 @@ from abc import ABC, abstractmethod
 from typing import List, Tuple, TypeVar, Generic
 
 from exactly_lib.definitions import expression
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
 from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.description_tree.tree import Node
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import is_sdv_of_logic_type
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.logic.test_resources.types import LOGIC_VALUE_TYPE_2_VALUE_TYPE
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 MODEL = TypeVar('MODEL')
+
+NOT_A_VALID_SYMBOL_NAME_NOR_VALID_PRIMITIVE_OR_OPERATOR = 'not/a/valid/symbol/name'
+
+VALID_SYMBOL_NAME_AND_NOT_VALID_PRIMITIVE_OR_OPERATOR = 'VALID_SYMBOL_NAME_AND_NOT_VALID_PRIMITIVE_OR_OPERATOR'
 
 
 class MatcherConfiguration(Generic[MODEL], ABC):
@@ -50,6 +62,22 @@ class MatcherConfiguration(Generic[MODEL], ABC):
         return matchers.MatcherThatRegistersModelArgument(registry, result)
 
 
+class _AssertionsHelper(Generic[MODEL]):
+    def __init__(self, configuration: MatcherConfiguration[MODEL]):
+        self.conf = configuration
+
+    def is_sym_ref_to(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+        restriction_expectation = is_value_type_restriction(
+            LOGIC_VALUE_TYPE_2_VALUE_TYPE[self.conf.logic_type()]
+        )
+
+        return asrt_sym_usage.matches_reference__ref(asrt.equals(symbol_name),
+                                                     restriction_expectation)
+
+    def is_expected_logic_type_sdv(self) -> ValueAssertion:
+        return is_sdv_of_logic_type(self.conf.logic_type())
+
+
 MatcherNameAndResult = Tuple[str, bool]
 
 
@@ -70,6 +98,10 @@ class TestCaseBase(Generic[MODEL], unittest.TestCase):
     @property
     def configuration(self) -> MatcherConfiguration[MODEL]:
         raise NotImplementedError('abstract method')
+
+    @property
+    def _asrt_helper(self) -> _AssertionsHelper[MODEL]:
+        return _AssertionsHelper(self.configuration)
 
     @property
     def trace_operator_name(self) -> str:
@@ -219,6 +251,41 @@ class TestCaseBase(Generic[MODEL], unittest.TestCase):
                 )
                 for child_name, child_result in child_nodes
             ])
+        )
+
+
+class TestSymbolReferenceBase(Generic[MODEL], TestCaseBase[MODEL], ABC):
+    def test_parse_SHOULD_fail_WHEN_initial_token_is_neither_valid_sym_ref_nor_primitive(self):
+        source = remaining_source(NOT_A_VALID_SYMBOL_NAME_NOR_VALID_PRIMITIVE_OR_OPERATOR)
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            self.configuration.parser().parse(source)
+
+    def test_parse_valid_symbol_reference(self):
+        # ARRANGE #
+
+        conf = self.configuration
+        source = remaining_source(VALID_SYMBOL_NAME_AND_NOT_VALID_PRIMITIVE_OR_OPERATOR)
+
+        # ACT #
+
+        matcher = conf.parser().parse(source)
+
+        # ASSERT #
+
+        asrt_helper = self._asrt_helper
+
+        asrt_helper.is_expected_logic_type_sdv().apply_with_message(self,
+                                                                    matcher,
+                                                                    'sdv type')
+
+        references_expectation = asrt.matches_singleton_sequence(
+            asrt_helper.is_sym_ref_to(VALID_SYMBOL_NAME_AND_NOT_VALID_PRIMITIVE_OR_OPERATOR)
+        )
+
+        references_expectation.apply_with_message(
+            self,
+            matcher.references,
+            'references'
         )
 
 

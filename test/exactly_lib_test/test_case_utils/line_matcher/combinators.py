@@ -14,6 +14,7 @@ from exactly_lib_test.test_case_utils.test_resources import matcher_combinators_
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestSymbolReference),
         unittest.makeSuite(TestAnd),
         unittest.makeSuite(TestOr),
         unittest.makeSuite(TestNot),
@@ -38,12 +39,21 @@ class LineMatcherConfiguration(matcher_combinators_check.MatcherConfiguration[Li
         return 69, 'irrelevant line model'
 
 
+_LINE_MATCHER_CONFIGURATION = LineMatcherConfiguration()
+
+
+class TestSymbolReference(matcher_combinators_check.TestSymbolReferenceBase[LineMatcherLine]):
+    @property
+    def configuration(self) -> matcher_combinators_check.MatcherConfiguration[LineMatcherLine]:
+        return _LINE_MATCHER_CONFIGURATION
+
+
 class TestAnd(matcher_combinators_check.TestAndBase[LineMatcherLine]):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     @property
     def configuration(self) -> matcher_combinators_check.MatcherConfiguration[LineMatcherLine]:
-        return LineMatcherConfiguration()
+        return _LINE_MATCHER_CONFIGURATION
 
     def new_combinator_to_check(self, constructor_argument) -> MatcherWTrace[LineMatcherLine]:
         return sut.conjunction(constructor_argument)
@@ -54,7 +64,7 @@ class TestOr(matcher_combinators_check.TestOrBase[LineMatcherLine]):
     # and call super.
     @property
     def configuration(self) -> matcher_combinators_check.MatcherConfiguration[LineMatcherLine]:
-        return LineMatcherConfiguration()
+        return _LINE_MATCHER_CONFIGURATION
 
     def new_combinator_to_check(self, constructor_argument) -> MatcherWTrace[LineMatcherLine]:
         return sut.disjunction(constructor_argument)
@@ -65,7 +75,7 @@ class TestNot(matcher_combinators_check.TestNotBase[LineMatcherLine]):
     # and call super.
     @property
     def configuration(self) -> matcher_combinators_check.MatcherConfiguration[LineMatcherLine]:
-        return LineMatcherConfiguration()
+        return _LINE_MATCHER_CONFIGURATION
 
     def new_combinator_to_check(self, constructor_argument) -> MatcherWTrace[LineMatcherLine]:
         return sut.negation(constructor_argument)

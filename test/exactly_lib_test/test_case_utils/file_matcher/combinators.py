@@ -16,6 +16,7 @@ from exactly_lib_test.test_case_utils.test_resources import matcher_combinators_
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestSymbolReference),
         unittest.makeSuite(TestAnd),
         unittest.makeSuite(TestOr),
         unittest.makeSuite(TestNot),
@@ -36,12 +37,21 @@ class FileMatcherConfiguration(matcher_combinators_check.MatcherConfiguration[Fi
         return models.new_model(pathlib.Path('irrelevant path'))
 
 
+_FILE_MATCHER_CONFIGURATION = FileMatcherConfiguration()
+
+
+class TestSymbolReference(matcher_combinators_check.TestSymbolReferenceBase[FileMatcherModel]):
+    @property
+    def configuration(self) -> matcher_combinators_check.MatcherConfiguration[FileMatcherModel]:
+        return _FILE_MATCHER_CONFIGURATION
+
+
 class TestAnd(matcher_combinators_check.TestAndBase[FileMatcherModel]):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     @property
     def configuration(self) -> matcher_combinators_check.MatcherConfiguration[FileMatcherModel]:
-        return FileMatcherConfiguration()
+        return _FILE_MATCHER_CONFIGURATION
 
     def new_combinator_to_check(self, constructor_argument) -> MatcherWTrace[FileMatcherModel]:
         return combinator_matchers.Conjunction(constructor_argument)
@@ -52,7 +62,7 @@ class TestOr(matcher_combinators_check.TestOrBase[FileMatcherModel]):
     # and call super.
     @property
     def configuration(self) -> matcher_combinators_check.MatcherConfiguration[FileMatcherModel]:
-        return FileMatcherConfiguration()
+        return _FILE_MATCHER_CONFIGURATION
 
     def new_combinator_to_check(self, constructor_argument) -> MatcherWTrace[FileMatcherModel]:
         return combinator_matchers.Disjunction(constructor_argument)
@@ -63,7 +73,7 @@ class TestNot(matcher_combinators_check.TestNotBase[FileMatcherModel]):
     # and call super.
     @property
     def configuration(self) -> matcher_combinators_check.MatcherConfiguration[FileMatcherModel]:
-        return FileMatcherConfiguration()
+        return _FILE_MATCHER_CONFIGURATION
 
     def new_combinator_to_check(self, constructor_argument) -> MatcherWTrace[FileMatcherModel]:
         return combinator_matchers.Negation(constructor_argument)
