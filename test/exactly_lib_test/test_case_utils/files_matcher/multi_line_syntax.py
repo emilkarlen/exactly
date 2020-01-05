@@ -31,7 +31,7 @@ class TestParseValidMultiLineSyntax(unittest.TestCase):
                 self,
                 case.source,
                 arbitrary_model(),
-                integration_check.Arrangement(),
+                integration_check.arrangement_w_tcds(),
                 integration_check.Expectation(
                     main_result=result_of_main,
                     source=case.source_assertion,

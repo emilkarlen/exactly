@@ -11,7 +11,8 @@ from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
 from exactly_lib_test.test_case_utils.matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, \
+    Arrangement
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.type_system.data.test_resources import described_path
 
@@ -63,14 +64,8 @@ def check(put: unittest.TestCase,
           model: ModelConstructor,
           arrangement: Arrangement,
           expectation: Expectation):
-    integration_check.check(put,
-                            source,
-                            model,
-                            parse_string_matcher.string_matcher_parser(),
-                            arrangement,
-                            LogicValueType.STRING_MATCHER,
-                            ValueType.STRING_MATCHER,
-                            expectation)
+    integration_check.check(put, source, model, parse_string_matcher.string_matcher_parser(), arrangement,
+                            LogicValueType.STRING_MATCHER, ValueType.STRING_MATCHER, expectation)
 
 
 def check_with_source_variants(put: unittest.TestCase,
@@ -78,11 +73,6 @@ def check_with_source_variants(put: unittest.TestCase,
                                model: ModelConstructor,
                                arrangement: Arrangement,
                                expectation: Expectation):
-    integration_check.check_with_source_variants(put,
-                                                 arguments,
-                                                 model,
-                                                 parse_string_matcher.string_matcher_parser(),
-                                                 arrangement,
-                                                 LogicValueType.STRING_MATCHER,
-                                                 ValueType.STRING_MATCHER,
+    integration_check.check_with_source_variants(put, arguments, model, parse_string_matcher.string_matcher_parser(),
+                                                 arrangement, LogicValueType.STRING_MATCHER, ValueType.STRING_MATCHER,
                                                  expectation)

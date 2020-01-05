@@ -7,12 +7,12 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 
 def fake_hds() -> HomeDirectoryStructure:
     """Gives a HDS with different sub-dirs for case, act."""
-    return HomeDirectoryStructure(case_dir=pathlib.Path('hds-case'),
-                                  act_dir=pathlib.Path('hds-act'))
+    return HomeDirectoryStructure(case_dir=pathlib.Path('/exactly-test-dummy-fs/hds-case'),
+                                  act_dir=pathlib.Path('/exactly-test-dummy-fs/hds-act'))
 
 
 def fake_sds() -> SandboxDirectoryStructure:
-    return SandboxDirectoryStructure('sds')
+    return SandboxDirectoryStructure('/exactly-test-dummy-fs/sds')
 
 
 def fake_tcds() -> Tcds:

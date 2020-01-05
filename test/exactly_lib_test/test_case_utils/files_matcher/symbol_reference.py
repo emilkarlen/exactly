@@ -13,6 +13,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import argume
     validation_cases, integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import tr
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArgumentsSetup
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success, pass_or_fail_from_bool
@@ -76,7 +77,7 @@ class TestReferencedMatcherShouldBeValidated(tr.TestCaseBaseForParser):
                     self,
                     instruction_source,
                     model.arbitrary_model(),
-                    integration_check.Arrangement(
+                    arrangement_w_tcds(
                         symbols=symbol_context.symbol_table
                     ),
                     integration_check.Expectation(
@@ -115,7 +116,7 @@ class TestResultShouldBeEqualToResultOfReferencedMatcher(tr.TestCaseBaseForParse
                 arguments = arguments_constructor.apply(etc)
                 instruction_source = remaining_source(arguments)
 
-                arrangement = integration_check.Arrangement(
+                arrangement = arrangement_w_tcds(
                     non_hds_contents=sds_populator,
                     symbols=symbols,
                 )

@@ -10,7 +10,7 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbo
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as arg
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax, integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as test_case_utils
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import Arrangement, \
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import arrangement_w_tcds, \
     Expectation, ARBITRARY_MODEL
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.test_utils import Actual
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -130,7 +130,7 @@ class ValidationShouldFailWhenRegexIsInvalid(test_case_utils.TestCaseBase):
                         model_constructor=
                         ARBITRARY_MODEL,
                         arrangement=
-                        Arrangement(
+                        arrangement_w_tcds(
                             symbols=symbol_table_from_name_and_sdvs(regex_case.symbols)
                         ),
                         expectation=
@@ -149,7 +149,7 @@ class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
     argument_w_opt_neg = arg.WithOptionalNegation(
         name_matches_regex_arg('AB' + symbol_reference_syntax_for_name(any_char_regex_string_symbol.name))
     )
-    arrangement = Arrangement(
+    arrangement = arrangement_w_tcds(
         symbols=SymbolTable({
             any_char_regex_string_symbol.name: any_char_regex_string_symbol.value,
         }))

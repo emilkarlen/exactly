@@ -9,7 +9,8 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import ModelConstructor
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.test_utils import Actual
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, Expectation, \
+    Arrangement
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser
@@ -57,7 +58,7 @@ class TestCaseBase(unittest.TestCase):
                     case.actual.arguments,
                     model_constructor=
                     integration_check.constant_path(described_path.new_primitive(case.actual.path)),
-                    arrangement=Arrangement(),
+                    arrangement=arrangement_w_tcds(),
                     expectation=Expectation(
                         main_result=asrt_matching_result.matches_value(case.expected)
                     )

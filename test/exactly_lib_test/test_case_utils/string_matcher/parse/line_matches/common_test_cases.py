@@ -75,7 +75,6 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
     def runTest(self):
         failure_message = 'failure'
         failing_validation_result = asrt_validation.new_single_string_text_for_test(failure_message)
-        assert_failing_validation = asrt_validation.post_sds_validation_fails(asrt.equals(failure_message))
         line_matcher_symbol_name = 'line_matcher_with_failing_validation'
 
         asserted_symbol_references = asrt.matches_sequence([

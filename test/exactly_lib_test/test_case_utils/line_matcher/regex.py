@@ -9,7 +9,7 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbo
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import test_case_utils
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
 from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases import failing_regex_validation_cases
@@ -82,8 +82,7 @@ class TestParseAndExecuteValidArguments(unittest.TestCase):
                             self,
                             matcher_arguments,
                             model_constructor,
-                            Arrangement(),
-                            Expectation(
+                            expectation=Expectation(
                                 main_result=MAIN_RESULT_ASSERTION__FROM_BOOL[expectation_type][case.result]
                             )
                         )
@@ -116,9 +115,7 @@ class ValidationShouldFailWhenRegexIsInvalid(test_case_utils.TestWithNegationArg
                     model_constructor=
                     CONSTRUCTOR_OF_ARBITRARY_MODEL,
                     arrangement=
-                    Arrangement(
-                        symbols=symbol_table_from_name_and_sdvs(regex_case.symbols)
-                    ),
+                    symbol_table_from_name_and_sdvs(regex_case.symbols),
                     expectation=
                     Expectation(
                         symbol_references=asrt.matches_sequence(regex_case.reference_assertions),
@@ -137,9 +134,9 @@ class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
     )
     matching_model_of_positive_check = (1, 'ABC')
 
-    arrangement = Arrangement(symbols=SymbolTable({
+    arrangement = SymbolTable({
         any_char_regex_string_symbol.name: any_char_regex_string_symbol.value,
-    }))
+    })
 
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         integration_check.check_with_source_variants(

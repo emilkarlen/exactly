@@ -4,6 +4,7 @@ from typing import Sequence
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building, test_configuration
@@ -105,7 +106,9 @@ class TestCaseBase(unittest.TestCase):
                         source,
                         integration_check.model_of(actual_file_contents),
                         Arrangement(
-                            post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
+                            tcds=TcdsArrangement(
+                                post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+                            ),
                             symbols=symbols,
                         ),
                         Expectation(

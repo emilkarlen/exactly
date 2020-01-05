@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import SB
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
@@ -80,7 +81,7 @@ class TestLineBreaksWithEmptyActualFile(TestCaseBase):
                 self._check(
                     case.source,
                     integration_check.empty_model(),
-                    integration_check.Arrangement(
+                    arrangement_w_tcds(
                         post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
                     integration_check.Expectation(
                         main_result=case.main_result_assertion,

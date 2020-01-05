@@ -11,6 +11,7 @@ from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher
     is_reference_to_string_matcher__ref
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration as tc, \
     test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
@@ -95,7 +96,7 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative,
                              symbol_reference=SYMBOL_FOR_EMPTINESS_MATCHER.name)),
                     integration_check.empty_model(),
-                    integration_check.Arrangement(
+                    arrangement_w_tcds(
                         post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                         symbols=symbols),
                     integration_check.Expectation(
@@ -122,7 +123,7 @@ class ActualFileIsNonEmpty(tc.TestWithNegationArgumentBase):
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative,
                              symbol_reference=SYMBOL_FOR_EMPTINESS_MATCHER.name)),
                     integration_check.model_of('contents that makes the file non-empty'),
-                    integration_check.Arrangement(
+                    arrangement_w_tcds(
                         post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                         symbols=symbols),
                     integration_check.Expectation(
@@ -157,7 +158,7 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
                      maybe_not=maybe_not.nothing__if_positive__not_option__if_negative,
                      symbol_reference=SYMBOL_FOR_EMPTINESS_MATCHER.name)),
             integration_check.model_of(original_file_contents),
-            integration_check.Arrangement(
+            arrangement_w_tcds(
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=symbols),
             integration_check.Expectation(

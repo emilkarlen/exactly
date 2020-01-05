@@ -1,13 +1,14 @@
 import unittest
-from typing import Callable
+from typing import Callable, Optional
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_utils.matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 
 ModelConstructor = Callable[[FullResolvingEnvironment], LineMatcherLine]
@@ -22,28 +23,30 @@ def constant_model(model: LineMatcherLine) -> ModelConstructor:
 def check(put: unittest.TestCase,
           source: ParseSource,
           model_constructor: ModelConstructor,
-          arrangement: Arrangement,
-          expectation: Expectation):
+          arrangement: Optional[SymbolTable] = None,
+          expectation: Expectation = Expectation()):
     integration_check.check(put,
                             source,
                             model_constructor,
                             parse_line_matcher.parser(),
-                            arrangement,
+                            integration_check.arrangement_wo_tcds(arrangement),
                             LogicValueType.LINE_MATCHER,
                             ValueType.LINE_MATCHER,
-                            expectation)
+                            expectation,
+                            )
 
 
 def check_with_source_variants(put: unittest.TestCase,
                                arguments: Arguments,
                                model_constructor: ModelConstructor,
-                               arrangement: Arrangement,
-                               expectation: Expectation):
+                               arrangement: Optional[SymbolTable] = None,
+                               expectation: Expectation = Expectation()):
     integration_check.check_with_source_variants(put,
                                                  arguments,
                                                  model_constructor,
                                                  parse_line_matcher.parser(),
-                                                 arrangement,
+                                                 integration_check.arrangement_wo_tcds(arrangement),
                                                  LogicValueType.LINE_MATCHER,
                                                  ValueType.LINE_MATCHER,
-                                                 expectation)
+                                                 expectation,
+                                                 )

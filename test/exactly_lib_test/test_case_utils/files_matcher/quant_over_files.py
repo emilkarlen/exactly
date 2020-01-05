@@ -34,6 +34,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import 
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.arguments import file_contents_arg2
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.misc import \
     FileMatcherThatMatchesAnyFileWhosNameStartsWith
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building2 as sm_arg
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.contents_transformation import \
     ToUppercaseStringTransformer
@@ -209,7 +210,7 @@ class TestHardErrorWhenContentsOfAFileThatIsNotARegularFileIsTested(unittest.Tes
                                 remaining_source(arguments),
                                 the_model,
                                 arrangement=
-                                integration_check.Arrangement(
+                                arrangement_w_tcds(
                                     tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                                         DirContents([
                                             Dir(name_of_checked_dir, [
@@ -453,7 +454,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                         remaining_source(arguments),
                         model.model_with_source_path_as_sub_dir_of_rel_root(name_of_checked_dir)(relativity_root_conf),
                         arrangement=
-                        integration_check.Arrangement(
+                        arrangement_w_tcds(
                             tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                                 DirContents([
                                     files_in_checked_dir,
@@ -518,7 +519,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                         remaining_source(arguments),
                         model.model_with_source_path_as_sub_dir_of_rel_root(name_of_checked_dir)(relativity_root_conf),
                         arrangement=
-                        integration_check.Arrangement(
+                        arrangement_w_tcds(
                             tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                                 DirContents([
                                     files_in_checked_dir,
@@ -581,7 +582,7 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
             remaining_source(arguments),
             model.model_with_rel_root_as_source_path(relativity_root_conf),
             arrangement=
-            integration_check.Arrangement(
+            arrangement_w_tcds(
                 tcds_contents=relativity_root_conf.populator_for_relativity_option_root(
                     DirContents([
                         File('1.txt', original_file_contents),

@@ -1,5 +1,6 @@
 import unittest
-from typing import Optional, Sequence, TypeVar, Generic, Callable
+from contextlib import contextmanager
+from typing import Optional, Sequence, TypeVar, Generic, Callable, ContextManager
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
@@ -7,6 +8,7 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MatcherWTraceAndNegation, \
     MatcherWTrace, MatcherAdv, ApplicationEnvironment
@@ -16,12 +18,15 @@ from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or
 from exactly_lib_test.test_case.test_resources.arrangements import ActResultProducer, ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
     tcds_populators
+from exactly_lib_test.test_case_file_structure.test_resources.ds_action import PlainTcdsAction
+from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement, \
+    tcds_with_act_as_curr_dir_3
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import tcds_with_act_as_curr_dir, TcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
@@ -30,21 +35,45 @@ from exactly_lib_test.util.description_tree.test_resources import described_tree
 
 class Arrangement:
     def __init__(self,
-                 tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
-                 hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
-                 non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
-                 act_result: Optional[ActResultProducer] = None,
-                 pre_population_action: TcdsAction = TcdsAction(),
-                 post_population_action: TcdsAction = TcdsAction(),
                  symbols: Optional[SymbolTable] = None,
+                 tcds: Optional[TcdsArrangement] = None,
                  ):
+        """
+        :param tcds: Not None iff TCDS is used (and must thus be created)
+        """
         self.symbols = symbol_table_from_none_or_value(symbols)
-        self.hds_contents = hds_contents
-        self.non_hds_contents = non_hds_contents
-        self.tcds_contents = tcds_contents
-        self.act_result = act_result
-        self.pre_population_action = pre_population_action
-        self.post_population_action = post_population_action
+        self.tcds = tcds
+
+
+def arrangement_w_tcds(tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
+                       hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
+                       non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
+                       act_result: Optional[ActResultProducer] = None,
+                       pre_population_action: PlainTcdsAction = PlainTcdsAction(),
+                       post_population_action: PlainTcdsAction = PlainTcdsAction(),
+                       symbols: Optional[SymbolTable] = None,
+                       ) -> Arrangement:
+    """
+    :return: An Arrangement with will create a TCDS
+    """
+    tcds = TcdsArrangement(
+        hds_contents=hds_contents,
+        non_hds_contents=non_hds_contents,
+        tcds_contents=tcds_contents,
+        act_result=act_result,
+        pre_population_action=pre_population_action,
+        post_population_action=post_population_action,
+    )
+    return Arrangement(symbols,
+                       tcds)
+
+
+def arrangement_wo_tcds(symbols: Optional[SymbolTable] = None) -> Arrangement:
+    """
+    :return: An Arrangement with will NOT create a TCDS
+    """
+    return Arrangement(symbols,
+                       None)
 
 
 class Expectation:
@@ -91,27 +120,29 @@ def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expected_logic_value_type: LogicValueType,
           expected_value_type: ValueType,
-          expectation: Expectation):
+          expectation: Expectation,
+          ):
     _Checker(put, source, model_constructor, parser, arrangement,
              expected_logic_value_type,
              expected_value_type,
              expectation).check()
 
 
-def check_with_source_variants(put: unittest.TestCase,
-                               arguments: Arguments,
+def check_with_source_variants(put: unittest.TestCase, arguments: Arguments,
                                model_constructor: Callable[[FullResolvingEnvironment], MODEL],
                                parser: Parser[MatcherTypeSdv[MODEL]],
                                arrangement: Arrangement,
                                expected_logic_value_type: LogicValueType,
                                expected_value_type: ValueType,
-                               expectation: Expectation):
+                               expectation: Expectation,
+                               ):
     for source in equivalent_source_variants__with_source_check__for_expression_parser(
             put, arguments):
         check(put, source, model_constructor, parser, arrangement,
               expected_logic_value_type,
               expected_value_type,
-              expectation)
+              expectation,
+              )
 
 
 class _CheckIsDoneException(Exception):
@@ -119,6 +150,8 @@ class _CheckIsDoneException(Exception):
 
 
 class _Checker(Generic[MODEL]):
+    FAKE_TCDS = fake_tcds()
+
     def __init__(self,
                  put: unittest.TestCase,
                  source: ParseSource,
@@ -127,7 +160,8 @@ class _Checker(Generic[MODEL]):
                  arrangement: Arrangement,
                  expected_logic_value_type: LogicValueType,
                  expected_value_type: ValueType,
-                 expectation: Expectation):
+                 expectation: Expectation,
+                 ):
         self.put = put
         self.source = source
         self.model_constructor = model_constructor
@@ -160,26 +194,34 @@ class _Checker(Generic[MODEL]):
                                                       structure_tree_of_ddv,
                                                       'sanity of structure of ddv')
 
-        with tcds_with_act_as_curr_dir(
-                pre_contents_population_action=self.arrangement.pre_population_action,
-                hds_contents=self.arrangement.hds_contents,
-                non_hds_contents=self.arrangement.non_hds_contents,
-                tcds_contents=self.arrangement.tcds_contents,
-                symbols=self.arrangement.symbols) as path_resolving_environment:
-            self.arrangement.post_population_action.apply(path_resolving_environment)
-            self.hds = path_resolving_environment.hds
+        with self._tcds_with_act_as_curr_dir() as tcds:
+            self.hds = tcds.hds
 
             self._check_with_hds(matcher_ddv)
 
-            self.tcds = path_resolving_environment.tcds
+            self.tcds = tcds
 
             self._produce_act_result()
 
             self._check_with_sds(matcher_ddv)
 
+    def _tcds_with_act_as_curr_dir(self) -> ContextManager[Tcds]:
+        tcds_arrangement = self.arrangement.tcds
+        return (
+            tcds_with_act_as_curr_dir_3(tcds_arrangement)
+            if tcds_arrangement
+            else
+            self._dummy_tcds_setup()
+        )
+
+    @contextmanager
+    def _dummy_tcds_setup(self) -> ContextManager[Tcds]:
+        yield self.FAKE_TCDS
+
     def _produce_act_result(self):
-        if self.arrangement.act_result:
-            act_result = self.arrangement.act_result.apply(ActEnvironment(self.tcds))
+        tcds = self.arrangement.tcds
+        if tcds and tcds.act_result:
+            act_result = tcds.act_result.apply(ActEnvironment(self.tcds))
             write_act_result(self.tcds.sds, act_result)
 
     def _check_with_hds(self, ddv: MatcherDdv[MODEL]):

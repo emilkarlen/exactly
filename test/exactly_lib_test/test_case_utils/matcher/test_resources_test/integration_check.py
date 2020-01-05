@@ -44,16 +44,11 @@ from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_hard_error
 from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, File
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import sds_2_tcds_assertion
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-
-EXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.LINE_MATCHER
-UNEXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.FILE_MATCHER
-
-EXPECTED_VALUE_TYPE_FOR_TEST = ValueType.LINE_MATCHER
-UNEXPECTED_VALUE_TYPE_FOR_TEST = ValueType.FILE_MATCHER
 
 
 def suite() -> unittest.TestSuite:
@@ -67,6 +62,18 @@ def suite() -> unittest.TestSuite:
     return ret_val
 
 
+EXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.LINE_MATCHER
+UNEXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.FILE_MATCHER
+
+EXPECTED_VALUE_TYPE_FOR_TEST = ValueType.LINE_MATCHER
+UNEXPECTED_VALUE_TYPE_FOR_TEST = ValueType.FILE_MATCHER
+
+_EMPTY_ARRANGEMENT_W_WO_TCDS = [
+    NameAndValue('without tcds', sut.Arrangement()),
+    NameAndValue('with tcds', sut.Arrangement(tcds=sut.TcdsArrangement()))
+]
+
+
 class TestCaseBase(unittest.TestCase):
     def setUp(self):
         self.tc = utils.TestCaseWithTestErrorAsFailureException()
@@ -75,8 +82,9 @@ class TestCaseBase(unittest.TestCase):
                                  source: ParseSource,
                                  model: int,
                                  parser: Parser[MatcherTypeSdv[int]],
-                                 arrangement: sut.Arrangement,
-                                 expectation: sut.Expectation):
+                                 arrangement: sut.arrangement_w_tcds,
+                                 expectation: sut.Expectation,
+                                 do_create_real_directories_and_files: bool = True):
         sut.check(self.tc, source, sut.constant_model(model), parser, arrangement,
                   EXPECTED_LOGIC_TYPE_FOR_TEST,
                   EXPECTED_VALUE_TYPE_FOR_TEST,
@@ -85,19 +93,21 @@ class TestCaseBase(unittest.TestCase):
 
 class TestSymbolReferences(TestCaseBase):
     def test_that_fails_due_to_missing_symbol_reference(self):
-        with self.assertRaises(utils.TestError):
-            symbol_usages_of_matcher = []
-            symbol_usages_of_expectation = [data_symbol_utils.symbol_reference('symbol_name')]
-            self._check_line_matcher_type(
-                utils.single_line_source(),
-                ARBITRARY_MODEL,
-                _constant_line_matcher_type_parser_of_matcher_sdv(
-                    matchers.sdv_from_primitive_value(references=symbol_usages_of_matcher)
-                ),
-                sut.Arrangement(),
-                sut.Expectation(
-                    symbol_references=sym_asrt.equals_symbol_references(symbol_usages_of_expectation)),
-            )
+        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+            with self.subTest(arrangement.name):
+                with self.assertRaises(utils.TestError):
+                    symbol_usages_of_matcher = []
+                    symbol_usages_of_expectation = [data_symbol_utils.symbol_reference('symbol_name')]
+                    self._check_line_matcher_type(
+                        utils.single_line_source(),
+                        ARBITRARY_MODEL,
+                        _constant_line_matcher_type_parser_of_matcher_sdv(
+                            matchers.sdv_from_primitive_value(references=symbol_usages_of_matcher)
+                        ),
+                        arrangement.value,
+                        sut.Expectation(
+                            symbol_references=sym_asrt.equals_symbol_references(symbol_usages_of_expectation)),
+                    )
 
     def test_that_symbols_from_arrangement_exist_in_environment(self):
         symbol_name = 'symbol_name'
@@ -110,14 +120,23 @@ class TestSymbolReferences(TestCaseBase):
 
         sdv_that_checks_symbols = MatcherSdvThatAssertsThatSymbolsAreAsExpected(self, expectation)
 
-        self._check_line_matcher_type(
-            utils.single_line_source(),
-            ARBITRARY_MODEL,
-            _constant_line_matcher_type_parser_of_matcher_sdv(sdv_that_checks_symbols),
-            sut.Arrangement(
-                symbols=symbol_table_of_arrangement),
-            sut.Expectation(),
-        )
+        cases = [
+            NameAndValue('arrangement without tcds',
+                         sut.arrangement_wo_tcds(symbol_table_of_arrangement)
+                         ),
+            NameAndValue('arrangement with tcds',
+                         sut.arrangement_w_tcds(symbols=symbol_table_of_arrangement)
+                         ),
+        ]
+        for arrangement in cases:
+            with self.subTest(arrangement.name):
+                self._check_line_matcher_type(
+                    utils.single_line_source(),
+                    ARBITRARY_MODEL,
+                    _constant_line_matcher_type_parser_of_matcher_sdv(sdv_that_checks_symbols),
+                    arrangement.value,
+                    sut.Expectation(),
+                )
 
 
 class TestHardError(TestCaseBase):
@@ -125,135 +144,149 @@ class TestHardError(TestCaseBase):
         parser_that_gives_value_that_causes_hard_error = _constant_line_matcher_type_parser_of_matcher(
             matchers.MatcherThatReportsHardError()
         )
-        self._check_line_matcher_type(
-            utils.single_line_source(),
-            ARBITRARY_MODEL,
-            parser_that_gives_value_that_causes_hard_error,
-            sut.Arrangement(),
-            sut.Expectation(
-                is_hard_error=is_hard_error(),
-            ))
+        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+            with self.subTest(arrangement.name):
+                self._check_line_matcher_type(
+                    utils.single_line_source(),
+                    ARBITRARY_MODEL,
+                    parser_that_gives_value_that_causes_hard_error,
+                    arrangement.value,
+                    sut.Expectation(
+                        is_hard_error=is_hard_error(),
+                    ),
+                )
 
     def test_missing_hard_error_is_detected(self):
-        with self.assertRaises(utils.TestError):
-            self._check_line_matcher_type(
-                utils.single_line_source(),
-                ARBITRARY_MODEL,
-                PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
-                sut.Arrangement(),
-                sut.Expectation(
-                    is_hard_error=is_hard_error(),
-                ))
+        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+            with self.subTest(arrangement.name):
+                with self.assertRaises(utils.TestError):
+                    self._check_line_matcher_type(
+                        utils.single_line_source(),
+                        ARBITRARY_MODEL,
+                        PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
+                        arrangement.value,
+                        sut.Expectation(
+                            is_hard_error=is_hard_error(),
+                        ),
+                    )
 
 
 class TestTypes(TestCaseBase):
     def test_expect_given_logic_value_type(self):
-        with self.assertRaises(utils.TestError):
-            sut.check(
-                self.tc,
-                utils.single_line_source(),
-                ARBITRARY_MODEL_CONSTRUCTOR,
-                PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
-                sut.Arrangement(),
-                UNEXPECTED_LOGIC_TYPE_FOR_TEST,
-                EXPECTED_VALUE_TYPE_FOR_TEST,
-                sut.Expectation(),
-            )
+        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+            with self.subTest(arrangement.name):
+                with self.assertRaises(utils.TestError):
+                    sut.check(self.tc, utils.single_line_source(), ARBITRARY_MODEL_CONSTRUCTOR,
+                              PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
+                              arrangement.value, UNEXPECTED_LOGIC_TYPE_FOR_TEST, EXPECTED_VALUE_TYPE_FOR_TEST,
+                              sut.Expectation())
 
     def test_expect_given_value_type(self):
-        with self.assertRaises(utils.TestError):
-            sut.check(
-                self.tc,
-                utils.single_line_source(),
-                ARBITRARY_MODEL_CONSTRUCTOR,
-                PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
-                sut.Arrangement(),
-                EXPECTED_LOGIC_TYPE_FOR_TEST,
-                UNEXPECTED_VALUE_TYPE_FOR_TEST,
-                sut.Expectation(),
-            )
+        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+            with self.subTest(arrangement.name):
+                with self.assertRaises(utils.TestError):
+                    sut.check(self.tc, utils.single_line_source(), ARBITRARY_MODEL_CONSTRUCTOR,
+                              PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
+                              arrangement.value, EXPECTED_LOGIC_TYPE_FOR_TEST, UNEXPECTED_VALUE_TYPE_FOR_TEST,
+                              sut.Expectation())
 
 
 class TestDefault(TestCaseBase):
 
     def test_expect_no_symbol_usages(self):
-        with self.assertRaises(utils.TestError):
-            unexpected_symbol_usages = [data_symbol_utils.symbol_reference('symbol_name')]
-            self._check_line_matcher_type(
-                utils.single_line_source(),
-                ARBITRARY_MODEL,
-                _constant_line_matcher_type_parser_of_matcher_sdv(
-                    matchers.sdv_from_primitive_value(references=unexpected_symbol_usages)
-                ),
-                sut.Arrangement(),
-                sut.Expectation(),
-            )
+        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+            with self.subTest(arrangement.name):
+                with self.assertRaises(utils.TestError):
+                    unexpected_symbol_usages = [data_symbol_utils.symbol_reference('symbol_name')]
+                    self._check_line_matcher_type(
+                        utils.single_line_source(),
+                        ARBITRARY_MODEL,
+                        _constant_line_matcher_type_parser_of_matcher_sdv(
+                            matchers.sdv_from_primitive_value(references=unexpected_symbol_usages)
+                        ),
+                        arrangement.value,
+                        sut.Expectation(),
+                    )
 
     def test_expect_pre_validation_succeeds(self):
-        with self.assertRaises(utils.TestError):
-            self._check_line_matcher_type(utils.single_line_source(),
-                                          ARBITRARY_MODEL,
-                                          _constant_line_matcher_type_parser_of_matcher_ddv(
-                                              matchers.MatcherDdvOfConstantMatcherTestImpl(
-                                                  matchers.MatcherWithConstantResult(True),
-                                                  ConstantDdvValidator(
-                                                      pre_sds_result=rend_comb.ConstantSequenceR([])
-                                                  )
-                                              )
-                                          ),
-                                          sut.Arrangement(),
-                                          Expectation(),
-                                          )
+        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+            with self.subTest(arrangement.name):
+                with self.assertRaises(utils.TestError):
+                    self._check_line_matcher_type(
+                        utils.single_line_source(),
+                        ARBITRARY_MODEL,
+                        _constant_line_matcher_type_parser_of_matcher_ddv(
+                            matchers.MatcherDdvOfConstantMatcherTestImpl(
+                                matchers.MatcherWithConstantResult(True),
+                                ConstantDdvValidator(
+                                    pre_sds_result=rend_comb.ConstantSequenceR([])
+                                )
+                            )
+                        ),
+                        arrangement.value,
+                        Expectation(),
+                    )
 
     def test_expect_post_validation_succeeds(self):
-        with self.assertRaises(utils.TestError):
-            self._check_line_matcher_type(utils.single_line_source(),
-                                          ARBITRARY_MODEL,
-                                          _constant_line_matcher_type_parser_of_matcher_ddv(
-                                              matchers.MatcherDdvOfConstantMatcherTestImpl(
-                                                  matchers.MatcherWithConstantResult(True),
-                                                  ConstantDdvValidator(
-                                                      post_sds_result=rend_comb.ConstantSequenceR([])
-                                                  )
-                                              )
-                                          ),
-                                          sut.Arrangement(),
-                                          Expectation(),
-                                          )
+        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+            with self.subTest(arrangement.name):
+                with self.assertRaises(utils.TestError):
+                    self._check_line_matcher_type(
+                        utils.single_line_source(),
+                        ARBITRARY_MODEL,
+                        _constant_line_matcher_type_parser_of_matcher_ddv(
+                            matchers.MatcherDdvOfConstantMatcherTestImpl(
+                                matchers.MatcherWithConstantResult(True),
+                                ConstantDdvValidator(
+                                    post_sds_result=rend_comb.ConstantSequenceR([])
+                                )
+                            )
+                        ),
+                        arrangement.value,
+                        Expectation(),
+                    )
 
     def test_expects_no_hard_error(self):
         parser_that_gives_value_that_causes_hard_error = _constant_line_matcher_type_parser_of_matcher_sdv(
             matchers.sdv_from_primitive_value(MatcherThatReportsHardError())
         )
-        with self.assertRaises(utils.TestError):
-            self._check_line_matcher_type(
-                utils.single_line_source(),
-                ARBITRARY_MODEL,
-                parser_that_gives_value_that_causes_hard_error,
-                sut.Arrangement(),
-                sut.Expectation(),
-            )
+        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+            with self.subTest(arrangement.name):
+                with self.assertRaises(utils.TestError):
+                    self._check_line_matcher_type(
+                        utils.single_line_source(),
+                        ARBITRARY_MODEL,
+                        parser_that_gives_value_that_causes_hard_error,
+                        arrangement.value,
+                        sut.Expectation(),
+                    )
 
     def test_expect_match_is_true(self):
-        with self.assertRaises(utils.TestError):
-            self._check_line_matcher_type(
-                utils.single_line_source(),
-                ARBITRARY_MODEL,
-                _constant_line_matcher_type_parser_of_matcher_sdv(
-                    matchers.sdv_from_primitive_value(
-                        matchers.MatcherWithConstantResult(False)
+        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+            with self.subTest(arrangement.name):
+                with self.assertRaises(utils.TestError):
+                    self._check_line_matcher_type(
+                        utils.single_line_source(),
+                        ARBITRARY_MODEL,
+                        _constant_line_matcher_type_parser_of_matcher_sdv(
+                            matchers.sdv_from_primitive_value(
+                                matchers.MatcherWithConstantResult(False)
+                            )
+                        ),
+                        arrangement.value,
+                        sut.Expectation(),
                     )
-                ),
-                sut.Arrangement(),
-                sut.Expectation())
 
     def test_successful_flow(self):
-        self._check_line_matcher_type(
-            utils.single_line_source(),
-            ARBITRARY_MODEL,
-            PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
-            sut.Arrangement(),
-            sut.Expectation())
+        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+            with self.subTest(arrangement.name):
+                self._check_line_matcher_type(
+                    utils.single_line_source(),
+                    ARBITRARY_MODEL,
+                    PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
+                    arrangement.value,
+                    sut.Expectation(),
+                )
 
     def test_tcds_directories_are_empty(self):
         all_tcds_dirs_are_empty = asrt.and_([
@@ -268,46 +301,72 @@ class TestDefault(TestCaseBase):
                 self,
                 all_tcds_dirs_are_empty,
             ),
-            sut.Arrangement(),
+            sut.arrangement_w_tcds(),
             sut.Expectation())
 
 
 class TestFailingExpectations(TestCaseBase):
     def test_fail_due_to_unexpected_result_from_pre_validation(self):
-        with self.assertRaises(utils.TestError):
-            self._check_line_matcher_type(utils.single_line_source(),
-                                          ARBITRARY_MODEL,
-                                          ConstantParser(_MATCHER_THAT_MATCHES),
-                                          sut.Arrangement(),
-                                          Expectation(
-                                              validation=asrt_validation.pre_sds_validation_fails(),
-                                          )
-                                          )
+        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+            with self.subTest(arrangement.name):
+                with self.assertRaises(utils.TestError):
+                    self._check_line_matcher_type(
+                        utils.single_line_source(),
+                        ARBITRARY_MODEL,
+                        ConstantParser(_MATCHER_THAT_MATCHES),
+                        arrangement.value,
+                        Expectation(
+                            validation=asrt_validation.pre_sds_validation_fails(),
+                        ),
+                    )
 
     def test_fail_due_to_unexpected_result_from_post_validation(self):
-        with self.assertRaises(utils.TestError):
-            self._check_line_matcher_type(utils.single_line_source(),
-                                          ARBITRARY_MODEL,
-                                          ConstantParser(_MATCHER_THAT_MATCHES),
-                                          sut.Arrangement(),
-                                          Expectation(
-                                              validation=asrt_validation.post_sds_validation_fails(),
-                                          )
-                                          )
+        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+            with self.subTest(arrangement.name):
+                with self.assertRaises(utils.TestError):
+                    self._check_line_matcher_type(
+                        utils.single_line_source(),
+                        ARBITRARY_MODEL,
+                        ConstantParser(_MATCHER_THAT_MATCHES),
+                        arrangement.value,
+                        Expectation(
+                            validation=asrt_validation.post_sds_validation_fails(),
+                        ),
+                    )
 
     def test_fail_due_to_unexpected_result_from_main(self):
-        with self.assertRaises(utils.TestError):
-            self._check_line_matcher_type(
-                utils.single_line_source(),
-                ARBITRARY_MODEL,
-                ConstantParser(_MATCHER_THAT_MATCHES),
-                sut.Arrangement(),
-                Expectation(
-                    main_result=matcher_assertions.is_arbitrary_matching_failure()),
-            )
+        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+            with self.subTest(arrangement.name):
+                with self.assertRaises(utils.TestError):
+                    self._check_line_matcher_type(
+                        utils.single_line_source(),
+                        ARBITRARY_MODEL,
+                        ConstantParser(_MATCHER_THAT_MATCHES),
+                        arrangement.value,
+                        Expectation(
+                            main_result=matcher_assertions.is_arbitrary_matching_failure()
+                        ),
+                    )
 
 
 class TestPopulateDirectoriesAndCwd(TestCaseBase):
+    def test_tcds_SHOULD_not_exist_WHEN_flag_for_not_creating_tcds_is_given(self):
+        def make_primitive(tcds: Tcds) -> MatcherWTraceAndNegation[int]:
+            return matchers.MatcherWithConstantResult(True)
+
+        self._check_line_matcher_type(
+            utils.single_line_source(),
+            ARBITRARY_MODEL,
+            _constant_line_matcher_type_parser_of_matcher_ddv(
+                matchers.MatcherDdvFromPartsTestImpl(
+                    make_primitive,
+                    ValidatorThatAssertsThatTcdsDirsDoesNotDenoteExistingDirectories(self),
+                )
+            ),
+            sut.arrangement_wo_tcds(),
+            Expectation(),
+        )
+
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
         def make_primitive(tcds: Tcds) -> MatcherWTraceAndNegation[int]:
             return MatcherThatAssertsThatCwdIsIsActDir(self, tcds)
@@ -321,7 +380,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
                     ValidatorThatAssertsThatCwdIsIsActDirAtPostSdsValidation(self),
                 )
             ),
-            sut.Arrangement(),
+            sut.arrangement_w_tcds(),
             Expectation())
 
     def test_populate_hds(self):
@@ -337,7 +396,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
                                                             populated_dir_contents)
                 )
             ),
-            sut.Arrangement(
+            sut.arrangement_w_tcds(
                 hds_contents=hds_populators.contents_in(
                     the_hds_dir,
                     populated_dir_contents)),
@@ -355,7 +414,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
                     tmp_user_dir_contains_exactly(populated_dir_contents)
                 )
             ),
-            sut.Arrangement(
+            sut.arrangement_w_tcds(
                 non_hds_contents=non_hds_populator.rel_option(
                     non_hds_populator.RelNonHdsOptionType.REL_TMP,
                     populated_dir_contents)),
@@ -394,7 +453,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
                 ]
                 )
             ),
-            sut.Arrangement(
+            sut.arrangement_w_tcds(
                 act_result=ActResultProducerFromActResult(act_result)
             ),
             Expectation(),
@@ -492,6 +551,20 @@ class ValidatorThatAssertsThatCwdIsIsActDirAtPostSdsValidation(DdvValidator):
     def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
         cwd = pathlib.Path.cwd()
         self._put.assertEqual(cwd, tcds.sds.act_dir, 'current directory at validation post-sds')
+        return None
+
+
+class ValidatorThatAssertsThatTcdsDirsDoesNotDenoteExistingDirectories(DdvValidator):
+    def __init__(self, put: unittest.TestCase):
+        self._put = put
+
+    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
+        self._put.assertFalse(hds.case_dir.exists())
+        self._put.assertFalse(hds.act_dir.exists())
+        return None
+
+    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+        self._put.assertFalse(tcds.sds.root_dir.exists())
         return None
 
 

@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as arg
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir
 from exactly_lib_test.test_resources.test_utils import NEA
@@ -28,7 +28,7 @@ class TestFileType(unittest.TestCase):
             self,
             ArgumentElements(arg.Type(file_type_to_check_for).elements).as_arguments,
             integration_check.constant_relative_file_name(base_name_of_file_to_check),
-            Arrangement(
+            arrangement_w_tcds(
                 non_hds_contents=non_hds_populator.rel_option(RelNonHdsOptionType.REL_CWD, dir_contents),
             ),
             Expectation(

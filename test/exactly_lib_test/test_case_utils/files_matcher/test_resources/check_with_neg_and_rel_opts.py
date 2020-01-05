@@ -9,12 +9,14 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndExpectSetup
+from exactly_lib_test.test_case_file_structure.test_resources.ds_action import MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     FilesMatcherArgumentsConstructor
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import ModelConstructorFromRelOptConf, \
     ModelConstructor
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
@@ -27,8 +29,6 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
     SymbolsConfiguration, conf_rel_sds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
-    MkSubDirAndMakeItCurrentDirectory
 
 SOME_ACCEPTED_REL_OPT_CONFIGURATIONS = [
     conf_rel_sds(RelSdsOptionType.REL_ACT),
@@ -72,7 +72,7 @@ class MatcherChecker:
                 self.put,
                 instruction_source,
                 model,
-                integration_check.Arrangement(
+                arrangement_w_tcds(
                     pre_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
                     tcds_contents=root_dir_of_dir_contents.populator_for_relativity_option_root(
                         contents_of_relativity_option_root

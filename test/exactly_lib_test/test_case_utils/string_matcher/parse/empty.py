@@ -4,6 +4,7 @@ from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransforme
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration as tc, \
     test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
@@ -40,7 +41,7 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
                              maybe_with_transformer_option=maybe_with_transformer_option,
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
                     integration_check.empty_model(),
-                    integration_check.Arrangement(
+                    arrangement_w_tcds(
                         post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
                     integration_check.Expectation(
                         main_result=maybe_not.pass__if_positive__fail__if_negative
@@ -58,7 +59,7 @@ class ActualFileIsNonEmpty(tc.TestWithNegationArgumentBase):
                              maybe_with_transformer_option=maybe_with_transformer_option,
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
                     integration_check.model_of('contents that makes the file non-empty'),
-                    integration_check.Arrangement(
+                    arrangement_w_tcds(
                         post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
                     integration_check.Expectation(
                         main_result=maybe_not.fail__if_positive__pass_if_negative
@@ -89,7 +90,7 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
                      the_transformer=named_transformer.name,
                      maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
             integration_check.model_of(original_file_contents),
-            integration_check.Arrangement(
+            arrangement_w_tcds(
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=symbols),
             integration_check.Expectation(

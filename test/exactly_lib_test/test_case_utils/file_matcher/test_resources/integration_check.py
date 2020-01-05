@@ -10,7 +10,8 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models
 from exactly_lib_test.test_case_utils.matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, Expectation, \
+    Arrangement
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 
 ModelConstructor = Callable[[FullResolvingEnvironment], FileMatcherModel]
@@ -36,16 +37,10 @@ ARBITRARY_MODEL = constant_relative_file_name('arbitrary-file.txt')
 def check(put: unittest.TestCase,
           source: ParseSource,
           model_constructor: ModelConstructor,
-          arrangement: Arrangement,
+          arrangement: arrangement_w_tcds,
           expectation: Expectation):
-    integration_check.check(put,
-                            source,
-                            model_constructor,
-                            parse_file_matcher.parser(),
-                            arrangement,
-                            LogicValueType.FILE_MATCHER,
-                            ValueType.FILE_MATCHER,
-                            expectation)
+    integration_check.check(put, source, model_constructor, parse_file_matcher.parser(), arrangement,
+                            LogicValueType.FILE_MATCHER, ValueType.FILE_MATCHER, expectation)
 
 
 def check_with_source_variants(put: unittest.TestCase,
@@ -53,11 +48,6 @@ def check_with_source_variants(put: unittest.TestCase,
                                model_constructor: ModelConstructor,
                                arrangement: Arrangement,
                                expectation: Expectation):
-    integration_check.check_with_source_variants(put,
-                                                 arguments,
-                                                 model_constructor,
-                                                 parse_file_matcher.parser(),
-                                                 arrangement,
-                                                 LogicValueType.FILE_MATCHER,
-                                                 ValueType.FILE_MATCHER,
+    integration_check.check_with_source_variants(put, arguments, model_constructor, parse_file_matcher.parser(),
+                                                 arrangement, LogicValueType.FILE_MATCHER, ValueType.FILE_MATCHER,
                                                  expectation)

@@ -12,6 +12,7 @@ from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl, \
     is_reference_to_string_transformer__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration as tc, \
     test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
@@ -85,7 +86,7 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
                      maybe_not=maybe_not.nothing__if_positive__not_option__if_negative,
                      prepend_and_equals_expected_matcher=prepend_and_equals_expected_matcher.name)),
             initial_model,
-            integration_check.Arrangement(
+            arrangement_w_tcds(
                 symbols=symbols),
             integration_check.Expectation(
                 main_result=maybe_not.pass__if_positive__fail__if_negative,

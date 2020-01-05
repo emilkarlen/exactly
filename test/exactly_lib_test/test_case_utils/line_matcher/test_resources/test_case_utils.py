@@ -5,9 +5,10 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import ModelConstructor
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success, ExpectationTypeConfigForNoneIsSuccess
 
@@ -16,9 +17,11 @@ class TestCaseBase(unittest.TestCase):
     def _check(self,
                source: ParseSource,
                model_constructor: ModelConstructor,
-               arrangement: Arrangement,
+               arrangement: SymbolTable,
                expectation: Expectation):
-        integration_check.check(self, source, model_constructor, arrangement, expectation)
+        integration_check.check(self, source, model_constructor,
+                                arrangement,
+                                expectation)
 
     def _assert_failing_parse(self, source: ParseSource):
         with self.assertRaises(SingleInstructionInvalidArgumentException):

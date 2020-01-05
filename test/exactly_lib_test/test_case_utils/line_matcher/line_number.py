@@ -70,9 +70,7 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
                     remaining_source(str(arguments)),
                     model_constructor=ARBITRARY_MODEL,
                     arrangement=
-                    integration_check.Arrangement(
-                        symbols=case.symbol_table
-                    ),
+                    case.symbol_table,
                     expectation=
                     integration_check.Expectation(
                         symbol_references=case.symbol_references_expectation,
@@ -100,9 +98,7 @@ class _SymbolReferencesInOperandShouldBeReported(unittest.TestCase):
             remaining_source(str(arguments)),
             model_constructor=model_that_matches,
             arrangement=
-            integration_check.Arrangement(
-                symbols=symbol_utils.symbol_table_from_name_and_sdvs([int_string_symbol])
-            ),
+            symbol_utils.symbol_table_from_name_and_sdvs([int_string_symbol]),
             expectation=
             integration_check.Expectation(
                 symbol_references=asrt.matches_sequence([
@@ -180,9 +176,7 @@ class _ParseAndMatchTest(unittest.TestCase):
                     self,
                     remaining_source(str(arguments)),
                     integration_check.constant_model((case.line_num_of_model, 'ignored line text')),
-                    integration_check.Arrangement(
-                        symbols=symbol_utils.symbol_table_from_name_and_sdvs(case.symbols)
-                    ),
+                    symbol_utils.symbol_table_from_name_and_sdvs(case.symbols),
                     integration_check.Expectation(
                         symbol_references=expected_symbol_references,
                         main_result=case.result

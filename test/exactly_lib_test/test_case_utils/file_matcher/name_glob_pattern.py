@@ -9,7 +9,8 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as arg
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax, integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as test_case_utils
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import Expectation, Arrangement
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import Expectation, \
+    arrangement_w_tcds
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.test_utils import Actual
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
@@ -84,7 +85,7 @@ class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
             'AB' + symbol_reference_syntax_for_name(any_char_glob_pattern_string_symbol.name))
         )
     )
-    arrangement = Arrangement(symbols=SymbolTable({
+    arrangement = arrangement_w_tcds(symbols=SymbolTable({
         any_char_glob_pattern_string_symbol.name: any_char_glob_pattern_string_symbol.value,
     }))
 

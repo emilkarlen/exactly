@@ -3,6 +3,7 @@ import pathlib
 
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolver
 
 
 class PlainSdsAction:
@@ -40,3 +41,12 @@ MK_DIR_AND_CHANGE_TO_IT_INSIDE_OF_SDS_BUT_OUTSIDE_OF_ANY_OF_THE_RELATIVITY_OPTIO
         MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs()
     )
 )
+
+
+class MkSubDirAndMakeItCurrentDirectory(PlainTcdsAction):
+    def __init__(self, sub_dir_resolver: SdsSubDirResolver):
+        self.sub_dir_resolver = sub_dir_resolver
+
+    def apply(self, tcds: Tcds):
+        sub_dir = self.sub_dir_resolver.population_dir__create_if_not_exists(tcds.sds)
+        os.chdir(str(sub_dir))

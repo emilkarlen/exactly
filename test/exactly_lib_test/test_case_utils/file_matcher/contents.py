@@ -14,7 +14,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_hds_pop
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHdsPopulator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax, integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as tc
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, elements
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args as sm_args, \
     EqualsStringAssertionArgumentsConstructor
@@ -78,7 +78,7 @@ class EmbeddedStringMatcherShouldBeValidated(tc.TestCaseBase):
                     model_constructor=
                     integration_check.constant_relative_file_name('non-existing.txt'),
                     arrangement=
-                    Arrangement(
+                    arrangement_w_tcds(
                         symbols=symbols,
                     ),
                     expectation=
@@ -99,7 +99,7 @@ class TestHardErrorWhenActualFileDoesNotExist(tc.TestWithNegationArgumentBase):
             model_constructor=
             integration_check.constant_relative_file_name('non-existing.txt'),
             arrangement=
-            Arrangement(),
+            arrangement_w_tcds(),
             expectation=
             Expectation(
                 is_hard_error=asrt.anything_goes()
@@ -119,7 +119,7 @@ class TestHardErrorWhenActualFileIsADirectory(tc.TestWithNegationArgumentBase):
             model_constructor=
             integration_check.constant_relative_file_name(checked_file.name),
             arrangement=
-            Arrangement(
+            arrangement_w_tcds(
                 non_hds_contents=single_file_in_current_dir(checked_file)
             ),
             expectation=
@@ -141,7 +141,7 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
             model_constructor=
             integration_check.constant_relative_file_name(checked_file.name),
             arrangement=
-            Arrangement(
+            arrangement_w_tcds(
                 non_hds_contents=single_file_in_current_dir(checked_file)
             ),
             expectation=
@@ -180,7 +180,7 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
             model_constructor=
             integration_check.constant_relative_file_name(checked_file.name),
             arrangement=
-            Arrangement(
+            arrangement_w_tcds(
                 non_hds_contents=single_file_in_current_dir(checked_file),
                 symbols=symbols,
             ),
@@ -210,7 +210,7 @@ class TestComplexMatcher(tc.TestWithNegationArgumentBase):
             model_constructor=
             integration_check.constant_relative_file_name(checked_file.name),
             arrangement=
-            Arrangement(
+            arrangement_w_tcds(
                 non_hds_contents=single_file_in_current_dir(checked_file)
             ),
             expectation=
@@ -241,7 +241,7 @@ class TestComplexMatcherWithParenthesis(tc.TestWithNegationArgumentBase):
             model_constructor=
             integration_check.constant_relative_file_name(checked_file.name),
             arrangement=
-            Arrangement(
+            arrangement_w_tcds(
                 non_hds_contents=single_file_in_current_dir(checked_file)
             ),
             expectation=
@@ -269,7 +269,7 @@ class TestEvaluationIsLazyFromLeftToRight(tc.TestCaseBase):
             model_constructor=
             integration_check.constant_relative_file_name(checked_file.name),
             arrangement=
-            Arrangement(
+            arrangement_w_tcds(
                 non_hds_contents=single_file_in_current_dir(checked_file)
             ),
             expectation=
