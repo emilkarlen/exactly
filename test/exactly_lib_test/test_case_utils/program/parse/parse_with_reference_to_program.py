@@ -27,6 +27,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_val
     sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HdsPopulator, SdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import tcds_with_act_as_curr_dir_2
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
@@ -37,8 +38,6 @@ from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_vali
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    tcds_with_act_as_curr_dir_2
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

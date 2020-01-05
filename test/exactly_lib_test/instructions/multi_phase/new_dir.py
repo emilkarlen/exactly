@@ -20,7 +20,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.tcds_and_symbols import sds_test
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import SdsAction, \
-    MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs
+    mk_dir_and_change_to_it_inside_of_sds_but_outside_of_any_of_the_relativity_option_dirs
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_test import Arrangement, Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -143,7 +143,7 @@ RELATIVITY_OPTIONS = [
     rel_opt.conf_rel_non_hds(RelNonHdsOptionType.REL_ACT),
     rel_opt.conf_rel_non_hds(RelNonHdsOptionType.REL_TMP),
     rel_opt.symbol_conf_rel_non_hds(RelNonHdsOptionType.REL_TMP,
-                                     'DIR_PATH_SYMBOL',
+                                    'DIR_PATH_SYMBOL',
                                     sut.RELATIVITY_VARIANTS.options.accepted_relativity_variants),
 ]
 
@@ -309,7 +309,7 @@ def arrangement_with_cwd_as_none_of_the_relativity_roots(
                        symbols=symbols)
 
 
-SETUP_CWD_ACTION = MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs()
+SETUP_CWD_ACTION = mk_dir_and_change_to_it_inside_of_sds_but_outside_of_any_of_the_relativity_option_dirs()
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
