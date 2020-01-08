@@ -4,6 +4,8 @@ from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransforme
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation, \
+    ExecutionExpectation, ParseExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration as tc, \
     test_configuration
@@ -43,8 +45,10 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
                     integration_check.empty_model(),
                     arrangement_w_tcds(
                         post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-                    integration_check.Expectation(
-                        main_result=maybe_not.pass__if_positive__fail__if_negative
+                    Expectation(
+                        execution=ExecutionExpectation(
+                            main_result=maybe_not.pass__if_positive__fail__if_negative
+                        ),
                     ),
                 )
 
@@ -61,8 +65,10 @@ class ActualFileIsNonEmpty(tc.TestWithNegationArgumentBase):
                     integration_check.model_of('contents that makes the file non-empty'),
                     arrangement_w_tcds(
                         post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-                    integration_check.Expectation(
-                        main_result=maybe_not.fail__if_positive__pass_if_negative
+                    Expectation(
+                        execution=ExecutionExpectation(
+                            main_result=maybe_not.fail__if_positive__pass_if_negative
+                        ),
                     ),
                 )
 
@@ -93,9 +99,13 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
             arrangement_w_tcds(
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=symbols),
-            integration_check.Expectation(
-                main_result=maybe_not.pass__if_positive__fail__if_negative,
-                symbol_references=expected_symbol_usages),
+            Expectation(
+                ParseExpectation(
+                    symbol_references=expected_symbol_usages),
+                ExecutionExpectation(
+                    main_result=maybe_not.pass__if_positive__fail__if_negative,
+                ),
+            )
         )
 
 
@@ -109,11 +119,15 @@ class StringTransformerShouldBeValidated(tc.TestWithNegationArgumentBase):
                              transformer_option=case.value.transformer_arguments_string,
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
                     integration_check.empty_model(),
-                    integration_check.Arrangement(
+                    Arrangement(
                         symbols=case.value.symbol_context.symbol_table
                     ),
-                    integration_check.Expectation(
-                        validation=case.value.expectation,
-                        symbol_references=case.value.symbol_context.references_assertion
+                    Expectation(
+                        ParseExpectation(
+                            symbol_references=case.value.symbol_context.references_assertion,
+                        ),
+                        ExecutionExpectation(
+                            validation=case.value.expectation,
+                        ),
                     ),
                 )

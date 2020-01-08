@@ -15,6 +15,8 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources import argumen
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args, \
     integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fsm_args, model
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, ExecutionExpectation, \
+    ParseExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_confs, matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -78,16 +80,20 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
 
             # ACT & ASSERT #
             with self.subTest(case.name):
-                integration_check.check(
+                integration_check.CHECKER.check(
                     self,
                     selection_is_empty_source,
                     model.arbitrary_model(),
                     arrangement_w_tcds(
                         symbols=symbol_context.symbol_table,
                     ),
-                    integration_check.Expectation(
-                        validation=case.value.expectation,
-                        symbol_references=symbol_context.references_assertion,
+                    Expectation(
+                        ParseExpectation(
+                            symbol_references=symbol_context.references_assertion,
+                        ),
+                        ExecutionExpectation(
+                            validation=case.value.expectation,
+                        ),
                     ),
                 )
 
@@ -153,7 +159,7 @@ class TestSequenceOfSelectionsAreCombinedWithAnd(unittest.TestCase):
 
         # ASSERT #
 
-        integration_check.check(
+        integration_check.CHECKER.check(
             self,
             remaining_source(files_matcher_source__begins_with_a__symbol),
             model.model_with_source_path_as_sub_dir_of_rel_root(checked_dir.name)(rel_opt_conf),
@@ -163,10 +169,14 @@ class TestSequenceOfSelectionsAreCombinedWithAnd(unittest.TestCase):
                 ),
                 symbols=symbols,
             ),
-            integration_check.Expectation(
-                symbol_references=asrt.matches_sequence([
-                    is_reference_to_files_matcher__ref(symbol_name)
-                ]),
-                main_result=matcher_assertions.is_matching_success(),
+            Expectation(
+                ParseExpectation(
+                    symbol_references=asrt.matches_sequence([
+                        is_reference_to_files_matcher__ref(symbol_name)
+                    ]),
+                ),
+                ExecutionExpectation(
+                    main_result=matcher_assertions.is_matching_success(),
+                ),
             )
         )

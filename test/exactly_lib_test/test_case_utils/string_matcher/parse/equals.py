@@ -14,6 +14,8 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation, \
+    ExecutionExpectation, ParseExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import contents_transformation, \
     test_configuration
@@ -129,9 +131,13 @@ class _ContentsDiffer(TestWithRelativityOptionAndNegationBase):
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
-            integration_check.Expectation(
-                main_result=self.not_opt.fail__if_positive__pass_if_negative,
-                symbol_references=self.rel_opt.symbols.usages_expectation(),
+            Expectation(
+                ParseExpectation(
+                    symbol_references=self.rel_opt.symbols.usages_expectation(),
+                ),
+                ExecutionExpectation(
+                    main_result=self.not_opt.fail__if_positive__pass_if_negative,
+                ),
             ),
         )
 
@@ -150,9 +156,13 @@ class _ContentsEquals(TestWithRelativityOptionAndNegationBase):
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
-            integration_check.Expectation(
-                main_result=self.not_opt.pass__if_positive__fail__if_negative,
-                symbol_references=self.rel_opt.symbols.usages_expectation(),
+            Expectation(
+                ParseExpectation(
+                    symbol_references=self.rel_opt.symbols.usages_expectation(),
+                ),
+                ExecutionExpectation(
+                    main_result=self.not_opt.pass__if_positive__fail__if_negative,
+                ),
             ),
         )
 
@@ -168,9 +178,13 @@ class _ContentsEqualsAHereDocument(TestWithNegationArgumentBase):
             integration_check.model_of(lines_content(['expected content line'])),
             arrangement_w_tcds(
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            integration_check.Expectation(
-                main_result=maybe_not.pass__if_positive__fail__if_negative,
-                source=asrt_source.is_at_end_of_line(3)
+            Expectation(
+                ParseExpectation(
+                    source=asrt_source.is_at_end_of_line(3),
+                ),
+                ExecutionExpectation(
+                    main_result=maybe_not.pass__if_positive__fail__if_negative,
+                ),
             ),
         )
 
@@ -187,8 +201,10 @@ class _ContentsEqualsAString(TestWithNegationArgumentBase):
             integration_check.model_of(expected_contents),
             arrangement_w_tcds(
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            integration_check.Expectation(
-                main_result=maybe_not.pass__if_positive__fail__if_negative
+            Expectation(
+                execution=ExecutionExpectation(
+                    main_result=maybe_not.pass__if_positive__fail__if_negative
+                ),
             ),
         )
 
@@ -214,12 +230,16 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithNegationArgumentB
                 symbols=SymbolTable({
                     symbol.name: data_symbol_utils.string_constant_container(symbol.value),
                 })),
-            integration_check.Expectation(
-                main_result=maybe_not.pass__if_positive__fail__if_negative,
-                symbol_references=equals_symbol_references([
-                    SymbolReference(symbol.name, is_any_data_type())
-                ]),
-                source=asrt_source.is_at_end_of_line(3)
+            Expectation(
+                ParseExpectation(
+                    source=asrt_source.is_at_end_of_line(3),
+                    symbol_references=equals_symbol_references([
+                        SymbolReference(symbol.name, is_any_data_type())
+                    ]),
+                ),
+                ExecutionExpectation(
+                    main_result=maybe_not.pass__if_positive__fail__if_negative,
+                ),
             ),
         )
 
@@ -236,9 +256,13 @@ class _ContentsDoNotEqualAHereDocument(TestWithNegationArgumentBase):
             integration_check.model_of(lines_content(['actual contents that is not equal to expected contents'])),
             arrangement_w_tcds(
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            integration_check.Expectation(
-                main_result=maybe_not.fail__if_positive__pass_if_negative,
-                source=asrt_source.is_at_end_of_line(3)
+            Expectation(
+                ParseExpectation(
+                    source=asrt_source.is_at_end_of_line(3)
+                ),
+                ExecutionExpectation(
+                    main_result=maybe_not.fail__if_positive__pass_if_negative,
+                ),
             ),
         )
 
@@ -282,9 +306,13 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=symbols,
             ),
-            integration_check.Expectation(
-                main_result=self.not_opt.pass__if_positive__fail__if_negative,
-                symbol_references=expected_symbol_usages,
+            Expectation(
+                ParseExpectation(
+                    symbol_references=expected_symbol_usages,
+                ),
+                ExecutionExpectation(
+                    main_result=self.not_opt.pass__if_positive__fail__if_negative,
+                ),
             ),
         )
 
@@ -302,11 +330,15 @@ class _StringTransformerShouldBeValidated(TestWithNegationArgumentBase):
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
                     ),
                     integration_check.model_of(expected_contents),
-                    integration_check.Arrangement(
+                    Arrangement(
                         symbols=case.value.symbol_context.symbol_table
                     ),
-                    integration_check.Expectation(
-                        validation=case.value.expectation,
-                        symbol_references=case.value.symbol_context.references_assertion
+                    Expectation(
+                        ParseExpectation(
+                            symbol_references=case.value.symbol_context.references_assertion,
+                        ),
+                        ExecutionExpectation(
+                            validation=case.value.expectation,
+                        ),
                     ),
                 )

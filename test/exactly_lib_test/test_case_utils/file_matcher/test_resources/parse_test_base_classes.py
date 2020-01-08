@@ -10,10 +10,8 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources import integra
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import ModelConstructor
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.test_utils import Actual
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, Expectation, \
-    Arrangement
+    Arrangement, ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
-from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success, ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.test_utils import NEA
@@ -27,11 +25,11 @@ class TestCaseBase(unittest.TestCase):
                model_constructor: ModelConstructor,
                arrangement: Arrangement,
                expectation: Expectation):
-        integration_check.check(self,
-                                source,
-                                model_constructor,
-                                arrangement,
-                                expectation)
+        integration_check.CHECKER.check(self,
+                                        source,
+                                        model_constructor,
+                                        arrangement,
+                                        expectation)
 
     def _assert_failing_parse(self, source: ParseSource):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -42,12 +40,11 @@ class TestCaseBase(unittest.TestCase):
                                     model_constructor: ModelConstructor,
                                     arrangement: Arrangement,
                                     expectation: Expectation):
-        for source in equivalent_source_variants__with_source_check__for_expression_parser(self, arguments):
-            integration_check.check(self,
-                                    source,
-                                    model_constructor,
-                                    arrangement,
-                                    expectation)
+        integration_check.CHECKER.check_with_source_variants(self,
+                                                             arguments,
+                                                             model_constructor,
+                                                             arrangement,
+                                                             expectation)
 
     def _check_cases__with_source_variants(self, cases: Sequence[NEA[bool, Actual]]):
         for case in cases:
@@ -60,7 +57,9 @@ class TestCaseBase(unittest.TestCase):
                     integration_check.constant_path(described_path.new_primitive(case.actual.path)),
                     arrangement=arrangement_w_tcds(),
                     expectation=Expectation(
-                        main_result=asrt_matching_result.matches_value(case.expected)
+                        execution=ExecutionExpectation(
+                            main_result=asrt_matching_result.matches_value(case.expected)
+                        ),
                     )
                 )
 

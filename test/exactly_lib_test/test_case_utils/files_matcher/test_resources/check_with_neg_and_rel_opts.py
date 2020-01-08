@@ -16,6 +16,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_bui
     FilesMatcherArgumentsConstructor
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import ModelConstructorFromRelOptConf, \
     ModelConstructor
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, ExecutionExpectation, \
+    ParseExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -68,7 +70,7 @@ class MatcherChecker:
         with self.put.subTest(case_name=test_case_name,
                               expectation_type=etc.expectation_type.name,
                               arguments=instruction_source.source_string):
-            integration_check.check(
+            integration_check.CHECKER.check(
                 self.put,
                 instruction_source,
                 model,
@@ -80,9 +82,13 @@ class MatcherChecker:
                     symbols=_symbol_table_of(root_dir_of_dir_contents.symbols,
                                              following_symbols_setup),
                 ),
-                integration_check.Expectation(
-                    main_result=etc.main_result(main_result_for_positive_expectation),
-                    symbol_references=following_symbols_setup.expected_references_assertion,
+                Expectation(
+                    ParseExpectation(
+                        symbol_references=following_symbols_setup.expected_references_assertion,
+                    ),
+                    ExecutionExpectation(
+                        main_result=etc.main_result(main_result_for_positive_expectation),
+                    ),
                 ))
 
     def check_parsing_with_different_source_variants(

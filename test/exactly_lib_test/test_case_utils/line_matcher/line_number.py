@@ -17,7 +17,7 @@ from exactly_lib_test.test_case_utils.line_matcher.test_resources import argumen
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import ARBITRARY_MODEL
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import main_result_is_success, \
-    main_result_is_failure
+    main_result_is_failure, ExecutionExpectation, ParseExpectation
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -73,8 +73,12 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
                     case.symbol_table,
                     expectation=
                     integration_check.Expectation(
-                        symbol_references=case.symbol_references_expectation,
-                        validation=case.expectation,
+                        ParseExpectation(
+                            symbol_references=case.symbol_references_expectation,
+                        ),
+                        ExecutionExpectation(
+                            validation=case.expectation,
+                        ),
                     )
                 )
 
@@ -101,9 +105,11 @@ class _SymbolReferencesInOperandShouldBeReported(unittest.TestCase):
             symbol_utils.symbol_table_from_name_and_sdvs([int_string_symbol]),
             expectation=
             integration_check.Expectation(
-                symbol_references=asrt.matches_sequence([
-                    is_reference_to_symbol_in_expression(int_string_symbol.name)
-                ]),
+                ParseExpectation(
+                    symbol_references=asrt.matches_sequence([
+                        is_reference_to_symbol_in_expression(int_string_symbol.name)
+                    ]),
+                ),
             )
 
         )
@@ -178,8 +184,12 @@ class _ParseAndMatchTest(unittest.TestCase):
                     integration_check.constant_model((case.line_num_of_model, 'ignored line text')),
                     symbol_utils.symbol_table_from_name_and_sdvs(case.symbols),
                     integration_check.Expectation(
-                        symbol_references=expected_symbol_references,
-                        main_result=case.result
+                        ParseExpectation(
+                            symbol_references=expected_symbol_references,
+                        ),
+                        ExecutionExpectation(
+                            main_result=case.result
+                        ),
                     )
                 )
 

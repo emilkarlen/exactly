@@ -3,12 +3,12 @@ from typing import List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Expectation, \
-    ModelConstructor, Arrangement
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import ModelConstructor
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success, ExpectationTypeConfigForNoneIsSuccess
 
@@ -31,11 +31,11 @@ class TestCaseBase(unittest.TestCase):
                model: ModelConstructor,
                arrangement: Arrangement,
                expectation: Expectation):
-        integration_check.check(self,
-                                source,
-                                model,
-                                arrangement,
-                                expectation)
+        integration_check.CHECKER.check(self,
+                                        source,
+                                        model,
+                                        arrangement,
+                                        expectation)
 
     def _check_with_source_variants(self,
                                     instruction_argument: Arguments,
@@ -44,12 +44,12 @@ class TestCaseBase(unittest.TestCase):
                                     expectation: Expectation):
         for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
                 self, instruction_argument):
-            integration_check.check(self,
-                                    source,
-                                    model,
-                                    arrangement,
-                                    expectation,
-                                    )
+            integration_check.CHECKER.check(self,
+                                            source,
+                                            model,
+                                            arrangement,
+                                            expectation,
+                                            )
 
 
 class TestWithNegationArgumentBase(TestCaseBase):

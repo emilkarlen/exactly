@@ -16,6 +16,8 @@ from exactly_lib_test.symbol.test_resources.string_transformer import is_referen
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_containers
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.arguments_building import NOT_A_LINE_MATCHER
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation, \
+    ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.string_matcher.parse.line_matches import test_resources as tr
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building, test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import \
@@ -84,9 +86,13 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
         validation_cases = [
             NEA('failure pre sds',
                 expected=
-                integration_check.Expectation(
-                    validation=asrt_validation.pre_sds_validation_fails(asrt.equals(failure_message)),
-                    symbol_references=asserted_symbol_references
+                Expectation(
+                    ParseExpectation(
+                        symbol_references=asserted_symbol_references,
+                    ),
+                    ExecutionExpectation(
+                        validation=asrt_validation.pre_sds_validation_fails(asrt.equals(failure_message)),
+                    ),
                 ),
                 actual=ConstantDdvValidator(
                     pre_sds_result=failing_validation_result
@@ -94,9 +100,13 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
                 ),
             NEA('failure post sds',
                 expected=
-                integration_check.Expectation(
-                    validation=asrt_validation.post_sds_validation_fails__w_any_msg(),
-                    symbol_references=asserted_symbol_references
+                Expectation(
+                    ParseExpectation(
+                        symbol_references=asserted_symbol_references,
+                    ),
+                    ExecutionExpectation(
+                        validation=asrt_validation.post_sds_validation_fails__w_any_msg(),
+                    ),
                 ),
                 actual=ConstantDdvValidator(
                     post_sds_result=failing_validation_result
@@ -126,7 +136,7 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
                         self._check(
                             source=source,
                             model=integration_check.ARBITRARY_MODEL,
-                            arrangement=integration_check.Arrangement(
+                            arrangement=Arrangement(
                                 symbols=symbols
                             ),
                             expectation=case.expected
@@ -171,12 +181,16 @@ class _TestStringTransformerValidatorIsApplied(TestCaseBase):
                         self._check(
                             source=source,
                             model=integration_check.ARBITRARY_MODEL,
-                            arrangement=integration_check.Arrangement(
+                            arrangement=Arrangement(
                                 symbols=symbols
                             ),
-                            expectation=integration_check.Expectation(
-                                validation=case.value.expectation,
-                                symbol_references=expected_symbol_references,
+                            expectation=Expectation(
+                                ParseExpectation(
+                                    symbol_references=expected_symbol_references,
+                                ),
+                                ExecutionExpectation(
+                                    validation=case.value.expectation,
+                                ),
                             )
                         )
 

@@ -34,6 +34,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import 
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.arguments import file_contents_arg2
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.misc import \
     FileMatcherThatMatchesAnyFileWhosNameStartsWith
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation, \
+    ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building2 as sm_arg
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.contents_transformation import \
@@ -96,18 +98,22 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
 
                 with self.subTest(quantifier=quantifier,
                                   validation_case=case.name):
-                    integration_check.check(
+                    integration_check.CHECKER.check(
                         self,
                         source=remaining_source(str(arguments)),
                         model_constructor=arbitrary_model(),
                         arrangement=
-                        integration_check.Arrangement(
+                        Arrangement(
                             symbols=symbol_context.symbol_table
                         ),
                         expectation=
-                        integration_check.Expectation(
-                            validation=case.value.expectation,
-                            symbol_references=symbol_context.references_assertion,
+                        Expectation(
+                            ParseExpectation(
+                                symbol_references=symbol_context.references_assertion,
+                            ),
+                            ExecutionExpectation(
+                                validation=case.value.expectation,
+                            ),
                         ),
                     )
 
@@ -205,7 +211,7 @@ class TestHardErrorWhenContentsOfAFileThatIsNotARegularFileIsTested(unittest.Tes
                                 expectation_type=expectation_type.name,
                                 arguments=arguments,
                                 non_regular_file=non_regular_file.name):
-                            integration_check.check(
+                            integration_check.CHECKER.check(
                                 self,
                                 remaining_source(arguments),
                                 the_model,
@@ -220,8 +226,10 @@ class TestHardErrorWhenContentsOfAFileThatIsNotARegularFileIsTested(unittest.Tes
                                     )
                                 ),
                                 expectation=
-                                integration_check.Expectation(
-                                    is_hard_error=asrt.anything_goes()
+                                Expectation(
+                                    execution=ExecutionExpectation(
+                                        is_hard_error=asrt.anything_goes()
+                                    ),
                                 )
                             )
 
@@ -449,7 +457,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                 with self.subTest(
                         expectation_type=expectation_type.name,
                         arguments=arguments):
-                    integration_check.check(
+                    integration_check.CHECKER.check(
                         self,
                         remaining_source(arguments),
                         model.model_with_source_path_as_sub_dir_of_rel_root(name_of_checked_dir)(relativity_root_conf),
@@ -463,9 +471,13 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                             symbols=symbol_table_with_file_matcher
                         ),
                         expectation=
-                        integration_check.Expectation(
-                            main_result=etc.pass__if_positive__fail__if_negative,
-                            symbol_references=expected_symbol_references,
+                        Expectation(
+                            ParseExpectation(
+                                symbol_references=expected_symbol_references,
+                            ),
+                            ExecutionExpectation(
+                                main_result=etc.pass__if_positive__fail__if_negative,
+                            ),
                         )
                     )
 
@@ -514,7 +526,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                 with self.subTest(
                         expectation_type=expectation_type.name,
                         arguments=arguments):
-                    integration_check.check(
+                    integration_check.CHECKER.check(
                         self,
                         remaining_source(arguments),
                         model.model_with_source_path_as_sub_dir_of_rel_root(name_of_checked_dir)(relativity_root_conf),
@@ -528,9 +540,13 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                             symbols=symbol_table_with_file_matcher
                         ),
                         expectation=
-                        integration_check.Expectation(
-                            main_result=etc.fail__if_positive__pass_if_negative,
-                            symbol_references=expected_symbol_references
+                        Expectation(
+                            ParseExpectation(
+                                symbol_references=expected_symbol_references
+                            ),
+                            ExecutionExpectation(
+                                main_result=etc.fail__if_positive__pass_if_negative,
+                            ),
                         )
                     )
 
@@ -577,7 +593,7 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
         etc = expectation_type_config__non_is_success(ExpectationType.POSITIVE)
         arguments = for_all__equals__arguments.apply(etc)
         # ACT & ASSERT #
-        integration_check.check(
+        integration_check.CHECKER.check(
             self,
             remaining_source(arguments),
             model.model_with_rel_root_as_source_path(relativity_root_conf),
@@ -592,9 +608,13 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
                 symbols=symbol_table_with_lines_transformer
             ),
             expectation=
-            integration_check.Expectation(
-                main_result=etc.pass__if_positive__fail__if_negative,
-                symbol_references=expected_symbol_references
+            Expectation(
+                ParseExpectation(
+                    symbol_references=expected_symbol_references
+                ),
+                ExecutionExpectation(
+                    main_result=etc.pass__if_positive__fail__if_negative,
+                ),
             )
         )
 

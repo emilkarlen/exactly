@@ -7,12 +7,21 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.common import TestCaseInstruction, InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
 def single_line_source() -> ParseSource:
     return source_of_lines(['argument'])
+
+
+def single_line_arguments() -> Arguments:
+    return Arguments('argument')
+
+
+def empty_arguments() -> Arguments:
+    return Arguments('')
 
 
 class TestError(Exception):

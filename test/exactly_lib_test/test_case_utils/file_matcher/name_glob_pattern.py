@@ -9,9 +9,9 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as arg
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax, integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as test_case_utils
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import Expectation, \
-    arrangement_w_tcds
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.test_utils import Actual
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, arrangement_w_tcds, \
+    ExecutionExpectation, ParseExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -97,9 +97,13 @@ class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
             integration_check.constant_relative_file_name('ABC'),
             arrangement=self.arrangement,
             expectation=Expectation(
-                symbol_references=asrt.matches_sequence([
-                    is_reference_to_valid_regex_string_part(self.any_char_glob_pattern_string_symbol.name),
-                ]),
-                main_result=maybe_not.main_result(PassOrFail.PASS)
+                ParseExpectation(
+                    symbol_references=asrt.matches_sequence([
+                        is_reference_to_valid_regex_string_part(self.any_char_glob_pattern_string_symbol.name),
+                    ]),
+                ),
+                ExecutionExpectation(
+                    main_result=maybe_not.main_result(PassOrFail.PASS)
+                ),
             )
         )

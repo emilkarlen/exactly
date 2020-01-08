@@ -11,6 +11,8 @@ from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_s
     is_reference_to_symbol_in_expression
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.validation_cases import \
     failing_integer_validation_cases
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation, \
+    ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
@@ -125,12 +127,16 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
                     ExpectationType.POSITIVE,
                     integration_check.ARBITRARY_MODEL,
                     arrangement=
-                    integration_check.Arrangement(
+                    Arrangement(
                         symbols=case.symbol_table
                     ),
                     expectation=
-                    integration_check.Expectation(
-                        symbol_references=case.symbol_references_expectation,
-                        validation=case.expectation,
+                    Expectation(
+                        ParseExpectation(
+                            symbol_references=case.symbol_references_expectation,
+                        ),
+                        ExecutionExpectation(
+                            validation=case.expectation,
+                        ),
                     )
                 )

@@ -1,5 +1,5 @@
 import unittest
-from typing import List, Tuple, Iterator
+from typing import List, Tuple, Iterator, TypeVar
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
@@ -7,6 +7,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import every_line_is_consumed, \
     is_at_beginning_of_line
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -81,6 +82,27 @@ def equivalent_source_variants__with_source_check__for_expression_parser(
                                                               first_line_separator='').as_remaining_source
             yield source
             source_assertion.apply_with_message(put, source, 'source after parse')
+
+
+T = TypeVar('T')
+
+
+def equivalent_source_variants__with_source_check__for_expression_parser_2(
+        original_arguments: Arguments,
+) -> List[NEA[ValueAssertion[ParseSource], ParseSource]]:
+    return [
+        NEA(
+            name='additional_arguments_on_same_line={}, additional_lines={}'.format(
+                repr(following_arguments.first_line),
+                repr(following_arguments.following_lines),
+            ),
+            expected=source_assertion,
+            actual=original_arguments.last_line_followed_by(following_arguments,
+                                                            first_line_separator='').as_remaining_source
+
+        )
+        for following_arguments, source_assertion in _source_variants_with__for_expression_parser()
+    ]
 
 
 def equivalent_source_variants(put: unittest.TestCase,

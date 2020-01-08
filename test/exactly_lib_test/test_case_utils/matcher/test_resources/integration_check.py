@@ -23,10 +23,13 @@ from exactly_lib_test.test_case_file_structure.test_resources.ds_construction im
     tcds_with_act_as_curr_dir_3
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
+from exactly_lib_test.test_case_utils.matcher.test_resources import assertions as asrt_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__for_expression_parser
+    equivalent_source_variants__with_source_check__for_expression_parser, \
+    equivalent_source_variants__with_source_check__for_expression_parser_2
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
+from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
@@ -76,20 +79,36 @@ def arrangement_wo_tcds(symbols: Optional[SymbolTable] = None) -> Arrangement:
                        None)
 
 
-class Expectation:
+class ParseExpectation:
     def __init__(
             self,
             source: ValueAssertion[ParseSource] = asrt.anything_goes(),
             symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+    ):
+        self.source = source
+        self.symbol_references = symbol_references
+
+
+class ExecutionExpectation:
+    def __init__(
+            self,
             validation: ValidationExpectation = all_validations_passes(),
             main_result: ValueAssertion[MatchingResult] = asrt_matching_result.matches_value(True),
             is_hard_error: Optional[ValueAssertion[TextRenderer]] = None,
     ):
-        self.source = source
-        self.symbol_references = symbol_references
         self.validation = validation
         self.main_result = main_result
         self.is_hard_error = is_hard_error
+
+
+class Expectation:
+    def __init__(
+            self,
+            parse: ParseExpectation = ParseExpectation(),
+            execution: ExecutionExpectation = ExecutionExpectation(),
+    ):
+        self.parse = parse
+        self.execution = execution
 
 
 is_pass = Expectation
@@ -113,80 +132,129 @@ def constant_model(model: MODEL) -> Callable[[FullResolvingEnvironment], MODEL]:
     return ret_val
 
 
-def check(put: unittest.TestCase,
-          source: ParseSource,
-          model_constructor: Callable[[FullResolvingEnvironment], MODEL],
-          parser: Parser[MatcherTypeSdv[MODEL]],
-          arrangement: Arrangement,
-          expected_logic_value_type: LogicValueType,
-          expected_value_type: ValueType,
-          expectation: Expectation,
-          ):
-    _Checker(put, source, model_constructor, parser, arrangement,
-             expected_logic_value_type,
-             expected_value_type,
-             expectation).check()
+class MatcherChecker(Generic[MODEL]):
+    def __init__(self,
+                 parser: Parser[MatcherTypeSdv[MODEL]],
+                 expected_logic_value_type: LogicValueType,
+                 ):
+        self._parser = parser
+        self._expected_logic_value_type = expected_logic_value_type
 
+    def check(self,
+              put: unittest.TestCase,
+              source: ParseSource,
+              model_constructor: Callable[[FullResolvingEnvironment], MODEL],
+              arrangement: Arrangement,
+              expectation: Expectation,
+              ):
+        checker = _ParserChecker(put,
+                                 model_constructor,
+                                 self._parser,
+                                 arrangement,
+                                 self._expected_logic_value_type,
+                                 expectation)
+        checker.check(source)
 
-def check_with_source_variants(put: unittest.TestCase, arguments: Arguments,
-                               model_constructor: Callable[[FullResolvingEnvironment], MODEL],
-                               parser: Parser[MatcherTypeSdv[MODEL]],
-                               arrangement: Arrangement,
-                               expected_logic_value_type: LogicValueType,
-                               expected_value_type: ValueType,
-                               expectation: Expectation,
-                               ):
-    for source in equivalent_source_variants__with_source_check__for_expression_parser(
-            put, arguments):
-        check(put, source, model_constructor, parser, arrangement,
-              expected_logic_value_type,
-              expected_value_type,
-              expectation,
-              )
+    def check_with_source_variants(self,
+                                   put: unittest.TestCase, arguments: Arguments,
+                                   model_constructor: Callable[[FullResolvingEnvironment], MODEL],
+                                   arrangement: Arrangement,
+                                   expectation: Expectation,
+                                   ):
+        for source in equivalent_source_variants__with_source_check__for_expression_parser(
+                put, arguments):
+            self.check(put, source, model_constructor, arrangement, expectation)
+
+    def check_multi_execution(self,
+                              put: unittest.TestCase,
+                              arguments: Arguments,
+                              symbol_references: ValueAssertion[Sequence[SymbolReference]],
+                              model_constructor: Callable[[FullResolvingEnvironment], MODEL],
+                              execution: Sequence[NExArr[ExecutionExpectation, Arrangement]],
+                              ):
+        is_valid_sdv = asrt_matcher.matches_matcher_attributes(
+            MatcherTypeSdv,
+            self._expected_logic_value_type,
+            symbol_references
+        )
+
+        for source_case in equivalent_source_variants__with_source_check__for_expression_parser_2(arguments):
+            with put.subTest(source_case.name):
+                source = source_case.actual
+                actual = self._parser.parse(source)
+                is_valid_sdv.apply_with_message(put, actual, 'parsed object')
+                source_case.expected.apply_with_message(put, source, 'source after parse')
+
+                for case in execution:
+                    with put.subTest(case.name):
+                        checker = _MatcherExecutionChecker(put, model_constructor, case.arrangement, case.expected)
+                        checker.check(actual)
 
 
 class _CheckIsDoneException(Exception):
     pass
 
 
-class _Checker(Generic[MODEL]):
+class _ParserChecker(Generic[MODEL]):
     FAKE_TCDS = fake_tcds()
 
     def __init__(self,
                  put: unittest.TestCase,
-                 source: ParseSource,
                  model_constructor: Callable[[FullResolvingEnvironment], MODEL],
                  parser: Parser[MatcherTypeSdv[MODEL]],
                  arrangement: Arrangement,
                  expected_logic_value_type: LogicValueType,
-                 expected_value_type: ValueType,
                  expectation: Expectation,
                  ):
         self.put = put
-        self.source = source
-        self.model_constructor = model_constructor
         self.parser = parser
-        self.arrangement = arrangement
         self.expected_logic_value_type = expected_logic_value_type
-        self.expected_value_type = expected_value_type
+        self.expectation = expectation
+        self._is_valid_sdv = asrt_matcher.matches_matcher_attributes(
+            MatcherTypeSdv,
+            self.expected_logic_value_type,
+            self.expectation.parse.symbol_references
+        )
+        self.source_expectation = expectation.parse.source
+        self._execution_checker = _MatcherExecutionChecker(put, model_constructor, arrangement, expectation.execution)
+
+    def check(self, source: ParseSource):
+        matcher_sdv = self._parse(source)
+        self._execution_checker.check(matcher_sdv)
+
+    def _parse(self, source: ParseSource) -> MatcherTypeSdv[MODEL]:
+        sdv = self.parser.parse(source)
+        self._is_valid_sdv.apply_with_message(self.put, sdv, 'parsed object')
+        self.source_expectation.apply_with_message(self.put,
+                                                   source,
+                                                   'source after parse')
+        return sdv
+
+
+class _MatcherExecutionChecker(Generic[MODEL]):
+    FAKE_TCDS = fake_tcds()
+
+    def __init__(self,
+                 put: unittest.TestCase,
+                 model_constructor: Callable[[FullResolvingEnvironment], MODEL],
+                 arrangement: Arrangement,
+                 expectation: ExecutionExpectation,
+                 ):
+        self.put = put
+        self.model_constructor = model_constructor
+        self.arrangement = arrangement
         self.expectation = expectation
         self.hds = None
         self.tcds = None
 
-    def check(self):
+    def check(self, sut: MatcherTypeSdv[MODEL]):
         try:
-            self._check()
+            self._check(sut)
         except _CheckIsDoneException:
             pass
 
-    def _check(self):
-        matcher_sdv = self._parse()
-
-        self.expectation.symbol_references.apply_with_message(self.put,
-                                                              matcher_sdv.references,
-                                                              'reference')
-
-        matcher_ddv = self._resolve_ddv(matcher_sdv)
+    def _check(self, sut: MatcherTypeSdv[MODEL]):
+        matcher_ddv = self._resolve_ddv(sut)
 
         structure_tree_of_ddv = matcher_ddv.structure().render()
 
@@ -253,25 +321,6 @@ class _Checker(Generic[MODEL]):
             'structure of primitive should be same as that of ddv')
 
         self._check_application(matcher, full_resolving_env)
-
-    def _parse(self) -> MatcherTypeSdv[MODEL]:
-        sdv = self.parser.parse(self.source)
-        asrt.is_instance(MatcherTypeSdv).apply_with_message(self.put,
-                                                            sdv,
-                                                            'SDV')
-        assert isinstance(sdv, MatcherTypeSdv)
-
-        self.put.assertIs(self.expected_logic_value_type,
-                          sdv.logic_value_type,
-                          'logic value type')
-        self.put.assertIs(self.expected_value_type,
-                          sdv.value_type,
-                          'logic type')
-        self.expectation.source.apply_with_message(self.put,
-                                                   self.source,
-                                                   'source after parse')
-
-        return sdv
 
     def _resolve_ddv(self, matcher_sdv: MatcherTypeSdv[MODEL]) -> MatcherDdv[MODEL]:
         matcher_ddv = matcher_sdv.resolve(self.arrangement.symbols)
@@ -350,3 +399,17 @@ class _Checker(Generic[MODEL]):
             self.expectation.is_hard_error.apply_with_message(self.put, result.error,
                                                               'error message for hard error')
             raise _CheckIsDoneException()
+
+
+def _assert_is_valid_matcher_sdv(put: unittest.TestCase,
+                                 expected_logic_value_type: LogicValueType,
+                                 expected_value_type: ValueType,
+                                 sdv):
+    put.assertIsInstance(sdv, MatcherTypeSdv, 'SDV')
+    assert isinstance(sdv, MatcherTypeSdv)
+    put.assertIs(expected_logic_value_type,
+                 sdv.logic_value_type,
+                 'logic value type')
+    put.assertIs(expected_value_type,
+                 sdv.value_type,
+                 'logic type')

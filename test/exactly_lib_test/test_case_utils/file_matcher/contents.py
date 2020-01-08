@@ -14,7 +14,8 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_hds_pop
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHdsPopulator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax, integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as tc
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, Expectation
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, Expectation, \
+    ExecutionExpectation, ParseExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, elements
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args as sm_args, \
     EqualsStringAssertionArgumentsConstructor
@@ -83,8 +84,12 @@ class EmbeddedStringMatcherShouldBeValidated(tc.TestCaseBase):
                     ),
                     expectation=
                     Expectation(
-                        validation=case.value.expectation,
-                        symbol_references=symbol_context.references_assertion,
+                        ParseExpectation(
+                            symbol_references=symbol_context.references_assertion,
+                        ),
+                        ExecutionExpectation(
+                            validation=case.value.expectation,
+                        ),
                     ),
                 )
 
@@ -102,7 +107,9 @@ class TestHardErrorWhenActualFileDoesNotExist(tc.TestWithNegationArgumentBase):
             arrangement_w_tcds(),
             expectation=
             Expectation(
-                is_hard_error=asrt.anything_goes()
+                execution=ExecutionExpectation(
+                    is_hard_error=asrt.anything_goes()
+                ),
             ),
         )
 
@@ -124,7 +131,9 @@ class TestHardErrorWhenActualFileIsADirectory(tc.TestWithNegationArgumentBase):
             ),
             expectation=
             Expectation(
-                is_hard_error=asrt.anything_goes()
+                execution=ExecutionExpectation(
+                    is_hard_error=asrt.anything_goes()
+                ),
             ),
         )
 
@@ -146,7 +155,9 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
             ),
             expectation=
             Expectation(
-                main_result=maybe_not.pass__if_positive__fail__if_negative
+                execution=ExecutionExpectation(
+                    main_result=maybe_not.pass__if_positive__fail__if_negative
+                )
             ),
         )
 
@@ -186,8 +197,13 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
             ),
             expectation=
             Expectation(
-                main_result=maybe_not.pass__if_positive__fail__if_negative,
-                symbol_references=expected_symbol_usages),
+                ParseExpectation(
+                    symbol_references=expected_symbol_usages
+                ),
+                ExecutionExpectation(
+                    main_result=maybe_not.pass__if_positive__fail__if_negative,
+                ),
+            )
         )
 
 
@@ -215,7 +231,9 @@ class TestComplexMatcher(tc.TestWithNegationArgumentBase):
             ),
             expectation=
             Expectation(
-                main_result=maybe_not.pass__if_positive__fail__if_negative
+                execution=ExecutionExpectation(
+                    main_result=maybe_not.pass__if_positive__fail__if_negative
+                ),
             ),
         )
 
@@ -246,7 +264,9 @@ class TestComplexMatcherWithParenthesis(tc.TestWithNegationArgumentBase):
             ),
             expectation=
             Expectation(
-                main_result=maybe_not.pass__if_positive__fail__if_negative
+                execution=ExecutionExpectation(
+                    main_result=maybe_not.pass__if_positive__fail__if_negative
+                ),
             ),
         )
 
@@ -274,6 +294,8 @@ class TestEvaluationIsLazyFromLeftToRight(tc.TestCaseBase):
             ),
             expectation=
             Expectation(
-                main_result=matcher_assertions.is_arbitrary_matching_failure()
+                execution=ExecutionExpectation(
+                    main_result=matcher_assertions.is_arbitrary_matching_failure()
+                ),
             ),
         )

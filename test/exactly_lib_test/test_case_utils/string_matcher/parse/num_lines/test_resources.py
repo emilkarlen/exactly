@@ -9,14 +9,15 @@ from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation, \
+    ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import Arrangement, \
-    Expectation, ModelConstructor
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import ModelConstructor
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -65,7 +66,7 @@ class TestCaseBase(unittest.TestCase):
             arrangement: Arrangement,
             expectation: Expectation):
 
-        integration_check.check(
+        integration_check.CHECKER.check(
             self,
             source,
             model,
@@ -87,7 +88,7 @@ class TestCaseBase(unittest.TestCase):
         for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
                 self,
                 complete_instruction_arguments):
-            integration_check.check(
+            integration_check.CHECKER.check(
                 self,
                 source,
                 model,
@@ -112,7 +113,7 @@ class TestCaseBase(unittest.TestCase):
                 for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
                         self,
                         complete_instruction_arguments):
-                    integration_check.check(
+                    integration_check.CHECKER.check(
                         self,
                         source,
                         integration_check.model_of(actual_file_contents),
@@ -122,6 +123,11 @@ class TestCaseBase(unittest.TestCase):
                             ),
                             symbols=symbols),
                         Expectation(
-                            main_result=etc.main_result(expected_result_of_positive_test),
-                            symbol_references=expected_symbol_usages)
+                            ParseExpectation(
+                                symbol_references=expected_symbol_usages,
+                            ),
+                            ExecutionExpectation(
+                                main_result=etc.main_result(expected_result_of_positive_test),
+                            ),
+                        )
                     )

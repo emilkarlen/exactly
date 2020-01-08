@@ -9,7 +9,8 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbo
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import test_case_utils
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, ExecutionExpectation, \
+    ParseExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
 from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases import failing_regex_validation_cases
@@ -83,7 +84,9 @@ class TestParseAndExecuteValidArguments(unittest.TestCase):
                             matcher_arguments,
                             model_constructor,
                             expectation=Expectation(
-                                main_result=MAIN_RESULT_ASSERTION__FROM_BOOL[expectation_type][case.result]
+                                execution=ExecutionExpectation(
+                                    main_result=MAIN_RESULT_ASSERTION__FROM_BOOL[expectation_type][case.result]
+                                ),
                             )
                         )
 
@@ -118,8 +121,12 @@ class ValidationShouldFailWhenRegexIsInvalid(test_case_utils.TestWithNegationArg
                     symbol_table_from_name_and_sdvs(regex_case.symbols),
                     expectation=
                     Expectation(
-                        symbol_references=asrt.matches_sequence(regex_case.reference_assertions),
-                        validation=regex_case.expectation
+                        ParseExpectation(
+                            symbol_references=asrt.matches_sequence(regex_case.reference_assertions),
+                        ),
+                        ExecutionExpectation(
+                            validation=regex_case.expectation
+                        ),
                     )
                 )
 
@@ -147,10 +154,14 @@ class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
             integration_check.constant_model(self.matching_model_of_positive_check),
             arrangement=self.arrangement,
             expectation=Expectation(
-                symbol_references=asrt.matches_sequence([
-                    is_reference_to_valid_regex_string_part(self.any_char_regex_string_symbol.name),
-                ]),
-                main_result=maybe_not.main_result(PassOrFail.PASS)
+                ParseExpectation(
+                    symbol_references=asrt.matches_sequence([
+                        is_reference_to_valid_regex_string_part(self.any_char_regex_string_symbol.name),
+                    ]),
+                ),
+                ExecutionExpectation(
+                    main_result=maybe_not.main_result(PassOrFail.PASS)
+                ),
             )
         )
 

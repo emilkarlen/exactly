@@ -13,6 +13,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import argume
     validation_cases, integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import tr
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArgumentsSetup
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, ExecutionExpectation, \
+    ParseExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -73,16 +75,20 @@ class TestReferencedMatcherShouldBeValidated(tr.TestCaseBaseForParser):
             symbol_context = case.value.symbol_context
             with self.subTest(case.name):
                 instruction_source = remaining_source(arguments)
-                integration_check.check(
+                integration_check.CHECKER.check(
                     self,
                     instruction_source,
                     model.arbitrary_model(),
                     arrangement_w_tcds(
                         symbols=symbol_context.symbol_table
                     ),
-                    integration_check.Expectation(
-                        validation=case.value.expectation,
-                        symbol_references=symbol_context.references_assertion,
+                    Expectation(
+                        ParseExpectation(
+                            symbol_references=symbol_context.references_assertion,
+                        ),
+                        ExecutionExpectation(
+                            validation=case.value.expectation,
+                        ),
                     ),
                 )
 
@@ -120,15 +126,19 @@ class TestResultShouldBeEqualToResultOfReferencedMatcher(tr.TestCaseBaseForParse
                     non_hds_contents=sds_populator,
                     symbols=symbols,
                 )
-                expectation = integration_check.Expectation(
-                    main_result=etc.main_result(pass_or_fail_from_bool(result_of_referenced_matcher)),
-                    symbol_references=expected_symbol_usages,
+                expectation = Expectation(
+                    ParseExpectation(
+                        symbol_references=expected_symbol_usages,
+                    ),
+                    ExecutionExpectation(
+                        main_result=etc.main_result(pass_or_fail_from_bool(result_of_referenced_matcher)),
+                    ),
                 )
 
                 with self.subTest(result_of_referenced_matcher=result_of_referenced_matcher,
                                   expectation_type=expectation_type):
                     # ACT & ASSERT #
-                    integration_check.check(
+                    integration_check.CHECKER.check(
                         self,
                         instruction_source,
                         model.arbitrary_model(),

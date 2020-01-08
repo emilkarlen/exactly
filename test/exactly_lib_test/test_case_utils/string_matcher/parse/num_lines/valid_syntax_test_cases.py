@@ -10,6 +10,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation, \
+    ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
@@ -124,12 +126,16 @@ class _StringTransformerShouldBeValidated(TestCaseBase):
                             ).construct(expectation_type)
                         ),
                         integration_check.empty_model(),
-                        integration_check.Arrangement(
+                        Arrangement(
                             symbols=case.value.symbol_context.symbol_table
                         ),
-                        integration_check.Expectation(
-                            validation=case.value.expectation,
-                            symbol_references=case.value.symbol_context.references_assertion
+                        Expectation(
+                            ParseExpectation(
+                                symbol_references=case.value.symbol_context.references_assertion,
+                            ),
+                            ExecutionExpectation(
+                                validation=case.value.expectation,
+                            ),
                         ),
                     )
 
